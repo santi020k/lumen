@@ -34,7 +34,7 @@ test('signature guard rejects nested certificate mismatch even when structural v
 
     await writeFile(join(directory, 'development.der'), new X509Certificate(await readFile(join(directory, 'development.pem'))).raw);
 
-    const fixture = name => `#!/bin/sh\nif [ "$1" = --verify ]; then exit 0; fi\ncase "$4" in *.bundle) cp '${join(directory, `${name}.der`)}' "$3"0;; *) cp '${join(directory, 'distribution.der')}' "$3"0;; esac\n`;
+    const fixture = name => `#!/bin/sh\nif [ "$1" = --verify ]; then exit 0; fi\ncase "$2" in --extract-certificates=*) prefix="\${2#--extract-certificates=}";; *) echo 'Expected an attached certificate prefix' >&2; exit 2;; esac\ncase "$3" in *.bundle) cp '${join(directory, `${name}.der`)}' "$prefix"0;; *) cp '${join(directory, 'distribution.der')}' "$prefix"0;; esac\n`;
 
     await writeFile(join(bin, 'codesign'), fixture('distribution'), { mode: 0o755 });
 
@@ -51,12 +51,31 @@ test('signature guard rejects nested certificate mismatch even when structural v
 
     await assert.rejects(checkAppStoreSignatures(app, 'invalid'), /validated distribution/u);
 
-    await writeFile(join(bin, 'codesign'), '#!/bin/sh\nexit 1\n', { mode: 0o755 });
+    await writeFile(join(bin, 'codesign'), '#!/bin/sh\necho "Synthetic signature diagnostic" >&2\nexit 1\n', { mode: 0o755 });
 
-    await assert.rejects(checkAppStoreSignatures(app, fingerprint), /signature verification failed/u);
+    await assert.rejects(checkAppStoreSignatures(app, fingerprint), /signature verification failed.*Synthetic signature diagnostic/u);
   } finally {
     process.env.PATH = originalPath;
 
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test('signature guard extracts certificates through the real macOS codesign interface', { skip: process.platform !== 'darwin' }, async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'lumen-signature-interface-'));
+  const app = '/System/Applications/Utilities/Terminal.app';
+  const prefix = join(directory, 'certificate-');
+
+  try {
+    const result = spawnSync('/usr/bin/codesign', ['--display', `--extract-certificates=${prefix}`, app], { encoding: 'utf8' });
+
+    assert.equal(result.status, 0, result.stderr);
+
+    const certificate = new X509Certificate(await readFile(`${prefix}0`));
+    const { checkAppStoreSignatures } = await import('../apps/playground-apple/scripts/check-app-store-signatures.mjs');
+
+    await checkAppStoreSignatures(app, certificate.fingerprint.replaceAll(':', ''));
+  } finally {
     await rm(directory, { recursive: true, force: true });
   }
 });

@@ -17,7 +17,11 @@ export const checkAppStoreSignatures = async (appPath, fingerprint) => {
   const run = args => {
     const result = spawnSync('codesign', args, { encoding: 'utf8' });
 
-    if (result.status !== 0) throw new Error(`App Store signature verification failed: ${args.at(-1)}`);
+    if (result.status !== 0) {
+      const diagnostic = result.error?.message ?? result.stderr.trim();
+
+      throw new Error(`App Store signature verification failed: ${args.at(-1)}${diagnostic ? `: ${diagnostic}` : ''}`);
+    }
   };
 
   run(['--verify', '--deep', '--strict', root]);
@@ -34,7 +38,7 @@ export const checkAppStoreSignatures = async (appPath, fingerprint) => {
       if (path === root || /\.(?:app|bundle|framework|xpc|appex)$/u.test(path)) {
         const prefix = join(temporary, `certificate-${count++}-`);
 
-        run(['--display', '--extract-certificates', prefix, path]);
+        run(['--display', `--extract-certificates=${prefix}`, path]);
 
         const certificate = new X509Certificate(await readFile(`${prefix}0`));
 
