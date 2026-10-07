@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "draft",
+  "status": "approved",
   "targetVersion": "4.0.0",
   "policy": {
     "compatibility": "Lumen 4 may deliberately replace v3 component and binary contracts. Consumer data, privacy, and release approval remain protected. Migration guidance documents externally visible changes.",
@@ -433,5 +433,17 @@
       ]
     }
   ],
-  "swiftApiBaseline": "v3.0.1"
+  "swiftApiBaseline": "v3.0.1",
+  "approval": {
+    "approver": "Santiago Molina (santi020k)",
+    "date": "2026-10-07",
+    "decision": "Approve the independently reviewed Mac distribution archive signing and nested certificate verification correction and deterministic Android popup Back test readiness under the standing authorization recorded by santi020k in PR #95 comment 6027959606. Delivery remains conditional on all required hosted checks and current Codex review passing before protected merge. Preserve immutable v4.0.0 artifacts and approved iOS and Android submissions and rollout holds; deliver the corrected Mac build from merged main.",
+    "reviewedRevision": "b6a995d9a6297d93193de9e36f72d28119b14dff",
+    "evidence": [
+      "https://github.com/santi020k/lumen/commit/b6a995d9a6297d93193de9e36f72d28119b14dff",
+      "https://github.com/santi020k/lumen/pull/95",
+      "https://github.com/santi020k/lumen/pull/100",
+      "https://github.com/santi020k/lumen/pull/101"
+    ]
+  }
 }
