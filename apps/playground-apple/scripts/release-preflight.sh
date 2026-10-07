@@ -3,6 +3,7 @@
 # cspell:words archs libexec lipo pbxproj plutil xcarchive xcshareddata xcodecloud xcscheme xcschemes
 
 set -euo pipefail
+umask 022
 
 apple_root="${0:A:h:h}"
 repo_root="${apple_root:h:h}"
@@ -112,6 +113,8 @@ if [[ "$(plutil -extract ApplicationProperties.CFBundleIdentifier raw "$mac_arch
     print -u2 "The macOS archive must use the shared App Store bundle identifier."
     exit 1
 fi
+
+node "$apple_root/scripts/check-app-store-permissions.mjs" "$mac_archive_app"
 
 archive_architectures="$(lipo -archs "$mac_archive_app/Contents/MacOS/Lumen Playground")"
 if [[ "$archive_architectures" != *arm64* || "$archive_architectures" != *x86_64* ]]; then
