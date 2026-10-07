@@ -150,7 +150,7 @@ Retained phone metadata/validation, QR encoding, semantic version resolution, sc
 - test-renderer stays 1.2.0: latest 1.3.0 depends on react-reconciler ~0.34.0, whose peer requires React ^19.3.0.
 - TypeScript stays 6.0.3: latest stable 7.0.2 is outside @astrojs/check's ^5 || ^6 range, owned ESLint configuration's <7 range, and @typescript-eslint/typescript-estree's <6.1 range. TS7's native compiler does not yet supply a compatible stable programmatic API for this toolchain.
 - Supply-chain age holds at selection time: Lucide 1.51.0 (published Oct 3 06:17 UTC), ESLint 10.12.0 (Oct 2 20:08 UTC), MCP server/client/core 2.3.0 and Express adapter 2.0.2 (Oct 2 17:44–17:48 UTC), EAS 24.9.0 and 24.10.0 (Oct 2 17:41/20:58 UTC). Latest policy-eligible releases selected instead. The regular `pnpm outdated` command applies the age policy, so registry publication metadata was checked separately.
-- Native tools already latest stable: Gradle 9.8.0, Android Gradle Plugin 9.4.1, Kotlin 2.4.20, Dokka 2.2.0, binary-compatibility-validator 0.18.2, activity-compose 1.13.0, libphonenumber 9.0.40, Espresso 3.7.0, AndroidX test JUnit 1.3.0 and runner 1.7.0. Swift packages have no external dependencies (only local package references). Platform SDK and minimum OS requirements were preserved.
+- Native tools already latest stable: Gradle 9.8.1, Android Gradle Plugin 9.4.1, Kotlin 2.4.20, Dokka 2.2.0, binary-compatibility-validator 0.18.2, activity-compose 1.13.0, libphonenumber 9.0.40, Espresso 3.7.0, AndroidX test JUnit 1.3.0 and runner 1.7.0. Swift packages have no external dependencies (only local package references). Platform SDK and minimum OS requirements were preserved.
 
 ## Generated icon impact
 
