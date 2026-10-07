@@ -226,8 +226,12 @@ For public store delivery, `release-playground-apple.yml` and `release-playgroun
 build numbers from live App Store records, archive/sign/upload on the standard runner, and create
 an immutable source tag only after upload succeeds. The runtime signing script uses a temporary
 keychain and removes certificates, private key files, and archives on exit. Archive with automatic
-Apple Development signing and the team applied to every target, including Swift resource bundles;
-App Store Connect export then signs for distribution. The delivery identity
+Apple Development signing and the team applied to every target, including Swift resource bundles.
+Before archiving, delivery downloads the active App Store profiles matching each bundle ID and
+imported distribution identity, verifies their signed team, expiry, UUID and release entitlements,
+and requires a usable Mac installer identity for macOS. Export selects those profile UUIDs and
+certificate fingerprints explicitly with manual signing, avoiding a cloud-signing fallback. The
+runner removes only profiles it installed; existing profiles are preserved. The delivery identity
 must support existing app and extension bundle IDs. iOS version changes do not implicitly upload Mac.
 
 Infisical `prod:/playground/apple` must supply `APPLE_DISTRIBUTION_P12_BASE64` and

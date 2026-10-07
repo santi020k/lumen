@@ -30,14 +30,18 @@ test('delivery rejects source branches before reading signing credentials', () =
   assert.doesNotMatch(result.stderr, /Missing required signing credential/u);
 });
 
-test('delivery archives with automatic development signing and exports for distribution', async () => {
+test('delivery archives with automatic development signing and exports with explicit distribution profiles', async () => {
   const root = await mkdtemp(join(tmpdir(), 'lumen-delivery-test-'));
   const bin = join(root, 'bin');
 
   await mkdir(bin);
 
   const mocks = {
-    node: 'if [[ "$1" == --input-type=module ]]; then cat >/dev/null; elif [[ "$1" == -p ]]; then echo 1.0.3; else echo 55; fi',
+    node: `if [[ "$1" == .github/scripts/apple-store-profiles.mjs ]]; then
+  if [[ "$MOCK_PROFILE_FAILURE" == true ]]; then echo "Distribution profile preflight failed" >&2; exit 1; fi
+  printf '<plist><dict><key>method</key><string>app-store-connect</string><key>signingStyle</key><string>manual</string><key>teamID</key><string>BY4995HQ3J</string><key>manageAppVersionAndBuildNumber</key><false/></dict></plist>' > "$4/ExportOptions.plist"
+elif [[ "$1" == --input-type=module ]]; then cat >/dev/null; elif [[ "$1" == -p ]]; then echo 1.0.3; else echo 55; fi`,
+    mkdir: 'exit 0',
     xcodebuild: `if [[ "$1" == -version ]]; then
   printf "Xcode 26.5\\nBuild version 17F42\\n"
   exit 0
@@ -105,12 +109,25 @@ printf "%s\\n" "$@" >> "$MOCK_LOG"`,
 
       assert.match(exportOptions, /<key>method<\/key><string>app-store-connect<\/string>/u);
 
-      assert.match(exportOptions, /<key>signingStyle<\/key><string>automatic<\/string>/u);
+      assert.match(exportOptions, /<key>signingStyle<\/key><string>manual<\/string>/u);
 
       assert.match(exportOptions, /<key>teamID<\/key><string>BY4995HQ3J<\/string>/u);
 
       assert.match(exportOptions, /<key>manageAppVersionAndBuildNumber<\/key><false\/>/u);
     }
+
+    const failureLog = join(root, 'preflight-failure.log');
+
+    const failure = spawnSync('bash', [script, 'iOS'], {
+      encoding: 'utf8',
+      env: { ...process.env, PATH: `${bin}:/usr/bin:/bin`, RUNNER_TEMP: root, MOCK_LOG: failureLog, MOCK_PROFILE_FAILURE: 'true', GITHUB_REF: 'refs/heads/main', APPLE_DISTRIBUTION_P12_BASE64: 'dGVzdA==', APPLE_DISTRIBUTION_P12_PASSWORD: 'fixture', APP_STORE_CONNECT_API_KEY_P8: 'fixture', APP_STORE_CONNECT_KEY_ID: 'fixture', APP_STORE_CONNECT_ISSUER_ID: 'fixture' },
+    });
+
+    assert.notEqual(failure.status, 0);
+
+    assert.match(failure.stderr, /Distribution profile preflight failed/u);
+
+    assert.equal((await readFile(failureLog, 'utf8')).trim(), 'cleanup');
   } finally {
     await rm(root, { recursive: true, force: true });
   }

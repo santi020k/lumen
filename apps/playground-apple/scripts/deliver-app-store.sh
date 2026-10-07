@@ -34,7 +34,17 @@ fi
 work="$(mktemp -d "${RUNNER_TEMP:?}/lumen-signing.XXXXXX")"
 keychain="$work/signing.keychain-db"
 keychain_password="$(openssl rand -hex 32)"
+profile_directory="$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"
 cleanup() {
+  if [[ -f "$work/installed-profile-uuids.txt" ]]; then
+    while IFS= read -r profile_uuid; do
+      if [[ "$profile_uuid" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]]; then
+        if ! rm -f "$profile_directory/$profile_uuid.mobileprovision"; then
+          printf 'Could not remove an installed distribution profile; continuing private signing cleanup.\n' >&2
+        fi
+      fi
+    done < "$work/installed-profile-uuids.txt"
+  fi
   security delete-keychain "$keychain" >/dev/null 2>&1 || true
   rm -rf "$work"
 }
@@ -53,6 +63,8 @@ security unlock-keychain -p "$keychain_password" "$keychain"
 security import "$work/distribution.p12" -P "$APPLE_DISTRIBUTION_P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -t cert -f pkcs12 -k "$keychain" >/dev/null
 security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain" >/dev/null
 security list-keychains -d user -s "$keychain" "$HOME/Library/Keychains/login.keychain-db"
+mkdir -p "$profile_directory"
+node .github/scripts/apple-store-profiles.mjs "$platform" "$keychain" "$work" "$profile_directory"
 
 if [[ "$platform" == iOS ]]; then
   scheme=LumenApplePlayground
@@ -67,16 +79,5 @@ xcrun agvtool new-marketing-version "$version"
 xcrun agvtool new-version -all "$build_number"
 auth=(-allowProvisioningUpdates -authenticationKeyPath "$work/AuthKey.p8" -authenticationKeyID "$APP_STORE_CONNECT_KEY_ID" -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID")
 xcodebuild -project LumenApplePlayground.xcodeproj -scheme "$scheme" -configuration Release -destination "$destination" -derivedDataPath "$work/DerivedData" -archivePath "$work/Playground.xcarchive" "${auth[@]}" CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="Apple Development" DEVELOPMENT_TEAM=BY4995HQ3J archive
-cat > "$work/ExportOptions.plist" <<'PLIST'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict>
-<key>method</key><string>app-store-connect</string>
-<key>destination</key><string>upload</string>
-<key>signingStyle</key><string>automatic</string>
-<key>teamID</key><string>BY4995HQ3J</string>
-<key>manageAppVersionAndBuildNumber</key><false/>
-</dict></plist>
-PLIST
 xcodebuild -exportArchive -archivePath "$work/Playground.xcarchive" -exportOptionsPlist "$work/ExportOptions.plist" -exportPath "$work/export" "${auth[@]}"
 printf 'Uploaded %s %s (%s) from %s. Store processing/review remains to be verified.\n' "$platform" "$version" "$build_number" "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
