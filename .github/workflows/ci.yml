@@ -223,6 +223,7 @@ jobs:
           path: |
             packages/compose/build/reports/androidTests/
             packages/compose/build/outputs/androidTest-results/
+            apps/playground-android/build/screenshots/
             ${{ runner.temp }}/lumen-emulator.log
             ${{ runner.temp }}/lumen-emulator-power.log
           if-no-files-found: ignore

@@ -112,20 +112,38 @@ test('Enter cannot activate stale quick commands while a search is loading', asy
 })
 
 test('the global search hotkey toggles once after each completed client navigation', async ({ page }) => {
-  await page.goto('/docs')
+  const controllerRequested = createSignal()
+  const releaseController = createSignal()
 
-  for (const label of ['Guides', 'Templates', 'Community', 'Docs']) {
-    await page.evaluate(() => {
-      document.addEventListener('astro:page-load', () => {
-        document.body.dataset.testNavigationReady = 'true'
-      }, { once: true })
-    })
-    await page.getByRole('navigation', { name: 'Primary', exact: true }).getByRole('link', { name: label, exact: true }).click()
-    await expect(page.locator('body')).toHaveAttribute('data-test-navigation-ready', 'true')
-    await page.keyboard.press('Control+k')
-    await expect(page.getByRole('dialog', { name: 'Search Lumen', exact: true })).toBeVisible()
-    await page.keyboard.press('Control+k')
-    await expect(page.getByRole('dialog', { name: 'Search Lumen', exact: true })).toBeHidden()
+  await page.route('**/dialogs.*.js', async route => {
+    controllerRequested.release()
+
+    await releaseController.promise
+    await route.continue()
+  })
+
+  try {
+    await page.goto('/docs', { waitUntil: 'domcontentloaded' })
+    await controllerRequested.promise
+
+    for (const label of ['Guides', 'Templates', 'Community', 'Docs']) {
+      const destination = page.getByRole('navigation', { name: 'Primary', exact: true })
+        .getByRole('link', { name: label, exact: true })
+
+      await destination.click()
+      await expect(destination).toHaveAttribute('aria-current', 'page')
+
+      releaseController.release()
+
+      await expect(page.getByRole('button', { name: 'Search Lumen', exact: true }))
+        .toHaveAttribute('data-ui-bound', 'true')
+      await page.keyboard.press('Control+k')
+      await expect(page.getByRole('dialog', { name: 'Search Lumen', exact: true })).toBeVisible()
+      await page.keyboard.press('Control+k')
+      await expect(page.getByRole('dialog', { name: 'Search Lumen', exact: true })).toBeHidden()
+    }
+  } finally {
+    releaseController.release()
   }
 })
 

@@ -152,6 +152,10 @@ The default phone component list is generated from `registry/native-playground-c
 `pnpm run generate:native-playground-catalogs`, alongside the app catalogs. Explicit component
 arguments still select a focused capture.
 
+Captures temporarily disable Android transition animations and restore the original settings on
+exit, including failures. CI retains capture PNGs with the Android test reports for visual failure
+diagnosis.
+
 The script writes one phone PNG per public component and a Wear catalog PNG beneath
 `build/screenshots`. It starts the phone activity with the `component` intent extra, which filters
 the gallery to the relevant section and opens the alert dialog, sheet, or menu when that overlay is
@@ -177,7 +181,8 @@ Production delivery uses the **Release Android playground beta** GitHub workflow
 dispatches from other branches are skipped. Store delivery uses `--require-current-approval`, so
 publishing a library tag does not exempt later uploads from exact-source approval. A source change
 requires a fresh matching approval before delivery. Local signed builds are development preflight only.
-Google Play review submission remains an explicit Play Console step after the automated upload.
+Google Play automatically submits committed changes for review. Prepare the listing before dispatch
+and keep managed publishing enabled to hold approved changes for the intended rollout.
 
 Public Google Play copy, the data-safety declaration, feature graphic, icon, and phone screenshot
 candidates live in `Store`; regenerate raster assets from the shared Lumen mark with

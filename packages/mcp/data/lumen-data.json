@@ -46346,11 +46346,16 @@
     "approval": {
       "approver": "Santiago Molina (santi020k)",
       "date": "2026-10-07",
-      "decision": "Publish Lumen 4.0.0 and deploy the coordinated release; deliver playground 1.0.3 for Apple and Android review with current screenshots and listing metadata under the standing authorization, after all checks and reviews pass. Standing authorization is recorded by santi020k in PR #95 comment 6027959606.",
-      "reviewedRevision": "cdb28a38aca0071af35021341bb7fbbefd7730a6",
+      "decision": "Approve the reviewed v4.0.0 delivery recovery for playground 1.0.3 Apple and Android submission with current screenshots and metadata after all checks and reviews pass, under the standing authorization recorded by santi020k in PR #95 comment 6027959606. Preserve already published v4.0.0 tags and artifacts.",
+      "reviewedRevision": "17e6db93bae8b05373fb4301703e074dd349a1f1",
       "evidence": [
-        "https://github.com/santi020k/lumen/commit/cdb28a38aca0071af35021341bb7fbbefd7730a6",
-        "https://github.com/santi020k/lumen/pull/95"
+        "https://github.com/santi020k/lumen/commit/17e6db93bae8b05373fb4301703e074dd349a1f1",
+        "https://github.com/santi020k/lumen/pull/97",
+        "https://github.com/santi020k/lumen/pull/95",
+        "https://github.com/santi020k/lumen/actions/runs/37597458120",
+        "https://github.com/santi020k/lumen/actions/runs/37597456901",
+        "https://github.com/santi020k/lumen/actions/runs/37597456914",
+        "https://github.com/santi020k/lumen/actions/runs/37597456912"
       ]
     }
   },

@@ -341,10 +341,10 @@ test("Android signing requires approved main before fetching production credenti
   assert.ok(approval >= 0 && credentials > approval, "validate approved source before injecting signing credentials");
 });
 
-test("Android uploads leave review submission explicit in Play Console", () => {
+test("Android uploads permit automatic Google Play review submission", () => {
   assert.match(
     playgroundAndroidWorkflow,
-    /changesNotSentForReview: true/u,
+    /changesNotSentForReview: false/u,
   );
 });
 
@@ -535,7 +535,7 @@ test("initial npm publication verifies the complete family before tagging", () =
     'release_audit_directory="$(mktemp -d)"',
     'cd "$release_audit_directory"',
     "npm init --yes",
-    "npm install \\",
+    'node "$published_installer" "${published_package_specs[@]}"',
     '--lockfile "$release_audit_directory/package-lock.json"',
     "pnpm run check:npm-release-provenance",
     '--revision "$audit_revision"',

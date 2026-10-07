@@ -50,7 +50,7 @@ const openDocsPage = async (page: Page, path: string, theme: DarkTheme) => {
   }
 }
 
-const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() => {
+const getDarkThemeAccessibilityReport = async (page: Page, sectionIndex: number | null = null) => page.evaluate(index => {
   type Rgb = [number, number, number, number]
 
   interface ContrastFailure {
@@ -161,6 +161,7 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
   }
 
   const shouldSkipElement = (element: Element) => (
+    (index === null && Boolean(element.closest('.home-section'))) ||
     ignoredSelectors.some(selector => element.closest(selector)) ||
     Boolean(element.closest(':disabled, [aria-disabled="true"]')) ||
     !isElementVisible(element)
@@ -191,7 +192,11 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
   }
 
   const contrastFailures: ContrastFailure[] = []
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+  const root = index === null ? document.body : [...document.querySelectorAll('.home-section')][index]
+
+  if (!root) throw new Error('The requested accessibility audit section is missing')
+
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
 
   while (walker.nextNode()) {
     const node = walker.currentNode
@@ -227,7 +232,7 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
     }
   }
 
-  for (const element of document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[placeholder], textarea[placeholder]')) {
+  for (const element of root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[placeholder], textarea[placeholder]')) {
     if (shouldSkipElement(element)) continue
 
     const foreground = parseRgb(window.getComputedStyle(element, '::placeholder').color)
@@ -262,7 +267,7 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
   ]
 
   const focusFailures: FocusFailure[] = []
-  const focusable = [...document.querySelectorAll<HTMLElement>(focusableSelectors.join(','))]
+  const focusable = [...root.querySelectorAll<HTMLElement>(focusableSelectors.join(','))]
     .filter(element => !shouldSkipElement(element))
     .slice(0, 36)
 
@@ -285,7 +290,19 @@ const getDarkThemeAccessibilityReport = async (page: Page) => page.evaluate(() =
     contrastFailures: contrastFailures.slice(0, 20),
     focusFailures
   }
-})
+}, sectionIndex)
+
+const renderSection = async (page: Page, index: number) => {
+  const section = page.locator('.home-section').nth(index)
+
+  await section.scrollIntoViewIfNeeded()
+  await expect(section.getByRole('heading').first()).toBeVisible()
+  await page.evaluate(() => new Promise<void>(resolve => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { resolve() })
+    })
+  }))
+}
 
 for (const theme of darkThemes) {
   for (const path of checkedPaths) {
@@ -296,6 +313,29 @@ for (const theme of darkThemes) {
 
       expect(report.contrastFailures).toEqual([])
       expect(report.focusFailures).toEqual([])
+
+      // Deferred sections must be audited while the browser renders their styles.
+      for (let index = 0; index < await page.locator('.home-section').count(); index += 1) {
+        await renderSection(page, index)
+
+        const sectionReport = await getDarkThemeAccessibilityReport(page, index)
+
+        expect(sectionReport.contrastFailures, `Section ${index} contrast`).toEqual([])
+        expect(sectionReport.focusFailures, `Section ${index} focus`).toEqual([])
+      }
     })
   }
+
+  test(`the rendered section audit detects low contrast below the fold (${theme})`, async ({ page }) => {
+    await openDocsPage(page, '/', theme)
+    await renderSection(page, 0)
+    await page.locator('#ai-title').evaluate(element => {
+      element.style.color = 'rgb(0, 0, 0)'
+    })
+    await expect(page.locator('#ai-title')).toHaveCSS('color', 'rgb(0, 0, 0)')
+
+    const report = await getDarkThemeAccessibilityReport(page, 0)
+
+    expect(report.contrastFailures).toContainEqual(expect.objectContaining({ selector: '#ai-title' }))
+  })
 }

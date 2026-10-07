@@ -101,8 +101,9 @@ For a Google Play closed-beta release, dispatch **Release Android playground bet
 with the public version name and the next unused, monotonically increasing version code. The
 workflow builds and signature-verifies the AAB, runs the Android tests and lint, retains the exact
 bundle as a workflow artifact, and publishes it to the existing `alpha` closed-testing track. It
-commits the release without sending the changes for review, leaving them pending explicit
-submission in Play Console.
+commits the release with automatic review submission, as required by this app’s Google Play
+configuration. Prepare listing assets and declarations before dispatch. Keep managed publishing
+enabled in Play Console to hold approved changes until the intended rollout.
 
 For a local signed upload bundle, keep the upload key and passwords in the configured Infisical
 project under the `dev` environment and `/playground/google-play` path. CI uses the matching `prod`
@@ -224,7 +225,9 @@ For public store delivery, `release-playground-apple.yml` and `release-playgroun
 `apple-store-release.yml` from merged main, in the protected `app-store` environment. They resolve
 build numbers from live App Store records, archive/sign/upload on the standard runner, and create
 an immutable source tag only after upload succeeds. The runtime signing script uses a temporary
-keychain and removes certificates, private key files, and archives on exit. The delivery identity
+keychain and removes certificates, private key files, and archives on exit. Archive with automatic
+Apple Development signing and the team applied to every target, including Swift resource bundles;
+App Store Connect export then signs for distribution. The delivery identity
 must support existing app and extension bundle IDs. iOS version changes do not implicitly upload Mac.
 
 Infisical `prod:/playground/apple` must supply `APPLE_DISTRIBUTION_P12_BASE64` and
