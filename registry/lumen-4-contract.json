@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "draft",
+  "status": "approved",
   "targetVersion": "4.0.0",
   "policy": {
     "compatibility": "Lumen 4 may deliberately replace v3 component and binary contracts. Consumer data, privacy, and release approval remain protected. Migration guidance documents externally visible changes.",
@@ -433,5 +433,20 @@
       ]
     }
   ],
-  "swiftApiBaseline": "v3.0.1"
+  "swiftApiBaseline": "v3.0.1",
+  "approval": {
+    "approver": "Santiago Molina (santi020k)",
+    "date": "2026-10-07",
+    "decision": "Approve the reviewed v4.0.0 delivery recovery for playground 1.0.3 Apple and Android submission with current screenshots and metadata under the standing authorization recorded by santi020k in PR #95 comment 6027959606. All hosted source checks and Codex review passed. Preserve already published v4.0.0 tags and artifacts; use new store build numbers for delivery from the merged recovery commit.",
+    "reviewedRevision": "27067d136db382b9113b83dd9fb5accea30d6c0b",
+    "evidence": [
+      "https://github.com/santi020k/lumen/commit/27067d136db382b9113b83dd9fb5accea30d6c0b",
+      "https://github.com/santi020k/lumen/pull/98",
+      "https://github.com/santi020k/lumen/pull/95",
+      "https://github.com/santi020k/lumen/actions/runs/37641000722",
+      "https://github.com/santi020k/lumen/actions/runs/37640999345",
+      "https://github.com/santi020k/lumen/actions/runs/37640999252",
+      "https://github.com/santi020k/lumen/actions/runs/37640999197"
+    ]
+  }
 }
