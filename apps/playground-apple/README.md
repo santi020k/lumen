@@ -107,7 +107,8 @@ project structure changes.
 
 Run the local preflight from the repository root with
 `pnpm playground:apple:release-preflight`. It checks release metadata, runs Swift tests, and builds
-unsigned iOS Simulator and macOS archive candidates.
+unsigned iOS Simulator and macOS archive candidates, including a check that every macOS app file
+is readable and every directory is traversable by ordinary users.
 
 For this public repository, **Launch Apple playground release** and **Launch Mac playground release**
 route delivery through the [Public Apple store delivery workflow](../../.github/workflows/apple-store-release.yml)
@@ -117,7 +118,10 @@ the workflows' visibility gates. Store review and customer rollout remain separa
 
 Delivery imports credentials into a temporary keychain with access restricted to Apple's signing
 tools. macOS also authorizes the installer signing tools so package export can run unattended;
-the keychain and newly installed distribution profiles are removed when delivery exits.
+the keychain and newly installed distribution profiles are removed when delivery exits. Signing
+credentials remain private under `umask 077`; Xcode archive and export subprocesses use `umask 022`
+so packaged resources remain readable after installation. The macOS archive permissions check runs
+before export and upload.
 
 See [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites and the complete Xcode,
 device, signing, and TestFlight workflow.

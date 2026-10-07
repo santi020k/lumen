@@ -82,6 +82,9 @@ cd "$apple_root"
 xcrun agvtool new-marketing-version "$version"
 xcrun agvtool new-version -all "$build_number"
 auth=(-allowProvisioningUpdates -authenticationKeyPath "$work/AuthKey.p8" -authenticationKeyID "$APP_STORE_CONNECT_KEY_ID" -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID")
-xcodebuild -project LumenApplePlayground.xcodeproj -scheme "$scheme" -configuration Release -destination "$destination" -derivedDataPath "$work/DerivedData" -archivePath "$work/Playground.xcarchive" "${auth[@]}" CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="Apple Development" DEVELOPMENT_TEAM=BY4995HQ3J archive
-xcodebuild -exportArchive -archivePath "$work/Playground.xcarchive" -exportOptionsPlist "$work/ExportOptions.plist" -exportPath "$work/export" "${auth[@]}"
+(umask 022; xcodebuild -project LumenApplePlayground.xcodeproj -scheme "$scheme" -configuration Release -destination "$destination" -derivedDataPath "$work/DerivedData" -archivePath "$work/Playground.xcarchive" "${auth[@]}" CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="Apple Development" DEVELOPMENT_TEAM=BY4995HQ3J archive)
+if [[ "$platform" == macOS ]]; then
+  node "$repository_root/apps/playground-apple/scripts/check-app-store-permissions.mjs" "$work/Playground.xcarchive/Products/Applications/Lumen Playground.app"
+fi
+(umask 022; xcodebuild -exportArchive -archivePath "$work/Playground.xcarchive" -exportOptionsPlist "$work/ExportOptions.plist" -exportPath "$work/export" "${auth[@]}")
 printf 'Uploaded %s %s (%s) from %s. Store processing/review remains to be verified.\n' "$platform" "$version" "$build_number" "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
