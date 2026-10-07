@@ -22,6 +22,37 @@ fi
 
 mkdir -p "$output_directory/phone" "$output_directory/wear"
 
+# Capture settled component states rather than a device-dependent transition frame.
+# Preserve the developer's animation settings when this also runs outside CI.
+animation_keys=(window_animation_scale transition_animation_scale animator_duration_scale)
+animation_values=()
+for key in "${animation_keys[@]}"; do
+    animation_values+=("$($adb shell settings get global "$key" | tr -d '\r')")
+done
+restore_capture_animation_settings() {
+    local status=$?
+    local restore_failed=false
+    trap - EXIT
+    for index in "${!animation_keys[@]}"; do
+        if [[ "${animation_values[$index]}" == null ]]; then
+            if ! $adb shell settings delete global "${animation_keys[$index]}" >/dev/null; then
+                restore_failed=true
+            fi
+        elif ! $adb shell settings put global "${animation_keys[$index]}" "${animation_values[$index]}"; then
+            restore_failed=true
+        fi
+    done
+    if [[ "$restore_failed" == true ]]; then
+        echo 'Could not restore Android capture animation settings.' >&2
+        if [[ "$status" == 0 ]]; then status=1; fi
+    fi
+    exit "$status"
+}
+trap restore_capture_animation_settings EXIT
+for key in "${animation_keys[@]}"; do
+    $adb shell settings put global "$key" 0
+done
+
 if $adb shell pm list features | grep -q 'android.hardware.type.watch'; then
     wear_components=("Theme" "Action button" "Progress ring" "Status" "Metric" "List row")
     $adb shell input keyevent 224
@@ -74,7 +105,6 @@ for component in "${components[@]}"; do
         "Card"|"Avatar"|"List row") scroll_count=1 ;;
         "Empty state") scroll_count=3 ;;
         "Error state") scroll_count=4 ;;
-        "Error state") scroll_count=5 ;;
         "Adaptive navigation scaffold") scroll_count=2 ;;
     esac
 
