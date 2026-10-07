@@ -7,6 +7,28 @@ afterEach(() => {
   document.body.replaceChildren()
 })
 
+test('RTL zoom keeps the center and modified-wheel pointer in logical map coordinates', () => {
+  document.body.innerHTML = '<figure><div data-ui-world-map-viewport style="direction:rtl"></div><button data-ui-world-map-zoom="in"></button></figure>'
+  const root = document.querySelector('figure')
+  const viewport = root?.querySelector<HTMLElement>('[data-ui-world-map-viewport]')
+  const button = root?.querySelector('button')
+  if (!root || !viewport || !button) throw new Error('Missing RTL zoom fixture')
+  Object.defineProperties(viewport, {
+    clientWidth: { value: 800 },
+    clientHeight: { value: 320 },
+    scrollWidth: { get: () => 800 * Number(viewport.style.getPropertyValue('--ui-world-map-zoom') || 1) }
+  })
+  const abort = new AbortController()
+  initLumenWorldMapZoom(root, abort.signal)
+  button.click()
+  expect(viewport.scrollLeft).toBe(-200)
+  const before = viewport.scrollWidth - viewport.clientWidth + viewport.scrollLeft
+  viewport.dispatchEvent(new WheelEvent('wheel', { ctrlKey: true, deltaY: -100, clientX: 100, cancelable: true }))
+  const after = viewport.scrollWidth - viewport.clientWidth + viewport.scrollLeft
+  expect(after).toBeCloseTo((before + 100) * Math.exp(0.2) - 100)
+  abort.abort()
+})
+
 test.each([[0, 1], [1.5, 1.5], [10, 8], [NaN, 1], [Infinity, 1]])('clamps zoom %s to %s', (value, expected) => {
   expect(normalizeLumenWorldMapZoom(value)).toBe(expected)
 })

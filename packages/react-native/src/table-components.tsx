@@ -43,6 +43,10 @@ interface TableContentProps extends LumenTableProps {
 }
 
 const emptySelection: ReadonlySet<string> = new Set()
+
+const isTableSelectionValid = (selection: unknown): boolean => selection === undefined ||
+  (selection instanceof Set && Array.from(selection).every((id: unknown) => typeof id === 'string'))
+
 const formatTableSort = (sort: LumenTableSort | null): string => sort?.direction ?? ''
 
 const TableContent = ({ columns, rows, layout = 'records', missingLabel = '', header, selection }: TableContentProps): ReactElement => {
@@ -237,7 +241,7 @@ const DataTableBody = (props: LumenDataTableProps): ReactElement => {
     />
   )
 
-  if (!validateLumenTable(props.columns, props.rows)) return (
+  if (!validateLumenTable(props.columns, props.rows) || !isTableSelectionValid(props.selectedIds)) return (
     <LumenText accessibilityRole="alert">
       {props.invalidLabel ?? 'Invalid table data'}
     </LumenText>

@@ -1,4 +1,4 @@
-import { fitHighlightedMap, initMapWheelZoom, type WorldMapZoomAnchor } from './world-map-navigation.js'
+import { fitHighlightedMap, initMapWheelZoom, readMapScrollLeft, type WorldMapZoomAnchor, writeMapScrollLeft } from './world-map-navigation.js'
 import { initLumenWorldMapPan } from './world-map-pan.js'
 
 /** Shared DOM enhancement for the web map's native zoom controls and scrollable viewport. */
@@ -51,7 +51,7 @@ export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): v
   ): void => {
     const next = normalizeLumenWorldMapZoom(value)
     const ratio = next / zoom
-    const x = (viewport.scrollLeft + anchor.x) * ratio - anchor.x
+    const x = (readMapScrollLeft(viewport) + anchor.x) * ratio - anchor.x
     const y = (viewport.scrollTop + anchor.y) * ratio - anchor.y
 
     zoom = next
@@ -60,7 +60,7 @@ export const initLumenWorldMapZoom = (root: HTMLElement, signal: AbortSignal): v
 
     viewport.style.setProperty('--ui-world-map-zoom', String(zoom))
 
-    viewport.scrollLeft = Math.max(0, x)
+    writeMapScrollLeft(viewport, x)
 
     viewport.scrollTop = Math.max(0, y)
 

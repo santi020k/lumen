@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Focus externally associated form controls from error summaries and clear corrected validation state on blur by form ownership. Preserve WorldMap country events in same-origin iframe realms and zoom anchors in RTL containers.
+
 - Preserve HoverCard keyboard focus transitions after adoption into a different document.
 
 - Animate bar geometry and filled line-chart areas inside ChartMotion using stable decorative identities, while keeping accessible chart data immediate.

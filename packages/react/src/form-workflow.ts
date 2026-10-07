@@ -318,8 +318,10 @@ export const useLumenFormWorkflow = ({
       onReset: event => {
         const form = event.currentTarget
 
-        queueMicrotask(() => {
-          if (event.defaultPrevented || !mountedRef.current) return
+        // A native reset button can checkpoint microtasks before restoring controls.
+        // A later task observes the completed default action and final cancellation.
+        setTimeout(() => {
+          if (event.defaultPrevented || !mountedRef.current || formRef.current !== form) return
 
           setErrors([])
 
@@ -331,7 +333,7 @@ export const useLumenFormWorkflow = ({
 
           // A reset restores defaults, not necessarily the last saved values.
           refresh(form)
-        })
+        }, 0)
       }
     }
   }

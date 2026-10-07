@@ -1313,6 +1313,18 @@ test('Tabs switches regression fixture preserves localized and accessible SSR co
   await page.getByRole('button', { name: 'Submit external field' }).click()
   await expect(form).toHaveAttribute('data-status', 'error')
   await expect(page.getByLabel('External field')).toHaveAttribute('aria-invalid', 'true')
+  await form.locator('[data-ui-error-summary] a[href="#external-field"]').click()
+  await expect(page.getByLabel('External field')).toBeFocused()
+  await page.evaluate(() => {
+    document.querySelector('#external-form')?.addEventListener('ui:valid', () => {
+      document.querySelector('#external-form')?.setAttribute('data-regression-valid', 'true')
+    }, { once: true })
+  })
+  await page.getByLabel('External field').fill('Corrected value')
+  await page.getByLabel('External field').press('Tab')
+  await expect(page.getByLabel('External field')).not.toHaveAttribute('aria-invalid')
+  await expect(page.locator('#external-error')).toBeHidden()
+  await expect(form).toHaveAttribute('data-regression-valid', 'true')
 })
 
 test('Tooltip opens when randomUUID is unavailable and generates distinct IDs', async ({ page }) => {

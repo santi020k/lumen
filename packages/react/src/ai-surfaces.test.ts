@@ -52,6 +52,25 @@ test('controlled prompt emits trimmed text and stop requests without owning tran
   expect(required(container.querySelector('textarea')).value).toBe(' Hello ')
 })
 
+test('standard form ID owns external submit controls and the textarea has its own label ID', () => {
+  const { root, container } = mount()
+  const submit = vi.fn()
+  act(() => {
+    root.render(createElement('div', null, createElement(PromptComposer, { id: 'composer', value: 'Hello', onPromptSubmit: submit }), createElement('button', { form: 'composer', type: 'submit' }, 'External send')))
+  })
+  const form = required(container.querySelector('form'))
+  const input = required(container.querySelector('textarea'))
+  const external = required(container.querySelector<HTMLButtonElement>('button[form]'))
+  expect(form.id).toBe('composer')
+  expect(input.id).not.toBe(form.id)
+  expect(container.querySelector('label')?.htmlFor).toBe(input.id)
+  expect(external.form).toBe(form)
+  act(() => {
+    external.click()
+  })
+  expect(submit).toHaveBeenCalledWith({ text: 'Hello' })
+})
+
 test('native reset updates the uncontrolled React draft and canceled reset keeps it', () => {
   const { root, container } = mount()
   const change = vi.fn()

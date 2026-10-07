@@ -26,6 +26,22 @@ const adapters = [
   { label: "Elements", path: "/visual/elements" },
 ] as const;
 
+test('React workflow observes native reset-button defaults and final cancellation', async ({ page }) => {
+  await page.goto('/visual/forms');
+  const input = page.getByRole('textbox', { name: 'Workflow value' });
+  const dirty = page.getByRole('status', { name: 'Workflow dirty' });
+  await input.fill('Draft');
+  await expect(dirty).toHaveText('Draft changed');
+  await page.getByRole('button', { name: 'Reset workflow', exact: true }).click();
+  await expect(input).toHaveValue('Saved');
+  await expect(dirty).toHaveText('Draft saved');
+  await input.fill('Keep draft');
+  await page.getByRole('button', { name: 'Cancel reset', exact: true }).click();
+  await page.getByRole('button', { name: 'Reset workflow', exact: true }).click();
+  await expect(input).toHaveValue('Keep draft');
+  await expect(dirty).toHaveText('Draft changed');
+});
+
 test('Elements buttons honor ancestor cancellation after native keyboard dispatch', async ({ page }) => {
   await page.goto('/visual/elements');
   await page.evaluate(async () => {

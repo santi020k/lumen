@@ -2,6 +2,42 @@ import { createRequire } from 'node:module'
 
 import { expect, test } from '@playwright/test'
 
+test('RTL map zoom preserves viewport and pointer anchors and fits highlighted geometry', async ({ page }) => {
+  await page.goto('/docs/components/world-map')
+  const map = page.locator('[data-ui-world-map]').first()
+  const viewport = map.locator('[data-ui-world-map-viewport]')
+  await map.evaluate(element => { element.setAttribute('dir', 'rtl') })
+  await map.getByRole('button', { name: 'Zoom in', exact: true }).click()
+  const read = () => viewport.evaluate(element => ({
+    raw: element.scrollLeft,
+    left: element.scrollWidth - element.clientWidth + element.scrollLeft,
+    width: element.clientWidth,
+    zoom: Number(getComputedStyle(element).getPropertyValue('--ui-world-map-zoom'))
+  }))
+  const center = await read()
+  expect(center.raw).toBeLessThan(0)
+  expect(Math.abs(center.left - center.width / 4)).toBeLessThan(2)
+  await viewport.scrollIntoViewIfNeeded()
+  const bounds = await viewport.boundingBox()
+  if (!bounds) throw new Error('Missing RTL viewport')
+  const x = bounds.width / 3
+  await page.mouse.move(bounds.x + x, bounds.y + bounds.height / 3)
+  const before = await read()
+  await page.keyboard.down('Control')
+  try { await page.mouse.wheel(0, -100) } finally { await page.keyboard.up('Control') }
+  await expect.poll(async () => (await read()).zoom).toBeGreaterThan(before.zoom)
+  const after = await read()
+  expect(Math.abs(after.left - ((before.left + x) * after.zoom / before.zoom - x))).toBeLessThan(2)
+  await map.locator('.ui-world-map__country--highlighted').evaluateAll(paths => {
+    for (const path of paths) if (path.getAttribute('data-ui-world-map-country') !== 'CO') path.classList.remove('ui-world-map__country--highlighted')
+  })
+  await map.getByRole('button', { name: 'Fit highlighted countries', exact: true }).click()
+  const country = await map.locator('[data-ui-world-map-country="CO"]').boundingBox()
+  const fitted = await viewport.boundingBox()
+  if (!country || !fitted) throw new Error('Missing fitted geometry')
+  expect(Math.abs(country.x + country.width / 2 - fitted.x - fitted.width / 2)).toBeLessThan(2)
+})
+
 const axePath = createRequire(new URL('../../packages/elements/package.json', import.meta.url)).resolve('axe-core/axe.min.js')
 
 for (const width of [360, 1440]) {

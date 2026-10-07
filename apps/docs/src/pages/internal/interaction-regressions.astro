@@ -2,7 +2,7 @@
 // cspell:words Mostrar Ocultar
 import '@santi020k/lumen/styles.css'
 
-import { AnimatedNumber, Avatar, Button, Form, Input, Label, Mentions, PasswordField, PhoneInput, Stack, Tooltip, TooltipContent, TreeSelect, Typography } from '@santi020k/lumen-astro'
+import { AnimatedNumber, Avatar, Button, ErrorSummary, Field, FieldError, Form, Input, Label, Mentions, PasswordField, PhoneInput, Stack, Tooltip, TooltipContent, TreeSelect, Typography } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
 ---
 <!doctype html>
@@ -25,14 +25,18 @@ import UIPrimitives from '@santi020k/lumen-astro/runtime'
         <Mentions options={['Alex', 'Sam']} />
         <TreeSelect treeData={[{ label: 'Parent', value: 'parent', children: [{ label: 'Child', value: 'child' }] }]} />
         <Form id="external-form">
+          <ErrorSummary id="external-summary" errors={{ fields: [{ controlId: 'external-field', name: 'external', message: 'Enter the external field.' }], form: [] }} />
           <Button type="submit">Submit external field</Button>
         </Form>
         <Form id="phone-owner"><Button type="reset">Reset external phone</Button></Form>
         <PhoneInput id="external-phone" countries={['US', 'CO']} countryName="phone-country" countryValue="US" name="external-phone" value="5550123" inputProps={{ form: 'phone-owner', 'aria-label': 'External phone' }} />
         <Form id="readonly-phone-owner" />
         <PhoneInput id="readonly-external-phone" countries={['US', 'CO']} countryName="readonly-country" countryValue="US" name="readonly-phone" value="5550123" readOnly inputProps={{ form: 'readonly-phone-owner', 'aria-label': 'Readonly external phone' }} />
-        <Label for="external-field">External field</Label>
-        <Input form="external-form" id="external-field" name="external" required />
+        <Field>
+          <Label for="external-field">External field</Label>
+          <Input form="external-form" id="external-field" name="external" required />
+          <FieldError id="external-error" />
+        </Field>
       </Stack>
     </main>
     <UIPrimitives />

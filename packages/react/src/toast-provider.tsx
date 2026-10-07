@@ -11,6 +11,13 @@ const defaultToastDuration = 5000
 const defaultToastMax = 5
 const closeDelay = 240
 
+const limitToastPlacement = (toasts: ToastRecord[], placement: ToastPlacement, max: number): ToastRecord[] => {
+  const open = toasts.filter(toast => toast.open && toast.placement === placement)
+  const staleIds = new Set(open.slice(0, Math.max(0, open.length - max)).map(toast => toast.id))
+
+  return toasts.map(toast => staleIds.has(toast.id) ? { ...toast, open: false } : toast)
+}
+
 const createToastId = (): string => {
   if (
     typeof crypto !== 'undefined' &&
@@ -244,15 +251,7 @@ export const ToastProvider = ({
       setToasts(current => {
         const next = [...current.filter(toast => toast.id !== record.id), record]
 
-        const samePlacement = next.filter(
-          toast => toast.placement === record.placement
-        )
-
-        const staleIds = samePlacement
-          .slice(0, Math.max(0, samePlacement.length - stackMax))
-          .map(toast => toast.id)
-
-        return next.map(toast => staleIds.includes(toast.id) ? { ...toast, open: false } : toast)
+        return limitToastPlacement(next, record.placement, stackMax)
       })
 
       return record.id
@@ -260,10 +259,12 @@ export const ToastProvider = ({
   )
 
   const update = useCallback((id: string, detail: ToastDetail) => {
-    setToasts(current => current.map(toast => {
-      if (toast.id !== id) return toast
+    setToasts(current => {
+      const toast = current.find(item => item.id === id)
 
-      return {
+      if (!toast) return current
+
+      const record: ToastRecord = {
         ...toast,
         ...detail,
         id,
@@ -272,8 +273,14 @@ export const ToastProvider = ({
         title: detail.title ?? toast.title,
         variant: detail.variant ?? toast.variant
       }
-    }))
-  }, [])
+
+      const next = !toast.open || record.placement !== toast.placement ?
+        [...current.filter(item => item.id !== id), record] :
+        current.map(item => item.id === id ? record : item)
+
+      return limitToastPlacement(next, record.placement, record.max ?? maxCount)
+    })
+  }, [maxCount])
 
   const api = useMemo<ToastApi>(
     () => ({

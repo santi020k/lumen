@@ -48,7 +48,7 @@ export const PromptComposer = ({
   value, onReset, ...props
 }: PromptComposerProps) => {
   const generatedId = useId()
-  const inputId = id ?? generatedId
+  const inputId = id === undefined ? generatedId : `${id}-input`
   const [draft, setDraft] = useState(defaultValue)
   const text = value ?? draft
   const limit = normalizeLumenPromptLimit(maxLength)
@@ -101,6 +101,7 @@ export const PromptComposer = ({
   return (
     <Form
       {...props}
+      id={id}
       ref={formRef}
       className={composeClassName('ui-prompt-composer', className)}
       data-disabled={String(disabled)}

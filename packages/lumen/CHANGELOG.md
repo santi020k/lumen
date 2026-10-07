@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Harden restored date and attachment validation, cross-document copy and map interactions, external form controls, native reset timing, toast placement limits, and RTL map navigation across web and React Native adapters.
+
 - Add mouse and pen drag panning and extend WorldMap zoom to 800%. Render the selection outline above all country fills with rounded joins so neighboring regions cannot clip it or produce spikes at high zoom.
 
 - Rebuild DeviceFrame hardware with tapered laptop decks, curved desktop stands, rounded phone glass, separate side rails and controls, and tablet home recesses. Support white, black, and custom hex finishes through the color prop or attribute while preserving screen content and iframe viewports.

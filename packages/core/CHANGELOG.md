@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Reject malformed restored date ranges and attachment metadata without throwing. Preserve WorldMap center, pointer zoom anchors, and highlighted-country fitting in RTL scroll containers.
+
 - Normalize malformed decoded MediaViewport values safely and preserve media action buttons across document adoption.
 
 - Add mouse and pen drag panning and extend WorldMap zoom to 800%. Render the selection outline above all country fills with rounded joins so neighboring regions cannot clip it or produce spikes at high zoom.

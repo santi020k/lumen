@@ -77,6 +77,14 @@ const invoke = (instance: TestInstance, key: string, args: readonly unknown[] = 
 }
 const order = (root: Root): readonly unknown[] => root.container.queryAll(item => item.type === 'Checkbox').map(item => read(item, 'label'))
 
+test.each([null, [], ['small'], {}, new Set([42])])('malformed controlled selection renders invalid feedback (%#)', selectedIds => {
+  const props: Partial<LumenDataTableProps> = { onSelectionChange: undefined, invalidLabel: 'Invalid selection' }
+  Reflect.set(props, 'selectedIds', selectedIds)
+  const { root } = render(props)
+  expect(root.container.queryAll(item => item.type === 'Text').some(item => item.children.includes('Invalid selection'))).toBe(true)
+  expect(root.container.queryAll(item => item.type === 'Checkbox')).toHaveLength(0)
+})
+
 test('client sorting changes displayed stable rows, localizes status and proposes controlled next sort', () => {
   const { root, sort } = render({ sortMode: 'client',
     sort: { key: 'amount', direction: 'ascending' },

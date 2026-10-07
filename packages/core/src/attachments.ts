@@ -12,15 +12,21 @@ export const lumenAttachmentPreviewLabels: Readonly<LumenAttachmentPreviewLabels
   unavailable: 'A preview is not available for this file.'
 }
 
+const isImageContentType = (contentType: unknown): boolean => {
+  if (contentType === undefined || contentType === null || contentType === '') return true
+
+  return typeof contentType === 'string' && contentType.trim().toLowerCase().startsWith('image/')
+}
+
 export const resolveLumenAttachmentPreviewState = (
-  src?: string | null,
-  contentType?: string | null,
+  src?: unknown,
+  contentType?: unknown,
   state?: LumenAttachmentPreviewState,
   failed = false
 ): LumenAttachmentPreviewState => {
   if (state === 'loading' || state === 'error' || state === 'unavailable') return state
 
-  if (!src?.trim() || (contentType && !contentType.trim().toLowerCase().startsWith('image/'))) return 'unavailable'
+  if (typeof src !== 'string' || !src.trim() || !isImageContentType(contentType)) return 'unavailable'
 
   return failed ? 'error' : 'ready'
 }

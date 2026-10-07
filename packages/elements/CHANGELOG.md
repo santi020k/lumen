@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve WorldMap center, pointer zoom anchors, and highlighted-country fitting in RTL containers through the shared map navigation runtime.
+
 - Preserve chart action focus through repeated adopted-document updates and keep retained MediaViewport controls interactive.
 
 - Preserve WorldMap inspection and selection after document adoption, and synchronize FileUpload feedback after native form reset while respecting canceled resets.

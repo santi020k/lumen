@@ -4,6 +4,9 @@ import { describe, expect, test } from 'vitest'
 import { isLumenDateBoundsValid, isLumenDateRangeValid, parseLumenDate, resolveLumenDateLabels, resolveLumenDateLocale } from './dates.js'
 
 describe('Gregorian date contracts', () => {
+  test.each([null, undefined, 20260101, [], {}, { start: '2026-01-01' }, { start: 1, end: '2026-01-02' }])('rejects malformed range records (%#)', range => {
+    expect(isLumenDateRangeValid(range)).toBe(false)
+  })
   test.each([null, undefined, 20260101, ['2026-01-01'], {}])('rejects non-string input (%#)', value => {
     expect(parseLumenDate(value)).toBeNull()
   })

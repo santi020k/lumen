@@ -594,11 +594,38 @@ const initFields = (scope: ParentNode): void => {
   }
 }
 
+const formValidationDocuments = new WeakSet<Document>()
+
+const observeFormValidation = (ownerDocument: Document): void => {
+  if (formValidationDocuments.has(ownerDocument)) return
+
+  formValidationDocuments.add(ownerDocument)
+
+  ownerDocument.addEventListener('focusout', event => {
+    const control = event.target
+
+    if (!isNativeFormControl(control)) return
+
+    const form = control.form
+
+    if (!form || form.dataset.uiFormBound !== 'true') return
+
+    const valid = validateControl(control, form)
+
+    form.dispatchEvent(new CustomEvent(valid ? 'ui:valid' : 'ui:invalid', {
+      bubbles: true,
+      detail: valid ? { control, form } : { control, controls: [control], form }
+    }))
+  })
+}
+
 const initForms = (scope: ParentNode): void => {
   for (const form of scope.querySelectorAll<HTMLFormElement>('form[data-ui-form]')) {
     if (form.dataset.uiFormBound === 'true') continue
 
     form.dataset.uiFormBound = 'true'
+
+    observeFormValidation(form.ownerDocument)
 
     form.noValidate = true
 
@@ -616,28 +643,16 @@ const initForms = (scope: ParentNode): void => {
 
       const link = target.closest<HTMLAnchorElement>('[data-ui-error-summary] a[href^="#"]')
       const controlId = link?.hash.slice(1)
-      const control = controlId ? document.getElementById(controlId) : null
+      const control = controlId ? form.ownerDocument.getElementById(controlId) : null
 
-      if (!link || !(control instanceof HTMLElement) || !form.contains(control)) return
+      if (!link || !(control instanceof HTMLElement) ||
+        !(isNativeFormControl(control) ? control.form === form : form.contains(control))) return
 
       event.preventDefault()
 
       control.focus({ preventScroll: true })
 
       control.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    })
-
-    form.addEventListener('focusout', event => {
-      if (!isNativeFormControl(event.target) || event.target.form !== form) return
-
-      const valid = validateControl(event.target, form)
-
-      form.dispatchEvent(new CustomEvent(valid ? 'ui:valid' : 'ui:invalid', {
-        bubbles: true,
-        detail: valid ?
-          { control: event.target, form } :
-          { control: event.target, controls: [event.target], form }
-      }))
     })
 
     form.addEventListener('submit', event => {

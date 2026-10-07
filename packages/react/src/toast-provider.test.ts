@@ -32,7 +32,13 @@ const ToastActions = () => {
     onClick: () => {
       toast.update('timed', { title: 'Reopened' })
     }
-  }, 'Reopen timed'))
+  }, 'Reopen timed'), createElement('button', {
+    onClick: () => toast.create({ id: 'top', duration: 0, placement: 'top-left', title: 'Top' })
+  }, 'Top'), createElement('button', {
+    onClick: () => {
+      toast.update('save', { placement: 'top-left', title: 'Moved' })
+    }
+  }, 'Move save'))
 }
 
 const clickButton = async (label: string) => {
@@ -114,6 +120,30 @@ test('recreating a closing toast makes it the newest record without a stale remo
   await act(() => vi.advanceTimersByTimeAsync(240))
   expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('open')
   expect(container.querySelector('#timed')).toBeNull()
+})
+
+test('updating a closing toast reopens it as newest while preserving the viewport limit', async () => {
+  await clickButton('Save')
+  await clickButton('Timed')
+  await clickButton('Complete')
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('open')
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('closed')
+  expect(container.querySelectorAll('[data-ui-toast][data-state="open"]')).toHaveLength(1)
+  await act(() => vi.advanceTimersByTimeAsync(240))
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('open')
+  expect(container.querySelector('#timed')).toBeNull()
+})
+
+test('moving a toast applies the destination limit without closing a different placement', async () => {
+  await clickButton('Save')
+  await clickButton('Timed')
+  await clickButton('Top')
+  await clickButton('Move save')
+  expect(container.querySelector('#top')?.getAttribute('data-state')).toBe('closed')
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('open')
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('open')
+  const placement = container.querySelector('#save')?.closest('[data-placement]')
+  expect(placement?.getAttribute('data-placement')).toBe('top-left')
 })
 
 test('resumes after keyboard focus leaves without subtracting time for internal focus changes', async () => {

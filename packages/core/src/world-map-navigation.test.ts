@@ -35,6 +35,20 @@ test('fits the union of highlighted geometry with padding and centers the viewpo
   expect(viewport.scrollTop).toBeCloseTo(112)
 })
 
+test('RTL fit centers highlighted geometry using negative browser scroll offsets', () => {
+  const { root, viewport } = fixture()
+  viewport.style.direction = 'rtl'
+  let zoom = 1
+  Object.defineProperty(viewport, 'scrollWidth', { get: () => 800 * zoom })
+  addCountry(root, new DOMRect(100, 50, 250, 100))
+  fitHighlightedMap(root, viewport, value => {
+    zoom = value
+  })
+  expect(zoom).toBe(3.4)
+  expect(viewport.scrollLeft).toBeCloseTo(-1708)
+  expect(viewport.scrollWidth - viewport.clientWidth + viewport.scrollLeft).toBeCloseTo(212)
+})
+
 test('empty or invalid geometry leaves the world unchanged; tiny regions clamp at maximum zoom', () => {
   const { root, viewport } = fixture()
   const update = vi.fn()

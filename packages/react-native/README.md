@@ -656,6 +656,8 @@ horizontal table layout available. `LumenDataTable` adds controlled sorting and
 row selection. Manual sorting preserves server order by default; explicit client
 sorting is stable and keeps missing values last. Selections retain filtered IDs;
 visible bulk actions skip disabled rows. Loading/error states hide stale controls.
+Controlled selections require a native Set of string IDs; malformed restored selections render
+`invalidLabel` before interactive controls are constructed.
 Supply localized labels and `formatSort`; the host owns requests and persistence.
 See the [native contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for parameter names
 and typed cell/column/row examples.

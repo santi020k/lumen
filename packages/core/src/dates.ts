@@ -14,13 +14,18 @@ export const isLumenDateBoundsValid = (min?: string, max?: string): boolean => (
   !(min && max && min > max)
 )
 
-export const isLumenDateRangeValid = (
-  range: { start: string, end: string }, min?: string, max?: string
-): boolean => (
-  parseLumenDate(range.start) !== null && parseLumenDate(range.end) !== null &&
-  isLumenDateBoundsValid(min, max) && range.start <= range.end &&
-  !(min && range.start < min) && !(max && range.end > max)
+const isDateRangeRecord = (range: unknown): range is { start: string, end: string } => (
+  typeof range === 'object' && range !== null && 'start' in range && 'end' in range &&
+  typeof range.start === 'string' && typeof range.end === 'string'
 )
+
+export const isLumenDateRangeValid = (range: unknown, min?: string, max?: string): boolean => {
+  if (!isDateRangeRecord(range)) return false
+
+  return parseLumenDate(range.start) !== null && parseLumenDate(range.end) !== null &&
+    isLumenDateBoundsValid(min, max) && range.start <= range.end &&
+    !(min && range.start < min) && !(max && range.end > max)
+}
 
 export const resolveLumenDateLocale = (locale?: string): string => {
   const documentLocale = typeof document === 'undefined' ? undefined : document.documentElement.lang

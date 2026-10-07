@@ -4,6 +4,10 @@ import { afterEach, expect, test } from 'vitest'
 import { createLumenAttachmentPreviewController, resolveLumenAttachmentPreviewState } from './attachments.js'
 
 const controllers: ReturnType<typeof createLumenAttachmentPreviewController>[] = []
+test.each([42, {}, [], false])('malformed attachment metadata uses unavailable state (%#)', value => {
+  expect(resolveLumenAttachmentPreviewState(value, 'image/png')).toBe('unavailable')
+  expect(resolveLumenAttachmentPreviewState('/image.png', value)).toBe('unavailable')
+})
 afterEach(() => {
   for (const controller of controllers.splice(0)) controller.destroy()
   document.body.replaceChildren()

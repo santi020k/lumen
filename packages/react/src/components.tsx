@@ -2542,12 +2542,14 @@ export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {
   size?: 'default' | 'icon' | 'lg' | 'sm'
 }
 
-const resolveCopyText = (target: string | undefined, value: string | undefined): string | undefined => {
+const resolveCopyText = (
+  button: HTMLButtonElement, target: string | undefined, value: string | undefined
+): string | undefined => {
   if (value !== undefined) return value
 
   if (!target) return undefined
 
-  const targetElement = document.querySelector<HTMLElement>(target)
+  const targetElement = button.ownerDocument.querySelector<HTMLElement>(target)
 
   return targetElement?.innerText ?? targetElement?.textContent ?? undefined
 }
@@ -2576,7 +2578,7 @@ export const CopyButton = ({
   const { accessibleLabel, handleClick, state } = useCopyFeedback({
     copiedLabel,
     errorLabel,
-    getValue: () => resolveCopyText(target, value),
+    getValue: button => resolveCopyText(button, target, value),
     label,
     onClick,
     resetAfter,

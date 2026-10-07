@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Validate controlled table selections as native sets of string IDs before constructing interactive controls; malformed restored state renders the existing invalid feedback.
+
 - Read controlled Tree selection and expansion through native Set operations so overridden instance methods cannot crash rendering or proposals.
 
 - Validate controlled Tree selection Sets and require own string titles for decoded Stepper rows, preserving existing invalid-state accessibility.

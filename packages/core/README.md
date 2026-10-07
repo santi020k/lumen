@@ -171,6 +171,9 @@ browser locale, falling back to English for invalid locale tags.
 invalid-range defaults through the `LumenDateLabels` contract. Components allow
 label overrides for other languages; pass an explicit locale during SSR.
 
+`isLumenDateRangeValid` accepts unknown restored data and returns `false` for a missing record
+or non-string range fields instead of dereferencing malformed input.
+
 ## Chart Helpers
 
 The package root also exports `createLumenLineChartModel`, `createLumenWaterfallGeometry`,
@@ -386,6 +389,9 @@ hours/minutes with inclusive same-day bounds, leaving dates and time zones to th
 and image failures. `createLumenAttachmentPreviewController` enhances the documented DOM child
 contract with safe state events and lifecycle cleanup. Use the framework components for product UI;
 see the [attachment recipe](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#attachment-previews-and-file-lists).
+
+Non-string source or MIME metadata resolves to `unavailable`; explicit loading and error states
+still take precedence.
 
 ## Chart datum activation
 

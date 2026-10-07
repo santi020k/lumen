@@ -12,8 +12,10 @@ const boundWorldMaps = new WeakMap<HTMLElement, WorldMapBinding>()
 const findCountryPath = (group: SVGGElement, countryId: string): SVGPathElement | null => [...group.querySelectorAll<SVGPathElement>('[data-ui-world-map-country]')]
   .find(path => path.dataset.uiWorldMapCountry === countryId) ?? null
 
-const closestCountryPath = (target: EventTarget | null): SVGPathElement | null => {
-  if (!(target instanceof Element)) return null
+const closestCountryPath = (group: SVGGElement, target: EventTarget | null): SVGPathElement | null => {
+  const ElementConstructor = group.ownerDocument.defaultView?.Element ?? Element
+
+  if (!(target instanceof ElementConstructor)) return null
 
   return target.closest<SVGPathElement>('[data-ui-world-map-country]')
 }
@@ -34,6 +36,19 @@ const matchesBinding = (
   return binding.group === group && binding.select === select
 }
 
+const isWorldMapRoot = (scope: ParentNode): scope is HTMLElement => (
+  'namespaceURI' in scope && scope.namespaceURI === 'http://www.w3.org/1999/xhtml' &&
+  Element.prototype.matches.call(scope, '[data-ui-world-map]')
+)
+
+const createWorldMapRealm = (root: HTMLElement) => {
+  const view = root.ownerDocument.defaultView
+  const AbortConstructor = view?.AbortController ?? AbortController
+  const EventConstructor = view?.CustomEvent ?? CustomEvent
+
+  return { abort: new AbortConstructor(), EventConstructor }
+}
+
 const updateSelectionOutline = (root: HTMLElement, path: SVGPathElement | null): void => {
   root.querySelector('.ui-world-map__selection')?.setAttribute('d', path?.getAttribute('d') ?? '')
 }
@@ -41,7 +56,7 @@ const updateSelectionOutline = (root: HTMLElement, path: SVGPathElement | null):
 export const initWorldMapControllers = (scope: ParentNode): void => {
   const roots = [...scope.querySelectorAll<HTMLElement>('[data-ui-world-map]')]
 
-  if (scope instanceof HTMLElement && scope.matches('[data-ui-world-map]')) roots.unshift(scope)
+  if (isWorldMapRoot(scope)) roots.unshift(scope)
 
   for (const root of roots) {
     const group = root.querySelector<SVGGElement>('.ui-world-map__countries')
@@ -58,7 +73,7 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
 
     if (!group) continue
 
-    const abort = new AbortController()
+    const { abort, EventConstructor } = createWorldMapRealm(root)
     const { signal } = abort
 
     initLumenWorldMapZoom(root, signal)
@@ -94,7 +109,7 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
       showLabel(next)
 
       if (next) {
-        root.dispatchEvent(new CustomEvent<LumenWorldMapSelectDetail>('ui:world-map-select', {
+        root.dispatchEvent(new EventConstructor<LumenWorldMapSelectDetail>('ui:world-map-select', {
           bubbles: true,
           detail: readSelectDetail(next)
         }))
@@ -102,7 +117,7 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
     }
 
     group.addEventListener('mouseover', event => {
-      const path = closestCountryPath(event.target)
+      const path = closestCountryPath(group, event.target)
 
       if (path) showLabel(path)
     }, { signal })
@@ -114,7 +129,7 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
     group.addEventListener('click', event => {
       if (root.dataset.interactive === 'false') return
 
-      const path = closestCountryPath(event.target)
+      const path = closestCountryPath(group, event.target)
 
       if (path?.dataset.uiWorldMapCountry) selectCountry(path.dataset.uiWorldMapCountry)
     }, { signal })

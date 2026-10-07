@@ -7,6 +7,12 @@ afterEach(() => {
   document.body.replaceChildren()
 })
 
+const required = <T>(value: T | null | undefined): T => {
+  if (value === undefined || value === null) throw new Error('Missing iframe fixture')
+
+  return value
+}
+
 const fixture = (interactive = true) => {
   document.body.innerHTML = `<figure data-ui-world-map data-interactive="${interactive}">
     <svg class="ui-world-map__plot">
@@ -35,6 +41,28 @@ const fixture = (interactive = true) => {
 
   return { colombia, japan, label, root, select }
 }
+
+test.each(['document', 'root'])('iframe maps use their owning realm when initialized from %s', scope => {
+  const source = fixture().root.outerHTML
+  const iframe = document.createElement('iframe')
+  document.body.append(iframe)
+  const owner = required(iframe.contentDocument)
+  const view = required(owner.defaultView)
+  owner.body.innerHTML = source
+  const root = required(owner.querySelector<HTMLElement>('[data-ui-world-map]'))
+  const path = required(owner.querySelector<SVGPathElement>('[data-ui-world-map-country="CO"]'))
+  const selected = vi.fn()
+  root.addEventListener('ui:world-map-select', selected)
+  initWorldMapControllers(scope === 'document' ? owner : root)
+  path.dispatchEvent(new view.MouseEvent('mouseover', { bubbles: true }))
+  expect(root.querySelector('[data-ui-world-map-inspection]')?.textContent).toBe('Colombia')
+  path.dispatchEvent(new view.MouseEvent('click', { bubbles: true }))
+  expect(root.querySelector('select')?.value).toBe('CO')
+  expect(selected).toHaveBeenCalledOnce()
+  const event: unknown = selected.mock.calls[0]?.[0]
+  if (!(event instanceof view.CustomEvent)) throw new Error('Expected owning-realm select event')
+  expect(event.detail).toEqual({ countryId: 'CO', highlighted: true, label: 'Colombia' })
+})
 
 test('enables the native select and clicking a country dispatches a typed select event', () => {
   const { colombia, label, root, select } = fixture()

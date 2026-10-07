@@ -1,13 +1,16 @@
 // @vitest-environment jsdom
 import { act, createElement, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { Code, CodeTabs, CopyButton } from './components.js'
+import { ToastProvider } from './toast-provider.js'
 
 let container: HTMLDivElement
 let root: Root
+const fixtures: HTMLElement[] = []
 
 beforeEach(() => {
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
@@ -23,6 +26,7 @@ afterEach(async () => {
     root.unmount()
   })
   container.remove()
+  for (const fixture of fixtures.splice(0)) fixture.remove()
   vi.useRealTimers()
   vi.unstubAllGlobals()
 })
@@ -38,6 +42,47 @@ const click = async () => {
     button().click()
   })
 }
+
+test.each([true, false])('CopyButton sends %s clipboard feedback to its React toast provider', async success => {
+  const writeText = success ? vi.fn().mockResolvedValue(undefined) : vi.fn().mockRejectedValue(new Error('Unavailable'))
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  await act(async () => {
+    await Promise.resolve()
+    root.render(createElement(ToastProvider, null, createElement(CopyButton, { value: 'Example', toast: true })))
+  })
+  await click()
+  expect(container.querySelector('[data-ui-toast]')?.getAttribute('data-variant')).toBe(success ? 'success' : 'destructive')
+  expect(container.querySelector('[data-ui-toast]')?.textContent).toContain(success ? 'Copied to clipboard' : 'Could not copy to clipboard')
+})
+
+test('CopyButton resolves duplicate target selectors in its owning iframe document', async () => {
+  const writeText = vi.fn().mockResolvedValue(undefined)
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  const iframe = document.createElement('iframe')
+  document.body.append(iframe)
+  fixtures.push(iframe)
+  const owner = iframe.contentDocument
+  if (!owner) throw new Error('Missing iframe document')
+  owner.body.innerHTML = '<p id="copy-target">Iframe value</p><div id="portal"></div>'
+  const host = document.createElement('p')
+  host.id = 'copy-target'
+  host.textContent = 'Host value'
+  document.body.append(host)
+  fixtures.push(host)
+  const portal = owner.getElementById('portal')
+  if (!portal) throw new Error('Missing portal')
+  await act(async () => {
+    await Promise.resolve()
+    root.render(createPortal(createElement(CopyButton, { target: '#copy-target' }), portal))
+  })
+  const copy = portal.querySelector('button')
+  if (!copy) throw new Error('Missing iframe copy button')
+  await act(async () => {
+    await Promise.resolve()
+    copy.click()
+  })
+  expect(writeText).toHaveBeenCalledWith('Iframe value')
+})
 
 test('Code copies exact text, announces localized success, and restarts feedback after repeated clicks', async () => {
   const writeText = vi.fn().mockResolvedValue(undefined)

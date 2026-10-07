@@ -307,6 +307,10 @@ either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
 customize its visible feedback while the localized label props remain the accessible announcement.
 Stable `data-slot` hooks expose the idle, copied, and error parts.
 
+Wrap React copy actions in `ToastProvider` to display their optional toast feedback. Target selectors
+resolve in the clicked button's owning document, including iframe portals. Updating a closing or moved
+toast reapplies the destination viewport limit without dismissing toasts in another placement.
+
 ## Data visualization
 
 The web visualization milestone adds `WaterfallChart` for signed changes and explicit totals, and
@@ -1008,6 +1012,10 @@ blur validation and dependent-field validation. Portaled controls use React form
 repeating validation through native document listeners. Each native edit is processed once, and
 controls associated with another form are ignored even when React bubbles their portal events.
 Adopted native controls retain checkbox, multiple-selection and file details in dirty-state tracking.
+
+Accepted native reset buttons refresh dirty state after the browser restores defaults; canceled resets
+preserve the draft. `PromptComposer` keeps its standard `id` on the form for external submit controls
+and derives a separate labelled textarea ID.
 
 See [composable form workflows](https://github.com/santi020k/lumen/blob/main/docs/powerful-forms.md). Applications retain schemas, financial
 rules, requests, draft storage, and authorization. Do not combine validation owners on one form.

@@ -8,6 +8,23 @@ interface MapBounds extends WorldMapZoomAnchor {
   height: number
 }
 
+const isRtlMap = (viewport: HTMLElement): boolean => viewport.ownerDocument.defaultView?.getComputedStyle(viewport).direction === 'rtl'
+
+/** Map geometry uses a left origin; RTL browser scroll offsets use the right edge. */
+export const readMapScrollLeft = (viewport: HTMLElement): number => {
+  if (!isRtlMap(viewport)) return viewport.scrollLeft
+
+  const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth)
+
+  return Math.min(max, Math.max(0, max + viewport.scrollLeft))
+}
+
+export const writeMapScrollLeft = (viewport: HTMLElement, value: number): void => {
+  const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth)
+
+  viewport.scrollLeft = isRtlMap(viewport) ? Math.min(max, Math.max(0, value)) - max : Math.max(0, value)
+}
+
 export const getHighlightedMapBounds = (root: HTMLElement): MapBounds | undefined => {
   const paths = [...root.querySelectorAll<SVGPathElement>('.ui-world-map__country--highlighted')]
   let bounds: MapBounds | undefined
@@ -48,7 +65,7 @@ export const fitHighlightedMap = (
 
   const scale = viewport.clientWidth * zoom / 1000
 
-  viewport.scrollLeft = Math.max(0, (bounds.x + bounds.width / 2) * scale - viewport.clientWidth / 2)
+  writeMapScrollLeft(viewport, (bounds.x + bounds.width / 2) * scale - viewport.clientWidth / 2)
 
   viewport.scrollTop = Math.max(0, (bounds.y + bounds.height / 2) * scale - viewport.clientHeight / 2)
 }

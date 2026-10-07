@@ -1,5 +1,8 @@
 import type { MouseEvent } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { use, useEffect, useRef, useState } from 'react'
+
+import type { ToastApi, ToastDetail } from './hooks.js'
+import { ToastContext } from './toast-context.js'
 
 interface CopyFeedbackOptions {
   copiedLabel: string
@@ -13,6 +16,22 @@ interface CopyFeedbackOptions {
 
 const normalizedResetAfter = (value: number): number => Number.isFinite(value) ? Math.max(0, value) : 2000
 
+const publishCopyToast = (
+  button: HTMLButtonElement, api: ToastApi | null, copied: boolean, copiedLabel: string, errorLabel: string
+): void => {
+  const detail: ToastDetail = { title: copied ? copiedLabel : errorLabel, variant: copied ? 'success' : 'destructive' }
+
+  if (api) {
+    api.create(detail)
+
+    return
+  }
+
+  const EventConstructor = button.ownerDocument.defaultView?.CustomEvent ?? CustomEvent
+
+  button.ownerDocument.dispatchEvent(new EventConstructor('ui:toast', { detail }))
+}
+
 export const useCopyFeedback = ({
   copiedLabel,
   errorLabel,
@@ -22,6 +41,7 @@ export const useCopyFeedback = ({
   resetAfter = 2000,
   toast = false
 }: CopyFeedbackOptions) => {
+  const toastApi = use(ToastContext)
   const [state, setState] = useState<'copied' | 'error' | 'idle'>('idle')
   const resetTimerRef = useRef<ReturnType<typeof globalThis.setTimeout>>(undefined)
   const operationRef = useRef(0)
@@ -64,14 +84,7 @@ export const useCopyFeedback = ({
 
     setState(nextState)
 
-    if (toast) {
-      document.dispatchEvent(new CustomEvent('ui:toast', {
-        detail: {
-          title: nextState === 'copied' ? copiedLabel : errorLabel,
-          variant: nextState === 'copied' ? 'success' : 'destructive'
-        }
-      }))
-    }
+    if (toast) publishCopyToast(button, toastApi, nextState === 'copied', copiedLabel, errorLabel)
 
     resetTimerRef.current = globalThis.setTimeout(() => {
       setState('idle')
