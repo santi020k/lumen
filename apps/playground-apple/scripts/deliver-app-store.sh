@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# cspell:words agvtool keychain plist iphoneos mobileprovision codesign xcarchive productbuild productsign
+# cspell:words xcconfig agvtool keychain plist iphoneos mobileprovision codesign xcarchive productbuild productsign
 set -euo pipefail
 set +x
 umask 077
@@ -73,18 +73,21 @@ node .github/scripts/apple-store-profiles.mjs "$platform" "$keychain" "$work" "$
 if [[ "$platform" == iOS ]]; then
   scheme=LumenApplePlayground
   destination='generic/platform=iOS'
+  archive_signing=(CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="Apple Development")
 else
   scheme=LumenMacPlayground
   destination='generic/platform=macOS'
+  archive_signing=(-xcconfig "$work/ArchiveSigning.xcconfig")
 fi
 
 cd "$apple_root"
 xcrun agvtool new-marketing-version "$version"
 xcrun agvtool new-version -all "$build_number"
 auth=(-allowProvisioningUpdates -authenticationKeyPath "$work/AuthKey.p8" -authenticationKeyID "$APP_STORE_CONNECT_KEY_ID" -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID")
-(umask 022; xcodebuild -project LumenApplePlayground.xcodeproj -scheme "$scheme" -configuration Release -destination "$destination" -derivedDataPath "$work/DerivedData" -archivePath "$work/Playground.xcarchive" "${auth[@]}" CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="Apple Development" DEVELOPMENT_TEAM=BY4995HQ3J archive)
+(umask 022; xcodebuild -project LumenApplePlayground.xcodeproj -scheme "$scheme" -configuration Release -destination "$destination" -derivedDataPath "$work/DerivedData" -archivePath "$work/Playground.xcarchive" "${auth[@]}" "${archive_signing[@]}" DEVELOPMENT_TEAM=BY4995HQ3J archive)
 if [[ "$platform" == macOS ]]; then
   node "$repository_root/apps/playground-apple/scripts/check-app-store-permissions.mjs" "$work/Playground.xcarchive/Products/Applications/Lumen Playground.app"
+  node "$repository_root/apps/playground-apple/scripts/check-app-store-signatures.mjs" "$work/Playground.xcarchive/Products/Applications/Lumen Playground.app" "$work/distribution-fingerprint.txt"
 fi
 (umask 022; xcodebuild -exportArchive -archivePath "$work/Playground.xcarchive" -exportOptionsPlist "$work/ExportOptions.plist" -exportPath "$work/export" "${auth[@]}")
 printf 'Uploaded %s %s (%s) from %s. Store processing/review remains to be verified.\n' "$platform" "$version" "$build_number" "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"

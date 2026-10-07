@@ -46346,13 +46346,13 @@
     "approval": {
       "approver": "Santiago Molina (santi020k)",
       "date": "2026-10-07",
-      "decision": "Approve the independently reviewed macOS payload permission, browser runner mirror, and Gradle security patch corrections under the standing authorization recorded by santi020k in PR #95 comment 6027959606. Publication or delivery remains conditional on all required hosted checks and current Codex review passing before merge. Preserve published v4.0.0 tags and artifacts and existing iOS and Android review submissions; deliver the corrected macOS build from protected merged main.",
-      "reviewedRevision": "3632596070eb2d3f14e9c4e665063228ee1c046c",
+      "decision": "Approve the independently reviewed Mac distribution archive signing and nested certificate verification correction and deterministic Android popup Back test readiness under the standing authorization recorded by santi020k in PR #95 comment 6027959606. Delivery remains conditional on all required hosted checks and current Codex review passing before protected merge. Preserve immutable v4.0.0 artifacts and approved iOS and Android submissions and rollout holds; deliver the corrected Mac build from merged main.",
+      "reviewedRevision": "b6a995d9a6297d93193de9e36f72d28119b14dff",
       "evidence": [
-        "https://github.com/santi020k/lumen/commit/3632596070eb2d3f14e9c4e665063228ee1c046c",
+        "https://github.com/santi020k/lumen/commit/b6a995d9a6297d93193de9e36f72d28119b14dff",
         "https://github.com/santi020k/lumen/pull/95",
-        "https://github.com/santi020k/lumen/pull/99",
-        "https://github.com/santi020k/lumen/pull/100"
+        "https://github.com/santi020k/lumen/pull/100",
+        "https://github.com/santi020k/lumen/pull/101"
       ]
     }
   },

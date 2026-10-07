@@ -1,6 +1,5 @@
 package com.santi020k.lumen
 
-import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -14,7 +13,6 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.unit.dp
-import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
@@ -70,8 +68,8 @@ class TourAccessibilityTest {
             }
         } }
         rule.onNodeWithText("Next").assertIsNotEnabled()
-        // Inject a real system Back event without Espresso selecting a popup root.
-        InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
+        // Await native input focus, then send a real Back event to the popup.
+        pressBackOnFocusedPopup(rule)
         rule.runOnIdle { assertFalse(open.value); assertEquals(0, changes); open.value = true; loading.value = true }
         rule.onNodeWithText("Waiting").assertExists()
         rule.onNodeWithTag("tour-highlight").assertDoesNotExist()

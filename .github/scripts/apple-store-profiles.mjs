@@ -4,7 +4,7 @@ import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-// cspell:words appstoreconnect codesigning hashlib hexdigest isoformat keychain mobileprovision plistlib
+// cspell:words xcconfig appstoreconnect codesigning hashlib hexdigest isoformat keychain mobileprovision plistlib
 
 const origin = 'https://api.appstoreconnect.apple.com';
 const team = 'BY4995HQ3J';
@@ -156,6 +156,12 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 
       appendFileSync(join(work, 'installed-profile-uuids.txt'), `${profile.attributes.uuid}\n`, { mode: 0o600 });
     }
+  }
+
+  if (platform === 'macOS') {
+    writeFileSync(join(work, 'ArchiveSigning.xcconfig'), `CODE_SIGN_STYLE = Manual\nCODE_SIGN_IDENTITY = ${fingerprint}\nLUMEN_MAC_APP_STORE_PROFILE = ${profiles[0].attributes.uuid}\n`, { mode: 0o600 });
+
+    writeFileSync(join(work, 'distribution-fingerprint.txt'), fingerprint, { mode: 0o600 });
   }
 
   const mapping = profiles.map(profile => `<key>${profile.identifier}</key><string>${profile.attributes.uuid}</string>`).join('');

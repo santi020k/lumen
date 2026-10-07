@@ -225,8 +225,11 @@ For public store delivery, `release-playground-apple.yml` and `release-playgroun
 `apple-store-release.yml` from merged main, in the protected `app-store` environment. They resolve
 build numbers from live App Store records, archive/sign/upload on the standard runner, and create
 an immutable source tag only after upload succeeds. The runtime signing script uses a temporary
-keychain and removes certificates, private key files, and archives on exit. Archive with automatic
-Apple Development signing and the team applied to every target, including Swift resource bundles.
+keychain and removes certificates, private key files, and archives on exit. iOS archives use automatic
+Apple Development signing with the team applied to every target. Mac archives use the validated
+distribution certificate for the app and Swift resource bundles, with the profile scoped to the app
+target. Before export, the Mac guard verifies the archive signature and checks each nested bundle
+certificate against that profile, rejecting development or mismatched signatures before upload.
 Before archiving, delivery downloads the active App Store profiles matching each bundle ID and
 imported distribution identity. It verifies each CMS signature and signer trust before reading
 the signed team, expiry, UUID and release entitlements or installing a profile, and requires
