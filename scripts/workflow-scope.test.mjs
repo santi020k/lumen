@@ -419,3 +419,79 @@ test('the required build context fails instead of skipping after failed prefligh
 
   assert.ok(build.indexOf('Require successful preflight') < build.indexOf('actions/checkout@'))
 })
+
+test('browser setup bounds Linux mirror waits and propagates configuration failures', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'lumen-apt-test-'))
+  const bin = join(root, 'bin')
+  const config = join(root, 'apt.conf')
+  const log = join(root, 'sudo.log')
+  const script = resolve(repositoryRoot, '.github/actions/setup-playwright/configure-apt.sh')
+
+  try {
+    await mkdir(bin)
+
+    await writeFile(join(bin, 'sudo'), `#!/bin/bash
+printf '%s\\n' "$@" > "$MOCK_APT_LOG"
+if [[ "$MOCK_APT_FAILURE" == true ]]; then exit 1; fi
+if [[ "$1" == cp ]]; then cp "$2" "$3"; else cat > "$MOCK_APT_CONFIG"; fi
+`, { mode: 0o755 })
+
+    const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, MOCK_APT_CONFIG: config, MOCK_APT_LOG: log }
+    const skipped = spawnSync('bash', [script], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'macOS' } })
+
+    assert.equal(skipped.status, 0, skipped.stderr)
+
+    await assert.rejects(readFile(config), { code: 'ENOENT' })
+
+    const mirrors = join(root, 'apt-mirrors.txt')
+
+    await writeFile(mirrors, 'http://azure.archive.ubuntu.com/ubuntu/ priority:1\nhttps://archive.ubuntu.com/ubuntu/ priority:2\nhttps://security.ubuntu.com/ubuntu/ priority:3\n')
+
+    const installed = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux' } })
+
+    assert.equal(installed.status, 0, installed.stderr)
+
+    assert.equal(await readFile(mirrors, 'utf8'), 'https://archive.ubuntu.com/ubuntu/ priority:2\nhttps://security.ubuntu.com/ubuntu/ priority:3\n')
+
+    assert.equal(await readFile(log, 'utf8'), 'tee\n/etc/apt/apt.conf.d/99-lumen-network\n')
+
+    assert.equal(await readFile(config, 'utf8'), 'Acquire::http::Timeout "30";\nAcquire::https::Timeout "30";\nAcquire::Retries "2";\n')
+
+    const unchangedMirrors = await readFile(mirrors, 'utf8')
+    const repeated = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux' } })
+
+    assert.equal(repeated.status, 0, repeated.stderr)
+
+    assert.equal(await readFile(mirrors, 'utf8'), unchangedMirrors)
+
+    await writeFile(mirrors, 'http://azure.archive.ubuntu.com/ubuntu/ priority:1\n')
+
+    const noFallback = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux' } })
+
+    assert.equal(noFallback.status, 0, noFallback.stderr)
+
+    assert.equal(await readFile(mirrors, 'utf8'), 'http://azure.archive.ubuntu.com/ubuntu/ priority:1\n')
+
+    const failed = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux', MOCK_APT_FAILURE: 'true' } })
+
+    assert.notEqual(failed.status, 0)
+
+    const withFallback = 'http://azure.archive.ubuntu.com/ubuntu/ priority:1\nhttps://archive.ubuntu.com/ubuntu/ priority:2\n'
+
+    await writeFile(mirrors, withFallback)
+
+    const failedRewrite = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux', MOCK_APT_FAILURE: 'true' } })
+
+    assert.notEqual(failedRewrite.status, 0)
+
+    assert.equal(await readFile(mirrors, 'utf8'), withFallback)
+
+    const action = await readRepositoryFile('.github/actions/setup-playwright/action.yml')
+
+    assert.match(action, /if: runner.os == 'Linux'/u)
+
+    assert.ok(action.indexOf('configure-apt.sh') < action.indexOf('pnpm exec playwright install-deps'))
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})

@@ -91,6 +91,10 @@ Quality's pinned pnpm setup action restores Turbo task outputs, while Java setup
 dependencies. Cache hits accelerate work but never replace the required checks or release approval.
 Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
 complete release gate.
+Linux browser setup configures 30-second APT connection/data timeouts and two retries per failed
+file before installing system dependencies. When the image's mirror list contains the official
+Ubuntu HTTPS archive, setup removes its repeatedly stalled Azure HTTP mirror entry and retains
+the configured fallback entries. Package signature checks and TLS verification remain enabled.
 
 The Swift API baseline builds only arm64 because its symbol extraction targets arm64 on every
 Apple SDK. It still checks all supported platforms and both public modules against the unchanged

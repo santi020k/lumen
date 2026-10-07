@@ -16,6 +16,10 @@ runs:
       with:
         path: ${{ github.workspace }}/.cache/ms-playwright
         key: playwright-${{ runner.os }}-${{ runner.arch }}-${{ inputs.browsers }}-${{ hashFiles('pnpm-lock.yaml') }}
+    - name: Bound Linux package mirror network waits
+      if: runner.os == 'Linux'
+      shell: bash
+      run: bash "$GITHUB_ACTION_PATH/configure-apt.sh"
     - name: Install browsers or refresh system dependencies
       shell: bash
       env:
