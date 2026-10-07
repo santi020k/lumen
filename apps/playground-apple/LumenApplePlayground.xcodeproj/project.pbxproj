@@ -141,6 +141,7 @@
 		48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundAdvancedInputsView.swift; sourceTree = "<group>"; };
 		498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundParityExamplesView.swift; sourceTree = "<group>"; };
 		4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarParityExample.swift; sourceTree = "<group>"; };
+		5128309A5EE62A8C5B16E7CD /* lumen */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lumen; path = ../..; sourceTree = SOURCE_ROOT; };
 		581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundShell.swift; sourceTree = "<group>"; };
 		589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundMacCommands.swift; sourceTree = "<group>"; };
 		5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchPlaygroundApp.swift; sourceTree = "<group>"; };
@@ -164,7 +165,6 @@
 		B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundHomeView.swift; sourceTree = "<group>"; };
 		BD50AF3AC7403C3CAC165F51 /* CarouselParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselParityExample.swift; sourceTree = "<group>"; };
 		C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferParityExample.swift; sourceTree = "<group>"; };
-		C5DA55DE8BF4B4194947AAF6 /* lumen-release-consolidation */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "lumen-release-consolidation"; path = ../..; sourceTree = SOURCE_ROOT; };
 		C951AD2FE174282B2B72440D /* PlaygroundMediaWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundMediaWorkspaceView.swift; sourceTree = "<group>"; };
 		D0B29A8B858A3D7AC3B468CF /* DataTableParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTableParityExample.swift; sourceTree = "<group>"; };
 		D98080257A4C04BB0ACA9566 /* LumenWidgetPlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWidgetPlayground.swift; sourceTree = "<group>"; };
@@ -275,7 +275,7 @@
 		DE258D8D5B5E09B006098DED /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				C5DA55DE8BF4B4194947AAF6 /* lumen-release-consolidation */,
+				5128309A5EE62A8C5B16E7CD /* lumen */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -831,6 +831,7 @@
 				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				PRODUCT_NAME = "Lumen Playground";
+				PROVISIONING_PROFILE_SPECIFIER = "$(LUMEN_MAC_APP_STORE_PROFILE)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 6.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -856,6 +857,7 @@
 				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				PRODUCT_NAME = "Lumen Playground";
+				PROVISIONING_PROFILE_SPECIFIER = "$(LUMEN_MAC_APP_STORE_PROFILE)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 6.0;
 				VERSIONING_SYSTEM = "apple-generic";

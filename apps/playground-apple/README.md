@@ -121,7 +121,10 @@ tools. macOS also authorizes the installer signing tools so package export can r
 the keychain and newly installed distribution profiles are removed when delivery exits. Signing
 credentials remain private under `umask 077`; Xcode archive and export subprocesses use `umask 022`
 so packaged resources remain readable after installation. The macOS archive permissions check runs
-before export and upload.
+before export and upload. Mac archives use the validated distribution identity from the outset,
+including Swift resource bundles. A second guard verifies the archive signature and checks every
+nested signed bundle against the selected profile certificate before upload. The profile is scoped
+to the app target so resource bundles do not inherit an unsupported provisioning profile.
 
 See [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites and the complete Xcode,
 device, signing, and TestFlight workflow.

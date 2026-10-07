@@ -7,7 +7,7 @@ import test from 'node:test';
 
 import { checkAppStorePermissions } from '../apps/playground-apple/scripts/check-app-store-permissions.mjs';
 
-// cspell:words agvtool iphoneos pkcs12 productbuild productsign codesign xcarchive
+// cspell:words xcconfig agvtool iphoneos pkcs12 productbuild productsign codesign xcarchive
 
 const script = resolve(import.meta.dirname, '../apps/playground-apple/scripts/deliver-app-store.sh');
 
@@ -32,7 +32,7 @@ test('delivery rejects source branches before reading signing credentials', () =
   assert.doesNotMatch(result.stderr, /Missing required signing credential/u);
 });
 
-test('delivery archives with automatic development signing and exports with explicit distribution profiles', async () => {
+test('delivery scopes Mac distribution signing and preserves iOS development archives', async () => {
   const root = await mkdtemp(join(tmpdir(), 'lumen-delivery-test-'));
   const bin = join(root, 'bin');
 
@@ -41,8 +41,12 @@ test('delivery archives with automatic development signing and exports with expl
   const mocks = {
     node: `if [[ "$1" == *check-app-store-permissions.mjs ]]; then
   exec "$MOCK_REAL_NODE" "$@"
+elif [[ "$1" == *check-app-store-signatures.mjs ]]; then
+  if [[ "$MOCK_SIGNATURE_FAILURE" == true ]]; then echo "App Store bundle uses a different signing certificate" >&2; exit 1; fi
+  echo signatures >> "$MOCK_LOG"
 elif [[ "$1" == .github/scripts/apple-store-profiles.mjs ]]; then
   if [[ "$MOCK_PROFILE_FAILURE" == true ]]; then echo "Distribution profile preflight failed" >&2; exit 1; fi
+  printf 'CODE_SIGN_STYLE = Manual\nCODE_SIGN_IDENTITY = fixture\nLUMEN_MAC_APP_STORE_PROFILE = fixture\n' > "$4/ArchiveSigning.xcconfig"
   printf '<plist><dict><key>method</key><string>app-store-connect</string><key>signingStyle</key><string>manual</string><key>teamID</key><string>BY4995HQ3J</string><key>manageAppVersionAndBuildNumber</key><false/></dict></plist>' > "$4/ExportOptions.plist"
 elif [[ "$1" == --input-type=module ]]; then cat >/dev/null; touch "$LUMEN_SIGNING_TEMP/AuthKey.p8" "$LUMEN_SIGNING_TEMP/distribution.p12"; elif [[ "$1" == -p ]]; then echo 1.0.3; else echo 55; fi`,
     mkdir: 'exit 0',
@@ -63,7 +67,10 @@ if [[ "$1" != -exportArchive ]]; then
   /bin/mkdir -p "$payload"
   touch "$payload/resource.json"
   if [[ "$MOCK_PRIVATE_PAYLOAD" == true ]]; then chmod 600 "$payload/resource.json"; fi
-  if [[ "$*" != *"CODE_SIGN_STYLE=Automatic"* || "$*" != *"CODE_SIGN_IDENTITY=Apple Development"* ]]; then
+  if [[ "$APPLE_RELEASE_PLATFORM" == macOS ]]; then
+    if [[ "$*" != *"-xcconfig"* || "$*" == *"PROVISIONING_PROFILE_SPECIFIER="* || "$*" == *"CODE_SIGN_STYLE=Automatic"* ]]; then exit 65; fi
+    if [[ "$("$MOCK_REAL_NODE" -p 'require("node:fs").statSync(process.env.LUMEN_SIGNING_TEMP + "/ArchiveSigning.xcconfig").mode & 511')" != 384 ]]; then exit 65; fi
+  elif [[ "$*" != *"CODE_SIGN_STYLE=Automatic"* || "$*" != *"CODE_SIGN_IDENTITY=Apple Development"* ]]; then
     echo "Automatic development signing conflicts with a forced distribution identity" >&2
     exit 65
   fi
@@ -117,13 +124,14 @@ printf "%s\\n" "$@" >> "$MOCK_LOG"`,
 
       const commands = await readFile(log, 'utf8');
 
-      assert.ok(commands.includes('CODE_SIGN_IDENTITY=Apple Development'));
+      assert.equal(commands.includes('CODE_SIGN_IDENTITY=Apple Development'), platform === 'iOS');
 
       assert.ok(commands.includes('DEVELOPMENT_TEAM=BY4995HQ3J'));
 
       assert.ok(!commands.includes('OTHER_CODE_SIGN_FLAGS='));
 
-      assert.match(commands, /CODE_SIGN_STYLE=Automatic/u);
+      if (platform === 'iOS') assert.match(commands, /CODE_SIGN_STYLE=Automatic/u);
+      else assert.match(commands, /-xcconfig[\s\S]*archive\nsignatures\n-exportArchive/u);
 
       assert.match(commands, /archive\n[\s\S]*-exportArchive/u);
 
@@ -149,22 +157,25 @@ printf "%s\\n" "$@" >> "$MOCK_LOG"`,
       assert.match(exportOptions, /<key>manageAppVersionAndBuildNumber<\/key><false\/>/u);
     }
 
-    const permissionsLog = join(root, 'permissions-failure.log');
+    for (const [variable, diagnostic] of [['MOCK_PRIVATE_PAYLOAD', /must be readable by non-root users/u], ['MOCK_SIGNATURE_FAILURE', /different signing certificate/u]]) {
+    const permissionsLog = join(root, `${variable}.log`);
 
     const permissionsFailure = spawnSync('bash', [script, 'macOS'], {
       encoding: 'utf8',
-      env: { ...process.env, PATH: `${bin}:/usr/bin:/bin`, RUNNER_TEMP: root, MOCK_REAL_NODE: process.execPath, MOCK_PRIVATE_PAYLOAD: 'true', MOCK_LOG: permissionsLog, MOCK_SECURITY_LOG: join(root, 'permissions.security.log'), GITHUB_REF: 'refs/heads/main', APPLE_DISTRIBUTION_P12_BASE64: 'dGVzdA==', APPLE_DISTRIBUTION_P12_PASSWORD: 'fixture', APP_STORE_CONNECT_API_KEY_P8: 'fixture', APP_STORE_CONNECT_KEY_ID: 'fixture', APP_STORE_CONNECT_ISSUER_ID: 'fixture' },
+      env: { ...process.env, PATH: `${bin}:/usr/bin:/bin`, RUNNER_TEMP: root, MOCK_REAL_NODE: process.execPath, APPLE_RELEASE_PLATFORM: 'macOS', [variable]: 'true', MOCK_LOG: permissionsLog, MOCK_SECURITY_LOG: join(root, 'permissions.security.log'), GITHUB_REF: 'refs/heads/main', APPLE_DISTRIBUTION_P12_BASE64: 'dGVzdA==', APPLE_DISTRIBUTION_P12_PASSWORD: 'fixture', APP_STORE_CONNECT_API_KEY_P8: 'fixture', APP_STORE_CONNECT_KEY_ID: 'fixture', APP_STORE_CONNECT_ISSUER_ID: 'fixture' },
     });
 
     assert.notEqual(permissionsFailure.status, 0);
 
-    assert.match(permissionsFailure.stderr, /must be readable by non-root users/u);
+    assert.match(permissionsFailure.stderr, diagnostic);
 
     const permissionsCommands = await readFile(permissionsLog, 'utf8');
 
     assert.ok(!permissionsCommands.includes('-exportArchive'));
 
     assert.match(permissionsCommands, /cleanup/u);
+
+    }
 
     const failureLog = join(root, 'preflight-failure.log');
 
