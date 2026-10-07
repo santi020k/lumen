@@ -1,5 +1,6 @@
 package com.santi020k.lumen
 
+import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.mutableStateOf
@@ -8,7 +9,7 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.test.espresso.Espresso.pressBack
+import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.launch
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +37,8 @@ class TooltipParityTest {
         rule.onNodeWithText("Synthetic project explanation").assertDoesNotExist()
         rule.onNodeWithText("Project help").performClick()
         rule.onNodeWithText("Synthetic project explanation").assertExists()
-        pressBack()
+        // Inject a real system Back event without Espresso selecting a popup root.
+        InstrumentationRegistry.getInstrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)
         rule.onNodeWithText("Synthetic project explanation").assertDoesNotExist()
         rule.onNodeWithText("Project help").performClick()
         rule.onNodeWithText("Synthetic project explanation").assertExists()
