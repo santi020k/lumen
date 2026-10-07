@@ -4,7 +4,6 @@
 
 import {
   Alert,
-  AnimatedNumber,
   Badge,
   Button,
   ButtonGroup,
@@ -197,15 +196,9 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
       <div class="home-container home-proof__inner">
         <p>One system. Every surface.</p>
         <div class="home-proof__stats">
-          <Stat label="components" variant="bare">
-            <span class="ui-stat-value"><AnimatedNumber value={componentCount} /></span>
-          </Stat>
-          <Stat label="product platforms" variant="bare">
-            <span class="ui-stat-value"><AnimatedNumber value={4} /></span>
-          </Stat>
-          <Stat label="runtime lock-in" variant="bare">
-            <span class="ui-stat-value"><AnimatedNumber value={0} /></span>
-          </Stat>
+          <Stat label="components" value={String(componentCount)} variant="bare" />
+          <Stat label="product platforms" value="4" variant="bare" />
+          <Stat label="runtime lock-in" value="0" variant="bare" />
         </div>
         <div class="home-proof__categories" aria-label="Component categories">
           {categories.map(category => <Badge variant="outline">{category}</Badge>)}
