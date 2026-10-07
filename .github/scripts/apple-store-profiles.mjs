@@ -132,7 +132,11 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 
     writeFileSync(path, bytes, { mode: 0o600 });
 
-    const xml = securityOutput(['cms', '-D', '-i', path]);
+    const verified = spawnSync('swift', [join(import.meta.dirname, 'verify-apple-profile.swift'), path], { encoding: 'utf8' });
+
+    if (verified.status !== 0) throw new Error('Distribution profile CMS signature or signer trust is invalid');
+
+    const xml = verified.stdout;
     const decoded = spawnSync('python3', ['-c', 'import sys,plistlib,json,hashlib; p=plistlib.loads(sys.stdin.buffer.read()); e=p["Entitlements"]; print(json.dumps({"uuid":p["UUID"],"team":p["TeamIdentifier"][0] if len(p["TeamIdentifier"])==1 else None,"identifier":e.get("application-identifier",e.get("com.apple.application-identifier")),"debugging":e.get("get-task-allow",False),"expiration":p["ExpirationDate"].isoformat()+"Z","fingerprints":[hashlib.sha1(c).hexdigest().upper() for c in p["DeveloperCertificates"]]}))'], { input: xml, encoding: 'utf8' });
 
     if (decoded.status !== 0) throw new Error('Could not decode distribution profile metadata');

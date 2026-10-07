@@ -61,6 +61,7 @@ case "$mode" in
                 "+refs/tags/${swift_compatibility_baseline}:refs/tags/${swift_compatibility_baseline}"
         fi
 
+        pnpm run test:playground-apple-release
         pnpm run check:swift-assets
         pnpm run check:swift-version
         pnpm run test:swift-version

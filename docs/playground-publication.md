@@ -228,8 +228,9 @@ an immutable source tag only after upload succeeds. The runtime signing script u
 keychain and removes certificates, private key files, and archives on exit. Archive with automatic
 Apple Development signing and the team applied to every target, including Swift resource bundles.
 Before archiving, delivery downloads the active App Store profiles matching each bundle ID and
-imported distribution identity, verifies their signed team, expiry, UUID and release entitlements,
-and requires a usable Mac installer identity for macOS. Export selects those profile UUIDs and
+imported distribution identity. It verifies each CMS signature and signer trust before reading
+the signed team, expiry, UUID and release entitlements or installing a profile, and requires
+a usable Mac installer identity for macOS. Export selects those profile UUIDs and
 certificate fingerprints explicitly with manual signing, avoiding a cloud-signing fallback. The
 runner removes only profiles it installed; existing profiles are preserved. The delivery identity
 must support existing app and extension bundle IDs. iOS version changes do not implicitly upload Mac.

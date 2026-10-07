@@ -1,8 +1,59 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { X509Certificate } from 'node:crypto';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
 
 import { identityFingerprint, selectDistributionProfiles, validateProfileMetadata } from './apple-store-profiles.mjs';
+
+// cspell:words swiftc keyout smime outform nodetach noverify
+
+test('CMS verifier rejects corrupted signatures, unsigned payloads and untrusted signers', { skip: process.platform !== 'darwin' }, () => {
+  const directory = mkdtempSync(join(tmpdir(), 'lumen-cms-test-'));
+  const run = (command, args) => spawnSync(command, args, { encoding: 'utf8' });
+  const key = join(directory, 'key.pem');
+  const cert = join(directory, 'cert.pem');
+  const input = join(directory, 'input.plist');
+  const signed = join(directory, 'signed.der');
+  const corrupted = join(directory, 'corrupted.der');
+  const verifier = join(directory, 'verify-profile');
+
+  try {
+    writeFileSync(input, '<?xml version="1.0"?><plist version="1.0"><dict><key>UUID</key><string>synthetic</string></dict></plist>');
+
+    assert.equal(run('swiftc', ['-warnings-as-errors', join(import.meta.dirname, 'verify-apple-profile.swift'), '-o', verifier]).status, 0);
+
+    assert.equal(run('openssl', ['req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-keyout', key, '-out', cert, '-days', '1', '-subj', '/CN=Lumen Synthetic CMS Test']).status, 0);
+
+    assert.equal(run('openssl', ['smime', '-sign', '-binary', '-in', input, '-signer', cert, '-inkey', key, '-outform', 'DER', '-out', signed, '-nodetach']).status, 0);
+
+    const bytes = readFileSync(signed);
+
+    bytes[bytes.length - 1] ^= 1;
+
+    writeFileSync(corrupted, bytes);
+
+    assert.equal(run('security', ['cms', '-D', '-i', corrupted]).status, 0, 'decoding alone accepts this bad signature');
+
+    assert.equal(run('openssl', ['smime', '-verify', '-noverify', '-inform', 'DER', '-in', signed]).status, 0, 'original signature is valid');
+
+    assert.notEqual(run('openssl', ['smime', '-verify', '-noverify', '-inform', 'DER', '-in', corrupted]).status, 0, 'tampered signature is invalid');
+
+    for (const path of [signed, corrupted, input]) {
+      const result = run(verifier, [path]);
+
+      assert.equal(result.status, 1);
+
+      assert.equal(result.stdout, '');
+
+      assert.match(result.stderr, /signature or signer trust is invalid/u);
+    }
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
 
 const certificate = 'MIIDLzCCAhegAwIBAgIUMRXQAipyWhnojEh8pn/Mf8u9bUMwDQYJKoZIhvcNAQELBQAwJzElMCMGA1UEAwwcTHVtZW4gU3ludGhldGljIFByb2ZpbGUgVGVzdDAeFw0yNjEwMDcxNDAzMDJaFw0yNjEwMDgxNDAzMDJaMCcxJTAjBgNVBAMMHEx1bWVuIFN5bnRoZXRpYyBQcm9maWxlIFRlc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCdzNX2B4FNtZMqCXd95qTqokqJ98yQp0BuaJWmgNVXZzO271/qMpZRK+9Y4IGhJQyeGxLKA8Dqz4CIpjhwJfOVe0Omf4PSlho9oTMX+ffNpP5wO9eWFNNmRVkIvD87p0i4aof9W4BXmMfrDWMVprBABARUMQWaUb0hN5kCnMPE8RxILFsR6nHTSpif2jc9AMt9ZAgA7OWh1GkuwpUJ2XvERei1xYVwADQOPhOQl53jKalAnG6AyYEnhjSw/RPyHPfbad0lgUs/AtpljpVh6fpcvZhdG0NlCHo9xwQ6CI4k0xzjifjEYDyIkMx6mga0iNfojAIkv2YcJSM7ZwML3cI7AgMBAAGjUzBRMB0GA1UdDgQWBBQrUxC7dj0A6rlFZdpdz7qhjj4mUzAfBgNVHSMEGDAWgBQrUxC7dj0A6rlFZdpdz7qhjj4mUzAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCYdQHiqqq8AvmnGUOEf6e4a69m8fxQDLPcxBkeje1edHjnRMeIVBVGNiOfy3+/UJrVlLr13olbI6akmdY+W/wzHaS6eclQ+PGXDJwm5GeB1I53jcpzB8CDXMHVXjjTrsWVEzr8Ve0zsU08lDgKHfy+jmicRgaEBmBbu1Jm3rap6JWW5F8qhkRqmdbiVf1lQBUpkpQR/GxuOsGSqkT6evt4vs6DuIix8YRJHLoZsS6V2QJpKZu1N6s1jI8HaQSKkeQeVaLrXlsTKmU9IbJv5Z3mBZGf4YS7dWGVBkpDiqJchGhHy8an92R4eX0F7vSMJKd7P6c0bMlERyIldLSE30zL';
 const fingerprint = new X509Certificate(Buffer.from(certificate, 'base64')).fingerprint.replaceAll(':', '');
