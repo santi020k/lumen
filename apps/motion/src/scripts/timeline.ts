@@ -46,7 +46,7 @@ if (root?.dataset.compositionId) {
 
   scenes.forEach((scene, index) => {
     const start = Number(scene.dataset.sceneStart)
-    const pieces = scene.querySelectorAll('.desktop-content .workspace-heading, .desktop-content .ui-stat, .desktop-content .project-heading, .desktop-content .project, .desktop-content .workspace-footer')
+    const pieces = scene.querySelectorAll('[data-desktop-reveal]')
 
     fitDevices(scene)
 
@@ -66,7 +66,7 @@ if (root?.dataset.compositionId) {
 
     timeline.fromTo(indicators, { scaleX: 0.15, transformOrigin: 'left' }, { scaleX: 1, duration: 0.9, stagger: 0.12, ease }, start + 0.7)
 
-    timeline.fromTo(scene.querySelectorAll('.desktop-content .project-art'), { y: 6 }, { y: 0, duration: 0.9, stagger: 0.1, ease }, start + 0.5)
+    timeline.fromTo(scene.querySelectorAll('.completion-trend'), { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 1.1, ease }, start + 0.55)
 
     if (index === 0) {
       timeline.fromTo(scene.querySelectorAll('.composition-header, .composition-footer'), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease }, 0.1)

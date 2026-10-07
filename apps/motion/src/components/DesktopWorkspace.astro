@@ -1,0 +1,75 @@
+---
+import '../styles/desktop-workspace.css'
+
+import { Badge, Button, Card, Icon, Progress, Sparkline, Stat } from '@santi020k/lumen-astro'
+
+interface Props { glass?: boolean }
+
+const { glass = false } = Astro.props
+---
+
+<Card glass={glass} class="desktop-workspace" as="section" aria-label="Sample desktop project workspace">
+  <div class="desktop-toolbar" data-desktop-reveal>
+    <span class="workspace-identity"><Icon name="layers" /> Lumen workspace</span>
+    <Badge variant="outline">Sample data</Badge>
+  </div>
+  <div class="desktop-heading" data-desktop-reveal>
+    <div>
+      <h2>Good work, in focus.</h2>
+      <p>Your projects. A little more clarity.</p>
+    </div>
+    <Button tabindex="-1"><Icon name="plus" /> New project</Button>
+  </div>
+  <div class="desktop-stats">
+    <Stat variant={glass ? 'glass' : 'default'} label="Active projects" value="12" data-desktop-reveal>
+      <Icon name="layers" class="metric-icon" />
+      <p>Ideas taking shape</p>
+    </Stat>
+    <Stat variant={glass ? 'glass' : 'default'} label="Ready to review" value="04" data-desktop-reveal>
+      <Icon name="circle-check" class="metric-icon" />
+      <p>Your next decisions</p>
+    </Stat>
+    <Stat variant={glass ? 'glass' : 'default'} label="Completed this week" value="08" data-desktop-reveal>
+      <Icon name="trending-up" class="metric-icon" />
+      <p>Moving forward, together</p>
+    </Stat>
+  </div>
+  <div class="desktop-detail">
+    <Card class="focus-projects" glass={glass ? 'subtle' : false} data-desktop-reveal>
+      <div class="desktop-section-heading"><h3>Projects in focus</h3><span>02</span></div>
+      <div class="focus-project">
+        <div class="focus-project-heading">
+          <span class="project-symbol"><Icon name="palette" /></span>
+          <div><h4>Design foundations</h4><p>Tokens · Typography · Color</p></div>
+          <Icon name="circle-check" class="project-ready" aria-label="Ready for review" />
+        </div>
+        <Progress value={100} aria-label="Design foundations: complete" />
+      </div>
+      <div class="focus-project">
+        <div class="focus-project-heading">
+          <span class="project-symbol"><Icon name="layout-dashboard" /></span>
+          <div><h4>Product workspace</h4><p>Components · Layout · Flow</p></div>
+          <strong>68%</strong>
+        </div>
+        <Progress value={68} aria-label="Product workspace: 68 percent complete" />
+      </div>
+    </Card>
+    <Card class="weekly-progress" glass={glass ? 'subtle' : false} data-desktop-reveal>
+      <div class="desktop-section-heading"><h3>Weekly momentum</h3><Icon name="trending-up" /></div>
+      <p>Small steps. Real progress.</p>
+      <Sparkline
+        class="completion-trend"
+        area
+        tone="brand"
+        values={[0, 1, 2, 3, 5, 6, 8]}
+        label="Sample cumulative completed projects, Monday to Sunday: 0, 1, 2, 3, 5, 6, 8."
+      />
+      <div class="week-labels"><span>Mon</span><span>Sun</span></div>
+      <div class="weekly-summary"><Badge variant="outline">8 completed</Badge><span>This week</span></div>
+    </Card>
+  </div>
+  <div class="desktop-workspace-footer" data-desktop-reveal>
+    <span><Icon name="circle-check" /> All changes saved</span>
+    <span>Built with Lumen UI</span>
+  </div>
+</Card>

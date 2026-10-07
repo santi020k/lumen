@@ -1,4 +1,20 @@
-import { expect, test } from '@playwright/test'
+import { expect, type Locator, test } from '@playwright/test'
+
+const expectDesktopCardsToFit = async (screen: Locator, context: string) => {
+  const footerBounds = await screen.locator('.desktop-workspace-footer').boundingBox()
+
+  if (!footerBounds) throw new Error('Desktop footer must be measurable')
+
+  for (const card of await screen.locator('.desktop-detail > [data-slot="card"]').all()) {
+    const bounds = await card.boundingBox()
+
+    if (!bounds) throw new Error('Desktop cards must be measurable')
+
+    expect(bounds.y + bounds.height, `${context}: card clears the footer`).toBeLessThanOrEqual(footerBounds.y - 6)
+
+    expect(await card.evaluate(element => element.scrollHeight <= element.clientHeight), `${context}: card content fits`).toBe(true)
+  }
+}
 
 for (const width of [390, 1440]) {
   test(`theme controls and playback work at ${width}px`, async ({ page }) => {
@@ -112,13 +128,36 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     await expect(lightScene.locator('.desktop-device')).toHaveAttribute('data-device', 'macbook-pro')
 
+    const proFrame = lightScene.locator('.desktop-device')
+
+    const proGeometry = await proFrame.evaluate(frame => {
+      const base = frame.querySelector<HTMLElement>('.ui-device-frame__base')
+      const camera = frame.querySelector<HTMLElement>('.ui-device-frame__camera')
+
+      if (!base || !camera) throw new Error('MacBook Pro hardware must be present')
+
+      return { frontEdge: base.offsetHeight / frame.clientWidth, notch: camera.offsetWidth / frame.clientWidth }
+    })
+
+    expect(proGeometry.frontEdge, 'Pro front edge survives export stylesheet filtering').toBeGreaterThan(0.03)
+
+    expect(proGeometry.notch, 'Pro camera notch survives export stylesheet filtering').toBeGreaterThan(0.1)
+
     for (const time of [2, 3.8, 6.6, 9]) {
       await seek(time)
 
       const index = [2.6, 5, 8].filter(start => time >= start).length
-      const screen = page.locator('.scene').nth(index).locator('.desktop-content .workspace')
+      const screen = page.locator('.scene').nth(index).locator('.desktop-workspace')
 
       expect(await screen.evaluate(element => element.scrollHeight <= element.clientHeight), `${format} workspace fits at ${time}s`).toBe(true)
+
+      await expectDesktopCardsToFit(screen, `${format} at ${time}s`)
+
+      await expect(screen.getByRole('progressbar', { name: 'Design foundations: complete' })).toHaveAttribute('aria-valuenow', '100')
+
+      await expect(screen.getByRole('progressbar', { name: 'Product workspace: 68 percent complete' })).toHaveAttribute('aria-valuenow', '68')
+
+      await expect(screen.getByRole('img', { name: /Sample cumulative completed projects/ })).toBeVisible()
 
       for (let other = 0; other < 4; other++) {
         if (other !== index) await expect(page.locator('.scene').nth(other)).toHaveCSS('visibility', 'hidden')
@@ -131,9 +170,9 @@ test('all compositions fit their canvases and can seek backwards deterministical
 
     await expect(glassScene).toHaveCSS('opacity', '1')
 
-    await expect(glassScene.locator('.workspace').first()).toHaveClass(/ui-card--glass/)
+    await expect(glassScene.locator('.desktop-workspace')).toHaveClass(/ui-card--glass/)
 
-    await expect(glassScene.locator('.workspace').first()).toHaveCSS('backdrop-filter', /blur/)
+    await expect(glassScene.locator('.desktop-workspace')).toHaveCSS('backdrop-filter', /blur/)
 
     await seek(11.2)
 

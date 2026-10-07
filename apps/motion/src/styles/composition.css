@@ -22,12 +22,9 @@ html, body { margin: 0; width: 100%; height: 100%; }
 .theme-label { margin-bottom: 18px; font-size: 22px; color: hsl(var(--ink-soft)); }
 .theme-label strong { color: hsl(var(--brand-solid)); }
 .viewport { width: 100%; height: 100%; position: relative; }
-.viewport-bar { position: relative; display: flex; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid hsl(var(--line)); font-size: 14px; font-weight: 600; color: hsl(var(--ink-soft)); background: hsl(var(--surface-muted)); }
 .composition-stage { display: flex; justify-content: center; align-items: center; flex: 1; min-height: 0; }
 .desktop-content { width: 100%; height: 100%; display: flex; flex-direction: column; }
 .workspace-backdrop { flex: 1; min-height: 0; }
-.desktop-content .workspace { height: 100%; display: flex; flex-direction: column; }
-.desktop-content .workspace-footer { margin-top: auto; padding-top: 18px; }
 .workspace { padding: 22px; gap: 0; border: 0; border-radius: 0; }
 .workspace h2 { font-size: 28px; margin: 8px 0; letter-spacing: -0.035em; }
 .workspace h3 { font-size: 21px; }
@@ -59,7 +56,6 @@ html, body { margin: 0; width: 100%; height: 100%; }
 [data-format="portrait"] .intro h1 br, [data-format="square"] .intro h1 br { display: block; }
 [data-format="portrait"] .eyebrow { font-size: 20px; }
 [data-format="portrait"] .theme-label { font-size: 28px; margin-bottom: 28px; }
-[data-format="portrait"] .viewport-bar { font-size: 20px; padding: 18px 24px; }
 [data-format="portrait"] .workspace { padding: 26px; }
 [data-format="portrait"] .workspace h2 { font-size: 36px; }
 [data-format="portrait"] .workspace h3 { font-size: 27px; }
@@ -125,23 +121,8 @@ html, body { margin: 0; width: 100%; height: 100%; }
 .scene .phone-screen .workspace-footer .muted { display: none; }
 .scene .phone-screen .workspace .ui-button { width: 100%; min-height: 44px; font-size: 14px; }
 
-[data-lumen-preset="glass"] .desktop-content .workspace { border: 1px solid hsl(var(--line) / 0.65); border-radius: var(--ui-radius-lg); }
 [data-lumen-preset="glass"] .project { border-radius: var(--ui-radius-lg); }
 [data-lumen-preset="studio"] .project { border-radius: var(--ui-radius); box-shadow: none; }
-/* Desktop content keeps desktop typography even inside a portrait video canvas. */
-.scene .desktop-content .workspace { padding: 18px; }
-.scene .desktop-content .workspace-heading, .scene .desktop-content .workspace-footer { flex-direction: row; align-items: center; gap: 16px; }
-.scene .desktop-content .workspace h2 { font-size: 38px; margin: 6px 0; }
-.scene .desktop-content .workspace h3 { font-size: 26px; }
-.scene .desktop-content .workspace h4 { font-size: 26px; }
-.scene .desktop-content .eyebrow { font-size: 15px; }
-.scene .desktop-content .workspace .muted { font-size: 20px; }
-.scene .desktop-content .workspace .ui-badge { font-size: 16px; }
-.scene .desktop-content .stats { margin: 14px 0; }
-.scene .desktop-content .workspace .ui-stat-label { font-size: 18px; }
-.scene .desktop-content .workspace .ui-stat-value { font-size: 48px; }
-.scene .desktop-content .workspace .ui-button { font-size: 20px; min-height: 48px; }
-.scene .desktop-content .viewport-bar { font-size: 14px; padding: 12px 24px; }
 
 /* Editorial project previews add hierarchy without inventing another UI primitive. */
 .project-art { height: 86px; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; margin: -2px -2px 16px; border-radius: var(--ui-radius); background: hsl(var(--brand-soft)); color: hsl(var(--ink)); overflow: hidden; }
@@ -158,38 +139,19 @@ html, body { margin: 0; width: 100%; height: 100%; }
 .mini-layout i { height: 22px; border: 1px solid hsl(var(--accent) / 0.3); border-radius: 5px; background: hsl(var(--surface) / 0.8); }
 .mini-layout i:first-child { grid-row: span 2; height: 50px; background: hsl(var(--accent) / 0.6); }
 .scene .phone-screen .project-art { display: none; }
-.scene .desktop-content .workspace { position: relative; z-index: 1; }
 .scene .workspace-backdrop { position: relative; isolation: isolate; overflow: hidden; }
 [data-lumen-preset="glass"] .workspace-backdrop { background: hsl(var(--brand-soft)); padding: 16px; }
 .glass-light-field { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: linear-gradient(130deg, hsl(var(--brand) / 0.5), hsl(var(--canvas)) 48%, hsl(var(--accent) / 0.5)); }
 .glass-light-field span { position: absolute; width: 58%; height: 85%; border-radius: 45%; background: hsl(var(--brand) / 0.48); filter: blur(28px); left: -12%; top: -10%; }
 .glass-light-field span:nth-child(2) { background: hsl(var(--accent) / 0.5); left: 53%; top: 35%; }
 .glass-light-field span:nth-child(3) { background: hsl(var(--warning) / 0.26); width: 32%; height: 46%; left: 46%; top: -10%; }
-[data-lumen-preset="glass"] .desktop-content .workspace { --glass-bg: var(--surface) / 0.3; --glass-bg-subtle: var(--surface) / 0.28; --glass-blur: 18px; border: 1px solid hsl(var(--surface) / 0.85); box-shadow: 0 12px 30px hsl(var(--brand) / 0.14), inset 0 1px 0 hsl(var(--surface)); }
 [data-lumen-preset="glass"] .project, [data-lumen-preset="glass"] .ui-stat { box-shadow: inset 0 1px 0 hsl(var(--surface) / 0.85), 0 8px 20px hsl(var(--brand) / 0.07); }
 [data-lumen-preset="glass"] .project-art { background: hsl(var(--surface) / 0.25); border: 1px solid hsl(var(--surface) / 0.7); }
-[data-lumen-preset="glass"] .viewport-bar { background: hsl(var(--brand-soft)); }
 [data-lumen-preset="studio"] .project-art { background: hsl(var(--surface-strong)); color: hsl(var(--ink)); }
 [data-format="portrait"] .intro h1 { max-width: 740px; font-size: 96px; line-height: 1.06; }
 [data-format="portrait"] .intro { margin: 42px 0 34px; min-height: 246px; }
 [data-format="square"] .intro h1 { font-size: 64px; }
 
-.scene .desktop-content .ui-stat { padding: 12px; }
-.scene .desktop-content .projects { gap: 12px; margin-top: 12px; }
-.scene .desktop-content .project { padding: 12px; }
-.scene .desktop-content .project-art { height: 64px; margin-bottom: 12px; padding: 10px 14px; }
-.scene .desktop-content .project p { margin: 8px 0 10px; }
-.scene .desktop-content .workspace-footer { padding-top: 12px; }
-[data-lumen-preset="glass"] .desktop-content .ui-stat { background: hsl(var(--surface) / 0.45); backdrop-filter: blur(var(--glass-blur)); border: 1px solid hsl(var(--surface) / 0.8); }
-
-/* Desktop scenes prioritize the few details that survive a social-feed preview. */
-.scene .desktop-content .workspace-heading .eyebrow,
-.scene .desktop-content .workspace-heading > .ui-badge,
-.scene .desktop-content .project-line .ui-badge,
-.scene .desktop-content .project p,
-.scene .desktop-content .workspace-footer .muted { display: none; }
-.scene .desktop-content .project .ui-progress { margin-top: 14px; }
-.scene .desktop-content .workspace-footer { justify-content: flex-end; }
 [data-format="landscape"] .scene { display: grid; grid-template-columns: 480px minmax(0, 1fr); grid-template-rows: auto 1fr auto auto; grid-template-areas: "header stage" "intro stage" "theme stage" "footer stage"; gap: 36px 32px; padding: 80px 64px 80px 80px; }
 [data-format="landscape"] .composition-header { grid-area: header; }
 [data-format="landscape"] .edition { display: none; }
