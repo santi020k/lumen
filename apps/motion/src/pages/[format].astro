@@ -8,6 +8,7 @@ import { transformSync } from 'esbuild'
 
 import LumenLogo from '../../../docs/src/components/LumenLogo.astro'
 import BrandOutro from '../components/BrandOutro.astro'
+import DesktopWorkspace from '../components/DesktopWorkspace.astro'
 import Workspace from '../components/Workspace.astro'
 import { appearances, duration, formats, outroStart } from '../composition'
 import timelineSource from '../scripts/timeline.ts?raw'
@@ -55,12 +56,18 @@ const timeline = transformSync(timelineSource, { loader: 'ts', format: 'iife' })
           <div class="theme-label"><span>{String(index + 1).padStart(2, '0')} / 04</span><strong>{theme.name}</strong></div>
           <div class="composition-stage">
             <div class="viewport">
-              <DeviceFrame device="macbook-pro" class="desktop-device" screenWidth={1000} screenHeight={650} scroll={false}>
+              <DeviceFrame
+device="macbook-pro"
+color="black"
+class="desktop-device"
+screenWidth={1000}
+screenHeight={650}
+scroll={false}
+              >
                 <div class="desktop-content">
-                  <div class="viewport-bar"><span>Adaptive workspace</span><span>Laptop layout</span></div>
                   <div class="workspace-backdrop">
                     {theme.preset === 'glass' && <div class="glass-light-field" aria-hidden="true"><span></span><span></span><span></span></div>}
-                    <Workspace glass={theme.preset === 'glass'} />
+                    <DesktopWorkspace glass={theme.preset === 'glass'} />
                   </div>
                 </div>
               </DeviceFrame>

@@ -74,7 +74,9 @@ release notes before upgrading it.
 ## Source and reuse
 
 - `src/components/BrandOutro.astro` owns the reusable brand ending and its copy props.
-- `src/components/Workspace.astro` owns the sample interface and clearly labels its data.
+- `src/components/DesktopWorkspace.astro` owns the desktop project overview, project progress,
+  and weekly completion chart. Its data is explicitly illustrative.
+- `src/components/Workspace.astro` owns the mobile sample interface.
 - `src/pages/[format].astro` owns the shared message, four appearances, and canvas dimensions.
 - `src/scripts/timeline.ts` registers the paused GSAP timeline with precise seeking for export and
   browser playback. Preview messages validate origin, sender, shape, and finite seek values.
@@ -98,12 +100,12 @@ fine highlights, and moving cyan, teal, and warm light behind the interface. All
 to the paused GSAP timeline, including the background, so seeking remains deterministic. Inactive
 scenes are hidden after fading out so their glass layers do not interfere with exported frames.
 
-At 9.7 seconds, the laptop yields to an iPhone-style mobile layout. Both devices use the refined public
-Astro `DeviceFrame` (`macbook-pro` and `iphone`) integrated into local `release/v4.0.0`; no published
-version is needed.
+At 9.7 seconds, the laptop yields to an iPhone-style mobile layout. Both devices use the current public
+Astro `DeviceFrame` (`macbook-pro` and `iphone`) from this workspace. The black MacBook Pro finish,
+full front edge, and camera notch come from the library component; no published version is needed.
 The frame also supports real viewport scaling for iframes. This composition uses slotted HTML
 so the single GSAP timeline controls component entrances and exports deterministically.
-`Workspace.astro` is shared by both devices; the phone content remains at 390 × 844 CSS pixels
+The desktop overview and mobile workspace share the sample project story. The phone remains at 390 × 844 CSS pixels
 with stacked cards and a full-width action. Hardware silhouettes are illustrative.
 
 Devices fit and center within the space between headline and footer. The reusable brand ending
@@ -126,8 +128,9 @@ register a paused HyperFrames timeline; the preview's **Brand ending** button sh
 social edits, or reuse the source for a sharper export at a different resolution.
 
 Portrait, square, and landscape share the message and components, with format-specific typography
-and spacing. Desktop workspaces use larger headings, figures, and project titles, with secondary
-badges and descriptions removed so the interface remains readable at feed size. Landscape places the message
+and spacing. Desktop workspaces emphasize a clear overview, three totals, two project rows with
+progress, and a cumulative weekly completion chart using the public `Sparkline` component.
+The chart reveals on the same paused timeline as the project progress bars. Landscape places the message
 beside the MacBook to give the screen more canvas space. The phone keeps its original content and
 typography; its hardware chrome, including the home indicator, comes from the public frame.
 The browser preview scales the canvas to its container and keeps the selected appearance when
@@ -145,7 +148,7 @@ Dark, Glass, and Studio, adapting from laptop to an iPhone-style mobile screen. 
 
 **Visual description:** A sample project workspace stays in the same layout while its colors and
 surface styling change from Lumen Light to Lumen Dark to Glass to Studio. The interface assembles in sequence,
-then alternates a laptop workspace with an iPhone-style screen containing a real mobile layout. Project counts are illustrative
+then transitions from a MacBook Pro project overview to an iPhone-style screen containing a real mobile layout. Project counts and chart values are illustrative
 sample data. The final line points to lumen.santi020k.com.
 
 This is a draft asset and caption. Publication remains subject to the
