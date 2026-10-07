@@ -5,7 +5,7 @@ import test from "node:test";
 
 import { classifyCanaryPaths } from "./classify-workflow-paths.mjs";
 
-// cspell:words mktemp xlarge
+// cspell:words mktemp xlarge keyevent keyguard stayon
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
 const workflowDirectory = resolve(repositoryRoot, ".github", "workflows");
@@ -779,4 +779,19 @@ test('release validation does not schedule removed native qualification checks',
   for (const surface of [manifest.scripts.validate, releaseScope, ciWorkflow, canaryWorkflow, npmWorkflow, composeWorkflow]) {
     assert.doesNotMatch(surface, removed);
   }
+});
+
+test("Compose instrumentation prepares an awake unlocked emulator before real Back input", () => {
+  assertOrderedCommands(ciWorkflow, "Compose emulator input readiness", [
+    'if [[ "$booted" != "true" ]]',
+    '"$adb" shell svc power stayon true',
+    '"$adb" shell settings put system screen_off_timeout 2147483647',
+    '"$adb" shell input keyevent 224',
+    '"$adb" shell wm dismiss-keyguard',
+    "run_phase 'Compose instrumentation' ./gradlew connectedDebugAndroidTest",
+  ]);
+
+  assert.ok(ciWorkflow.includes("${{ runner.temp }}/lumen-emulator.log"));
+
+  assert.ok(ciWorkflow.includes("${{ runner.temp }}/lumen-emulator-power.log"));
 });

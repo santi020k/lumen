@@ -190,6 +190,14 @@ jobs:
             exit 1
           fi
 
+          # Prepare the disposable emulator for real window input after boot.
+          # cspell:words keyevent keyguard stayon
+          "$adb" shell svc power stayon true
+          "$adb" shell settings put system screen_off_timeout 2147483647
+          "$adb" shell input keyevent 224
+          "$adb" shell wm dismiss-keyguard
+          "$adb" shell dumpsys power > "$RUNNER_TEMP/lumen-emulator-power.log"
+
           run_phase() {
             local label="$1"
             shift
@@ -215,6 +223,8 @@ jobs:
           path: |
             packages/compose/build/reports/androidTests/
             packages/compose/build/outputs/androidTest-results/
+            ${{ runner.temp }}/lumen-emulator.log
+            ${{ runner.temp }}/lumen-emulator-power.log
           if-no-files-found: ignore
           retention-days: 7
 
