@@ -115,6 +115,10 @@ on standard GitHub-hosted macOS runners. It requires approved, merged `main`, pa
 protected Infisical signing credentials. Private repository deployments use Xcode Cloud through
 the workflows' visibility gates. Store review and customer rollout remain separate from upload.
 
+Delivery imports credentials into a temporary keychain with access restricted to Apple's signing
+tools. macOS also authorizes the installer signing tools so package export can run unattended;
+the keychain and newly installed distribution profiles are removed when delivery exits.
+
 See [`docs/playgrounds.md`](../../docs/playgrounds.md) for prerequisites and the complete Xcode,
 device, signing, and TestFlight workflow.
 

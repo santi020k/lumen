@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# cspell:words agvtool keychain plist iphoneos mobileprovision codesign xcarchive
+# cspell:words agvtool keychain plist iphoneos mobileprovision codesign xcarchive productbuild productsign
 set -euo pipefail
 set +x
 umask 077
@@ -60,7 +60,11 @@ JS
 security create-keychain -p "$keychain_password" "$keychain"
 security set-keychain-settings -lut 21600 "$keychain"
 security unlock-keychain -p "$keychain_password" "$keychain"
-security import "$work/distribution.p12" -P "$APPLE_DISTRIBUTION_P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security -t cert -f pkcs12 -k "$keychain" >/dev/null
+trusted_signing_tools=(-T /usr/bin/codesign -T /usr/bin/security)
+if [[ "$platform" == macOS ]]; then
+  trusted_signing_tools+=(-T /usr/bin/productbuild -T /usr/bin/productsign)
+fi
+security import "$work/distribution.p12" -P "$APPLE_DISTRIBUTION_P12_PASSWORD" "${trusted_signing_tools[@]}" -t cert -f pkcs12 -k "$keychain" >/dev/null
 security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain" >/dev/null
 security list-keychains -d user -s "$keychain" "$HOME/Library/Keychains/login.keychain-db"
 mkdir -p "$profile_directory"
