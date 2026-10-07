@@ -45909,7 +45909,7 @@
   },
   "migration": {
     "schemaVersion": 1,
-    "status": "draft",
+    "status": "approved",
     "targetVersion": "4.0.0",
     "policy": {
       "compatibility": "Lumen 4 may deliberately replace v3 component and binary contracts. Consumer data, privacy, and release approval remain protected. Migration guidance documents externally visible changes.",
@@ -46342,7 +46342,20 @@
         ]
       }
     ],
-    "swiftApiBaseline": "v3.0.1"
+    "swiftApiBaseline": "v3.0.1",
+    "approval": {
+      "approver": "Santiago Molina (santi020k)",
+      "date": "2026-10-07",
+      "decision": "Approve the reviewed v4.0.0 delivery recovery for playground 1.0.3 Apple and Android submission with current screenshots and metadata after all checks and reviews pass, under the standing authorization recorded by santi020k in PR #95 comment 6027959606. Preserve already published v4.0.0 tags and artifacts.",
+      "reviewedRevision": "fcdd4ec7a1e97d8dfebb884151ead0c38535c6b1",
+      "evidence": [
+        "https://github.com/santi020k/lumen/commit/fcdd4ec7a1e97d8dfebb884151ead0c38535c6b1",
+        "https://github.com/santi020k/lumen/pull/97",
+        "https://github.com/santi020k/lumen/pull/95",
+        "https://github.com/santi020k/lumen/actions/runs/37588745193",
+        "https://github.com/santi020k/lumen/actions/runs/37588744397"
+      ]
+    }
   },
   "nativeComponents": [
     {
