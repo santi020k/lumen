@@ -617,3 +617,21 @@ test('visualSize renders equivalent form densities and preserves keyboard select
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.screenshot({ path: testInfo.outputPath('visual-form-sizes.png'), fullPage: true });
 });
+
+
+test('React workflow retains validation when a native document listener cancels reset', async ({ page }) => {
+  await page.goto('/visual/forms');
+  const input = page.getByRole('textbox', { name: 'Workflow value' });
+  const validation = page.getByRole('status', { name: 'Workflow validation' });
+  await input.fill('');
+  await page.getByRole('button', { name: 'Validate workflow', exact: true }).click();
+  await expect(validation).toHaveText('Attempted: true; errors: 1');
+  await page.evaluate(() => {
+    document.addEventListener('reset', event => { event.preventDefault(); }, { once: true });
+  });
+  await page.getByRole('button', { name: 'Reset workflow', exact: true }).click();
+  await page.evaluate(() => new Promise<void>(resolve => { setTimeout(resolve, 0); }));
+  await expect(input).toHaveValue('');
+  await expect(validation).toHaveText('Attempted: true; errors: 1');
+  await expect(page.getByRole('status', { name: 'Workflow dirty' })).toHaveText('Draft changed');
+});

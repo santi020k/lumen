@@ -457,13 +457,25 @@ const initGlassTracking = (scope: ParentNode): void => {
   }
 }
 
+const isFormElement = (element: EventTarget | null): element is Element => {
+  try {
+    return element !== null && Element.prototype.matches.call(element, '*')
+  } catch {
+    return false
+  }
+}
+
+const isFormHtmlElement = (element: EventTarget | null): element is HTMLElement => (
+  isFormElement(element) && element.namespaceURI === 'http://www.w3.org/1999/xhtml'
+)
+
 const getFieldControl = (root: HTMLElement): HTMLElement | null => {
   const controlId = root.dataset.uiFieldControl
 
   if (controlId) {
-    const control = document.getElementById(controlId)
+    const control = root.ownerDocument.getElementById(controlId)
 
-    if (control instanceof HTMLElement) return control
+    if (isFormHtmlElement(control)) return control
   }
 
   return root.querySelector<HTMLElement>(fieldControlSelector)
@@ -484,9 +496,7 @@ const getFieldRoot = (control: HTMLElement): HTMLElement | null => (
 type NativeFormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
 const isNativeFormControl = (element: EventTarget | null): element is NativeFormControl => (
-  element instanceof HTMLInputElement ||
-  element instanceof HTMLSelectElement ||
-  element instanceof HTMLTextAreaElement
+  isFormHtmlElement(element) && element.matches('input, select, textarea')
 )
 
 const getValidationMessage = (
@@ -556,7 +566,7 @@ const validateControl = (
 const getFormControls = (form: HTMLFormElement): NativeFormControl[] => [
   ...form.elements
 ].filter(isNativeFormControl).filter(control => !control.disabled &&
-  !(control instanceof HTMLInputElement && control.type === 'hidden'))
+  control.type !== 'hidden')
 
 const validateForm = (form: HTMLFormElement): Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> => {
   const invalidControls: Array<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> = []
@@ -621,11 +631,11 @@ const observeFormValidation = (ownerDocument: Document): void => {
 
 const initForms = (scope: ParentNode): void => {
   for (const form of scope.querySelectorAll<HTMLFormElement>('form[data-ui-form]')) {
+    observeFormValidation(form.ownerDocument)
+
     if (form.dataset.uiFormBound === 'true') continue
 
     form.dataset.uiFormBound = 'true'
-
-    observeFormValidation(form.ownerDocument)
 
     form.noValidate = true
 
@@ -639,13 +649,13 @@ const initForms = (scope: ParentNode): void => {
     form.addEventListener('click', event => {
       const target = event.target
 
-      if (!(target instanceof Element)) return
+      if (!isFormElement(target)) return
 
       const link = target.closest<HTMLAnchorElement>('[data-ui-error-summary] a[href^="#"]')
       const controlId = link?.hash.slice(1)
       const control = controlId ? form.ownerDocument.getElementById(controlId) : null
 
-      if (!link || !(control instanceof HTMLElement) ||
+      if (!link || !isFormHtmlElement(control) ||
         !(isNativeFormControl(control) ? control.form === form : form.contains(control))) return
 
       event.preventDefault()

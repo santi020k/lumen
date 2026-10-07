@@ -12,12 +12,19 @@ const boundWorldMaps = new WeakMap<HTMLElement, WorldMapBinding>()
 const findCountryPath = (group: SVGGElement, countryId: string): SVGPathElement | null => [...group.querySelectorAll<SVGPathElement>('[data-ui-world-map-country]')]
   .find(path => path.dataset.uiWorldMapCountry === countryId) ?? null
 
+const isCountryPath = (path: Element | null): path is SVGPathElement => (
+  path?.namespaceURI === 'http://www.w3.org/2000/svg' && path.localName === 'path'
+)
+
 const closestCountryPath = (group: SVGGElement, target: EventTarget | null): SVGPathElement | null => {
-  const ElementConstructor = group.ownerDocument.defaultView?.Element ?? Element
+  try {
+    // Native brand checks also accept adopted nodes whose prototypes retain their source realm.
+    const path: Element | null = Element.prototype.closest.call(target, '[data-ui-world-map-country]')
 
-  if (!(target instanceof ElementConstructor)) return null
-
-  return target.closest<SVGPathElement>('[data-ui-world-map-country]')
+    return isCountryPath(path) && group.contains(path) ? path : null
+  } catch {
+    return null
+  }
 }
 
 const readSelectDetail = (path: SVGPathElement): LumenWorldMapSelectDetail => ({
@@ -41,12 +48,10 @@ const isWorldMapRoot = (scope: ParentNode): scope is HTMLElement => (
   Element.prototype.matches.call(scope, '[data-ui-world-map]')
 )
 
-const createWorldMapRealm = (root: HTMLElement) => {
-  const view = root.ownerDocument.defaultView
-  const AbortConstructor = view?.AbortController ?? AbortController
-  const EventConstructor = view?.CustomEvent ?? CustomEvent
+const createWorldMapAbort = (root: HTMLElement): AbortController => {
+  const AbortConstructor = root.ownerDocument.defaultView?.AbortController ?? AbortController
 
-  return { abort: new AbortConstructor(), EventConstructor }
+  return new AbortConstructor()
 }
 
 const updateSelectionOutline = (root: HTMLElement, path: SVGPathElement | null): void => {
@@ -73,7 +78,7 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
 
     if (!group) continue
 
-    const { abort, EventConstructor } = createWorldMapRealm(root)
+    const abort = createWorldMapAbort(root)
     const { signal } = abort
 
     initLumenWorldMapZoom(root, signal)
@@ -109,6 +114,8 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
       showLabel(next)
 
       if (next) {
+        const EventConstructor = root.ownerDocument.defaultView?.CustomEvent ?? CustomEvent
+
         root.dispatchEvent(new EventConstructor<LumenWorldMapSelectDetail>('ui:world-map-select', {
           bubbles: true,
           detail: readSelectDetail(next)
@@ -134,9 +141,7 @@ export const initWorldMapControllers = (scope: ParentNode): void => {
       if (path?.dataset.uiWorldMapCountry) selectCountry(path.dataset.uiWorldMapCountry)
     }, { signal })
 
-    if (select && root.dataset.interactive !== 'false') {
-      select.disabled = false
-
+    if (select) {
       select.addEventListener('change', () => {
         if (root.dataset.interactive === 'false') return
 

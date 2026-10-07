@@ -59,6 +59,11 @@ export default function FormBehaviorPage() {
         {...workflow.formProps}
         aria-label="Workflow draft"
         enhance={false}
+        onSubmit={event => {
+          event.preventDefault()
+
+          workflow.validate(event.currentTarget)
+        }}
         onReset={event => {
           if (cancelReset) event.preventDefault()
 
@@ -66,9 +71,13 @@ export default function FormBehaviorPage() {
         }}
       >
         <Label htmlFor="workflow-value">Workflow value</Label>
-        <Input id="workflow-value" name="value" defaultValue="Saved" />
+        <Input id="workflow-value" name="value" defaultValue="Saved" required />
         <Button type="reset">Reset workflow</Button>
-        <Typography><p role="status" aria-label="Workflow dirty">{workflow.dirty ? 'Draft changed' : 'Draft saved'}</p></Typography>
+        <Button type="submit">Validate workflow</Button>
+        <Typography>
+          <p role="status" aria-label="Workflow dirty">{workflow.dirty ? 'Draft changed' : 'Draft saved'}</p>
+          <p role="status" aria-label="Workflow validation">{`Attempted: ${workflow.attempted}; errors: ${workflow.errors.length}`}</p>
+        </Typography>
       </Form>
     </Stack>
   )

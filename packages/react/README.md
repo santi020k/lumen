@@ -1014,7 +1014,8 @@ controls associated with another form are ignored even when React bubbles their 
 Adopted native controls retain checkbox, multiple-selection and file details in dirty-state tracking.
 
 Accepted native reset buttons refresh dirty state after the browser restores defaults; canceled resets
-preserve the draft. `PromptComposer` keeps its standard `id` on the form for external submit controls
+preserve the draft, errors, and attempted state, including cancellation by a native ancestor after
+React dispatch. `PromptComposer` keeps its standard `id` on the form for external submit controls
 and derives a separate labelled textarea ID.
 
 See [composable form workflows](https://github.com/santi020k/lumen/blob/main/docs/powerful-forms.md). Applications retain schemas, financial

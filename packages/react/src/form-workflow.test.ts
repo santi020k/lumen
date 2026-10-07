@@ -736,3 +736,37 @@ test('dirty state preserves adopted checkbox, multiple select and file details',
   })
   expect(get().dirty).toBe(true)
 })
+
+test('late native reset cancellation preserves draft validation and attempted state', async () => {
+  let current: LumenFormWorkflow | undefined
+  const { container } = await mount(() => {
+    current = useLumenFormWorkflow()
+    return createElement('form', current.formProps, createElement('input', { id: 'late-reset', name: 'value', defaultValue: 'Saved', required: true }))
+  })
+  const get = () => {
+    if (!current) throw new Error('Missing workflow')
+    return current
+  }
+  const field = control(container, '#late-reset')
+  await input(field, '')
+  await act(async () => {
+    get().validate()
+    await Promise.resolve()
+  })
+  expect(get().attempted).toBe(true)
+  const errors = get().errors
+  expect(errors).toHaveLength(1)
+  document.addEventListener('reset', event => {
+    event.preventDefault()
+  }, { once: true })
+  await act(async () => {
+    field.form?.reset()
+    await new Promise<void>(resolve => {
+      setTimeout(resolve, 0)
+    })
+  })
+  expect(field.value).toBe('')
+  expect(get().dirty).toBe(true)
+  expect(get().attempted).toBe(true)
+  expect(get().errors).toEqual(errors)
+})

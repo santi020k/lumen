@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve draft validation when a native ancestor cancels form reset after React dispatch.
+
 - Keep PromptComposer form IDs available to external submit controls; resolve CopyButton targets in their owning document and deliver feedback through ToastProvider. Refresh dirty state after native reset default actions, and enforce destination toast limits when records reopen or move.
 
 - Request a valid server page when matching results shrink, preserving controlled view preferences and avoiding duplicate requests.

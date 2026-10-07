@@ -281,3 +281,51 @@ test('package directory exposes all public npm packages with grouped usage links
   await page.getByRole('link', { name: 'Destination examples', exact: true }).click()
   await expect(page).toHaveURL(/\/docs\/web\/world-map\/destinations/)
 })
+
+
+test('adopted maps keep zoom and use current-realm selection through interaction mode changes', async ({ page }) => {
+  await page.goto('/docs/components/world-map')
+  const map = page.locator('[data-ui-world-map]').first()
+  await map.getByRole('button', { name: 'Zoom in', exact: true }).click()
+  const result = await map.evaluate(async element => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+    const frame = document.createElement('iframe')
+    document.body.append(frame)
+    const destination = frame.contentDocument
+    const view = destination?.defaultView
+    const select = element.querySelector<HTMLSelectElement>('[data-ui-world-map-select]')
+    const path = element.querySelector<SVGPathElement>('[data-ui-world-map-country="CO"]')
+    const viewport = element.querySelector<HTMLElement>('[data-ui-world-map-viewport]')
+    if (!init || !destination || !view || !select || !path || !viewport) throw new Error('Missing map adoption fixture')
+    destination.body.append(destination.adoptNode(element))
+    const waitForDisabled = async (disabled: boolean): Promise<void> => {
+      for (let attempt = 0; attempt < 100; attempt += 1) {
+        if (select.disabled === disabled) return
+        await new Promise<void>(resolve => { setTimeout(resolve, 20) })
+      }
+      throw new Error('Map controller did not apply the current interaction mode')
+    }
+    const ownedEvents: boolean[] = []
+    element.addEventListener('ui:world-map-select', event => { ownedEvents.push(event instanceof view.CustomEvent) })
+    init(destination)
+    init(destination)
+    await new Promise<void>(resolve => { setTimeout(resolve, 0) })
+    select.value = 'JP'
+    select.dispatchEvent(new view.Event('change', { bubbles: true }))
+    path.dispatchEvent(new view.MouseEvent('click', { bubbles: true }))
+    const clicked = select.value === 'CO'
+    element.setAttribute('data-interactive', 'false')
+    init(destination)
+    await waitForDisabled(true)
+    const disabled = select.disabled
+    select.value = 'JP'
+    select.dispatchEvent(new view.Event('change', { bubbles: true }))
+    const heldEvents = ownedEvents.length
+    element.setAttribute('data-interactive', 'true')
+    init(destination)
+    await waitForDisabled(false)
+    select.dispatchEvent(new view.Event('change', { bubbles: true }))
+    return { clicked, disabled, heldEvents, enabled: !select.disabled, selected: select.value, ownedEvents, zoom: viewport.style.getPropertyValue('--ui-world-map-zoom') }
+  })
+  expect(result).toEqual({ clicked: true, disabled: true, heldEvents: 2, enabled: true, selected: 'JP', ownedEvents: [true, true, true], zoom: '1.5' })
+})

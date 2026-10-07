@@ -1313,7 +1313,15 @@ test('Tabs switches regression fixture preserves localized and accessible SSR co
   await page.getByRole('button', { name: 'Submit external field' }).click()
   await expect(form).toHaveAttribute('data-status', 'error')
   await expect(page.getByLabel('External field')).toHaveAttribute('aria-invalid', 'true')
-  await form.locator('[data-ui-error-summary] a[href="#external-field"]').click()
+  const summaryLink = form.locator('[data-ui-error-summary] a[href="#external-field"]')
+  await summaryLink.evaluate(link => {
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    icon.setAttribute('width', '20')
+    icon.setAttribute('height', '20')
+    icon.setAttribute('aria-hidden', 'true')
+    link.append(icon)
+  })
+  await summaryLink.locator('svg').click()
   await expect(page.getByLabel('External field')).toBeFocused()
   await page.evaluate(() => {
     document.querySelector('#external-form')?.addEventListener('ui:valid', () => {
@@ -1457,4 +1465,90 @@ test('PhoneInput synchronizes enhanced metadata after a real reset-button click'
   await expect(code).toHaveText('+57')
   await expect(input).toHaveValue('')
   await expect(root).toHaveAttribute('data-e164', '')
+})
+
+
+test('enhanced forms retain validation when adopted and reinitialized in another document', async ({ page }) => {
+  await page.goto('/internal/interaction-regressions')
+  await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
+  await page.getByRole('button', { name: 'Submit external field' }).click()
+  const result = await page.evaluate(() => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+    const form = document.querySelector<HTMLFormElement>('#external-form')
+    const control = document.querySelector<HTMLInputElement>('#external-field')
+    const field = control?.closest<HTMLElement>('[data-ui-field], .ui-field')
+    const error = document.querySelector<HTMLElement>('#external-error')
+    if (!init || !form || !control || !field || !error) throw new Error('Missing form adoption fixture')
+    let valid = 0
+    let invalid = 0
+    form.addEventListener('ui:valid', () => { valid += 1 })
+    form.addEventListener('ui:invalid', () => { invalid += 1 })
+    const frame = document.createElement('iframe')
+    document.body.append(frame)
+    const destination = frame.contentDocument
+    if (!destination) throw new Error('Missing adoption document')
+    destination.body.append(destination.adoptNode(form), destination.adoptNode(field))
+    init(destination)
+    init(destination)
+    control.value = 'Corrected'
+    control.focus()
+    control.blur()
+    const corrected = control.getAttribute('aria-invalid') === null && error.hidden
+    control.value = ''
+    control.focus()
+    control.blur()
+    const rejected = control.getAttribute('aria-invalid') === 'true' && !error.hidden
+    document.body.append(document.adoptNode(form), document.adoptNode(field))
+    init(document)
+    control.value = 'Returned'
+    control.focus()
+    control.blur()
+    return { corrected, rejected, valid, invalid, returned: control.getAttribute('aria-invalid') === null }
+  })
+  expect(result).toEqual({ corrected: true, rejected: true, valid: 2, invalid: 1, returned: true })
+})
+
+
+test('iframe-origin enhanced forms validate after adoption into the host document', async ({ page }) => {
+  await page.goto('/internal/interaction-regressions')
+  await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
+  const result = await page.evaluate(() => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+    const createFixture = () => {
+      const sourceForm = document.querySelector<HTMLFormElement>('#external-form')
+      const sourceField = document.querySelector<HTMLInputElement>('#external-field')?.closest<HTMLElement>('[data-ui-field], .ui-field')
+      if (!sourceForm || !sourceField) throw new Error('Missing reverse-adoption fixture')
+      const frame = document.createElement('iframe')
+      document.body.append(frame)
+      const source = frame.contentDocument
+      if (!source) throw new Error('Missing source document')
+      source.body.innerHTML = sourceForm.outerHTML + sourceField.outerHTML
+      sourceForm.remove()
+      sourceField.remove()
+      const form = source.querySelector<HTMLFormElement>('#external-form')
+      const control = source.querySelector<HTMLInputElement>('#external-field')
+      const field = control?.closest<HTMLElement>('[data-ui-field], .ui-field')
+      const error = source.querySelector<HTMLElement>('#external-error')
+      if (!form || !control || !field || !error) throw new Error('Missing source form controls')
+      return { source, form, control, field, error }
+    }
+    const { source, form, control, field, error } = createFixture()
+    if (!init) throw new Error('Missing form initializer')
+    delete form.dataset.uiFormBound
+    init(source)
+    document.body.append(document.adoptNode(form), document.adoptNode(field))
+    init(document)
+    init(document)
+    let invalid = 0
+    let valid = 0
+    form.addEventListener('ui:invalid', () => { invalid += 1 })
+    form.addEventListener('ui:valid', () => { valid += 1 })
+    form.requestSubmit()
+    const rejected = control.getAttribute('aria-invalid') === 'true' && !error.hidden
+    control.value = 'Corrected'
+    control.focus()
+    control.blur()
+    return { foreignPrototype: !(control instanceof HTMLInputElement), rejected, corrected: control.getAttribute('aria-invalid') === null && error.hidden, invalid, valid }
+  })
+  expect(result).toEqual({ foreignPrototype: true, rejected: true, corrected: true, invalid: 1, valid: 1 })
 })

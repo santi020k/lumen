@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Retain adopted form/map interactions and honor late native reset cancellation in React workflows.
+
 - Harden restored date and attachment validation, cross-document copy and map interactions, external form controls, native reset timing, toast placement limits, and RTL map navigation across web and React Native adapters.
 
 - Add mouse and pen drag panning and extend WorldMap zoom to 800%. Render the selection outline above all country fills with rounded joins so neighboring regions cannot clip it or produce spikes at high zoom.

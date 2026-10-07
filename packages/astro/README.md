@@ -642,7 +642,9 @@ applications own offscreen editing state. See [data rendering](https://github.co
 setup, lifecycle, accessibility and the mounted-mode tradeoff.
 
 Action-error normalization ignores malformed fields and non-string messages. Enhanced forms include
-externally associated native controls. Timed toasts stay paused while hovered or focused.
+externally associated native controls. Reinitialize with `LumenInitUiPrimitives(destination)` after
+adopting an enhanced form into another document so blur validation follows its owner, including
+controls created in another document. Timed toasts stay paused while hovered or focused.
 
 ### Compound dialog tasks
 
@@ -800,7 +802,8 @@ The component bundles its resize behavior; `UIPrimitives` is not required for th
 WorldMap supports highlighted countries, location markers, dotted or solid styles, country selection,
 and theme customization. Use `initialView="highlighted"` (Elements: `initial-view`) to start with a
 regional view. Zoom toward the cursor with Ctrl/Cmd-scroll, or fit highlighted countries using the
-map controls. Import geography explicitly from
+map controls. Adopted maps emit selection events in their current document; reinitialization follows
+interaction mode changes without duplicating listeners or resetting zoom. Import geography explicitly from
 `@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
 [WorldMap usage guide](https://github.com/santi020k/lumen/blob/main/docs/world-map.md) for adapter examples, events, localization,
 accessibility, and customization.

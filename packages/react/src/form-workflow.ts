@@ -321,7 +321,8 @@ export const useLumenFormWorkflow = ({
         // A native reset button can checkpoint microtasks before restoring controls.
         // A later task observes the completed default action and final cancellation.
         setTimeout(() => {
-          if (event.defaultPrevented || !mountedRef.current || formRef.current !== form) return
+          if (event.defaultPrevented || event.nativeEvent.defaultPrevented ||
+            !mountedRef.current || formRef.current !== form) return
 
           setErrors([])
 

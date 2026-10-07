@@ -2,6 +2,8 @@
 
 ## 4.0.0
 
+- Preserve form validation after document adoption and WorldMap selection across adoption and interaction mode changes.
+
 - Focus externally associated form controls from error summaries and clear corrected validation state on blur by form ownership. Preserve WorldMap country events in same-origin iframe realms and zoom anchors in RTL containers.
 
 - Preserve HoverCard keyboard focus transitions after adoption into a different document.

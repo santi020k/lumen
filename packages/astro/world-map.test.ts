@@ -173,3 +173,53 @@ test('does not interpret country identifiers as CSS selectors', () => {
   expect(() => select.dispatchEvent(new Event('change', { bubbles: true }))).not.toThrow()
   expect(colombia.classList.contains('ui-world-map__country--selected')).toBe(true)
 })
+
+test.each(['host', 'iframe'])('adopted maps retain current-document selection events from %s', sourceRealm => {
+  const original = fixture().root
+  const sourceFrame = document.createElement('iframe')
+  const destinationFrame = document.createElement('iframe')
+  document.body.append(sourceFrame, destinationFrame)
+  const sourceDocument = sourceRealm === 'host' ? document : required(sourceFrame.contentDocument)
+  if (sourceRealm === 'iframe') sourceDocument.body.innerHTML = original.outerHTML
+  const root = required(sourceDocument.querySelector<HTMLElement>('[data-ui-world-map]'))
+  const select = required(root.querySelector<HTMLSelectElement>('select'))
+  const selected = vi.fn()
+  root.addEventListener('ui:world-map-select', selected)
+  initWorldMapControllers(sourceDocument)
+  const destination = required(destinationFrame.contentDocument)
+  const view = required(destination.defaultView)
+  destination.body.append(destination.adoptNode(root))
+  initWorldMapControllers(destination)
+  initWorldMapControllers(destination)
+  select.value = 'JP'
+  select.dispatchEvent(new view.Event('change', { bubbles: true }))
+  expect(selected).toHaveBeenCalledOnce()
+  expect(selected.mock.calls[0]?.[0] instanceof view.CustomEvent).toBe(true)
+  const path = required(root.querySelector<SVGPathElement>('[data-ui-world-map-country="CO"]'))
+  path.dispatchEvent(new view.MouseEvent('click', { bubbles: true }))
+  expect(select.value).toBe('CO')
+  expect(selected).toHaveBeenCalledTimes(2)
+  expect(selected.mock.calls[1]?.[0] instanceof view.CustomEvent).toBe(true)
+})
+
+test('native map selection follows repeated interactive mode changes without duplicate events', () => {
+  const { root, select } = fixture(false)
+  const selected = vi.fn()
+  root.addEventListener('ui:world-map-select', selected)
+  initWorldMapControllers(root)
+  for (const country of ['JP', 'CO']) {
+    root.dataset.interactive = 'true'
+    initWorldMapControllers(root)
+    expect(select.disabled).toBe(false)
+    select.value = country
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+    expect(root.querySelector('.ui-world-map__country--selected')?.getAttribute('data-ui-world-map-country')).toBe(country)
+    root.dataset.interactive = 'false'
+    initWorldMapControllers(root)
+    expect(select.disabled).toBe(true)
+    select.value = country === 'JP' ? 'CO' : 'JP'
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+    expect(root.querySelector('.ui-world-map__country--selected')?.getAttribute('data-ui-world-map-country')).toBe(country)
+  }
+  expect(selected).toHaveBeenCalledTimes(2)
+})
