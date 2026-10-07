@@ -45909,7 +45909,7 @@
   },
   "migration": {
     "schemaVersion": 1,
-    "status": "approved",
+    "status": "draft",
     "targetVersion": "4.0.0",
     "policy": {
       "compatibility": "Lumen 4 may deliberately replace v3 component and binary contracts. Consumer data, privacy, and release approval remain protected. Migration guidance documents externally visible changes.",
@@ -46342,17 +46342,7 @@
         ]
       }
     ],
-    "swiftApiBaseline": "v3.0.1",
-    "approval": {
-      "approver": "Santiago Molina (santi020k)",
-      "date": "2026-10-07",
-      "decision": "Publish Lumen 4.0.0 and deploy the coordinated release; deliver playground 1.0.3 for Apple and Android review with current screenshots and listing metadata under the standing authorization, after all checks and reviews pass. Standing authorization is recorded by santi020k in PR #95 comment 6027959606.",
-      "reviewedRevision": "cdb28a38aca0071af35021341bb7fbbefd7730a6",
-      "evidence": [
-        "https://github.com/santi020k/lumen/commit/cdb28a38aca0071af35021341bb7fbbefd7730a6",
-        "https://github.com/santi020k/lumen/pull/95"
-      ]
-    }
+    "swiftApiBaseline": "v3.0.1"
   },
   "nativeComponents": [
     {

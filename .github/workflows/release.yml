@@ -137,15 +137,11 @@ jobs:
             jq -r '.[] | "\(.name)@\(.version)"' <<<"$audit_packages"
           )
 
+          published_installer="$PWD/scripts/install-published-packages.mjs"
           (
             cd "$release_audit_directory"
             npm init --yes >/dev/null
-            npm install \
-              --ignore-scripts \
-              --legacy-peer-deps \
-              --no-audit \
-              --no-fund \
-              -- "${published_package_specs[@]}"
+            node "$published_installer" "${published_package_specs[@]}"
           )
 
           node scripts/check-published-package-family.mjs \

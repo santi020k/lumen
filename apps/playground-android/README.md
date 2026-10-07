@@ -177,7 +177,8 @@ Production delivery uses the **Release Android playground beta** GitHub workflow
 dispatches from other branches are skipped. Store delivery uses `--require-current-approval`, so
 publishing a library tag does not exempt later uploads from exact-source approval. A source change
 requires a fresh matching approval before delivery. Local signed builds are development preflight only.
-Google Play review submission remains an explicit Play Console step after the automated upload.
+Google Play automatically submits committed changes for review. Prepare the listing before dispatch
+and keep managed publishing enabled to hold approved changes for the intended rollout.
 
 Public Google Play copy, the data-safety declaration, feature graphic, icon, and phone screenshot
 candidates live in `Store`; regenerate raster assets from the shared Lumen mark with

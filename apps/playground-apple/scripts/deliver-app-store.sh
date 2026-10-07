@@ -5,8 +5,14 @@ set +x
 umask 077
 
 platform="${1:-}"
-[[ "$platform" == iOS || "$platform" == macOS ]]
-[[ "${GITHUB_REF:-}" == refs/heads/main ]]
+if [[ "$platform" != iOS && "$platform" != macOS ]]; then
+  printf 'Unsupported Apple release platform; use iOS or macOS.\n' >&2
+  exit 1
+fi
+if [[ "${GITHUB_REF:-}" != refs/heads/main ]]; then
+  printf 'Apple delivery requires merged main.\n' >&2
+  exit 1
+fi
 for name in APPLE_DISTRIBUTION_P12_BASE64 APPLE_DISTRIBUTION_P12_PASSWORD APP_STORE_CONNECT_API_KEY_P8 APP_STORE_CONNECT_KEY_ID APP_STORE_CONNECT_ISSUER_ID; do
   if [[ -z "${!name:-}" ]]; then
     printf 'Missing required signing credential: %s\n' "$name" >&2
@@ -20,7 +26,10 @@ cd "$repository_root"
 "$apple_root/scripts/check-app-store-toolchain.sh"
 build_number="$(node .github/scripts/apple-store-build-number.mjs "$platform")"
 version="$(node -p "require('./apps/playground-apple/release.json').version")"
-[[ "$build_number" =~ ^[1-9][0-9]*$ ]]
+if [[ ! "$build_number" =~ ^[1-9][0-9]*$ ]]; then
+  printf 'Invalid live Apple build number.\n' >&2
+  exit 1
+fi
 
 work="$(mktemp -d "${RUNNER_TEMP:?}/lumen-signing.XXXXXX")"
 keychain="$work/signing.keychain-db"
@@ -48,18 +57,16 @@ security list-keychains -d user -s "$keychain" "$HOME/Library/Keychains/login.ke
 if [[ "$platform" == iOS ]]; then
   scheme=LumenApplePlayground
   destination='generic/platform=iOS'
-  signing_identity='Apple Distribution'
 else
   scheme=LumenMacPlayground
   destination='generic/platform=macOS'
-  signing_identity='3rd Party Mac Developer Application'
 fi
 
 cd "$apple_root"
 xcrun agvtool new-marketing-version "$version"
 xcrun agvtool new-version -all "$build_number"
 auth=(-allowProvisioningUpdates -authenticationKeyPath "$work/AuthKey.p8" -authenticationKeyID "$APP_STORE_CONNECT_KEY_ID" -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID")
-xcodebuild -project LumenApplePlayground.xcodeproj -scheme "$scheme" -configuration Release -destination "$destination" -derivedDataPath "$work/DerivedData" -archivePath "$work/Playground.xcarchive" "${auth[@]}" CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="$signing_identity" OTHER_CODE_SIGN_FLAGS="--keychain $keychain" archive
+xcodebuild -project LumenApplePlayground.xcodeproj -scheme "$scheme" -configuration Release -destination "$destination" -derivedDataPath "$work/DerivedData" -archivePath "$work/Playground.xcarchive" "${auth[@]}" CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="Apple Development" DEVELOPMENT_TEAM=BY4995HQ3J archive
 cat > "$work/ExportOptions.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
