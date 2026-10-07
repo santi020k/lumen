@@ -35,6 +35,18 @@ import {
 } from './server.js'
 
 describe('@santi020k/lumen-react/server', () => {
+  test('renders content roles and surface density without forwarding presentation props', () => {
+    const html = renderToStaticMarkup(createElement(Stack, { gap: 'section' }, createElement(Grid, { gap: 'related' }, createElement(Card, { density: 'compact' }, 'Details'))))
+
+    expect(html).toContain('ui-stack--gap-section')
+    expect(html).toContain('ui-grid--gap-related')
+    expect(html).toContain('ui-card--compact')
+    expect(html).toContain('data-density="compact"')
+    expect(html).not.toContain(' gap=')
+    expect(html).not.toContain(' density=')
+    expect(renderToStaticMarkup(createElement(Stack))).toContain('ui-stack--gap-group')
+    expect(renderToStaticMarkup(createElement(Grid))).toContain('ui-grid--gap-group')
+  })
   test('shares implementations with the full client catalog', () => {
     expect(Badge).toBe(ClientBadge)
     expect(Card).toBe(ClientCard)

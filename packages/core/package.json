@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-core",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -67,12 +67,49 @@
     "./icon-data": {
       "types": "./dist/icon-data.generated.d.ts",
       "import": "./dist/icon-data.generated.js"
+    },
+    "./image-comparison": {
+      "types": "./dist/image-comparison.d.ts",
+      "import": "./dist/image-comparison.js"
+    },
+    "./virtual-list": {
+      "types": "./dist/virtual-list.d.ts",
+      "import": "./dist/virtual-list.js"
+    },
+    "./virtual-window": {
+      "types": "./dist/virtual-window.d.ts",
+      "import": "./dist/virtual-window.js"
+    },
+    "./rive": {
+      "types": "./dist/rive.d.ts",
+      "import": "./dist/rive.js"
+    },
+    "./world-map": {
+      "types": "./dist/world-map.d.ts",
+      "import": "./dist/world-map.js"
+    },
+    "./world-map-data": {
+      "types": "./dist/world-map-data.generated.d.ts",
+      "import": "./dist/world-map-data.generated.js"
+    },
+    "./world-map-zoom": {
+      "types": "./dist/world-map-zoom.d.ts",
+      "import": "./dist/world-map-zoom.js"
+    },
+    "./media-workspace": {
+      "types": "./dist/media-workspace.d.ts",
+      "import": "./dist/media-workspace.js"
+    },
+    "./media-viewport": {
+      "types": "./dist/media-viewport.d.ts",
+      "import": "./dist/media-viewport.js"
     }
   },
   "files": [
     "dist",
     "README.md",
     "LICENSE",
+    "PHONE_FLAG_LICENSE.txt",
     "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
@@ -90,9 +127,19 @@
     "libphonenumber-js": "catalog:"
   },
   "devDependencies": {
+    "@rive-app/canvas": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "jsdom": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "@rive-app/canvas": "^2.44.0"
+  },
+  "peerDependenciesMeta": {
+    "@rive-app/canvas": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.12.0"

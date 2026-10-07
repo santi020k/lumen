@@ -76,7 +76,8 @@ fun LumenCard(
     enabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colors = LocalLumenTheme.current.colors
+    val theme = LocalLumenTheme.current
+    val colors = theme.colors
     val palette = lumenCardPalette(colors, variant)
     val interactionModifier = if (onClick == null) {
         Modifier
@@ -88,10 +89,10 @@ fun LumenCard(
         modifier = modifier.then(interactionModifier),
         color = palette.background,
         contentColor = colors.ink,
-        shape = RoundedCornerShape(radius.value),
-        border = androidx.compose.foundation.BorderStroke(1.dp, palette.border)
+        shape = RoundedCornerShape(radius.value * theme.appearance.radiusScale),
+        border = androidx.compose.foundation.BorderStroke(theme.appearance.borderWidth.dp, palette.border)
     ) {
-        Box(modifier = Modifier.padding(padding.value)) {
+        Box(modifier = Modifier.padding(padding.value * theme.appearance.spacingScale)) {
             content()
         }
     }

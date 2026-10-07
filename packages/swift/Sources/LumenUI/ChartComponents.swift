@@ -23,6 +23,15 @@ public struct LumenChartLabels: Sendable {
     public let notAvailable: String
     public let size: String
     public let viewData: String
+    public let invalidData: String
+    public let start: String
+    public let end: String
+    public let value: String
+    public let count: String
+    public let density: String
+    public let column: String
+    public let row: String
+    public let formatValue: @Sendable (Double) -> String
     public let formatHeatmapSummary: @Sendable (Int) -> String
     public let formatRangeSummary: @Sendable (Int) -> String
     public let formatSummary: @Sendable (LumenChartSummary) -> String
@@ -32,6 +41,15 @@ public struct LumenChartLabels: Sendable {
         notAvailable: String = "Not available",
         size: String = "Size",
         viewData: String = "View chart data",
+        invalidData: String = "Chart data is invalid.",
+        start: String = "Start",
+        end: String = "End",
+        value: String = "Value",
+        count: String = "Count",
+        density: String = "Density",
+        column: String = "Column",
+        row: String = "Row",
+        formatValue: @escaping @Sendable (Double) -> String = { $0.formatted() },
         formatHeatmapSummary: @escaping @Sendable (Int) -> String = { count in
             count == 0 ? "No chart data available." : "\(count) heatmap \(count == 1 ? "cell" : "cells")."
         },
@@ -44,6 +62,15 @@ public struct LumenChartLabels: Sendable {
         self.notAvailable = notAvailable
         self.size = size
         self.viewData = viewData
+        self.invalidData = invalidData
+        self.start = start
+        self.end = end
+        self.value = value
+        self.count = count
+        self.density = density
+        self.column = column
+        self.row = row
+        self.formatValue = formatValue
         self.formatHeatmapSummary = formatHeatmapSummary
         self.formatRangeSummary = formatRangeSummary
         self.formatSummary = formatSummary
@@ -305,7 +332,7 @@ public struct LumenChartSummary: Equatable, Sendable {
     }
 }
 
-private extension LumenTheme {
+extension LumenTheme {
     var chartColors: LumenChartColorPalette {
         scheme == .dark ? LumenChartColors.dark : LumenChartColors.light
     }
@@ -497,7 +524,11 @@ private struct LumenChartDataList: View {
         }
         #else
         DisclosureGroup(labels.viewData) {
-            dataRows
+            ScrollView {
+                dataRows
+                    .padding(LumenSpacing.sm)
+            }
+            .frame(maxHeight: 280)
         }
         .tint(theme.colors.brand)
         #endif
@@ -521,12 +552,12 @@ func lumenScatterSymbolSize(_ size: Double?) -> Double {
     size.flatMap { $0.isFinite && $0 >= 0 ? $0 : nil } ?? 36
 }
 
-private struct LumenChartDataRow: Identifiable {
+struct LumenChartDataRow: Identifiable {
     let id: String
     let label: String
 }
 
-private struct LumenStructuredChartDataList: View {
+struct LumenStructuredChartDataList: View {
     @Environment(\.lumenTheme) private var theme
 
     let labels: LumenChartLabels
@@ -555,16 +586,21 @@ private struct LumenStructuredChartDataList: View {
         }
         #else
         DisclosureGroup(labels.viewData) {
-            dataRows
+            ScrollView {
+                dataRows
+                    .padding(LumenSpacing.sm)
+            }
+            .frame(maxHeight: 280)
         }
         .tint(theme.colors.brand)
         #endif
     }
 }
 
-private struct LumenChartFrame<Content: View>: View {
+struct LumenChartFrame<Content: View>: View {
     @Environment(\.lumenTheme) private var theme
 
+    let bare: Bool
     let content: Content
     let description: String?
     let heading: String?
@@ -576,8 +612,10 @@ private struct LumenChartFrame<Content: View>: View {
         heading: String?,
         description: String?,
         summary: String,
+        bare: Bool = false,
         @ViewBuilder content: () -> Content
     ) {
+        self.bare = bare
         self.label = label
         self.heading = heading
         self.description = description
@@ -586,6 +624,31 @@ private struct LumenChartFrame<Content: View>: View {
     }
 
     var body: some View {
+        Group {
+            if bare {
+                contents
+            } else {
+                contents
+                    .padding(LumenSpacing.lg)
+                    .background(theme.colors.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous)
+                            .stroke(theme.colors.line, lineWidth: 1)
+                    }
+            }
+        }
+        .overlay(alignment: .topLeading) {
+            Text(summary)
+                .font(.system(size: 1))
+                .foregroundStyle(.clear)
+                .frame(width: 1, height: 1)
+                .accessibilityLabel(label)
+                .accessibilityValue(summary)
+        }
+    }
+
+    private var contents: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.md) {
             if let heading {
                 Text(heading)
@@ -601,15 +664,6 @@ private struct LumenChartFrame<Content: View>: View {
 
             content
         }
-        .padding(LumenSpacing.lg)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: LumenRadius.lg, style: .continuous)
-                .stroke(theme.colors.line, lineWidth: 1)
-        }
-        .accessibilityLabel(label)
-        .accessibilityValue(summary)
     }
 }
 
@@ -619,6 +673,8 @@ public struct LumenLineChart: View {
     private let area: Bool
     private let description: String?
     private let heading: String?
+    private let bare: Bool
+    private let height: CGFloat
     private let label: String
     private let labels: LumenChartLabels
     private let reference: LumenChartReference?
@@ -637,8 +693,12 @@ public struct LumenLineChart: View {
         area: Bool = false,
         reference: LumenChartReference? = nil,
         showData: Bool = true,
-        selection: Binding<LumenChartSelection?>? = nil
+        selection: Binding<LumenChartSelection?>? = nil,
+        bare: Bool = false,
+        height: CGFloat = 220
     ) {
+        self.bare = bare
+        self.height = height.isFinite && height > 0 ? height : 220
         self.label = label
         self.labels = labels
         self.series = series
@@ -661,7 +721,8 @@ public struct LumenLineChart: View {
             label: label,
             heading: heading,
             description: description,
-            summary: summary
+            summary: summary,
+            bare: bare
         ) {
             Chart {
                 if let reference {
@@ -692,7 +753,7 @@ public struct LumenLineChart: View {
                     }
                 }
             }
-            .frame(minHeight: 220)
+            .frame(height: height)
 
             if showData {
                 LumenChartDataList(labels: labels, selection: selection, series: series)
@@ -709,6 +770,8 @@ public enum LumenBarChartLayout: Sendable {
 public struct LumenBarChart: View {
     @Environment(\.lumenTheme) private var theme
 
+    private let bare: Bool
+    private let height: CGFloat
     private let label: String
     private let labels: LumenChartLabels
     private let layout: LumenBarChartLayout
@@ -724,8 +787,12 @@ public struct LumenBarChart: View {
         summary: String? = nil,
         labels: LumenChartLabels = .english,
         showData: Bool = true,
-        selection: Binding<LumenChartSelection?>? = nil
+        selection: Binding<LumenChartSelection?>? = nil,
+        bare: Bool = false,
+        height: CGFloat = 220
     ) {
+        self.bare = bare
+        self.height = height.isFinite && height > 0 ? height : 220
         self.label = label
         self.labels = labels
         self.series = series
@@ -736,7 +803,7 @@ public struct LumenBarChart: View {
     }
 
     public var body: some View {
-        LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
+        LumenChartFrame(label: label, heading: nil, description: nil, summary: summary, bare: bare) {
             Chart {
                 ForEach(Array(series.enumerated()), id: \.element.id) { index, item in
                     let color = theme.chartColor(resolvedLumenChartTone(item.tone, index: index))
@@ -751,7 +818,7 @@ public struct LumenBarChart: View {
                     }
                 }
             }
-            .frame(minHeight: 220)
+            .frame(height: height)
 
             if showData {
                 LumenChartDataList(labels: labels, selection: selection, series: series)
@@ -1103,78 +1170,6 @@ public struct LumenPieChart: View {
     }
 }
 
-public struct LumenHeatmap: View {
-    @Environment(\.lumenTheme) private var theme
-
-    private let data: [LumenHeatmapDatum]
-    private let label: String
-    private let labels: LumenChartLabels
-    private let showData: Bool
-    private let summary: String
-
-    public init(
-        label: String,
-        data: [LumenHeatmapDatum],
-        summary: String? = nil,
-        labels: LumenChartLabels = .english,
-        showData: Bool = true
-    ) {
-        self.label = label
-        self.labels = labels
-        self.data = data
-        self.summary = summary ?? labels.formatHeatmapSummary(lumenAvailableHeatmapData(data).count)
-        self.showData = showData
-    }
-
-    public var body: some View {
-        let availableData = lumenAvailableHeatmapData(data)
-        let values = availableData.compactMap(\.value)
-        let minimum = values.min() ?? 0
-        let maximum = values.max() ?? 1
-
-        LumenChartFrame(label: label, heading: nil, description: nil, summary: summary) {
-            if availableData.isEmpty {
-                Text(labels.empty)
-                    .foregroundStyle(theme.colors.inkMuted)
-            } else {
-                Chart(availableData) { datum in
-                    RectangleMark(
-                        x: .value("Column", datum.column),
-                        y: .value("Row", datum.row)
-                    )
-                    .foregroundStyle(
-                        theme.chartColors.sequentialHigh.opacity(
-                            lumenHeatmapOpacity(value: datum.value, minimum: minimum, maximum: maximum)
-                        )
-                    )
-                    .accessibilityLabel(datum.label ?? "\(datum.column), \(datum.row)")
-                    .accessibilityValue(datum.value?.formatted() ?? labels.notAvailable)
-                }
-                .frame(minHeight: 220)
-            }
-
-            if showData {
-                LumenStructuredChartDataList(labels: labels, rows: data.map { datum in
-                    let value = datum.value?.isFinite == true
-                        ? datum.value?.formatted() ?? labels.notAvailable
-                        : labels.notAvailable
-
-                    return LumenChartDataRow(
-                        id: datum.id,
-                        label: "\(datum.label ?? "\(datum.column), \(datum.row)"): \(value)"
-                    )
-                })
-            }
-        }
-    }
-}
-
-private func lumenHeatmapOpacity(value: Double?, minimum: Double, maximum: Double) -> Double {
-    guard let value, value.isFinite, maximum > minimum else { return 0.12 }
-
-    return max(0.12, min(1, (value - minimum) / (maximum - minimum)))
-}
-
 public struct LumenComboChart: View {
     @Environment(\.lumenTheme) private var theme
 
@@ -1249,4 +1244,12 @@ public struct LumenComboChart: View {
             }
         }
     }
+}
+
+func lumenChartRatio(_ value: Double, domain: ClosedRange<Double>) -> Double {
+    let span = domain.upperBound - domain.lowerBound
+    guard value.isFinite, span > 0 else { return 0.5 }
+    let ratio = span.isFinite ? (value - domain.lowerBound) / span
+        : (value / 2 - domain.lowerBound / 2) / (domain.upperBound / 2 - domain.lowerBound / 2)
+    return min(1, max(0, ratio))
 }

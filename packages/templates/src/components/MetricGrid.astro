@@ -29,7 +29,7 @@ const badgeFor = (direction: Metric['direction']) => {
   {metrics.map(metric => (
     <Card as="article" class="template-metric">
       <div class="template-metric__summary">
-        <Stat label={metric.label} value={metric.value} />
+        <Stat variant="bare" label={metric.label} value={metric.value} />
         <Badge variant={badgeFor(metric.direction)}>{metric.change}</Badge>
       </div>
       <Sparkline

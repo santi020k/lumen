@@ -1,0 +1,15 @@
+---
+import { Badge, Card, Icon, Link } from '@santi020k/lumen-astro'
+
+import { visualGuideHref, visualGuides } from '../data/visual-guides'
+---
+<section aria-label="Choose a visual guide" class="visual-guide-directory" data-docs-toc-ignore>
+  {visualGuides.map((guide, index) => (
+<Card class="visual-guide-tile">
+    <Badge variant="outline">0{index + 1} / {guide.label}</Badge>
+    <h2><Link href={visualGuideHref(guide.id)}>{guide.title} <Icon name="arrow-up-right" decorative size="sm" /></Link></h2>
+    <p>{guide.description}</p>
+    <p>Live preview · Copyable code · Usage notes</p>
+  </Card>
+))}
+</section>

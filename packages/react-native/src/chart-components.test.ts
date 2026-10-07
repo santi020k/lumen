@@ -8,19 +8,31 @@ import { describe, expect, test, vi } from 'vitest'
 
 import {
   LumenBarChart,
+  LumenBoxPlot,
+  LumenBulletChart,
+  LumenCalendarHeatmap,
   LumenComboChart,
+  LumenFunnelChart,
   LumenHeatmap,
+  LumenHistogram,
+  LumenLineChart,
   LumenPieChart,
   LumenRangeChart,
-  LumenScatterChart
-} from './chart-components.js'
+  LumenScatterChart,
+  LumenWaterfallChart } from './chart-components.js'
+
+vi.mock('./chart-layout.js', () => ({
+  useLumenChartLayout: () => ({ width: 640, height: 320, onLayout: () => undefined })
+}))
 
 vi.mock('react-native-svg', () => ({
   Circle: () => null,
+  G: () => null,
   Line: () => null,
   Path: () => null,
   Rect: () => null,
-  Svg: () => null
+  Svg: () => null,
+  Text: () => null
 }))
 
 vi.mock('react-native', () => ({
@@ -33,6 +45,7 @@ vi.mock('react-native', () => ({
 vi.mock('./theme-context.js', () => ({
   useLumenTheme: () => ({
     chartColors: {
+      grid: '#e5e7eb',
       sequentialHigh: '#2463eb',
       series1: '#2463eb',
       series2: '#854dff',
@@ -57,6 +70,7 @@ vi.mock('./theme-context.js', () => ({
       surfaceMuted: '#f3f4f6',
       warning: '#d97706'
     },
+    fontFamilies: { sans: ['sans-serif'] },
     fontSizes: { lg: 18, sm: 14 },
     radii: { lg: 16, sm: 8 },
     spacing: { lg: 16, md: 12, sm: 8, xs: 4 }
@@ -81,6 +95,8 @@ interface ChartDataOutputProps {
 }
 
 type Props = Record<string, unknown>
+
+const isProps = (value: unknown): value is Props => typeof value === 'object' && value !== null && !Array.isArray(value)
 
 const isReactNodeList = (value: ReactNode): value is ReactNode[] => Array.isArray(value)
 const propsOf = (element: ReactElement | undefined): Props => (element?.props ?? {}) as Props
@@ -124,6 +140,153 @@ const renderDataOutput = (element: ReactElement<ChartFrameOutputProps>): ReactNo
 }
 
 describe('Lumen React Native chart components', () => {
+  test.each([[0, 5, 10], [-10, -5, 0], [-5, 0, 5], [7]].map(values => ({ values })))(
+    'aligns combo lines and areas with bar value endpoints for $values', ({ values }) => {
+      const data = values.map((y, x) => ({ x, y }))
+
+      for (const mark of ['line', 'area'] as const) {
+        const chart = LumenComboChart({
+          label: 'Planned and actual',
+          series: [
+            { data, id: 'bars', label: 'Bars', mark: 'bar' },
+            { data, id: 'trend', label: 'Trend', mark }
+          ]
+        })
+        const descendants = descendantsOf(chart)
+        const rectangles = descendants.filter(element => propsOf(element).rx === 4)
+        const endpoints = rectangles.map((element, index) => {
+          const coordinates = /translate\(([-\d.]+) ([-\d.]+)\)/u.exec(String(propsOf(element).transform))
+
+          return [
+            Number((Number(coordinates?.[1]) + Number(propsOf(element).width) / 2).toFixed(3)),
+            Number((
+              Number(coordinates?.[2]) + ((values[index] ?? 0) < 0 ? Number(propsOf(element).height) : 0)
+            ).toFixed(3))
+          ]
+        })
+        const line = descendants.find(element => propsOf(element).fill === 'none' && typeof propsOf(element).d === 'string')
+        const points = [...String(propsOf(line).d).matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)/gu)]
+          .map(match => [Number(match[1]), Number(match[2])])
+
+        expect(endpoints).toHaveLength(values.length)
+        expect(points).toEqual(endpoints)
+      }
+    }
+  )
+
+  test('keeps bar category and formatted value labels visible when readable data is hidden', () => {
+    const chart = LumenBarChart({
+      formatValue: value => `${value} pts`,
+      label: 'Final scores',
+      labels: { chartData: 'Datos del gráfico' },
+      series: [{
+        data: [{ x: 'id-1', xLabel: 'Ana', y: -4 }, { x: 'id-2', xLabel: 'Ben', y: 8 }],
+        id: 'scores',
+        label: 'Score'
+      }],
+      showData: false,
+      summary: 'Ana has minus four points; Ben has eight.'
+    }) as ReactElement<ChartFrameOutputProps>
+    const descendants = descendantsOf(chart)
+    const text = descendants.map(element => propsOf(element).children)
+
+    expect(text).toContain('Ana')
+    expect(text).toContain('Ben')
+    expect(text).toContain('0 pts')
+    expect(descendants.some(element => propsOf(element).accessibilityLabel === 'Datos del gráfico')).toBe(true)
+    expect(descendants.some(element => propsOf(element).stroke === '#6b7280' && propsOf(element).strokeOpacity === 1)).toBe(true)
+    expect(chart.props.summary).toBe('Ana has minus four points; Ben has eight.')
+  })
+
+  test('uses full detail formatters without replacing short axis labels', () => {
+    const chart = LumenBarChart({
+      formatCategory: value => `Passenger ${value}`,
+      label: 'Final scores',
+      series: [{ data: [{ x: 'id-1', xLabel: 'Ana', y: 8 }], id: 'scores', label: 'Score' }]
+    }) as ReactElement<ChartFrameOutputProps>
+
+    expect(descendantsOf(chart).some(element => propsOf(element).children === 'Ana')).toBe(true)
+    expect(descendantsOf(renderDataOutput(chart)).some(element => (
+      propsOf(element).children === 'Passenger id-1, Score: 8'
+    ))).toBe(true)
+  })
+
+  test('allocates bounded native chart margins for long formatted values', () => {
+    const chart = (formatValue: (value: number) => string) => LumenBarChart({
+      formatValue,
+      label: 'Revenue',
+      series: [{ data: [{ x: 'A', y: 400000 }], id: 'revenue', label: 'Revenue' }]
+    }) as ReactElement<ChartFrameOutputProps>
+    const margin = (element: ReactElement<ChartFrameOutputProps>) => propsOf(descendantsOf(element)
+      .find(child => propsOf(child).x1 !== undefined)).x1
+    const plain = margin(chart(String))
+    const formatted = margin(chart(value => `COP ${value.toLocaleString('en-US')} million`))
+
+    expect(Number(formatted)).toBeGreaterThan(Number(plain))
+    expect(Number(formatted)).toBeLessThanOrEqual(240)
+  })
+
+  test('centers a singleton line axis label on its plotted point', () => {
+    const chart = LumenLineChart({
+      label: 'Score',
+      series: [{ data: [{ tone: 'success', x: 'id-1', xLabel: 'Ana', y: 8 }], id: 'scores', label: 'Score' }],
+      showData: false
+    }) as ReactElement<ChartFrameOutputProps>
+    const descendants = descendantsOf(chart)
+    const label = descendants.find(element => propsOf(element).children === 'Ana')
+    const point = descendants.find(element => propsOf(element).r === '4')
+    const position = Number(/translate\(([-\d.]+)/u.exec(String(propsOf(label).transform))?.[1])
+
+    expect(propsOf(label).textAnchor).toBe('middle')
+    expect(position).toBe(propsOf(point).cx)
+  })
+
+  test('retains every bar while selecting readable dense category labels', () => {
+    const chart = LumenBarChart({
+      label: 'Passengers',
+      series: [{
+        data: Array.from({ length: 30 }, (_, index) => ({ x: index, xLabel: `Passenger ${index + 1}`, y: index })),
+        id: 'scores',
+        label: 'Score'
+      }],
+      showData: false
+    }) as ReactElement<ChartFrameOutputProps>
+    const descendants = descendantsOf(chart)
+    const categoryLabels = descendants.filter(element => (
+      typeof propsOf(element).children === 'string' && String(propsOf(element).children).startsWith('Passenger ')
+    ))
+
+    expect(descendants.filter(element => propsOf(element).rx === 4)).toHaveLength(30)
+    expect(categoryLabels.length).toBeGreaterThan(1)
+    expect(categoryLabels.length).toBeLessThan(30)
+    expect(categoryLabels.map(element => propsOf(element).children)).toContain('Passenger 30')
+  })
+
+  test('matches pie data markers to rendered slice colors after filtering unavailable data', () => {
+    const chart = LumenPieChart({
+      label: 'Round mix',
+      series: {
+        data: [{ x: 'Skipped', y: 0 }, { x: 'Trivia', y: 4 }, { tone: 'success', x: 'Spotting', y: 8 }],
+        id: 'rounds',
+        label: 'Rounds'
+      }
+    }) as ReactElement<ChartFrameOutputProps>
+    const slices = descendantsOf(chart).filter(element => propsOf(element).fillRule === 'evenodd')
+    const markers = descendantsOf(renderDataOutput(chart)).filter(element => (
+      propsOf(element).importantForAccessibility === 'no-hide-descendants'
+    ))
+
+    expect(markers.map(element => {
+      const style = propsOf(element).style
+
+      return isProps(style) ? style.backgroundColor : undefined
+    }))
+      .toEqual(slices.map(element => propsOf(element).fill))
+    expect(descendantsOf(renderDataOutput(chart)).some(element => (
+      propsOf(element).children === 'Trivia, Rounds: 4'
+    ))).toBe(true)
+  })
+
   test.each([
     ['scatter', LumenScatterChart],
     ['combo', LumenComboChart]
@@ -152,6 +315,18 @@ describe('Lumen React Native chart components', () => {
     expect(fallback.selectedX).toBe(x)
   })
 
+  test.each([null, { x: 'X', y: 'Y', value: 1, xLabel: null }])('heatmap rejects decoded rows before native formatting: %j', datum => {
+    const formatCategory = vi.fn((value: number | string) => String(value))
+    const heatmap = LumenHeatmap({
+      data: [{ x: 'Valid', y: 'Row', value: 2 }, datum],
+      label: 'Activity',
+      formatCategory
+    }) as ReactElement<ChartFrameOutputProps>
+    expect(formatCategory).not.toHaveBeenCalled()
+    expect(heatmap.props.summary).toBe('No chart data available.')
+    expect(dataOutput(heatmap).rows).toEqual([])
+  })
+
   test('exposes missing heatmap and range values through readable rows', () => {
     const heatmap = LumenHeatmap({
       data: [{ value: null, x: 'Monday', y: 'Morning' }],
@@ -166,19 +341,22 @@ describe('Lumen React Native chart components', () => {
     expect(dataOutput(range).rows?.[0]?.label).toBe('Monday: Not available to 18')
   })
 
-  test('omits unavailable heatmap cells from native SVG marks', () => {
+  test('preserves missing cells and the first measurement at each coordinate', () => {
     const heatmap = LumenHeatmap({
       data: [
         { value: 8, x: 'Monday', y: 'Morning' },
+        { value: 80, x: 'Monday', y: 'Morning' },
         { value: null, x: 'Tuesday', y: 'Morning' },
         { value: Number.POSITIVE_INFINITY, x: 'Wednesday', y: 'Morning' }
       ],
       label: 'Activity'
     }) as ReactElement<ChartFrameOutputProps>
-    const cells = descendantsOf(heatmap)
-      .filter(element => propsOf(element).fillOpacity !== undefined)
-
-    expect(cells).toHaveLength(1)
+    expect(heatmap.props.summary).toBe('1 available heatmap cell.')
+    expect(dataOutput(heatmap).rows?.map(row => row.label)).toEqual([
+      'Monday, Morning: 8',
+      'Tuesday, Morning: Not available',
+      'Wednesday, Morning: Not available'
+    ])
   })
 
   test('shows the native heatmap empty state when every cell is unavailable', () => {
@@ -349,4 +527,155 @@ describe('Lumen React Native chart components', () => {
     expect(categoryCenters).toHaveLength(3)
     expect(lineXCoordinates).toEqual(categoryCenters)
   })
+})
+
+const isIntervalModelFactory = (value: unknown): value is (width: number) => unknown => typeof value === 'function'
+const intervalModelOf = (chart: ReactElement): unknown => {
+  const createModel = propsOf(chart).createModel
+
+  if (!isIntervalModelFactory(createModel)) throw new Error('Expected native interval geometry factory')
+
+  return createModel(320)
+}
+
+describe('native interval chart adapters', () => {
+  test('waterfall preserves signed balances and rejects partial invalid input', () => {
+    const chart = LumenWaterfallChart({ label: 'Revenue',
+      data: [
+        { id: 'opening', label: 'Balance', kind: 'total', value: 100 },
+        { id: 'income', label: 'Income', value: 40 },
+        { id: 'costs', label: 'Costs', value: -180 },
+        { id: 'closing', label: 'Balance', kind: 'total', value: -40 }
+      ] })
+    expect(intervalModelOf(chart)).toMatchObject({ valid: true,
+      marks: [
+        { start: 0, end: 100, value: 100 },
+        { start: 100, end: 140, value: 40 },
+        { start: 140, end: -40, value: -180 },
+        { start: 0, end: -40, value: -40 }
+      ] })
+    const invalid = LumenWaterfallChart({ label: 'Revenue', data: [{ id: 'invalid', label: 'Invalid', value: NaN }] })
+    expect(intervalModelOf(invalid)).toMatchObject({ valid: false, marks: [] })
+  })
+
+  test('histogram requires density for unequal bin widths and retains original counts', () => {
+    const data = [{ start: 20, end: 40, count: 10 }, { start: 0, end: 10, count: 5 }]
+    expect(intervalModelOf(LumenHistogram({ data, label: 'Distribution' }))).toMatchObject({ valid: false, marks: [] })
+    expect(intervalModelOf(LumenHistogram({ data, label: 'Distribution', frequency: 'density', formatBoundary: value => `${value} ms` }))).toMatchObject({
+      valid: true,
+      marks: [{ start: 0, end: 10, value: 0.5, label: '0 ms–10 ms' }, { start: 20, end: 40, value: 0.5 }],
+      bins: [{ count: 5 }, { count: 10 }]
+    })
+    expect(data[0]?.start).toBe(20)
+  })
+})
+
+test.each([{ value: NaN, target: 20 }, { value: Infinity, target: 20 }, { value: 10, target: Infinity }])('does not format invalid native bullet measurements %#', input => {
+  const formatValue = vi.fn(() => {
+    throw new Error('Invalid bullet model must not invoke application formatters')
+  })
+  const chart = LumenBulletChart({ ...input, formatValue, label: 'Bullet' })
+  if (typeof chart.type !== 'function') throw new Error('Expected native bullet content')
+  const rendered: unknown = Reflect.apply(chart.type, undefined, [chart.props])
+  if (!isValidElement<ChartFrameOutputProps>(rendered)) throw new Error('Expected native chart frame')
+  expect(formatValue).not.toHaveBeenCalled()
+  expect(rendered.props.summary).toContain('invalid')
+})
+
+describe('expanded native chart adapters', () => {
+  test('calendar disclosure keeps missing dates and localized exact values', () => {
+    const chart = LumenCalendarHeatmap({ label: 'Daily',
+      startDate: '2024-02-28',
+      endDate: '2024-03-01',
+      data: [{ date: '2024-02-29', value: 0 }],
+      formatDate: date => `Day ${date}`,
+      formatValue: value => `${value} events`,
+      labels: { notAvailable: 'Unavailable' }
+    })
+    const disclosure = descendantsOf(chart).find(element => Array.isArray(propsOf(element).rows))
+    expect(propsOf(disclosure).rows).toEqual([
+      { id: '2024-02-28', label: 'Day 2024-02-28: Unavailable.' },
+      { id: '2024-02-29', label: 'Day 2024-02-29: 0 events.' },
+      { id: '2024-03-01', label: 'Day 2024-03-01: Unavailable.' }
+    ])
+  })
+  test('funnel preserves stage order and exact values without inferred percentages', () => {
+    const chart = LumenFunnelChart({ label: 'Stages',
+      data: [
+        { id: 'one', label: 'One', value: 0 },
+        { id: 'two', label: 'Two', value: 10 },
+        { id: 'three', label: 'Three', value: null }
+      ] })
+    const disclosure = descendantsOf(chart).find(element => Array.isArray(propsOf(element).rows))
+    expect(propsOf(disclosure).rows).toEqual([
+      { id: 'one', label: 'One: 0.' },
+      { id: 'two', label: 'Two: 10.' },
+      { id: 'three', label: 'Three: Not available.' }
+    ])
+  })
+  test('box plot preserves every supplied statistic and outlier in localized disclosure', () => {
+    const chart = LumenBoxPlot({ label: 'Distribution',
+      statisticLabels: { median: 'Middle value' },
+      formatValue: value => `${value} ms`,
+      data: [{ id: 'a',
+        label: 'A',
+        min: 1,
+        q1: 2,
+        median: 3,
+        q3: 4,
+        max: 5,
+        outliers: [8, 9] }] })
+    const disclosure = descendantsOf(chart).find(element => Array.isArray(propsOf(element).rows))
+    expect(propsOf(disclosure).rows).toEqual([{ id: 'a',
+      label: 'A. Lower whisker: 1 ms. First quartile: 2 ms. Middle value: 3 ms. Third quartile: 4 ms. Upper whisker: 5 ms. Outliers: 8 ms, 9 ms.' }])
+  })
+  test('invalid charts never call value or date formatters', () => {
+    const formatter = vi.fn(() => {
+      throw new Error('Invalid inputs must not reach formatters')
+    })
+    const charts = [
+      LumenCalendarHeatmap({ label: 'Daily',
+        data: [],
+        startDate: '2024-02-30',
+        endDate: '2024-03-01',
+        formatDate: formatter,
+        formatValue: formatter }),
+      LumenFunnelChart({ label: 'Stages', data: [{ id: 'a', label: 'A', value: -1 }], formatValue: formatter }),
+      LumenBoxPlot({ label: 'Distribution',
+        data: [{ id: 'a',
+          label: 'A',
+          min: 5,
+          q1: 2,
+          median: 3,
+          q3: 4,
+          max: 5 }],
+        formatValue: formatter })
+    ]
+    expect(formatter).not.toHaveBeenCalled()
+    charts.forEach(chart => {
+      expect(propsOf(chart).summary).toBe('Chart data is invalid. Check the supplied values.')
+    })
+  })
+})
+
+test('calendar keeps every exact date accessible when the visible data list is disabled', () => {
+  const chart = LumenCalendarHeatmap({ label: 'Daily',
+    startDate: '2024-02-28',
+    endDate: '2024-02-29',
+    data: [{ date: '2024-02-29', value: 7 }],
+    showData: false,
+    formatDate: date => date })
+  const accessiblePlot = descendantsOf(chart).find(element => propsOf(element).accessible === true)
+  expect(propsOf(accessiblePlot).accessibilityLabel).toBe('2024-02-28: Not available. 2024-02-29: 7.')
+  expect(propsOf(accessiblePlot).accessibilityElementsHidden).toBe(false)
+})
+
+test('box plot keeps all statistics accessible with the data list disabled', () => {
+  const chart = LumenBoxPlot({ label: 'Distribution',
+    showData: false,
+    data: [{ id: 'a', label: 'A', min: 1, q1: 2, median: 3, q3: 4, max: 5, outliers: [8] }] })
+  const row = descendantsOf(chart).find(element => propsOf(element).accessible === true)
+  expect(propsOf(row).accessibilityLabel).toBe(
+    'A. Lower whisker: 1. First quartile: 2. Median: 3. Third quartile: 4. Upper whisker: 5. Outliers: 8.'
+  )
 })

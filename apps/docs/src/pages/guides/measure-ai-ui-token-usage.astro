@@ -1,0 +1,197 @@
+---
+import '../../styles/ai-guides.css'
+
+import { Alert, Badge, ButtonLink, Code, Container, Link, Prose, Stack, Table } from '@santi020k/lumen-astro'
+
+import report from '../../../public/benchmarks/ai-efficiency-2026-10-04.json'
+import { getGuide } from '../../data/guides'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const guide = getGuide('/guides/measure-ai-ui-token-usage')
+const number = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 })
+
+const tasks = [
+  { id: 'profile-dialog', label: 'Profile dialog' },
+  { id: 'notification-settings', label: 'Notification settings' }
+]
+
+const approaches = [
+  { id: 'scratch', label: 'From scratch' },
+  { id: 'docs', label: 'Lumen + documentation' },
+  { id: 'skill-mcp', label: 'Lumen + skill/MCP' }
+]
+
+const rows = tasks.flatMap(task => approaches.map(approach => {
+  const summary = report.summary.find(entry => entry.case === task.id && entry.mode === approach.id)
+
+  if (!summary) throw new Error(`Missing benchmark group: ${task.id}/${approach.id}`)
+
+  const firstPasses = report.runs.filter(run => run.case === task.id && run.mode === approach.id &&
+    run.attempts[0]?.status === 'passed').length
+
+  return { ...summary, task: task.label, approach: approach.label, firstPasses }
+}))
+
+const passed = report.runs.filter(run => run.status === 'passed').length
+
+const command = `pnpm install --frozen-lockfile
+pnpm --filter @santi020k/lumen-react... run build
+pnpm --filter @santi020k/lumen-mcp run build
+pnpm run test:ai-efficiency
+pnpm run eval:ai-efficiency --model <model-id> --effort <reasoning-effort> \\
+  --repetitions 3 --output /absolute/path/outside-the-repository`
+---
+
+<BaseLayout
+  article={{ author: guide.author, publishedAt: guide.publishedAt }}
+  breadcrumbs={[{ href: '/', label: 'Home' }, { href: '/guides', label: 'Guides' }, { href: guide.href, label: guide.title }]}
+  description={guide.description}
+  title={`${guide.title} — Lumen UI`}
+>
+  <Container as="main" class="ai-guide" size="md">
+    <Stack gap="section">
+      <Prose>
+        <Badge variant="outline">Reproducible evaluation</Badge>
+        <h1>Does a UI library save AI tokens? Measure the whole task.</h1>
+        <p>
+          Reusable components can reduce the code an agent writes. Skills, documentation, and tool
+          calls also consume context. A useful comparison counts both, holds the product requirements
+          steady, and checks whether the result works.
+        </p>
+        <p>By {guide.author} · <time datetime={guide.publishedAt}>October 4, 2026</time></p>
+      </Prose>
+      <Alert>
+        Lumen is designed to reduce repetitive UI code and unnecessary AI context. That is a design
+        goal, not a guaranteed token saving. Do not infer a percentage from a short prompt, a smaller
+        source file, or a single successful run.
+      </Alert>
+      <Stack as="section" gap="group" aria-labelledby="results-title">
+        <Prose>
+          <h2 id="results-title">Our first comparison did not show token savings.</h2>
+          <p>
+            On these two small React tasks, both Lumen approaches used more total tokens than
+            building from scratch. We used <code>{report.model}</code> with <code>{report.effort}</code>{' '}
+            reasoning effort and <code>{report.cli}</code>, with {report.repetitions} fresh runs per
+            task and approach. {passed} of {report.runs.length} runs passed the host checks within{' '}
+            {report.maxAttempts} attempts.
+          </p>
+        </Prose>
+        <Table aria-label="AI usage comparison, scroll horizontally when needed" role="region" tabindex="0">
+          <table>
+            <caption>October 4, 2026 · Median total tokens include repairs and cached input.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Task</th>
+                <th scope="col">Approach</th>
+                <th scope="col">Median tokens</th>
+                <th scope="col">Passed</th>
+                <th scope="col">First attempt</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(row => (
+                <tr>
+                  <th scope="row">{row.task}</th>
+                  <td>{row.approach}</td>
+                  <td>{row.medianTotalTokens === null ? 'Unavailable' : number.format(row.medianTotalTokens)}</td>
+                  <td>{row.passed}/{row.runs}</td>
+                  <td>{row.firstPasses}/{row.runs}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Table>
+        <Prose>
+          <p>
+            All six Lumen dialog runs needed a repair to satisfy this protocol's strict
+            within-dialog Tab and Shift+Tab containment check. The totals include that work;
+            they do not isolate documentation lookup overhead. This sample does not support
+            a claim of fewer AI tokens or lower bills.
+          </p>
+          <p>
+            These runs used a local v4 candidate based on <code>{report.revision.slice(0, 8)}</code>.
+            Source hashes identify the measured files, including candidate changes. Elapsed times
+            were recorded on a shared development machine and are not isolated speed measurements.
+            The sample covers one model, two tasks, and three repetitions per approach.
+          </p>
+          <p>
+            <Link download href="/benchmarks/ai-efficiency-2026-10-04.json">Download all {report.runs.length} results as JSON</Link>{' '}
+            for input, cached input, output, tool calls, elapsed times, attempts, prompts, and source
+            hashes. Cached input is a subset of input; the report never adds it twice.
+            {' '}The <Link download href="/benchmarks/ai-efficiency-2026-10-04-sources.zip">measured source archive</Link>{' '}
+            preserves the harness, verifier, token parser, stylesheet, and MCP catalog at their recorded hashes.
+          </p>
+        </Prose>
+      </Stack>
+      <Prose>
+        <h2>Compare three ways to build the same interface.</h2>
+        <ol>
+          <li><strong>From scratch:</strong> React with native HTML controls and custom CSS.</li>
+          <li><strong>Lumen with documentation:</strong> public React components, installed types, and the package README.</li>
+          <li><strong>Lumen with skill and MCP:</strong> the same components and documentation, plus the portable skill and local component catalog.</li>
+        </ol>
+        <p>
+          The initial fixtures cover a profile dialog and a notification settings screen. Every
+          approach gets the same behavior, responsive, keyboard, and accessibility requirements.
+          This is a bounded React comparison; it does not establish results for other frameworks,
+          native platforms, competitors, or every kind of application.
+        </p>
+        <h2>Count everything needed to complete the task.</h2>
+        <ul>
+          <li><strong>Input tokens:</strong> include instructions, read documentation, tool context, and subsequent turns reported by the client.</li>
+          <li><strong>Output tokens:</strong> use the client's completed-turn usage, including the work in repair attempts.</li>
+          <li><strong>Cached input:</strong> report it separately as a subset of input; never add it twice.</li>
+          <li><strong>Failures and repairs:</strong> retain unsuccessful runs. Each approach gets at most one independently checked repair.</li>
+          <li><strong>Time and quality:</strong> report elapsed time, success rate, and the same verification checks alongside token totals.</li>
+        </ul>
+        <p>
+          Total tokens are input plus output, not a monetary price. Caching and billing vary by
+          provider. Missing usage stays unavailable; it must never become a zero-token result.
+          The host's local compilation and browser checks are included in elapsed time but consume
+          no model tokens. This protocol does not ask agents to run their own test suite.
+        </p>
+        <h2>Keep the comparison controlled.</h2>
+        <p>
+          Pin the model, reasoning effort, client version, package snapshot, skill, and prompts.
+          Start each repetition in a fresh fixture and rotate the approach order. Run at least three
+          repetitions per task and approach, then report per-task medians and all run outcomes.
+          Retain the provider's cache measurements: a fresh directory does not guarantee a cold model cache.
+        </p>
+        <p>
+          The verifier checks strict TypeScript, the assigned component approach, responsive overflow,
+          browser errors, labels, keyboard behavior, preserved input, and automated WCAG checks at
+          390px and 1440px. Automated checks do not replace visual judgment or assistive-technology testing.
+        </p>
+      </Prose>
+      <Stack as="section" gap="group" aria-labelledby="reproduce-title">
+        <Prose>
+          <h2 id="reproduce-title">Run the comparison locally.</h2>
+          <p>
+            Clone the <Link href="https://github.com/santi020k/lumen" newTab>repository</Link>, follow its
+            contributor setup, and use an authenticated Codex CLI. This opt-in evaluation consumes
+            account usage. The default matrix has 18 runs and permits one repair per run.
+          </p>
+        </Prose>
+        <Code code={command} copy label="Run from the Lumen repository" language="bash" variant="block" wrap />
+        <Prose>
+          <p>
+            Each run saves prompts, transcripts, synthetic output, screenshots, and token measurements
+            outside the repository. <code>results.json</code> records the comparison and source hashes.
+            Read <Link href="https://github.com/santi020k/lumen/blob/main/docs/ai-efficiency.md" newTab>the full protocol</Link>{' '}
+            before interpreting or publishing results. Rechecking saved output is verification, not a new generation.
+          </p>
+        </Prose>
+      </Stack>
+      <Prose>
+        <h2>Apply the result to your own workflow.</h2>
+        <p>
+          Start with one representative task and a quality bar your team can verify. If discovery
+          overhead outweighs reusable code on a small screen, record that result too. Prefer focused
+          usage retrieval and reuse stable context where your client supports it. More tool calls
+          do not automatically mean better output.
+        </p>
+      </Prose>
+      <ButtonLink href="/guides/build-ui-with-ai" showArrow>Build the example before measuring</ButtonLink>
+    </Stack>
+  </Container>
+</BaseLayout>

@@ -19,6 +19,7 @@ const language = typeof lang === 'string' ? lang : lang.name
 
 <Code
   class="docs-code-block"
+  codeLabel={title ? `${title} code example` : `${language} code example`}
   copy
   highlighted
   label={title ?? ''}
@@ -32,3 +33,13 @@ const language = typeof lang === 'string' ? lang : lang.name
     <AstroCode code={code} defaultColor={false} lang={lang} themes={cachedLumenThemes} />
   </div>
 </Code>
+
+<style>
+  .docs-code-block__variant :global(pre) {
+    background: var(--shiki-light-bg, var(--ui-code-bg));
+  }
+
+  :global(:root:is([data-theme='dark'], [data-theme='lumen-dark'], [data-theme='santi020k-dark'])) .docs-code-block__variant :global(pre) {
+    background: var(--shiki-dark-bg, var(--ui-code-bg));
+  }
+</style>

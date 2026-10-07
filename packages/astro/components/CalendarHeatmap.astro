@@ -1,0 +1,76 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { createLumenCalendarHeatmapGeometry, type LumenCalendarHeatmapDatum, type LumenCalendarHeatmapOptions, type LumenChartLabels, resolveLumenChartLabels } from '@santi020k/lumen-core'
+
+import Chart from './Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'>, LumenCalendarHeatmapOptions {
+  data: readonly LumenCalendarHeatmapDatum[]
+  className?: string
+  heading?: string
+  description?: string
+  caption?: string
+  presentation?: 'bare' | 'default'
+  summary?: string
+  formatValue?: (value: number) => string
+  formatDate?: (date: string) => string
+  weekdayLabels?: readonly string[]
+  labels?: Partial<LumenChartLabels>
+  showTable?: boolean
+}
+
+const { data, startDate, endDate, weekStartsOn = 0, domain, formatValue = String, formatDate = String,
+  weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], labels, showTable = true, summary,
+  class: classProp, className, ...props } = Astro.props
+
+const text = resolveLumenChartLabels(labels)
+const model = createLumenCalendarHeatmapGeometry(data, { startDate, endDate, weekStartsOn, domain })
+const observed = model.cells.filter(cell => cell.value !== null).length
+const format = (value: number | null) => value === null ? text.notAvailable : formatValue(value)
+const width = Math.max(240, model.weekCount * 18 + 52)
+const factual = model.valid ? `${formatDate(startDate)} – ${formatDate(endDate)}. ${text.value}: ${observed}/${model.cells.length}. ${text.notAvailable}: ${model.cells.length - observed}.` : text.invalidData
+---
+<Chart {...props} class:list={['ui-calendar-heatmap', classProp, className]} summary={summary ?? factual}>
+  {model.valid ?
+(
+<>
+    <p class="ui-calendar-heatmap__range">{formatDate(startDate)} – {formatDate(endDate)}</p>
+    <div class="ui-calendar-heatmap__plot" role="group" tabindex="0" aria-label={text.chartData}>
+      <svg viewBox={`0 0 ${width} 152`} width={width} height="152" aria-hidden="true">
+        {Array.from({ length: 7 }, (_, day) => (
+<text
+x="0"
+y={day * 18 + 15}
+class="ui-calendar-heatmap__weekday"
+>{weekdayLabels[(day + weekStartsOn) % 7] ?? ''}</text>
+))}
+        {model.cells.map(cell => (
+<g><rect class="ui-calendar-heatmap__cell" data-missing={cell.value === null ? '' : undefined} x={cell.week * 18 + 46} y={cell.day * 18 + 2} width="15" height="15" rx="3" style={{ opacity: cell.ratio === null ? 1 : 0.15 + cell.ratio * 0.85 }} /><title>{formatDate(cell.date)}: {format(cell.value)}</title>{cell.value === null && (
+<text
+x={cell.week * 18 + 53.5}
+y={cell.day * 18 + 14}
+text-anchor="middle"
+class="ui-calendar-heatmap__missing"
+>×</text>
+)}</g>
+))}
+        {model.cells.filter(cell => cell.day === 0 && cell.week % 4 === 0).map(cell => (
+<text
+x={cell.week * 18 + 46}
+y="145"
+class="ui-calendar-heatmap__weekday"
+>{cell.date.slice(5)}</text>
+))}
+      </svg>
+    </div>
+    <div class="ui-calendar-heatmap__legend"><span>{formatValue(model.domain.min)}</span><span
+class="ui-calendar-heatmap__scale"
+aria-hidden="true"
+                                                                                         /><span>{formatValue(model.domain.max)}</span><span>× {text.notAvailable}</span></div>
+    {!showTable && <ul class="ui-sr-only">{model.cells.map(cell => <li>{formatDate(cell.date)}: {format(cell.value)}</li>)}</ul>}
+    {showTable && <details class="ui-chart__data"><summary>{text.viewData}</summary><div role="group" tabindex="0" aria-label={text.chartData}><table><thead><tr><th scope="col">{text.category}</th><th scope="col">{text.value}</th></tr></thead><tbody>{model.cells.map(cell => <tr><th scope="row">{formatDate(cell.date)}</th><td>{format(cell.value)}</td></tr>)}</tbody></table></div></details>}
+  </>
+) :
+<p class="ui-chart__empty" role="status">{text.invalidData}</p>}
+</Chart>

@@ -1,0 +1,1 @@
+Updated for Lumen 4 with an expanded native component catalog, richer table and calendar examples, improved mention and keyboard interactions, refreshed themes, and accessibility fixes. The catalog remains available offline without an account, advertising, tracking, or data collection.

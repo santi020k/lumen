@@ -1,0 +1,36 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { type LumenChangeSummaryItem, resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'section'> {
+  items?: readonly LumenChangeSummaryItem[]
+  label?: string
+  beforeLabel?: string
+  afterLabel?: string
+  changedLabel?: string
+  unchangedLabel?: string
+  summary?: string
+  class?: string | null
+  className?: string
+}
+
+const { items = [], label = 'Changes', beforeLabel = 'Before', afterLabel = 'After', changedLabel = 'Changed',
+  unchangedLabel = 'Unchanged', summary, class: classProp, className, ...rest } = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-change-summary'], classProp, className)
+---
+<section class:list={classList} aria-label={label} {...passthrough}>
+  <h3 class="ui-change-summary__heading">{label}</h3>
+  {summary && <p class="ui-change-summary__summary">{summary}</p>}
+  <dl class="ui-change-summary__list">
+    {items.map(item => (
+      <div class="ui-change-summary__item" data-changed={item.changed}>
+        <dt>{item.label}<span class="ui-change-summary__state">{item.changed ? changedLabel : unchangedLabel}</span></dt>
+        <dd><span class="ui-change-summary__value-label">{beforeLabel}</span>{item.before}</dd>
+        <dd><span class="ui-change-summary__value-label">{afterLabel}</span>{item.after}</dd>
+      </div>
+    ))}
+  </dl>
+  <slot />
+</section>

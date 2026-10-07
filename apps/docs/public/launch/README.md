@@ -1,5 +1,9 @@
 # Lumen launch media
 
+[Documentation app](../../README.md) · [Motion studio](../../../motion/README.md) · [Marketing package](../../../../docs/marketing/README.md)
+
+## Assets
+
 These short, captioned videos are generated from Lumen-owned screenshots and Open Graph artwork.
 They are designed as reusable source assets for launch posts rather than platform-specific uploads.
 
@@ -8,6 +12,8 @@ They are designed as reusable source assets for launch posts rather than platfor
 - `figma-to-native-foundations.mp4` introduces the design-to-platform story.
 
 Each campaign also has a `-vertical.mp4` export at 1080 × 1920 for short-form channels.
+
+## Regenerate carousels
 
 The first Instagram carousel lives under `instagram/lumen-introduction/`. Its five 1080 × 1080 PNG
 cards combine Lumen's positioning with real native-playground captures. Regenerate them with:
@@ -21,7 +27,9 @@ The ChatGPT and Codex plugin announcement lives under `instagram/lumen-plugin-la
 `node apps/docs/scripts/render-instagram-plugin-launch.mjs`; publication copy and evidence live in
 `docs/marketing/INSTAGRAM_PLUGIN_LAUNCH.md`.
 
-Regenerate them from the repository root:
+## Regenerate videos
+
+Regenerate the videos from the repository root:
 
 ```bash
 bash apps/docs/scripts/generate-launch-videos.sh
@@ -32,6 +40,8 @@ artwork renderer, joins them into three 12-second landscape and three vertical v
 the temporary files.
 Channel-specific scripts, captions, and campaign links live in
 [`docs/exposure-playbook.md`](../../../../docs/exposure-playbook.md).
+
+## Verify launch destinations
 
 After the site and GitHub issue templates are deployed to the default branch, run the external
 launch preflight from the repository root:

@@ -3,6 +3,7 @@ name: Release candidate canaries
 on:
   pull_request:
     paths:
+      - ".github/actions/setup-playwright/**"
       - ".github/workflows/release-canary.yml"
       - ".github/workflows/release.yml"
       - ".github/workflows/publish-compose.yml"
@@ -19,13 +20,13 @@ on:
       - "docs/playgrounds.md"
       - "docs/web-consumer-validation.md"
       - "packages/**"
-      - "registry/native-device-evidence.json"
-      - "registry/native-consumer-evidence.json"
-      - "registry/native-stability-soak.json"
+      - "tests/motion/**"
+      - "playwright.motion.config.ts"
       - "registry/native-api-baseline.json"
       - "registry/compose-api-classification.json"
       - "registry/lumen-2-contract.json"
       - "registry/lumen-3-contract.json"
+      - "registry/lumen-4-contract.json"
       - "registry/web-api-baseline.json"
       - "registry/web-consumer-evidence.json"
       - "registry/swift-api-baseline.json"
@@ -42,19 +43,13 @@ on:
       - "scripts/prepare-packed-react-native-canary.mjs"
       - "scripts/check-graduated-release-revision.test.mjs"
       - "scripts/check-wear-api-classification.mjs"
-      - "scripts/check-native-device-evidence.mjs"
-      - "scripts/check-native-device-evidence.test.mjs"
-      - "scripts/check-native-consumer-evidence.mjs"
-      - "scripts/check-native-consumer-evidence.test.mjs"
-      - "scripts/check-native-stability-soak.mjs"
-      - "scripts/check-native-stability-soak.test.mjs"
       - "scripts/check-native-api-baseline.mjs"
-      - "scripts/check-native-stable-readiness.mjs"
-      - "scripts/check-native-stable-readiness.test.mjs"
       - "scripts/check-lumen-2-contract.mjs"
       - "scripts/check-lumen-2-contract.test.mjs"
       - "scripts/check-lumen-3-contract.mjs"
       - "scripts/check-lumen-3-contract.test.mjs"
+      - "scripts/check-lumen-4-contract.mjs"
+      - "scripts/check-lumen-4-contract.test.mjs"
       - "scripts/check-maven-release-artifacts.mjs"
       - "scripts/check-maven-release-artifacts.test.mjs"
       - "scripts/check-maven-pom-metadata.mjs"
@@ -119,6 +114,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Fetch comparison base
+        if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: git fetch --no-tags --depth=1 origin "$BASE_SHA"
@@ -134,24 +130,21 @@ jobs:
           --head "$HEAD_SHA"
           --output "$GITHUB_OUTPUT"
 
-  web:
-    name: Packed npm consumer
+  preflight:
+    name: Release contract preflight
     needs: classify
-    if: needs.classify.outputs.web == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      LUMEN_RELEASE_PACKAGES: ${{ needs.classify.outputs.npm-packages }}
-      TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
-      TURBO_SCM_HEAD: ${{ github.event.pull_request.head.sha }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: 22.x
+      - name: Check repository and dependency security before builds
+        run: pnpm run ci:preflight
       - run: pnpm run check:release-manifest
       - run: node --test scripts/generate-release-manifest.test.mjs
       - run: pnpm run check:web-api-baseline && pnpm run test:web-api-baseline
@@ -164,17 +157,12 @@ jobs:
           pnpm run check:lumen-2-contract &&
           pnpm run test:lumen-2-contract &&
           pnpm run check:lumen-3-contract &&
-          pnpm run test:lumen-3-contract
+          pnpm run test:lumen-3-contract &&
+          pnpm run check:lumen-4-contract &&
+          pnpm run test:lumen-4-contract
       - name: Enforce coordinated native release gates
         if: needs.classify.outputs.native == 'true'
         run: >-
-          pnpm run check:native-stability-soak &&
-          pnpm run test:native-stability-soak &&
-          pnpm run check:native-consumer-evidence &&
-          pnpm run test:native-consumer-evidence &&
-          pnpm run check:native-device-evidence &&
-          pnpm run test:native-device-evidence &&
-          pnpm run test:native-stable-readiness &&
           pnpm run test:approved-release-revision &&
           pnpm run test:coordinated-release-revision &&
           pnpm run check:graduated-release-revision &&
@@ -187,6 +175,27 @@ jobs:
         if: needs.classify.outputs.react-native == 'true'
       - run: pnpm run check:react-native-peer-docs && pnpm run test:react-native-peer-docs
         if: needs.classify.outputs.react-native == 'true'
+
+  web:
+    name: Packed npm consumer
+    needs: [classify, preflight]
+    if: needs.classify.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      LUMEN_RELEASE_PACKAGES: ${{ needs.classify.outputs.npm-packages }}
+      TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
+      TURBO_SCM_HEAD: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Set up pnpm workspace
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+          task-cache-path: .turbo/cache
+          task-cache-key: canary-web
       - name: Build the selected release packages
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
@@ -194,17 +203,6 @@ jobs:
           else
             pnpm run build:release-scope
           fi
-      - name: Install the release-candidate browser
-        if: needs.classify.outputs.browser == 'true'
-        run: pnpm exec playwright install --with-deps chromium
-      - name: Verify release-candidate accessibility
-        if: needs.classify.outputs.browser == 'true'
-        run: pnpm run test:a11y
-      - name: Verify release-candidate framework behavior
-        if: needs.classify.outputs.browser == 'true'
-        env:
-          LUMEN_FRAMEWORK_CONFORMANCE_PROJECTS: chromium
-        run: pnpm run test:framework-conformance
       - run: pnpm run check:consumer-packages
         if: needs.classify.outputs.consumer-packages == 'true'
       - name: Build React Native package for packed validation
@@ -223,14 +221,14 @@ jobs:
 
   compose:
     name: Compose source and app consumer
-    needs: classify
+    needs: [classify, preflight]
     if: needs.classify.outputs.compose == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: 22.x
           install: false
@@ -238,6 +236,11 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+          cache: gradle
+          cache-dependency-path: |
+            packages/compose/**/*.gradle*
+            packages/compose/gradle/wrapper/gradle-wrapper.properties
+            apps/playground-android/**/*.gradle*
       - name: Install Android platform
         run: |
           android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
@@ -249,10 +252,94 @@ jobs:
         working-directory: packages/compose
       - run: pnpm run check:compose-api-classification && pnpm run test:compose-api-classification
       - run: node scripts/check-wear-api-classification.mjs
-      - run: pnpm run check:native-consumer-evidence && pnpm run test:native-consumer-evidence
       - run: >-
           ./packages/compose/gradlew -p apps/playground-android
           -PlumenComposeRepository=../../packages/compose/build/central-staging
           assembleDebug :app:verifyLumenArtifactIsolation
+
+  react-native-android:
+    name: Packed React Native Android consumer
+    needs: [classify, preflight]
+    if: needs.classify.outputs.react-native == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up pnpm workspace
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+          task-cache-path: .turbo/cache
+          task-cache-key: canary-react-native
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+          cache-dependency-path: |
+            apps/playground-react-native/android/**/*.gradle*
+            pnpm-lock.yaml
+      - name: Install Android platform
+        run: |
+          android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          "$android_sdk_root/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" \
+            "build-tools;36.0.0"
       - name: Build a native Android consumer from the packed React Native package
         run: pnpm run check:react-native-native-package:android
+
+  browser:
+    name: Release browser contracts (${{ matrix.shard }}/2)
+    needs: [classify, preflight]
+    if: needs.classify.outputs.browser == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: true
+      matrix:
+        shard: [1, 2]
+    env:
+      LUMEN_RELEASE_PACKAGES: ${{ needs.classify.outputs.npm-packages }}
+      TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha }}
+      TURBO_SCM_HEAD: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Set up pnpm workspace
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+          task-cache-path: .turbo/cache
+          task-cache-key: canary-browser-${{ matrix.shard }}
+      - name: Build the selected release packages
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            pnpm run build
+          else
+            pnpm run build:release-scope
+          fi
+      - name: Install the release-candidate browser
+        if: needs.classify.outputs.browser == 'true'
+        uses: ./.github/actions/setup-playwright
+        with:
+          browsers: chromium webkit
+      - name: Verify release-candidate accessibility
+        if: needs.classify.outputs.browser == 'true'
+        run: pnpm run test:a11y --shard=${{ matrix.shard }}/2 --max-failures=1
+      - name: Verify release-candidate framework behavior
+        if: matrix.shard == 1
+        env:
+          LUMEN_FRAMEWORK_CONFORMANCE_PROJECTS: chromium
+        run: pnpm run test:framework-conformance
+      - name: Verify release-candidate primitive motion
+        if: matrix.shard == 1
+        run: pnpm run test:motion
+      - name: Preserve browser failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-browser-${{ matrix.shard }}
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7

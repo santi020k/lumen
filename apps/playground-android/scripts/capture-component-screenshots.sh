@@ -40,70 +40,11 @@ if $adb shell pm list features | grep -q 'android.hardware.type.watch'; then
     exit 0
 fi
 
-components=(
-    "Theme"
-    "Text"
-    "Surface"
-    "Icon"
-    "Icon button"
-    "Button"
-    "Button group"
-    "Chip"
-    "Floating action button"
-    "Text field"
-    "Textarea"
-    "Field group"
-    "Toggle"
-    "Settings row"
-    "Search field"
-    "Phone input"
-    "Date field"
-    "Date range field"
-    "Checkbox"
-    "Radio group"
-    "Segmented control"
-    "Tabs"
-    "Picker"
-    "Slider"
-    "Badge"
-    "Divider"
-    "Spinner"
-    "Alert"
-    "Progress"
-    "Banner"
-    "Toast"
-    "Status bar"
-    "Skeleton"
-    "Disclosure"
-    "Graphic"
-    "Backdrop"
-    "Illustration"
-    "Image"
-    "Sparkline"
-    "Line chart"
-    "Bar chart"
-    "Pie chart"
-    "Scatter chart"
-    "Heatmap"
-    "Range chart"
-    "Combo chart"
-    "Card"
-    "Avatar"
-    "Empty state"
-    "Error state"
-    "List row"
-    "Stat"
-    "Gauge"
-    "Section header"
-    "Alert dialog"
-    "Sheet"
-    "Menu"
-    "Share button"
-    "Navigation bar"
-    "Navigation bar scroll behavior"
-    "Navigation bar accessory"
-    "Adaptive navigation scaffold"
-)
+script_directory="$(cd "$(dirname "$0")" && pwd)"
+components=()
+while IFS= read -r component; do
+    components+=("$component")
+done < "$script_directory/component-capture-catalog.generated.txt"
 
 if (( $# > 1 )); then
     components=("${@:2}")
@@ -127,7 +68,9 @@ for component in "${components[@]}"; do
         "Backdrop") scroll_count=1 ;;
         "Illustration") scroll_count=2 ;;
         "Image") scroll_count=2 ;;
-        "Sparkline"|"Line chart"|"Bar chart"|"Pie chart"|"Scatter chart"|"Heatmap"|"Range chart"|"Combo chart") scroll_count=2 ;;
+        "Heatmap"|"Lollipop chart"|"Dumbbell chart") scroll_count=4 ;;
+        "Bullet chart") scroll_count=5 ;;
+        "Sparkline"|"Line chart"|"Bar chart"|"Pie chart"|"Scatter chart"|"Waterfall chart"|"Histogram"|"Range chart"|"Combo chart") scroll_count=2 ;;
         "Card"|"Avatar"|"List row") scroll_count=1 ;;
         "Empty state") scroll_count=3 ;;
         "Error state") scroll_count=4 ;;

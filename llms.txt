@@ -6,6 +6,8 @@ Use these files first when generating, reviewing, or migrating apps that use Lum
 
 - README.md: public overview and package strategy.
 - docs/ai-usage.md: AI-focused setup, package selection, and component selection.
+- https://lumen.santi020k.com/guides/build-ui-with-ai: tested Astro and React adoption example with a reusable prompt.
+- docs/ai-efficiency.md: reproducible AI token measurement, quality checks, and limits on efficiency claims.
 - skills/lumen-ui/SKILL.md: portable Agent Skill for building, reviewing, and theming Lumen interfaces.
 - docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.
 - registry/lumen.registry.json: installable component, recipe, and documentation manifest.
@@ -24,14 +26,14 @@ Default usage:
 
 ```astro
 ---
-import { Button, Card, Input } from '@santi020k/lumen-astro'
+import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import '@santi020k/lumen-astro/styles.css'
 ---
 
 <UIPrimitives />
 <Card>
-  <label for="email">Email</label>
+  <Label for="email">Email</Label>
   <Input id="email" type="email" />
   <Button>Subscribe</Button>
 </Card>
@@ -43,12 +45,39 @@ Rules for agents:
 - Prefer Astro unless the user explicitly targets React or Web Components.
 - In React, use the visual components with behavior hooks for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip instead of mounting the Astro runtime.
 - In Web Components, registered `lumen-*` elements include behavior parity for Dialog, Popover, DropdownMenu, Tabs, Select, Toast, and Tooltip, including ARIA state, keyboard paths, Escape/outside dismissal, focus handling, native select form participation, and the shared toast controller.
+- For React report filters, use `DateRangeInput` (`value`, `onValueChange`, localized `labels`, bounds and presets) or inline `DateRangeCalendar`. These React-specific compositions are documented in packages/react/README.md and the reporting example at /docs/web/reporting.
+- React record tables can opt into DataTableView from @santi020k/lumen-react/components/data-table-view for search, filters, visibility, density, pagination and controlled sorting. Read docs/data-table-views.md; applications retain cells, data fetching and domain actions.
+- Keep server-paginated DataTable rows in server order with `sortMode="manual"`, controlled `sort` and `onSortChange`. Apply sorting before pagination in the application backend. Use Dialog dismissal policies for pending workflows.
+- Chart X identities must be unique. Use `xLabel` for abbreviated axes, `formatCategory` for full details, and explicit null gaps for missing observations. Read docs/data-visualization.md.
+- Use ImageComparison for before/after media with matching dimensions, alternative text and a visible localized control label. See docs/image-comparison.md for adapter contracts.
+- Read docs/migrating-to-lumen.md before upgrading to v4, especially date-trigger IDs, loading buttons, hidden semantics, copy feedback and native initializer changes.
 - Do not require Tailwind configuration for Lumen components.
-- Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, accent, success, warning, danger.
+- Give each outer edge one border and radius owner. Flush images inside rounded frames use Image radius="none"; Image defaults to radius="lg". Use one divider at shared edges, account for padding on inset curves, and check phone/desktop corners and keyboard focus in both themes. Keep artwork clipping scoped so it does not cut off focus rings or overlays. See docs/ai-usage.md for styling rules.
+- Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, on-brand, accent, success, warning, danger, on-danger.
 - Mount `UIPrimitives` once for interactive Astro primitives.
-- Use `glass` for glass surfaces. Overlay `surface="glass"` is a deprecated compatibility alias that maps to `glass`.
+- Use `glass` for glass surfaces. The obsolete overlay `surface="glass"` alias is removed.
 - Treat schedule, data collection, rich text, theme builder, and advanced fields as supported surfaces with progressively enhanced behavior.
 - Use `lumen list`, `lumen show <component>`, and `lumen add <component>` for individually addressable registry components; component names also resolve from kebab-case aliases such as `data-table`.
-- Runtime CustomEvents used by `UIPrimitives`: `ui:data-table-selection-change` from `[data-ui-datatable]` with `{ values }` (`ui:datatable-selection-change` remains a deprecated alias until 1.0); `ui:schedule-change` from `[data-ui-schedule]` with `{ eventId, slot }`; `ui:virtual-list-range` from `[data-ui-virtual-list]` with `{ startIndex, endIndex }`; `ui:tag-remove` from tag groups with `{ value }`; `ui:editor-command` from rich text editors with `{ command }`; `ui:theme-change` from theme builders with `{ hue, tokens }`; `ui:theme-export` from theme builders with `{ css }`; `ui:validate`, `ui:invalid`, and `ui:valid` from `[data-ui-form]` for native Constraint Validation API enhancement; document-level `ui:toast`, `ui:toast-update`, and `ui:toast-dismiss` for runtime toasts; `ui:toast-action` from `[data-ui-toast]` when an action button is pressed.
+- Runtime CustomEvents used by `UIPrimitives`: `ui:data-table-selection-change` from `[data-ui-datatable]` with `{ values }`; `ui:schedule-change` from `[data-ui-schedule]` with `{ eventId, slot }`; `ui:virtual-list-range` from `[data-ui-virtual-list]` with `{ startIndex, endIndex }`; `ui:tag-remove` from tag groups with `{ value }`; `ui:editor-command` from rich text editors with `{ command }`; `ui:theme-change` from theme builders with `{ hue, tokens }`; `ui:theme-export` from theme builders with `{ css }`; `ui:validate`, `ui:invalid`, and `ui:valid` from `[data-ui-form]` for native Constraint Validation API enhancement; document-level `ui:toast`, `ui:toast-update`, and `ui:toast-dismiss` for runtime toasts; `ui:toast-action` from `[data-ui-toast]` when an action button is pressed.
 - Add `data-ui-form` to forms that should reflect `required`, `pattern`, `min`, `max`, `type`, and custom `setCustomValidity()` state into Field error slots on blur and submit. Use `data-error-required`, `data-error-pattern`, `data-error-min`, `data-error-max`, or `data-error-custom` to override browser validation messages.
 - Toasts use `ToastViewport` for explicit `placement` and `maxCount` configuration. With `UIPrimitives` or registered Web Components, use `window.LumenToast.create(detail)`, `.update(id, detail)`, and `.dismiss(id?)`, import `LumenToast` from `@santi020k/lumen-elements`, or dispatch the matching document events. Runtime toast `detail` supports `title`, `description`, `variant`, `duration`, `placement`, `max`, and `action`.
+
+## Content flow
+
+- Reuse content-flow-header, content-flow-settings, content-flow-list and content-flow-actions recipes; lumen_get_recipe returns complete framework source.
+- Container gutters grow from group to section spacing. Override --ui-container-gutter at the product boundary instead of adding nested page padding.
+- Prose and Typography trim their outer child margins and separate headings from preceding text. Card allows interactive overflow; AspectRatio owns media clipping.
+
+- Read docs/content-flow.md. Stack/Grid own sibling gaps; surfaces own padding; Field owns control feedback spacing. Do not add child margins for a relationship already controlled by a parent gap.
+- Use Stack/Grid gap="related" (8px), "group" (16px, default), or "section" (32px). Size gaps match the canonical scale: xs=4, sm=8, md=12, lg=16, xl=24, 2xl=32, 3xl=48. CSS variables use rem. Retrieve spacing and spacingRoles through lumen_get_tokens.
+- Use CardHeader, CardContent and CardFooter. Card owns their gap; missing, hidden and empty parts leave no spacing. Use a nested Stack inside the body and allow footer actions to wrap. Card density is compact, comfortable (default), or spacious; it does not reduce control touch targets.
+- Keep Prose/Typography text rhythm separate from sibling gaps. Check long translated text, enlarged text, validation, optional parts and phone/desktop wrapping in both themes. Use one outer Container for page gutters and one border owner per visible edge.
+
+Before using MCP contracts, call lumen_check_compatibility with resolved installed Lumen versions.
+If versions differ, use installed public types and package README or a matching MCP package.
+Never silently upgrade an application. For an explicit v4 upgrade, read lumen_get_migration and
+preview lumen migrate v4 --dry-run --json; review dependency updates and application workarounds.
+
+- [React form workflows](docs/powerful-forms.md): optional dependent validation, edit tracking, steps, repeatable rows, and async checks.
+
+- WorldMap: reusable dotted/solid SVG map in Astro, React and Elements. Import country geometry explicitly from @santi020k/lumen-core/world-map-data; see docs/world-map.md.

@@ -1,8 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "lumen-ui",
-  "displayName": "Lumen UI",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Build accessible web and native interfaces from Lumen's real component contracts.",
   "author": {
     "name": "Santiago Molina",
@@ -11,7 +10,16 @@
   "homepage": "https://lumen.santi020k.com/docs/mcp",
   "repository": "https://github.com/santi020k/lumen",
   "license": "MIT",
-  "keywords": ["design-system", "lumen", "mcp", "ui"],
+  "keywords": [
+    "design-system",
+    "lumen",
+    "mcp",
+    "ui"
+  ],
+  "displayName": "Lumen UI",
   "skills": "./skills/",
+  "agents": [
+    "./agents/lumen-reviewer.md"
+  ],
   "mcpServers": "./.mcp.json"
 }

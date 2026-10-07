@@ -2,7 +2,10 @@
 import { Button, Drawer, Icon } from '@santi020k/lumen-astro'
 
 import DocsNavigation from '../components/DocsNavigation.astro'
+import DocsPageNavigation from '../components/DocsPageNavigation.astro'
 import { getDocsPlatform, getPlatformGuide } from '../data/platforms'
+import { getDocsBreadcrumbs } from '../lib/docs-breadcrumbs'
+import type { DocsPageNavigationItem } from '../lib/docs-page-navigation'
 
 import BaseLayout from './BaseLayout.astro'
 
@@ -12,10 +15,11 @@ interface Props {
     label: string
   }[]
   description: string
+  pageNavigation?: DocsPageNavigationItem[] | false | undefined
   title: string
 }
 
-const { breadcrumbs, description, title } = Astro.props
+const { breadcrumbs, description, pageNavigation, title } = Astro.props
 const currentPath = Astro.url.pathname.replace(/\/$/, '')
 const activePlatform = getDocsPlatform(currentPath)
 
@@ -31,7 +35,7 @@ if (currentPath === '/changelog') navigationLabel = 'Changelog'
 
 ---
 
-<BaseLayout breadcrumbs={breadcrumbs ?? []} description={description} title={title}>
+<BaseLayout breadcrumbs={getDocsBreadcrumbs(currentPath, title, breadcrumbs)} description={description} title={title}>
   <div class="docs-shell">
     <div class="docs-shell__wash" aria-hidden="true"></div>
     <aside
@@ -52,9 +56,10 @@ if (currentPath === '/changelog') navigationLabel = 'Changelog'
       <DocsNavigation currentPath={currentPath} platform={activePlatform} />
     </aside>
     <main class="docs-content">
-      <div class="docs-mobile-navigation-bar">
+      <div class="docs-mobile-navigation-bar" data-docs-page-bar>
         <div class="docs-mobile-navigation-bar__header">
           <span>{navigationLabel}</span>
+          <DocsPageNavigation items={pageNavigation} />
           <Button
             class="docs-mobile-nav-trigger"
             size="sm"
@@ -92,3 +97,59 @@ if (currentPath === '/changelog') navigationLabel = 'Changelog'
     </Drawer>
   </div>
 </BaseLayout>
+
+<style>
+  .docs-mobile-navigation-bar[data-docs-page-bar]:has(:global(.docs-page-navigation:not([hidden]))) > .docs-mobile-navigation-bar__header > span { display: none; }
+  @media (min-width: 64rem) {
+    .docs-mobile-navigation-bar[data-docs-page-bar]:has(:global(.docs-page-navigation:not([hidden]))) { display: block; margin: 0 0 1.25rem; padding: 0.25rem; border: 1px solid hsl(var(--line) / 0.7); border-radius: 0.65rem; }
+    .docs-mobile-navigation-bar[data-docs-page-bar] :global(.docs-mobile-nav-trigger) { display: none; }
+  }
+</style>
+
+<script>
+  let headerObserver: ResizeObserver | undefined
+
+  const syncDocsHeaderHeight = (): void => {
+    headerObserver?.disconnect()
+
+    const header = document.querySelector<HTMLElement>('.docs-site-header')
+
+    if (!header || !document.querySelector('.docs-shell')) {
+      document.documentElement.style.removeProperty('--docs-sticky-header-height')
+
+      document.documentElement.style.removeProperty('--docs-sticky-navigation-height')
+
+      return
+    }
+
+    const updateHeight = (): void => {
+      document.documentElement.style.setProperty(
+        '--docs-sticky-header-height',
+        `${header.getBoundingClientRect().height}px`
+      )
+
+      const navigation = document.querySelector<HTMLElement>('.docs-mobile-navigation-bar')
+
+      document.documentElement.style.setProperty(
+        '--docs-sticky-navigation-height',
+        `${navigation?.getBoundingClientRect().height ?? 0}px`
+      )
+    }
+
+    updateHeight()
+
+    headerObserver = new ResizeObserver(updateHeight)
+
+    headerObserver.observe(header)
+
+    const navigation = document.querySelector<HTMLElement>('.docs-mobile-navigation-bar')
+
+    if (navigation) headerObserver.observe(navigation)
+  }
+
+  syncDocsHeaderHeight()
+
+  document.addEventListener('astro:after-swap', syncDocsHeaderHeight)
+
+  document.addEventListener('astro:before-swap', () => headerObserver?.disconnect())
+</script>

@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -98,7 +99,7 @@ internal enum class PlaygroundDestination {
             entries.firstOrNull { it.name.equals(value, ignoreCase = true) } ?: Home
     }
 }
-private enum class ExamplePattern(val label: String) { Release("Release"), Health("Health"), Profile("Profile") }
+private enum class ExamplePattern(val label: String) { Release("Release"), Health("Health"), Profile("Profile"), Workspace("Workspace"), ListDetail("List/detail"), Motion("Motion") }
 private enum class ExampleState { Loading, Empty, Error, Success }
 private enum class PlaygroundLocale(val label: String) { English("English"), Spanish("Español") }
 
@@ -112,7 +113,7 @@ internal fun LumenReferenceApplication(
     catalog: List<CatalogCategorySummary>,
     components: @Composable () -> Unit
 ) {
-    var destination by remember(initialDestination) { mutableStateOf(initialDestination) }
+    var destination by rememberSaveable(initialDestination) { mutableStateOf(initialDestination) }
     val navigationItems = remember {
         listOf(
             LumenNavigationItem(PlaygroundDestination.Home, "Home", Icons.Default.Home),
@@ -320,7 +321,7 @@ private fun WorkflowRow(icon: LumenIconName, title: String, description: String)
 
 @Composable
 private fun ExamplesScreen(catalog: List<CatalogCategorySummary>) {
-    var pattern by remember { mutableStateOf(ExamplePattern.Release) }
+    var pattern by rememberSaveable { mutableStateOf(ExamplePattern.Release) }
     var projectName by remember { mutableStateOf("Lumen Android") }
     var accessibilityReview by remember { mutableStateOf(true) }
     var releaseState by remember { mutableStateOf(ExampleState.Success) }
@@ -332,11 +333,24 @@ private fun ExamplesScreen(catalog: List<CatalogCategorySummary>) {
     var updatesEnabled by remember { mutableStateOf(true) }
     var showSavedToast by remember { mutableStateOf(false) }
 
+    if (pattern == ExamplePattern.ListDetail) {
+        Column(Modifier.fillMaxSize()) {
+            LumenButton(onClick = { pattern = ExamplePattern.Release }, intent = LumenButtonIntent.Quiet) { LumenText("Back to examples") }
+            Box(Modifier.weight(1f)) { AdaptiveListDetailExample() }
+        }
+        return
+    }
+
+    if (pattern == ExamplePattern.Workspace) {
+        WorkspaceExample(onBack = { pattern = ExamplePattern.Release })
+        return
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         ResponsiveScreen { wide ->
             item {
                 DestinationHeader(
-                    "3 patterns",
+                    "6 patterns",
                     "Examples",
                     "Switch tasks, change state, and inspect complete product compositions."
                 )
@@ -365,6 +379,8 @@ private fun ExamplesScreen(catalog: List<CatalogCategorySummary>) {
                         },
                         { showResetDialog = true }
                     )
+                    ExamplePattern.Workspace, ExamplePattern.ListDetail -> Unit
+                    ExamplePattern.Motion -> MotionExample()
                     ExamplePattern.Health -> HealthPattern(catalog, releaseState) { releaseState = it }
                     ExamplePattern.Profile -> ProfilePattern(
                         wide,
@@ -805,6 +821,11 @@ private fun ThemePreview(
                     }
                 }
             )
+            LumenText(
+                "Normal keeps the classic Lumen look. Studio uses neutral surfaces. Glass uses rounded surfaces with an opaque material fallback on Android.",
+                variant = LumenTextVariant.Caption,
+                tone = LumenTextTone.Muted
+            )
             LumenToggle(
                 label = "Dark theme",
                 checked = darkTheme,
@@ -942,7 +963,7 @@ private fun ResourceSettings(uriHandler: UriHandler) {
     SettingsGroup("Privacy and resources", "Documentation, privacy, and support") {
         ResourceButton("Android documentation") { uriHandler.openUri("https://lumen.santi020k.com/docs/android") }
         ResourceButton("Privacy") { uriHandler.openUri("https://lumen.santi020k.com/privacy") }
-        ResourceButton("Support") { uriHandler.openUri("https://lumen.santi020k.com/support") }
+        ResourceButton("Feedback & support") { uriHandler.openUri("https://lumen.santi020k.com/support") }
         ResourceButton("santi020k") { uriHandler.openUri("https://santi020k.com") }
     }
 }

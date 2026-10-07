@@ -1,0 +1,14 @@
+---
+import { Button, Stack, Typography } from '@santi020k/lumen-astro'
+---
+
+<Stack as="section" gap="group" aria-labelledby="workspace-heading">
+  <Typography>
+    <h1 id="workspace-heading">Workspace settings</h1>
+    <p>Manage your team’s access and notification preferences.</p>
+  </Typography>
+  <Stack direction="horizontal" gap="related" wrap>
+    <Button>Invite a teammate</Button>
+    <Button variant="secondary">View activity</Button>
+  </Stack>
+</Stack>

@@ -1,0 +1,18 @@
+---
+import { WorldMap } from '@santi020k/lumen-astro'
+import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
+---
+
+<WorldMap
+  caption="Illustrative destinations. Hover over the map or choose a country to explore."
+  countries={lumenWorldMapCountries}
+  description="Your own destinations, your own colors. Sample data for this demo."
+  heading="Places worth remembering"
+  highlightedCountries={['CO', 'JP', 'PT', 'ES', 'US', 'BR', 'AU']}
+  label="World map showing sample destinations"
+  markers={[
+    { id: 'bogota', label: 'Bogotá', latitude: 4.71, longitude: -74.07 },
+    { id: 'tokyo', label: 'Tokyo', latitude: 35.68, longitude: 139.69 },
+    { id: 'lisbon', label: 'Lisbon', latitude: 38.72, longitude: -9.14 }
+  ]}
+/>

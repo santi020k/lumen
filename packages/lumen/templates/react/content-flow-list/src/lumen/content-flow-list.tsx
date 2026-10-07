@@ -1,0 +1,19 @@
+import { Badge, Card, CardContent, CardHeader, CardTitle, Stack } from '@santi020k/lumen-react'
+
+export const ContentFlowListRecipe = () => (
+  <Card as="section" aria-labelledby="members-heading">
+    <CardHeader><CardTitle as="h2" id="members-heading">Team members</CardTitle></CardHeader>
+    <CardContent>
+      <Stack role="list" gap="group">
+        <Stack role="listitem" direction="horizontal" align="center" justify="between" gap="related" wrap>
+          <span>Alex Morgan — Workspace owner</span>
+          <Badge>Active</Badge>
+        </Stack>
+        <Stack role="listitem" direction="horizontal" align="center" justify="between" gap="related" wrap>
+          <span>Jamie Lee — Design and operations</span>
+          <Badge variant="secondary">Invited</Badge>
+        </Stack>
+      </Stack>
+    </CardContent>
+  </Card>
+)

@@ -1,0 +1,96 @@
+---
+import { Badge, Button, Carousel, Code, DeviceFrame, Field, Icon, Input, Label, Stack } from '@santi020k/lumen-astro'
+
+import { deviceExamples } from '../data/device-frame'
+
+const snippet = (device: typeof deviceExamples[number]): string => {
+  const orientation = device.device === 'ipad-pro' ? ' orientation="landscape"' : ''
+  const content = '  <iframe src="/device-frame-demo" title="Lumen component workspace" loading="lazy" sandbox=""></iframe>'
+
+  return `<DeviceFrame device="${device.device}" color="white"${orientation}>\n${content}\n</DeviceFrame>`
+}
+---
+<Stack gap="lg" data-device-gallery>
+  <div class="device-gallery-heading"><p>THE DEVICE COLLECTION</p><h3>A better frame for your next idea.</h3><p>One Lumen workspace. Six familiar forms. Pick a device and compare.</p></div>
+  <Stack class="device-gallery-picker" direction="horizontal" gap="sm" wrap role="group" aria-label="Choose a device">
+    {deviceExamples.map((device, index) => <Button variant="ghost" size="sm" data-device-select={index} aria-pressed={index === 0 ? 'true' : 'false'}>{device.label}</Button>)}
+  </Stack>
+  <Stack class="device-gallery-finishes" direction="horizontal" justify="between" align="center" gap="md" wrap>
+    <Stack direction="horizontal" gap="sm" align="center" wrap><span class="
+      device-gallery-label
+    "
+                                                               >Hardware finish</span><Stack direction="horizontal" gap="sm" role="group" aria-label="Device finish"><Button variant="secondary" size="sm" data-device-finish="white" aria-pressed="true">White</Button><Button variant="secondary" size="sm" data-device-finish="black" aria-pressed="false">Black</Button><Button variant="secondary" size="sm" data-device-finish="custom" aria-pressed="false">Custom</Button></Stack></Stack>
+    <Field class="device-gallery-color"><Label for="device-gallery-color">Custom color</Label><Input id="device-gallery-color" type="color" value="#a9b8ac" /></Field>
+  </Stack>
+  <Carousel class="device-gallery" aria-label="Device examples" aria-roledescription="carousel">
+    <div class="device-gallery-viewport" data-ui-carousel-viewport tabindex="0" aria-label="Device slides. Use the arrow keys to browse.">
+      {deviceExamples.map((device, index) => (
+        <article data-device-slide data-device-name={device.label} aria-label={`${index + 1} of ${deviceExamples.length}: ${device.label}`} aria-roledescription="slide" role="group" inert={index !== 0} aria-hidden={index === 0 ? undefined : 'true'}>
+          <header class="device-slide-heading"><div><span>0{index + 1} / 0{deviceExamples.length}</span><h3>{device.label}</h3><p>{device.detail}</p></div><Badge variant="outline">Live iframe</Badge></header>
+          <div class="device-gallery-stage">
+            <DeviceFrame device={device.device} color="white" {...('orientation' in device ? { orientation: device.orientation } : {})}>
+              <iframe loading={index === 0 ? 'eager' : 'lazy'} sandbox="" src="/device-frame-demo" title={`${device.label} Lumen workspace`}></iframe>
+            </DeviceFrame>
+          </div>
+          <div class="device-slide-meta"><span>{device.viewport} <span aria-hidden="true">·</span> Demo viewport</span><span>Responsive frame</span></div>
+          <Code code={snippet(device)} language="astro" variant="block" codeLabel={`${device.label} usage`} copy wrap />
+        </article>
+      ))}
+    </div>
+    <footer class="device-gallery-navigation"><Button variant="outline" size="sm" data-device-prev disabled aria-label="Previous device"><Icon name="arrow-left" /> Previous</Button><span data-device-position aria-live="polite" aria-atomic="true">MacBook Pro · 1 of {deviceExamples.length}</span><Button variant="outline" size="sm" data-device-next aria-label="Next device">Next <Icon name="arrow-right" /></Button></footer>
+  </Carousel>
+
+</Stack>
+<style>
+  .device-gallery-heading { padding-block: 0.75rem 0.25rem; text-align: center; }
+  .device-gallery-heading > p:first-child { color: hsl(var(--ink-muted)); font-size: 0.65rem; font-weight: 650; letter-spacing: 0.17em; }
+  .device-gallery-heading h3 { margin: 0.65rem 0; font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.15; font-weight: 500; letter-spacing: -0.04em; }
+  .device-gallery-heading > p:last-child { color: hsl(var(--ink-soft)); font-size: 0.875rem; }
+  .device-gallery-picker { justify-content: center; }
+  .device-gallery-picker :global([aria-pressed="true"]) { background: hsl(var(--ink)); color: hsl(var(--canvas)); }
+  :global(.device-gallery) { padding: 0; border: 0; background: transparent; overflow: visible; }
+  :global(.device-gallery) .device-gallery-viewport { gap: 0; align-items: flex-start; scrollbar-width: none; border-radius: 1rem; }
+  .device-gallery-viewport:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: 4px; }
+  :global(.device-gallery) .device-gallery-viewport > article { flex: 0 0 100%; min-width: 0; padding: 0; border: 0; border-radius: 0; background: transparent; scroll-snap-stop: always; }
+  .device-slide-heading { display: flex; align-items: start; justify-content: space-between; gap: 1rem; padding: 1.5rem 1.5rem 0; background: hsl(var(--surface-muted)); }
+  .device-slide-heading span { color: hsl(var(--ink-muted)); font-size: 0.65rem; letter-spacing: 0.08em; }
+  .device-slide-heading h3 { margin: 0.35rem 0; font-size: 1.25rem; letter-spacing: -0.03em; }
+  .device-slide-heading p { margin: 0; max-width: 32rem; color: hsl(var(--ink-soft)); font-size: 0.8rem; line-height: 1.5; }
+  .device-gallery-stage { --device-stage-height: clamp(27rem, 50vw, 36rem); height: var(--device-stage-height); display: flex; align-items: center; justify-content: center; padding: 2rem 1.5rem; background: hsl(var(--surface-muted)); }
+  .device-gallery-stage :global(.ui-device-frame) { max-width: 46rem; }
+  .device-gallery-stage :global([data-device="imac"]) { max-width: 43rem; }
+  .device-gallery-stage :global([data-device="ipad-pro"]) { max-width: 41rem; }
+  .device-gallery-stage :global([data-device="iphone"]), .device-gallery-stage :global([data-device="pixel"]) { width: min(15rem, calc(var(--device-stage-height) * 0.39)); }
+  .device-slide-meta { display: flex; justify-content: space-between; gap: 0.5rem; padding: 1rem 1.5rem; font-size: 0.72rem; color: hsl(var(--ink-muted)); background: hsl(var(--surface-muted)); border-radius: 0 0 1rem 1rem; margin-bottom: 1rem; }
+  :global(.device-gallery) .device-gallery-navigation { justify-content: space-between; align-items: center; }
+  .device-gallery-navigation > span { color: hsl(var(--ink-soft)); font-size: 0.75rem; text-align: center; }
+  .device-gallery-finishes { border-top: 1px solid hsl(var(--line)); padding-top: 1rem; }
+  .device-gallery-label { color: hsl(var(--ink-soft)); font-size: 0.75rem; margin-right: 0.5rem; }
+  .device-gallery-finishes :global([aria-pressed="true"]) { outline: 2px solid hsl(var(--ink)); outline-offset: 2px; }
+  .device-gallery-color { display: flex; align-items: center; gap: 0.75rem; }
+  .device-gallery-color :global(input) { width: 2.75rem; height: 2.5rem; padding: 0.2rem; cursor: pointer; }
+  @media (max-width: 40rem) { .device-gallery-stage:has([data-device="macbook-pro"]), .device-gallery-stage:has([data-device="macbook-air"]), .device-gallery-stage:has([data-device="imac"]), .device-gallery-stage:has([data-device="ipad-pro"]) { height: auto; padding-block: 2rem; } .device-slide-heading { padding: 1rem 0.75rem 0; } .device-slide-heading p { font-size: 0.75rem; } .device-slide-heading :global(.ui-badge) { display: none; } .device-gallery-stage { padding: 1.5rem 0.65rem; } .device-slide-meta { padding: 0.75rem; flex-wrap: wrap; } .device-slide-meta > span:last-child { display: none; } }
+</style>
+<script>
+  import { initDeviceGallery } from '../lib/device-frame-gallery'
+
+  let cleanups: (() => void)[] = []
+
+  const destroy = (): void => {
+    for (const cleanup of cleanups) cleanup()
+
+    cleanups = []
+  }
+
+  const initialize = (): void => {
+    destroy()
+
+    cleanups = [...document.querySelectorAll<HTMLElement>('[data-device-gallery]')].map(initDeviceGallery)
+  }
+
+  initialize()
+
+  document.addEventListener('astro:page-load', initialize)
+
+  document.addEventListener('astro:before-swap', destroy)
+</script>

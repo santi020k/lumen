@@ -22,8 +22,11 @@ import {
   Tabs,
   TabsList,
   TabsPanel,
-  TabsTrigger
+  TabsTrigger,
+  VirtualList
 } from '@santi020k/lumen-react'
+
+const virtualRecords = Array.from({ length: 10000 }, (_, id) => ({ id, label: `Record ${id + 1}` }))
 
 const releaseColumns = [
   { header: 'Package', key: 'package', sortable: true },
@@ -134,7 +137,7 @@ export const ReactVisualHost = () => {
           <CardHeader>
             <CardTitle>Framework selector</CardTitle>
             <CardDescription>
-              Shared filtering and roving option focus.
+              Shared filtering with active options and uninterrupted text editing.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -147,6 +150,21 @@ export const ReactVisualHost = () => {
           </CardContent>
         </Card>
       </section>
+
+      <Card>
+        <CardHeader><CardTitle>Large collection</CardTitle></CardHeader>
+        <CardContent>
+          <VirtualList
+            aria-label="Large records"
+            items={virtualRecords}
+            getKey={record => record.id}
+            renderItem={record => <Button variant="ghost">{record.label}</Button>}
+            itemSize={44}
+            overscan={2}
+            style={{ height: '12rem' }}
+          />
+        </CardContent>
+      </Card>
 
       <Tabs defaultValue="packages" glass>
         <TabsList aria-label="React visual evidence">

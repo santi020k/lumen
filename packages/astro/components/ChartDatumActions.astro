@@ -1,0 +1,24 @@
+---
+import type { ChartDatumAction } from '../runtime/chart-actions'
+
+import Button from './Button.astro'
+
+interface Props {
+  actions: readonly (ChartDatumAction | null)[]
+  label: string
+}
+
+const { actions, label } = Astro.props
+const available = actions.filter(action => action !== null)
+---
+
+{available.length > 0 && (
+  <details class="ui-chart__actions" data-ui-chart-actions>
+    <summary>{label}</summary>
+    <ul>
+      {available.map(action => (
+        <li><Button variant="ghost" data-ui-chart-datum={action.serialized}>{action.label}</Button></li>
+      ))}
+    </ul>
+  </details>
+)}

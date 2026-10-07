@@ -3,6 +3,8 @@ import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
 
+import { validateLumen4Contract, validateLumen4ContractReferences } from "./check-lumen-4-contract.mjs";
+
 const repositoryRoot = resolve(import.meta.dirname, "..");
 
 const readArgument = (name) => {
@@ -19,6 +21,7 @@ const readArgument = (name) => {
 
 const repository = resolve(readArgument("--repository") ?? repositoryRoot);
 const versionArgument = readArgument("--version");
+const requireCurrentApproval = process.argv.includes("--require-current-approval");
 
 const version =
   versionArgument ??
@@ -34,8 +37,9 @@ assert.match(
 
 const major = Number.parseInt(version.split(".")[0], 10);
 const initialMajorVersion = `${major}.0.0`;
+const approvalVersion = requireCurrentApproval ? initialMajorVersion : version;
 
-if (![2, 3].includes(major) || version !== initialMajorVersion) {
+if (!requireCurrentApproval && (major < 2 || version !== initialMajorVersion)) {
   process.stdout.write(
     `Approved release revision integrity is not required for ${version}.\n`,
   );
@@ -49,7 +53,7 @@ const publishedTag = spawnSync(
   { cwd: repository, encoding: "utf8" },
 );
 
-if (publishedTag.status === 0) {
+if (publishedTag.status === 0 && !requireCurrentApproval) {
   process.stdout.write(
     `Approved release revision integrity was already enforced before v${version} was published.\n`,
   );
@@ -77,8 +81,8 @@ assert.ok(
 
 assert.equal(
   contract.targetVersion,
-  version,
-  `${releaseLabel} contract must target ${version}`,
+  approvalVersion,
+  `${releaseLabel} contract must target ${approvalVersion}`,
 );
 
 assert.equal(
@@ -86,6 +90,15 @@ assert.equal(
   "approved",
   `Initial ${releaseLabel} publication requires an approved contract`,
 );
+
+if (major === 4) {
+  const failures = [
+    ...validateLumen4Contract(contract, { requireApproved: true }),
+    ...await validateLumen4ContractReferences(contract, repository),
+  ];
+
+  assert.deepEqual(failures, [], `Lumen 4 contract validation failed:\n${failures.join("\n")}`);
+}
 
 assert.match(
   contract.approval?.reviewedRevision ?? "",
@@ -97,6 +110,7 @@ const runGit = (arguments_, label) => {
   const result = spawnSync("git", arguments_, {
     cwd: repository,
     encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
   });
 
   assert.equal(result.status, 0, label);
@@ -168,9 +182,15 @@ const changedFiles = runGit(
   .filter(Boolean)
   .sort();
 
-assert.deepEqual(
-  changedFiles,
-  [contractRelativePath],
+const migrationMirrors = major === 4 ? [
+  { path: "packages/lumen/v4-migration.json", bundled: false },
+  { path: "packages/mcp/data/lumen-data.json", bundled: true },
+] : [];
+
+const allowedFiles = new Set([contractRelativePath, ...migrationMirrors.map(mirror => mirror.path)]);
+
+assert.ok(
+  changedFiles.includes(contractRelativePath) && changedFiles.every(path => allowedFiles.has(path)),
   `Only the contract approval record may change after the reviewed ${releaseLabel} candidate revision`,
 );
 
@@ -205,6 +225,32 @@ assert.deepEqual(
   `Only status and approval metadata may change inside the ${releaseLabel} contract after review`,
 );
 
+for (const mirror of migrationMirrors) {
+  const exists = spawnSync("git", ["cat-file", "-e", `${reviewedRevision}:${mirror.path}`], { cwd: repository });
+
+  assert.equal(exists.status, 0, `Required migration mirror is missing from the reviewed revision: ${mirror.path}`);
+
+  const reviewed = JSON.parse(runGit(["show", `${reviewedRevision}:${mirror.path}`], "Could not read reviewed migration mirror"));
+  const candidate = JSON.parse(runGit(["show", `${candidateRevision}:${mirror.path}`], "Could not read candidate migration mirror"));
+
+  assert.deepEqual(mirror.bundled ? reviewed.migration : reviewed, reviewedContract,
+    "Reviewed migration mirrors must match the reviewed contract");
+
+  assert.deepEqual(mirror.bundled ? candidate.migration : candidate, contract,
+    "Candidate migration mirrors must match the approved contract");
+
+  const neutral = structuredClone(candidate);
+
+  if (mirror.bundled) neutral.migration = approvalNeutralContract;
+  else {
+    neutral.status = "draft";
+
+    delete neutral.approval;
+  }
+
+  assert.deepEqual(neutral, reviewed, "Only approval metadata may change in generated migration mirrors");
+}
+
 process.stdout.write(
-  `Approved ${releaseLabel} candidate ${reviewedRevision} has only the ${contractRelativePath} approval delta.\n`,
+  `Approved ${releaseLabel} candidate ${reviewedRevision} has only the ${contractRelativePath} approval delta and verified generated mirrors.\n`,
 );

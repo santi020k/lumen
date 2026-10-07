@@ -241,6 +241,7 @@ fun LumenTabs(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    panelAccessibilityLabel: String? = null,
     content: @Composable (String) -> Unit
 ) {
     val colors = LocalLumenTheme.current.colors
@@ -310,7 +311,7 @@ fun LumenTabs(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .semantics { contentDescription = "$selectedLabel tab panel" }
+                .semantics { contentDescription = panelAccessibilityLabel ?: selectedLabel }
         ) {
             content(value)
         }

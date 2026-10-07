@@ -12,8 +12,8 @@ support is relevant, use the exact approved sentence below rather than paraphras
 
 **Positioning (use exactly, do not paraphrase):**
 
-> Lumen is an open-source UI system that keeps accessible product interfaces consistent across
-> web, native platforms, Figma, and AI-assisted development.
+> Lumen is an open-source UI library built for AI-assisted development, with accessible components
+> and a shared design language across web, native platforms, and Figma.
 
 **Localization (use exactly when localization comes up; claim C-04):**
 
@@ -29,19 +29,27 @@ Never shorten this to "Lumen supports Spanish" or "available in English and Span
 ## Short descriptions
 
 **One-line (≤ 100 characters):**
-Open-source UI primitives for web, native, Figma, and AI-assisted development.
+An open-source UI library built for AI-assisted development across web and native apps.
 
 **Two-line:**
-Lumen is an open-source UI system that keeps accessible product interfaces consistent across web,
-native platforms, Figma, and AI-assisted development. Free and MIT licensed.
+Lumen is an open-source UI library built for AI-assisted development, with accessible components
+and a shared design language across web, native platforms, and Figma. Free and MIT licensed.
 
 **Paragraph (bio/about fields, ≤ 500 characters):**
-Lumen is an open-source UI system for developers, design-system engineers, and AI-assisted builders.
+Lumen is an open-source UI library built for AI-assisted development.
 It ships 150+ accessible web primitives for Astro, React, and Web Components, shared native
 foundations for React Native, SwiftUI, and Jetpack Compose, a public Figma library, and a portable
 Agent Skill and MCP server. Free and MIT licensed.
 
 ## Message pillar one-liners
+
+**AI efficiency wording (claim C-15):**
+
+> Designed to reduce repetitive UI code and unnecessary AI context. Actual token usage depends on
+> your model, task, discovery, and corrections.
+
+Use "AI tokens" when discussing model usage; "design tokens" means semantic styling values.
+Do not turn the design goal into a guaranteed token, cost, speed, or correction-rate claim.
 
 Reuse directly from `STRATEGY.md`'s message-pillar table; do not invent new pillars here.
 
@@ -92,7 +100,8 @@ append the UTM pattern documented there:
 | --- | --- |
 | Wants to try Lumen | `/guides/ship-a-settings-screen` |
 | Wants a working starting point | `/templates` |
-| Uses an AI coding tool | `/docs/ai-skill` |
+| Uses an AI coding tool | `/guides/build-ui-with-ai` |
+| Wants to compare AI token use | `/guides/measure-ai-ui-token-usage` |
 | Needs structured AI context | `/docs/mcp` |
 | Built something | `/community` |
 | Evaluating for a team | `/teams` |

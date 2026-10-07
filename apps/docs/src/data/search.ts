@@ -3,6 +3,8 @@ import { lumenComponentNames } from '@santi020k/lumen-core'
 import type { DocsSearchItem } from '../lib/docs-search'
 import { toSlug } from '../lib/routes'
 
+import { getChartGuide } from './chart-guides'
+import { chartTopics } from './chart-topics'
 import {
   type ComponentDoc,
   componentDocs,
@@ -11,11 +13,17 @@ import {
   frameworkSetups,
   glassSurfaceExamples,
   globalStyleSetups,
-  reactHooksReference,
   runtimeEvents,
   themeSetups
 } from './docs'
+import { publishedGuides } from './guides'
+import { mcpGuideTopics } from './mcp-guides'
+import { getNativeComponentsForPlatform } from './native-components'
+import { nativeGuidePlatforms, nativeGuideTopics } from './native-guide-topics'
+import { packageGuides, worldMapTopics } from './package-guides'
 import { platformGuides } from './platforms'
+import { reactHookGuides } from './react-hooks'
+import { visualGuideHref, visualGuides } from './visual-guides'
 
 const canonicalComponentNames = new Set<string>(lumenComponentNames)
 
@@ -26,12 +34,18 @@ const normalizeKeywords = (...values: string[]): string => values
   .trim()
   .toLowerCase()
 
+const chartKeywords = (name: string): string => {
+  const guide = getChartGuide(name)
+
+  return guide ? `${guide.question} ${guide.category}` : ''
+}
+
 const componentItems: DocsSearchItem[] = componentDocs.map(component => ({
   category: component.category,
   description: component.summary,
   href: `/docs/components/${toSlug(component.name)}`,
   keywords: normalizeKeywords(
-    component.name, component.category, component.summary, component.guidance?.when ?? '', component.guidance?.distinction ?? '', component.glass ? 'glass surface' : '', canonicalComponentNames.has(component.name) ?
+    chartKeywords(component.name), component.name, component.category, component.summary, component.guidance?.when ?? '', component.guidance?.distinction ?? '', component.glass ? 'glass surface' : '', canonicalComponentNames.has(component.name) ?
       'canonical component primitive' :
       ''
   ),
@@ -66,7 +80,9 @@ const keyboardItemsFor = (
 const keyboardItems: DocsSearchItem[] = componentDocs.flatMap(keyboardItemsFor)
 
 const eventItems: DocsSearchItem[] = runtimeEvents.map(event => {
-  const owner = componentDocs.find(component => component.runtimeEvents?.some(item => item.name === event.name))
+  const owner = componentDocs.find(component => component.runtimeEvents?.some(
+    item => item.name === event.name && item.target === event.target
+  ))
 
   return {
     category: owner?.name ?? 'Runtime',
@@ -83,6 +99,39 @@ const eventItems: DocsSearchItem[] = runtimeEvents.map(event => {
 })
 
 const recipeItems: DocsSearchItem[] = [
+  { category: 'Packages', description: 'Browse published npm packages by purpose.', href: '/docs/packages', keywords: 'npm install packages adapters foundations integrations', title: 'Package directory', type: 'Recipe' },
+  ...packageGuides.map(pkg => ({ category: 'Packages', description: pkg.packageName, href: `/docs/packages#${pkg.slug}`, keywords: normalizeKeywords(pkg.name, pkg.packageName, pkg.group), title: pkg.name, type: 'Recipe' as const })),
+  ...worldMapTopics.slice(0, 2).map(topic => ({ category: 'WorldMap guides', description: topic.description, href: topic.href, keywords: normalizeKeywords(topic.label, topic.description, 'zoom drag fit visited countries'), title: topic.label, type: 'Recipe' as const })),
+  ...chartTopics.map(topic => ({
+    category: 'Data visualization',
+    description: topic.description,
+    href: topic.href,
+    keywords: normalizeKeywords('chart visualization', topic.label, topic.description),
+    title: `Charts: ${topic.label}`,
+    type: 'Recipe' as const
+  })),
+  ...mcpGuideTopics.slice(1).map(topic => ({
+    category: 'AI integration',
+    description: topic.description,
+    href: topic.href,
+    keywords: normalizeKeywords('mcp tools resources clients plugin', topic.label, topic.description),
+    title: `MCP: ${topic.label}`,
+    type: 'Recipe' as const
+  })),
+  ...nativeGuideTopics.map(topic => ({
+    category: 'Native guides',
+    description: topic.description,
+    href: topic.href,
+    keywords: normalizeKeywords(topic.platform, topic.title, topic.description),
+    title: topic.title,
+    type: 'Recipe' as const
+  })),
+  { category: 'React Hooks',
+    description: 'Browse 19 behavior hooks by task and open their focused API guides.',
+    href: '/docs/frameworks/react/hooks',
+    keywords: 'react hooks state controllers overlays forms selection',
+    title: 'React hooks',
+    type: 'Recipe' },
   {
     category: 'Getting started',
     description:
@@ -114,6 +163,14 @@ const recipeItems: DocsSearchItem[] = [
     category: 'Forms',
     description:
       'Build accessible native-first forms with shared fields, errors, summaries, and submission states.',
+    href: '/docs/web/consumer-workflows',
+    keywords: normalizeKeywords('consumer workflows exact amounts formatted money validation server errors records row actions dialog focus activity feed'),
+    title: 'Consumer workflows',
+    type: 'Recipe'
+  },
+  {
+    category: 'Forms',
+    description: 'Build accessible native-first forms with shared fields, errors, summaries, and submission states.',
     href: '/docs/forms',
     keywords: normalizeKeywords(
       'forms field label error summary validation submission native FormData accessibility'
@@ -155,6 +212,31 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Interaction',
+    type: 'Recipe',
+    href: '/docs/visual-playground',
+    keywords: 'motion animation effects aurora mesh spotlight reduced motion AI prompt streaming approval',
+    title: 'Visual guides',
+    description: 'Explore coordinated motion, visual effects and AI surfaces.'
+  },
+  ...visualGuides.map(guide => ({ category: 'Interaction', type: 'Recipe' as const, href: visualGuideHref(guide.id), keywords: normalizeKeywords(guide.label, ...guide.components), title: `${guide.label} guide`, description: guide.description })),
+  {
+    category: 'Motion',
+    description: 'Preview presence presets, disclosure transitions, feedback, and list changes with reduced motion.',
+    href: '/docs/motion-playground',
+    keywords: normalizeKeywords('motion animation presence enter exit fade scale slide reduced disclosure list'),
+    title: 'Motion playground',
+    type: 'Recipe'
+  },
+  {
+    category: 'Media',
+    description: 'Try selection, reorder, comparison, inspection, adjustments and cancellable preparation in Studio.',
+    href: '/docs/studio-media-workspaces',
+    keywords: normalizeKeywords('studio media photo editor selection filmstrip comparison viewport zoom pan export processing retry'),
+    title: 'Studio media workspaces',
+    type: 'Recipe'
+  },
+  {
     category: 'Themes',
     description:
       'Generate theme tokens from a hue, preview Lumen components, and copy CSS.',
@@ -191,7 +273,7 @@ const recipeItems: DocsSearchItem[] = [
     category: 'AI integration',
     description:
       'Install Lumen UI in ChatGPT or Codex to use the workflow skill and hosted, read-only component catalog.',
-    href: '/docs/mcp#plugin-title',
+    href: '/docs/mcp/clients#plugin-title',
     keywords: normalizeKeywords(
       'openai chatgpt codex plugin plugins directory install lumen ui skill mcp hosted catalog'
     ),
@@ -209,17 +291,14 @@ const recipeItems: DocsSearchItem[] = [
     title: 'Lumen MCP server',
     type: 'Recipe'
   },
-  {
+  ...publishedGuides.map(guide => ({
     category: 'Guides',
-    description:
-      'Build and verify a production-shaped account settings screen in Astro, React, or Web Components.',
-    href: '/guides/ship-a-settings-screen',
-    keywords: normalizeKeywords(
-      'guide tutorial account settings screen evaluation form validation keyboard accessibility astro react web components'
-    ),
-    title: 'Ship an accessible settings screen',
-    type: 'Recipe'
-  },
+    description: guide.description,
+    href: guide.href,
+    keywords: normalizeKeywords('guide tutorial', guide.title, guide.description),
+    title: guide.title,
+    type: 'Recipe' as const
+  })),
   {
     category: 'Community',
     description:
@@ -229,6 +308,14 @@ const recipeItems: DocsSearchItem[] = [
       'community showcase built with lumen submit project survey feedback updates newsletter'
     ),
     title: 'Lumen community',
+    type: 'Recipe'
+  },
+  {
+    category: 'Community',
+    description: 'Suggest improvements, report bugs, ask questions, and follow accepted work through a release.',
+    href: '/support',
+    keywords: normalizeKeywords('feedback support help bug accessibility question idea suggestion discussion roadmap vote release'),
+    title: 'Feedback & support',
     type: 'Recipe'
   },
   {
@@ -265,6 +352,38 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Migrations',
+    description: 'Choose a version upgrade guide, review breaking changes, and verify your application.',
+    href: '/docs/migrations',
+    keywords: normalizeKeywords('migration upgrade versions breaking changes rollback'),
+    title: 'Migration guides',
+    type: 'Recipe'
+  },
+  {
+    category: 'Migrations',
+    description: 'Migrate v1 runtime imports, sizing, toast viewports, native dates, and Swift enums.',
+    href: '/docs/migrations/v1-to-v2',
+    keywords: normalizeKeywords('migration upgrade v1 v2 version 1 version 2 runtime size toast dates Swift rollback'),
+    title: 'Migrating from Lumen 1 to Lumen 2',
+    type: 'Recipe'
+  },
+  {
+    category: 'Migrations',
+    description: 'Upgrade v2 dependencies and handle the expanded Swift icon enum before rebuilding.',
+    href: '/docs/migrations/v2-to-v3',
+    keywords: normalizeKeywords('migration upgrade v2 v3 version 2 version 3 Swift icons package dependencies rollback'),
+    title: 'Migrating from Lumen 2 to Lumen 3',
+    type: 'Recipe'
+  },
+  {
+    category: 'Migrations',
+    description: 'Review v4 candidate spacing, component behavior, native signatures, and consumer checks.',
+    href: '/docs/migrations/v3-to-v4',
+    keywords: normalizeKeywords('migration upgrade v3 v4 version 3 version 4 candidate spacing focus dates native rollback'),
+    title: 'Migrating from Lumen 3 to Lumen 4',
+    type: 'Recipe'
+  },
+  {
     category: 'Releases',
     description:
       'Follow new Lumen components, improvements, and fixes across every framework package.',
@@ -295,10 +414,10 @@ const recipeItems: DocsSearchItem[] = [
     title: `${guide.title} framework guide`,
     type: 'Recipe' as const
   })),
-  ...reactHooksReference.map(hook => ({
+  ...reactHookGuides.map(hook => ({
     category: 'React Hooks',
     description: hook.description,
-    href: `/docs/frameworks/react#${hook.name}`,
+    href: hook.href,
     keywords: normalizeKeywords(
       hook.name, hook.description, 'react hook use state'
     ),
@@ -347,8 +466,20 @@ const recipeItems: DocsSearchItem[] = [
   }))
 ]
 
+const nativeComponentItems: DocsSearchItem[] = nativeGuidePlatforms.flatMap(platform => (
+  getNativeComponentsForPlatform(platform).map(component => ({
+    category: `${platform}: ${component.category}`,
+    description: component.summary,
+    href: `/docs/${platform}/components/${component.slug}`,
+    keywords: normalizeKeywords(platform, component.name, component.category, component.summary, component.guidance),
+    title: `${component.name} (${platform})`,
+    type: 'Component' as const
+  }))
+))
+
 export const docsSearchIndex: DocsSearchItem[] = [
   ...componentItems,
+  ...nativeComponentItems,
   ...propItems,
   ...keyboardItems,
   ...eventItems,

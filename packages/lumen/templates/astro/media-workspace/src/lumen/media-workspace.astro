@@ -1,0 +1,77 @@
+---
+import { Button, Card, Image, MediaFilmstrip, MediaThumbnail, Stack, Toolbar } from '@santi020k/lumen-astro'
+import { resolveLumenMediaSelection } from '@santi020k/lumen-core'
+
+interface MediaItem {
+  id: string
+  label: string
+  src: string
+  alt: string
+  width: number
+  height: number
+  disabled?: boolean
+}
+
+interface Props {
+  title: string
+  items: readonly MediaItem[]
+  selectedIds?: readonly string[]
+  collectionLabel: string
+  selectionLabel: string
+  toolsLabel: string
+  previewLabel: string
+  inspectorLabel: string
+  moveEarlierLabel: string
+  moveLaterLabel: string
+}
+
+declare const Astro: Readonly<{ props: Props, slots: { has: (name: string) => boolean } }>
+
+const { title, items, selectedIds = [], collectionLabel, selectionLabel, toolsLabel, previewLabel, inspectorLabel, moveEarlierLabel, moveLaterLabel } = Astro.props
+const selection = resolveLumenMediaSelection(items, selectedIds)
+---
+
+<section class="lumen-media-workspace" aria-label={title} data-media-workspace>
+  <h2>{title}</h2>
+  <div class="lumen-media-workspace__layout">
+    <div class="lumen-media-workspace__preview" role="group" aria-label={previewLabel}><slot name="preview" /></div>
+    <Card class="lumen-media-workspace__inspector" aria-label={inspectorLabel}><slot name="inspector" /></Card>
+  </div>
+  <Card glass="subtle" class="lumen-media-workspace__tools"><Toolbar aria-label={toolsLabel}><slot name="tools" /></Toolbar></Card>
+  <MediaFilmstrip label={collectionLabel} selectionLabel={selectionLabel}>
+    {items.map((item, index) => (
+<li data-media-item={item.id}>
+      <MediaThumbnail label={item.label} mediaId={item.id} selected={selection.includes(item.id)} order={index + 1} disabled={item.disabled}>
+        <Image src={item.src} alt={item.alt} width={item.width} height={item.height} />
+      </MediaThumbnail>
+      <Stack gap="related">
+        <Button variant="outline" aria-label={`${moveEarlierLabel}: ${item.label}`} disabled={item.disabled === true || index === 0} data-media-move="earlier" data-media-id={item.id}>{moveEarlierLabel}</Button>
+        <Button variant="outline" aria-label={`${moveLaterLabel}: ${item.label}`} disabled={item.disabled === true || index === items.length - 1} data-media-move="later" data-media-id={item.id}>{moveLaterLabel}</Button>
+      </Stack>
+    </li>
+))}
+  </MediaFilmstrip>
+  <Card class="lumen-media-workspace__bottom"><slot name="bottom-controls" /></Card>
+</section>
+
+<script>
+  // Import media-workspace.css once at the application's style boundary.
+  // Selection and move requests remain controlled by the host. Accept them only after
+  // validating permissions and updating canonical state; keep focus on the same stable ID.
+  for (const workspace of document.querySelectorAll<HTMLElement>('[data-media-workspace]')) {
+    workspace.addEventListener('click', event => {
+      if (!(event.target instanceof Element)) return
+
+      const button = event.target.closest<HTMLButtonElement>('button[data-media-move]')
+
+      if (!button || button.disabled || !workspace.contains(button)) return
+
+      const id = button.dataset.mediaId
+      const direction = button.dataset.mediaMove
+
+      if (!id || (direction !== 'earlier' && direction !== 'later')) return
+
+      workspace.dispatchEvent(new CustomEvent('ui:media-move-request', { bubbles: true, detail: { id, direction } }))
+    })
+  }
+</script>

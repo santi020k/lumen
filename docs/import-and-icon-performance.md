@@ -8,6 +8,7 @@ pnpm run measure:imports
 pnpm run measure:react-icons
 pnpm run measure:react-server
 pnpm run measure:elements-registration
+pnpm run measure:selective-imports
 ```
 
 The Astro and React commands default to three builds per scenario and report median wall time,
@@ -37,8 +38,8 @@ The 397-byte Astro output delta is the rendered icon SVG, not a server-side Luci
 The Next.js client fixture produced the same 1,301,831-byte complete `.next/static` directory with
 and without `Icon`. Median builds were 5.70 s with Icon and 4.81 s without it in this three-sample
 run; the time difference is too noisy to justify generated subsets, while identical client output
-shows no measurable emitted-directory cost in this fixture. Continue enforcing the existing React
-bundle budget and rerun the benchmark after icon-registry changes.
+shows no measurable emitted-directory cost in this fixture. Rerun the benchmark after icon-registry
+changes; current size enforcement follows the [bundle size policy](../CONTRIBUTING.md#bundle-size-policy).
 
 These are local regression measurements, not universal performance claims. Keep the JSON output in
 release evidence when an import or icon change is proposed.
@@ -107,3 +108,19 @@ catalog, a 70.6% reduction. It retains the canonical token/base layers plus the 
 feedback, tabs, dialogs, calendar, and data-table selectors. Identical exports ship from the
 umbrella, Astro, React, and Elements packages, and `pnpm run check:critical-web-css` rejects stale or
 accidentally expanded generated output.
+
+## V4 selective component entries
+
+React exposes existing standalone component modules under `/components/*` and behavior hooks under
+`/hooks`. Elements adds `/components/virtual-list`, using the same constructor as full registration.
+Core exposes image-comparison and virtual-windowing helpers through dedicated entry points. Root imports
+remain supported. Interactive React entries preserve their client boundary for Next.js consumers.
+
+The minified equivalent-consumer benchmark uses external React and reports module graph size as
+well as raw/gzip output. In the final October 4 run, ImageComparison traversed 2,026 modules from
+root and five from its selective entry, with identical 4,599-byte raw output (1,979 vs 1,985 gzip).
+VirtualList registration measured 1,474,882 raw / 488,079 gzip through the full catalog and
+7,215 raw / 2,973 gzip through its granular entry. These are synthetic consumer measurements,
+not application download sizes or a promise that every selective import reduces final output.
+Run the benchmark against the final candidate after rebuilding packages; output varies with
+bundler symbol naming and subsequent component changes.

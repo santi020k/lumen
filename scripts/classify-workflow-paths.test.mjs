@@ -7,6 +7,43 @@ import {
   classifyCiPaths
 } from './classify-workflow-paths.mjs'
 
+test('Figma plugin sources and browser regressions select browser coverage', () => {
+  for (const path of ['apps/figma-plugin/src/plugin.ts', 'tests/figma/plugin-beta.spec.ts']) {
+    const classification = classifyCiPaths([path])
+
+    assert.equal(classification.playwright, true)
+
+    assert.equal(classification.apple, false)
+
+    assert.equal(classification.android, false)
+  }
+})
+
+test('motion source changes select browser coverage without native jobs', () => {
+  const classification = classifyCiPaths(['apps/motion/src/scripts/timeline.ts'])
+
+  assert.equal(classification.playwright, true)
+
+  assert.equal(classification.apple, false)
+
+  assert.equal(classification.android, false)
+})
+
+test('primitive motion regressions select CI and release browser coverage', () => {
+  for (const path of ['tests/motion/playground.spec.ts', 'playwright.motion.config.ts']) {
+    const ci = classifyCiPaths([path])
+    const canary = classifyCanaryPaths([path])
+
+    assert.equal(ci.playwright, true, path)
+
+    assert.equal(canary.browser, true, path)
+
+    assert.equal(ci.apple, false, path)
+
+    assert.equal(ci.android, false, path)
+  }
+})
+
 test('a web package change skips every native platform job', () => {
   const classification = classifyCiPaths(['packages/react/src/Button.tsx'])
 
@@ -103,6 +140,20 @@ test('the Lumen 3 Swift contract selects Apple and native compatibility gates', 
   assert.equal(classification['native-contracts'], true)
 })
 
+test('the Lumen 4 contract selects native and publication qualification gates', () => {
+  const path = 'registry/lumen-4-contract.json'
+  const ci = classifyCiPaths([path])
+  const canary = classifyCanaryPaths([path])
+
+  assert.equal(ci.apple, true)
+
+  assert.equal(ci['native-contracts'], true)
+
+  assert.equal(canary.native, true)
+
+  assert.equal(canary.swift, true)
+})
+
 test('canaries isolate web, Swift, and Compose package changes', () => {
   const react = classifyCanaryPaths(['packages/react/src/Button.tsx'])
   const swift = classifyCanaryPaths(['packages/swift/Sources/LumenUI/Button.swift'])
@@ -171,6 +222,8 @@ test('publish dry runs target only changed packages unless shared tooling change
 
   for (const path of [
     'scripts/check-bundle-size.mjs',
+    'scripts/check-bundle-size.test.mjs',
+    'scripts/lib/bundle-size.mjs',
     'scripts/smoke-consumer-packages.mjs',
     'scripts/classify-workflow-paths.mjs'
   ]) {
@@ -197,4 +250,60 @@ test('MCP changes skip unrelated bundle, browser, and packed UI consumer gates',
   assert.equal(canary['consumer-packages'], false)
 
   assert.equal(canary['web-contracts'], false)
+})
+
+test('portable skill and plugin changes select MCP validation', () => {
+  for (const path of [
+    'skills/lumen-review/SKILL.md',
+    'plugins/lumen-ui/plugin.json',
+    'scripts/lib/plugin-contract.mjs',
+    'scripts/schemas/agent-plugin.schema.json',
+    'registry/lumen-4-contract.json',
+    'docs/ai-usage.md'
+  ]) {
+    assert.equal(classifyCiPaths([path]).mcp, true, path)
+  }
+})
+
+test('hosted MCP deployment changes select protocol validation without native platform jobs', () => {
+  for (const path of [
+    '.github/workflows/deploy-mcp.yml',
+    'scripts/check-hosted-mcp.mjs',
+    'scripts/check-hosted-mcp.test.mjs'
+  ]) {
+    const classification = classifyCiPaths([path])
+
+    assert.equal(classification.mcp, true, path)
+
+    assert.equal(classification.apple, false, path)
+
+    assert.equal(classification.android, false, path)
+  }
+})
+
+
+test('browser setup action changes select browser CI and canaries', () => {
+  const paths = ['.github/actions/setup-playwright/action.yml']
+
+  assert.equal(classifyCiPaths(paths).playwright, true)
+
+  assert.equal(classifyCanaryPaths(paths).browser, true)
+
+  assert.equal(classifyCanaryPaths(paths).web, true)
+
+  assert.equal(classifyCanaryPaths(paths).compose, false)
+})
+
+test('canary scheduling changes exercise browser shards', () => {
+  assert.equal(classifyCanaryPaths(['.github/workflows/release-canary.yml']).browser, true)
+})
+
+test('bundle policy helpers and regression tests select builds and size checks', () => {
+  for (const path of ['scripts/lib/bundle-size.mjs', 'scripts/check-bundle-size.test.mjs']) {
+    const classification = classifyCiPaths([path])
+
+    assert.equal(classification['bundle-size'], true, path)
+
+    assert.equal(classification.compatibility, true, path)
+  }
 })

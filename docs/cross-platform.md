@@ -73,7 +73,7 @@ Native adapters must not depend on the DOM, CSS class names, the Astro runtime, 
 | Apple-native | Shared across iOS and macOS without forcing parity onto other adapters | Settings rows, native selection, empty states, shortcut recording, SF Symbols selection |
 | Platform-specific | Uses platform conventions and does not promise API parity | Pull-to-refresh controls, floating actions, gestures |
 
-The web catalog remains the reference for design intent, not a requirement that all 150 components
+The web catalog remains the reference for design intent, not a requirement that all 162 components
 be ported. A native component is considered supported only after its public contract, accessibility
 behavior, tests, and usage documentation exist in that adapter.
 
@@ -83,7 +83,9 @@ platform mappings, accessibility requirements, and contribution checks.
 ## Native support policy
 
 The shared token foundation and the React Native, SwiftUI, Jetpack Compose, and Wear OS component
-contracts are **Supported for Lumen 2**. Package, migration, build, security, published-artifact,
+contracts received their Supported classification in Lumen 2. The current Lumen 4 candidate
+requires a fresh review of its changed baselines and migration guide; that classification is not
+evidence of v4 publication or qualification. Package, migration, build, security, published-artifact,
 and two-release stability checks gate the initial publication. External-consumer and
 physical-device evidence remains visible as post-release qualification work. Breaking changes
 require release notes and a practical migration path.

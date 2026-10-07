@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lumen Review"
+  short_description: "Review Lumen contracts, accessibility, and setup"
+  default_prompt: "Use $lumen-review to review this Lumen interface and report actionable findings with evidence."

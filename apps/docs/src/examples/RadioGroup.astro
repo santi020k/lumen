@@ -1,9 +1,12 @@
 ---
-import { RadioGroup } from '@santi020k/lumen-astro'
+import {
+  Label,
+  RadioGroup
+} from '@santi020k/lumen-astro'
 ---
 
 <RadioGroup>
   <legend>Theme</legend>
-  <label><input type="radio" name="ex-theme" value="light" /> Light</label>
-  <label><input type="radio" name="ex-theme" value="dark" checked /> Dark</label>
+  <Label><input type="radio" name="ex-theme" value="light" /> Light</Label>
+  <Label><input type="radio" name="ex-theme" value="dark" checked /> Dark</Label>
 </RadioGroup>

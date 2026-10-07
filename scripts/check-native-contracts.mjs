@@ -260,3 +260,26 @@ process.stdout.write(
   `Checked ${registry.components.length} shared native contracts and `
     + `${registry.platformComponents.length} platform contracts across ${adapterNames.length} adapters.\n`
 )
+
+// Keep the reviewed web/native disposition table complete as the reference catalog evolves.
+const webCatalogSource = await readFile(join(repositoryRoot, 'packages/core/src/components.ts'), 'utf8')
+const webCatalogBlock = webCatalogSource.split('] as const')[0]
+const webNames = [...webCatalogBlock.matchAll(/^ {2}'([^']+)'/gm)].map(match => match[1])
+const webAudit = await readFile(join(repositoryRoot, 'docs/lumen-4-web-native-audit.md'), 'utf8')
+const auditRows = webAudit.split('\n').filter(line => line.startsWith('| `')).map(line => line.split(' | '))
+
+assert.deepEqual(auditRows.map(row => row[0].slice(3, -1)), webNames, 'Web/native audit must cover the exact reference catalog in order')
+
+const nativeIds = new Set(registry.components.map(component => component.id))
+
+for (const row of auditRows) {
+  assert.ok(['Counterpart', 'Composition', 'Platform / host', 'Gap'].includes(row[1]), 'Unknown web/native audit disposition')
+
+  if (row[1] === 'Counterpart' || row[1] === 'Composition') {
+    const nativeId = row[2].split('`')[1]
+
+    assert.ok(nativeIds.has(nativeId), `Web/native audit claims a missing native contract: ${nativeId}`)
+  }
+}
+
+process.stdout.write(`Reviewed all ${webNames.length} web/native catalog dispositions.\n`)

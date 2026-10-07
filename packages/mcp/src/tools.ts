@@ -60,6 +60,8 @@ export interface SearchResult {
 }
 
 const normalize = (value: string) => value
+  .normalize('NFD')
+  .replaceAll(/[\u0300-\u036f]/g, '')
   .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
   .replaceAll(/[\s_]+/g, '-')
   .toLowerCase()
@@ -87,10 +89,41 @@ const searchStopWords = new Set([
   'the',
   'to',
   'ui',
-  'with'
+  'with',
+  'de',
+  'del',
+  'el',
+  'la',
+  'las',
+  'los',
+  'para',
+  'un',
+  'una',
+  'y',
+  'con',
+  'accesible'
 ])
 
 const searchTermAliases: Record<string, string[]> = {
+  boton: ['button'],
+  buscar: ['search'],
+  calendario: ['calendar'],
+  confirmar: ['confirm', 'confirmation'],
+  contrasena: ['password'],
+  eliminacion: ['delete', 'destructive'],
+  eliminar: ['delete', 'destructive'],
+  fecha: ['date'],
+  fechas: ['date'],
+  formulario: ['form'],
+  modal: ['modal', 'dialog'],
+  notificacion: ['toast', 'notification'],
+  oscuro: ['dark', 'theme'],
+  paginada: ['pagination', 'paginated'],
+  rango: ['range'],
+  registros: ['records', 'data-table'],
+  seleccion: ['select'],
+  selector: ['select', 'picker'],
+  tabla: ['table'],
   booking: ['booking', 'schedule', 'calendar', 'appointment', 'date'],
   dark: ['dark', 'theme'],
   dashboard: ['dashboard', 'data-table', 'sidebar', 'chart', 'stat', 'metric'],
@@ -272,7 +305,7 @@ const scoreCandidate = (
   const normalizedText = normalize(searchableText)
 
   const matchedTerms = terms.filter(term => (
-    (Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]
+    (Object.hasOwn(searchTermAliases, term) ? searchTermAliases[term] : undefined) ?? [term]
   ).some(candidate => normalizedText.includes(candidate)))
 
   if (matchedTerms.length === 0) return { matchedTerms, score: 0 }
@@ -284,7 +317,7 @@ const scoreCandidate = (
   let score = matchedTerms.reduce(
     (total, term) => total +
       ((
-        (Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]
+        (Object.hasOwn(searchTermAliases, term) ? searchTermAliases[term] : undefined) ?? [term]
       ).some(candidate => normalizedName.includes(candidate)) ?
         20 :
         5), 0
@@ -296,7 +329,7 @@ const scoreCandidate = (
 
   if (
     terms.some(term => (
-      (Reflect.get(searchTermAliases, term) as string[] | undefined) ?? [term]
+      (Object.hasOwn(searchTermAliases, term) ? searchTermAliases[term] : undefined) ?? [term]
     ).includes(normalizedName))
   )
     score += 150
@@ -371,6 +404,14 @@ const collectComponentSearchResults = (
   return results
 }
 
+const spacingValue = (tokens: LumenData['tokens'], token: string): number => {
+  const value = tokens.spacing[token]
+
+  if (value === undefined) throw new Error(`Missing spacing dimension for ${token}.`)
+
+  return value
+}
+
 const collectReferenceSearchResults = (
   query: string,
   terms: string[],
@@ -396,6 +437,14 @@ const collectReferenceSearchResults = (
         kind: 'token',
         name: token
       }, query, terms, token
+    )
+  }
+
+  for (const [role, token] of Object.entries(data.tokens.spacingRoles)) {
+    const description = `Content flow spacing role ${role}: ${spacingValue(data.tokens, token)}px; CSS --ui-space-${role}.`
+
+    appendSearchResult(
+      results, { description, kind: 'token', name: role }, query, terms, `${description} layout gap padding rhythm`
     )
   }
 
@@ -904,6 +953,25 @@ export const getNativeComponent = (
   }
 }
 
+const recipeExamples = (recipe: LumenRecipeSnapshot, framework: FrameworkFilter): string[] => {
+  const frameworks: LumenFramework[] = [framework]
+
+  return frameworks.flatMap(target => {
+    const source = recipe.examples[target]
+
+    if (!source) return []
+
+    return [
+      '',
+      `## Complete composition (${target})`,
+      'Wire application actions and persistence before shipping; replace sample IDs when rendering multiple instances.',
+      `\`\`\`${{ astro: 'astro', elements: 'html', react: 'tsx' }[target]}`,
+      source,
+      '```'
+    ]
+  })
+}
+
 export const getRecipe = (
   args: { framework?: FrameworkFilter | undefined, name: string },
   data: LumenData = loadLumenData()
@@ -944,7 +1012,8 @@ export const getRecipe = (
       `Install for ${framework}: ${getRecipeInstall(recipe.install, framework)}`,
       '',
       '## Components',
-      ...componentLines
+      ...componentLines,
+      ...recipeExamples(recipe, framework)
     ].join('\n')
   }
 }
@@ -952,6 +1021,7 @@ export const getRecipe = (
 export const search = (
   args: {
     framework?: FrameworkFilter | undefined
+    kind?: SearchResult['kind'] | undefined
     limit?: number | undefined
     platform?: NativePlatformFilter | undefined
     query: string
@@ -976,7 +1046,7 @@ export const search = (
 
   const results = collectSearchResults(
     query, meaningfulSearchTerms(query), data, args.framework, args.platform
-  )
+  ).filter(result => !args.kind || result.kind === args.kind)
 
   const kindPriority: Record<SearchResult['kind'], number> = {
     component: 0,
@@ -1314,6 +1384,16 @@ export const getTokens = (
   const text = [
     '# Lumen design tokens',
     `Theme attribute: ${tokens.themeAttribute} (values: light, dark)`,
+    `Appearance presets: ${tokens.presets.names.join(', ')} via ${tokens.presets.attribute}; scheme via ${tokens.presets.schemeAttribute}.`,
+    'Studio follows the neutral PostLens appearance. Glass is explicit on supporting surfaces; native adapters use platform materials or opaque fallbacks.',
+    '',
+    '## Spacing scale (px at the default 16px root; CSS uses rem)',
+    Object.entries(tokens.spacing).map(([name, value]) => `- ${name}: ${value}px; --ui-space-${name}`).join('\n'),
+    '',
+    '## Content flow roles',
+    Object.entries(tokens.spacingRoles).map(([role, token]) => `- ${role}: ${token} (${spacingValue(tokens, token)}px); --ui-space-${role}`).join('\n'),
+    'Stack and Grid own sibling gaps; surfaces own padding; Field owns control feedback spacing.',
+    'Use related, group or section for Stack/Grid gap. Use inset for surface padding, not a gap prop.',
     '',
     '## Semantic token names (use as `text-ink`, `bg-surface`, `border-line`, etc.)',
     tokens.semantic.map(token => `- ${token}`).join('\n'),

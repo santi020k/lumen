@@ -2,7 +2,9 @@ import { expect, type Page, test } from '@playwright/test'
 
 import type { LumenComponentName } from '../../packages/core/src/components.js'
 
+import { verifyAstroChartActivation } from './chart-activation.js'
 import { runtimeBehaviorComponentNames } from './component-coverage.js'
+import { verifyFocusNavigation } from './focus-navigation.js'
 
 const openPreview = async (page: Page, slug: string) => {
   await page.goto(`/docs/components/${slug}`)
@@ -11,7 +13,72 @@ const openPreview = async (page: Page, slug: string) => {
 
 type BehaviorTestBody = (fixtures: { page: Page }) => Promise<void>
 
+test('Popover navigates available controls and restores newly available actions', async ({ page }) => {
+  await openPreview(page, 'popover')
+  const preview = page.locator('.component-doc-preview')
+  await preview.getByRole('button', { name: 'Invite teammates' }).click()
+  await verifyFocusNavigation(preview.locator('[data-ui-popover] > div').last())
+})
+
 const registeredBehaviorComponents = new Set<LumenComponentName>()
+
+test('Dialog opens with native autofocus and dismisses only genuine backdrop presses', async ({ page }) => {
+  await openPreview(page, 'dialog')
+  const preview = page.locator('.component-doc-preview')
+  const dialog = preview.locator('dialog')
+  const trigger = preview.getByRole('button', { name: 'Edit profile' })
+  await expect(dialog).toHaveAttribute('data-ui-bound', 'true')
+  await dialog.evaluate(element => {
+    const input = document.createElement('input')
+    input.autofocus = true
+    input.setAttribute('aria-label', 'Autofocus field')
+    element.append(input)
+  })
+  await trigger.evaluate(element => {
+    element.removeAttribute('id')
+    Object.defineProperty(crypto, 'randomUUID', { configurable: true, value: undefined })
+  })
+  await trigger.click()
+  await expect(dialog.getByRole('textbox', { name: 'Autofocus field' })).toBeFocused()
+  // Backdrop coordinates must use the settled opening-transition geometry.
+  await dialog.evaluate(async element => {
+    await Promise.all(element.getAnimations().map(animation => animation.finished))
+  })
+  const bounds = await dialog.boundingBox()
+  if (!bounds) throw new Error('Expected an open dialog')
+  await page.mouse.click(bounds.x + 4, bounds.y + 4)
+  await expect(dialog).toBeVisible()
+  await page.mouse.move(bounds.x + 4, bounds.y + 4)
+  await page.mouse.down()
+  await page.mouse.move(bounds.x - 8, bounds.y - 8)
+  await page.mouse.up()
+  await expect(dialog).toBeVisible()
+  await page.mouse.click(bounds.x - 8, bounds.y - 8)
+  await expect(dialog).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
+test('Tabs switches panels while skipping disabled tabs on arrow and End keys', async ({ page }) => {
+  await openPreview(page, 'tabs')
+  const tabs = page.locator('.component-doc-preview [data-ui-tabs]').first()
+  const triggers = tabs.getByRole('tab')
+  const count = await triggers.count()
+  expect(count).toBeGreaterThanOrEqual(3)
+  await triggers.nth(1).evaluate(element => {
+    element.setAttribute('disabled', '')
+  })
+  await triggers.first().focus()
+  await triggers.first().press('ArrowRight')
+  await expect(triggers.nth(2)).toBeFocused()
+  await expect(triggers.nth(1)).toHaveAttribute('aria-selected', 'false')
+  await triggers.nth(count - 1).evaluate(element => {
+    element.setAttribute('disabled', '')
+  })
+  await triggers.first().focus()
+  await triggers.first().press('End')
+  await expect(triggers.nth(count > 3 ? count - 2 : 0)).toBeFocused()
+})
+
 const behaviorTest = (
   components: readonly LumenComponentName[],
   title: string,
@@ -143,6 +210,13 @@ behaviorTest(['ContextMenu'], 'ContextMenu opens from the keyboard and closes wi
   await trigger.press('Shift+F10')
   await expect(menu).toBeVisible()
   await expect(menu).toHaveAttribute('data-state', 'open')
+  await menu.evaluate(element => { element.setAttribute('tabindex', '-1'); })
+  await menu.focus()
+  await menu.press('ArrowUp')
+  await expect(menu.getByRole('menuitem').last()).toBeFocused()
+  await menu.focus()
+  await menu.press('ArrowDown')
+  await expect(menu.getByRole('menuitem').first()).toBeFocused()
   await page.keyboard.press('Escape')
   await expect(menu).toBeHidden()
 })
@@ -222,8 +296,18 @@ behaviorTest(
 
 behaviorTest(
   ['NavigationMenu'],
-  'NavigationMenu supports horizontal keyboard navigation',
-  rovingNavigationScenario('navigation-menu', 'link')
+  'NavigationMenu preserves ordinary link Tab order',
+  async ({ page }) => {
+    await openPreview(page, 'navigation-menu')
+
+    const links = page.locator('.component-doc-preview a')
+
+    await links.first().focus()
+    await page.keyboard.press('Tab')
+    await expect(links.nth(1)).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(links.first()).toBeFocused()
+  }
 )
 
 behaviorTest(['RadioGroup'], 'RadioGroup changes selection with arrow keys', async ({ page }) => {
@@ -273,6 +357,100 @@ behaviorTest(['Toast', 'ToastViewport'], 'Toast creates a live notification in t
 
   await expect(toast).toContainText('Published')
   await expect(toast).toContainText('The latest version is now live.')
+})
+
+const invokeLumenInitUiPrimitives = (page: Page): Promise<void> => page.evaluate(() => {
+  (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives?.()
+})
+
+test('Toast binds static markup added after the initial runtime pass without duplicating per-toast dismissal', async ({ page }) => {
+  await openPreview(page, 'toast')
+
+  const preview = page.locator('.component-doc-preview')
+  const existingToast = preview.locator('[data-ui-toast]').first()
+
+  await expect(existingToast).toHaveAttribute('data-ui-bound', 'true')
+
+  await preview.evaluate(root => {
+    const toast = document.createElement('aside')
+
+    toast.id = 'late-static-toast'
+    toast.dataset.uiToast = ''
+    toast.setAttribute('role', 'status')
+    toast.textContent = 'Late static toast'
+    root.append(toast)
+  })
+
+  const lateToast = page.locator('#late-static-toast')
+
+  await expect(lateToast).not.toHaveAttribute('data-ui-bound', 'true')
+
+  // The once-only document API guard must not block binding markup discovered on a later pass.
+  await invokeLumenInitUiPrimitives(page)
+
+  await expect(lateToast).toHaveAttribute('data-ui-bound', 'true')
+
+  await lateToast.evaluate(element => {
+    let removeCalls = 0
+
+    Object.defineProperty(element, 'remove', {
+      value: () => { removeCalls += 1 }
+    })
+
+    Object.defineProperty(element, 'removeCalls', {
+      get: () => removeCalls
+    })
+  })
+
+  // Repeated initialization after client navigation must not rebind an already-bound toast.
+  await invokeLumenInitUiPrimitives(page)
+  await invokeLumenInitUiPrimitives(page)
+
+  await lateToast.evaluate(element => {
+    element.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Escape' }))
+  })
+
+  await expect(lateToast).toHaveAttribute('data-state', 'closed')
+  await expect.poll(() => lateToast.evaluate(element => {
+    const calls: unknown = Reflect.get(element, 'removeCalls')
+    if (typeof calls !== 'number') throw new Error('Expected dismissal count')
+    return calls
+  })).toBe(1)
+})
+
+test('Toast ignores canceled and composing Escape keydown events', async ({ page }) => {
+  await openPreview(page, 'toast')
+
+  const toast = page.locator('.component-doc-preview [data-ui-toast]').first()
+
+  await expect(toast).toHaveAttribute('data-ui-bound', 'true')
+
+  await toast.evaluate(element => {
+    element.dispatchEvent(new KeyboardEvent('keydown', {
+      bubbles: true,
+      cancelable: true,
+      isComposing: true,
+      key: 'Escape'
+    }))
+  })
+
+  await expect(toast).not.toHaveAttribute('data-state', 'closed')
+
+  await page.evaluate(() => {
+    document.addEventListener('keydown', event => { event.preventDefault() }, { capture: true, once: true })
+  })
+
+  await toast.evaluate(element => {
+    element.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Escape' }))
+  })
+
+  await expect(toast).not.toHaveAttribute('data-state', 'closed')
+
+  await toast.evaluate(element => {
+    element.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Escape' }))
+  })
+
+  await expect(toast).toHaveAttribute('data-state', 'closed')
 })
 
 behaviorTest(['Tour'], 'Tour opens from its linked trigger and closes from its action', async ({ page }) => {
@@ -371,7 +549,7 @@ behaviorTest(['ToggleGroup'], 'ToggleGroup moves focus and pressed state with ar
 behaviorTest(['VirtualList'], 'VirtualList updates its rendered window while scrolling', async ({ page }) => {
   await openPreview(page, 'virtual-list')
 
-  const list = page.locator('.component-doc-preview [data-ui-virtual-list]')
+  const list = page.locator('.component-doc-preview [data-ui-virtual-list-mode="mounted"]')
   const initialStart = await list.getAttribute('data-ui-range-start')
 
   await list.evaluate(element => {
@@ -380,7 +558,8 @@ behaviorTest(['VirtualList'], 'VirtualList updates its rendered window while scr
   })
 
   await expect(list).not.toHaveAttribute('data-ui-range-start', initialStart ?? '0')
-  await expect(list.locator('[data-ui-virtual-list-item]')).not.toHaveCount(200)
+  await expect(list.locator(':scope > :not([data-ui-virtual-list-spacer]):not([hidden])')).not.toHaveCount(200)
+  await expect(list.locator(':scope > :not([data-ui-virtual-list-spacer]):not([hidden])').last()).toHaveText('Deployment #1')
 })
 
 const dialogScenario = (
@@ -464,12 +643,64 @@ behaviorTest(['HoverCard'], 'HoverCard opens for keyboard focus and closes on Es
 
   const preview = page.locator('.component-doc-preview')
   const trigger = preview.getByRole('button', { name: 'Preview maintainer' })
-  const panel = preview.locator('[data-ui-hover-card] > div').last()
+  const root = preview.locator('[data-ui-hover-card]')
+  const panel = root.locator(':scope > div').last()
 
+  await expect(trigger).toHaveAttribute('data-ui-bound', 'true')
   await trigger.focus()
+  await expect(panel).toBeVisible()
+  await root.dispatchEvent('mouseleave')
   await expect(panel).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(panel).toBeHidden()
+  await trigger.evaluate(element => { element.blur() })
+  await trigger.focus()
+  await expect(panel).toBeVisible()
+  await panel.evaluate(element => {
+    const action = document.createElement('button')
+    action.textContent = 'View maintainer'
+    element.append(action)
+  })
+  await panel.getByRole('button', { name: 'View maintainer' }).focus()
+  await expect(panel).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(trigger).toBeFocused()
+  await expect(panel).toBeHidden()
+  await trigger.evaluate(element => { element.blur() })
+  await trigger.focus()
+  await expect(panel).toBeVisible()
+  await trigger.evaluate(element => { element.blur() })
+  await expect(panel).toBeHidden()
+})
+
+test('HoverCard retains keyboard focus when adopted into another document', async ({ page }) => {
+  await openPreview(page, 'hover-card')
+  const root = page.locator('.component-doc-preview [data-ui-hover-card]')
+
+  await expect(root.getByRole('button', { name: 'Preview maintainer' })).toHaveAttribute('data-ui-bound', 'true')
+  const result = await root.evaluate(element => {
+    const iframe = document.createElement('iframe')
+    document.body.append(iframe)
+    const destination = iframe.contentDocument
+    if (!destination) throw new Error('Missing destination document')
+    const trigger = element.querySelector<HTMLButtonElement>('button')
+    const panel = element.querySelector<HTMLElement>(':scope > div:last-child')
+    if (!trigger || !panel) throw new Error('Missing HoverCard controls')
+    const originalAction = document.createElement('button')
+    originalAction.textContent = 'Original action'
+    panel.append(originalAction)
+    destination.body.append(destination.adoptNode(element))
+    const action = destination.createElement('button')
+    action.textContent = 'Destination action'
+    panel.append(action)
+    trigger.focus()
+    originalAction.focus()
+    action.focus()
+    originalAction.focus()
+    return { hidden: panel.hidden, focused: destination.activeElement === originalAction }
+  })
+
+  expect(result).toEqual({ hidden: false, focused: true })
 })
 
 behaviorTest(['Tooltip'], 'Tooltip opens for keyboard focus and closes on Escape', async ({ page }) => {
@@ -509,7 +740,7 @@ behaviorTest(['Code'], 'Code copies its block content and announces success', as
 
   await expect(copy).toHaveAttribute('aria-label', 'Copy code to clipboard')
   await copy.click()
-  await expect(copy).toHaveAttribute('aria-label', 'Code copied!')
+  await expect(copy).toHaveAttribute('aria-label', 'Code copied to clipboard')
   await expect(page.getByText('Code copied to clipboard', { exact: true })).toBeAttached()
 })
 
@@ -569,7 +800,7 @@ behaviorTest(['InputOTP'], 'InputOTP synchronizes typed digits with its visual s
   await page.keyboard.type('654321')
 
   await expect(input).toHaveValue('654321')
-  await expect(root.locator('[data-ui-input-otp-char]')).toHaveText(['6', '5', '4', '3', '2', '1'])
+  await expect(root.locator('[data-ui-input-otp-char]')).toHaveText(['6', '5', '4', '3', '2', '1', '\u00a0', '\u00a0'])
 })
 
 behaviorTest(['DataTable'], 'DataTable sorts records and reports row selection', async ({ page }) => {
@@ -587,6 +818,39 @@ behaviorTest(['DataTable'], 'DataTable sorts records and reports row selection',
   await firstRow.locator('[data-ui-datatable-row-select]').check()
   await expect(firstRow).toHaveAttribute('aria-selected', 'true')
   await expect(preview.locator('[data-selected-count]')).toHaveText('1')
+})
+
+test('DataTable requests server sorting from the displayed header state', async ({ page }) => {
+  await openPreview(page, 'data-table')
+  const header = page.locator('.component-doc-preview thead th').filter({ hasText: 'Downloads' })
+  const result = await header.evaluate(element => {
+    const root = element.closest('[data-ui-datatable]')
+    const button = element.querySelector('[data-ui-datatable-sort]')
+
+    if (!(root instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) {
+      throw new Error('Missing data table controls')
+    }
+    root.dataset.uiDatatableSortMode = 'manual'
+    element.setAttribute('aria-sort', 'ascending')
+    const rows = () => [...root.querySelectorAll('tbody tr')].map(row => row.textContent)
+    const before = rows()
+    const events: unknown[] = []
+
+    root.addEventListener('ui:data-table-sort-change', event => {
+      if (event instanceof CustomEvent) {
+        const detail: unknown = event.detail
+
+        events.push(detail)
+      }
+    })
+    button.click()
+
+    return { before, after: rows(), events, direction: element.getAttribute('aria-sort') }
+  })
+
+  expect(result.after).toEqual(result.before)
+  expect(result.direction).toBe('descending')
+  expect(result.events).toEqual([expect.objectContaining({ direction: 'descending' })])
 })
 
 behaviorTest(['Calendar'], 'Calendar navigates months and commits a selected day', async ({ page }) => {
@@ -720,6 +984,25 @@ behaviorTest(['FileUpload'], 'FileUpload reports selected files and updates its 
 
   await expect(root).toHaveAttribute('data-state', 'selected')
   await expect(root.locator('[data-ui-file-upload-files]')).toHaveText('avatar.png')
+  await root.evaluate(element => {
+    const form = document.createElement('form')
+    const reset = document.createElement('button')
+
+    element.before(form)
+    form.append(element)
+    reset.type = 'reset'
+    reset.textContent = 'Reset upload'
+    form.append(reset)
+    form.addEventListener('reset', event => { event.preventDefault() }, { once: true })
+  })
+  const reset = page.getByRole('button', { name: 'Reset upload' })
+
+  await reset.click()
+  await expect(root.locator('[data-ui-file-upload-files]')).toHaveText('avatar.png')
+  await reset.click()
+  await expect(root).toHaveAttribute('data-state', 'idle')
+  await expect(root.locator('[data-ui-file-upload-files]')).toBeEmpty()
+  expect(await input.evaluate(element => element instanceof HTMLInputElement && element.files?.length)).toBe(0)
 })
 
 behaviorTest(['Anchor'], 'Anchor initializes section tracking for in-page links', async ({ page }) => {
@@ -762,6 +1045,55 @@ behaviorTest(['Mentions'], 'Mentions filters suggestions and inserts the selecte
   await expect(input).toHaveValue('Hello @alice ')
   await expect(list).toBeHidden()
   await expect(input).toHaveAttribute('aria-expanded', 'false')
+})
+
+test('Mentions keeps option buttons out of the tab sequence while keyboard and pointer selection still work', async ({ page }) => {
+  await openPreview(page, 'mentions')
+  await page.clock.install()
+
+  const root = page.locator('.component-doc-preview [data-ui-mentions]')
+  const input = root.locator('[data-ui-mentions-input]')
+  const list = root.locator('[data-ui-mentions-list]')
+  const aliceOption = root.getByRole('option', { name: 'alice' })
+
+  await root.evaluate(element => {
+    const nextField = document.createElement('input')
+
+    nextField.type = 'text'
+    nextField.setAttribute('aria-label', 'Next field')
+    element.insertAdjacentElement('afterend', nextField)
+  })
+
+  const nextField = page.getByRole('textbox', { name: 'Next field' })
+
+  await input.fill('Hello @al')
+  await expect(list).toBeVisible()
+  await expect(aliceOption).toHaveAttribute('tabindex', '-1')
+
+  await input.focus()
+  await page.keyboard.press('Tab')
+  await expect(nextField).toBeFocused()
+
+  await page.keyboard.press('Shift+Tab')
+  await expect(input).toBeFocused()
+
+  await input.fill('Hello @al')
+  await page.clock.runFor(150)
+  await expect(list).toBeVisible()
+  await input.press('Enter')
+  await expect(input).toHaveValue('Hello @alice ')
+  await expect(list).toBeHidden()
+
+  await input.fill('Hello @al')
+  await expect(list).toBeVisible()
+  await aliceOption.click()
+  await expect(input).toHaveValue('Hello @alice ')
+  await expect(list).toBeHidden()
+  await input.fill('Hello @al')
+  await expect(list).toBeVisible()
+  await nextField.focus()
+  await page.clock.runFor(150)
+  await expect(list).toBeHidden()
 })
 
 behaviorTest(['TreeSelect'], 'TreeSelect commits a node and closes its disclosure', async ({ page }) => {
@@ -964,4 +1296,259 @@ behaviorTest(['ScrollProgress'], 'ScrollProgress tracks document reading positio
 test('runtime behavior registry is completely represented', () => {
   expect([...registeredBehaviorComponents].sort())
     .toEqual([...runtimeBehaviorComponentNames].sort())
+})
+
+test('Tabs switches regression fixture preserves localized and accessible SSR contracts', async ({ page }) => {
+  await page.goto('/internal/interaction-regressions')
+  await expect(page.getByRole('heading', { name: 'Interaction regression fixture' })).toBeVisible()
+  await expect(page.getByRole('img', { name: 'Alex Smith' })).toBeVisible()
+  const toggle = page.getByRole('button', { name: 'Mostrar' })
+  await expect(toggle).toHaveText('Mostrar')
+  await toggle.click()
+  await expect(page.getByRole('button', { name: 'Ocultar' })).toHaveText('Ocultar')
+  await expect(page.locator('[role="treeitem"]').nth(1)).toHaveAttribute('aria-level', '2')
+  expect(await page.locator('[role="listbox"] > li').evaluateAll(items => items.every(item => item.getAttribute('role') === 'presentation'))).toBe(true)
+  const form = page.locator('#external-form')
+  await expect(form).toHaveAttribute('data-ui-form-bound', 'true')
+  await page.getByRole('button', { name: 'Submit external field' }).click()
+  await expect(form).toHaveAttribute('data-status', 'error')
+  await expect(page.getByLabel('External field')).toHaveAttribute('aria-invalid', 'true')
+  const summaryLink = form.locator('[data-ui-error-summary] a[href="#external-field"]')
+  await summaryLink.evaluate(link => {
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    icon.setAttribute('width', '20')
+    icon.setAttribute('height', '20')
+    icon.setAttribute('aria-hidden', 'true')
+    link.append(icon)
+  })
+  await summaryLink.locator('svg').click()
+  await expect(page.getByLabel('External field')).toBeFocused()
+  await page.evaluate(() => {
+    document.querySelector('#external-form')?.addEventListener('ui:valid', () => {
+      document.querySelector('#external-form')?.setAttribute('data-regression-valid', 'true')
+    }, { once: true })
+  })
+  await page.getByLabel('External field').fill('Corrected value')
+  await page.getByLabel('External field').press('Tab')
+  await expect(page.getByLabel('External field')).not.toHaveAttribute('aria-invalid')
+  await expect(page.locator('#external-error')).toBeHidden()
+  await expect(form).toHaveAttribute('data-regression-valid', 'true')
+})
+
+test('Tooltip opens when randomUUID is unavailable and generates distinct IDs', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(crypto, 'randomUUID', { configurable: true, value: undefined })
+  })
+  await page.goto('/internal/interaction-regressions')
+  const first = page.getByRole('button', { name: 'First tooltip' })
+  const second = page.getByRole('button', { name: 'Second tooltip' })
+  await expect(first).toHaveAttribute('aria-describedby', /ui-tooltip-/)
+  const firstId = await first.getAttribute('aria-describedby')
+  const secondId = await second.getAttribute('aria-describedby')
+  expect(firstId).not.toBe(secondId)
+  await first.focus()
+  await expect(page.getByRole('tooltip', { name: 'First help' })).toBeVisible()
+  await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
+})
+
+behaviorTest(
+  ['BarChart', 'LineChart', 'PieChart', 'ScatterChart', 'ComboChart', 'Heatmap', 'RangeChart'],
+  'Chart datum actions preserve identity across pointer and keyboard activation',
+  async ({ page }) => { await verifyAstroChartActivation(page) }
+)
+
+behaviorTest(
+  ['DialogClose'],
+  'Dialog opens a long compound task with reachable actions and restored focus',
+  async ({ page }) => {
+    await page.goto('/internal/dashboard-dialog')
+    const opener = page.getByRole('button', { name: 'Edit record', exact: true })
+    await opener.click()
+    const dialog = page.getByRole('dialog', { name: 'Edit a long record' })
+    await expect(dialog).toBeVisible()
+    const body = dialog.locator('[data-slot="dialog-body"]')
+    const dimensions = await body.evaluate(element => ({
+      visible: element.clientHeight,
+      content: element.scrollHeight
+    }))
+    expect(dimensions.content).toBeGreaterThan(dimensions.visible)
+    await page.getByLabel('Record field 20', { exact: true }).focus()
+    await expect(page.getByLabel('Record field 20', { exact: true })).toBeInViewport()
+    await expect(dialog.getByRole('button', { name: 'Save changes' })).toBeInViewport()
+    const cancel = dialog.getByRole('button', { name: 'Cancel', exact: true })
+    await cancel.focus()
+    await page.keyboard.press('Enter')
+    await expect(dialog).not.toBeVisible()
+    await expect(opener).toBeFocused()
+    await opener.click()
+    await page.keyboard.press('Escape')
+    await expect(dialog).not.toBeVisible()
+    await expect(opener).toBeFocused()
+  }
+)
+
+behaviorTest(['AttachmentPreview'], 'Attachment previews retain actions through image failure and replacement', async ({ page }) => {
+  await openPreview(page, 'attachment-preview')
+  const preview = page.locator('.component-doc-preview [data-ui-attachment-preview]').first()
+  const image = preview.locator('img')
+  await expect(preview).toHaveAttribute('data-state', 'ready')
+  await image.evaluate(element => {
+    element.setAttribute('src', '/missing-synthetic-attachment.png')
+  })
+  await expect(preview).toHaveAttribute('data-state', 'error')
+  await expect(preview.getByRole('status')).toHaveText('Could not load the preview.')
+  await expect(preview.getByRole('button', { name: 'Replace' })).toBeEnabled()
+  await preview.getByRole('button', { name: 'Replace' }).focus()
+  await expect(preview.getByRole('button', { name: 'Replace' })).toBeFocused()
+  await image.evaluate(element => {
+    element.setAttribute('src', '/logo.svg')
+  })
+  await expect(preview).toHaveAttribute('data-state', 'ready')
+  await expect(preview.getByRole('status')).toBeHidden()
+})
+
+test('PhoneInput keeps external editable and readonly form submission and reset complete', async ({ page }) => {
+  await page.goto('/internal/interaction-regressions')
+  const country = page.locator('#external-phone').locator('..').locator('select')
+  const readonlyCountry = page.locator('#readonly-external-phone').locator('..').locator('select')
+  await expect(country).toHaveAttribute('form', 'phone-owner')
+  await expect(readonlyCountry).toHaveAttribute('form', 'readonly-phone-owner')
+  await country.selectOption('CO')
+  await page.locator('#external-phone').fill('999')
+  const submitted = await page.evaluate(() => {
+    const owner = document.getElementById('phone-owner')
+    const readonlyOwner = document.getElementById('readonly-phone-owner')
+    if (!(owner instanceof HTMLFormElement) || !(readonlyOwner instanceof HTMLFormElement))
+      throw new Error('Expected external phone forms')
+    return {
+      editable: Object.fromEntries(new FormData(owner)),
+      readonly: Object.fromEntries(new FormData(readonlyOwner))
+    }
+  })
+  expect(submitted).toEqual({
+    editable: { 'phone-country': 'CO', 'external-phone': '999' },
+    readonly: { 'readonly-country': 'US', 'readonly-phone': '5550123' }
+  })
+  await page.getByRole('button', { name: 'Reset external phone' }).click()
+  await expect(country).toHaveValue('US')
+  await expect(page.locator('#external-phone')).toHaveValue('5550123')
+})
+
+test('PhoneInput synchronizes enhanced metadata after a real reset-button click', async ({ page }) => {
+  await openPreview(page, 'phone-input')
+  const root = page.locator('#ex-phone').locator('..')
+  const input = root.locator('.ui-phone-input__number')
+  const country = root.locator('select')
+  const code = root.locator('[data-ui-phone-code]')
+
+  await expect(code).toHaveText('+57')
+  await root.evaluate(element => {
+    const form = document.createElement('form')
+    const reset = document.createElement('button')
+
+    element.before(form)
+    form.append(element)
+    reset.type = 'reset'
+    reset.textContent = 'Reset enhanced phone'
+    form.append(reset)
+    form.addEventListener('reset', event => { event.preventDefault() }, { once: true })
+  })
+  await input.fill('+1 212 555 0123')
+  await expect(country).toHaveValue('US')
+  await expect(code).toHaveText('+1')
+  const reset = page.getByRole('button', { name: 'Reset enhanced phone' })
+
+  await reset.click()
+  await expect(code).toHaveText('+1')
+  await reset.click()
+  await expect(country).toHaveValue('CO')
+  await expect(code).toHaveText('+57')
+  await expect(input).toHaveValue('')
+  await expect(root).toHaveAttribute('data-e164', '')
+})
+
+
+test('enhanced forms retain validation when adopted and reinitialized in another document', async ({ page }) => {
+  await page.goto('/internal/interaction-regressions')
+  await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
+  await page.getByRole('button', { name: 'Submit external field' }).click()
+  const result = await page.evaluate(() => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+    const form = document.querySelector<HTMLFormElement>('#external-form')
+    const control = document.querySelector<HTMLInputElement>('#external-field')
+    const field = control?.closest<HTMLElement>('[data-ui-field], .ui-field')
+    const error = document.querySelector<HTMLElement>('#external-error')
+    if (!init || !form || !control || !field || !error) throw new Error('Missing form adoption fixture')
+    let valid = 0
+    let invalid = 0
+    form.addEventListener('ui:valid', () => { valid += 1 })
+    form.addEventListener('ui:invalid', () => { invalid += 1 })
+    const frame = document.createElement('iframe')
+    document.body.append(frame)
+    const destination = frame.contentDocument
+    if (!destination) throw new Error('Missing adoption document')
+    destination.body.append(destination.adoptNode(form), destination.adoptNode(field))
+    init(destination)
+    init(destination)
+    control.value = 'Corrected'
+    control.focus()
+    control.blur()
+    const corrected = control.getAttribute('aria-invalid') === null && error.hidden
+    control.value = ''
+    control.focus()
+    control.blur()
+    const rejected = control.getAttribute('aria-invalid') === 'true' && !error.hidden
+    document.body.append(document.adoptNode(form), document.adoptNode(field))
+    init(document)
+    control.value = 'Returned'
+    control.focus()
+    control.blur()
+    return { corrected, rejected, valid, invalid, returned: control.getAttribute('aria-invalid') === null }
+  })
+  expect(result).toEqual({ corrected: true, rejected: true, valid: 2, invalid: 1, returned: true })
+})
+
+
+test('iframe-origin enhanced forms validate after adoption into the host document', async ({ page }) => {
+  await page.goto('/internal/interaction-regressions')
+  await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
+  const result = await page.evaluate(() => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+    const createFixture = () => {
+      const sourceForm = document.querySelector<HTMLFormElement>('#external-form')
+      const sourceField = document.querySelector<HTMLInputElement>('#external-field')?.closest<HTMLElement>('[data-ui-field], .ui-field')
+      if (!sourceForm || !sourceField) throw new Error('Missing reverse-adoption fixture')
+      const frame = document.createElement('iframe')
+      document.body.append(frame)
+      const source = frame.contentDocument
+      if (!source) throw new Error('Missing source document')
+      source.body.innerHTML = sourceForm.outerHTML + sourceField.outerHTML
+      sourceForm.remove()
+      sourceField.remove()
+      const form = source.querySelector<HTMLFormElement>('#external-form')
+      const control = source.querySelector<HTMLInputElement>('#external-field')
+      const field = control?.closest<HTMLElement>('[data-ui-field], .ui-field')
+      const error = source.querySelector<HTMLElement>('#external-error')
+      if (!form || !control || !field || !error) throw new Error('Missing source form controls')
+      return { source, form, control, field, error }
+    }
+    const { source, form, control, field, error } = createFixture()
+    if (!init) throw new Error('Missing form initializer')
+    delete form.dataset.uiFormBound
+    init(source)
+    document.body.append(document.adoptNode(form), document.adoptNode(field))
+    init(document)
+    init(document)
+    let invalid = 0
+    let valid = 0
+    form.addEventListener('ui:invalid', () => { invalid += 1 })
+    form.addEventListener('ui:valid', () => { valid += 1 })
+    form.requestSubmit()
+    const rejected = control.getAttribute('aria-invalid') === 'true' && !error.hidden
+    control.value = 'Corrected'
+    control.focus()
+    control.blur()
+    return { foreignPrototype: !(control instanceof HTMLInputElement), rejected, corrected: control.getAttribute('aria-invalid') === null && error.hidden, invalid, valid }
+  })
+  expect(result).toEqual({ foreignPrototype: true, rejected: true, corrected: true, invalid: 1, valid: 1 })
 })

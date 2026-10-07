@@ -1,5 +1,246 @@
 # @santi020k/lumen-react-native
 
+## 4.0.0
+
+- Validate controlled table selections as native sets of string IDs before constructing interactive controls; malformed restored state renders the existing invalid feedback.
+
+- Read controlled Tree selection and expansion through native Set operations so overridden instance methods cannot crash rendering or proposals.
+
+- Validate controlled Tree selection Sets and require own string titles for decoded Stepper rows, preserving existing invalid-state accessibility.
+
+- Treat malformed tour anchor collections as unavailable targets and validate tree expansion Sets before traversal or proposals.
+
+- Reject malformed breadcrumb entries, cascader paths, command queries and weekday labels; ignore malformed palette swatches while preserving the color field.
+
+- Validate decoded tree, table, command, transfer, kanban, tour, stepper, mentions and QR inputs before model or hook access; invalid carousel slides also stop before identity derivation.
+
+- Reject malformed decoded Agenda event collections, fields and timing, and Carousel slide collections, IDs and labels before rendering or navigation.
+
+- Reject malformed decoded event collections, rows, and date bounds before displaying calendar indicators.
+
+- Reject malformed decoded calendar days before reading fields or rendering calendar grids.
+
+- Honor comparison chart value labels and escaped accessible summaries in Web Components. Reset iOS and web time-picker drafts when controlled values or bounds change, preserving current Android bounds and callback handling.
+
+- Add controlled MultiSelect to React Native and SwiftUI alongside Compose, retaining selections
+  outside filtered results, blocking disabled/read-only edits, and exposing loading/retry and localized
+  action labels. Forward application safe-area insets into the React Native sheet. Add a complete,
+  checked web-to-native catalog audit for the remaining v4 gaps.
+
+### Minor Changes
+
+- Add controlled media viewport, thumbnail and filmstrip primitives, persistent comparison modes, and installable Studio workspace, adjustment and processing recipes. Keep media services and export host-owned. Include interactive qualification examples and native adapter contracts.
+
+- Add controlled civil-date Calendar and Agenda plus native KanbanBoard and standalone
+  KanbanColumn, with stable identity, localized accessible actions and state guards.
+
+- Add controlled native ColorPicker with bounded hex/rgba parsing, channel editing,
+  optional alpha and palettes, retained invalid drafts and localized accessibility.
+
+- Add controlled grouped Command search and hierarchical TreeGrid records with
+  localized native controls, retained host state and guarded custom cell actions.
+
+- Add Stepper, Timeline and Breadcrumb contracts across native adapters, with localized
+  progress, accessible host content and controlled navigation callbacks.
+
+- Add offline native QRCode encoding and controlled Cascader branch/leaf selection
+  across React Native, SwiftUI and Compose, with localized recovery and accessibility.
+
+- Add controlled whole-star Rating with localized option labels, bounded input,
+  and disabled/read-only protection. SwiftUI and Compose expose the corresponding native control.
+
+- Add controlled native Schedule day/week grids with all-day bands, collision-safe
+  overlap lanes, localized state guards and accessible host rescheduling requests.
+
+- Add native Table and DataTable with controlled manual/client sorting, stable row
+  selection, accessible record/table layouts and explicit status/retry states.
+  Corresponding SwiftUI and Compose contracts share the same ownership boundaries.
+
+- Add controlled native Carousel paging and Tooltip help with localized accessible
+  controls and safe status/disabled guards. Compose tooltip popups now consume Back
+  for dismissal instead of closing the host activity.
+
+- Add controlled Tour guidance anchored to measured native targets and Mentions text
+  input with atomic text/selection updates, guarded literal suggestion insertion and
+  documented native composition boundaries.
+
+- Add controlled native Tree components and graph models for React Native, SwiftUI
+  and Compose, with explicit invalid/status states and inherited disabled branches.
+
+- Add controlled native TreeSelect and Transfer with stable identities, retained unknown
+  values, disabled ancestry/membership guards and localized accessible selection.
+
+- Add controlled native range filters with independently named and formatted endpoints, domain
+  stepping, crossing protection, and disabled/read-only behavior. SwiftUI now exposes the same
+  semantic range contract; Compose retains native two-thumb rendering.
+
+- Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
+  semantic chart colors, localized formatting, responsive layouts, and accessible exact data.
+  Calendar heatmaps use explicit Gregorian date-only ranges; funnels preserve supplied stage order;
+  box plots accept precomputed quartiles, whiskers, and outliers without performing application statistics.
+
+- Add canonical Default, Studio and Glass appearance presets, scoped web styling and ThemeBuilder radius, spacing and border customization. Native adapters expose preset palettes and explicit surface material with opaque fallbacks. Swift and Compose consumers must rebuild for the updated theme and surface signatures; see the appearance presets guide.
+
+- Add BulletChart across Astro, React, Web Components, React Native, SwiftUI, and Compose.
+  Compare actual values with targets and labeled qualitative ranges using an honest zero-inclusive
+  domain. Preserve missing measurements, localized exact data, responsive typography, and native
+  accessibility. Existing chart APIs remain compatible.
+
+- Close advanced-input and media gaps across React Native, SwiftUI and Compose with number, time,
+  autocomplete, password, numeric OTP and image comparison controls. Preserve controlled state,
+  localized drafts, native secure entry and autofill hints, explicit cancellation and accessible
+  adjustment. Add exact bounded decimal, numeric OTP and same-day time helpers for web and native
+  consumers, plus bilingual native playground examples and a form-submission error recipe.
+
+- Add canonical per-icon graphic imports through `icons/<name>` for use with the lightweight
+  `graphics` entrypoint. Preserve dynamic named root lookups and generate both layouts from the
+  shared artwork. Brand paths use `icons/brand-<name>`.
+
+- Repair chart data disclosures with full-width controls, bounded keyboard scrolling, and sticky
+  headers across the web adapters. Add WaterfallChart and Histogram to React Native, SwiftUI, and
+  Compose, with matching invalid-input behavior, exact values, and native expandable data lists.
+
+- Bring labeled sequential and diverging heatmaps to React Native, SwiftUI, and Compose with
+  numeric legends, explicit missing-value markers, responsive axes, and consistent exact-value
+  disclosures. Keep duplicate coordinates deterministic and numeric scaling finite at extreme values.
+
+  Swift and Compose consumers should rebuild for the defaulted heatmap options added in v4.
+
+- Improve native sheet scrolling, dismissal protection, keyboard integration, and accessibility text
+  layouts. React Native sheets accept explicit initial and return focus targets. Required-field and
+  tab-panel descriptions are caller-localizable in React Native and Compose. SwiftUI rows and section
+  headers stack at accessibility text sizes. SwiftUI and Compose consumers must rebuild for the
+  updated sheet signatures; application-owned lazy or virtualized sheet content should disable the
+  additional scrolling wrapper.
+
+  Add the optional React Native foundations entrypoint, which shares root implementations and avoids eager full-catalog imports.
+
+  Native horizontal button groups wrap or stack when space is limited and switch to vertical layouts at accessibility text sizes.
+
+  Add an optional React Native graphics entrypoint for statically imported, app-owned SVG components. It shares root icon behavior while avoiding the full named catalog; root name and custom icon APIs remain available.
+
+- Add LollipopChart and DumbbellChart across Astro, React, Elements, React Native, SwiftUI, and Compose.
+  The charts preserve missing values, share a zero-inclusive domain, and provide readable exact data.
+  Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
+
+### Patch Changes
+
+- Keep inactive carousel pages out of web focus and accessibility paths, hide decorative breadcrumb separators, and provide explicit final Timeline item connectors. Swift color parsing rejects non-ASCII hexadecimal graphemes; Swift and Compose rich-text replacement reject malformed span offsets before arithmetic. The React Native RichTextEditor remains deferred with no additional native dependency.
+
+- Give native Checkbox an explicit accessible name while preserving host overrides.
+  Native parity integration also fixes React Native Calendar container sizing and
+  Compose Button default text/icon content color inheritance.
+
+  Expose checked and disabled state for native web checkbox and palette/carousel radio
+  controls. Default nested React Native and SwiftUI text and icons inherit their button foreground while
+  explicit tones and colors remain supported. Announce localized DataTable sort direction
+  and hide stale controls for an empty error message.
+
+  Swift quiet buttons now accept taps across their full padded shape, including sparse compound command labels.
+
+- Prevent a shared Combobox observer loop when an open field becomes disabled or read-only. Keep Android TimeField bounds, error labels, and callbacks current while its native dialog is open. Preserve localized negative Swift NumberField drafts and repeated stepping in Arabic and Persian locales.
+
+- Vertically center Picker option labels within their touch targets to match the selected-value trigger.
+
+- Respect Android accessibility time-to-action settings when automatically dismissing native toasts.
+  Never shorten the requested duration; retain it if the native timeout recommendation fails or is
+  invalid. Ignore stale recommendations after updates, dismissal, eviction, clearing or unmount,
+  while preserving persistent toasts and iOS/web durations.
+
+- Announce Toast and ErrorState title/description updates on iOS using native accessibility APIs.
+  Polite announcements queue behind speech; assertive errors interrupt it, and off disables error
+  announcements. Avoid repeated speech for unchanged copy while retaining Android/web live regions
+  and independently operable actions.
+
+- Allow navigation destination labels to wrap at accessibility text sizes instead of truncating their visible names.
+
+- Expose Slider tracks as accessible adjustable controls on native platforms so screen readers can
+  reach their value and increment/decrement actions.
+
+- Align Slider touch and drag values with native right-to-left layouts. Position the thumb from the
+  logical leading edge while preserving numeric screen-reader increment and decrement actions.
+
+- Updated dependencies [`dcbb1c0`, `c71c50a`, `7163f95`, `ef5187d`, `788125f`, `55a1032`, `551f903`, `85f332c`, `0ea4a4e`, `bd11bc0`, `7a17060`, `79d9b0a`, `edf9cbe`, `059aae9`, `bd11bc0`, `aba0839`]:
+  - @santi020k/lumen-core@4.0.0
+
+- Polish shared Select keyboard activation, accessible popup names, and focus-leave dismissal.
+  Use enhanced Lumen selectors for documentation theme and scope controls, retaining progressive
+  enhancement and resilient preference handling.
+
+  Refresh compatible dependencies and remove unused MDX support, the duplicate root Next
+  declaration, the monolithic MCP SDK, and obsolete dependency overrides. Migrate MCP to the
+  split v2 SDK with unchanged stdio, HTTP, and Worker wire contracts. Programmatic consumers
+  must use v2 SDK transports and types with the returned server object; see the v4 migration guide.
+
+  Regenerate the shared Lucide catalog with four additional icon names and updated nut artwork.
+  Swift exhaustive icon switches must handle the new cases or provide an unknown default.
+
+  Batch React ImageComparison form resets into one scheduled update and cancel pending work
+  during cleanup, preserving controlled values and canceled resets.
+
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.0.0
+
+- Fit line, bar, scatter, range, and combo chart geometry to the available container width. Keep every plotted value visible on phones with readable axis text and a compact plot height, and resize when the container changes.
+
+  Fit web bar charts to narrow cards across Astro, React, and Web Components, reserving more room for horizontal category labels and spacing value-axis labels to avoid overlap.
+
+- Validate decoded heatmap cells through the shared normalizeLumenHeatmapData helper before geometry or native category formatting. Fail closed for malformed rows while preserving unavailable measurements. Execute React rich-text toolbar and keyboard commands in the editor root's owning document, including same-origin iframe portals.
+- Updated dependencies []:
+  - @santi020k/lumen-core@4.0.0
+
+- Avoid calling application BulletChart formatters when measurements or configuration are invalid; render the invalid-data fallback consistently across web and native adapters.
+
+- Reject malformed Astro Bullet range containers, exclude missing heatmap observations from drilldown formatters and targets, keep generated code-region names current after label updates and reconnects, and safely format native image comparison percentages with malformed locales.
+
+- Preserve regex literals during source migration with the existing TypeScript compiler parser as a runtime dependency; leave parser-exhausting input unchanged for manual review and recognize manifests on platform-native paths. Reject malformed serialized heatmap datasets atomically and guard native time display against malformed locales while preserving hour-format preferences.
+
+### Native Advanced Inputs
+
+- Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison
+  controls alongside Compose. Add exact decimal, numeric OTP and same-day time helpers in Core,
+  bilingual playground examples and an application-owned form-error summary recipe.
+
+### Appearance Presets
+
+- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
+  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
+  Swift and Compose consumers must rebuild for the updated initializer signatures.
+
+### Phone Input Improvements
+
+- Polish international phone inputs with shared offline flag artwork, compact country selectors,
+  continuous borders, consistent spacing, visible validation, and complete disabled/read-only states.
+  Expose input attributes and refs directly, and add reusable country flags and read-only phone views.
+
+  In v4, Astro and React PhoneInput `id` labels the actual number input. Web Components expose
+  `input-id` and render the visual phone frame inside the host. Remove consumer flag overlays and
+  DOM attribute patches; use the public props and stable phone parts instead.
+
+### Major Changes
+
+- Prepare the coordinated Lumen 4 family from twenty real consumer audits.
+
+  - Make chart axes readable, preserve complete detail labels, center single observations, use
+    deterministic duplicate handling, and expose formatted native axes and compact plot layouts.
+  - Add controlled date-range drafting with strict calendar bounds, localized labels, and safe
+    disabled/read-only behavior. Keep form labels and keyboard focus attached to the active control.
+  - Keep server-paginated tables in supplied order with controlled manual sorting, and make dialog
+    dismissal and opener restoration explicit for pending and nested workflows.
+  - Preserve native hidden semantics, loading-button dimensions, and disabled slotted activation.
+  - Give code-copy actions localized success and failure feedback, preserve normal navigation Tab
+    order, and improve readable prose and code-theme defaults.
+  - Add ImageComparison with a fixed image frame, native range control, RTL support, and matching
+    Astro, React, and Web Component contracts.
+  - Improve native slider announcements, long text layout, and contextual symbol selection.
+  - Refresh usage examples, migration guidance, machine-readable contracts, and the public consumer
+    showcase. Token, icon, and form-integration packages join the coordinated major family.
+
+  Migration: use unique stable chart X values, rebuild native consumers for updated initializer
+  contracts, and review custom button selectors against the content wrapper. Loading actions now
+  prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
+  application data migration is performed, and this candidate is not publication authorization.
+
 ## 3.0.0
 
 ### Major Changes

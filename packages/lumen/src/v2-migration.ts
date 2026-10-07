@@ -1,4 +1,4 @@
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { lstat, readdir, readFile, writeFile } from 'node:fs/promises'
 import { extname, relative, resolve } from 'node:path'
 
 // cspell:words swiftpm
@@ -189,7 +189,7 @@ const createFinding = (
   message
 })
 
-const findImportStatements = (
+export const findImportStatements = (
   source: string,
   module: string
 ): ImportStatement[] => {
@@ -226,7 +226,7 @@ const findImportStatements = (
   return statements.sort((left, right) => left.start - right.start)
 }
 
-const parseNamedImports = (clause: string): ParsedNamedImports | undefined => {
+export const parseNamedImports = (clause: string): ParsedNamedImports | undefined => {
   const open = clause.indexOf('{')
   const close = clause.lastIndexOf('}')
 
@@ -276,7 +276,7 @@ const applyEdits = (source: string, edits: SourceEdit[]): string => edits
     source
   )
 
-const findBalancedEnd = (
+export const findBalancedEnd = (
   source: string,
   start: number,
   opening: string,
@@ -469,7 +469,7 @@ const parseMarkupAttribute = (
   )
 }
 
-const parseMarkupAttributes = (
+export const parseMarkupAttributes = (
   source: string,
   start: number,
   end: number
@@ -506,7 +506,20 @@ const advanceQuotedSource = (
   skip: character === '\\'
 })
 
-const findMarkupTagEnd = (source: string, start: number): number => {
+const getMarkupBoundary = (
+  character: string | undefined,
+  braceDepth: number,
+  rejectNestedTags: boolean,
+  index: number
+): number | undefined => {
+  if (braceDepth !== 0) return undefined
+
+  if (character === '>') return index
+
+  return character === '<' && rejectNestedTags ? -1 : undefined
+}
+
+export const findMarkupTagEnd = (source: string, start: number, rejectNestedTags = false): number => {
   let braceDepth = 0
   let quote: '\'' | '"' | '`' | undefined
 
@@ -526,7 +539,11 @@ const findMarkupTagEnd = (source: string, start: number): number => {
     if (isMarkupQuoteStart(character, braceDepth)) quote = character
     else if (character === '{') braceDepth += 1
     else if (character === '}') braceDepth = Math.max(0, braceDepth - 1)
-    else if (character === '>' && braceDepth === 0) return index
+    else {
+      const boundary = getMarkupBoundary(character, braceDepth, rejectNestedTags, index)
+
+      if (boundary !== undefined) return boundary
+    }
   }
 
   return source.length
@@ -711,7 +728,7 @@ const migrateRuntimeImports = (
   return { changes, manualReview, source: applyEdits(source, edits) }
 }
 
-const getTagNameEnd = (source: string, start: number): number => {
+export const getTagNameEnd = (source: string, start: number): number => {
   let end = start
 
   while (/[\w:.-]/u.test(source[end] ?? '')) end += 1
@@ -791,7 +808,7 @@ const inspectVisualSize = (
   }
 }
 
-const getMarkupStart = (source: string, file: string): number => {
+export const getMarkupStart = (source: string, file: string): number => {
   if (!file.endsWith('.astro')) return 0
 
   const opening = /^(?:\uFEFF)?\s*---\s*(?:\r?\n|$)/u.exec(source)
@@ -1289,11 +1306,15 @@ export const migrateLumenV2Source = (
   }
 }
 
-const discoverSourceFiles = async (path: string): Promise<string[]> => {
-  const details = await stat(path)
+export const discoverSourceFiles = async (
+  path: string, extensions: ReadonlySet<string> = SOURCE_EXTENSIONS
+): Promise<string[]> => {
+  const details = await lstat(path)
+
+  if (details.isSymbolicLink()) return []
 
   if (details.isFile())
-    return SOURCE_EXTENSIONS.has(extname(path)) ? [path] : []
+    return extensions.has(extname(path)) ? [path] : []
 
   const entries = await readdir(path, { withFileTypes: true })
 
@@ -1302,7 +1323,7 @@ const discoverSourceFiles = async (path: string): Promise<string[]> => {
       .filter(
         entry => !entry.isDirectory() || !IGNORED_DIRECTORIES.has(entry.name)
       )
-      .map(entry => discoverSourceFiles(resolve(path, entry.name)))
+      .map(entry => discoverSourceFiles(resolve(path, entry.name), extensions))
   )
 
   return nested.flat().sort()

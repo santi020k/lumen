@@ -15,6 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -50,7 +54,8 @@ sealed interface LumenChartX {
 
     @Immutable
     data class Time(val epochMillis: Long) : LumenChartX {
-        override val label: String = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(epochMillis))
+        override val label: String = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT)
+            .format(Date(epochMillis))
     }
 }
 
@@ -74,9 +79,18 @@ enum class LumenChartTone {
 @Immutable
 data class LumenChartLabels(
     val chartData: String = "Chart data",
+    val viewData: String = "View chart data",
+    val invalidData: String = "Chart data is invalid.",
+    val start: String = "Start",
+    val end: String = "End",
+    val value: String = "Value",
+    val count: String = "Count",
+    val density: String = "Density",
     val empty: String = "No chart data available.",
     val notAvailable: String = "Not available",
     val size: String = "Size",
+    val formatX: (LumenChartX) -> String = { it.label },
+    val formatValue: (Double) -> String = { it.toString() },
     val formatHeatmapSummary: (Int) -> String = { count ->
         if (count == 0) "No chart data available." else "$count heatmap ${if (count == 1) "cell" else "cells"}."
     },
@@ -300,9 +314,50 @@ internal fun lumenChartCategoryPosition(
     centerInBand: Boolean
 ): Float {
     if (categoryCount <= 0) return 0f
+    if (categoryCount == 1) return 0.5f
     if (centerInBand) return (categoryIndex + 0.5f) / categoryCount
 
     return categoryIndex.toFloat() / max(1, categoryCount - 1).toFloat()
+}
+
+/** Continuous line charts sort homogeneous numeric/time coordinates; mixed types stay categorical. */
+internal fun lumenLineChartCategories(series: List<LumenChartSeries>): List<LumenChartX> {
+    val categories = lumenChartCategories(series)
+
+    return when {
+        categories.all { it is LumenChartX.Number } -> categories
+            .filterIsInstance<LumenChartX.Number>()
+            .filter { it.value.isFinite() }
+            .sortedBy { it.value }
+        categories.all { it is LumenChartX.Time } -> categories
+            .filterIsInstance<LumenChartX.Time>()
+            .sortedBy { it.epochMillis }
+        else -> categories
+    }
+}
+
+internal fun lumenChartXPosition(
+    categoryIndex: Int,
+    categories: List<LumenChartX>,
+    centerInBands: Boolean = false
+): Float {
+    if (centerInBands || categories.size <= 1) {
+        return lumenChartCategoryPosition(categoryIndex, categories.size, centerInBands)
+    }
+    val values = when {
+        categories.all { it is LumenChartX.Number } ->
+            categories.filterIsInstance<LumenChartX.Number>().map { it.value }
+        categories.all { it is LumenChartX.Time } ->
+            categories.filterIsInstance<LumenChartX.Time>().map { it.epochMillis.toDouble() }
+        else -> return lumenChartCategoryPosition(categoryIndex, categories.size, false)
+    }
+    val value = values.getOrNull(categoryIndex) ?: return 0.5f
+    val minimum = values.min()
+    val maximum = values.max()
+    if (minimum == maximum) return 0.5f
+
+    // Halving before subtraction keeps opposite finite extremes from overflowing.
+    return ((value / 2 - minimum / 2) / (maximum / 2 - minimum / 2)).toFloat()
 }
 
 private fun lumenChartDomain(values: List<Double?>, includeZero: Boolean = false): LumenChartDomain {
@@ -358,7 +413,7 @@ private fun resolvedLumenChartTone(tone: LumenChartTone?, index: Int): LumenChar
     return tones[index % tones.size]
 }
 
-private fun LumenThemeValues.chartColor(tone: LumenChartTone): Color = when (tone) {
+internal fun LumenThemeValues.chartColor(tone: LumenChartTone): Color = when (tone) {
     LumenChartTone.Accent -> colors.accent
     LumenChartTone.Brand -> colors.brand
     LumenChartTone.Danger -> colors.danger
@@ -376,7 +431,7 @@ private fun LumenThemeValues.chartColor(tone: LumenChartTone): Color = when (ton
 }
 
 @Composable
-private fun LumenChartFrame(
+internal fun LumenChartFrame(
     label: String,
     summary: String,
     modifier: Modifier,
@@ -430,31 +485,33 @@ private fun LumenChartDataList(
 ) {
     val colors = LocalLumenTheme.current.colors
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(max = 240.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
-    ) {
-        Text(labels.chartData, color = colors.ink, fontWeight = FontWeight.Bold)
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    LumenDisclosure(title = labels.viewData, expanded = expanded, onExpandedChange = { expanded = it }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 240.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
+        ) {
 
-        for (item in series) {
-            for (datum in item.data) {
-                val label = lumenChartDataLabel(item, datum, labels, includeSize)
-                val next = LumenChartSelection(item.id, datum.x)
+            for (item in series) {
+                for (datum in item.data) {
+                    val label = lumenChartDataLabel(item, datum, labels, includeSize)
+                    val next = LumenChartSelection(item.id, datum.x)
 
-                if (onSelectionChange == null || datum.y?.isFinite() != true) {
-                    Text(label, color = colors.inkSoft, style = MaterialTheme.typography.bodySmall)
-                } else {
-                    TextButton(
-                        onClick = { onSelectionChange(next) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 44.dp)
-                            .semantics { selected = selection == next }
-                    ) {
-                        Text(label, modifier = Modifier.fillMaxWidth(), color = colors.inkSoft)
+                    if (onSelectionChange == null || datum.y?.isFinite() != true) {
+                        Text(label, color = colors.inkSoft, style = MaterialTheme.typography.bodySmall)
+                    } else {
+                        TextButton(
+                            onClick = { onSelectionChange(next) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 44.dp)
+                                .semantics { selected = selection == next }
+                        ) {
+                            Text(label, modifier = Modifier.fillMaxWidth(), color = colors.inkSoft)
+                        }
                     }
                 }
             }
@@ -468,37 +525,39 @@ internal fun lumenChartDataLabel(
     labels: LumenChartLabels = LumenChartLabels(),
     includeSize: Boolean = false
 ): String {
-    val value = datum.y?.takeIf(Double::isFinite)?.toString() ?: labels.notAvailable
-    val base = "${datum.x.label}, ${series.label}: ${datum.label ?: value}${datum.toneLabel?.let { ", $it" } ?: ""}"
-    val size = datum.size?.takeIf { it.isFinite() && it >= 0 }?.toString() ?: labels.notAvailable
+    val value = datum.y?.takeIf(Double::isFinite)?.let(labels.formatValue) ?: labels.notAvailable
+    val base = "${labels.formatX(datum.x)}, ${series.label}: ${datum.label ?: value}${datum.toneLabel?.let { ", $it" } ?: ""}"
+    val size = datum.size?.takeIf { it.isFinite() && it >= 0 }?.let(labels.formatValue) ?: labels.notAvailable
 
     return if (includeSize) "$base, ${labels.size}: $size" else base
 }
 
-private data class LumenStructuredChartDataRow(val id: String, val label: String)
+internal data class LumenStructuredChartDataRow(val id: String, val label: String)
 
 @Composable
-private fun LumenStructuredChartDataList(
+internal fun LumenStructuredChartDataList(
     rows: List<LumenStructuredChartDataRow>,
     labels: LumenChartLabels
 ) {
     val colors = LocalLumenTheme.current.colors
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(max = 240.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
-    ) {
-        Text(labels.chartData, color = colors.ink, fontWeight = FontWeight.Bold)
-        rows.forEach { row ->
-            Text(
-                row.label,
-                color = colors.inkSoft,
-                modifier = Modifier.semantics { contentDescription = row.label },
-                style = MaterialTheme.typography.bodySmall
-            )
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    LumenDisclosure(title = labels.viewData, expanded = expanded, onExpandedChange = { expanded = it }) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 240.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)
+        ) {
+            rows.forEach { row ->
+                Text(
+                    row.label,
+                    color = colors.inkSoft,
+                    modifier = Modifier.semantics { contentDescription = row.label },
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 }
@@ -523,21 +582,24 @@ private fun DrawScope.drawLumenLineSeries(
     color: Color,
     area: Boolean,
     padding: Float,
-    categories: List<LumenChartX> = lumenChartCategories(listOf(series)),
+    categories: List<LumenChartX> = lumenLineChartCategories(listOf(series)),
     centerInBands: Boolean = false
 ) {
     val plotWidth = size.width - padding * 2
 
     lumenLineValueSegments(series, categories).forEach { segment ->
         val available = segment.map { point ->
-            val x = padding + lumenChartCategoryPosition(
+            val x = padding + lumenChartXPosition(
                 point.categoryIndex,
-                categories.size,
+                categories,
                 centerInBands
             ) * plotWidth
             val y = lumenChartScale(point.value, domain, size.height - padding, padding)
 
             Offset(x, y)
+        }
+        if (available.size == 1) {
+            drawCircle(color, radius = 4.dp.toPx(), center = available.first())
         }
         val path = Path().apply {
             moveTo(available.first().x, available.first().y)
@@ -614,17 +676,17 @@ fun LumenLineChart(
     val domain = lumenChartDomain(
         series.flatMap { item -> item.data.map { it.y } } + listOf(reference?.value)
     )
-    val categories = lumenChartCategories(series)
+    val categories = lumenLineChartCategories(series)
 
     val baseSummary = labels.formatSummary(LumenChartSummary.resolve(series))
     val resolvedSummary = summary ?: reference?.let {
-        "$baseSummary ${it.label}: ${it.value}."
+        "$baseSummary ${it.label}: ${labels.formatValue(it.value)}."
     } ?: baseSummary
 
     LumenChartFrame(label, resolvedSummary, modifier, heading, description) {
         if (reference != null) {
             Text(
-                "${reference.label}: ${reference.value}",
+                "${reference.label}: ${labels.formatValue(reference.value)}",
                 color = theme.chartColor(reference.tone),
                 style = MaterialTheme.typography.labelSmall
             )
@@ -662,14 +724,15 @@ fun LumenLineChart(
                 item.data.forEach { datum ->
                     val datumTone = datum.tone ?: return@forEach
                     val datumIndex = categories.indexOf(datum.x)
+                    if (datumIndex < 0) return@forEach
                     val datumValue = datum.y?.takeIf(Double::isFinite) ?: return@forEach
 
                     drawCircle(
                         color = theme.chartColor(datumTone),
                         radius = 4.dp.toPx(),
                         center = Offset(
-                            padding + lumenChartCategoryPosition(
-                                datumIndex, categories.size, false
+                            padding + lumenChartXPosition(
+                                datumIndex, categories
                             ) * plotWidth,
                             lumenChartScale(
                                 datumValue, domain, size.height - padding, padding
@@ -981,55 +1044,14 @@ fun LumenHeatmap(
     modifier: Modifier = Modifier,
     summary: String? = null,
     labels: LumenChartLabels = LumenChartLabels(),
-    showData: Boolean = true
+    showData: Boolean = true,
+    heading: String? = null,
+    description: String? = null,
+    colorScale: LumenHeatmapColorScale = LumenHeatmapColorScale.Sequential,
+    domain: ClosedFloatingPointRange<Double>? = null,
+    midpoint: Double = 0.0
 ) {
-    val theme = LocalLumenTheme.current
-    val columns = data.map { it.column }.distinct()
-    val rows = data.map { it.row }.distinct()
-    val domain = lumenChartDomain(data.map { it.value })
-    val availableData = lumenAvailableHeatmapData(data)
-
-    val resolvedSummary = summary ?: labels.formatHeatmapSummary(availableData.size)
-
-    LumenChartFrame(label, resolvedSummary, modifier) {
-        if (availableData.isEmpty()) {
-            Text(labels.empty, color = theme.colors.inkMuted)
-        } else Canvas(Modifier.fillMaxWidth().height(240.dp)) {
-            val cellWidth = size.width / max(1, columns.size)
-            val cellHeight = size.height / max(1, rows.size)
-
-            availableData.forEach { datum ->
-                val column = columns.indexOf(datum.column)
-                val row = rows.indexOf(datum.row)
-                val ratio = datum.value?.let {
-                    lumenChartScale(it, domain, 0.12f, 1f)
-                } ?: return@forEach
-
-                if (column >= 0 && row >= 0) {
-                    drawRect(
-                        color = theme.chartColors.sequentialHigh.copy(alpha = ratio),
-                        topLeft = Offset(column * cellWidth + 1, row * cellHeight + 1),
-                        size = Size(max(0f, cellWidth - 2), max(0f, cellHeight - 2))
-                    )
-                }
-            }
-        }
-
-
-        if (showData) {
-            LumenStructuredChartDataList(
-                data.map { datum ->
-                    val value = datum.value?.takeIf(Double::isFinite)?.toString() ?: labels.notAvailable
-
-                    LumenStructuredChartDataRow(
-                        datum.id,
-                        "${datum.label ?: "${datum.column}, ${datum.row}"}: $value"
-                    )
-                },
-                labels
-            )
-        }
-    }
+    LumenHeatmapContent(data, label, modifier, summary, labels, showData, heading, description, colorScale, domain, midpoint)
 }
 
 @Composable
@@ -1073,4 +1095,12 @@ fun LumenComboChart(
 
         if (showData) LumenChartDataList(series, selection, onSelectionChange, labels)
     }
+}
+
+internal fun lumenChartRatio(value: Double, domain: ClosedFloatingPointRange<Double>): Float {
+    val span = domain.endInclusive - domain.start
+    if (!value.isFinite() || span <= 0) return 0.5f
+    val ratio = if (span.isFinite()) (value - domain.start) / span
+        else (value / 2 - domain.start / 2) / (domain.endInclusive / 2 - domain.start / 2)
+    return ratio.coerceIn(0.0, 1.0).toFloat()
 }

@@ -1,0 +1,28 @@
+title: "Question: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing answers and documentation before posting. Questions and replies are public.
+        Remove secrets, private code, and personal information. Mark a helpful reply as the answer when resolved.
+  - type: input
+    id: environment
+    attributes:
+      label: Platform and version
+      description: Include the package or app, installed version, framework, and relevant OS or browser.
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: What are you trying to do?
+      description: Describe the result you want and where you need help.
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried?
+      description: Include relevant docs, a minimal safe code example, and any error message.
+    validations:
+      required: true

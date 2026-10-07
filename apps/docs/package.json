@@ -8,15 +8,16 @@
     "predev": "pnpm --filter @santi020k/lumen-playground-react-native run build && pnpm run prepare:native-live-previews",
     "dev": "astro dev",
     "prebuild": "pnpm run prepare:native-live-previews",
-    "build": "santi-og generate --config scripts/generate-og-images.mjs && astro build",
-    "postbuild": "santi-og audit",
-    "generate:og": "santi-og generate --config scripts/generate-og-images.mjs",
-    "generate:og:force": "santi-og generate --config scripts/generate-og-images.mjs --force",
+    "build": "astro build && pnpm run generate:og",
+    "postbuild": "santi-og audit && node scripts/prepare-cloudflare-pages.mjs",
+    "generate:og": "santi-og generate --config scripts/generate-og-images.mjs && node scripts/sync-og-images.mjs",
+    "generate:og:force": "santi-og generate --config scripts/generate-og-images.mjs --force && node scripts/sync-og-images.mjs",
     "prepare:native-live-previews": "node scripts/prepare-native-live-previews.mjs",
     "sync:native-captures": "node --experimental-strip-types scripts/sync-native-component-captures.mjs",
     "check:native-captures": "node --experimental-strip-types scripts/sync-native-component-captures.mjs --check",
     "check:og": "santi-og check --config scripts/generate-og-images.mjs",
     "audit:seo": "santi-og audit",
+    "audit:lighthouse": "lighthouse",
     "preview": "astro preview",
     "check": "astro check",
     "typecheck": "astro check",
@@ -24,10 +25,9 @@
     "test:coverage": "vitest run --config ../../vitest.config.ts --project docs --coverage --passWithNoTests",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
     "lint:fix": "eslint . --fix --no-warn-ignored --max-warnings=0",
-    "clean": "rm -rf dist .astro coverage"
+    "clean": "rm -rf dist cloudflare/dist .astro coverage"
   },
   "dependencies": {
-    "@astrojs/mdx": "catalog:",
     "@astrojs/sitemap": "catalog:",
     "@santi020k/lumen": "workspace:^",
     "@santi020k/lumen-astro": "workspace:^",
@@ -45,11 +45,14 @@
   },
   "devDependencies": {
     "@astrojs/check": "catalog:",
+    "@astrojs/markdown-satteri": "catalog:",
     "@astrojs/ts-plugin": "catalog:",
     "@santi020k/lumen-playground-react-native": "workspace:*",
     "@santi020k/og": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
+    "lighthouse": "catalog:",
     "sharp": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
@@ -57,5 +60,5 @@
   "engines": {
     "node": ">=22.18.0"
   },
-  "packageManager": "pnpm@10.32.1"
+  "packageManager": "pnpm@12.8.1"
 }

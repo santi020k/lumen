@@ -101,36 +101,94 @@ private struct LumenSheetModifier<SheetContent: View, Actions: View>: ViewModifi
     @Binding var isPresented: Bool
 
     let actions: Actions
-    let description: LocalizedStringKey?
+    let description: LumenTextContent?
+    let dismissible: Bool
     let onDismiss: () -> Void
     let sheetContent: SheetContent
-    let title: LocalizedStringKey?
+    let scrollable: Bool
+    let title: LumenTextContent?
 
     func body(content: Content) -> some View {
         content.sheet(isPresented: $isPresented, onDismiss: onDismiss) {
-            VStack(alignment: .leading, spacing: LumenSpacing.lg) {
-                if title != nil || description != nil {
-                    VStack(alignment: .leading, spacing: LumenSpacing.sm) {
-                        if let title {
-                            Text(title)
-                                .font(.title2.weight(.semibold))
-                                .accessibilityAddTraits(.isHeader)
-                        }
-                        if let description {
-                            Text(description)
-                                .font(.callout)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-
-                sheetContent
-
-                actions
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-            }
-            .padding(LumenSpacing.xl)
+            LumenSheetLayout(
+                title: title,
+                description: description,
+                scrollable: scrollable,
+                sheetContent: sheetContent,
+                actions: actions
+            )
+            .interactiveDismissDisabled(!dismissible)
         }
+    }
+}
+
+/// Keeps ordinary sheet actions outside the scrolling body and prioritizes readability at large text sizes.
+struct LumenSheetLayout<SheetContent: View, Actions: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+#if os(iOS)
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+#endif
+
+    let title: LumenTextContent?
+    let description: LumenTextContent?
+    let scrollable: Bool
+    let sheetContent: SheetContent
+    let actions: Actions
+
+    @ViewBuilder private var heading: some View {
+        if title != nil || description != nil {
+            VStack(alignment: .leading, spacing: LumenSpacing.sm) {
+                if let title {
+                    title.text
+                        .font(.title2.weight(.semibold))
+                        .accessibilityAddTraits(.isHeader)
+                }
+                if let description {
+                    description.text.font(.callout).foregroundStyle(.secondary)
+                }
+            }
+        }
+    }
+
+    private var footer: some View {
+        actions.frame(maxWidth: .infinity, alignment: .trailing)
+    }
+
+    private var needsWholeSheetScrolling: Bool {
+        if dynamicTypeSize.isAccessibilitySize { return true }
+#if os(iOS)
+        return verticalSizeClass == .compact
+#else
+        return false
+#endif
+    }
+
+    var body: some View {
+        Group {
+            if scrollable && needsWholeSheetScrolling {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: LumenSpacing.lg) {
+                        heading
+                        sheetContent
+                        footer
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: LumenSpacing.lg) {
+                    heading
+                    if scrollable {
+                        ScrollView {
+                            sheetContent.frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    } else {
+                        sheetContent
+                    }
+                    footer
+                }
+            }
+        }
+        .padding(LumenSpacing.xl)
     }
 }
 
@@ -140,6 +198,30 @@ public extension View {
         isPresented: Binding<Bool>,
         title: LocalizedStringKey? = nil,
         description: LocalizedStringKey? = nil,
+        dismissible: Bool = true,
+        scrollable: Bool = true,
+        onDismiss: @escaping () -> Void = {},
+        @ViewBuilder actions: () -> Actions,
+        @ViewBuilder content: () -> SheetContent
+    ) -> some View {
+        lumenSheetContent(
+            isPresented: isPresented,
+            title: title.map(LumenTextContent.localized),
+            description: description.map(LumenTextContent.localized),
+            dismissible: dismissible,
+            scrollable: scrollable,
+            onDismiss: onDismiss,
+            actions: actions,
+            content: content
+        )
+    }
+
+    internal func lumenSheetContent<SheetContent: View, Actions: View>(
+        isPresented: Binding<Bool>,
+        title: LumenTextContent? = nil,
+        description: LumenTextContent? = nil,
+        dismissible: Bool = true,
+        scrollable: Bool = true,
         onDismiss: @escaping () -> Void = {},
         @ViewBuilder actions: () -> Actions,
         @ViewBuilder content: () -> SheetContent
@@ -149,8 +231,10 @@ public extension View {
                 isPresented: isPresented,
                 actions: actions(),
                 description: description,
+                dismissible: dismissible,
                 onDismiss: onDismiss,
                 sheetContent: content(),
+                scrollable: scrollable,
                 title: title
             )
         )
@@ -160,6 +244,8 @@ public extension View {
         isPresented: Binding<Bool>,
         title: LocalizedStringKey? = nil,
         description: LocalizedStringKey? = nil,
+        dismissible: Bool = true,
+        scrollable: Bool = true,
         onDismiss: @escaping () -> Void = {},
         @ViewBuilder content: () -> SheetContent
     ) -> some View {
@@ -167,6 +253,8 @@ public extension View {
             isPresented: isPresented,
             title: title,
             description: description,
+            dismissible: dismissible,
+            scrollable: scrollable,
             onDismiss: onDismiss,
             actions: { EmptyView() },
             content: content

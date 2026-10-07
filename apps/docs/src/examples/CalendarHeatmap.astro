@@ -1,0 +1,19 @@
+---
+import { CalendarHeatmap } from '@santi020k/lumen-astro'
+
+// Illustrative daily observations, including real zeros and missing values.
+const data = Array.from({ length: 184 }, (_, index) => ({
+  date: new Date(Date.UTC(2026, 2, index + 1)).toISOString().slice(0, 10),
+  value: index % 19 === 0 ? null : (index * 7 + Math.floor(index / 7)) % 9
+}))
+---
+
+<CalendarHeatmap
+  aria-label="Daily activity"
+  heading="Daily activity"
+  description="Illustrative contributions · March–August 2026"
+  data={data}
+  startDate="2026-03-01"
+  endDate="2026-08-31"
+  weekStartsOn={1}
+/>

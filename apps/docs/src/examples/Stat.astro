@@ -1,5 +1,6 @@
 ---
 import {
+  Grid,
   Icon,
   Stat,
   StatDescription,
@@ -10,7 +11,7 @@ import {
 } from '@santi020k/lumen-astro'
 ---
 
-<div style="display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr));">
+<Grid gap="md" minItemWidth="12rem">
   <Stat as="article" label="Active workspaces" value="1,234" />
   <Stat as="article" label="Deploy success" value="99.8%" variant="accent" />
   <Stat as="article" label="Median build" value="42s" variant="glass" />
@@ -21,4 +22,4 @@ import {
     <StatDescription>Compared with the previous 30 days</StatDescription>
     <StatTrend tone="success">Up 8.2 percent</StatTrend>
   </Stat>
-</div>
+</Grid>

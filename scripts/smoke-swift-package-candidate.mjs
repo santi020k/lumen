@@ -21,6 +21,7 @@ const readOption = name => {
 
 const releaseUrl = readOption('--url')
 const releaseVersion = readOption('--version')
+const checkApiBaseline = process.argv.includes('--check-api-baseline')
 
 assert.equal(
   Boolean(releaseUrl),
@@ -283,6 +284,13 @@ struct SwiftTaggedConsumer: App {
 
   run('swift', ['build'], consumerDirectory)
 
+  const macProducts = run('swift', ['build', '--show-bin-path'], consumerDirectory).trim()
+
+  const apiProducts = {
+    LumenUI: { macOS: macProducts },
+    LumenWidgetUI: { macOS: macProducts }
+  }
+
   const destinations = [
     ['iOS', 'generic/platform=iOS Simulator'],
     ['tvOS', 'generic/platform=tvOS Simulator'],
@@ -291,6 +299,8 @@ struct SwiftTaggedConsumer: App {
   ]
 
   for (const [platform, destination] of destinations) {
+    const derivedData = join(temporaryRoot, `DerivedData-${platform}`)
+
     run(
       'xcodebuild',
       [
@@ -299,12 +309,14 @@ struct SwiftTaggedConsumer: App {
         '-destination',
         destination,
         '-derivedDataPath',
-        join(temporaryRoot, `DerivedData-${platform}`),
+        derivedData,
         'CODE_SIGNING_ALLOWED=NO',
         'build'
       ],
       consumerDirectory
     )
+
+    apiProducts.LumenUI[platform] = join(derivedData, 'Build/Products')
   }
 
   const widgetDestinations = [
@@ -313,6 +325,8 @@ struct SwiftTaggedConsumer: App {
   ]
 
   for (const [platform, destination] of widgetDestinations) {
+    const derivedData = join(temporaryRoot, `DerivedData-Widget-${platform}`)
+
     run(
       'xcodebuild',
       [
@@ -321,12 +335,28 @@ struct SwiftTaggedConsumer: App {
         '-destination',
         destination,
         '-derivedDataPath',
-        join(temporaryRoot, `DerivedData-Widget-${platform}`),
+        derivedData,
         'CODE_SIGNING_ALLOWED=NO',
         'build'
       ],
       consumerDirectory
     )
+
+    apiProducts.LumenWidgetUI[platform] = join(derivedData, 'Build/Products')
+  }
+
+  if (checkApiBaseline) {
+    const productsManifest = join(temporaryRoot, 'api-products.json')
+
+    await writeFile(productsManifest, JSON.stringify(apiProducts))
+
+    for (const moduleName of ['LumenUI', 'LumenWidgetUI']) {
+      process.stdout.write(run(process.execPath, [
+        join(repositoryRoot, 'scripts/check-swift-api-baseline.mjs'),
+        '--module', moduleName,
+        '--products-manifest', productsManifest
+      ]))
+    }
   }
 
   process.stdout.write(

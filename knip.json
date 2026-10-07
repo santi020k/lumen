@@ -1,19 +1,29 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
+    "apps/motion": {
+      "entry": ["src/pages/**/*.astro", "src/scripts/timeline.ts", "scripts/*.mjs"],
+      "project": ["src/**/*.{astro,ts}", "scripts/*.mjs"]
+    },
+    "apps/figma-plugin": {
+      "entry": ["src/plugin.ts", "src/ui.tsx"],
+      "project": ["src/**/*.{ts,tsx}", "scripts/*.mjs"]
+    },
     ".": {
-      "entry": ["scripts/check-maven-pom-metadata.mjs"],
-      "ignoreBinaries": ["infisical", "pod", "quality", "swift"],
-      "project": ["*.js", "scripts/*.mjs"]
+      "entry": ["scripts/check-maven-pom-metadata.mjs", "scripts/report-android-workspace-runtime.mjs"],
+      "ignoreBinaries": ["codex", "infisical", "pod", "quality", "swift"],
+      "project": ["*.{js,css}", "scripts/*.mjs"]
     },
     "apps/docs": {
       "entry": ["src/pages/**/*.astro", "scripts/**/*.{js,mjs}"],
       "ignoreDependencies": [
-        "@santi020k/lumen",
-        "@santi020k/lumen-playground-react-native",
-        "tailwindcss"
+        "@santi020k/lumen-playground-react-native"
       ],
-      "project": ["src/**/*.{astro,ts,tsx}", "scripts/**/*.{js,mjs}"]
+      "project": ["src/**/*.{astro,css,ts,tsx}", "scripts/**/*.{js,mjs}"]
+    },
+    "apps/playground-react-native": {
+      "entry": ["src/fixtures/TextLayoutProbe.tsx"],
+      "project": ["src/**/*.{ts,tsx}", "plugins/*.{cjs,ts}"]
     },
     "packages/astro": {
       "entry": ["components/**/*.astro", "strict-props.fixture.astro"],
@@ -26,12 +36,17 @@
       "project": ["src/**/*.ts"]
     },
     "packages/lumen": {
+      "entry": ["src/index.ts", "src/cli.ts", "bin/*.mjs", "templates/shared/common/src/lumen/lumen-template.css"],
       "ignoreDependencies": ["@types/react", "react"],
-      "project": ["bin/*.mjs", "src/**/*.ts"]
+      "project": ["bin/*.mjs", "**/*.{css,ts}"]
     },
     "packages/mcp": {
       "entry": ["src/cloudflare-worker.ts"],
       "project": ["src/**/*.ts"]
+    },
+    "packages/react-native": {
+      "entry": ["src/static-icon-exports.generated.ts"],
+      "project": ["src/**/*.{ts,tsx}"]
     },
     "packages/react": {
       "project": ["src/**/*.{ts,tsx}"]

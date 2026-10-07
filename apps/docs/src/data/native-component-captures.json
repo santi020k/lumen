@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "captures": [
     {
+      "alt": "Adaptive list detail scaffold rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "f2b32f7c9cc57dbf5ab2d979356408306cba287dd123b668e7cc302aa630666b",
+      "slug": "adaptive-list-detail-scaffold",
+      "src": "/native-components/android/adaptive-list-detail-scaffold.webp",
+      "width": 900
+    },
+    {
       "alt": "Adaptive navigation scaffold rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -10,6 +20,16 @@
       "slug": "adaptive-navigation-scaffold",
       "src": "/native-components/android/adaptive-navigation-scaffold.webp",
       "width": 900
+    },
+    {
+      "alt": "Agenda rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "bc0558956576b59c3d44d53572bed8a2fe244e3eb171f14cd9fda8cc60e4f75d",
+      "slug": "agenda",
+      "src": "/native-components/android/agenda.webp",
+      "width": 780
     },
     {
       "alt": "Alert rendered in the Android phone emulator Lumen playground",
@@ -29,6 +49,16 @@
       "sha256": "1bf4856099d0fbeb6946ad5f939774d505438535fc195bd951ba31ca37b96523",
       "slug": "alert-dialog",
       "src": "/native-components/android/alert-dialog.webp",
+      "width": 900
+    },
+    {
+      "alt": "Autocomplete rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "c9cf9b1362f4173adf3ba3c54f61a0250b18542c58b243ac1deab3914da3fe30",
+      "slug": "autocomplete",
+      "src": "/native-components/android/autocomplete.webp",
       "width": 900
     },
     {
@@ -82,6 +112,36 @@
       "width": 900
     },
     {
+      "alt": "Box plot rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "89c84e00e3c32e2cbc3cc4e7ea98749d37dd6caffd617dc291c9457c6335c15c",
+      "slug": "box-plot",
+      "src": "/native-components/android/box-plot.webp",
+      "width": 900
+    },
+    {
+      "alt": "Breadcrumb rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "5bf2cf9d9c574caeba2bf778a4378d9bedceb10ca612a8b6cd15e32dafac3fe6",
+      "slug": "breadcrumb",
+      "src": "/native-components/android/breadcrumb.webp",
+      "width": 780
+    },
+    {
+      "alt": "Bullet chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "f2eda05a69f45ba67439fe59fdc618e87eeab7a296a5cba1adcc1849d326a256",
+      "slug": "bullet-chart",
+      "src": "/native-components/android/bullet-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Button rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -102,6 +162,26 @@
       "width": 900
     },
     {
+      "alt": "Calendar rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "664f92099633403ce2928510b2d87e684fbe7042a8cf79127aed4628a974e1f2",
+      "slug": "calendar",
+      "src": "/native-components/android/calendar.webp",
+      "width": 780
+    },
+    {
+      "alt": "Calendar heatmap rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "8150064e06af8f8d6b759b4b0a48d04d20c1bd73e219d4a6186e60e52d884129",
+      "slug": "calendar-heatmap",
+      "src": "/native-components/android/calendar-heatmap.webp",
+      "width": 900
+    },
+    {
       "alt": "Card rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -110,6 +190,26 @@
       "slug": "card",
       "src": "/native-components/android/card.webp",
       "width": 900
+    },
+    {
+      "alt": "Carousel rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "402b9296da8162bb36f14488fc567a719557b0ce1506429d3ba926bfb62996b0",
+      "slug": "carousel",
+      "src": "/native-components/android/carousel.webp",
+      "width": 780
+    },
+    {
+      "alt": "Cascader rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "80559b1526bd81546989967b5e4374fb137bfda0650c7f859dd44f53ff6b9f8b",
+      "slug": "cascader",
+      "src": "/native-components/android/cascader.webp",
+      "width": 780
     },
     {
       "alt": "Checkbox rendered in the Android phone emulator Lumen playground",
@@ -132,6 +232,16 @@
       "width": 900
     },
     {
+      "alt": "Color picker rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "15d7bd5a543f5aa33a352165e469aa651220d7e21dccc0f83e0b5aba3720f0cd",
+      "slug": "color-picker",
+      "src": "/native-components/android/color-picker.webp",
+      "width": 780
+    },
+    {
       "alt": "Combo chart rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 2008,
@@ -140,6 +250,26 @@
       "slug": "combo-chart",
       "src": "/native-components/android/combo-chart.webp",
       "width": 900
+    },
+    {
+      "alt": "Command rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "4feb6044a0a1f40c05cb0305605db95ea8d921a57e3ca0e0a6bf261e1fa93d6e",
+      "slug": "command",
+      "src": "/native-components/android/command.webp",
+      "width": 780
+    },
+    {
+      "alt": "Data table rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "305c44eeb62d933040bdb42236e78539b6ec1adfecf1117ca8afb802e8bdc8ac",
+      "slug": "data-table",
+      "src": "/native-components/android/data-table.webp",
+      "width": 780
     },
     {
       "alt": "Date field rendered in the Android phone emulator Lumen playground",
@@ -179,6 +309,16 @@
       "sha256": "3977accd49b7d901895b99b7f432a7a7ebe952eabba3f7b4c861cb3746427dcd",
       "slug": "divider",
       "src": "/native-components/android/divider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Dumbbell chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "7dc8a75484e3dc871bcbd33e32ed0d3085a70c75479353d3bacc311d3861586d",
+      "slug": "dumbbell-chart",
+      "src": "/native-components/android/dumbbell-chart.webp",
       "width": 900
     },
     {
@@ -222,6 +362,16 @@
       "width": 900
     },
     {
+      "alt": "Funnel chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "12d9e94a0fd643976463119125e60161da8ec875ebc431e8661f93e22b480357",
+      "slug": "funnel-chart",
+      "src": "/native-components/android/funnel-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Gauge rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -246,9 +396,19 @@
       "device": "Android phone emulator",
       "height": 2008,
       "platform": "android",
-      "sha256": "8befa872385745fee3e397b095f4e8c6c59a676692e6817b314909cb6ec6cc56",
+      "sha256": "1b8748bfd148f1bcbaa1e339335b45508c21ae7f6d5e94d5489970f0f0f88f1e",
       "slug": "heatmap",
       "src": "/native-components/android/heatmap.webp",
+      "width": 900
+    },
+    {
+      "alt": "Histogram rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "e43c89df12b0828782139df05e32e20482a63cf2397e5f3e7a8c6794ca1c1a09",
+      "slug": "histogram",
+      "src": "/native-components/android/histogram.webp",
       "width": 900
     },
     {
@@ -292,6 +452,46 @@
       "width": 900
     },
     {
+      "alt": "Image comparison rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "41b8216fa72c5cd98a4398d253b624a7479f95e2aad6399395c98f422fd9bd3e",
+      "slug": "image-comparison",
+      "src": "/native-components/android/image-comparison.webp",
+      "width": 900
+    },
+    {
+      "alt": "Input OTP rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "f45da1dcf50b1d04903f45f30ae7d130ed38f0293bbd171b83e01d254149cdd2",
+      "slug": "input-otp",
+      "src": "/native-components/android/input-otp.webp",
+      "width": 900
+    },
+    {
+      "alt": "Kanban board rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "e0bbe2495d5988427b69acb37c414a8a0987f99e8b5cc087e8237c017603eff5",
+      "slug": "kanban-board",
+      "src": "/native-components/android/kanban-board.webp",
+      "width": 780
+    },
+    {
+      "alt": "Kanban column rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "fa3d4efb46cdabbd93829cd57bb6a2e3198df108771e23f1cec9ecc0a484943f",
+      "slug": "kanban-column",
+      "src": "/native-components/android/kanban-column.webp",
+      "width": 780
+    },
+    {
       "alt": "Line chart rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 2008,
@@ -312,6 +512,56 @@
       "width": 900
     },
     {
+      "alt": "Lollipop chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "f839db1d77009ae94d15941d5a016936bb31689f710903688b8b4b3a72a28e36",
+      "slug": "lollipop-chart",
+      "src": "/native-components/android/lollipop-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media filmstrip rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "b05e8fa13e6e9133f5f3a0376e8f052eba7405d5d9b09e135a505e3a097b4632",
+      "slug": "media-filmstrip",
+      "src": "/native-components/android/media-filmstrip.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media thumbnail rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "be3d38971e21974574a53d8a520f7bcdd22b74ec94385350ce1d0dd7cc9c762b",
+      "slug": "media-thumbnail",
+      "src": "/native-components/android/media-thumbnail.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media viewport rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "1634f77ebbf81305f4972b2448048ac2a38207e0bbc6fc3f866b40bdffc0dbd5",
+      "slug": "media-viewport",
+      "src": "/native-components/android/media-viewport.webp",
+      "width": 900
+    },
+    {
+      "alt": "Mentions rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "97ce5c01d72c97ab7659dec690d20cb127cd74d76ec1c4094c645d011fafc4cb",
+      "slug": "mentions",
+      "src": "/native-components/android/mentions.webp",
+      "width": 780
+    },
+    {
       "alt": "Menu rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -319,6 +569,16 @@
       "sha256": "9d7024513a0f4615dc542153288a320d2f27f4f5323a0d1be0e2ba4acd761097",
       "slug": "menu",
       "src": "/native-components/android/menu.webp",
+      "width": 900
+    },
+    {
+      "alt": "Multi select rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "d456d90b0be9feef4b5d85d802a1b8188246e6e65d66d5d4e24240ca5477b59c",
+      "slug": "multi-select",
+      "src": "/native-components/android/multi-select.webp",
       "width": 900
     },
     {
@@ -349,6 +609,26 @@
       "sha256": "2be1e3776b3b574aee53afc067e2bad99e684cd8b1c455cfdd620a6faa183784",
       "slug": "navigation-bar-scroll-behavior",
       "src": "/native-components/android/navigation-bar-scroll-behavior.webp",
+      "width": 900
+    },
+    {
+      "alt": "Number field rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "e6c70c71fb038430dda2f527d71a954c03f7c8b9be1a68034f567c483a19ef21",
+      "slug": "number-field",
+      "src": "/native-components/android/number-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Password field rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "1c23dfb15dfc0d8d093cb598ae8e1c22d45b6e60276786cb7a46f629df3ccf92",
+      "slug": "password-field",
+      "src": "/native-components/android/password-field.webp",
       "width": 900
     },
     {
@@ -392,6 +672,26 @@
       "width": 900
     },
     {
+      "alt": "Pull to refresh rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "c6ad723adec4000efc922858a5740f9cfa5c1de1009a933573138665c03eed3b",
+      "slug": "pull-to-refresh",
+      "src": "/native-components/android/pull-to-refresh.webp",
+      "width": 900
+    },
+    {
+      "alt": "QR code rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "d83365af01003e5234c1377a7afffd1f959813593dc5338e70d54966fb44dfa2",
+      "slug": "qr-code",
+      "src": "/native-components/android/qr-code.webp",
+      "width": 780
+    },
+    {
       "alt": "Radio group rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -412,6 +712,26 @@
       "width": 900
     },
     {
+      "alt": "Range slider rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "b12c3433f798a680f6725d980435798e0b48e4bdc3969e79506db7bec858e1ef",
+      "slug": "range-slider",
+      "src": "/native-components/android/range-slider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Rating rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "68820d5a8322a2ae5b0a4ff7df8aa12aed103cda2a272883673a39020cd3eb1e",
+      "slug": "rating",
+      "src": "/native-components/android/rating.webp",
+      "width": 780
+    },
+    {
       "alt": "Scatter chart rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 2008,
@@ -420,6 +740,16 @@
       "slug": "scatter-chart",
       "src": "/native-components/android/scatter-chart.webp",
       "width": 900
+    },
+    {
+      "alt": "Schedule rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "dba7d2d60cf472d4cd3e230d4d3cb1e22ba91e6530f15a2f89cd79fa91da8f07",
+      "slug": "schedule",
+      "src": "/native-components/android/schedule.webp",
+      "width": 780
     },
     {
       "alt": "Search field rendered in the Android phone emulator Lumen playground",
@@ -542,6 +872,16 @@
       "width": 900
     },
     {
+      "alt": "Stepper rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "490f1a13a585d4ab9426596f208c67054570add5dfed430aad40116c067f5d82",
+      "slug": "stepper",
+      "src": "/native-components/android/stepper.webp",
+      "width": 780
+    },
+    {
       "alt": "Surface rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -550,6 +890,26 @@
       "slug": "surface",
       "src": "/native-components/android/surface.webp",
       "width": 900
+    },
+    {
+      "alt": "Swipe actions rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "3020829edfa5d82f9e9643abab12250c0da37461fc6c20ee6f7ec705c99c2575",
+      "slug": "swipe-actions",
+      "src": "/native-components/android/swipe-actions.webp",
+      "width": 900
+    },
+    {
+      "alt": "Table rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "23cfa385533a11505704661430841b9739668d07a50eeead769694e80b5239db",
+      "slug": "table",
+      "src": "/native-components/android/table.webp",
+      "width": 780
     },
     {
       "alt": "Tabs rendered in the Android phone emulator Lumen playground",
@@ -602,6 +962,26 @@
       "width": 900
     },
     {
+      "alt": "Time field rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "750397a30a0e5e9c6af6db513a7b042430ef53dc8c5b5803bfabaeb4ff061547",
+      "slug": "time-field",
+      "src": "/native-components/android/time-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Timeline rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "18a58d0630180c361a4810ca22ba7342d9494e800ec7b3d677495d21ac0cecee",
+      "slug": "timeline",
+      "src": "/native-components/android/timeline.webp",
+      "width": 780
+    },
+    {
       "alt": "Toast rendered in the Android phone emulator Lumen playground",
       "device": "Android phone emulator",
       "height": 1600,
@@ -619,6 +999,86 @@
       "sha256": "c1cfd615043a7d4f098d7726695eed6a1007553b9edb719439640205ef90ac3a",
       "slug": "toggle",
       "src": "/native-components/android/toggle.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tooltip rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "2174d69f6cc57d3efbd57cfbc3aac26099b4f30ca1a07b3511cff00a9e1aca37",
+      "slug": "tooltip",
+      "src": "/native-components/android/tooltip.webp",
+      "width": 780
+    },
+    {
+      "alt": "Top app bar rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "7a142ede709cc307a4b63389b0ef80a4b63580a7e0bdca436408248dc4fa8738",
+      "slug": "top-app-bar",
+      "src": "/native-components/android/top-app-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tour rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "b6af53ae03d48f1367d556be6385551a878716a384da1ec32cab7b4a048486a2",
+      "slug": "tour",
+      "src": "/native-components/android/tour.webp",
+      "width": 780
+    },
+    {
+      "alt": "Transfer rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "12352a82b49de76c5f134542498340351cb45604a3aad739056b109bf3d58627",
+      "slug": "transfer",
+      "src": "/native-components/android/transfer.webp",
+      "width": 780
+    },
+    {
+      "alt": "Tree rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "09b86dff3b8fb58b721ac8d05951315975197f1733cd57d8ff0d77b28385fff9",
+      "slug": "tree",
+      "src": "/native-components/android/tree.webp",
+      "width": 780
+    },
+    {
+      "alt": "Tree grid rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "a64098b039c1ae257af4bc7d016d8be7a4eb027c1560acb2c398ccb42c76a178",
+      "slug": "tree-grid",
+      "src": "/native-components/android/tree-grid.webp",
+      "width": 780
+    },
+    {
+      "alt": "Tree select rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2000,
+      "platform": "android",
+      "sha256": "8d01d0e850c39d1ee3e7cf0f66fd370ebd9b32d047ed6926c0448cab082d3e65",
+      "slug": "tree-select",
+      "src": "/native-components/android/tree-select.webp",
+      "width": 780
+    },
+    {
+      "alt": "Waterfall chart rendered in the Android phone emulator Lumen playground",
+      "device": "Android phone emulator",
+      "height": 2008,
+      "platform": "android",
+      "sha256": "72a2073423e82eefc40eaa257bb29f4d37d20b423c88dc602d489bf5225914eb",
+      "slug": "waterfall-chart",
+      "src": "/native-components/android/waterfall-chart.webp",
       "width": 900
     },
     {
@@ -672,6 +1132,16 @@
       "width": 454
     },
     {
+      "alt": "Agenda rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "056c4971df8514053ba1ae46dd457b027c2f094d41b0101aba65a74208b8e467",
+      "slug": "agenda",
+      "src": "/native-components/apple/agenda.webp",
+      "width": 900
+    },
+    {
       "alt": "Alert rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -689,6 +1159,16 @@
       "sha256": "ae0d2caa8badf2ab1d426119b4ff09471c9acf340051aaf8b19b22dc51e6b999",
       "slug": "alert-dialog",
       "src": "/native-components/apple/alert-dialog.webp",
+      "width": 900
+    },
+    {
+      "alt": "Autocomplete rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "e294cc8736127f4a3bda3e403c917ff2172f4fad9d800b2da5b06bd361076c6c",
+      "slug": "autocomplete",
+      "src": "/native-components/apple/autocomplete.webp",
       "width": 900
     },
     {
@@ -742,6 +1222,36 @@
       "width": 900
     },
     {
+      "alt": "Box plot rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "209aa0928114f6e7f20be46e587cfc0c953b124d790d56027ddae89af7ce54c4",
+      "slug": "box-plot",
+      "src": "/native-components/apple/box-plot.webp",
+      "width": 900
+    },
+    {
+      "alt": "Breadcrumb rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "0feeafe46b7bef31d5232ab3cdbdfd9d7dd9bea286ca2c02bb07a666800064da",
+      "slug": "breadcrumb",
+      "src": "/native-components/apple/breadcrumb.webp",
+      "width": 900
+    },
+    {
+      "alt": "Bullet chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "e37c2b2577ede11c05db7a6fd7956ba65a6df3fc21332e466ae7cfc4d087d780",
+      "slug": "bullet-chart",
+      "src": "/native-components/apple/bullet-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Button rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -762,6 +1272,26 @@
       "width": 900
     },
     {
+      "alt": "Calendar rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "72a3c50192e46a03e4357c6275fa78eb5d2d43b2d9d6cf000e428adb1899c736",
+      "slug": "calendar",
+      "src": "/native-components/apple/calendar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Calendar heatmap rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "5d0bcb45cb7c5b4547e80bc961c75e1e54dcc2ae1eb2a7e88d391d576f83aefd",
+      "slug": "calendar-heatmap",
+      "src": "/native-components/apple/calendar-heatmap.webp",
+      "width": 900
+    },
+    {
       "alt": "Card rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -769,6 +1299,26 @@
       "sha256": "4edfb8f726fb8840a4f5f2b628d94a82e6c0ab7de9f30edefbbf4a80d4ae7bdf",
       "slug": "card",
       "src": "/native-components/apple/card.webp",
+      "width": 900
+    },
+    {
+      "alt": "Carousel rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "5e09ab021f6cb26d4ad642020df8e9e88cfa8caf90b001ee8d8e1041972c3267",
+      "slug": "carousel",
+      "src": "/native-components/apple/carousel.webp",
+      "width": 900
+    },
+    {
+      "alt": "Cascader rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "65dfc58ecd60ba1fa5889d65ebbab6734fe962809938837fce3b07c158cf5197",
+      "slug": "cascader",
+      "src": "/native-components/apple/cascader.webp",
       "width": 900
     },
     {
@@ -792,6 +1342,16 @@
       "width": 900
     },
     {
+      "alt": "Color picker rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "d03a973cc981a172953d67e8bb43c79de82f5cecac856f7a682db53bf875774d",
+      "slug": "color-picker",
+      "src": "/native-components/apple/color-picker.webp",
+      "width": 900
+    },
+    {
       "alt": "Combo chart rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -799,6 +1359,26 @@
       "sha256": "8754ec007fe5784cbc02349632110aa3769316ae3f216bee5904b7ff748a69c9",
       "slug": "combo-chart",
       "src": "/native-components/apple/combo-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Command rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "78a1af183d0446c1cf1f3135b13be306868adae1411a91d41657768ab3d0651a",
+      "slug": "command",
+      "src": "/native-components/apple/command.webp",
+      "width": 900
+    },
+    {
+      "alt": "Data table rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "b9d4ff141d0df31d8767ead145a2aa5e85417c02d255118003c679494cc40a0b",
+      "slug": "data-table",
+      "src": "/native-components/apple/data-table.webp",
       "width": 900
     },
     {
@@ -842,6 +1422,16 @@
       "width": 900
     },
     {
+      "alt": "Dumbbell chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "56fdfca3936f65c2e34891c9bf780786524b761e792ecb6e653d3d61618adade",
+      "slug": "dumbbell-chart",
+      "src": "/native-components/apple/dumbbell-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Empty state rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -872,6 +1462,16 @@
       "width": 900
     },
     {
+      "alt": "Funnel chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "4c45d61bacd4d89af612d9875b9ee8f77c7338a59c52b6280db6b39c11adbf53",
+      "slug": "funnel-chart",
+      "src": "/native-components/apple/funnel-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Gauge rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -896,9 +1496,19 @@
       "device": "iPhone simulator",
       "height": 1957,
       "platform": "apple",
-      "sha256": "fb5b611186bf455c0db5031121735b83540ee18f92f3eefc927fa21a37f83f95",
+      "sha256": "76767e747d790ac40b9b0dc1a304585e0a931a56316fa7ec0f567a83ee49771b",
       "slug": "heatmap",
       "src": "/native-components/apple/heatmap.webp",
+      "width": 900
+    },
+    {
+      "alt": "Histogram rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "181195bd1e06cd28d8998413c8ad3a7431bbc3bbe859bd29358d07d45c35b735",
+      "slug": "histogram",
+      "src": "/native-components/apple/histogram.webp",
       "width": 900
     },
     {
@@ -942,6 +1552,46 @@
       "width": 900
     },
     {
+      "alt": "Image comparison rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "8f697d642a3feebe806f37150add1c589c52228bd99bf83ff70be7adda4d2cb8",
+      "slug": "image-comparison",
+      "src": "/native-components/apple/image-comparison.webp",
+      "width": 900
+    },
+    {
+      "alt": "Input OTP rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "f64e114bc710b26f24f53d07395410468ea22615f1f74b4cb78e899e01389194",
+      "slug": "input-otp",
+      "src": "/native-components/apple/input-otp.webp",
+      "width": 900
+    },
+    {
+      "alt": "Kanban board rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "8ca9013028193d103176dc389cf0c6d3d1661a65af19653b4328cd1e5a2f75f1",
+      "slug": "kanban-board",
+      "src": "/native-components/apple/kanban-board.webp",
+      "width": 900
+    },
+    {
+      "alt": "Kanban column rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "a693ab356356affc22cd2b843ab05ce760f842e95ecff692cad85b53124bc929",
+      "slug": "kanban-column",
+      "src": "/native-components/apple/kanban-column.webp",
+      "width": 900
+    },
+    {
       "alt": "Line chart rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -972,6 +1622,56 @@
       "width": 900
     },
     {
+      "alt": "Lollipop chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "a535882abb96d82eecfba61a0c204cfd76917f7d0f66ed21e0e631113b2cbd7c",
+      "slug": "lollipop-chart",
+      "src": "/native-components/apple/lollipop-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media filmstrip rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "e001db6eafb97beda12ccfde4de63b188f565dfc9058bb0fdc2d669c13a01421",
+      "slug": "media-filmstrip",
+      "src": "/native-components/apple/media-filmstrip.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media thumbnail rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "7cfed9883d40fd8e7eaed8d8e47cf9b2601ac96a240e945b443aab31d255e606",
+      "slug": "media-thumbnail",
+      "src": "/native-components/apple/media-thumbnail.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media viewport rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "6250b4953fbcb780d97de624ddf69020bc53d78c9e6a6b8aab688c0337ee1daa",
+      "slug": "media-viewport",
+      "src": "/native-components/apple/media-viewport.webp",
+      "width": 900
+    },
+    {
+      "alt": "Mentions rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "e6649cf7d0f5866feb70e8e6148d4fd8545a9ccb07fab3ec9dba49a220b887d3",
+      "slug": "mentions",
+      "src": "/native-components/apple/mentions.webp",
+      "width": 900
+    },
+    {
       "alt": "Menu rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -982,6 +1682,16 @@
       "width": 900
     },
     {
+      "alt": "Multi select rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "29e5019154e380c9422a460ccb0f9523675bacd2e82e5df5f1ed1d5e4d0fa64c",
+      "slug": "multi-select",
+      "src": "/native-components/apple/multi-select.webp",
+      "width": 900
+    },
+    {
       "alt": "Navigation bar rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -989,6 +1699,26 @@
       "sha256": "b633fa6f3b2e22db93eb56c4695347e00d8a8356eaf6a7e4caadac90873defb9",
       "slug": "navigation-bar",
       "src": "/native-components/apple/navigation-bar.webp",
+      "width": 900
+    },
+    {
+      "alt": "Number field rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "b7c56fa946336eeaeb3ec3cf2263cbb63eb9af433344c0b2819919db4c1ba208",
+      "slug": "number-field",
+      "src": "/native-components/apple/number-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Password field rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "8d28eb7078071fcfe959a1ef82aab6f67baa8ac440e2e0bcf158ab238e5dbe0f",
+      "slug": "password-field",
+      "src": "/native-components/apple/password-field.webp",
       "width": 900
     },
     {
@@ -1032,6 +1762,16 @@
       "width": 900
     },
     {
+      "alt": "QR code rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "bffb667f808d45efea9cac41bf42cbecf39eb8143d232998c484f159a5264977",
+      "slug": "qr-code",
+      "src": "/native-components/apple/qr-code.webp",
+      "width": 900
+    },
+    {
       "alt": "Radio group rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1052,6 +1792,26 @@
       "width": 900
     },
     {
+      "alt": "Range slider rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "202eed3fc6e90c1c783d32a5f26e2edb1bb5be4efd0270c94b2aa98a0aad9b16",
+      "slug": "range-slider",
+      "src": "/native-components/apple/range-slider.webp",
+      "width": 900
+    },
+    {
+      "alt": "Rating rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "873049b038ae4c7c3801db2b13daaea8b0c359cbfd2e631b8a38f242107a2df1",
+      "slug": "rating",
+      "src": "/native-components/apple/rating.webp",
+      "width": 900
+    },
+    {
       "alt": "Scatter chart rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1059,6 +1819,16 @@
       "sha256": "89b96c095999006e23c5349751cfbf0448e9da6c85323c0968927922f52601b0",
       "slug": "scatter-chart",
       "src": "/native-components/apple/scatter-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Schedule rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "46cd54505b5482cfe84a331db0d1d53eeb6648ea810372086ed20f21c7b1190a",
+      "slug": "schedule",
+      "src": "/native-components/apple/schedule.webp",
       "width": 900
     },
     {
@@ -1192,6 +1962,16 @@
       "width": 900
     },
     {
+      "alt": "Stepper rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "90a2a9c5386b1b7d55608b5ccde807f52bcf5e6e26a003ff52771a9f036208bd",
+      "slug": "stepper",
+      "src": "/native-components/apple/stepper.webp",
+      "width": 900
+    },
+    {
       "alt": "Surface rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1229,6 +2009,16 @@
       "sha256": "d26958743d040a4bcb1a770a0d5817c4c6f4eb36136d219556b7f2eeb7453fc2",
       "slug": "tab-bar-minimization",
       "src": "/native-components/apple/tab-bar-minimization.webp",
+      "width": 900
+    },
+    {
+      "alt": "Table rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "6a8ee65ea1cba718ffb6b2515bb2b6581ade0adbb0b0ee4aba6df74b01d3c547",
+      "slug": "table",
+      "src": "/native-components/apple/table.webp",
       "width": 900
     },
     {
@@ -1282,6 +2072,26 @@
       "width": 900
     },
     {
+      "alt": "Time field rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "7f60156906910190903aa6fce2fc6d5d42ea1f645434d261614ef86f36aa9693",
+      "slug": "time-field",
+      "src": "/native-components/apple/time-field.webp",
+      "width": 900
+    },
+    {
+      "alt": "Timeline rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "2eda2250493a505625b752d6c1e49209e18bfb1a4ba348c1438ab83fdb2248b2",
+      "slug": "timeline",
+      "src": "/native-components/apple/timeline.webp",
+      "width": 900
+    },
+    {
       "alt": "Toast rendered in the iPhone simulator Lumen playground",
       "device": "iPhone simulator",
       "height": 1957,
@@ -1299,6 +2109,76 @@
       "sha256": "07a4c9847c839ec965996adad34991b79d52d3d0c420a2bb30223f740b307a67",
       "slug": "toggle",
       "src": "/native-components/apple/toggle.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tooltip rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "a4c6829d3dd082e0c3527c5eb6aceac74ef2e28d2b8beb58a88a4670baa1bb5b",
+      "slug": "tooltip",
+      "src": "/native-components/apple/tooltip.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tour rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "e2345b6d2b9bfb90255d3a1a50e826d15895b71e5995c152f4a424bf6a7781ea",
+      "slug": "tour",
+      "src": "/native-components/apple/tour.webp",
+      "width": 900
+    },
+    {
+      "alt": "Transfer rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "7ff35bc6dc5e9fd9644f50cd59b42cb0c6a7a3aaa7cc54e17f0454e2f1a129ae",
+      "slug": "transfer",
+      "src": "/native-components/apple/transfer.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tree rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "f1b0623e7c13eb6bfd6f4472345dfd2e946331ebcbf5e8b1df7496393613953a",
+      "slug": "tree",
+      "src": "/native-components/apple/tree.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tree grid rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "ef0b8fddd1dd25011136844a03e384b3b3770e8aadf373d83543887adf35e8f7",
+      "slug": "tree-grid",
+      "src": "/native-components/apple/tree-grid.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tree select rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "3873ddc3d3cef8db5f53eb1fb3a6c17bf09c2f443667a14542be95b1e648402e",
+      "slug": "tree-select",
+      "src": "/native-components/apple/tree-select.webp",
+      "width": 900
+    },
+    {
+      "alt": "Waterfall chart rendered in the iPhone simulator Lumen playground",
+      "device": "iPhone simulator",
+      "height": 1957,
+      "platform": "apple",
+      "sha256": "26652fba63da62215edb810bca96487b9577057decb592ac4b1b62b0dc9e494c",
+      "slug": "waterfall-chart",
+      "src": "/native-components/apple/waterfall-chart.webp",
       "width": 900
     },
     {
@@ -1352,6 +2232,56 @@
       "width": 416
     },
     {
+      "alt": "Widget badge rendered in the macOS SwiftUI preview (WidgetKit primitives) Lumen playground",
+      "device": "macOS SwiftUI preview (WidgetKit primitives)",
+      "height": 360,
+      "platform": "apple",
+      "sha256": "ace73bcba0a2f24fb60115e3d4dfb895b0ea7333464b69e9141b0073162996ac",
+      "slug": "widget-badge",
+      "src": "/native-components/apple/widget-badge.webp",
+      "width": 720
+    },
+    {
+      "alt": "Widget compact stat rendered in the macOS SwiftUI preview (WidgetKit primitives) Lumen playground",
+      "device": "macOS SwiftUI preview (WidgetKit primitives)",
+      "height": 360,
+      "platform": "apple",
+      "sha256": "d7914060e1a0324a38bbe1ea276870ca9462f18b18807d881b0278aefa490059",
+      "slug": "widget-compact-stat",
+      "src": "/native-components/apple/widget-compact-stat.webp",
+      "width": 720
+    },
+    {
+      "alt": "Widget icon rendered in the macOS SwiftUI preview (WidgetKit primitives) Lumen playground",
+      "device": "macOS SwiftUI preview (WidgetKit primitives)",
+      "height": 360,
+      "platform": "apple",
+      "sha256": "5fa0664c1704e7bb4bb7082e9b7cca9607b66b202d667c6ceb2da393849936bb",
+      "slug": "widget-icon",
+      "src": "/native-components/apple/widget-icon.webp",
+      "width": 720
+    },
+    {
+      "alt": "Widget text rendered in the macOS SwiftUI preview (WidgetKit primitives) Lumen playground",
+      "device": "macOS SwiftUI preview (WidgetKit primitives)",
+      "height": 360,
+      "platform": "apple",
+      "sha256": "6fda5489d7e27d37f97731981d4d4c595b0b3b2afe75cc2e24db59385e9a9ef5",
+      "slug": "widget-text",
+      "src": "/native-components/apple/widget-text.webp",
+      "width": 720
+    },
+    {
+      "alt": "Agenda rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 847,
+      "platform": "react-native",
+      "sha256": "2fc649fc624a207724cc538538a344ca9a3caad874883efbd5abad7a18897c8c",
+      "slug": "agenda",
+      "src": "/native-components/react-native/agenda.webp",
+      "width": 350
+    },
+    {
       "alt": "Alert rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1370,6 +2300,16 @@
       "slug": "alert-dialog",
       "src": "/native-components/react-native/alert-dialog.webp",
       "width": 900
+    },
+    {
+      "alt": "Autocomplete rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 69,
+      "platform": "react-native",
+      "sha256": "286dcfe17d79465a76b1cd35978d7a86803e39e28a6c83b2c63a4f7806b27581",
+      "slug": "autocomplete",
+      "src": "/native-components/react-native/autocomplete.webp",
+      "width": 670
     },
     {
       "alt": "Avatar rendered in the Expo web renderer Lumen playground",
@@ -1422,6 +2362,36 @@
       "width": 900
     },
     {
+      "alt": "Box plot rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "e4fc0cea14d9614553de0f6805dbe090d2365cc611bc3607dddf18f8ef6023f5",
+      "slug": "box-plot",
+      "src": "/native-components/react-native/box-plot.webp",
+      "width": 900
+    },
+    {
+      "alt": "Breadcrumb rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 900,
+      "platform": "react-native",
+      "sha256": "33f1ca73ea985677a092179ac93af688d1adfe9cf5cd075c3750b174e15c76f3",
+      "slug": "breadcrumb",
+      "src": "/native-components/react-native/breadcrumb.webp",
+      "width": 390
+    },
+    {
+      "alt": "Bullet chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "2c7aa2f7fa86b11fbd2f0902a90181702a1305c5c0a9f9a45847fc2e9ae853c1",
+      "slug": "bullet-chart",
+      "src": "/native-components/react-native/bullet-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Button rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1442,6 +2412,26 @@
       "width": 900
     },
     {
+      "alt": "Calendar rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 512,
+      "platform": "react-native",
+      "sha256": "46382fd80ff0973c0932fee631c8eded5d208d3adaebf1dbda4581cac79b8a1f",
+      "slug": "calendar",
+      "src": "/native-components/react-native/calendar.webp",
+      "width": 350
+    },
+    {
+      "alt": "Calendar heatmap rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "3790f82e159d4367e803a91e126a25c363b7d9f699e7a0d3e2bd4fa71f70544b",
+      "slug": "calendar-heatmap",
+      "src": "/native-components/react-native/calendar-heatmap.webp",
+      "width": 900
+    },
+    {
       "alt": "Card rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1450,6 +2440,26 @@
       "slug": "card",
       "src": "/native-components/react-native/card.webp",
       "width": 900
+    },
+    {
+      "alt": "Carousel rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 732,
+      "platform": "react-native",
+      "sha256": "d928d7bb32c82c59981394d21b83c1adef21b5ce78772ab95cfd1e99e12bfc76",
+      "slug": "carousel",
+      "src": "/native-components/react-native/carousel.webp",
+      "width": 358
+    },
+    {
+      "alt": "Cascader rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 360,
+      "platform": "react-native",
+      "sha256": "83522146202f3d8ffdfb54614883630c6e9784f8a8e8c358c7e495765112a55d",
+      "slug": "cascader",
+      "src": "/native-components/react-native/cascader.webp",
+      "width": 350
     },
     {
       "alt": "Checkbox rendered in the Expo web renderer Lumen playground",
@@ -1482,6 +2492,16 @@
       "width": 900
     },
     {
+      "alt": "Color picker rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 860,
+      "platform": "react-native",
+      "sha256": "5a5e4bc9e2bc37b9b9677040962a82d7799f67932b8b1672ed2421888101b44c",
+      "slug": "color-picker",
+      "src": "/native-components/react-native/color-picker.webp",
+      "width": 350
+    },
+    {
       "alt": "Combo chart rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1490,6 +2510,26 @@
       "slug": "combo-chart",
       "src": "/native-components/react-native/combo-chart.webp",
       "width": 900
+    },
+    {
+      "alt": "Command rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 1000,
+      "platform": "react-native",
+      "sha256": "e6e197cd5a3bb38eaa34c3899834cf74630e66109cb9b2b9083681839e0ec709",
+      "slug": "command",
+      "src": "/native-components/react-native/command.webp",
+      "width": 390
+    },
+    {
+      "alt": "Data table rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 900,
+      "platform": "react-native",
+      "sha256": "6796b258749c53ad8b81cd7fd41b7b3bc2001e3ee9e472613a9a1efa67d79242",
+      "slug": "data-table",
+      "src": "/native-components/react-native/data-table.webp",
+      "width": 390
     },
     {
       "alt": "Date field rendered in the Expo web renderer Lumen playground",
@@ -1532,6 +2572,16 @@
       "width": 900
     },
     {
+      "alt": "Dumbbell chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "d8b3d88af9387eef33c7b9656d4d58e1a1322b324eb9568a0ab2ae461ef179ff",
+      "slug": "dumbbell-chart",
+      "src": "/native-components/react-native/dumbbell-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Empty state rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1562,6 +2612,16 @@
       "width": 900
     },
     {
+      "alt": "Funnel chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "2ae5dde377e153175d1de3c0dcfcd5198ea48623fe7929c2b9bdbbe93e858d04",
+      "slug": "funnel-chart",
+      "src": "/native-components/react-native/funnel-chart.webp",
+      "width": 900
+    },
+    {
       "alt": "Gauge rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1586,9 +2646,19 @@
       "device": "Expo web renderer",
       "height": 633,
       "platform": "react-native",
-      "sha256": "74f092906625bbd60defd5445ac6e1db9cc80d861f44bc67e6e68c7ec7510209",
+      "sha256": "670c89b8cfea967fd37bd7339f61460bd207be0b70a9fa69eb5f760faa96f652",
       "slug": "heatmap",
       "src": "/native-components/react-native/heatmap.webp",
+      "width": 900
+    },
+    {
+      "alt": "Histogram rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 506,
+      "platform": "react-native",
+      "sha256": "568da691ab1bb52eb66381e5ff43c1bdcc4267c54ae362232df87251c0e6cae8",
+      "slug": "histogram",
+      "src": "/native-components/react-native/histogram.webp",
       "width": 900
     },
     {
@@ -1632,6 +2702,46 @@
       "width": 900
     },
     {
+      "alt": "Image comparison rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 486,
+      "platform": "react-native",
+      "sha256": "ae7be2ff9675a0b21155dc5abd7da6e2a9498843a7e59b52bd1311cb53787e7e",
+      "slug": "image-comparison",
+      "src": "/native-components/react-native/image-comparison.webp",
+      "width": 670
+    },
+    {
+      "alt": "Input OTP rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 69,
+      "platform": "react-native",
+      "sha256": "6eaee5301c0de245e5a366a45247bfece07352494b76764bd6d4b5491e090043",
+      "slug": "input-otp",
+      "src": "/native-components/react-native/input-otp.webp",
+      "width": 670
+    },
+    {
+      "alt": "Kanban board rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 900,
+      "platform": "react-native",
+      "sha256": "b4305ab0f6b061d42c1e7dbead53b418d0290b394c6e4375f18e6f962d61ee9c",
+      "slug": "kanban-board",
+      "src": "/native-components/react-native/kanban-board.webp",
+      "width": 390
+    },
+    {
+      "alt": "Kanban column rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 1000,
+      "platform": "react-native",
+      "sha256": "6e9b976f624e1f89a96f5018739aae01a788dfe348b41be3c1fb5cebc09c8fa2",
+      "slug": "kanban-column",
+      "src": "/native-components/react-native/kanban-column.webp",
+      "width": 390
+    },
+    {
       "alt": "Line chart rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1652,6 +2762,56 @@
       "width": 900
     },
     {
+      "alt": "Lollipop chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "2cd7ef37be3cb655769e2bf5030bef857d544babd510fc7f171b84d0225021bf",
+      "slug": "lollipop-chart",
+      "src": "/native-components/react-native/lollipop-chart.webp",
+      "width": 900
+    },
+    {
+      "alt": "Media filmstrip rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 348,
+      "platform": "react-native",
+      "sha256": "67adac25d72911f468964ebab6af240c484e19a1ec785d227852b80c1175cfec",
+      "slug": "media-filmstrip",
+      "src": "/native-components/react-native/media-filmstrip.webp",
+      "width": 670
+    },
+    {
+      "alt": "Media thumbnail rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 161,
+      "platform": "react-native",
+      "sha256": "6b6262e1bd9840e99311581a0a20554ad8ce4d988c4f4480da167126a891996e",
+      "slug": "media-thumbnail",
+      "src": "/native-components/react-native/media-thumbnail.webp",
+      "width": 160
+    },
+    {
+      "alt": "Media viewport rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 545,
+      "platform": "react-native",
+      "sha256": "1b9399c9038d2a52cd0de2c60e2016a1536d55c431601e7c38bf022e47c4d2f3",
+      "slug": "media-viewport",
+      "src": "/native-components/react-native/media-viewport.webp",
+      "width": 670
+    },
+    {
+      "alt": "Mentions rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 1552,
+      "platform": "react-native",
+      "sha256": "72b0ab6b7bdf775c5008b16d5c405eeaab9b57c079bd587326eaa6478f5ee28e",
+      "slug": "mentions",
+      "src": "/native-components/react-native/mentions.webp",
+      "width": 700
+    },
+    {
       "alt": "Menu rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1659,6 +2819,16 @@
       "sha256": "5af610035013e48a25b76385f03ebdcebf009ef42319dcabb8699ccec9b70ea5",
       "slug": "menu",
       "src": "/native-components/react-native/menu.webp",
+      "width": 900
+    },
+    {
+      "alt": "Multi select rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 633,
+      "platform": "react-native",
+      "sha256": "4779ce41b67abaf74c70fbea8e9c214541d9f0529b77937a983e3a441f732eb1",
+      "slug": "multi-select",
+      "src": "/native-components/react-native/multi-select.webp",
       "width": 900
     },
     {
@@ -1680,6 +2850,26 @@
       "slug": "navigation-bar",
       "src": "/native-components/react-native/navigation-bar.webp",
       "width": 900
+    },
+    {
+      "alt": "Number field rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 121,
+      "platform": "react-native",
+      "sha256": "6677b0fe32d1fca8036f413cb66e5dc64fbdb5625c795f15db8ad3076db27862",
+      "slug": "number-field",
+      "src": "/native-components/react-native/number-field.webp",
+      "width": 670
+    },
+    {
+      "alt": "Password field rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 121,
+      "platform": "react-native",
+      "sha256": "e692b3a964210eed59530e67d850779160a333eaa064a4cb99f7fdcc670aaf82",
+      "slug": "password-field",
+      "src": "/native-components/react-native/password-field.webp",
+      "width": 670
     },
     {
       "alt": "Phone input rendered in the Expo web renderer Lumen playground",
@@ -1722,6 +2912,16 @@
       "width": 900
     },
     {
+      "alt": "QR code rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 936,
+      "platform": "react-native",
+      "sha256": "e82890554fbf8f11cf12896dfacd0373258ffd4fffd5fd3d8aca281f70ac9009",
+      "slug": "qr-code",
+      "src": "/native-components/react-native/qr-code.webp",
+      "width": 700
+    },
+    {
       "alt": "Radio group rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1742,6 +2942,26 @@
       "width": 900
     },
     {
+      "alt": "Range slider rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 292,
+      "platform": "react-native",
+      "sha256": "9da0e9085c29e063c7aed0b34217d2d161ba8d79e20b93a61e64e7745ba95d26",
+      "slug": "range-slider",
+      "src": "/native-components/react-native/range-slider.webp",
+      "width": 670
+    },
+    {
+      "alt": "Rating rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 900,
+      "platform": "react-native",
+      "sha256": "c89b516a36d5a4d38aaa7be1a489b36cec6323edda8a0ce6dad51488343dce55",
+      "slug": "rating",
+      "src": "/native-components/react-native/rating.webp",
+      "width": 390
+    },
+    {
       "alt": "Refresh control rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1760,6 +2980,16 @@
       "slug": "scatter-chart",
       "src": "/native-components/react-native/scatter-chart.webp",
       "width": 900
+    },
+    {
+      "alt": "Schedule rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 792,
+      "platform": "react-native",
+      "sha256": "af3f853716175a291c2258ea44b5166275bb3d7f3f2dd711f730b62da6581838",
+      "slug": "schedule",
+      "src": "/native-components/react-native/schedule.webp",
+      "width": 350
     },
     {
       "alt": "Search field rendered in the Expo web renderer Lumen playground",
@@ -1882,6 +3112,16 @@
       "width": 900
     },
     {
+      "alt": "Stepper rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 1000,
+      "platform": "react-native",
+      "sha256": "8a0d468f70293bfddcf87f589d4d7306a0f075f7ef4b9321fa5d82d7e2e446bd",
+      "slug": "stepper",
+      "src": "/native-components/react-native/stepper.webp",
+      "width": 390
+    },
+    {
       "alt": "Surface rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1890,6 +3130,16 @@
       "slug": "surface",
       "src": "/native-components/react-native/surface.webp",
       "width": 900
+    },
+    {
+      "alt": "Table rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 1632,
+      "platform": "react-native",
+      "sha256": "6ecc4a71cf60bf04bd166f0b52803345ca603233e136a35e172e7b2c90164165",
+      "slug": "table",
+      "src": "/native-components/react-native/table.webp",
+      "width": 700
     },
     {
       "alt": "Tabs rendered in the Expo web renderer Lumen playground",
@@ -1942,6 +3192,26 @@
       "width": 900
     },
     {
+      "alt": "Time field rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 69,
+      "platform": "react-native",
+      "sha256": "9e1b1152a2e51c022cb3985bf298a6ced8efe785fd0053e1a46a07e5145397b5",
+      "slug": "time-field",
+      "src": "/native-components/react-native/time-field.webp",
+      "width": 670
+    },
+    {
+      "alt": "Timeline rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 1584,
+      "platform": "react-native",
+      "sha256": "1ee7224d2798e43c5afbbcce53d6d8c049da1e2af8560846e8f6e75f31a92997",
+      "slug": "timeline",
+      "src": "/native-components/react-native/timeline.webp",
+      "width": 700
+    },
+    {
       "alt": "Toast rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
       "height": 633,
@@ -1959,6 +3229,76 @@
       "sha256": "0251e6309e847b3fcc78c8e8cc80162def033e31f39904c96978c815905a39ac",
       "slug": "toggle",
       "src": "/native-components/react-native/toggle.webp",
+      "width": 900
+    },
+    {
+      "alt": "Tooltip rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 268,
+      "platform": "react-native",
+      "sha256": "09739a0df49623d198be45dcc94643b0cdc45e293220df90736a02f141a8be75",
+      "slug": "tooltip",
+      "src": "/native-components/react-native/tooltip.webp",
+      "width": 358
+    },
+    {
+      "alt": "Tour rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 1000,
+      "platform": "react-native",
+      "sha256": "a089498e8fc2cfc40d7440bb060d36e6b300c5193436cdbbf607b8ba24670e52",
+      "slug": "tour",
+      "src": "/native-components/react-native/tour.webp",
+      "width": 390
+    },
+    {
+      "alt": "Transfer rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 588,
+      "platform": "react-native",
+      "sha256": "c4e3d11028c731c3a894f54fb7de3d3a2ad0ccd7e8d4ab91f19f960e9cfdd886",
+      "slug": "transfer",
+      "src": "/native-components/react-native/transfer.webp",
+      "width": 350
+    },
+    {
+      "alt": "Tree rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 632,
+      "platform": "react-native",
+      "sha256": "be912f73d78c164ab6910681e39f77321705ee8a20747a5f3c197151973a390e",
+      "slug": "tree",
+      "src": "/native-components/react-native/tree.webp",
+      "width": 350
+    },
+    {
+      "alt": "Tree grid rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 572,
+      "platform": "react-native",
+      "sha256": "17797771ecca6795b758c3ce74704c52e6257f9f2ad30fe6df7719913104f9e9",
+      "slug": "tree-grid",
+      "src": "/native-components/react-native/tree-grid.webp",
+      "width": 358
+    },
+    {
+      "alt": "Tree select rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 440,
+      "platform": "react-native",
+      "sha256": "d6f7ef4a005df87ce623f252fc1093c9e54cdfc63f7f4ff92b833794603c9d66",
+      "slug": "tree-select",
+      "src": "/native-components/react-native/tree-select.webp",
+      "width": 350
+    },
+    {
+      "alt": "Waterfall chart rendered in the Expo web renderer Lumen playground",
+      "device": "Expo web renderer",
+      "height": 506,
+      "platform": "react-native",
+      "sha256": "539b02220c328e2c920a49f18b547061e0f7f86261030b3875796c68dd88b612",
+      "slug": "waterfall-chart",
+      "src": "/native-components/react-native/waterfall-chart.webp",
       "width": 900
     }
   ]

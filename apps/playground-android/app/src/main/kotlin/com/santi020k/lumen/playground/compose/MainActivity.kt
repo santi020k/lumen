@@ -26,6 +26,8 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -79,6 +81,24 @@ import com.santi020k.lumen.LumenGraphicSize
 import com.santi020k.lumen.LumenGraphicTone
 import com.santi020k.lumen.LumenGraphicVariant
 import com.santi020k.lumen.LumenHeatmap
+import com.santi020k.lumen.LumenCalendarHeatmap
+import com.santi020k.lumen.LumenCalendarHeatmapDatum
+import com.santi020k.lumen.LumenFunnelChart
+import com.santi020k.lumen.LumenFunnelDatum
+import com.santi020k.lumen.LumenBoxPlot
+import com.santi020k.lumen.LumenBoxPlotDatum
+import com.santi020k.lumen.LumenChartLabels
+import com.santi020k.lumen.LumenHeatmapColorScale
+import com.santi020k.lumen.LumenComparisonDatum
+import com.santi020k.lumen.LumenDumbbellChart
+import com.santi020k.lumen.LumenLollipopChart
+import com.santi020k.lumen.LumenBulletChart
+import com.santi020k.lumen.LumenBulletRange
+import com.santi020k.lumen.LumenHistogram
+import com.santi020k.lumen.LumenHistogramBin
+import com.santi020k.lumen.LumenWaterfallChart
+import com.santi020k.lumen.LumenWaterfallDatum
+import com.santi020k.lumen.LumenWaterfallKind
 import com.santi020k.lumen.LumenHeatmapDatum
 import com.santi020k.lumen.LumenIcon
 import com.santi020k.lumen.LumenIconButton
@@ -121,6 +141,7 @@ import com.santi020k.lumen.LumenSpinner
 import com.santi020k.lumen.LumenSparkline
 import com.santi020k.lumen.LumenSlider
 import com.santi020k.lumen.LumenStat
+import com.santi020k.lumen.LumenSpacing
 import com.santi020k.lumen.LumenStatusBar
 import com.santi020k.lumen.LumenSurface
 import com.santi020k.lumen.LumenSurfacePadding
@@ -167,18 +188,24 @@ class MainActivity : ComponentActivity() {
 }
 
 internal enum class PlaygroundThemePreset(val label: String) {
-    Lumen("Lumen"),
+    Lumen("Normal"),
+    Studio("Studio"),
+    Glass("Glass"),
     Santi020k("santi020k");
 
-    fun values(darkTheme: Boolean): LumenThemeValues = LumenThemeValues(
-        colors = when {
-            this == Santi020k && darkTheme -> santi020kDark
-            this == Santi020k -> santi020kLight
-            darkTheme -> com.santi020k.lumen.LumenColors.Dark
-            else -> com.santi020k.lumen.LumenColors.Light
-        },
-        isDark = darkTheme
-    )
+    fun values(darkTheme: Boolean): LumenThemeValues = when (this) {
+        Studio -> LumenThemeValues.preset(com.santi020k.lumen.LumenThemePreset.Studio, darkTheme)
+        Glass -> LumenThemeValues.preset(com.santi020k.lumen.LumenThemePreset.Glass, darkTheme)
+        else -> LumenThemeValues(
+            colors = when {
+                this == Santi020k && darkTheme -> santi020kDark
+                this == Santi020k -> santi020kLight
+                darkTheme -> com.santi020k.lumen.LumenColors.Dark
+                else -> com.santi020k.lumen.LumenColors.Light
+            },
+            isDark = darkTheme
+        )
+    }
 
     private companion object {
         val santi020kLight = palette(
@@ -275,14 +302,14 @@ private fun PlaygroundContent(
     var saved by remember { mutableStateOf(false) }
     var showBanner by remember { mutableStateOf(true) }
     var selectedCategory by remember(enhancedDiscovery) {
-        mutableStateOf(if (enhancedDiscovery) playgroundSections.first().title else ALL_CATEGORIES)
+        mutableStateOf(ALL_CATEGORIES)
     }
     val visibleSections = playgroundSections.filter { section ->
         (selectedCategory == ALL_CATEGORIES || section.title == selectedCategory) &&
-            (query.isBlank() || section.names.any { it.contains(query, ignoreCase = true) })
+            section.names.any { matchesComponentQuery(it, query, exact = !enhancedDiscovery) }
     }
     val visibleCount = visibleSections.sumOf { section ->
-        section.names.count { query.isBlank() || it.contains(query, ignoreCase = true) }
+        section.names.count { matchesComponentQuery(it, query, exact = !enhancedDiscovery) }
     }
 
     LumenSurface(
@@ -343,27 +370,51 @@ private fun PlaygroundContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    LumenText("$visibleCount components", variant = LumenTextVariant.Label)
                     LumenText(
-                        if (enhancedDiscovery) "$selectedCategory · Android" else "Android · Compose",
+                        "$visibleCount ${if (visibleCount == 1) "component" else "components"}",
+                        variant = LumenTextVariant.Label
+                    )
+                    LumenText(
+                        if (enhancedDiscovery) "$selectedCategory · Lumen $playgroundLumenVersion" else "Android · Compose",
                         variant = LumenTextVariant.Caption,
                         tone = LumenTextTone.Muted
                     )
                 }
             }
 
+            if (enhancedDiscovery && (query.isNotBlank() || selectedCategory != ALL_CATEGORIES)) {
+                item {
+                    LumenButton(
+                        onClick = {
+                            query = ""
+                            selectedCategory = ALL_CATEGORIES
+                        },
+                        intent = LumenButtonIntent.Quiet
+                    ) { Text("Reset filters") }
+                }
+            }
+
             items(visibleSections, key = { it.title }) { section ->
                 ComponentSection(section) {
-                    when (section.title) {
+                    CatalogParityExamples(section.names.filter {
+                        it in parityExampleNames && (query.isBlank() || it.contains(query, ignoreCase = true))
+                    })
+                    if (query in parityExampleNames) Unit else if (initialComponent in v4AdditionNames) V4AdditionsExample(initialComponent) else when (section.title) {
                         "Foundations" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             FoundationsExample()
                             VisualContentExample()
                         }
-                        "Actions" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        "Actions" -> if (initialComponent == "Tooltip") { TooltipExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             ActionsExample()
                             SystemActionsExample()
+                            TooltipExample()
                         }
-                        "Forms" -> FormsExample(
+                        "Forms" -> if (initialComponent in secureFormNames) {
+                            SecureFormsExample(initialComponent)
+                        } else if (initialComponent in advancedFormNames) {
+                            AdvancedFormsExample(initialComponent)
+                        } else Column(verticalArrangement = Arrangement.spacedBy(LumenSpacing.Md)) {
+                            FormsExample(
                             email = email,
                             onEmailChange = { email = it },
                             notificationsEnabled = notificationsEnabled,
@@ -374,15 +425,22 @@ private fun PlaygroundContent(
                             onProfileChange = { profile = it },
                             density = density,
                             onDensityChange = { density = it }
-                        )
-                        "Feedback" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            )
+                            AdvancedFormsExample()
+                            SecureFormsExample()
+                        }
+                        "Feedback" -> if (initialComponent == "Pull to refresh") {
+                            PullToRefreshExample()
+                        } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                             FeedbackExample(
                                 showBanner = showBanner,
                                 onBannerVisibilityChange = { showBanner = it }
                             )
                             FeedbackStatesExample()
+                            PullToRefreshExample()
                         }
-                        "Data" -> Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        "Data" -> if (initialComponent in setOf("Media viewport", "Media thumbnail", "Media filmstrip")) { MediaWorkspaceExample(initialComponent) } else if (initialComponent in setOf("Calendar heatmap", "Funnel chart", "Box plot")) { ChartExample(setOf(initialComponent)) } else if (initialComponent == "Image comparison") { ImageComparisonExample() } else Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            ImageComparisonExample()
                             DataExample(saved = saved, onToggleSaved = { saved = !saved })
                             DisclosureExample(
                                 expanded = disclosureExpanded,
@@ -390,7 +448,7 @@ private fun PlaygroundContent(
                             )
                             ChartExample(
                                 section.names.filterTo(mutableSetOf()) { name ->
-                                    query.isBlank() || name.contains(query, ignoreCase = true)
+                                    query.isBlank() || matchesComponentQuery(name, query, exact = !enhancedDiscovery)
                                 }
                             )
                         }
@@ -410,10 +468,13 @@ private fun PlaygroundContent(
                         graphic = { LumenIcon(LumenIconName.Search, contentDescription = null) },
                         actions = {
                             LumenButton(
-                                onClick = { query = "" },
+                                onClick = {
+                                    query = ""
+                                    selectedCategory = ALL_CATEGORIES
+                                },
                                 intent = LumenButtonIntent.Secondary
                             ) {
-                                Text("Clear search")
+                                Text("Reset filters")
                             }
                         }
                     )
@@ -534,7 +595,7 @@ private fun AboutPlayground() {
                     onClick = { uriHandler.openUri("https://lumen.santi020k.com/support") },
                     intent = LumenButtonIntent.Secondary
                 ) {
-                    Text("Support")
+                    Text("Feedback & support")
                 }
                 LumenButton(
                     onClick = { uriHandler.openUri("https://lumen.santi020k.com/privacy") },
@@ -644,7 +705,7 @@ private fun FormsExample(
 ) {
     var notes by remember { mutableStateOf("Native components now share one documented contract.") }
     var pickerProfile by remember { mutableStateOf("balanced") }
-    var sliderValue by remember { mutableStateOf(72f) }
+    var sliderValue by remember { mutableFloatStateOf(72f) }
     var activeTab by remember { mutableStateOf("overview") }
     var releaseDateMillis by remember { mutableStateOf<Long?>(null) }
     var releaseRange by remember {
@@ -1002,7 +1063,7 @@ private fun NavigationOverlaysExample(initialComponent: String) {
 @Composable
 private fun NavigationExample(initialComponent: String) {
     var destination by remember { mutableStateOf("home") }
-    var reselectionCount by remember { mutableStateOf(0) }
+    var reselectionCount by remember { mutableIntStateOf(0) }
     val scrollState = rememberLumenNavigationBarScrollState()
     val items = remember {
         listOf(
@@ -1277,15 +1338,55 @@ private fun ChartExample(visibleNames: Set<String>) {
             )
         )
     }
+
+    if ("Waterfall chart" in visibleNames) {
+        LumenWaterfallChart(label = "Revenue movement", heading = "Revenue movement", description = "Opening balance to closing · USD, thousands", valueLabel = "USD, thousands", data = listOf(
+            LumenWaterfallDatum("opening", "Opening", 120.0, LumenWaterfallKind.Total),
+            LumenWaterfallDatum("new", "New", 85.0),
+            LumenWaterfallDatum("growth", "Growth", 35.0),
+            LumenWaterfallDatum("costs", "Costs", -45.0),
+            LumenWaterfallDatum("other", "Other", -10.0),
+            LumenWaterfallDatum("closing", "Closing", 185.0, LumenWaterfallKind.Total)
+        ))
+    }
+    if ("Lollipop chart" in visibleNames) {
+        LumenLollipopChart(data = listOf(LumenComparisonDatum("design", "Design", 88.0, 62.0), LumenComparisonDatum("engineering", "Engineering", 91.0, 76.0), LumenComparisonDatum("support", "Support", 74.0, 81.0), LumenComparisonDatum("operations", "Operations", 83.0, 54.0)), label = "Team performance", domain = 0.0..100.0, heading = "Team performance", valueLabel = "Current")
+    }
+    if ("Dumbbell chart" in visibleNames) {
+        LumenDumbbellChart(data = listOf(LumenComparisonDatum("design", "Design", 88.0, 62.0), LumenComparisonDatum("engineering", "Engineering", 91.0, 76.0), LumenComparisonDatum("support", "Support", 74.0, 81.0), LumenComparisonDatum("operations", "Operations", 83.0, 54.0)), label = "Progress by team", domain = 0.0..100.0, heading = "Progress by team", valueLabel = "Current")
+    }
+    if ("Bullet chart" in visibleNames) {
+        LumenBulletChart(value = 86.0, target = 95.0, label = "Delivery performance", heading = "On-time delivery", description = "Actual performance against the service target", ranges = listOf(
+            LumenBulletRange(70.0, "Developing"), LumenBulletRange(90.0, "Consistent"), LumenBulletRange(100.0, "Excellent")
+        ), labels = LumenChartLabels(formatValue = { "${it.toInt()}%" }))
+    }
+    if ("Histogram" in visibleNames) {
+        LumenHistogram(label = "Response times", heading = "Response time", description = "Distribution of requests · milliseconds", data = listOf(3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3).mapIndexed { index, count ->
+            LumenHistogramBin(index * 25.0, (index + 1) * 25.0, count.toDouble())
+        })
+    }
+    if ("Calendar heatmap" in visibleNames) {
+        LumenCalendarHeatmap(label = "Daily activity", heading = "Daily activity", startDate = "2026-01-01", endDate = "2026-01-31", data = (1..31).map { day -> LumenCalendarHeatmapDatum("2026-01-${day.toString().padStart(2, '0')}", if (day % 11 == 0) null else ((day * 7) % 30).toDouble()) })
+    }
+    if ("Funnel chart" in visibleNames) {
+        LumenFunnelChart(label = "Signup stages", heading = "Signup stages", data = listOf(LumenFunnelDatum("visits", "Visits", 1200.0), LumenFunnelDatum("started", "Started", 720.0), LumenFunnelDatum("completed", "Completed", 360.0)))
+    }
+    if ("Box plot" in visibleNames) {
+        LumenBoxPlot(label = "Response time distribution", heading = "Response time distribution", description = "Milliseconds · supplied five-number summaries", data = listOf(LumenBoxPlotDatum("api", "API", 12.0, 24.0, 35.0, 48.0, 70.0, listOf(95.0)), LumenBoxPlotDatum("worker", "Worker", 18.0, 30.0, 46.0, 64.0, 90.0, listOf(110.0))))
+    }
     if ("Heatmap" in visibleNames) {
         LumenHeatmap(
-            label = "Activity by day and period",
-            data = listOf(
-                LumenHeatmapDatum("mon-am", "Mon", "Morning", 18.0),
-                LumenHeatmapDatum("tue-am", "Tue", "Morning", 32.0),
-                LumenHeatmapDatum("mon-pm", "Mon", "Evening", 47.0),
-                LumenHeatmapDatum("tue-pm", "Tue", "Evening", null)
-            )
+            label = "Change in activity by day and hour",
+            heading = "Weekly activity", description = "Change from typical activity · by day and hour",
+            colorScale = LumenHeatmapColorScale.Diverging,
+            labels = LumenChartLabels(formatValue = { it.toInt().toString() }),
+            data = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun").flatMapIndexed { row, day ->
+                (0..<12).map { column ->
+                    val value = if (row == 4 && column == 6) null else if (row == 0 && column == 0) 0.0 else
+                        kotlin.math.round(kotlin.math.sin((column - 3) / 2.0) * 14 + kotlin.math.cos(row.toDouble()) * 6)
+                    LumenHeatmapDatum("$row-$column", "${column + 8}:00", day, value)
+                }
+            }
         )
     }
     if ("Range chart" in visibleNames) {

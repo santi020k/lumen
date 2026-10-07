@@ -4,6 +4,7 @@ import { Breadcrumb, Card } from '@santi020k/lumen-astro'
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
+import RuntimeExamples from '../../../components/RuntimeExamples.astro'
 import { frameworkGuides, frameworkSetups } from '../../../data/docs'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
@@ -96,6 +97,7 @@ if (!guide || !setup) {
         </p>
       </div>
       <CodeBlock code={guide.code} lang={guide.lang} />
+      <RuntimeExamples idPrefix="astro" />
     </section>
   </div>
 

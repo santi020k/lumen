@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 
-import { act, createElement } from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
+import { act, createElement, isValidElement, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 
-import { afterEach, describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 
-import { Combobox } from './index.js'
+import { Combobox, type ComboboxProps, usePopover } from './index.js'
 
 const mounted: { container: HTMLDivElement, root: Root }[] = []
 
@@ -29,17 +30,6 @@ const requireListbox = (root: ParentNode): HTMLElement => {
   return element
 }
 
-const requireOption = (
-  options: HTMLButtonElement[],
-  index: number
-): HTMLButtonElement => {
-  const option = options[index]
-
-  if (!option) throw new Error(`Expected Combobox option at index ${index}`)
-
-  return option
-}
-
 const press = async (element: Element, key: string): Promise<void> => {
   await act(async () => {
     element.dispatchEvent(new KeyboardEvent('keydown', {
@@ -52,7 +42,7 @@ const press = async (element: Element, key: string): Promise<void> => {
   })
 }
 
-const renderCombobox = () => {
+const renderCombobox = (props: Partial<ComboboxProps> = {}) => {
   const container = document.createElement('div')
   const root = createRoot(container)
 
@@ -64,7 +54,8 @@ const renderCombobox = () => {
     root.render(createElement(Combobox, {
       label: 'Framework',
       list: 'framework-options',
-      options: ['Astro', 'React', 'Web Components']
+      options: ['Astro', 'React', 'Web Components'],
+      ...props
     }))
   })
 
@@ -72,7 +63,49 @@ const renderCombobox = () => {
   const listbox = requireListbox(container)
   const options = [...container.querySelectorAll<HTMLButtonElement>('[role="option"]')]
 
-  return { input, listbox, options }
+  return { container, root, input, listbox, options }
+}
+
+const setInputValue = (input: HTMLInputElement, value: string): void => {
+  const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')
+
+  if (!descriptor?.set) throw new Error('Expected native input value setter')
+
+  descriptor.set.call(input, value)
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+}
+
+const renderComboboxForm = (formProps: ComponentPropsWithoutRef<'form'>, props: Partial<ComboboxProps> = {}) => {
+  const container = document.createElement('div')
+  const root = createRoot(container)
+
+  document.body.append(container)
+
+  mounted.push({ container, root })
+
+  act(() => {
+    root.render(createElement('form', formProps, createElement(Combobox, {
+      label: 'Framework',
+      list: 'framework-options',
+      options: ['Astro', 'React', 'Web Components'],
+      ...props
+    })))
+  })
+
+  const input = requireInput(container)
+  const listbox = requireListbox(container)
+  const form = container.querySelector('form')
+
+  if (!(form instanceof HTMLFormElement)) throw new Error('Expected form')
+
+  return { container, root, input, listbox, form }
+}
+
+const flushReset = async (form: HTMLFormElement): Promise<void> => {
+  await act(async () => {
+    form.reset()
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
 }
 
 afterEach(() => {
@@ -104,17 +137,18 @@ describe('Combobox', () => {
 
     await press(input, 'ArrowDown')
 
-    expect(document.activeElement).toBe(options[0])
+    expect(document.activeElement).toBe(input)
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[0]?.id)
 
-    await press(requireOption(options, 0), 'ArrowDown')
+    await press(input, 'ArrowDown')
 
-    expect(document.activeElement).toBe(options[1])
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[1]?.id)
 
-    await press(requireOption(options, 1), 'End')
+    await press(input, 'ArrowDown')
 
-    expect(document.activeElement).toBe(options[2])
+    expect(input.getAttribute('aria-activedescendant')).toBe(options[2]?.id)
 
-    await press(requireOption(options, 2), 'Enter')
+    await press(input, 'Enter')
 
     expect(input.value).toBe('Web Components')
     expect(input.getAttribute('aria-expanded')).toBe('false')
@@ -122,3 +156,259 @@ describe('Combobox', () => {
     expect(document.activeElement).toBe(input)
   })
 })
+
+test('ignores composition and preserves ordinary editing and form submission keys', async () => {
+  const { input, listbox } = renderCombobox()
+
+  act(() => {
+    input.focus()
+  })
+  await press(input, 'ArrowDown')
+  for (const key of ['Enter', 'Escape', 'ArrowDown']) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key, isComposing: true })
+
+    act(() => {
+      input.dispatchEvent(event)
+    })
+    expect(event.defaultPrevented).toBe(false)
+  }
+  expect(input.value).toBe('')
+  expect(listbox.hidden).toBe(false)
+  for (const key of ['Home', 'End', 'ArrowLeft', 'ArrowRight']) {
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key })
+
+    act(() => {
+      input.dispatchEvent(event)
+    })
+    expect(event.defaultPrevented).toBe(false)
+  }
+  await press(input, 'Escape')
+  const enter = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter' })
+
+  act(() => {
+    input.dispatchEvent(enter)
+  })
+  expect(enter.defaultPrevented).toBe(false)
+})
+
+test('honors canceled navigation and readonly inputs', async () => {
+  const { input } = renderCombobox({ onKeyDown: event => {
+    event.preventDefault()
+  } })
+
+  act(() => {
+    input.focus()
+  })
+  await press(input, 'ArrowDown')
+  expect(input.hasAttribute('aria-activedescendant')).toBe(false)
+  const readonly = renderCombobox({ list: 'readonly-list', readOnly: true })
+
+  act(() => {
+    readonly.input.focus()
+  })
+  await press(readonly.input, 'ArrowDown')
+  expect(readonly.listbox.hidden).toBe(true)
+})
+
+test('updates active descendants when options are removed or replaced', async () => {
+  const { root, input } = renderCombobox()
+
+  act(() => {
+    input.focus()
+  })
+  await press(input, 'ArrowDown')
+  act(() => {
+    root.render(createElement(Combobox, { label: 'Framework', list: 'framework-options', options: [] }))
+  })
+  expect(input.hasAttribute('aria-activedescendant')).toBe(false)
+  act(() => {
+    root.render(createElement(Combobox, { label: 'Framework', list: 'framework-options', options: ['New choice'] }))
+  })
+  await press(input, 'ArrowDown')
+  const active = document.getElementById(input.getAttribute('aria-activedescendant') ?? '')
+
+  expect(active?.textContent).toBe('New choice')
+  await press(input, 'Enter')
+  expect(input.value).toBe('New choice')
+})
+
+test('notifies a controlled input when an option is committed', async () => {
+  const changes: string[] = []
+  const Controlled = () => {
+    const [value, setValue] = useState('')
+
+    return createElement(Combobox, { list: 'controlled-list',
+      options: ['Astro', 'React'],
+      value,
+      onChange: event => {
+        changes.push(event.currentTarget.value)
+        setValue(event.currentTarget.value)
+      }
+    })
+  }
+  const { root, container } = renderCombobox()
+
+  act(() => {
+    root.render(createElement(Controlled))
+  })
+  const input = requireInput(container)
+
+  act(() => {
+    input.focus()
+  })
+  await press(input, 'ArrowDown')
+  await press(input, 'Enter')
+  expect(input.value).toBe('Astro')
+  expect(changes).toEqual(['Astro'])
+})
+
+test('nested popovers leave handled Escape and text editing to the inner control', async () => {
+  const Nested = () => {
+    const outer = usePopover({ defaultOpen: true })
+    const inner = usePopover({ defaultOpen: true })
+
+    return createElement('div', outer.rootProps, createElement('button', outer.triggerProps, 'Outer'), createElement('div', outer.panelProps, createElement('div', inner.rootProps, createElement('button', inner.triggerProps, 'Inner'), createElement('div', inner.panelProps, createElement(Combobox, { list: 'nested-list', options: ['Astro'] })))))
+  }
+  const { root, container } = renderCombobox()
+
+  act(() => {
+    root.render(createElement(Nested))
+  })
+  const input = requireInput(container)
+  const triggers = [...container.querySelectorAll<HTMLButtonElement>('[data-ui-trigger]')]
+  const innerTrigger = triggers[1]
+
+  if (!innerTrigger) throw new Error('Expected inner trigger')
+  act(() => {
+    input.focus()
+  })
+  await press(input, 'Escape')
+  expect(triggers.map(trigger => trigger.getAttribute('aria-expanded'))).toEqual(['true', 'true'])
+  await press(input, 'Home')
+  expect(document.activeElement).toBe(input)
+  await press(input, 'Escape')
+  expect(triggers.map(trigger => trigger.getAttribute('aria-expanded'))).toEqual(['true', 'false'])
+  expect(document.activeElement).toBe(innerTrigger)
+  await press(innerTrigger, 'Escape')
+  expect(triggers.map(trigger => trigger.getAttribute('aria-expanded'))).toEqual(['false', 'false'])
+})
+
+test('restores the default value and closes options on an uncontrolled form reset', async () => {
+  const { input, listbox, form } = renderComboboxForm({}, { defaultValue: 'React' })
+
+  act(() => {
+    input.focus()
+  })
+  await press(input, 'ArrowDown')
+  act(() => {
+    setInputValue(input, 'Web')
+  })
+  expect(input.value).toBe('Web')
+  expect(listbox.hidden).toBe(false)
+  await flushReset(form)
+  expect(input.value).toBe('React')
+  expect(listbox.hidden).toBe(true)
+  expect(input.hasAttribute('aria-activedescendant')).toBe(false)
+})
+
+test('honors a cancelled reset and keeps the edited uncontrolled value', async () => {
+  const cancelReset: ComponentPropsWithoutRef<'form'>['onReset'] = event => {
+    event.preventDefault()
+  }
+  const { input, form } = renderComboboxForm({ onReset: cancelReset }, { defaultValue: 'React' })
+
+  act(() => {
+    setInputValue(input, 'Web Components')
+  })
+  expect(input.value).toBe('Web Components')
+  await flushReset(form)
+  expect(input.value).toBe('Web Components')
+})
+
+test('preserves a controlled value and does not emit onChange when the form resets', async () => {
+  const onChange = vi.fn<NonNullable<ComboboxProps['onChange']>>()
+  const { input, form, listbox } = renderComboboxForm({}, { value: 'React', onChange })
+
+  act(() => {
+    input.focus()
+  })
+  await press(input, 'ArrowDown')
+  expect(listbox.hidden).toBe(false)
+  await flushReset(form)
+  expect(input.value).toBe('React')
+  expect(onChange).not.toHaveBeenCalled()
+  expect(listbox.hidden).toBe(true)
+})
+
+test('ignores a reset scheduled before the combobox unmounts', async () => {
+  const { form, root, container } = renderComboboxForm({}, { defaultValue: 'React' })
+
+  await act(async () => {
+    form.reset()
+    root.render(null)
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(container.childNodes).toHaveLength(0)
+})
+
+test('rebinds the reset listener when the combobox is given a different explicit form owner', async () => {
+  const container = document.createElement('div')
+  const root = createRoot(container)
+
+  document.body.append(container)
+  mounted.push({ container, root })
+
+  const renderWithOwner = (owner: string) => {
+    act(() => {
+      root.render(createElement('div', null, createElement('form', { id: 'form-a' }), createElement('form', { id: 'form-b' }), createElement(Combobox, {
+        defaultValue: 'React',
+        form: owner,
+        label: 'Framework',
+        list: 'framework-options',
+        options: ['Astro', 'React', 'Web Components']
+      })))
+    })
+  }
+
+  renderWithOwner('form-a')
+
+  const input = requireInput(container)
+  const formA = container.querySelector('#form-a')
+  const formB = container.querySelector('#form-b')
+
+  if (!(formA instanceof HTMLFormElement) || !(formB instanceof HTMLFormElement)) {
+    throw new Error('Expected both forms')
+  }
+
+  act(() => {
+    setInputValue(input, 'Web Components')
+  })
+  expect(input.value).toBe('Web Components')
+
+  await flushReset(formB)
+  expect(input.value).toBe('Web Components')
+
+  renderWithOwner('form-b')
+
+  await flushReset(formA)
+  expect(input.value).toBe('Web Components')
+
+  await flushReset(formB)
+  expect(input.value).toBe('React')
+})
+
+test.each([null, 1, 'options', {}, ['Astro', null], ['Astro', 42], ['Astro', {}], new Array(2)])(
+  'fails closed on malformed decoded options: %j', options => {
+    const { root, container, input } = renderCombobox()
+
+    act(() => {
+      const view: unknown = Reflect.apply(createElement, undefined, [Combobox, { list: 'framework-options', options, value: 'a' }])
+
+      if (!isValidElement(view)) throw new Error('Expected combobox')
+
+      root.render(view)
+    })
+    expect(container.querySelectorAll('[role="option"]')).toHaveLength(0)
+    expect(input.value).toBe('a')
+  }
+)

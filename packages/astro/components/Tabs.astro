@@ -7,6 +7,7 @@ interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
+  indicator?: boolean
   initialValue?: string
   storageKey?: string
 }
@@ -15,6 +16,7 @@ const {
   class: classProp = '',
   className = '',
   glass = false,
+  indicator = false,
   initialValue,
   storageKey,
   ...rest
@@ -29,6 +31,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ---
 
 <div
+  data-ui-tab-indicator={indicator || undefined}
   data-initial-value={initialValue}
   data-storage-key={storageKey}
   data-ui-tabs

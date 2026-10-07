@@ -1,0 +1,61 @@
+/* Native disclosures keep their semantic toggle and immediate fallback in older browsers. */
+@layer lumen.components {
+  @supports (interpolate-size: allow-keywords) and selector(details::details-content) {
+    @media (prefers-reduced-motion: no-preference) {
+      :is(.ui-accordion details, .ui-collapsible) {
+        interpolate-size: allow-keywords;
+        transition:
+          border-color var(--ui-duration-fast) var(--ui-ease),
+          padding-block-end var(--ui-duration) var(--ui-ease-emphasized);
+      }
+
+      :is(.ui-accordion details, .ui-collapsible)::details-content {
+        block-size: 0;
+        overflow: clip;
+        opacity: 0;
+        transition:
+          block-size var(--ui-duration) var(--ui-ease-emphasized),
+          opacity var(--ui-duration) var(--ui-ease),
+          content-visibility var(--ui-duration) allow-discrete;
+      }
+
+      :is(.ui-accordion details, .ui-collapsible)[open]::details-content {
+        block-size: auto;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+/* A local preference can reduce motion without changing the operating system setting. */
+[data-ui-motion="reduce"],
+[data-ui-motion="reduce"]::before,
+[data-ui-motion="reduce"]::after,
+[data-ui-motion="reduce"]::backdrop,
+[data-ui-motion="reduce"] *,
+[data-ui-motion="reduce"] *::before,
+[data-ui-motion="reduce"] *::after,
+[data-ui-motion="reduce"] ::backdrop {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+[data-ui-motion="reduce"].ui-collapsible::details-content,
+[data-ui-motion="reduce"] :is(.ui-accordion details, .ui-collapsible)::details-content {
+  transition: none !important;
+}
+
+[data-ui-motion="reduce"].ui-collapsible[open]::details-content,
+[data-ui-motion="reduce"] :is(.ui-accordion details, .ui-collapsible)[open]::details-content {
+  block-size: auto;
+  opacity: 1;
+}
+
+[data-ui-motion="reduce"].ui-scroll-reveal,
+[data-ui-motion="reduce"] .ui-scroll-reveal,
+[data-ui-motion="reduce"].ui-reveal-group > *,
+[data-ui-motion="reduce"] .ui-reveal-group > * {
+  opacity: 1;
+  transform: none;
+}

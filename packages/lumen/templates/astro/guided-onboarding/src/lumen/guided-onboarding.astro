@@ -1,0 +1,35 @@
+---
+import { Button, Card, Form, Input, Label, Stack, Typography } from '@santi020k/lumen-astro'
+---
+
+<section data-product-block="onboarding" aria-label="Workspace setup">
+  <Card><Stack gap="group"><Typography><h2>Prepare your workspace</h2><p>This draft stays local until your application handles completion.</p></Typography>
+  <Form enhance={false} method="post"><Stack gap="group">
+    <section data-onboarding-step="0"><Typography><h3 tabindex="-1">Workspace</h3></Typography><Label>Workspace name<Input name="workspace" data-workspace-name required maxlength="80" /></Label></section>
+    <section data-onboarding-step="1" hidden><Typography><h3 tabindex="-1">Review your draft</h3><p>Workspace: <span data-workspace-review></span></p></Typography></section>
+    <section data-onboarding-step="2" hidden><Typography><h3 tabindex="-1">Ready</h3><p>Workspace draft completed.</p></Typography><Button data-onboarding-edit type="button">Edit draft</Button></section>
+    <Stack direction="horizontal" gap="related"><Button data-onboarding-back type="button" hidden variant="secondary">Back</Button><Button data-onboarding-next disabled type="submit">Continue</Button></Stack>
+  </Stack></Form><p role="status" data-block-status>Step 1 of 3.</p></Stack></Card>
+</section>
+
+<script>
+  import { mountProductBlocks } from './product-blocks'
+
+  let cleanup: (() => void) | undefined
+
+  const mount = () => {
+ cleanup?.()
+
+ cleanup = mountProductBlocks(document)
+}
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+
+  document.addEventListener('astro:before-swap', () => {
+ cleanup?.()
+
+ cleanup = undefined
+})
+</script>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lumen Migration"
+  short_description: "Plan and verify Lumen version migrations"
+  default_prompt: "Use $lumen-migrate to inspect and migrate this consumer to the requested Lumen version."

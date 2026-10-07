@@ -51,10 +51,12 @@ const titleId = `${dialogId}-title`
 </Dialog>
 
 <script>
-  const initGlobalDocsSearch = (): void => {
-    if (document.documentElement.dataset.globalDocsSearchBound === 'true') return
+  let globalDocsSearchBound = false
 
-    document.documentElement.dataset.globalDocsSearchBound = 'true'
+  const initGlobalDocsSearch = (): void => {
+    if (globalDocsSearchBound) return
+
+    globalDocsSearchBound = true
 
     document.addEventListener('keydown', event => {
       if (event.key.toLowerCase() !== 'k' || (!event.metaKey && !event.ctrlKey) || event.altKey) return

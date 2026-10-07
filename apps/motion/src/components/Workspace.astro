@@ -1,0 +1,51 @@
+---
+import { Badge, Button, Card, Icon, Progress, Stat } from '@santi020k/lumen-astro'
+
+interface Props { glass?: boolean }
+
+const { glass = false } = Astro.props
+---
+
+<Card glass={glass} class="workspace" as="section" aria-label="Sample project workspace">
+  <div class="workspace-heading">
+    <div>
+      <p class="eyebrow">YOUR WORKSPACE</p>
+      <h2>A little more clarity.</h2>
+      <p class="muted">Everything you need. Room to focus.</p>
+    </div>
+    <Badge variant="success">All systems ready</Badge>
+  </div>
+  <div class="stats">
+    <Stat variant={glass ? 'glass' : 'default'} label="Active projects" value="12" />
+    <Stat variant={glass ? 'glass' : 'default'} label="Ready to review" value="04" />
+    <Stat variant={glass ? 'glass' : 'default'} label="Completed this week" value="08" />
+  </div>
+  <div class="project-heading">
+    <h3>In progress</h3>
+    <Badge variant="outline">Sample data</Badge>
+  </div>
+  <div class="projects">
+    <Card class="project" glass={glass ? 'subtle' : false} variant={glass ? 'default' : 'muted'}>
+      <div class="project-art foundations-art" aria-hidden="true"><span>Aa</span><div class="
+        color-swatches
+      "
+                                                                                 ><i></i><i></i><i></i><i></i></div><Icon name="layers" /></div>
+      <div class="project-line"><h4>Design foundations</h4><Badge variant="success">Ready</Badge></div>
+      <p class="muted">Tokens, typography, and a shared language.</p>
+      <Progress value={100} aria-label="Design foundations: complete" />
+    </Card>
+    <Card class="project" glass={glass ? 'subtle' : false} variant={glass ? 'default' : 'muted'}>
+      <div class="project-art workspace-art" aria-hidden="true"><Icon name="layout-dashboard" /><div class="
+        mini-layout
+      "
+                                                                                                ><i></i><i></i><i></i></div><span>01—12</span></div>
+      <div class="project-line"><h4>Product workspace</h4><Badge variant="secondary">In progress</Badge></div>
+      <p class="muted">One set of components. Your own expression.</p>
+      <Progress value={68} aria-label="Product workspace: 68 percent complete" />
+    </Card>
+  </div>
+  <div class="workspace-footer">
+    <p class="muted">Built with public Lumen components.</p>
+    <Button aria-disabled="true" tabindex="-1">Open workspace <Icon name="arrow-up-right" /></Button>
+  </div>
+</Card>

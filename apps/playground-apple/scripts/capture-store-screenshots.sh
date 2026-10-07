@@ -29,10 +29,10 @@ strip_alpha() {
 
 cleanup() {
   local device_id
-  for device_id in "${status_bar_device_ids[@]}"; do
+  for device_id in ${status_bar_device_ids[@]+"${status_bar_device_ids[@]}"}; do
     xcrun simctl status_bar "${device_id}" clear 2>/dev/null || true
   done
-  for device_id in "${started_device_ids[@]}"; do
+  for device_id in ${started_device_ids[@]+"${started_device_ids[@]}"}; do
     xcrun simctl shutdown "${device_id}" 2>/dev/null || true
   done
   rm -rf "${capture_dir}"
@@ -49,13 +49,16 @@ device_is_booted() {
 capture_rendered_frame() {
   local device_id="$1"
   local screenshot_path="$2"
+  local previous_path="${screenshot_path}.previous.png"
   local _
   for _ in {1..20}; do
     sleep 1
     xcrun simctl io "${device_id}" screenshot "${screenshot_path}"
-    if [[ "$(stat -f '%z' "${screenshot_path}")" -ge 100000 ]]; then
+    if [[ "$(stat -f '%z' "${screenshot_path}")" -ge 100000 ]] && cmp -s "${previous_path}" "${screenshot_path}"; then
+      rm -f "${previous_path}"
       return 0
     fi
+    cp "${screenshot_path}" "${previous_path}"
   done
   echo "The app did not finish rendering a complete frame for ${screenshot_path}." >&2
   return 1

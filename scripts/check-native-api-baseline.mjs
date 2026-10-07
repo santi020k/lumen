@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-import ts from 'typescript'
+import { collectTypeScriptExports, validateIconMembers } from './lib/native-api-exports.mjs'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const baselinePath = resolve(repositoryRoot, 'registry/native-api-baseline.json')
@@ -11,31 +11,6 @@ const classifications = ['supported', 'experimental', 'deprecated']
 const maturities = new Set(['stable'])
 const nativeApiAuditPath = resolve(repositoryRoot, 'docs/native-api-audit.md')
 const nativeApiAudit = await readFile(nativeApiAuditPath, 'utf8')
-
-const collectTypeScriptExports = (entrypoint, source) => {
-  const sourceFile = ts.createSourceFile(
-    entrypoint,
-    source,
-    ts.ScriptTarget.Latest,
-    true,
-    ts.ScriptKind.TS
-  )
-
-  const exports = []
-
-  for (const statement of sourceFile.statements) {
-    if (!ts.isExportDeclaration(statement)) continue
-
-    assert.ok(
-      statement.exportClause && ts.isNamedExports(statement.exportClause),
-      `${entrypoint} must use named exports so the native API baseline can classify every symbol`
-    )
-
-    for (const element of statement.exportClause.elements) exports.push(element.name.text)
-  }
-
-  return exports.sort()
-}
 
 const validateClassification = (adapterName, adapter) => {
   assert.ok(maturities.has(adapter.maturity), `${adapterName} has an invalid maturity`)
@@ -107,26 +82,38 @@ for (const [adapterName, adapter] of Object.entries(baseline.adapters)) {
       `${subpathLabel} public exports changed; classify intentional additions and removals in ${baselinePath}`
     )
 
+    if (subpathContract.membersDirectory !== undefined) {
+      assert.equal(subpath, './icons/*', 'Only the reviewed icon family may declare directory members')
+
+      await validateIconMembers(repositoryRoot, subpathContract, subpathSource, subpathClassifiedNames)
+    }
+
     entrypointClassifications.push(subpathContract)
 
     exportCount += subpathExportedNames.length
   }
 
-  const allClassifiedNames = entrypointClassifications.flatMap(contract => (
-    classifications.flatMap(classification => contract[classification])
-  ))
+  // Optional entrypoints may expose an existing contract without duplicating its implementation.
+  // The same symbol must retain its reviewed classification at every entrypoint.
+  const symbolClassifications = new Map()
 
-  assert.equal(
-    new Set(allClassifiedNames).size,
-    allClassifiedNames.length,
-    `${adapterName} exports the same public symbol from more than one stable entrypoint`
-  )
+  for (const contract of entrypointClassifications) {
+    for (const classification of classifications) {
+      for (const name of contract[classification]) {
+        const previous = symbolClassifications.get(name)
+
+        assert.ok(previous === undefined || previous === classification, `${name} has inconsistent classifications`)
+
+        symbolClassifications.set(name, classification)
+      }
+    }
+  }
 
   if (adapterName === 'reactNative') {
     const expectedClassification = [
-      `${entrypointClassifications.reduce((count, contract) => count + contract.supported.length, 0)} Supported`,
-      `${entrypointClassifications.reduce((count, contract) => count + contract.experimental.length, 0)} Experimental phone exports`,
-      `${entrypointClassifications.reduce((count, contract) => count + contract.deprecated.length, 0)} Deprecated`
+      `${new Set(entrypointClassifications.flatMap(contract => contract.supported)).size} Supported`,
+      `${new Set(entrypointClassifications.flatMap(contract => contract.experimental)).size} Experimental phone exports`,
+      `${new Set(entrypointClassifications.flatMap(contract => contract.deprecated)).size} Deprecated`
     ].join('; ')
 
     assert.ok(

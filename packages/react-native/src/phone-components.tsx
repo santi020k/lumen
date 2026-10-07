@@ -5,6 +5,7 @@ import {
 } from 'react'
 import {
   FlatList,
+  Image,
   Pressable,
   Text,
   TextInput,
@@ -14,7 +15,9 @@ import {
 } from 'react-native'
 
 import {
+  formatLumenPhoneNumber,
   getLumenPhoneCountries,
+  getLumenPhoneFlagSource,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber
@@ -48,9 +51,39 @@ export interface LumenPhoneInputProps extends Omit<ViewProps, 'children'> {
   locale?: LumenPhoneCountryOptions['locale']
   numberLabel?: string
   onValueChange: (value: LumenPhoneNumber) => void
+  readOnly?: boolean
   required?: boolean
   showValidationError?: boolean
   value: LumenPhoneNumber
+}
+
+export const LumenCountryFlag = ({
+  regionCode, decorative = false
+}: { regionCode: string, decorative?: boolean }): ReactElement => {
+  const source = getLumenPhoneFlagSource(regionCode)
+  const theme = useLumenTheme()
+
+  if (!source) return <Text style={{ color: theme.colors.ink }}>{regionCode.toUpperCase().slice(0, 2)}</Text>
+
+  return (
+    <Image
+      accessibilityLabel={decorative ? undefined : regionCode.toUpperCase()}
+      accessible={!decorative}
+      source={{ uri: source }}
+      style={{ width: 24, height: 18, borderRadius: 2 }}
+    />
+  )
+}
+
+export const LumenPhoneNumberView = ({ value }: { value: LumenPhoneNumber }): ReactElement => {
+  const theme = useLumenTheme()
+
+  return (
+    <View accessibilityLabel={`${value.country.displayName}, ${formatLumenPhoneNumber(value)}`} style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm }}>
+      <LumenCountryFlag decorative regionCode={value.country.regionCode} />
+      <Text style={{ color: theme.colors.ink }}>{formatLumenPhoneNumber(value) || '—'}</Text>
+    </View>
+  )
 }
 
 interface LumenPhoneInputLabels {
@@ -168,11 +201,13 @@ const LumenPhoneCountryPicker = ({
                   alignItems: 'center',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
+                  gap: theme.spacing.sm,
                   minHeight: 48,
                   opacity: resolvePhoneCountryOpacity(enabled, pressed),
                   paddingHorizontal: theme.spacing.sm
                 })}
               >
+                <LumenCountryFlag decorative regionCode={country.regionCode} />
                 <Text
                   style={{
                     color: theme.colors.ink,
@@ -181,7 +216,11 @@ const LumenPhoneCountryPicker = ({
                     fontWeight: String(theme.fontWeights.medium) as TextStyle['fontWeight']
                   }}
                 >
-                  {country.pickerLabel}
+                  {country.displayName}
+                  {' '}
+                  (
+                  {country.callingCode}
+                  )
                 </Text>
                 {selected ? <LumenIcon decorative name="check" size="sm" /> : null}
               </Pressable>
@@ -195,12 +234,23 @@ const LumenPhoneCountryPicker = ({
 }
 
 /** A controlled international phone editor with searchable country metadata and E.164 output. */
+const isPhoneEditable = (props: LumenPhoneInputProps): boolean => (props.enabled ?? true) && !props.readOnly
+
+const phoneBorderToken = (error: string | undefined, focused: boolean): 'danger' | 'brand' | 'line' => {
+  if (error) return 'danger'
+
+  return focused ? 'brand' : 'line'
+}
+
 const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
+  const [numberFocused, setNumberFocused] = useState(false)
+  const [countryHovered, setCountryHovered] = useState(false)
   const theme = useLumenTheme()
   const [countryQuery, setCountryQuery] = useState('')
   const [pickerVisible, setPickerVisible] = useState(false)
   const labels = resolvePhoneInputLabels(props)
   const enabled = props.enabled ?? true
+  const editable = isPhoneEditable(props)
   const required = props.required ?? false
   const showValidationError = props.showValidationError ?? true
   const phoneOptions = useMemo(() => getPhoneOptions(props.locale), [props.locale])
@@ -210,7 +260,7 @@ const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
     [phoneOptions, props.countries]
   )
 
-  const countrySelectorDisabled = !enabled || availableCountries.length === 0
+  const countrySelectorDisabled = !editable || availableCountries.length === 0
   const pickerEnabled = !countrySelectorDisabled
   const pickerVisibleForState = resolvePhonePickerVisible(pickerEnabled, pickerVisible)
 
@@ -261,6 +311,7 @@ const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
     locale: _locale,
     numberLabel: _numberLabel,
     onValueChange: _onValueChange,
+    readOnly: _readOnly,
     required: _required,
     showValidationError: _showValidationError,
     style,
@@ -276,7 +327,7 @@ const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
         label={label}
         required={required}
       >
-        <View style={{ alignItems: 'center', flexDirection: 'row', gap: theme.spacing.sm }}>
+        <View style={{ alignItems: 'stretch', flexDirection: 'row', gap: 0, backgroundColor: props.readOnly ? theme.colors.surfaceMuted : theme.colors.surface, borderColor: theme.colors[phoneBorderToken(effectiveError, numberFocused)], borderWidth: 1, borderRadius: theme.radii.sm, overflow: 'hidden', opacity: enabled ? 1 : 0.52 }}>
           <Pressable
             accessibilityLabel={`${labels.countrySelectorLabel}, ${value.country.displayName}, ${value.country.callingCode}`}
             accessibilityRole="button"
@@ -285,6 +336,12 @@ const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
               expanded: pickerVisibleForState
             }}
             disabled={countrySelectorDisabled}
+            onHoverIn={() => {
+              setCountryHovered(true)
+            }}
+            onHoverOut={() => {
+              setCountryHovered(false)
+            }}
             onPress={() => {
               setCountryQuery('')
 
@@ -292,22 +349,20 @@ const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
             }}
             style={({ pressed }) => ({
               alignItems: 'center',
-              backgroundColor: theme.colors.surface,
-              borderColor: effectiveError ? theme.colors.danger : theme.colors.line,
-              borderRadius: theme.radii.sm,
-              borderWidth: 1,
+              backgroundColor: (pressed || countryHovered) && pickerEnabled ? theme.colors.surfaceMuted : 'transparent',
+              borderColor: theme.colors.line,
+              borderRightWidth: 1,
+              justifyContent: 'center',
               flexDirection: 'row',
               gap: theme.spacing.xs,
               minHeight: 44,
-              opacity: countrySelectorDisabled ? 0.52 : resolveLumenButtonOpacity(false, pressed),
+              opacity: resolveLumenButtonOpacity(false, pressed),
               paddingHorizontal: theme.spacing.md
             })}
           >
-            <Text style={{ color: theme.colors.ink, fontSize: theme.fontSizes.sm }}>
-              {value.country.flag}
-              {' '}
-              {value.country.callingCode}
-            </Text>
+            <LumenCountryFlag decorative regionCode={value.country.regionCode} />
+            <Text style={{ color: theme.colors.ink, fontSize: theme.fontSizes.sm }}>{value.country.callingCode}</Text>
+            <LumenIcon decorative name="chevron-down" size="sm" />
           </Pressable>
           <TextInput
             accessibilityHint={resolveLumenValidationHint(effectiveError, description)}
@@ -315,8 +370,14 @@ const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
             accessibilityState={{ disabled: !enabled }}
             aria-invalid={resolveLumenAriaInvalid(effectiveError)}
             autoComplete="tel"
-            editable={enabled}
+            editable={editable}
             keyboardType="phone-pad"
+            onFocus={() => {
+              setNumberFocused(true)
+            }}
+            onBlur={() => {
+              setNumberFocused(false)
+            }}
             onChangeText={input => {
               props.onValueChange(resolveLumenPhoneInputValue(
                 availableCountries,
@@ -328,15 +389,12 @@ const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
             placeholder={labels.numberLabel}
             placeholderTextColor={theme.colors.inkMuted}
             style={{
-              backgroundColor: theme.colors.surface,
-              borderColor: effectiveError ? theme.colors.danger : theme.colors.line,
-              borderRadius: theme.radii.sm,
-              borderWidth: 1,
+              backgroundColor: 'transparent',
               color: theme.colors.ink,
               flex: 1,
               fontSize: theme.fontSizes.sm,
               minHeight: 44,
-              opacity: enabled ? 1 : 0.52,
+              opacity: 1,
               paddingHorizontal: theme.spacing.md
             }}
             textContentType="telephoneNumber"
@@ -361,7 +419,7 @@ const LumenPhoneInputControl = (props: LumenPhoneInputProps): ReactElement => {
 }
 
 export const LumenPhoneInput = (props: LumenPhoneInputProps): ReactElement => {
-  const pickerEnabled = (props.enabled ?? true) && (props.countries?.length ?? 1) > 0
+  const pickerEnabled = (props.enabled ?? true) && !props.readOnly && (props.countries?.length ?? 1) > 0
 
   return <LumenPhoneInputControl key={String(pickerEnabled)} {...props} />
 }

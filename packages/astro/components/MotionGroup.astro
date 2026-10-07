@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { type LumenWorkflowDuration, resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  class?: string | null
+  className?: string
+  duration?: LumenWorkflowDuration
+  enterExit?: boolean
+}
+
+const { class: classProp, className, duration = 'standard', enterExit = true, ...rest } = Astro.props
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-motion-group'], classProp, className)
+---
+
+<div class:list={classList} data-ui-motion-group data-ui-motion-duration={duration} data-ui-motion-enter-exit={String(enterExit)} {...passthrough}>
+  <slot />
+</div>

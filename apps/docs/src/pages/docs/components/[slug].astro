@@ -6,15 +6,21 @@ import {
   Breadcrumb,
   Icon,
   Link,
+  Note,
   Pagination,
   Separator,
-  Table,
   Tabs
 } from '@santi020k/lumen-astro'
 
+import ChartUsageDetails from '../../../components/ChartUsageDetails.astro'
 import CodeBlock from '../../../components/CodeBlock.astro'
+import CommunityFeedback from '../../../components/CommunityFeedback.astro'
+import DeviceFrameUsage from '../../../components/DeviceFrameUsage.astro'
 import DocsActionLink from '../../../components/DocsActionLink.astro'
+import DocsReferenceTable from '../../../components/DocsReferenceTable.astro'
 import FrameworkExample from '../../../components/FrameworkExample.astro'
+import { chartGuides, getChartGuide } from '../../../data/chart-guides'
+import { deviceFrameQuickStart } from '../../../data/device-frame'
 import {
   componentCollections,
   componentDocs,
@@ -36,7 +42,11 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>
 const { component } = Astro.props
 const { component: Example, source } = getExample(component.name)
 const componentSlug = toSlug(component.name)
-const snippets = buildSnippets(component.name, source)
+const chartGuide = getChartGuide(component.name)
+const solidMapExample = component.name === 'WorldMap' ? getExample('WorldMapSolid') : undefined
+const SolidMapExample = solidMapExample?.component
+const solidMapSnippets = solidMapExample ? buildSnippets('WorldMapSolid', solidMapExample.source) : undefined
+const snippets = buildSnippets(component.name, component.name === 'DeviceFrame' ? deviceFrameQuickStart : source)
 const registryCommand = `lumen add ${component.name}`
 
 const packageInstallSetups = frameworkSetups.map(setup => ({
@@ -52,11 +62,12 @@ const packageInstallSetups = frameworkSetups.map(setup => ({
 const glassExample = component.glass ? getGlassExample(component.name) : undefined
 const GlassExample = glassExample?.component
 const glassSnippets = glassExample ? buildSnippets(component.name, glassExample.source) : undefined
-const index = componentDocs.findIndex(entry => entry.name === component.name)
-const previous = index > 0 ? componentDocs[index - 1] : undefined
+const paginationComponents = chartGuide ? chartGuides : componentDocs
+const index = paginationComponents.findIndex(entry => entry.name === component.name)
+const previous = index > 0 ? paginationComponents[index - 1] : undefined
 
-const next = index >= 0 && index < componentDocs.length - 1 ?
-  componentDocs[index + 1] :
+const next = index >= 0 && index < paginationComponents.length - 1 ?
+  paginationComponents[index + 1] :
   undefined
 
 const requiresAstroRuntime = Boolean(
@@ -113,13 +124,25 @@ export function HeroImage() {
 ---
 
 <DocsLayout
+  pageNavigation={chartGuide ?
+[
+    { id: 'preview-title', label: 'Live example & code' },
+    { id: 'chart-reading-title', label: 'When to use it' },
+    { id: 'chart-data-title', label: 'Data shape' },
+    { id: 'chart-pitfalls-title', label: 'Reading accurately' },
+    { id: 'install-title', label: 'Installation' },
+    { id: 'api-title', label: 'API reference' },
+    ...(component.keyboardInteractions ? [{ id: 'keyboard-title', label: 'Keyboard access' }] : []),
+    ...(component.runtimeEvents ? [{ id: 'runtime-events-title', label: 'Events' }] : [])
+  ] :
+undefined}
   breadcrumbs={[
     { href: '/', label: 'Home' },
     { href: '/docs', label: 'Docs' },
     { href: '/docs/components', label: 'Components' },
     { href: `/docs/components/${componentSlug}`, label: component.name }
   ]}
-  description={`${component.name}: ${component.summary} Usage examples for Astro, React, and Elements.`}
+  description={chartGuide ? `${chartGuide.description} Live examples, data shapes, and code for Astro, React, and Web Components.` : `${component.name}: ${component.summary} Usage examples for Astro, React, and Elements.`}
   title={`${component.name} - Lumen UI`}
 >
   <div class="component-doc-page">
@@ -131,7 +154,7 @@ export function HeroImage() {
       </ol>
     </Breadcrumb>
 
-    <header class="component-doc-hero">
+    <header class:list={['component-doc-hero', { 'component-doc-hero--chart': chartGuide }]}>
       <div class="component-doc-hero__copy">
         <div class="component-doc-hero__badges">
           <Badge variant="secondary">{component.category}</Badge>
@@ -152,7 +175,7 @@ export function HeroImage() {
           </DocsActionLink>
           <DocsActionLink
             href={figmaUrl}
-            rel="noreferrer"
+            rel="noopener noreferrer"
             target="_blank"
             variant="outline"
           >
@@ -179,14 +202,15 @@ export function HeroImage() {
           <p>
             <small>Design source</small>
             {component.figmaNodeId ?
-              <Link href={figmaUrl} rel="noreferrer" target="_blank">Linked component node</Link> :
+              <Link href={figmaUrl} rel="noopener noreferrer" target="_blank">Linked component node</Link> :
               <Link href={figmaUrl}>Behavior-only contract</Link>}
           </p>
         </div>
       </div>
     </header>
 
-    {component.guidance && (
+    {component.name === 'WorldMap' && <p>Explore <Link href="/docs/web/world-map">navigation guidance</Link> and <Link href="/docs/web/world-map/destinations">regional destination examples</Link>.</p>}
+    {component.guidance && !chartGuide && (
       <aside class="component-doc-guidance" aria-label={`${component.name} usage guidance`}>
         <div>
           <span><Icon decorative name="check-circle-2" size="sm" /></span>
@@ -201,7 +225,11 @@ export function HeroImage() {
       </aside>
     )}
 
-    {relatedCollection && relatedComponents.length > 0 && (
+    {chartGuide && (
+      <p class="text-sm text-ink-soft"><Link href="/docs/web/data-visualization">← All chart guides</Link> · <Link href="/docs/web/data-visualization/setup">Framework setup</Link> · <Link href="/docs/web/data-visualization/native">Native counterparts</Link></p>
+    )}
+
+    {relatedCollection && !chartGuide && relatedComponents.length > 0 && (
       <aside class="component-doc-related" aria-labelledby="related-components-title">
         <div>
           <small>Compare the pattern</small>
@@ -228,17 +256,42 @@ export function HeroImage() {
         </div>
       </div>
       <p class="max-w-2xl text-sm/7 text-ink-soft">
-        Choose Astro, React, or Elements to compare native usage against the shared visual output.
-        Each example assumes the framework-level setup is already complete.
+        {chartGuide ?
+          'Explore the live chart, then open its code for Astro, React, or Elements.' :
+          'Choose Astro, React, or Elements to compare native usage against the shared visual output. Each example assumes the framework-level setup is already complete.'}
       </p>
+      {component.name === 'WorldMap' && <h3>Dotted destinations</h3>}
       <FrameworkExample
         componentName={component.name}
+        codeCollapsed={Boolean(chartGuide) || component.name === 'DeviceFrame'}
         groupId={`code-${componentSlug}`}
         snippets={snippets}
       >
         <Example />
       </FrameworkExample>
+      {component.name === 'DeviceFrame' && <DeviceFrameUsage />}
+      {SolidMapExample && solidMapSnippets && (
+        <>
+          <h3>Solid regions</h3>
+          <p>Use Lumen accent colors and country labels to match your product.</p>
+          <FrameworkExample componentName="WorldMap" examplePath="apps/docs/src/examples/WorldMapSolid.astro" groupId="code-world-map-solid" snippets={solidMapSnippets}>
+            <SolidMapExample />
+          </FrameworkExample>
+        </>
+      )}
+      {component.adapterNotes && (
+        <Note label="Framework differences">
+          {component.adapterNotes.map(note => (
+            <p>
+              <Link href={`/docs/frameworks/${note.framework.toLowerCase()}`}>{note.framework}</Link>
+              {`: ${note.text}`}
+            </p>
+          ))}
+        </Note>
+      )}
     </section>
+
+    {chartGuide && <ChartUsageDetails guide={chartGuide} />}
 
     {isImage && (
       <section class="component-doc-section space-y-5" aria-labelledby="image-optimization-title">
@@ -294,7 +347,7 @@ export function HeroImage() {
             <Link
               class="text-sm"
               href="https://docs.astro.build/en/reference/modules/astro-assets/"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               target="_blank"
             >Astro Image reference
             </Link>
@@ -337,7 +390,7 @@ export function HeroImage() {
             <Link
               class="text-sm"
               href="https://nextjs.org/docs/app/api-reference/components/image"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               target="_blank"
             >Next.js Image reference
             </Link>
@@ -407,9 +460,7 @@ export function HeroImage() {
       <section class="mt-10 space-y-3" aria-labelledby="glass-title">
         <div class="space-y-2">
           <h2
-            class="
-              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-            "
+            class="text-sm font-black tracking-[0.14em] text-ink-soft uppercase"
             id="glass-title"
           >Glass
           </h2>
@@ -433,66 +484,27 @@ export function HeroImage() {
     <section class="mt-10 space-y-3" aria-labelledby="api-title">
       <div class="space-y-2">
         <h2
-          class="text-sm font-black tracking-[0.14em] text-ink-muted uppercase"
+          class="text-sm font-black tracking-[0.14em] text-ink-soft uppercase"
           id="api-title"
         >API reference
         </h2>
         <p class="max-w-2xl text-sm/7 text-ink-soft">
-          Lumen-specific props and runtime attributes for the Astro primitive. React props follow the
-          same names; Elements use equivalent kebab-case attributes where custom elements expose them.
+          Lumen-specific props and runtime attributes for the Astro primitive. Use the framework differences above and the copyable examples for React composition and
+          Elements attributes; the public adapter types define their supported contracts.
         </p>
       </div>
-      <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
-        <table class="w-full min-w-176 border-collapse text-left text-sm">
-          <thead class="
-            bg-surface-muted text-xs font-black tracking-[0.12em] text-ink-muted
-            uppercase
-          "
-          >
-            <tr>
-              <th class="border-b border-line px-4 py-3">Attribute</th>
-              <th class="border-b border-line px-4 py-3">Values</th>
-              <th class="border-b border-line px-4 py-3">Default</th>
-              <th class="border-b border-line px-4 py-3">Description</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-line">
-            {component.apiReference.map(row => (
-              <tr>
-                <th
-                  class="
-                    w-48 px-4 py-3 align-top font-mono text-xs font-bold
-                    text-ink
-                  "
-                  scope="row"
-                >
-                  {row.attribute}
-                </th>
-                <td class="
-                  w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
-                "
-                >{row.values}
-                </td>
-                <td class="
-                  w-28 px-4 py-3 align-top font-mono text-xs text-ink-soft
-                "
-                >{row.defaultValue}
-                </td>
-                <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.description}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Table>
+      <DocsReferenceTable
+        columns={['Attribute', 'Values', 'Default', 'Description']}
+        labelledBy="api-title"
+        rows={component.apiReference.map(row => [row.attribute, row.values, row.defaultValue, row.description])}
+      />
     </section>
 
     {component.keyboardInteractions && (
       <section class="mt-10 space-y-3" aria-labelledby="keyboard-title">
         <div class="space-y-2">
           <h2
-            class="
-              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-            "
+            class="text-sm font-black tracking-[0.14em] text-ink-soft uppercase"
             id="keyboard-title"
           >Keyboard interactions
           </h2>
@@ -500,36 +512,11 @@ export function HeroImage() {
             Keyboard behavior provided by the Astro UIPrimitives runtime for this component.
           </p>
         </div>
-        <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
-          <table class="w-full min-w-xl border-collapse text-left text-sm">
-            <thead class="
-              bg-surface-muted text-xs font-black tracking-[0.12em]
-              text-ink-muted uppercase
-            "
-            >
-              <tr>
-                <th class="border-b border-line px-4 py-3">Key</th>
-                <th class="border-b border-line px-4 py-3">Action</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-line">
-              {component.keyboardInteractions.map(row => (
-                <tr>
-                  <th
-                    class="
-                      w-72 px-4 py-3 align-top font-mono text-xs font-bold
-                      text-ink
-                    "
-                    scope="row"
-                  >
-                    {row.key}
-                  </th>
-                  <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.action}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Table>
+        <DocsReferenceTable
+        columns={['Key', 'Action']}
+        labelledBy="keyboard-title"
+        rows={component.keyboardInteractions.map(row => [row.key, row.action])}
+        />
       </section>
     )}
 
@@ -537,9 +524,7 @@ export function HeroImage() {
       <section class="mt-10 space-y-3" aria-labelledby="runtime-events-title">
         <div class="space-y-2">
           <h2
-            class="
-              text-sm font-black tracking-[0.14em] text-ink-muted uppercase
-            "
+            class="text-sm font-black tracking-[0.14em] text-ink-soft uppercase"
             id="runtime-events-title"
           >Runtime events
           </h2>
@@ -547,48 +532,17 @@ export function HeroImage() {
             CustomEvents dispatched by the Astro UIPrimitives runtime for this component.
           </p>
         </div>
-        <Table class="overflow-x-auto rounded-xl border border-line bg-surface">
-          <table class="w-full min-w-176 border-collapse text-left text-sm">
-            <thead class="
-              bg-surface-muted text-xs font-black tracking-[0.12em]
-              text-ink-muted uppercase
-            "
-            >
-              <tr>
-                <th class="border-b border-line px-4 py-3">Event</th>
-                <th class="border-b border-line px-4 py-3">Target</th>
-                <th class="border-b border-line px-4 py-3">Detail</th>
-                <th class="border-b border-line px-4 py-3">When</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-line">
-              {component.runtimeEvents.map(row => (
-                <tr>
-                  <th
-                    class="
-                      w-56 px-4 py-3 align-top font-mono text-xs font-bold
-                      text-ink
-                    "
-                    scope="row"
-                  >
-                    {row.name}
-                  </th>
-                  <td class="w-64 px-4 py-3 align-top text-sm/6 text-ink-soft">{row.target}</td>
-                  <td class="
-                    w-64 px-4 py-3 align-top font-mono text-xs text-ink-soft
-                  "
-                  >{row.detail}
-                  </td>
-                  <td class="px-4 py-3 align-top text-sm/6 text-ink-soft">{row.when}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Table>
+        <DocsReferenceTable
+        columns={['Event', 'Target', 'Detail', 'When']}
+        labelledBy="runtime-events-title"
+        rows={component.runtimeEvents.map(row => [row.name, row.target, row.detail, row.when])}
+        />
       </section>
     )}
 
     <Separator class="my-10" />
+
+    <CommunityFeedback documentationPath={`/docs/components/${componentSlug}`} subject={component.name} />
 
     <Pagination class="component-doc-pagination" aria-label="Component pagination">
       {previous ?
@@ -633,3 +587,12 @@ export function HeroImage() {
     </Pagination>
   </div>
 </DocsLayout>
+
+<style>
+  .component-doc-hero--chart { min-height: 0; grid-template-columns: minmax(0, 1fr); padding: 1.5rem; gap: 0; }
+  .component-doc-hero--chart .component-doc-hero__meta { display: none; }
+  .component-doc-hero--chart h1,
+  .component-doc-hero--chart h1[data-long-title] { max-width: none; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; }
+  .component-doc-hero--chart .component-doc-hero__copy > p { margin-top: .75rem; font-size: .9375rem; }
+  .component-doc-hero--chart .component-doc-hero__actions { margin-top: 1rem; }
+</style>

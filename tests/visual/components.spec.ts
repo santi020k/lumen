@@ -128,10 +128,10 @@ const interactiveScenarios: VisualScenario[] = [
 
       await input.fill('')
       await input.focus()
-      await page.keyboard.type('123456')
+      await page.keyboard.type('12345678')
 
-      await expect(input).toHaveValue('123456')
-      await expect(otp.locator('[data-ui-input-otp-char]').last()).toHaveText('6')
+      await expect(input).toHaveValue('12345678')
+      await expect(otp.locator('[data-ui-input-otp-char]').last()).toHaveText('8')
     }
   },
   {

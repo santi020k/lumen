@@ -5,6 +5,7 @@ import {
 } from 'react'
 import {
   type AccessibilityActionEvent,
+  I18nManager,
   type LayoutChangeEvent,
   type NativeSyntheticEvent,
   type NativeTouchEvent,
@@ -25,6 +26,7 @@ import {
 } from './structured-recipes.js'
 import { useLumenTheme } from './theme-context.js'
 import {
+  resolveLumenRangeValue,
   resolveLumenSliderPosition,
   resolveLumenSliderValue,
   stepLumenSliderValue
@@ -140,6 +142,7 @@ const LumenPickerControl = <Value extends number | string,>({
                   }}
                   style={({ pressed }) => ({
                     backgroundColor: optionSelected ? theme.colors.brandSoft : theme.colors.surface,
+                    justifyContent: 'center',
                     minHeight: 44,
                     opacity: resolveControlOpacity(!optionDisabled, pressed),
                     paddingHorizontal: theme.spacing.md,
@@ -201,7 +204,9 @@ export const LumenSlider = ({
   const updateFromTouch = (event: NativeSyntheticEvent<NativeTouchEvent>): void => {
     if (!enabled) return
 
-    onValueChange(resolveLumenSliderPosition(event.nativeEvent.locationX, trackWidth, resolved))
+    const location = I18nManager.isRTL ? trackWidth - event.nativeEvent.locationX : event.nativeEvent.locationX
+
+    onValueChange(resolveLumenSliderPosition(location, trackWidth, resolved))
   }
 
   const handleAccessibilityAction = (event: AccessibilityActionEvent): void => {
@@ -235,9 +240,15 @@ export const LumenSlider = ({
         </Text>
       </View>
       <View
+        accessible
         accessibilityActions={[{ name: 'decrement' }, { name: 'increment' }]}
         accessibilityLabel={label}
         accessibilityRole="adjustable"
+        aria-disabled={!enabled}
+        aria-valuemax={resolved.max}
+        aria-valuemin={resolved.min}
+        aria-valuenow={resolved.value}
+        aria-valuetext={formattedValue}
         accessibilityState={{ disabled: !enabled }}
         accessibilityValue={{
           max: resolved.max,
@@ -281,8 +292,8 @@ export const LumenSlider = ({
               borderRadius: 10,
               borderWidth: 2,
               height: 20,
-              left: `${resolved.percentage}%`,
-              marginLeft: -10,
+              marginStart: -10,
+              start: `${resolved.percentage}%`,
               position: 'absolute',
               top: -7,
               width: 20
@@ -376,6 +387,73 @@ export const LumenGauge = ({
       >
         {label}
       </Text>
+    </View>
+  )
+}
+
+/** Controlled interval with independent, named adjustable endpoints. */
+export interface LumenRangeSliderProps extends Omit<ViewProps, 'children'> {
+  enabled?: boolean
+  endLabel?: string
+  formatValue?: (value: number) => string
+  label: string
+  max?: number
+  min?: number
+  onValueChange: (value: readonly [number, number]) => void
+  readOnly?: boolean
+  ref?: LumenViewRef
+  startLabel?: string
+  step?: number
+  value: readonly [number, number]
+}
+
+export const LumenRangeSlider = ({
+  enabled = true,
+  endLabel = 'Maximum',
+  formatValue = String,
+  label,
+  max = 100,
+  min = 0,
+  onValueChange,
+  readOnly = false,
+  ref,
+  startLabel = 'Minimum',
+  step,
+  style,
+  value,
+  ...props
+}: LumenRangeSliderProps): ReactElement => {
+  const theme = useLumenTheme()
+  const [start, end] = resolveLumenRangeValue(value, min, max, step)
+  const editable = enabled && !readOnly
+  const sliderStep = step === undefined ? {} : { step }
+
+  return (
+    <View ref={ref} {...props} style={[{ gap: theme.spacing.sm }, style]}>
+      <LumenSlider
+        enabled={editable}
+        label={`${label} · ${startLabel}`}
+        max={max}
+        min={min}
+        onValueChange={next => {
+          if (editable) onValueChange([Math.min(next, end), end])
+        }}
+        {...sliderStep}
+        value={start}
+        valueLabel={formatValue(start)}
+      />
+      <LumenSlider
+        enabled={editable}
+        label={`${label} · ${endLabel}`}
+        max={max}
+        min={min}
+        onValueChange={next => {
+          if (editable) onValueChange([start, Math.max(start, next)])
+        }}
+        {...sliderStep}
+        value={end}
+        valueLabel={formatValue(end)}
+      />
     </View>
   )
 }

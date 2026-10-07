@@ -145,6 +145,28 @@ describe('lumen core metadata', () => {
     ])
   })
 
+  test.each([
+    'BackToTop',
+    'Cascader',
+    'DatePicker',
+    'Field',
+    'FileUpload',
+    'Mentions',
+    'Popconfirm',
+    'Popover',
+    'SpeedDial',
+    'ThemeToggle',
+    'Toolbar',
+    'Tooltip',
+    'Tour',
+    'Transfer',
+    'Tree',
+    'TreeGrid',
+    'TreeSelect'
+  ] as const)('declares the Astro runtime needed to enhance %s', name => {
+    expect(lumenComponentBehavior[name].astro).toBe('ui-primitives')
+  })
+
   test('publishes framework behavior for every component and global authored behavior', () => {
     expect(Object.keys(lumenComponentBehavior).sort()).toEqual([...lumenComponentNames].sort())
     expect(lumenComponentBehavior.Card).toEqual({
@@ -487,7 +509,7 @@ describe('lumen product helpers', () => {
 
     expect(parsed.filters.status).toBe('ready')
     expect(parsed.sort).toEqual({ direction: 'desc', key: 'updated' })
-    expect(getVirtualRange(120, 200, 40, 100)).toEqual({ endIndex: 13, startIndex: 0 })
+    expect(getVirtualRange(120, 200, 40, 100)).toEqual({ endIndex: 11, startIndex: 0 })
 
     expect(applyDataViewState([
       { id: '1', name: 'Docs', status: 'ready', updated: 2 },
@@ -519,6 +541,33 @@ describe('lumen product helpers', () => {
     ).toEqual({ direction: 'asc', key: 'metadata:updatedAt' })
     expect(paginateDataRecords(['one', 'two'], Number.POSITIVE_INFINITY, 0))
       .toEqual({ items: ['one', 'two'], page: 1, pageCount: 1, total: 2 })
+  })
+
+  test('round-trips reserved filter names as own properties without changing the prototype', () => {
+    const state = parseDataViewState('filter.__proto__=ready&filter.constructor=draft&filter.toString=active&filter.__proto__=updated')
+
+    expect(Object.getPrototypeOf(state.filters)).toBe(Object.prototype)
+    expect(Object.hasOwn(state.filters, '__proto__')).toBe(true)
+    expect(Object.entries(state.filters)).toEqual([
+      ['__proto__', 'updated'], ['constructor', 'draft'], ['toString', 'active']
+    ])
+    expect(parseDataViewState(serializeDataViewState(state)).filters).toEqual(state.filters)
+  })
+
+  test.each([
+    ['/api/orders#results', '/api/orders?page=1&pageSize=25#results'],
+    ['/api/orders?tenant=acme#results', '/api/orders?tenant=acme&page=1&pageSize=25#results'],
+    ['/api/orders#results?detail=true', '/api/orders?page=1&pageSize=25#results?detail=true'],
+    ['/api/orders?', '/api/orders?page=1&pageSize=25'],
+    ['/api/orders?tenant=acme&', '/api/orders?tenant=acme&page=1&pageSize=25'],
+    ['https://example.com/orders#results', 'https://example.com/orders?page=1&pageSize=25#results']
+  ])('places server request parameters before the fragment in %s', (endpoint, expected) => {
+    const state = createDataViewState()
+    const request = createDataViewServerRequest(endpoint, state)
+
+    expect(createDataViewRequestUrl(endpoint, state)).toBe(expected)
+    expect(request.url).toBe(expected)
+    expect(request.query).toBe('page=1&pageSize=25')
   })
 
   test('persists data view state through storage-like adapters', () => {

@@ -28,6 +28,22 @@ view would duplicate restoration, deep links, keyboard routing, window behavior,
 
 ## Pattern: complete settings section
 
+For editable settings in a sheet, keep the draft and saving state in the application. All three
+adapters accept `dismissible` and `scrollable`: prevent interactive dismissal while saving, and
+disable Lumen's scrolling wrapper when the child already owns a native lazy or virtualized list.
+Ordinary layouts scroll the body with actions outside it. At large accessibility text sizes or
+short mobile heights, headings and actions can join the scrolling region to remain reachable.
+
+React Native sheets also accept `initialFocusRef` and `returnFocusRef` for explicit native control
+focus after presentation and closing. Use mounted refs from the application's field and trigger;
+test both screen-reader and keyboard focus on each operating system. Keep safe-area insets owned
+by the existing application provider and pass `avoidKeyboard` for editable sheet content.
+
+Localize every visible and spoken label together. In React Native and Compose, set `requiredLabel`
+to `"obligatorio"` for required Spanish field groups, and supply `panelAccessibilityLabel` when the
+selected tab's visible label needs more panel context. SwiftUI uses application localization for
+the `Required` key. Do not translate stable selection values, IDs, or domain data.
+
 Group settings with the platform's native form or scrolling container. Use `LumenSettingsRow` for
 alignment and keep each trailing control independently focusable and named.
 
@@ -77,6 +93,39 @@ LumenListRow {
 Use the platform's native `List`, lazy collection, selection, swipe actions, context menu, and
 keyboard commands around the row. Those containers own virtualization and navigation behavior.
 
+In React Native, let long labels wrap inside `LumenListRow` rather than truncating the entire row.
+Keep a separate, named control in the trailing slot:
+
+```tsx
+import {
+  LumenAvatar,
+  LumenIconButton,
+  LumenListRow,
+  LumenSectionHeader,
+  LumenText
+} from '@santi020k/lumen-react-native'
+
+export function WorkspaceRows({ onOpen }: { onOpen: () => void }) {
+  return (
+    <>
+      <LumenSectionHeader title="Workspaces shared with your household" count="3" />
+      <LumenListRow
+        leading={<LumenAvatar fallback="LM" />}
+        trailing={<LumenIconButton name="chevron-right" label="Open Lumen workspace" onPress={onOpen} />}
+      >
+        <LumenText variant="label">Lumen workspace</LumenText>
+        <LumenText tone="muted">Edited five minutes ago</LumenText>
+      </LumenListRow>
+    </>
+  )
+}
+```
+
+The row reserves flexible space for its content and bounds trailing content. Section headings
+also allow the title to shrink beside a count. At narrow widths or large text sizes, keep trailing
+actions compact and move lengthy secondary descriptions into the row's main content. Verify the
+application's actual longest translations and text scale.
+
 ## Pattern: asynchronous collection state
 
 Render one clear collection state at a time:
@@ -118,6 +167,11 @@ Always express status with text or an accessible symbol as well as color.
 Use `LumenButtonGroup` for a small, related action set. Let the surrounding view choose horizontal
 or vertical orientation from its actual available width, Dynamic Type size, or window class. Keep
 toolbar placement, keyboard commands, and navigation actions in their native containers.
+
+Swift `LumenButton(loading: true, ...)` retains the label's layout space and overlays progress;
+the button is disabled while loading. Keep the label content stable if constant dimensions matter,
+and provide localized `loadingAccessibilityValue`. The application owns pending state and error
+recovery, including keeping a dialog open when an operation fails.
 
 ## Pattern: immersive iPhone tabs
 
@@ -221,3 +275,60 @@ A developed pattern is ready to become a component only when it:
 - supports loading, disabled, error, high-contrast, large-text, and reduced-motion conditions where
   applicable;
 - can be verified in a real integration example and on supported device classes.
+
+## Search, edit, and chart workspace
+
+The React Native playground's Workspace example uses an app-owned bounded `FlatList` for 200
+searchable records, a separate scrolling detail pane on wide windows, and a protected editing sheet.
+Selection and draft state survive window resizing; Android Back returns from detail to the list.
+The form passes safe-area insets and explicit focus targets, validates its required name, and
+supports cancel and local save. English, Spanish, direction previews, and loading, empty, error,
+retry, and success states exercise the same workflow. Direction previews are layout probes, not
+proof of an Arabic translation or a physical screen-reader pass.
+
+Open the Expo web preview with `?destination=examples&pattern=workspace`. The example owns its
+scroll containers and must remain outside the other examples' surrounding `ScrollView`.
+
+SwiftUI's Workspace example uses `NavigationSplitView` and native `List` selection outside the
+page's scrolling wrapper. Its detail chart and protected edit sheet support English and Spanish;
+the sheet's actions stack at accessibility text sizes. The Android Workspace example uses bounded
+`LazyColumn` and detail panes, Back navigation, and `rememberSaveable` state for record names, notes,
+selection, search, and drafts. These application examples do not add a library navigation router.
+
+## Related actions at large text sizes
+
+Native button groups treat horizontal orientation as a preference. React Native and Compose wrap
+when needed, while SwiftUI falls back to a vertical layout when the row does not fit. All three
+stack at accessibility text sizes. Keep action labels descriptive and allow the group to grow
+vertically instead of fixing its height.
+
+## Pattern: form submission errors
+
+Keep the form and its drafts visible after an invalid submission. Use field error messages for
+specific context, and compose an alert containing a concise summary and actions that move focus to
+the corresponding native controls. The application owns the error collection and focus targets;
+Lumen does not infer field identity or replace the form with ErrorState.
+
+React Native can retain `TextInput` refs and call `focus()` from summary actions. Associate each
+message through `LumenFieldGroup` and give each action a readable name such as “Review quantity.”
+SwiftUI can pass its application-owned `@FocusState<Bool>` binding to NumberField and set it
+from an alert action; Compose
+can request focus using its application-owned `FocusRequester`.
+
+```swift
+@FocusState var quantityFocused: Bool
+
+LumenAlert(variant: .destructive) {
+    VStack(alignment: .leading, spacing: LumenSpacing.sm) {
+        LumenText("Review the form", variant: .label)
+        LumenButton("Review quantity", intent: .quiet) { quantityFocused = true }
+    }
+}
+LumenNumberField("Quantity", text: $quantityDraft, min: "0", focused: $quantityFocused)
+```
+
+For advanced controls that compose several focusable children, use the platform's native focus
+section or wrap the actual application-owned input when precise editor focus is required. Verify
+summary-to-field focus in the consuming form on each target. Announce a new summary once, preserve
+submitted values, and avoid announcing the same failure through both a summary and a toast. This
+recipe intentionally retains native focus ownership and requires no extra public summary primitive.

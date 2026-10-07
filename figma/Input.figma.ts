@@ -1,11 +1,8 @@
 // url=https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9/Lumen-UI-Library?node-id=14-21
 // source=packages/astro/components/Input.astro
 // component=Input
-import _figma from 'figma'
+import figma from 'figma'
 
-import type { FigmaStatic } from './types.ts'
-
-const figma = _figma as unknown as FigmaStatic
 const instance = figma.selectedInstance
 const placeholder = instance.getString('Placeholder')
 
@@ -16,7 +13,7 @@ const size = instance.getEnum('Size', {
 })
 
 export default {
-  example: figma.code`<Input placeholder="${placeholder}" size="${size}" />`,
+  example: figma.code`<Input placeholder="${placeholder}" visualSize="${size}" />`,
   id: 'lumen-astro-input',
   imports: ['import { Input } from "@santi020k/lumen-astro"'],
   metadata: { nestable: true }

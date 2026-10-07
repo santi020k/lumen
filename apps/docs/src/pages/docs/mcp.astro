@@ -1,149 +1,27 @@
 ---
-import { Badge, Card, Icon } from '@santi020k/lumen-astro'
+import { Badge, Card, Icon, Link } from '@santi020k/lumen-astro'
 
-import CodeBlock from '../../components/CodeBlock.astro'
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
+import McpGuideLayout from '../../components/McpGuideLayout.astro'
+import { mcpGuideTopics, npmUrl, packageName, readmeUrl, resources, tools } from '../../data/mcp-guides'
 import { nativeComponentDocs } from '../../data/native-components'
 import { documentedComponentCount } from '../../data/site-metadata'
-import DocsLayout from '../../layouts/DocsLayout.astro'
 
-const packageName = '@santi020k/lumen-mcp'
-const npmUrl = 'https://www.npmjs.com/package/@santi020k/lumen-mcp'
-const readmeUrl = 'https://github.com/santi020k/lumen/blob/main/packages/mcp/README.md'
-const pluginUrl = 'https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b'
-const claudePluginGuideUrl = 'https://github.com/santi020k/lumen/blob/main/docs/claude-code-plugin.md'
-
-const claudePluginInstall = `/plugin marketplace add santi020k/lumen
-/plugin install lumen-ui@lumen`
-
-const tools = [
-  [
-    'lumen_list_components',
-    'List every component with its framework availability and recipe membership. Filter by framework, recipe, or a name query.',
-    'list'
-  ],
-  [
-    'lumen_get_component',
-    'Return framework-specific imports, styles, props or attributes, examples, accessibility behavior, events, and optional source.',
-    'component'
-  ],
-  [
-    'lumen_list_native_components',
-    'List native components with React Native, SwiftUI, and Compose availability, accessibility, category, and contract tier.',
-    'list'
-  ],
-  [
-    'lumen_get_native_component',
-    'Return native install and setup steps, imports, API rows, examples, accessibility guidance, and optional adapter source.',
-    'component'
-  ],
-  [
-    'lumen_get_recipe',
-    'Return a recipe’s purpose, categories, components, files, and framework-specific install command.',
-    'blocks'
-  ],
-  [
-    'lumen_search',
-    'Rank natural-language matches across web or native platform contracts, recipes, tokens, and rules.',
-    'search'
-  ],
-  [
-    'lumen_get_meta',
-    'Return the schema version, package versions, component count, and deterministic catalog hash.',
-    'fingerprint'
-  ],
-  [
-    'lumen_get_catalog_manifest',
-    'Return stable fingerprints for every web component, native component, and recipe.',
-    'notebook-tabs'
-  ],
-  [
-    'lumen_diff_catalog',
-    'Compare a retained manifest with the current catalog and identify exactly which entries changed.',
-    'git-compare-arrows'
-  ],
-  [
-    'lumen_diagnose',
-    'Verify snapshot integrity and report web framework plus native platform coverage.',
-    'stethoscope'
-  ],
-  [
-    'lumen_get_tokens',
-    'Return semantic token names, base color values, glass tokens, and the theme attribute for generated code.',
-    'swatch-book'
-  ],
-  [
-    'lumen_get_rules',
-    'Return the Lumen agent rules (llms.txt) to read before producing Lumen code.',
-    'scroll-text'
-  ]
-] as const
-
-const workflow = [
-  ['01', 'Verify the snapshot', 'lumen_get_meta identifies the snapshot and lumen_diagnose verifies web and native coverage.'],
-  ['02', 'Discover', 'The agent lists web or native components, or searches with a target framework or platform.'],
-  ['03', 'Read target usage', 'The matching get tool returns installation, setup, imports, API, examples, accessibility, and runtime guidance.'],
-  ['04', 'Compose a recipe', 'lumen_get_recipe explains multi-component patterns and gives the correct framework install command.'],
-  ['05', 'Track changes', 'Retain lumen://catalog-manifest and compare it after upgrades to refresh only contracts that changed.']
-] as const
-
-const resources = [
-  ['lumen://meta', 'Snapshot provenance, package versions, and deterministic catalog hash.'],
-  ['lumen://catalog-manifest', 'Stable web, native, and recipe fingerprints for change detection.'],
-  ['lumen://diagnostics', 'Snapshot integrity checks and web plus native coverage.'],
-  ['lumen://rules', 'Agent generation rules as Markdown.'],
-  ['lumen://tokens', 'Structured semantic, color, glass, and theme tokens.'],
-  ['lumen://components', 'Compact structured component catalog.'],
-  ['lumen://components/{name}', 'One component’s metadata and default Astro usage.'],
-  ['lumen://native-components', 'Native component catalog with platform availability.'],
-  ['lumen://native-components/{name}', 'One native component’s metadata and platform usage.'],
-  ['lumen://recipes/{name}', 'Recipe metadata and framework install commands.']
-] as const
-
-const claudeConfig = `{
-  "mcpServers": {
-    "lumen": {
-      "command": "npx",
-      "args": ["-y", "@santi020k/lumen-mcp"]
-    }
-  }
-}`
-
-const cursorConfig = `{
-  "mcpServers": {
-    "lumen": {
-      "command": "npx",
-      "args": ["-y", "@santi020k/lumen-mcp"]
-    }
-  }
-}`
-
-const codexConfig = `[mcp_servers.lumen]
-enabled = true
-command = "npx"
-args = ["-y", "@santi020k/lumen-mcp"]
-startup_timeout_sec = 10.0
-tool_timeout_sec = 30.0`
-
-const genericConfig = `{
-  "name": "lumen",
-  "transport": "stdio",
-  "command": "npx",
-  "args": ["-y", "@santi020k/lumen-mcp"]
-}`
-
-const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
-# MCP endpoint: http://127.0.0.1:3000/mcp
-# Health check: http://127.0.0.1:3000/health
-# Default limit: 120 requests per minute`
+const movedSections = [
+  { id: 'setup-title', href: '/docs/mcp/clients#setup-title', label: 'Client configuration' },
+  { id: 'plugin-title', href: '/docs/mcp/clients#plugin-title', label: 'ChatGPT and Codex plugin' },
+  { id: 'claude-plugin-title', href: '/docs/mcp/clients#claude-plugin-title', label: 'Claude Code plugin' },
+  { id: 'tools-title', href: '/docs/mcp/reference#tools-title', label: 'MCP tools' },
+  { id: 'resources-title', href: '/docs/mcp/reference#resources-title', label: 'MCP resources' },
+  { id: 'workflow-title', href: '/docs/mcp/reference#workflow-title', label: 'Agent workflow' }
+]
 ---
 
-<DocsLayout
-  description="Connect the Lumen MCP server so AI agents can discover web and native components, read platform contracts and recipes, and follow Lumen tokens and rules."
-  title="MCP server - Lumen UI"
+<McpGuideLayout
+  description="Give AI agents the Lumen component catalog. Choose client setup or explore the MCP tool and resource reference for web and native development."
+  title="MCP server overview — Lumen UI"
 >
-  <div class="mcp-page">
     <DocsPageHero
       description="A Model Context Protocol server that gives AI agents structured access to Lumen web and native contracts, platform usage, recipes, design tokens, resources, and generation rules."
       eyebrow="AI integration"
@@ -189,171 +67,22 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
       </div>
     </DocsPageHero>
 
-    <section class="mcp-section" aria-labelledby="tools-title">
-      <div class="mcp-section__heading">
-        <div>
-          <p>What agents can do</p>
-          <h2 id="tools-title">Focused MCP tools</h2>
-        </div>
-        <p>
-          Every tool returns readable text plus validated structured content, grounded in the same
-          catalog, docs, web and native source, tokens, and rules the packages ship.
-        </p>
-      </div>
-
-      <div class="mcp-tools">
-        {tools.map(([name, description, icon]) => (
-          <Card class="mcp-tool-card" variant="muted">
-            <span class="mcp-tool-card__icon">
-              <Icon decorative name={icon} />
-            </span>
-            <code>{name}</code>
-            <p>{description}</p>
-          </Card>
-        ))}
-      </div>
-    </section>
-
-    <section class="mcp-section" aria-labelledby="setup-title">
-      <div class="mcp-section__heading">
-        <div>
-          <p>Connect a client</p>
-          <h2 id="setup-title">Run with npx over stdio or HTTP</h2>
-        </div>
-        <p>
-          The server ships a self-contained snapshot of the catalog, so no repository checkout is
-          required. With Node.js 20.20 or newer, point any MCP client at
-          <code>npx -y {packageName}</code>.
-        </p>
-      </div>
-
-      <div class="mcp-setup">
-        <Card class="mcp-setup-card" variant="muted">
-          <div class="mcp-setup-card__head">
-            <Badge variant="outline">Codex</Badge>
-            <span>.codex/config.toml</span>
-          </div>
-          <pre><code>{codexConfig}</code></pre>
-          <p>Or run <code>codex mcp add lumen -- npx -y {packageName}</code>.</p>
+  <section class="mcp-section" aria-labelledby="explore-mcp-title">
+    <div class="mcp-section__heading">
+      <div><p>Your next step</p><h2 id="explore-mcp-title">Connect. Discover. Build.</h2></div>
+      <p>Connect your preferred client, then use the reference when you need a specific contract or tool.</p>
+    </div>
+    <div class="mcp-guide-topics">
+      {mcpGuideTopics.slice(1).map((topic, index) => (
+        <Card class="mcp-guide-topic" variant="muted">
+          <Icon decorative name={index === 0 ? 'plug' : 'book-open'} />
+          <h3>{topic.label}</h3>
+          <p>{topic.description}</p>
+          <DocsActionLink href={topic.href} variant="outline">{topic.label}<Icon decorative name="arrow-right" size="sm" /></DocsActionLink>
         </Card>
-
-        <Card class="mcp-setup-card" variant="muted">
-          <div class="mcp-setup-card__head">
-            <Badge variant="outline">Claude Desktop</Badge>
-            <span>claude_desktop_config.json</span>
-          </div>
-          <pre><code>{claudeConfig}</code></pre>
-        </Card>
-
-        <Card class="mcp-setup-card" variant="muted">
-          <div class="mcp-setup-card__head">
-            <Badge variant="outline">Cursor</Badge>
-            <span>.cursor/mcp.json</span>
-          </div>
-          <pre><code>{cursorConfig}</code></pre>
-        </Card>
-
-        <Card class="mcp-setup-card" variant="muted">
-          <div class="mcp-setup-card__head">
-            <Badge variant="outline">Any stdio client</Badge>
-            <span>generic shape</span>
-          </div>
-          <pre><code>{genericConfig}</code></pre>
-        </Card>
-
-        <Card class="mcp-setup-card" variant="muted">
-          <div class="mcp-setup-card__head">
-            <Badge variant="outline">Streamable HTTP</Badge>
-            <span>local or self-hosted</span>
-          </div>
-          <pre><code>{httpCommand}</code></pre>
-          <p>
-            The transport includes safe response headers and bounded request rates. Public hosting
-            must terminate TLS, set the exact allowed host, and configure authentication if the
-            deployed data requires it.
-          </p>
-        </Card>
-      </div>
-    </section>
-
-    <Card as="section" class="mcp-file-card" aria-labelledby="plugin-title" glass="subtle">
-      <div>
-        <Badge>Published · 1.0.0</Badge>
-        <h2 id="plugin-title">Lumen UI for ChatGPT and Codex</h2>
-        <p>
-          Open Lumen UI in the Plugins Directory and select <strong>Install plugin</strong>.
-          Then mention <strong>@Lumen UI</strong> in a request or choose a starter prompt.
-          The plugin bundles the workflow skill and hosted, read-only public catalog, with no
-          separate Lumen account, API key, or local server setup.
-        </p>
-      </div>
-      <p>Try: “Find the right Lumen components for an accessible React settings screen.”</p>
-      <DocsActionLink href={pluginUrl} target="_blank" rel="noopener noreferrer">
-        Install Lumen UI
-      </DocsActionLink>
-    </Card>
-
-    <Card as="section" class="mcp-file-card" aria-labelledby="claude-plugin-title" glass="subtle">
-      <div>
-        <Badge>Claude Code plugin</Badge>
-        <h2 id="claude-plugin-title">Install the skill and live catalog together</h2>
-        <p>
-          Add Lumen's repository marketplace, then install one plugin that bundles the portable
-          workflow skill with the latest published read-only MCP catalog.
-        </p>
-      </div>
-      <CodeBlock code={claudePluginInstall} lang="text" title="Claude Code" />
-      <DocsActionLink href={claudePluginGuideUrl} target="_blank" rel="noopener noreferrer">
-        Read the Claude Code guide
-      </DocsActionLink>
-    </Card>
-
-    <section class="mcp-section" aria-labelledby="resources-title">
-      <div class="mcp-section__heading">
-        <div>
-          <p>Stable context</p>
-          <h2 id="resources-title">Browsable MCP resources</h2>
-        </div>
-        <p>
-          Clients can read or cache stable catalog context without calling a tool. Component and
-          recipe templates are enumerable and support name completion.
-        </p>
-      </div>
-
-      <div class="mcp-resources">
-        {resources.map(([uri, description]) => (
-          <Card class="mcp-resource-card" variant="muted">
-            <code>{uri}</code>
-            <p>{description}</p>
-          </Card>
-        ))}
-      </div>
-    </section>
-
-    <section class="mcp-section" aria-labelledby="workflow-title">
-      <div class="mcp-section__heading">
-        <div>
-          <p>How agents use it</p>
-          <h2 id="workflow-title">Discover, read, and stay on-system</h2>
-        </div>
-        <p>
-          Start compact, read the target framework or platform usage contract, and request full source only
-          when the imports, examples, accessibility notes, and API rows are insufficient.
-        </p>
-      </div>
-
-      <ol class="mcp-workflow">
-        {workflow.map(([step, title, description]) => (
-          <li>
-            <span>{step}</span>
-            <div>
-              <h3>{title}</h3>
-              <p>{description}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </section>
+      ))}
+    </div>
+  </section>
 
     <Card as="section" class="mcp-file-card" aria-labelledby="package-title" glass="subtle">
       <div>
@@ -373,294 +102,23 @@ const httpCommand = `npx -y --package @santi020k/lumen-mcp lumen-mcp-http
       >Open on npm
       </DocsActionLink>
     </Card>
-  </div>
-</DocsLayout>
 
-<style>
-  .mcp-page {
-    display: grid;
-    gap: 3.5rem;
+  <nav class="mcp-legacy-links" aria-label="MCP quick links" data-mcp-moved-sections>
+    {movedSections.map(section => <Link id={section.id} href={section.href}>{section.label}</Link>)}
+  </nav>
+</McpGuideLayout>
+
+<script>
+  const followMovedSection = (): void => {
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-mcp-moved-sections] a')
+    const destination = Array.from(links).find(link => `#${link.id}` === location.hash)
+
+    if (destination) location.replace(destination.href)
   }
 
-  .mcp-hero-card {
-    display: grid;
-    gap: 0.55rem;
-    padding: 0.75rem;
-    border: 1px solid hsl(var(--line));
-    border-radius: 1.1rem;
-    background: hsl(var(--canvas) / 0.62);
-    backdrop-filter: blur(14px);
-  }
+  followMovedSection()
 
-  .mcp-hero-card > div {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.7rem;
-    border-radius: 0.75rem;
-    background: hsl(var(--surface) / 0.75);
-  }
+  document.addEventListener('astro:page-load', followMovedSection)
 
-  .mcp-hero-card span {
-    display: grid;
-    width: 2.4rem;
-    height: 2.4rem;
-    flex: 0 0 auto;
-    place-items: center;
-    border: 1px solid hsl(var(--line));
-    border-radius: 0.65rem;
-    background: hsl(var(--brand-soft));
-    color: hsl(var(--brand));
-  }
-
-  .mcp-hero-card p {
-    display: grid;
-    margin: 0;
-  }
-
-  .mcp-hero-card strong {
-    color: hsl(var(--ink));
-    font: 800 0.78rem/1.3 ui-monospace, monospace;
-  }
-
-  .mcp-hero-card small {
-    color: hsl(var(--ink-muted));
-    font-size: 0.7rem;
-  }
-
-  .mcp-section {
-    display: grid;
-    gap: 1.4rem;
-  }
-
-  .mcp-section__heading {
-    display: grid;
-    gap: 0.75rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid hsl(var(--line));
-  }
-
-  .mcp-section__heading > div > p {
-    color: hsl(var(--brand));
-    font-size: 0.7rem;
-    font-weight: 900;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .mcp-section__heading h2,
-  .mcp-file-card h2 {
-    margin-top: 0.25rem;
-    color: hsl(var(--ink));
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: 900;
-    letter-spacing: -0.025em;
-  }
-
-  .mcp-section__heading > p,
-  .mcp-file-card p {
-    max-width: 40rem;
-    color: hsl(var(--ink-soft));
-    font-size: 0.9rem;
-    line-height: 1.65;
-  }
-
-  .mcp-section__heading code,
-  .mcp-file-card code {
-    color: hsl(var(--ink));
-    font-family: ui-monospace, monospace;
-    font-size: 0.82em;
-  }
-
-  .mcp-tools {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
-    gap: 0.85rem;
-  }
-
-  .mcp-tool-card {
-    display: flex;
-    min-height: 12rem;
-    flex-direction: column;
-    gap: 0.7rem;
-    padding: 1.15rem;
-  }
-
-  .mcp-tool-card__icon {
-    display: grid;
-    width: 2.4rem;
-    height: 2.4rem;
-    place-items: center;
-    border-radius: 0.7rem;
-    background: hsl(var(--brand-soft));
-    color: hsl(var(--brand));
-  }
-
-  .mcp-tool-card code {
-    color: hsl(var(--ink));
-    font-family: ui-monospace, monospace;
-    font-size: 0.82rem;
-    font-weight: 700;
-  }
-
-  .mcp-tool-card p {
-    color: hsl(var(--ink-soft));
-    font-size: 0.82rem;
-    line-height: 1.6;
-  }
-
-  .mcp-setup {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    gap: 0.85rem;
-  }
-
-  .mcp-setup-card {
-    display: grid;
-    gap: 0.85rem;
-    padding: 1.15rem;
-  }
-
-  .mcp-setup-card__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-  }
-
-  .mcp-setup-card__head span {
-    color: hsl(var(--ink-muted));
-    font-family: ui-monospace, monospace;
-    font-size: 0.72rem;
-  }
-
-  .mcp-setup-card pre {
-    overflow-x: auto;
-    margin: 0;
-    padding: 0.9rem;
-    border: 1px solid hsl(var(--line));
-    border-radius: 0.75rem;
-    background: hsl(var(--surface-strong) / 0.5);
-  }
-
-  .mcp-setup-card code {
-    color: hsl(var(--ink));
-    font-family: ui-monospace, monospace;
-    font-size: 0.78rem;
-    line-height: 1.6;
-  }
-
-  .mcp-setup-card > p,
-  .mcp-resource-card p {
-    color: hsl(var(--ink-soft));
-    font-size: 0.78rem;
-    line-height: 1.55;
-  }
-
-  .mcp-setup-card > p code {
-    color: hsl(var(--ink));
-    font-family: ui-monospace, monospace;
-    font-size: 0.9em;
-  }
-
-  .mcp-resources {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-    gap: 0.85rem;
-  }
-
-  .mcp-resource-card {
-    display: grid;
-    gap: 0.55rem;
-    padding: 1rem;
-  }
-
-  .mcp-resource-card code {
-    overflow-wrap: anywhere;
-    color: hsl(var(--brand));
-    font-family: ui-monospace, monospace;
-    font-size: 0.78rem;
-    font-weight: 700;
-  }
-
-  .mcp-workflow {
-    display: grid;
-    gap: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .mcp-workflow li {
-    display: grid;
-    grid-template-columns: 3rem minmax(0, 1fr);
-    gap: 1rem;
-    padding: 1.25rem 0;
-    border-bottom: 1px solid hsl(var(--line));
-  }
-
-  .mcp-workflow li > span {
-    color: hsl(var(--brand));
-    font-size: 0.75rem;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-  }
-
-  .mcp-workflow li div {
-    display: grid;
-    gap: 0.35rem;
-  }
-
-  .mcp-workflow h3 {
-    color: hsl(var(--ink));
-    font-size: 0.95rem;
-    font-weight: 800;
-  }
-
-  .mcp-workflow p {
-    color: hsl(var(--ink-soft));
-    font-size: 0.82rem;
-    line-height: 1.6;
-  }
-
-  .mcp-file-card {
-    display: grid;
-    gap: 1.25rem;
-    align-items: center;
-    padding: clamp(1.25rem, 3vw, 2rem);
-  }
-
-  .mcp-file-card > div {
-    display: grid;
-    gap: 0.5rem;
-    min-width: 0;
-  }
-
-  .mcp-file-card > code {
-    overflow: hidden;
-    color: hsl(var(--ink-muted));
-    font-size: 0.72rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .mcp-file-card > :global(.ui-button) {
-    width: max-content;
-  }
-
-  @media (min-width: 48rem) {
-    .mcp-section__heading {
-      grid-template-columns: minmax(13rem, 0.8fr) minmax(18rem, 1fr);
-      align-items: end;
-    }
-
-    .mcp-file-card {
-      grid-template-columns: minmax(0, 1fr) auto;
-    }
-
-    .mcp-file-card > :global(.ui-button) {
-      grid-column: 2;
-      grid-row: 1;
-    }
-  }
-</style>
+  window.addEventListener('hashchange', followMovedSection)
+</script>

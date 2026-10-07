@@ -64,8 +64,21 @@ struct PlaygroundSettingsView: View {
     var body: some View {
         PlaygroundPage(
             "Settings",
-            subtitle: "Preview appearance, understand accessibility context, and review local app resources."
+            subtitle: "Choose your look, preview each surface, and make the playground feel at home."
         ) {
+            #if os(macOS)
+            appearanceSection
+            AdaptiveColumns {
+                accessibilitySection
+            } secondary: {
+                appSection
+            }
+            AdaptiveColumns {
+                localizationSection
+            } secondary: {
+                resourcesSection
+            }
+            #else
             AdaptiveColumns {
                 appearanceSection
             } secondary: {
@@ -77,6 +90,7 @@ struct PlaygroundSettingsView: View {
             } secondary: {
                 resourcesSection
             }
+            #endif
         }
     }
 
@@ -85,33 +99,57 @@ struct PlaygroundSettingsView: View {
             "Appearance",
             description: "Choose a theme and preview the semantic surface hierarchy immediately."
         ) {
-            VStack(alignment: .leading, spacing: LumenSpacing.md) {
-                LumenPicker("Theme", selection: $themePreset, style: .segmented) {
-                    ForEach(PlaygroundThemePreset.allCases) { preset in
-                        Text(preset.title).tag(preset)
-                    }
-                }
-                LumenPicker("Appearance", selection: $themePreference, style: .segmented) {
-                    ForEach(PlaygroundThemePreference.allCases) { preference in
-                        Text(preference.title).tag(preference)
-                    }
-                }
-                .onChange(of: themePreference) { _ in
-                    showThemeFeedback = true
-                }
-                .onChange(of: themePreset) { _ in
-                    showThemeFeedback = true
-                }
+            #if os(macOS)
+            AdaptiveColumns {
+                appearanceControls
+            } secondary: {
                 themePreview
-                if showThemeFeedback {
-                    LumenToast(
-                        "Appearance updated",
-                        description: "The selected theme now applies across every playground destination.",
-                        variant: .success,
-                        onDismiss: { showThemeFeedback = false }
-                    )
+            }
+            #else
+            VStack(alignment: .leading, spacing: LumenSpacing.md) {
+                appearanceControls
+                themePreview
+            }
+            #endif
+        }
+    }
+
+    private var appearanceControls: some View {
+        VStack(alignment: .leading, spacing: LumenSpacing.md) {
+            LumenPicker("Theme", selection: $themePreset, style: .menu) {
+                ForEach(PlaygroundThemePreset.allCases) { preset in
+                    Text(preset.title).tag(preset)
                 }
             }
+            LumenPicker("Appearance", selection: $themePreference, style: .segmented) {
+                ForEach(PlaygroundThemePreference.allCases) { preference in
+                    Text(preference.title).tag(preference)
+                }
+            }
+            .onChange(of: themePreference) { _ in showThemeFeedback = true }
+            .onChange(of: themePreset) { _ in showThemeFeedback = true }
+            LumenText(LocalizedStringKey(themePresetDescription), variant: .caption, tone: .soft)
+            LumenText(
+                "System follows your device’s appearance. Light and Dark keep a fixed appearance in this playground.",
+                variant: .caption, tone: .muted
+            )
+            if showThemeFeedback {
+                LumenToast(
+                    "Appearance updated",
+                    description: "Applied across every playground destination.",
+                    variant: .success,
+                    onDismiss: { showThemeFeedback = false }
+                )
+            }
+        }
+    }
+
+    private var themePresetDescription: String {
+        switch themePreset {
+        case .lumen: "Normal · The classic Lumen palette, with crisp surfaces and expressive accents."
+        case .studio: "Studio · Neutral surfaces for focused photo and creative workspaces."
+        case .glass: "Glass · Rounded supporting surfaces, with accessible material fallbacks."
+        case .santi020k: "santi020k · The maintainer’s palette, built on the same semantic roles."
         }
     }
 
@@ -145,7 +183,7 @@ struct PlaygroundSettingsView: View {
     }
 
     private func previewSurface(_ label: LocalizedStringKey, tone: LumenSurfaceTone) -> some View {
-        LumenSurface(tone: tone, padding: .md) {
+        LumenSurface(tone: tone, padding: .md, material: themePreset == .glass && tone == .surface ? .glass : .solid) {
             LumenText(label, variant: .caption)
                 .frame(maxWidth: .infinity)
         }
@@ -283,8 +321,8 @@ struct PlaygroundSettingsView: View {
                 )
                 LumenDivider()
                 resourceRow(
-                    "Support",
-                    detail: "Project help and issue guidance",
+                    "Feedback & support",
+                    detail: "Ideas, questions, bug reports, and the public roadmap",
                     destination: safeURL("https://lumen.santi020k.com/support")
                 )
                 LumenDivider()

@@ -1,0 +1,89 @@
+---
+import { ButtonLink, Callout, CodeTabs, Link, Typography } from '@santi020k/lumen-astro'
+
+import DocsPageHero from '../../../components/DocsPageHero.astro'
+import VisualGuideNavigation from '../../../components/VisualGuideNavigation.astro'
+import VisualWorkbench from '../../../components/VisualWorkbench.astro'
+import { visualAdapterExamples } from '../../../data/visual-adapter-examples'
+import { visualGuideHref, visualGuides } from '../../../data/visual-guides'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+import { toSlug } from '../../../lib/routes'
+
+export const getStaticPaths = () => visualGuides.map(guide => ({ params: { topic: guide.id }, props: { guide } }))
+
+interface Props { guide: typeof visualGuides[number] }
+
+const { guide } = Astro.props
+const nextGuide = visualGuides.find(item => item.id === guide.next)
+
+const setup = [
+  { value: 'astro', label: 'Astro', language: 'astro', code: `---
+// pnpm add @santi020k/lumen-astro
+// In your root layout:
+import '@santi020k/lumen-astro/styles.css'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+<slot />
+<UIPrimitives />` },
+  { value: 'react',
+label: 'React',
+language: 'tsx',
+code: `// pnpm add @santi020k/lumen-react
+// In your application entry:
+import '@santi020k/lumen-react/styles.css'
+
+// Import components from the public package:
+import { ${guide.components.join(', ')} } from '@santi020k/lumen-react'` },
+  { value: 'elements',
+label: 'Elements',
+language: 'ts',
+code: `// pnpm add @santi020k/lumen-elements
+// In your client entry, processed by a bundler:
+import '@santi020k/lumen-elements/styles.css'
+import { defineLumenElements } from '@santi020k/lumen-elements'
+
+defineLumenElements([${guide.components.map(name => `'${name}'`).join(', ')}])` }
+]
+
+const adapterExample = guide.id === 'recipes' ? undefined : visualAdapterExamples[guide.id]
+
+const starterExamples = adapterExample ?
+[
+  { value: 'react', label: 'React', language: 'tsx', code: `'use client'\n\n${guide.code}` },
+  { value: 'astro', label: 'Astro', language: 'astro', code: adapterExample.astro },
+  { value: 'elements', label: 'Elements', language: 'html', code: adapterExample.elements }
+] :
+[]
+
+const frameworkLabels: Record<string, string> = { astro: 'Astro', react: 'React', elements: 'Elements' }
+const recipeExamples = ['astro', 'react', 'elements'].map(target => ({ value: target, label: frameworkLabels[target] ?? target, language: 'bash', code: guide.code.replaceAll('--target react', `--target ${target}`) }))
+---
+<DocsLayout title={`${guide.label} guide — Lumen UI`} description={guide.description} breadcrumbs={[{ href: '/docs', label: 'Docs' }, { href: '/docs/visual-playground', label: 'Visual guides' }, { href: visualGuideHref(guide.id), label: guide.label }]}>
+  <DocsPageHero compact eyebrow={`Visual guides / ${guide.label}`} title={guide.title} description={guide.description} />
+  <VisualGuideNavigation />
+  <Typography><p>{guide.useCase}</p></Typography>
+  <VisualWorkbench section={guide.id} />
+  <section class="visual-guide-notes" aria-labelledby="start-building">
+    <Typography><h2 id="start-building">Start building</h2><p>Load your adapter stylesheet once. Astro needs its client runtime for enhanced interactions; React manages its own lifecycle; Elements needs client registration.</p></Typography>
+    <CodeTabs ariaLabel="Framework setup" items={setup} />
+    {guide.id === 'recipes' ?
+<CodeTabs ariaLabel="Install product recipes" items={recipeExamples} /> :
+(
+<>
+      <Typography><h3>Starter example</h3><p>The React example includes local state. Astro and Elements show the component structure; your client code owns data updates and event handlers.</p></Typography>
+      <CodeTabs ariaLabel={`${guide.label} starter example`} items={starterExamples} />
+    </>
+)}
+    <Typography><p>Adapter setup: <Link href="/docs/frameworks/astro">Astro</Link> · <Link href="/docs/frameworks/react">React</Link> · <Link href="/docs/frameworks/elements">Elements</Link>.</p></Typography>
+  </section>
+  <section class="visual-guide-notes" aria-labelledby="usage-notes">
+    <Typography><h2 id="usage-notes">Before you ship</h2><ul>{guide.notes.map(note => <li>{note}</li>)}</ul></Typography>
+    <Callout><p>Respect reduced motion and keep keyboard controls, readable text, and immediate access to information. Preview decoration should never block the underlying interaction.</p></Callout>
+  </section>
+  <section class="visual-guide-notes" aria-labelledby="component-reference">
+    <Typography><h2 id="component-reference">Component reference</h2><p>Find props, events, keyboard behavior, and Astro, React, and Elements examples for each primitive.</p><ul>{guide.components.map(name => <li><Link href={`/docs/components/${toSlug(name)}`}>{name}</Link></li>)}</ul></Typography>
+    {guide.id === 'charts' && <Typography><p>Explore more chart types in the <Link href="/docs/web/data-visualization">data visualization guides</Link>.</p></Typography>}
+    {guide.id === 'motion' && <Typography><p>For optional Motion and Rive integrations, see the <Link href="/docs/motion-playground">motion playground</Link>.</p></Typography>}
+    {nextGuide && <ButtonLink href={visualGuideHref(nextGuide.id)} variant="secondary">Next: {nextGuide.label}</ButtonLink>}
+  </section>
+</DocsLayout>

@@ -1,3 +1,4 @@
+// cspell:words Capacidad
 import {
   type ReactElement,
   type ReactNode,
@@ -25,7 +26,6 @@ import {
 
 import {
   createEmptyLumenPhoneNumber,
-  createLumenTheme,
   getLumenIconGraphic,
   getLumenPhoneCountry,
   LumenAlert,
@@ -37,8 +37,11 @@ import {
   LumenBadge,
   LumenBanner,
   LumenBarChart,
+  LumenBoxPlot,
+  LumenBulletChart,
   LumenButton,
   LumenButtonGroup,
+  LumenCalendarHeatmap,
   LumenCard,
   LumenCheckbox,
   LumenChip,
@@ -46,18 +49,22 @@ import {
   LumenComboChart,
   LumenDisclosure,
   LumenDivider,
+  LumenDumbbellChart,
   LumenEmptyState,
   LumenErrorState,
   LumenFieldGroup,
+  LumenFunnelChart,
   LumenGauge,
   LumenGraphic,
   LumenHeatmap,
+  LumenHistogram,
   LumenIcon,
   LumenIconButton,
   LumenIllustration,
   LumenImage,
   LumenLineChart,
   LumenListRow,
+  LumenLollipopChart,
   LumenMenu,
   LumenNavigationAccessory,
   LumenNavigationBar,
@@ -69,6 +76,7 @@ import {
   LumenProvider,
   LumenRadioGroup,
   LumenRangeChart,
+  LumenRangeSlider,
   LumenRefreshControl,
   LumenScatterChart,
   LumenSearchField,
@@ -88,9 +96,9 @@ import {
   LumenText,
   LumenTextarea,
   LumenTextField,
-  type LumenTheme,
   LumenToast,
   LumenToggle,
+  LumenWaterfallChart,
   useLumenTheme
 } from '@santi020k/lumen-react-native'
 import {
@@ -100,6 +108,10 @@ import {
 } from '@santi020k/lumen-react-native/datetime'
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar'
 
+import { AdvancedInputExamples } from './AdvancedInputExamples'
+import { CatalogParityExamples } from './CatalogParityExamples'
+import { MediaWorkspaceExamples } from './MediaWorkspaceExamples'
+import { MotionExample } from './MotionExample'
 import {
   type AppDestination,
   componentCategories,
@@ -108,12 +120,14 @@ import {
   getComponentCategory,
   getVisibleComponentNames,
   isAppDestination,
-  isComponentCategory
+  isComponentCategory,
+  normalizeComponentQuery,
+  playgroundLumenVersion
 } from './playground-model'
+import { createPlaygroundTheme, isThemePreset, type ThemePreset, themePresetOptions } from './playground-theme'
+import { WorkspaceExample } from './WorkspaceExample'
 
 type ColorScheme = 'dark' | 'light' | 'system'
-
-type ThemePreset = 'lumen' | 'santi020k'
 
 const resolvePlaygroundScheme = (
   preference: ColorScheme,
@@ -122,58 +136,6 @@ const resolvePlaygroundScheme = (
   if (preference === 'dark' || preference === 'light') return preference
 
   return systemScheme === 'dark' ? 'dark' : 'light'
-}
-
-const santi020kColorPalettes: Record<'dark' | 'light', LumenTheme['colors']> = {
-  light: {
-    canvas: '#FAF9FB',
-    surface: '#FFFFFF',
-    surfaceMuted: '#F5F3F7',
-    surfaceStrong: '#E5E2E9',
-    line: '#D6D0DC',
-    ink: '#332E38',
-    inkSoft: '#5B5463',
-    inkMuted: '#47434C',
-    brand: '#620AE6',
-    brandSolid: '#5709CE',
-    brandSoft: '#EEE7F9',
-    onBrand: '#FFFFFF',
-    accent: '#7D29FA',
-    success: '#16A249',
-    warning: '#F59F0A',
-    danger: '#EF4343',
-    onDanger: '#000000'
-  },
-  dark: {
-    canvas: '#110C1D',
-    surface: '#1C1528',
-    surfaceMuted: '#231D30',
-    surfaceStrong: '#322B40',
-    line: '#494158',
-    ink: '#DFDDE3',
-    inkSoft: '#B6B2BD',
-    inkMuted: '#8D8896',
-    brand: '#A56EF7',
-    brandSolid: '#6F16F3',
-    brandSoft: '#2A1943',
-    onBrand: '#FFFFFF',
-    accent: '#9F64F7',
-    success: '#21C45D',
-    warning: '#F6A823',
-    danger: '#F15B5B',
-    onDanger: '#110C1D'
-  }
-}
-
-const createPlaygroundTheme = (preset: ThemePreset, scheme: 'dark' | 'light'): LumenTheme => {
-  const theme = createLumenTheme(scheme)
-
-  if (preset === 'lumen') return theme
-
-  return {
-    ...theme,
-    colors: santi020kColorPalettes[scheme]
-  }
 }
 
 interface ComponentSectionProps {
@@ -223,9 +185,11 @@ const getInitialColorScheme = (): ColorScheme => {
   return scheme === 'dark' || scheme === 'light' || scheme === 'system' ? scheme : 'system'
 }
 
-const getInitialThemePreset = (): ThemePreset => (
-  getWebQueryParameter('theme') === 'santi020k' ? 'santi020k' : 'lumen'
-)
+const getInitialThemePreset = (): ThemePreset => {
+  const preset = getWebQueryParameter('theme')
+
+  return isThemePreset(preset) ? preset : 'lumen'
+}
 
 const getInitialDestination = (): AppDestination => {
   if (isEmbeddedPreview() || getInitialComponentQuery()) return 'components'
@@ -416,13 +380,9 @@ const isColorScheme = (value: string): value is ColorScheme => (
   value === 'dark' || value === 'light' || value === 'system'
 )
 
-const isThemePreset = (value: string): value is ThemePreset => (
-  value === 'lumen' || value === 'santi020k'
-)
-
 type ExampleState = 'empty' | 'error' | 'loading' | 'success'
 
-type ExamplePattern = 'health' | 'profile' | 'release'
+type ExamplePattern = 'health' | 'motion' | 'profile' | 'release' | 'workspace'
 
 type PlaygroundLocale = 'en' | 'es'
 
@@ -462,13 +422,13 @@ const isExampleState = (value: string): value is ExampleState => (
 )
 
 const isExamplePattern = (value: string): value is ExamplePattern => (
-  value === 'health' || value === 'profile' || value === 'release'
+  value === 'health' || value === 'motion' || value === 'profile' || value === 'release' || value === 'workspace'
 )
 
 const useAccessibilitySnapshot = (): AccessibilitySnapshot => {
   const [snapshot, setSnapshot] = useState<AccessibilitySnapshot>({
     fontScale: PixelRatio.getFontScale(),
-    reduceMotion: false,
+    reduceMotion: true,
     screenReader: false
   })
 
@@ -689,6 +649,7 @@ const ExampleStatePreview = ({
 )
 
 const ExamplesScreen = (): ReactElement => {
+  const accessibility = useAccessibilitySnapshot()
   const initialState = getWebQueryParameter('state')
   const initialPattern = getWebQueryParameter('pattern')
 
@@ -710,6 +671,17 @@ const ExamplesScreen = (): ReactElement => {
     setExampleState(state)
 
     updateWebQueryParameter('state', state)
+  }
+
+  if (pattern === 'workspace') {
+    return (
+      <WorkspaceExample onBack={() => {
+        setPattern('release')
+
+        updateWebQueryParameter('pattern', 'release')
+      }}
+      />
+    )
   }
 
   return (
@@ -735,10 +707,13 @@ const ExamplesScreen = (): ReactElement => {
           options={[
             { label: 'Release', value: 'release' },
             { label: 'Health', value: 'health' },
-            { label: 'Profile', value: 'profile' }
+            { label: 'Profile', value: 'profile' },
+            { label: 'Workspace', value: 'workspace' },
+            { label: 'Motion', value: 'motion' }
           ]}
           value={pattern}
         >
+          {pattern === 'motion' && <MotionExample reducedMotion={accessibility.reduceMotion} />}
           {pattern === 'release' && (
             <View style={styles.stack}>
               <LumenCard style={styles.section}>
@@ -910,17 +885,18 @@ const SettingsScreen = ({
             subtitle="Follow the device or choose a fixed playground theme."
             title="Appearance"
           />
-          <LumenSegmentedControl
+          <LumenPicker
             label="Playground theme"
             onValueChange={value => {
               if (isThemePreset(value)) onThemePresetChange(value)
             }}
-            options={[
-              { label: 'Lumen', value: 'lumen' },
-              { label: 'santi020k', value: 'santi020k' }
-            ]}
+            options={themePresetOptions}
             value={themePreset}
           />
+          <LumenText variant="caption" tone="muted">
+            Normal keeps the classic Lumen look. Studio uses neutral surfaces. Glass uses rounded surfaces
+            with an opaque material fallback on React Native.
+          </LumenText>
           <LumenSegmentedControl
             label="Playground appearance"
             onValueChange={value => {
@@ -934,7 +910,7 @@ const SettingsScreen = ({
             value={scheme}
           />
           <View style={styles.row}>
-            <LumenBadge tone="accent">{themePreset === 'lumen' ? 'Lumen' : 'santi020k'}</LumenBadge>
+            <LumenBadge tone="accent">{themePresetOptions.find(option => option.value === themePreset)?.label}</LumenBadge>
             <LumenBadge tone="neutral">{scheme.charAt(0).toUpperCase() + scheme.slice(1)}</LumenBadge>
           </View>
         </LumenCard>
@@ -1074,7 +1050,7 @@ const SettingsScreen = ({
                 openExternalURL('https://lumen.santi020k.com/support')
               }}
             >
-              Support
+              Feedback & support
             </LumenButton>
             <LumenButton
               intent="quiet"
@@ -1094,6 +1070,57 @@ const SettingsScreen = ({
     </LumenSurface>
   )
 }
+
+const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boolean }): ReactElement => (
+  <>
+    {isVisible('Calendar heatmap') && (
+      <LumenCalendarHeatmap testID="component-calendar-heatmap" label="Daily activity" heading="Daily activity" startDate="2026-01-01" endDate="2026-03-31" data={Array.from({ length: 90 }, (_, index) => ({ date: new Date(Date.UTC(2026, 0, index + 1)).toISOString().slice(0, 10), value: index % 11 === 0 ? null : (index * 7) % 30 }))} />
+    )}
+    {isVisible('Funnel chart') && (
+      <LumenFunnelChart testID="component-funnel-chart" label="Signup stages" heading="Signup stages" data={[{ id: 'visits', label: 'Visits', value: 1200 }, { id: 'started', label: 'Started', value: 720 }, { id: 'completed', label: 'Completed', value: 360 }]} />
+    )}
+    {isVisible('Box plot') && (
+      <LumenBoxPlot testID="component-box-plot" label="Response time distribution" heading="Response time distribution" description="Milliseconds · supplied five-number summaries" data={[{ id: 'api', label: 'API', min: 12, q1: 24, median: 35, q3: 48, max: 70, outliers: [95] }, { id: 'worker', label: 'Worker', min: 18, q1: 30, median: 46, q3: 64, max: 90, outliers: [110] }]} />
+    )}
+    {isVisible('Waterfall chart') && (
+      <LumenWaterfallChart
+        label="Revenue movement"
+        heading="Revenue movement"
+        description="Opening balance to closing · USD, thousands"
+        valueLabel="USD, thousands"
+        data={[
+          { id: 'opening', label: 'Opening', kind: 'total', value: 120 },
+          { id: 'new', label: 'New', value: 85 },
+          { id: 'growth', label: 'Growth', value: 35 },
+          { id: 'costs', label: 'Costs', value: -45 },
+          { id: 'other', label: 'Other', value: -10 },
+          { id: 'closing', label: 'Closing', kind: 'total', value: 185 }
+        ]}
+      />
+    )}
+    {isVisible('Lollipop chart') && (
+      <LumenLollipopChart testID="component-lollipop-chart" label="Team performance" heading="Team performance" data={[{ id: 'design', label: 'Design', reference: 62, value: 88 }, { id: 'engineering', label: 'Engineering', reference: 76, value: 91 }, { id: 'support', label: 'Support', reference: 81, value: 74 }, { id: 'operations', label: 'Operations', reference: 54, value: 83 }]} domain={{ min: 0, max: 100 }} referenceLabel="Previous" valueLabel="Current" />
+    )}
+    {isVisible('Dumbbell chart') && (
+      <LumenDumbbellChart testID="component-dumbbell-chart" label="Progress by team" heading="Progress by team" data={[{ id: 'design', label: 'Design', reference: 62, value: 88 }, { id: 'engineering', label: 'Engineering', reference: 76, value: 91 }, { id: 'support', label: 'Support', reference: 81, value: 74 }, { id: 'operations', label: 'Operations', reference: 54, value: 83 }]} domain={{ min: 0, max: 100 }} referenceLabel="Previous" valueLabel="Current" />
+    )}
+    {isVisible('Bullet chart') && (
+      <LumenBulletChart testID="component-bullet-chart" label="Delivery performance" heading="On-time delivery" description="Actual performance against the service target" value={86} target={95} ranges={[{ end: 70, label: 'Developing' }, { end: 90, label: 'Consistent' }, { end: 100, label: 'Excellent' }]} formatValue={value => `${value}%`} />
+    )}
+    {isVisible('Histogram') && (
+      <LumenHistogram
+        label="Response times"
+        heading="Response time"
+        description="Distribution of requests · milliseconds"
+        data={
+          [3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3].map((count, index) => ({
+            start: index * 25, end: (index + 1) * 25, count
+          }))
+        }
+      />
+    )}
+  </>
+)
 
 const ChartExamples = ({
   isVisible
@@ -1152,16 +1179,24 @@ const ChartExamples = ({
         }]}
       />
     )}
+    <IntervalChartExamples isVisible={isVisible} />
     {isVisible('Heatmap') && (
-      <LumenHeatmap
-        data={[
-          { value: 18, x: 'Mon', y: 'Morning' },
-          { value: 32, x: 'Tue', y: 'Morning' },
-          { value: 47, x: 'Mon', y: 'Evening' },
-          { value: null, x: 'Tue', y: 'Evening' }
-        ]}
-        label="Activity by day and period"
-      />
+      <View testID="component-heatmap">
+        <LumenHeatmap
+          colorScale="diverging"
+          heading="Weekly activity"
+          description="Change from typical activity · by day and hour"
+          data={['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].flatMap((day, row) => (
+            Array.from({ length: 12 }, (_, column) => {
+              const typical = Math.round(Math.sin((column - 3) / 2) * 14 + Math.cos(row) * 6)
+              const value = row === 0 && column === 0 ? 0 : typical
+
+              return { value: row === 4 && column === 6 ? null : value, x: `${column + 8}:00`, y: day }
+            })
+          ))}
+          label="Change in activity by day and hour"
+        />
+      </View>
     )}
     {isVisible('Range chart') && (
       <LumenRangeChart
@@ -1195,6 +1230,46 @@ const ChartExamples = ({
   </>
 )
 
+const EmptyStateExample = (): ReactElement => {
+  const [hasProject, setHasProject] = useState(false)
+
+  if (hasProject) {
+    return (
+      <LumenCard style={styles.stack} testID="component-empty-state">
+        <LumenText variant="label">My first project</LumenText>
+        <LumenText tone="muted">Projects you create will show their latest activity here.</LumenText>
+        <LumenButton
+          intent="secondary"
+          onPress={() => {
+            setHasProject(false)
+          }}
+        >
+          Reset example
+        </LumenButton>
+      </LumenCard>
+    )
+  }
+
+  return (
+    <LumenEmptyState
+      actions={(
+        <LumenButton
+          intent="primary"
+          onPress={() => {
+            setHasProject(true)
+          }}
+        >
+          Create project
+        </LumenButton>
+      )}
+      description="Projects you create will appear here with their latest activity."
+      graphic={<LumenIcon decorative name="folder-plus" size="lg" />}
+      testID="component-empty-state"
+      title="No projects yet"
+    />
+  )
+}
+
 interface CatalogFocusPanelProps {
   focusedComponent: string | undefined
   onClear: () => void
@@ -1209,7 +1284,9 @@ const CatalogFocusPanel = ({
   onSelectComponent,
   showComponentPicker,
   visibleNames
-}: CatalogFocusPanelProps): ReactElement => {
+}: CatalogFocusPanelProps): ReactElement | null => {
+  if (visibleNames.length === 0) return null
+
   if (focusedComponent) {
     const focusedCategory = getComponentCategory(focusedComponent)
 
@@ -1299,7 +1376,7 @@ const CatalogDiscovery = ({
   const themeToggle = getThemeToggleState(theme.scheme)
 
   const focusedComponent = componentNames.find(
-    name => name.toLowerCase() === query.trim().toLowerCase()
+    name => visibleNames.includes(name) && normalizeComponentQuery(name) === normalizeComponentQuery(query)
   )
 
   const showComponentPicker = query.trim().length > 0 || selectedCategory !== 'all'
@@ -1309,6 +1386,9 @@ const CatalogDiscovery = ({
       <View style={styles.hero}>
         <View style={styles.heroCopy}>
           <LumenBadge tone="accent">{Platform.OS}</LumenBadge>
+          <LumenBadge tone="neutral">
+            {`Lumen ${playgroundLumenVersion}`}
+          </LumenBadge>
           <LumenText variant="title">Lumen Playground</LumenText>
           <LumenText tone="soft">
             Explore every public primitive with real React Native state and behavior.
@@ -1345,13 +1425,19 @@ const CatalogDiscovery = ({
       </View>
 
       <View style={styles.catalogMeta}>
-        <LumenText variant="label">
+        <LumenText accessibilityLiveRegion="polite" variant="label">
           {visibleNames.length}
           {' '}
-          components
+          {visibleNames.length === 1 ? 'component' : 'components'}
         </LumenText>
         <LumenText tone="muted" variant="caption">Interactive web · iOS · Android</LumenText>
       </View>
+
+      {showComponentPicker ?
+        (
+          <LumenButton intent="quiet" onPress={onClear}>Reset filters</LumenButton>
+        ) :
+        null}
 
       <CatalogFocusPanel
         focusedComponent={focusedComponent}
@@ -1398,6 +1484,7 @@ const Playground = ({
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [profile, setProfile] = useState('balanced')
   const [region, setRegion] = useState('americas')
+  const [speedRange, setSpeedRange] = useState<readonly [number, number]>([2_000, 4_000])
   const [minimumSpeed, setMinimumSpeed] = useState(2_400)
   const [density, setDensity] = useState('comfortable')
   const [detailsExpanded, setDetailsExpanded] = useState(true)
@@ -1482,6 +1569,8 @@ const Playground = ({
           />
         </Visibility>
 
+        <CatalogParityExamples isVisible={isVisible} />
+
         <Visibility visible={isAnyVisible('Theme', 'Text', 'Surface')}>
           <ComponentSection
             description="Semantic roles adapt to the selected color scheme."
@@ -1549,7 +1638,7 @@ const Playground = ({
           </ComponentSection>
         </Visibility>
 
-        <Visibility visible={isAnyVisible('Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Heatmap', 'Range chart', 'Combo chart')}>
+        <Visibility visible={isAnyVisible('Calendar heatmap', 'Funnel chart', 'Box plot', 'Sparkline', 'Line chart', 'Bar chart', 'Pie chart', 'Scatter chart', 'Waterfall chart', 'Histogram', 'Bullet chart', 'Lollipop chart', 'Dumbbell chart', 'Heatmap', 'Range chart', 'Combo chart')}>
           <ComponentSection
             description="Tokenized plots include a factual accessibility summary and readable fallback data."
             title="Data visualization"
@@ -1561,6 +1650,16 @@ const Playground = ({
         <Visibility
           visible={isAnyVisible(
             'Text field',
+            'Number field',
+            'Time field',
+            'Autocomplete',
+            'Multi select',
+            'Password field',
+            'Input OTP',
+            'Image comparison',
+            'Media viewport',
+            'Media thumbnail',
+            'Media filmstrip',
             'Textarea',
             'Field group',
             'Toggle',
@@ -1571,6 +1670,7 @@ const Playground = ({
             'Phone input',
             'Picker',
             'Slider',
+            'Range slider',
             'Checkbox',
             'Radio group',
             'Segmented control',
@@ -1578,142 +1678,169 @@ const Playground = ({
           )}
         >
           <ComponentSection description="Edit controls to exercise native focus, switch, and clear behavior." title="Forms">
-            <LumenTextField
-              accessibilityLabel="Email address"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              onChangeText={setEmail}
-              value={email}
-            />
-            <LumenTextField
-              accessibilityLabel="Invalid project slug"
-              error
-              placeholder="Invalid value"
-              value="lumen playground"
-            />
-            <LumenTextarea
-              description="Summarize the native release."
-              label="Release notes"
-              onChangeText={setNotes}
-              value={notes}
-            />
-            <LumenDateField
-              description="Choose the planned native release date."
-              label="Release date"
-              minimumDate={new Date(2026, 8, 1)}
-              onValueChange={setReleaseDate}
-              value={releaseDate}
-            />
-            <LumenDateRangeField
-              description="The end date cannot precede the start date."
-              label="Reporting period"
-              minimumDate={new Date(2026, 8, 1)}
-              onValueChange={setReportingRange}
-              value={reportingRange}
-            />
-            <LumenPhoneInput
-              description={phoneNumber.e164 ?? 'Add the full hospital or OB number.'}
-              label="Hospital or OB phone number"
-              locale="en-US"
-              onValueChange={setPhoneNumber}
-              value={phoneNumber}
-            />
-            <View testID="component-picker">
-              <LumenPicker
-                label="Deployment region"
-                onValueChange={setRegion}
-                options={[
-                  { label: 'Americas', value: 'americas' },
-                  { label: 'Europe', value: 'europe' },
-                  { disabled: true, label: 'Asia Pacific (coming soon)', value: 'asia-pacific' }
-                ]}
-                value={region}
-              />
-            </View>
-            <View testID="component-slider">
-              <LumenSlider
-                label="Minimum speed"
-                max={5_000}
-                min={1_000}
-                onValueChange={setMinimumSpeed}
-                step={100}
-                value={minimumSpeed}
-                valueLabel={`${minimumSpeed} RPM`}
-              />
-            </View>
-            <LumenFieldGroup
-              description="These controls retain independent focus and labels."
-              label="Publication checks"
-              required
+            <AdvancedInputExamples isVisible={isVisible} />
+            <MediaWorkspaceExamples isVisible={isVisible} />
+            <Visibility visible={isAnyVisible(
+              'Text field', 'Textarea', 'Field group', 'Toggle', 'Settings row', 'Search field', 'Date field', 'Date range field', 'Phone input', 'Picker', 'Slider', 'Range slider', 'Checkbox', 'Radio group', 'Segmented control', 'Tabs'
+            )}
             >
+              <LumenTextField
+                accessibilityLabel="Email address"
+                autoCapitalize="none"
+                keyboardType="email-address"
+                onChangeText={setEmail}
+                value={email}
+              />
+              <LumenTextField
+                accessibilityLabel="Invalid project slug"
+                error
+                placeholder="Invalid value"
+                value="lumen playground"
+              />
+              <LumenTextarea
+                description="Summarize the native release."
+                label="Release notes"
+                onChangeText={setNotes}
+                value={notes}
+              />
+              <LumenDateField
+                description="Choose the planned native release date."
+                label="Release date"
+                minimumDate={new Date(2026, 8, 1)}
+                onValueChange={setReleaseDate}
+                value={releaseDate}
+              />
+              <LumenDateRangeField
+                description="The end date cannot precede the start date."
+                label="Reporting period"
+                minimumDate={new Date(2026, 8, 1)}
+                onValueChange={setReportingRange}
+                value={reportingRange}
+              />
+              <LumenPhoneInput
+                description={phoneNumber.e164 ?? 'Add the full hospital or OB number.'}
+                label="Hospital or OB phone number"
+                locale="en-US"
+                onValueChange={setPhoneNumber}
+                value={phoneNumber}
+              />
+              <View testID="component-picker">
+                <LumenPicker
+                  label="Deployment region"
+                  onValueChange={setRegion}
+                  options={[
+                    { label: 'Americas', value: 'americas' },
+                    { label: 'Europe', value: 'europe' },
+                    { disabled: true, label: 'Asia Pacific (coming soon)', value: 'asia-pacific' }
+                  ]}
+                  value={region}
+                />
+              </View>
+              <View testID="component-slider">
+                <LumenSlider
+                  label="Minimum speed"
+                  max={5_000}
+                  min={1_000}
+                  onValueChange={setMinimumSpeed}
+                  step={100}
+                  value={minimumSpeed}
+                  valueLabel={`${minimumSpeed} RPM`}
+                />
+              </View>
+              <View testID="component-range-slider">
+                <LumenRangeSlider
+                  label="Speed range"
+                  value={speedRange}
+                  onValueChange={setSpeedRange}
+                  min={1_000}
+                  max={5_000}
+                  step={100}
+                  formatValue={value => `${value} RPM`}
+                />
+                <LumenRangeSlider
+                  label="Capacidad"
+                  value={[20, 80]}
+                  onValueChange={() => undefined}
+                  readOnly
+                  startLabel="Mínimo"
+                  endLabel="Máximo"
+                  formatValue={value => `${value} %`}
+                />
+              </View>
+              <LumenFieldGroup
+                description="These controls retain independent focus and labels."
+                label="Publication checks"
+                required
+              >
+                <LumenCheckbox
+                  checked={termsAccepted}
+                  label="Confirm accessibility review"
+                  onCheckedChange={setTermsAccepted}
+                />
+              </LumenFieldGroup>
+              <LumenToggle
+                description="Example state only. The playground does not register for notifications."
+                label="Demo notification preference"
+                onValueChange={setNotificationsEnabled}
+                value={notificationsEnabled}
+              />
+              <LumenSettingsRow
+                control={(
+                  <LumenToggle
+                    label="Demo automatic updates"
+                    onValueChange={setNotificationsEnabled}
+                    showLabel={false}
+                    value={notificationsEnabled}
+                  />
+                )}
+                description="Example state only. The playground does not download updates."
+                graphic={<LumenIcon decorative name="check" size="sm" />}
+                title="Demo automatic updates"
+              />
               <LumenCheckbox
                 checked={termsAccepted}
+                description="Required before publishing this native component set."
                 label="Confirm accessibility review"
                 onCheckedChange={setTermsAccepted}
               />
-            </LumenFieldGroup>
-            <LumenToggle
-              description="Example state only. The playground does not register for notifications."
-              label="Demo notification preference"
-              onValueChange={setNotificationsEnabled}
-              value={notificationsEnabled}
-            />
-            <LumenSettingsRow
-              control={(
-                <LumenToggle
-                  label="Demo automatic updates"
-                  onValueChange={setNotificationsEnabled}
-                  showLabel={false}
-                  value={notificationsEnabled}
-                />
-              )}
-              description="Example state only. The playground does not download updates."
-              graphic={<LumenIcon decorative name="check" size="sm" />}
-              title="Demo automatic updates"
-            />
-            <LumenCheckbox
-              checked={termsAccepted}
-              description="Required before publishing this native component set."
-              label="Confirm accessibility review"
-              onCheckedChange={setTermsAccepted}
-            />
-            <LumenRadioGroup
-              label="Performance profile"
-              onValueChange={setProfile}
-              options={[
-                { description: 'Reduce background activity.', label: 'Quiet', value: 'quiet' },
-                { description: 'Recommended for most projects.', label: 'Balanced', value: 'balanced' },
-                { description: 'Prioritize responsiveness.', label: 'Performance', value: 'performance' }
-              ]}
-              value={profile}
-            />
-            <LumenSegmentedControl
-              label="Control density"
-              onValueChange={setDensity}
-              options={[
-                { label: 'Compact', value: 'compact' },
-                { label: 'Comfortable', value: 'comfortable' },
-                { disabled: true, label: 'Spacious', value: 'spacious' }
-              ]}
-              value={density}
-            />
-            <Visibility visible={isVisible('Tabs')}>
-              <LumenTabs
-                label="Workspace views"
-                onValueChange={setActiveTab}
+              <LumenRadioGroup
+                label="Performance profile"
+                onValueChange={setProfile}
                 options={[
-                  { label: 'Overview', value: 'overview' },
-                  { label: 'Activity', value: 'activity' },
-                  { disabled: true, label: 'Billing', value: 'billing' }
+                  { description: 'Reduce background activity.', label: 'Quiet', value: 'quiet' },
+                  { description: 'Recommended for most projects.', label: 'Balanced', value: 'balanced' },
+                  { description: 'Prioritize responsiveness.', label: 'Performance', value: 'performance' }
                 ]}
-                value={activeTab}
-              >
-                <LumenSurface padding="md" tone="muted">
-                  <LumenText variant="label">
-                    {activeTab === 'overview' ? 'Workspace health is ready.' : 'Three components updated today.'}
-                  </LumenText>
-                </LumenSurface>
-              </LumenTabs>
+                value={profile}
+              />
+              <LumenSegmentedControl
+                label="Control density"
+                onValueChange={setDensity}
+                options={[
+                  { label: 'Compact', value: 'compact' },
+                  { label: 'Comfortable', value: 'comfortable' },
+                  { disabled: true, label: 'Spacious', value: 'spacious' }
+                ]}
+                value={density}
+              />
+              <Visibility visible={isVisible('Tabs')}>
+                <LumenTabs
+                  label="Workspace views"
+                  onValueChange={setActiveTab}
+                  options={[
+                    { label: 'Overview', value: 'overview' },
+                    { label: 'Activity', value: 'activity' },
+                    { disabled: true, label: 'Billing', value: 'billing' }
+                  ]}
+                  value={activeTab}
+                >
+                  <LumenSurface padding="md" tone="muted">
+                    <LumenText variant="label">
+                      {activeTab === 'overview' ? 'Workspace health is ready.' : 'Three components updated today.'}
+                    </LumenText>
+                  </LumenSurface>
+                </LumenTabs>
+              </Visibility>
             </Visibility>
           </ComponentSection>
         </Visibility>
@@ -1838,6 +1965,15 @@ const Playground = ({
               reference="REQ-4F82"
               title="Could not load projects"
             />
+          </ComponentSection>
+        </Visibility>
+
+        <Visibility visible={isVisible('Empty state')}>
+          <ComponentSection
+            description="A recoverable empty collection that fills with a sample result and resets on demand."
+            title="Empty state"
+          >
+            <EmptyStateExample />
           </ComponentSection>
         </Visibility>
 

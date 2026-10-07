@@ -56,15 +56,7 @@ import {
 
       const createToast = (detail: Record<string, unknown>) => lumenWindow.LumenToast?.create(detail)
 
-      // eslint-disable-next-line complexity -- each branch mirrors one visible demo control.
-      this.addEventListener('click', e => {
-        const target = e.target as HTMLElement
-        const btn = target.closest('[data-ex-toast]')
-
-        if (!btn) return
-
-        const type = btn.getAttribute('data-ex-toast')
-
+      const showToast = (type: string | null): void => {
         switch (type) {
           case 'default': {
             createToast({
@@ -145,6 +137,14 @@ import {
           }
       // No default
         }
+      }
+
+      this.addEventListener('click', event => {
+        if (!(event.target instanceof Element)) return
+
+        const button = event.target.closest('[data-ex-toast]')
+
+        if (button) showToast(button.getAttribute('data-ex-toast'))
       })
     }
   }

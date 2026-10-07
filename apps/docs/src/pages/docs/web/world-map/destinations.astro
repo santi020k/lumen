@@ -1,0 +1,35 @@
+---
+import { Link } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../../../components/CodeBlock.astro'
+import DocsGuideContent from '../../../../components/DocsGuideContent.astro'
+import DocsPageHero from '../../../../components/DocsPageHero.astro'
+import FrameworkExample from '../../../../components/FrameworkExample.astro'
+import DocsLayout from '../../../../layouts/DocsLayout.astro'
+import { getExample } from '../../../../lib/examples'
+import { buildSnippets } from '../../../../lib/snippets'
+
+const { component: Example, source } = getExample('WorldMapRegions')
+const snippets = buildSnippets('WorldMapRegions', source)
+---
+<DocsLayout title="WorldMap destination examples — Lumen UI" description="Copy regional WorldMap examples for Astro, React, and Web Components, and customize country highlights, labels, and colors.">
+  <DocsGuideContent>
+  <DocsPageHero compact eyebrow="Destination examples" title="Start with your country data." description="Highlight country codes, fit the region, and apply Lumen tokens or your website’s colors. These are illustrative destinations." />
+  <section aria-labelledby="regional-map">
+    <h2 id="regional-map">Fit a regional view.</h2>
+    <p><code>initialView="highlighted"</code> fits the highlighted country geometry when the map is enhanced. Without JavaScript, Astro still renders the full map and the country list.</p>
+    <FrameworkExample componentName="WorldMap" examplePath="apps/docs/src/examples/WorldMapRegions.astro" groupId="code-world-map-regions" snippets={snippets}><Example /></FrameworkExample>
+  </section>
+  <section aria-labelledby="country-data">
+    <h2 id="country-data">Keep destination metadata in your application.</h2>
+    <p>Use ISO country codes for highlights. Labels, travel dates, images, and navigation belong to your website. Listen to <code>ui:world-map-select</code> in Astro or Elements, or use <code>onCountrySelect</code> in React to render details with your existing components.</p>
+    <CodeBlock lang="tsx" code={'<WorldMap countries={lumenWorldMapCountries}\n  highlightedCountries={visitedCountries}\n  label="My visited countries"\n  onCountrySelect={({ countryId }) => setActiveCountry(countryId)} />'} />
+  </section>
+  <section aria-labelledby="map-customization">
+    <h2 id="map-customization">Match your website.</h2>
+    <CodeBlock lang="css" code={'.travel-map {\n  --ui-world-map-highlight: hsl(var(--brand));\n  --ui-world-map-marker: hsl(var(--accent));\n  --ui-world-map-surface: hsl(var(--surface-muted));\n}'} />
+    <p>Localize country names with <code>labels</code>, navigation buttons with <code>zoomLabels</code>, and the chooser with <code>listLabel</code>. Use <code>{'zoomable={false}'}</code> for a static presentation.</p>
+    <Link href="/docs/web/world-map">Navigation guide</Link> · <Link href="/docs/components/world-map">Full component API and default examples</Link>
+  </section>
+  </DocsGuideContent>
+</DocsLayout>

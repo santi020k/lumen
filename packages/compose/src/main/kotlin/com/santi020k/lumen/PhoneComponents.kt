@@ -1,13 +1,21 @@
 package com.santi020k.lumen
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,9 +33,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -196,6 +209,27 @@ private fun formatLumenPhoneInput(
     return normalized.fold("") { _, character -> formatter.inputDigit(character) }
 }
 
+/** Bundled artwork for a country; unsupported codes remain visible as text. */
+@Composable
+fun LumenCountryFlag(regionCode: String, modifier: Modifier = Modifier, contentDescription: String? = regionCode) {
+    val resource = lumenPhoneFlagResources[regionCode.uppercase(Locale.ROOT)]
+    if (resource != null) {
+        Image(painterResource(resource), contentDescription, modifier.size(width = 24.dp, height = 18.dp).clip(RoundedCornerShape(2.dp)))
+    } else {
+        Text(regionCode.uppercase(Locale.ROOT).take(2), modifier = modifier.clearAndSetSemantics {
+            if (contentDescription != null) this.contentDescription = contentDescription
+        })
+    }
+}
+
+@Composable
+fun LumenPhoneNumberView(value: LumenPhoneNumber, modifier: Modifier = Modifier) {
+    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {
+        LumenCountryFlag(value.country.regionCode, contentDescription = null)
+        Text(if (value.isValid) value.e164 ?: value.nationalNumber else value.nationalNumber)
+    }
+}
+
 /**
  * Presents a controlled phone editor with a searchable country sheet and metadata-backed
  * formatting and validation.
@@ -217,13 +251,17 @@ fun LumenPhoneInput(
     countryPickerTitle: String = "Select country",
     countrySearchLabel: String = "Search countries",
     required: Boolean = false,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    readOnly: Boolean = false
 ) {
     val colors = LocalLumenTheme.current.colors
+    var numberFocused by remember { mutableStateOf(false) }
+    val countryInteraction = remember { MutableInteractionSource() }
+    val countryHovered by countryInteraction.collectIsHoveredAsState()
     var pickerVisible by rememberSaveable { mutableStateOf(false) }
     var countryQuery by rememberSaveable { mutableStateOf("") }
     val availableCountries = countries ?: remember(locale) { LumenPhoneCountries.all(locale) }
-    val pickerEnabled = enabled && availableCountries.isNotEmpty()
+    val pickerEnabled = enabled && !readOnly && availableCountries.isNotEmpty()
     val displayValue = remember(availableCountries, locale, value) {
         constrainLumenPhoneInputValue(availableCountries, value, locale)
     }
@@ -259,23 +297,32 @@ fun LumenPhoneInput(
         required = required
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm),
+            modifier = Modifier.fillMaxWidth()
+                .alpha(if (enabled) 1f else 0.55f)
+                .clip(RoundedCornerShape(LumenRadius.Sm))
+                .background(if (readOnly) colors.surfaceMuted else colors.surface)
+                .border(1.dp, if (effectiveError != null) colors.danger else if (numberFocused) colors.brand else colors.line, RoundedCornerShape(LumenRadius.Sm)),
+            horizontalArrangement = Arrangement.spacedBy(0.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LumenButton(
-                onClick = { pickerVisible = true },
+            Row(
                 modifier = Modifier
-                    .widthIn(min = 112.dp)
+                    .hoverable(countryInteraction, enabled = pickerEnabled)
+                    .background(if (countryHovered && pickerEnabled) colors.surfaceMuted else androidx.compose.ui.graphics.Color.Transparent)
+                    .clickable(enabled = pickerEnabled, role = Role.Button) { pickerVisible = true }
+                    .heightIn(min = 56.dp)
+                    .padding(horizontal = LumenSpacing.Md)
                     .semantics {
-                        contentDescription = "$countrySelectorLabel, ${displayValue.country.displayName}, " +
-                            displayValue.country.callingCode
+                        contentDescription = "$countrySelectorLabel, ${displayValue.country.displayName}, ${displayValue.country.callingCode}"
                     },
-                intent = LumenButtonIntent.Secondary,
-                enabled = pickerEnabled
+                horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("${displayValue.country.flag} ${displayValue.country.callingCode}")
+                LumenCountryFlag(displayValue.country.regionCode, contentDescription = null)
+                Text(displayValue.country.callingCode)
+                LumenIcon(name = LumenIconName.ChevronDown, contentDescription = null, modifier = Modifier.size(12.dp))
             }
+            Box(Modifier.width(1.dp).heightIn(min = 56.dp).background(colors.line))
             OutlinedTextField(
                 value = displayValue.nationalNumber,
                 onValueChange = { input ->
@@ -290,10 +337,12 @@ fun LumenPhoneInput(
                 },
                 modifier = Modifier
                     .weight(1f)
+                    .onFocusChanged { numberFocused = it.isFocused }
                     .semantics {
                         if (effectiveError != null) error(effectiveError)
                     },
                 enabled = enabled,
+                readOnly = readOnly,
                 isError = effectiveError != null,
                 singleLine = true,
                 label = { Text(numberLabel) },
@@ -305,9 +354,10 @@ fun LumenPhoneInput(
                     disabledContainerColor = colors.surface,
                     focusedTextColor = colors.ink,
                     unfocusedTextColor = colors.ink,
-                    focusedBorderColor = colors.brand,
-                    unfocusedBorderColor = colors.line,
-                    errorBorderColor = colors.danger,
+                    focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+                    unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+                    disabledBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+                    errorBorderColor = androidx.compose.ui.graphics.Color.Transparent,
                     cursorColor = colors.brand
                 )
             )
@@ -356,7 +406,10 @@ fun LumenPhoneInput(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(country.pickerLabel, style = MaterialTheme.typography.bodyLarge)
+                        Row(horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm), verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                            LumenCountryFlag(country.regionCode, contentDescription = null)
+                            Text("${country.displayName} (${country.callingCode})", style = MaterialTheme.typography.bodyLarge)
+                        }
                         if (isSelected) {
                             LumenIcon(
                                 name = LumenIconName.Check,

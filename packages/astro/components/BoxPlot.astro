@@ -1,0 +1,77 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { createLumenBoxPlotGeometry, getLumenChartToneClassName, type LumenBoxPlotDatum, type LumenBoxPlotOptions, type LumenBoxPlotStatisticLabels, type LumenChartLabels, resolveLumenChartLabels } from '@santi020k/lumen-core'
+
+import Chart from './Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'>, LumenBoxPlotOptions {
+  data: readonly LumenBoxPlotDatum[]
+  className?: string
+  heading?: string
+  description?: string
+  caption?: string
+  presentation?: 'bare' | 'default'
+  summary?: string
+  formatValue?: (value: number) => string
+  labels?: Partial<LumenChartLabels>
+  statisticLabels?: Partial<LumenBoxPlotStatisticLabels>
+  showTable?: boolean
+}
+
+const { data, domain, formatValue = String, labels, statisticLabels, showTable = true, summary, class: classProp, className, ...props } = Astro.props
+const text = resolveLumenChartLabels(labels)
+const stats = { min: 'Lower whisker', q1: 'First quartile', median: 'Median', q3: 'Third quartile', max: 'Upper whisker', outliers: 'Outliers', ...statisticLabels }
+const columns = ['min', 'q1', 'median', 'q3', 'max'] as const
+const model = createLumenBoxPlotGeometry(data, { domain })
+const format = (value: number | null) => value === null ? text.notAvailable : formatValue(value)
+const fallback = model.valid ? text.empty : text.invalidData
+
+const factual = !model.valid || model.rows.length === 0 ?
+fallback :
+model.rows.map(row => (
+  `${row.label}. ${columns.map(column => `${stats[column]}: ${format(row[column])}`).join('. ')}. ${stats.outliers}: ${(row.outliers ?? []).map(formatValue).join(', ') || '—'}.`
+)).join(' ')
+
+---
+<Chart {...props} class:list={['ui-box-plot', classProp, className]} summary={summary ?? factual}>
+  {!model.valid || model.rows.length === 0 ?
+<p class="ui-chart__empty" role="status">{model.valid ? text.empty : text.invalidData}</p> :
+(
+<>
+    <ul class="ui-box-plot__rows">{model.rows.map((row, index) => (
+<li class={getLumenChartToneClassName(row.tone, index)}><div class="
+  ui-box-plot__label
+"
+                                                        ><span>{row.label}</span><span>{stats.median}: <strong>{format(row.median)}</strong></span></div><div
+class="ui-box-plot__track"
+aria-hidden="true"
+                                                                                                                                                         >
+      {row.minPosition !== null && row.maxPosition !== null && (
+<><span
+class="ui-box-plot__whisker"
+style={{ left: `${row.minPosition * 100}%`, width: `${(row.maxPosition - row.minPosition) * 100}%` }}
+  /><span
+class="ui-box-plot__cap"
+style={{ left: `${row.minPosition * 100}%` }}
+    /><span
+class="ui-box-plot__cap"
+style={{ left: `${row.maxPosition * 100}%` }}
+      /></>
+)}
+      {row.q1Position !== null && row.q3Position !== null && (
+<span
+class="ui-box-plot__box"
+style={{ left: `${row.q1Position * 100}%`, width: `${(row.q3Position - row.q1Position) * 100}%` }}
+/>
+)}
+      {row.medianPosition !== null && <span class="ui-box-plot__median" style={{ left: `${row.medianPosition * 100}%` }} />}
+      {row.outlierPositions.map(position => <span class="ui-box-plot__outlier" style={{ left: `${position * 100}%` }} />)}
+    </div></li>
+))}</ul>
+    <div class="ui-bullet-chart__ticks" aria-hidden="true">{model.ticks.map(tick => <span>{formatValue(tick)}</span>)}</div>
+    {!showTable && <ul class="ui-sr-only">{model.rows.map(row => <li>{row.label}. {columns.map(column => `${stats[column]}: ${format(row[column])}`).join('. ')}. {stats.outliers}: {(row.outliers ?? []).map(formatValue).join(', ') || '—'}.</li>)}</ul>}
+    {showTable && <details class="ui-chart__data"><summary>{text.viewData}</summary><div role="group" tabindex="0" aria-label={text.chartData}><table><thead><tr><th scope="col">{text.category}</th>{columns.map(column => <th scope="col">{stats[column]}</th>)}<th scope="col">{stats.outliers}</th></tr></thead><tbody>{model.rows.map(row => <tr><th scope="row">{row.label}</th>{columns.map(column => <td>{format(row[column])}</td>)}<td>{(row.outliers ?? []).map(formatValue).join(', ') || '—'}</td></tr>)}</tbody></table></div></details>}
+  </>
+)}
+</Chart>

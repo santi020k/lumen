@@ -39,6 +39,8 @@ import {
 } from './shared-recipes.js'
 import { useLumenTheme } from './theme-context.js'
 
+const resolveLumenBorderWidth = (theme: ReturnType<typeof useLumenTheme>): number => theme.appearance?.borderWidth ?? 1
+
 export interface LumenCardProps extends Omit<PressableProps, 'children'> {
   children: ReactNode
   padding?: LumenSurfacePadding
@@ -70,7 +72,7 @@ export const LumenCard = ({
     backgroundColor: colors.backgroundColor,
     borderColor: colors.borderColor,
     borderRadius: resolveLumenSurfaceRadius(theme, radius),
-    borderWidth: 1,
+    borderWidth: resolveLumenBorderWidth(theme),
     gap: theme.spacing.lg,
     padding: resolveLumenSurfacePadding(theme, padding)
   }

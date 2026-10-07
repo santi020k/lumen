@@ -1,5 +1,217 @@
 # @santi020k/lumen-mcp
 
+## 4.0.0
+
+- Animate bar geometry and filled line-chart areas inside ChartMotion using stable decorative identities, while keeping accessible chart data immediate.
+
+- Add mouse and pen drag panning and extend WorldMap zoom to 800%. Render the selection outline above all country fills with rounded joins so neighboring regions cannot clip it or produce spikes at high zoom.
+
+- Rebuild DeviceFrame hardware with tapered laptop decks, curved desktop stands, rounded phone glass, separate side rails and controls, and tablet home recesses. Support white, black, and custom hex finishes through the color prop or attribute while preserving screen content and iframe viewports.
+
+- Add separate MacBook Air and iPad Pro device presets with a tapered deck and even tablet bezels, and refine MacBook Pro hardware with a display notch and full front edge. Improve DeviceFrame documentation with individual device slides, Lumen content, finish controls, and copyable image, HTML, and iframe examples.
+
+- Correct the bundled component runtime-event references for Tabs, Transfer, Cascader, TreeSelect, ThemeToggle, and ThemeBuilder so agents receive the same event ownership as the documentation.
+
+- Add accessible WorldMap zoom in, zoom out, and reset controls across web adapters, with center-preserving scaling, native viewport scrolling, bounded zoom, and localized control labels. Split the dotted and solid documentation examples into independent framework code panels using Lumen semantic colors.
+
+- Add cursor-centered modified-wheel zoom and fitting to highlighted countries, with an optional regional initial view and localized fit controls. Organize npm packages by purpose and add dedicated WorldMap navigation and destination guides with separate framework examples.
+
+- Make the React command-center recipe filter results with local state, show an empty search result, and support arrow keys, Home, End, and Escape without an Astro runtime.
+
+### Minor Changes
+
+- Add controlled media viewport, thumbnail and filmstrip primitives, persistent comparison modes, and installable Studio workspace, adjustment and processing recipes. Keep media services and export host-owned. Include interactive qualification examples and native adapter contracts.
+
+- Add WorldMap for Astro, React, and Web Components with dotted and solid styles, highlighted countries, labeled markers, country selection, theme customization, and reduced motion. Ship public-domain country geometry behind an explicit core subpath, with no runtime requests or new dependencies.
+
+- Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
+  slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
+
+### Patch Changes
+
+- Refine DeviceFrame with MacBook Pro, iMac, and Pixel presets, minimalist matte frames, camera details, side buttons, and simple bases. Reserve hardware space for live HTML and iframe content, and let phone images fill the glass. Refresh the interactive gallery and retain all generic device presets.
+
+
+- Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
+  Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
+  review signals, semantic theme diagnostics, and installable React form and operational-record recipes.
+
+- Add an optional search kind filter so agents can retrieve only components, native components, recipes, tokens or rules before applying the result limit. Existing searches retain their default behavior.
+
+### Minor Changes
+
+- Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
+  semantic chart colors, localized formatting, responsive layouts, and accessible exact data.
+  Calendar heatmaps use explicit Gregorian date-only ranges; funnels preserve supplied stage order;
+  box plots accept precomputed quartiles, whiskers, and outliers without performing application statistics.
+
+- Add canonical Default, Studio and Glass appearance presets, scoped web styling and ThemeBuilder radius, spacing and border customization. Native adapters expose preset palettes and explicit surface material with opaque fallbacks. Swift and Compose consumers must rebuild for the updated theme and surface signatures; see the appearance presets guide.
+
+- Add Compose TopAppBar, SwipeActions, MultiSelect, RangeSlider, and AdaptiveListDetailScaffold.
+  Keep selection, navigation, persistence, and destructive operations application-owned; provide native
+  Material behavior, localized accessibility labels, disabled states, and Android reference examples.
+
+- Refine v4 reading rhythm and responsive page gutters, allow interactive Card content to overflow,
+  and wrap long actions in wrapping Stacks. Move media clipping into AspectRatio when upgrading.
+  Container gutters now grow from 16px to 32px; override --ui-container-gutter to preserve fixed
+  product gutters. Prose and Typography trim their outer child margins and separate headings from
+  preceding paragraphs. Add four installable content-flow recipes for all web adapters and return
+  complete framework examples through MCP recipe discovery.
+
+  Elements Stack now honors align, justify, and wrap attributes, including boolean-presence wrap,
+  so installed compositions wrap long actions consistently across the web adapters.
+  Include CLI starter templates in the published umbrella package and verify all twelve new
+  compositions install from a packed consumer, rather than only from the repository checkout.
+
+- Prepare the v4 content-flow contract: canonical gap sizes, semantic related/group/section gaps,
+  Card density and parent-owned part spacing, wrapping footer actions, and generated spacing tokens
+  available through CSS and MCP. Explicit md/lg/xl layout gaps now mean 12/16/24px; migrate old
+  16/24/32px layouts to group/xl/2xl. Default Stack/Grid spacing remains 16px. Comfortable Card
+  insets become 24px, and direct child margins no longer stack with layout gaps.
+
+- Add complete page-header and section-header recipes for Astro, React and Elements with localized
+  navigation and action labels, optional metadata, heading hierarchy, and wrapping actions.
+
+  Honor a caller-provided accessible navigation label in Astro Breadcrumb.
+
+- Add Android Compose TimeField, Autocomplete, NumberField, and PullToRefresh contracts and discovery.
+  Time selection confirms drafts; autocomplete exposes host-owned results and recovery states;
+  numeric entry preserves localized drafts with exact decimal steps; refresh remains host-controlled
+  and includes an accessibility action. These are additions to the unpublished Lumen 4 candidate.
+
+- Add Compose PasswordField, InputOTP, Tooltip, and ImageComparison with native autofill hints,
+  controlled code normalization, Material tooltip behavior, and accessible image adjustment.
+  Include Android playground examples, localized documentation, and reviewed public API baselines.
+
+- Add Histogram and WaterfallChart to the web catalog with explicit data contracts, shared geometry,
+  validation, accessible summaries, and source tables. Add continuous numeric and time axes,
+  reference annotations, optional keyboard and pointer inspection, interactive legends, and cursor
+  synchronization to LineChart. React supports controlled cursor selection.
+
+  Heatmaps now label axes, display a sequential or diverging color legend, and mark missing cells
+  distinctly from measured zero. Duplicate coordinates use the first observation consistently.
+  Existing category line spacing remains the default. Native component coverage is unchanged.
+
+### Patch Changes
+
+- Reject malformed Astro action errors and inherited icon names, preserve plain markup prose without syntax highlighting, and normalize form-error records whose field is named `fields`, exclude blank numeric chart coordinates, preserve literal slash-star text during markup migrations, and detect existing recipe conflicts before writing files.
+
+  Validate externally associated native form controls on submission in Astro and Web Components.
+
+  Keep timed toasts paused while hovered or focused, without subtracting elapsed time twice.
+
+  Preserve localized password-toggle labels, accessible avatar fallback names and tree levels,
+  correct listbox ownership, tolerate non-finite animation precision, and apply the final batched
+  scroll-reveal visibility state.
+
+  Restrict schedule drops to their actively dragged event, clear interrupted resizing state, and
+  generate unique Astro runtime IDs without depending on `crypto.randomUUID`.
+
+  Reject inherited search-alias dictionary properties instead of crashing MCP search.
+
+- Add opt-in Astro chart drilldown with matching pointer and native keyboard actions, localized
+  action labels, and validated data identity events. Keep actions available when tables are hidden.
+
+- Add BulletChart across Astro, React, Web Components, React Native, SwiftUI, and Compose.
+  Compare actual values with targets and labeled qualitative ranges using an honest zero-inclusive
+  domain. Preserve missing measurements, localized exact data, responsive typography, and native
+  accessibility. Existing chart APIs remain compatible.
+
+- Correct the bundled React editor and theme builder examples to use accessible controls and public
+  Lumen form primitives, keeping the MCP reference aligned with the documentation.
+
+- Add opt-in datum actions to all seven Elements data charts. Share validated pointer and native
+  button payloads, localize action labels, retain focus across data updates, and clean up controllers
+  on disconnect. Astro's runtime leaves Elements-owned chart hosts to their adapter.
+
+- Repair chart data disclosures with full-width controls, bounded keyboard scrolling, and sticky
+  headers across the web adapters. Add WaterfallChart and Histogram to React Native, SwiftUI, and
+  Compose, with matching invalid-input behavior, exact values, and native expandable data lists.
+
+- Bring labeled sequential and diverging heatmaps to React Native, SwiftUI, and Compose with
+  numeric legends, explicit missing-value markers, responsive axes, and consistent exact-value
+  disclosures. Keep duplicate coordinates deterministic and numeric scaling finite at extreme values.
+
+  Swift and Compose consumers should rebuild for the defaulted heatmap options added in v4.
+
+- Add callback-driven datum actions to all seven React data charts, with localized native buttons
+  and matching pointer payloads. Preserve focused action identity across value updates and keep
+  Astro's runtime from enhancing React-owned chart roots on mixed-framework pages.
+
+- Clarify border ownership for composed surfaces, including disabling default image rounding inside
+  rounded frames and preserving focus indicators when clipping artwork.
+
+- Polish shared Select keyboard activation, accessible popup names, and focus-leave dismissal.
+  Use enhanced Lumen selectors for documentation theme and scope controls, retaining progressive
+  enhancement and resilient preference handling.
+
+  Refresh compatible dependencies and remove unused MDX support, the duplicate root Next
+  declaration, the monolithic MCP SDK, and obsolete dependency overrides. Migrate MCP to the
+  split v2 SDK with unchanged stdio, HTTP, and Worker wire contracts. Programmatic consumers
+  must use v2 SDK transports and types with the returned server object; see the v4 migration guide.
+
+  Regenerate the shared Lucide catalog with four additional icon names and updated nut artwork.
+  Swift exhaustive icon switches must handle the new cases or provide an unknown default.
+
+  Batch React ImageComparison form resets into one scheduled update and cancel pending work
+  during cleanup, preserving controlled values and canceled resets.
+
+- Add LollipopChart and DumbbellChart across Astro, React, Elements, React Native, SwiftUI, and Compose.
+  The charts preserve missing values, share a zero-inclusive domain, and provide readable exact data.
+  Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
+
+- Fit line, bar, scatter, range, and combo chart geometry to the available container width. Keep every plotted value visible on phones with readable axis text and a compact plot height, and resize when the container changes.
+
+  Fit web bar charts to narrow cards across Astro, React, and Web Components, reserving more room for horizontal category labels and spacing value-axis labels to avoid overlap.
+
+### Migration, Direction and Data Collections
+
+- Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
+  explicit v3 layout gaps, report product and native review boundaries, and prevent repeated v4 applies
+  from rewriting spacing twice.
+
+  Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
+  VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
+  keys and a shared DOM controller for Astro and Elements.
+
+### Appearance Presets
+
+- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
+  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
+  Swift and Compose consumers must rebuild for the updated initializer signatures.
+
+### AI Workflow Improvements
+
+- Add version-aware AI workflows with exact installed-package compatibility checks, v4 migration discovery, concrete MCP usage schemas, and English/Spanish search. Preview known static embedded SDK import migrations with `lumen migrate v4`; preserve examples and report dependency and application review decisions before applying changes.
+
+  Package portable plugin 1.1.0 with shared Codex/Claude manifests, a pinned v4 catalog, build/review/migration skills, and an optional read-only Claude reviewer. Add actual authenticated agent benchmarks with independently checked types, browser interactions, accessibility, migration output, and version-mismatch review.
+
+### Major Changes
+
+- Finalize web form visual sizing with visualSize/visual-size on Select, PhoneInput and Segmented, preserving native numeric size. Add conservative literal migration previews and a complete machine-readable v4 breaking inventory. Fix controlled Segmented ownership, Select accessibility/callback/reset behavior, Elements scalar reconnection and reset defaults, and multiple-select submission. Add selective React component and Elements VirtualList imports with measured bundle and packed-consumer checks. Existing root imports remain supported.
+
+- Prepare the coordinated Lumen 4 family from twenty real consumer audits.
+
+  - Make chart axes readable, preserve complete detail labels, center single observations, use
+    deterministic duplicate handling, and expose formatted native axes and compact plot layouts.
+  - Add controlled date-range drafting with strict calendar bounds, localized labels, and safe
+    disabled/read-only behavior. Keep form labels and keyboard focus attached to the active control.
+  - Keep server-paginated tables in supplied order with controlled manual sorting, and make dialog
+    dismissal and opener restoration explicit for pending and nested workflows.
+  - Preserve native hidden semantics, loading-button dimensions, and disabled slotted activation.
+  - Give code-copy actions localized success and failure feedback, preserve normal navigation Tab
+    order, and improve readable prose and code-theme defaults.
+  - Add ImageComparison with a fixed image frame, native range control, RTL support, and matching
+    Astro, React, and Web Component contracts.
+  - Improve native slider announcements, long text layout, and contextual symbol selection.
+  - Refresh usage examples, migration guidance, machine-readable contracts, and the public consumer
+    showcase. Token, icon, and form-integration packages join the coordinated major family.
+
+  Migration: use unique stable chart X values, rebuild native consumers for updated initializer
+  contracts, and review custom button selectors against the content wrapper. Loading actions now
+  prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
+  application data migration is performed, and this candidate is not publication authorization.
+
 ## 3.0.1
 
 ### Patch Changes

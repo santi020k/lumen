@@ -211,7 +211,7 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(classesOf(connect('lumen-date-picker', { glass: 'strong' })))
       .toEqual(['ui-date-picker', 'ui-date-picker-field--glass', 'ui-glass-strong', 'ui-input'].sort())
     expect(classesOf(connect('lumen-select', { glass: 'subtle' })))
-      .toEqual(['ui-glass-subtle', 'ui-select', 'ui-select-field--glass'].sort())
+      .toEqual(['ui-glass-subtle', 'ui-select-field', 'ui-select-field--glass'].sort())
   })
 
   test('maps visual size independently from native size', () => {
@@ -221,8 +221,10 @@ describe('@santi020k/lumen-elements primitives', () => {
       .toEqual(['ui-select', 'ui-select--lg'].sort())
     expect(classesOf(connect('lumen-input', { 'visual-size': 'sm' })))
       .toEqual(['ui-input', 'ui-input--sm'].sort())
-    expect(classesOf(connect('lumen-select', { size: 'lg' })))
-      .toEqual(['ui-select', 'ui-select--lg'].sort())
+    const select = connect('lumen-select', { 'visual-size': 'lg' })
+
+    expect(classesOf(select)).toEqual(['ui-select-field'])
+    expect(select.querySelector('[data-ui-select-trigger]')?.classList.contains('ui-select--lg')).toBe(true)
   })
 
   test('reapplies modifier classes when attributes change', () => {
@@ -247,6 +249,18 @@ describe('@santi020k/lumen-elements primitives', () => {
     stat.setAttribute('variant', 'glass')
 
     expect(classesOf(stat)).toEqual(['ui-stat', 'ui-stat--glass'].sort())
+  })
+
+  test('positions sparkline endpoints outside the stretched SVG and honors visibility', () => {
+    const sparkline = connect('lumen-sparkline', { values: '4,8' })
+    const endpoint = sparkline.querySelector('.ui-sparkline__endpoint')
+    expect(endpoint?.tagName).toBe('SPAN')
+    expect(endpoint?.getAttribute('style')).toBe('left:97.5%;top:7.5%')
+    expect(endpoint?.closest('svg')).toBeNull()
+    sparkline.setAttribute('show-endpoint', 'false')
+    expect(sparkline.querySelector('.ui-sparkline__endpoint')).toBeNull()
+    sparkline.setAttribute('values', '[]')
+    expect(sparkline.querySelector('.ui-sparkline__endpoint')).toBeNull()
   })
 
   test('renders chart elements from serializable data with accessible tables', () => {
@@ -324,10 +338,12 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(sparkline.getAttribute('role')).toBe('img')
     expect(sparkline.getAttribute('aria-label')).toBe('Downloads increased from 4 to 8')
     expect(sparkline.querySelector('.ui-sparkline__line')).not.toBeNull()
+
     expect(scatter.querySelectorAll('.ui-scatter-chart__marks circle')).toHaveLength(2)
     expect(scatter.querySelector('details table')?.textContent).toContain('Size')
     expect(scatter.querySelector('details table')?.textContent).toContain('20')
     expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(1)
+    expect(heatmap.querySelectorAll('.ui-heatmap__missing')).toHaveLength(0)
     expect(range.querySelector('.ui-range-chart__area')).not.toBeNull()
     expect(combo.querySelector('.ui-bar-chart__marks rect')).not.toBeNull()
     expect(combo.querySelector('.ui-line-chart__line')).not.toBeNull()
@@ -367,39 +383,89 @@ describe('@santi020k/lumen-elements primitives', () => {
     }
   })
 
-  test('renders programmatic combo series and aligns line marks with bar centers', () => {
-    const data = [
-      { x: 'Mon', y: 4 },
-      { x: 'Tue', y: 8 },
-      { x: 'Wed', y: 6 }
-    ]
+  test('centers singleton labels and separates concise dates from full chart details', () => {
+    const chart = connect('lumen-line-chart', {
+      series: JSON.stringify([{ data: [{ x: '2026-09-01', xLabel: 'Sep 1', y: 4 }], id: 'daily', label: 'Daily' }])
+    })
 
-    const series: readonly LumenComboSeries[] = [
-      { data, id: 'bars', label: 'Bars', mark: 'bar' },
-      { data, id: 'line', label: 'Line', mark: 'line' }
-    ]
+    expect(Reflect.set(chart, 'categoryFormatter', () => 'September 1, 2026')).toBe(true)
 
-    const combo = connect('lumen-combo-chart')
+    const label = requiredElement(chart.querySelector('.ui-chart__axis-labels text'))
+    const mark = requiredElement(chart.querySelector('circle'))
 
-    expect(Reflect.set(combo, 'series', series)).toBe(true)
-
-    const categoryCenters = [...combo.querySelectorAll('.ui-bar-chart__marks rect')]
-      .map(rectangle => Number(
-        (
-          Number(rectangle.getAttribute('x')) +
-          Number(rectangle.getAttribute('width')) / 2
-        ).toFixed(3)
-      ))
-
-    const linePath =
-      combo.querySelector('.ui-line-chart__line')?.getAttribute('d') ?? ''
-
-    const lineXCoordinates = [...linePath.matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
-      .map(match => Number(match[1]))
-
-    expect(categoryCenters).toHaveLength(3)
-    expect(lineXCoordinates).toEqual(categoryCenters)
+    expect(label.textContent).toBe('Sep 1')
+    expect(label.getAttribute('x')).toBe(mark.getAttribute('cx'))
+    expect(mark.querySelector('title')?.textContent).toBe('September 1, 2026 · Daily: 4')
+    expect(chart.querySelector('tbody th')?.textContent).toBe('September 1, 2026')
+    expect(chart.querySelector('.ui-chart__plot')?.getAttribute('tabindex')).toBe('0')
   })
+
+  test('keeps duplicate category marks and fallback values consistent', () => {
+    for (const tag of ['lumen-line-chart', 'lumen-bar-chart']) {
+      const chart = connect(tag, {
+        series: JSON.stringify([{ data: [{ x: 'A', y: 100 }, { x: 'A', y: 160 }, { x: 'B', y: 220 }], id: 'daily', label: 'Daily' }])
+      })
+
+      expect(chart.querySelector('[data-ui-chart-summary]')?.textContent).toBe('1 series, 2 points. Values range from 160 to 220.')
+      expect(chart.querySelector('tbody td')?.textContent).toBe('160')
+      expect(chart.querySelector('svg title')?.textContent).toBe('A · Daily: 160')
+    }
+  })
+
+  test('formats bar axes and retains repeated display labels with distinct keys', () => {
+    const chart = connect('lumen-bar-chart', {
+      series: JSON.stringify([{ data: [{ x: 'a', y: -3_000_000 }, { x: 'b', y: 4_000_000 }], id: 'money', label: 'Money' }])
+    })
+
+    expect(Reflect.set(chart, 'categoryFormatter', (value: string | number) => `Category ${value}`)).toBe(true)
+    expect(Reflect.set(chart, 'valueFormatter', (value: number) => `$ ${value}`)).toBe(true)
+    expect(chart.querySelector('.ui-chart__axis-labels text')?.textContent).toBe('Category a')
+    expect(chart.querySelector('.ui-chart__grid text')?.textContent).toContain('$ ')
+    expect(chart.querySelector('svg title')?.textContent).toBe('Category a · Money: $ -3000000')
+
+    expect(Reflect.set(chart, 'series', [{ data: [{ x: 'a', xLabel: 'Same', y: 4 }, { x: 'b', xLabel: 'Same', y: 8 }], id: 'daily', label: 'Daily' }])).toBe(true)
+    expect([...chart.querySelectorAll('.ui-chart__axis-labels text')].map(label => label.textContent)).toEqual(['Same', 'Same'])
+    expect(chart.querySelectorAll('rect')).toHaveLength(2)
+  })
+
+  test.each([[0, 5, 10], [-10, -5, 0], [-5, 0, 5], [7]].map(values => ({ values })))(
+    'aligns combo line marks with bar centers and value endpoints for $values', ({ values }) => {
+      const data = values.map((y, x) => ({ x, y }))
+
+      const series: readonly LumenComboSeries[] = [
+        { data, id: 'bars', label: 'Bars', mark: 'bar' },
+        { data, id: 'line', label: 'Line', mark: 'line' }
+      ]
+
+      const combo = connect('lumen-combo-chart')
+
+      expect(Reflect.set(combo, 'series', series)).toBe(true)
+
+      const rectangles = [...combo.querySelectorAll('.ui-bar-chart__marks rect')]
+      const categoryCenters = rectangles
+        .map(rectangle => Number(
+          (
+            Number(rectangle.getAttribute('x')) +
+            Number(rectangle.getAttribute('width')) / 2
+          ).toFixed(3)
+        ))
+      const valueEndpoints = rectangles.map((rectangle, index) => Number((
+        Number(rectangle.getAttribute('y')) + ((values[index] ?? 0) < 0 ? Number(rectangle.getAttribute('height')) : 0)
+      ).toFixed(3)))
+
+      const linePath =
+        combo.querySelector('.ui-line-chart__line')?.getAttribute('d') ?? ''
+
+      const lineXCoordinates = [...linePath.matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
+        .map(match => Number(match[1]))
+      const lineYCoordinates = [...linePath.matchAll(/[LM]\s+-?\d+(?:\.\d+)?\s+(-?\d+(?:\.\d+)?)/gu)]
+        .map(match => Number(match[1]))
+
+      expect(categoryCenters).toHaveLength(values.length)
+      expect(lineXCoordinates).toEqual(categoryCenters)
+      expect(lineYCoordinates).toEqual(valueEndpoints)
+    }
+  )
 
   test('keeps programmatic chart disclosures aligned with finite rendered values', () => {
     const valueFormatter = vi.fn((value: number) => `${value} units`)
@@ -456,7 +522,29 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(combo.querySelector('.ui-line-chart__line')).toBeNull()
   })
 
-  test('omits unavailable heatmap cells while preserving semantic table gaps', () => {
+  test.each([null, {}, { x: 'Bad', y: 'Morning', value: '8' }, { x: 'Bad', y: 'Morning', value: 2, label: 4 }, { x: 'Bad', y: 'Morning', value: 2, tone: 'invalid' }])('rejects a corrupted heatmap collection atomically: %j', malformed => {
+    const heatmap = connect('lumen-heatmap', {
+      data: JSON.stringify([{ value: 8, x: 'Mon', y: 'Morning' }, malformed])
+    })
+
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(0)
+    expect(heatmap.querySelector('details table tbody tr')).toBeNull()
+    expect(heatmap.querySelector('.ui-chart__empty')?.textContent).toBe('No chart data available.')
+
+    heatmap.setAttribute('data', JSON.stringify([{ value: 8, x: 'Mon', y: 'Morning', tone: 'brand' }]))
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(1)
+  })
+
+  test('retains nonfinite JSON heatmap measurements as missing cells alongside finite zero', () => {
+    const heatmap = connect('lumen-heatmap', { data: '[{"x":"A","y":"Row","value":1e309},{"x":"B","y":"Row","value":0}]' })
+
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(2)
+    expect(heatmap.querySelectorAll('.ui-heatmap__missing')).toHaveLength(1)
+    expect(heatmap.querySelector('details table')?.textContent).toContain('Not available')
+    expect(heatmap.querySelectorAll('details table tbody tr')[1]?.textContent).toContain('0')
+  })
+
+  test('marks unavailable heatmap cells while preserving semantic table gaps', () => {
     const data = JSON.stringify([
       { value: 8, x: 'Mon', y: 'Morning' },
       { value: null, x: 'Tue', y: 'Morning' }
@@ -464,7 +552,8 @@ describe('@santi020k/lumen-elements primitives', () => {
 
     const heatmap = connect('lumen-heatmap', { data })
 
-    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(1)
+    expect(heatmap.querySelectorAll('.ui-heatmap__cells rect')).toHaveLength(2)
+    expect(heatmap.querySelectorAll('.ui-heatmap__missing')).toHaveLength(1)
     expect(heatmap.querySelector('details table')?.textContent).toContain('Not available')
 
     heatmap.setAttribute('show-table', 'false')
@@ -500,4 +589,17 @@ describe('@santi020k/lumen-elements primitives', () => {
 
     expect(range.querySelector('.ui-chart__data')).toBeNull()
   })
+})
+
+test('bar and area motion identities follow stable data across rerenders', () => {
+  for (const tag of ['lumen-bar-chart', 'lumen-line-chart']) {
+    const chart = connect(tag, { area: '', series: JSON.stringify([{ id: 'tasks', label: 'Tasks', data: [{ id: 'stable', x: 'Monday', y: 10 }] }]) })
+    const selector = tag === 'lumen-bar-chart' ? '.ui-bar-chart__marks rect' : '.ui-line-chart__area'
+    const key = requiredElement(chart.querySelector(selector)).getAttribute('data-ui-chart-motion-key')
+
+    expect(key).toBeTruthy()
+    chart.setAttribute('series', JSON.stringify([{ id: 'tasks', label: 'Tasks', data: [{ id: 'stable', x: 'Tuesday', y: 30 }] }]))
+    expect(requiredElement(chart.querySelector(selector)).getAttribute('data-ui-chart-motion-key')).toBe(key)
+    expect(chart.textContent).toContain('30')
+  }
 })

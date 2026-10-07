@@ -1,0 +1,61 @@
+---
+import { Collapsible, DumbbellChart, Link } from '@santi020k/lumen-astro'
+import type { LumenComparisonDatum } from '@santi020k/lumen-core'
+
+import CodeBlock from '../../../../components/CodeBlock.astro'
+import ChartGuideLayout from '../../../../layouts/ChartGuideLayout.astro'
+
+const coverage = [
+  { id: 'design', label: 'Design', reference: 62, value: 88 },
+  { id: 'support', label: 'Support', reference: 81, value: 74 }
+] satisfies readonly LumenComparisonDatum[]
+
+const exampleCode = `<DumbbellChart
+  aria-label="Survey response coverage by team in June and July 2026"
+  heading="Every comparison has a name."
+  description="Responses per 100 invited · June → July 2026"
+  summary="Design increased from 62 to 88 responses per 100 invited. Support decreased from 81 to 74."
+  data={[
+    { id: 'design', label: 'Design', reference: 62, value: 88 },
+    { id: 'support', label: 'Support', reference: 81, value: 74 }
+  ]}
+  domain={{ min: 0, max: 100 }}
+  referenceLabel="June"
+  valueLabel="July"
+  showTable
+/>`
+---
+<ChartGuideLayout title="Accessible chart design" description="Make chart labels, exact values, keyboard interaction, and themes readable for everyone.">
+  <section id="chart-accessibility" aria-labelledby="chart-accessibility-title">
+    <header class="chart-guide-heading">
+      <span class="chart-guide-step">05 / Refine</span>
+      <h2 id="chart-accessibility-title">Readable beyond the plot.</h2>
+    </header>
+    <DumbbellChart
+      aria-label="Survey response coverage by team in June and July 2026"
+      heading="Every comparison has a name."
+      description="Responses per 100 invited · June → July 2026"
+      summary="Design increased from 62 to 88 responses per 100 invited. Support decreased from 81 to 74."
+      caption="Illustrative data. Row labels and printed values explain each change without depending on color."
+      data={coverage}
+      domain={{ min: 0, max: 100 }}
+      referenceLabel="June"
+      valueLabel="July"
+      showTable
+    />
+    <p><strong>Try the data alternative.</strong> Focus <strong>View chart data</strong> above and press Enter or Space. The table repeats both months with row and column headings; the visible labels also keep the comparison readable when colors are difficult to distinguish.</p>
+    <Collapsible class="chart-accessibility-code">
+      <summary>View the labels, summary, and exact-data options</summary>
+      <CodeBlock code={exampleCode} lang="astro" title="Astro / React component props" />
+    </Collapsible>
+    <ul class="chart-guide-list">
+      <li><strong>Name the comparison.</strong> Supply an <code>aria-label</code>, a visible <code>heading</code>, and a <code>description</code> with the unit and period. Add a factual <code>summary</code> when readers need a written takeaway.</li>
+      <li><strong>Keep exact values reachable.</strong> Leave <code>showTable</code> enabled. The data disclosure opens with Enter or Space. Only hide it when an equivalent accessible data view is already provided nearby.</li>
+      <li><strong>Localize the whole experience.</strong> Use <code>labels</code> for messages and data-table headings, and <code>valueLabel</code>, <code>referenceLabel</code>, or <code>targetLabel</code> for the measure names. Elements uses label attributes such as <code>not-available-label</code> and <code>view-data-label</code>.</li>
+      <li><strong>Use color deliberately.</strong> Categorical tones such as <code>series-1</code> work across themes. Reserve <code>success</code>, <code>warning</code>, and <code>danger</code> for meaningful status. Pair color with labels or mark shape.</li>
+      <li><strong>Match interaction to the chart.</strong> Interactive LineChart supports pointer, touch, arrow keys, Home, End, and Escape. Lollipop, dumbbell, and bullet charts expose values directly and through the disclosure; they do not use the line-chart cursor.</li>
+      <li><strong>Test the context.</strong> Check narrow cards, long labels, dark mode, keyboard navigation, enlarged text, missing measurements, and your largest realistic dataset. Split dense comparisons into focused groups instead of shrinking labels.</li>
+    </ul>
+    <p>Use <code>presentation="bare"</code> when a surrounding Lumen <Link href="/docs/components/card">Card</Link> already owns the surface. Keep the chart’s name and context available, and let the parent layout own spacing.</p>
+  </section>
+</ChartGuideLayout>

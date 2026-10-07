@@ -104,4 +104,8 @@ if (repositoryFiles.length > 0) {
   ])
 }
 
+if (repositoryFiles.some(file => file.startsWith('figma/') || /^tsconfig[^/]*\.json$/.test(file))) {
+  run('pnpm', ['run', 'typecheck:figma'])
+}
+
 run('pnpm', ['exec', 'cspell', '--no-must-find-files', ...files])

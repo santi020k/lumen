@@ -1,0 +1,146 @@
+---
+import '../../styles/ai-guides.css'
+
+import { Alert, Badge, ButtonLink, Code, CodeTabs, Container, Link, Prose, Stack } from '@santi020k/lumen-astro'
+
+import AiSettingsExample from '../../components/AiSettingsExample.astro'
+import astroExample from '../../components/AiSettingsExample.astro?raw'
+import reactExample from '../../components/AiSettingsReact.tsx?raw'
+import { getGuide } from '../../data/guides'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const guide = getGuide('/guides/build-ui-with-ai')
+
+const installExamples = [
+  { label: 'Astro', value: 'astro', language: 'bash', code: 'pnpm add @santi020k/lumen-astro' },
+  { label: 'React', value: 'react', language: 'bash', code: 'pnpm add @santi020k/lumen-react' }
+] as const
+
+const setupExamples = [
+  { label: 'Astro layout', value: 'astro', language: 'astro', code: `---
+import '@santi020k/lumen-astro/styles.css'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+<html lang="en">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>Preferences</title></head>
+  <body><main><h1>Account settings</h1><slot /></main><UIPrimitives /></body>
+</html>` },
+  { label: 'React entry', value: 'react', language: 'tsx', code: `import '@santi020k/lumen-react/styles.css'
+import NotificationPreferences from './NotificationPreferences'
+
+export default function App() {
+  return <main><h1>Account settings</h1><NotificationPreferences /></main>
+}` }
+] as const
+
+const prompt = `Use Lumen UI to build a notification preferences panel in this app's existing framework.
+Read the installed package version and the matching component usage before writing code.
+Use public Card parts, Stack, Field, Label, Input, Button, and Alert.
+The panel title is Notification preferences. Email address starts as ada@example.com.
+Show delivery details toggles the initially hidden text Weekly summaries arrive on Monday.
+Keep edited input when details are hidden. Save preferences validates the email and announces
+Preferences saved for <email>. Clear that message when the email changes.
+This is an in-memory demo: no network request and no saving across reloads.
+Use the existing stylesheet, visible keyboard focus, semantic spacing, and a wrapping action row.
+Verify the keyboard flow, invalid input, status announcement, and layout at 390px and 1440px.`
+---
+
+<BaseLayout
+  article={{ author: guide.author, publishedAt: guide.publishedAt }}
+  breadcrumbs={[{ href: '/', label: 'Home' }, { href: '/guides', label: 'Guides' }, { href: guide.href, label: guide.title }]}
+  description={guide.description}
+  title={`${guide.title} — Lumen UI`}
+>
+  <Container as="main" class="ai-guide" size="md">
+    <Stack gap="section">
+      <Prose>
+        <Badge variant="outline">AI-assisted development · Astro and React</Badge>
+        <h1>Build an accessible UI with your AI coding agent.</h1>
+        <p>
+          Turn a product request into a working notification panel. Give your agent Lumen components
+          and focused API guidance, then check the result yourself. Keep the framework you already use.
+        </p>
+        <p>By {guide.author} · <time datetime={guide.publishedAt}>October 4, 2026</time></p>
+      </Prose>
+      <Stack as="section" gap="group" aria-labelledby="connect-title">
+        <Prose>
+          <h2 id="connect-title">1. Connect the agent and install your adapter.</h2>
+          <p>
+            In an existing Astro or React application, install the matching package with your
+            project's package manager. The commands below use pnpm. Then install the portable
+            skill in the compatible coding tool you use.
+          </p>
+        </Prose>
+        <CodeTabs ariaLabel="Choose your framework" items={installExamples} storageKey="lumen-ai-guide-framework" />
+        <Code code="npx skills add santi020k/lumen --skill lumen-ui" copy label="Install the agent skill" language="bash" variant="block" wrap />
+        <Prose>
+          <p>
+            Follow the <Link href="/docs/mcp">MCP connection guide</Link>{' '}for structured component
+            discovery. Without MCP, your agent can read installed types and documentation.
+            Load styles once at the app boundary; Astro also mounts its progressive runtime once.
+          </p>
+        </Prose>
+        <CodeTabs ariaLabel="Set up styles and runtime" items={setupExamples} />
+      </Stack>
+      <Stack as="section" gap="group" aria-labelledby="describe-title">
+        <Prose>
+          <h2 id="describe-title">2. Describe the behavior and states.</h2>
+          <p>
+            Name the inputs, actions, and expected feedback. Explicit behavior gives you and your
+            agent a shared way to judge the result. This prompt works with either installed adapter.
+          </p>
+        </Prose>
+        <Code code={prompt} copy label="Copy this prompt into your coding agent" variant="block" wrap />
+      </Stack>
+      <Prose>
+        <h2>3. Retrieve the relevant component guidance.</h2>
+        <p>
+          Ask the agent to search for the task, read the matching framework usage, and request
+          full source only when the API and example are insufficient. Use shared spacing and
+          color roles so each new screen follows the same design language.
+        </p>
+        <p>
+          Components provide presentation and interaction contracts. Your application still owns
+          validation, persistence, authorization, and business rules.
+        </p>
+      </Prose>
+      <Stack as="section" gap="group" aria-labelledby="try-title">
+        <Prose>
+          <h2 id="try-title">4. Try the reference implementation.</h2>
+          <p>
+            Edit the email, reveal and hide the details, then save. This tested reference implements
+            the prompt with synthetic data and keeps changes in this page only.
+          </p>
+        </Prose>
+        <AiSettingsExample />
+        <CodeTabs
+          ariaLabel="Reference implementation by framework"
+          items={[
+            { label: 'Astro', value: 'astro', language: 'astro', code: astroExample.trim() },
+            { label: 'React', value: 'react', language: 'tsx', code: reactExample.trim() }
+          ]}
+        />
+      </Stack>
+      <Prose>
+        <h2>5. Verify before connecting real data.</h2>
+        <ul>
+          <li>Use Tab and Enter to operate both actions; confirm focus stays visible.</li>
+          <li>Try an empty or invalid email. The browser should prevent submission.</li>
+          <li>Hide and reopen the details. Your edited email should remain.</li>
+          <li>Save, then edit again. The previous success message should clear.</li>
+          <li>Check the status announcement with a screen reader and inspect narrow and desktop layouts.</li>
+        </ul>
+        <p>
+          For a real save operation, add pending, failure, and retry behavior around your existing
+          application API. See <Link href="/docs/forms">form integrations</Link>{' '}for the next step.
+        </p>
+      </Prose>
+      <Alert>
+        Reusing components can reduce repetitive code. Reading skills and calling tools also uses
+        AI tokens. Total usage depends on the task and model;{' '}
+        <Link href="/guides/measure-ai-ui-token-usage">compare the full workflow with our measurement method</Link>.
+      </Alert>
+      <ButtonLink href="/templates" showArrow>Explore complete application templates</ButtonLink>
+    </Stack>
+  </Container>
+</BaseLayout>

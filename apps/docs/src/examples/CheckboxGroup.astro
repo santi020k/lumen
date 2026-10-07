@@ -1,8 +1,12 @@
 ---
-import { Checkbox, CheckboxGroup } from '@santi020k/lumen-astro'
+import {
+  Checkbox,
+  CheckboxGroup,
+  Label
+} from '@santi020k/lumen-astro'
 ---
 
 <CheckboxGroup legend="Notifications">
-  <label><Checkbox name="alerts" value="product" /> Product alerts</label>
-  <label><Checkbox name="alerts" value="billing" /> Billing updates</label>
+  <Label><Checkbox name="alerts" value="product" /> Product alerts</Label>
+  <Label><Checkbox name="alerts" value="billing" /> Billing updates</Label>
 </CheckboxGroup>

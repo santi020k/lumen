@@ -25,7 +25,33 @@ const version =
     ),
   ).version;
 
-if (!["2.0.0", "3.0.0"].includes(version)) {
+const auditPackagesMode = process.argv.includes("--audit-packages");
+const lockfileArgument = readArgument("--lockfile");
+
+const publishedPackagesSource =
+  readArgument("--published-packages") ?? process.env.PUBLISHED_PACKAGES;
+
+const readPublishedPackages = (source) => {
+  const entries = JSON.parse(source);
+
+  assert.ok(Array.isArray(entries), "Changesets published-packages output must be an array");
+
+  return entries.map((entry) => {
+    assert.equal(typeof entry?.name, "string", "Every published package requires a name");
+
+    assert.equal(typeof entry.version, "string", `Published package ${entry.name} requires a version`);
+
+    return { name: entry.name, version: entry.version };
+  }).sort((left, right) => left.name.localeCompare(right.name));
+};
+
+if (!["2.0.0", "3.0.0", "4.0.0"].includes(version)) {
+  if (auditPackagesMode) {
+    process.stdout.write(`${JSON.stringify(readPublishedPackages(publishedPackagesSource || "[]"))}\n`);
+
+    process.exit(0);
+  }
+
   process.stdout.write(
     `Coordinated npm package-family publication is not required for ${version}.\n`,
   );
@@ -36,14 +62,6 @@ if (!["2.0.0", "3.0.0"].includes(version)) {
 const releaseManifestPath = resolve(
   repositoryRoot,
   readArgument("--release-manifest") ?? "registry/release-manifest.json",
-);
-
-const publishedPackagesSource =
-  readArgument("--published-packages") ?? process.env.PUBLISHED_PACKAGES;
-
-assert.ok(
-  publishedPackagesSource,
-  `Initial Lumen ${version.split(".")[0]} publication requires the Changesets published-packages output`,
 );
 
 const releaseManifest = JSON.parse(await readFile(releaseManifestPath, "utf8"));
@@ -73,30 +91,29 @@ for (const entry of expectedPackages) {
   );
 }
 
-const publishedPackages = JSON.parse(publishedPackagesSource);
+if (auditPackagesMode) {
+  process.stdout.write(`${JSON.stringify(expectedPackages)}\n`);
 
-assert.ok(
-  Array.isArray(publishedPackages),
-  "Changesets published-packages output must be an array",
-);
+  process.exit(0);
+}
 
-const actualPackages = publishedPackages
-  .map((entry) => {
-    assert.equal(
-      typeof entry?.name,
-      "string",
-      "Every published package requires a name",
-    );
+let actualPackages;
 
-    assert.equal(
-      typeof entry.version,
-      "string",
-      `Published package ${entry.name} requires a version`,
-    );
+if (lockfileArgument) {
+  const lockfile = JSON.parse(await readFile(resolve(lockfileArgument), "utf8"));
 
-    return { name: entry.name, version: entry.version };
-  })
-  .sort((left, right) => left.name.localeCompare(right.name));
+  actualPackages = expectedPackages.map((entry) => ({
+    name: entry.name,
+    version: lockfile.packages?.[`node_modules/${entry.name}`]?.version,
+  }));
+} else {
+  assert.ok(
+    publishedPackagesSource,
+    `Initial Lumen ${version.split(".")[0]} publication requires the Changesets published-packages output`,
+  );
+
+  actualPackages = readPublishedPackages(publishedPackagesSource);
+}
 
 assert.deepEqual(
   actualPackages,

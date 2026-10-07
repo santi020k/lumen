@@ -20,6 +20,8 @@ enum PlaygroundComponentCategory: String, CaseIterable, Identifiable {
 }
 
 enum PlaygroundCatalog {
+    static let lumenVersion = "4.0.0"
+
     static let categories: [(category: PlaygroundComponentCategory, names: [String])] = [
         (
             .foundations,
@@ -43,6 +45,8 @@ enum PlaygroundCatalog {
                 "Chip",
                 "Menu",
                 "Share button",
+                "Tooltip",
+                "Command",
                 "Link"
             ]
         ),
@@ -64,6 +68,19 @@ enum PlaygroundCatalog {
                 "Tabs",
                 "Picker",
                 "Slider",
+                "Range slider",
+                "Time field",
+                "Autocomplete",
+                "Number field",
+                "Password field",
+                "Input OTP",
+                "Multi select",
+                "Rating",
+                "Cascader",
+                "Color picker",
+                "Tree select",
+                "Transfer",
+                "Mentions",
                 "Shortcut recorder",
                 "Symbol picker"
             ]
@@ -80,7 +97,9 @@ enum PlaygroundCatalog {
                 "Skeleton",
                 "Empty state",
                 "Error state",
-                "Banner"
+                "Banner",
+                "Stepper",
+                "Timeline"
             ]
         ),
         (
@@ -92,6 +111,8 @@ enum PlaygroundCatalog {
                 "Bar chart",
                 "Pie chart",
                 "Scatter chart",
+                "Waterfall chart",
+                "Histogram",
                 "Heatmap",
                 "Range chart",
                 "Combo chart",
@@ -101,7 +122,28 @@ enum PlaygroundCatalog {
                 "Stat",
                 "Section header",
                 "Status bar",
-                "Gauge"
+                "Gauge",
+                "Image comparison",
+                "Media viewport",
+                "Media thumbnail",
+                "Media filmstrip",
+                "Bullet chart",
+                "Lollipop chart",
+                "Dumbbell chart",
+                "Calendar heatmap",
+                "Funnel chart",
+                "Box plot",
+                "Table",
+                "Data table",
+                "Tree",
+                "QR code",
+                "Calendar",
+                "Agenda",
+                "Kanban board",
+                "Kanban column",
+                "Schedule",
+                "Carousel",
+                "Tree grid"
             ]
         ),
         (
@@ -110,6 +152,8 @@ enum PlaygroundCatalog {
                 "Alert dialog",
                 "Sheet",
                 "Navigation bar",
+                "Breadcrumb",
+                "Tour",
                 "Tab bar minimization",
                 "Tab accessory"
             ]

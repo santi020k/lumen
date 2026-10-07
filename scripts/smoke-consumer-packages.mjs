@@ -101,19 +101,19 @@ try {
       '--no-fund',
       ...archives,
       ...publishedPackageSpecs,
-      '@hookform/resolvers@5.7.1',
-      '@types/node@26.2.0',
+      '@hookform/resolvers@5.9.1',
+      '@types/node@26.6.4',
       '@types/react@19.2.18',
-      '@types/react-dom@19.2.5',
-      'astro@7.1.3',
-      'jsdom@29.1.1',
-      'next@16.3.2',
-      'react@19.2.8',
-      'react-dom@19.2.8',
-      'react-hook-form@7.76.1',
+      '@types/react-dom@19.2.7',
+      'astro@7.3.5',
+      'jsdom@30.1.1',
+      'next@16.3.8',
+      'react@19.2.3',
+      'react-dom@19.2.3',
+      'react-hook-form@7.89.0',
       'typescript@6.0.3',
       'yup@1.7.1',
-      'zod@4.4.3'
+      'zod@4.6.5'
     ],
     consumerDirectory
   )
@@ -121,15 +121,18 @@ try {
   await writeFile(
     join(consumerDirectory, 'smoke.mjs'),
     `import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { JSDOM } from 'jsdom'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { useForm } from 'react-hook-form'
 
-import { lumen } from '@santi020k/lumen'
+import { addLumenRegistryItem, lumen } from '@santi020k/lumen'
 import { lumenComponentNames, renderLumenIconSvg } from '@santi020k/lumen-core'
 import { registerLumenBrandIcons } from '@santi020k/lumen-icons-brand'
 import { Badge, Card } from '@santi020k/lumen-react'
+import { ImageComparison } from '@santi020k/lumen-react/components/image-comparison'
 import { Icon as StaticIcon, Search } from '@santi020k/lumen-react/icons'
 import { Badge as ServerBadge, Card as ServerCard } from '@santi020k/lumen-react/server'
 import {
@@ -143,6 +146,24 @@ import * as z from 'zod'
 
 assert.equal(lumen.name, 'Lumen')
 assert.ok(lumenComponentNames.includes('Card'))
+assert.match(renderToStaticMarkup(createElement(ImageComparison, { label: 'Compare', before: 'Before', after: 'After' })), /ui-image-comparison/)
+for (const name of ['attachments', 'bullet-chart', 'comparison-chart', 'data-table', 'date-range-calendar', 'date-range-input', 'expanded-charts', 'image-comparison', 'interval-charts', 'virtual-list']) {
+  assert.ok(Object.keys(await import('@santi020k/lumen-react/components/' + name)).length > 0)
+}
+assert.equal(typeof (await import('@santi020k/lumen-react/hooks')).useDialog, 'function')
+
+for (const target of ['astro', 'react', 'elements']) {
+  for (const name of ['header', 'settings', 'list', 'actions']) {
+    const cwd = join(process.cwd(), 'installed-recipes', target)
+    const result = await addLumenRegistryItem('content-flow-' + name, { cwd, target })
+
+    assert.equal(result.added.length, 1)
+    const source = await readFile(join(cwd, result.added[0]), 'utf8')
+
+    assert.ok(source.includes('@santi020k/lumen-' + target))
+    assert.ok(source.includes(name === 'settings' ? 'group' : 'related'))
+  }
+}
 
 registerLumenBrandIcons()
 
@@ -161,7 +182,7 @@ assert.equal(
 )
 assert.match(
   renderToStaticMarkup(createElement(ServerCard, { as: 'article' }, 'Server card')),
-  /<article class="ui-card"/
+  /<article class="ui-card ui-card--comfortable" data-density="comfortable"/
 )
 
 const HookFormFixture = () => {
@@ -240,8 +261,12 @@ const { defineLumenButton } = await import('@santi020k/lumen-elements/components
 const { defineLumenCard } = await import('@santi020k/lumen-elements/components/card')
 const { defineLumenCombobox } = await import('@santi020k/lumen-elements/components/combobox')
 const { defineLumenFoundations } = await import('@santi020k/lumen-elements/components/foundations')
+const { defineLumenVirtualList } = await import('@santi020k/lumen-elements/components/virtual-list')
 
+defineLumenVirtualList(dom.window.customElements)
+const virtualListConstructor = dom.window.customElements.get('lumen-virtual-list')
 defineLumenElements(dom.window.customElements)
+assert.equal(dom.window.customElements.get('lumen-virtual-list'), virtualListConstructor)
 
 assert.ok(dom.window.customElements.get('lumen-card'))
 assert.ok(dom.window.customElements.get('lumen-dialog'))
@@ -289,10 +314,20 @@ assert.ok(foundationConstructors.has('lumen-visually-hidden'))
   await writeFile(
     join(consumerDirectory, 'src', 'pages', 'index.astro'),
     `---
-import { Badge, Card, CopyButton, RevealGroup, ScrollReveal, Stat } from '@santi020k/lumen-astro'
+import { Badge, BulletChart, Card, CopyButton, Heatmap, RevealGroup, ScrollReveal, Stat } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import '@santi020k/lumen-astro/styles.css'
 import '@santi020k/lumen-elements/styles.css'
+const finiteBulletValue = (value: number): string => {
+  if (!Number.isFinite(value)) throw new Error('Invalid bullet measurements reached the formatter')
+  return String(value)
+}
+const invalidRanges = [null, false].map(ranges => {
+  const props = { value: 10, target: 20, ranges: [] }
+  Object.defineProperty(props, 'ranges', { value: ranges })
+  return props
+})
+const unavailableHeatmap = [NaN, Infinity, null].map((value, index) => ({ x: index, y: 'Missing', value }))
 ---
 
 <Card>
@@ -300,6 +335,10 @@ import '@santi020k/lumen-elements/styles.css'
   <CopyButton value="Packed copy value" />
   <RevealGroup as="ul"><ScrollReveal as="li"><Stat label="Checks" value="4" /></ScrollReveal></RevealGroup>
   <p>Packed Astro consumer</p>
+  <BulletChart value={NaN} target={20} formatValue={finiteBulletValue} labels={{ invalidData: 'Invalid bullet data fallback' }} />
+  <BulletChart value={10} target={Infinity} formatValue={finiteBulletValue} labels={{ invalidData: 'Invalid bullet data fallback' }} />
+  {invalidRanges.map(props => <BulletChart {...props} formatValue={() => { throw new Error('Malformed ranges reached the formatter') }} labels={{ invalidData: 'Invalid bullet data fallback' }} />)}
+  <Heatmap data={unavailableHeatmap} drilldown showLegend={false} formatValue={finiteBulletValue} labels={{ empty: 'Missing heatmap fallback' }} />
 </Card>
 
 <UIPrimitives />
@@ -363,6 +402,7 @@ export function ClientPanel() {
     join(consumerDirectory, 'src', 'app', 'page.tsx'),
     `import { Card } from '@santi020k/lumen-react'
 import { Badge, Skeleton } from '@santi020k/lumen-react/server'
+import { ImageComparison } from '@santi020k/lumen-react/components/image-comparison'
 
 import { ClientPanel } from './client-panel'
 
@@ -374,6 +414,7 @@ export default function Page() {
         <p>Packed React package imported by a Server Component.</p>
         <Skeleton aria-label="Server-rendered placeholder" />
         <ClientPanel />
+        <ImageComparison label="Compare packed imports" before="Before" after="After" />
       </Card>
     </main>
   )
@@ -411,6 +452,12 @@ export default function Page() {
   assert.match(astroHtml, /Granular elements ready/)
 
   assert.match(astroHtml, /Foundation bundle ready/)
+
+  assert.equal(astroHtml.match(/Invalid bullet data fallback/g)?.length, 8)
+
+  assert.match(astroHtml, /Missing heatmap fallback/)
+
+  assert.doesNotMatch(astroHtml, /data-ui-chart-datum=/)
 
   process.stdout.write(
     'Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js, and brand-icon packages passed clean-consumer smoke tests\n'

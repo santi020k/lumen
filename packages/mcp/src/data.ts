@@ -74,16 +74,36 @@ export interface LumenData {
     schemaVersion: number
     serverVersion: string
   }
+  migration: {
+    changes: {
+      currentContract: string
+      docs: string[]
+      id: string
+      migration: string
+      packages: string[]
+      replacement: string
+    }[]
+    status: string
+    targetVersion: string
+  }
   nativeComponents: LumenNativeComponentSnapshot[]
   nativeSources: Record<LumenNativePlatform, Record<string, string>>
   recipes: LumenRecipeSnapshot[]
   releaseManifest: LumenReleaseManifest
   rules: string
   tokens: {
+    presets: {
+      attribute: string
+      names: string[]
+      schemeAttribute: string
+      materialPolicy: string
+    }
     chart: Record<string, string>
     colors: Record<string, string>
     glass: Record<string, string>
     semantic: string[]
+    spacing: Record<string, number>
+    spacingRoles: Record<string, string>
     themeAttribute: string
   }
 }
@@ -167,6 +187,7 @@ export interface LumenFrameworkSnapshot {
       name: string
       type: string
     }[]
+    runtimeBypass?: string
     setup: string
   }
   example: string
@@ -189,6 +210,7 @@ export interface LumenRecipeSnapshot {
   categories: string[]
   components?: string[]
   description: string
+  examples: Partial<Record<LumenFramework, string>>
   files?: unknown[]
   install: Record<LumenFramework, string>
   name: string

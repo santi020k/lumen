@@ -1,0 +1,47 @@
+---
+import { Button, ErrorState, Progress, Stack } from '@santi020k/lumen-astro'
+
+interface Props {
+  phase: 'idle' | 'pending' | 'cancelled' | 'error' | 'success'
+  message: string
+  recovery?: string
+  progress?: number
+  progressLabel: string
+  startLabel: string
+  cancelLabel: string
+  retryLabel: string
+}
+
+declare const Astro: Readonly<{ props: Props, slots: { has: (name: string) => boolean } }>
+
+const { phase, message, recovery, progress, progressLabel, startLabel, cancelLabel, retryLabel } = Astro.props
+---
+
+<Stack gap="related" data-media-processing data-phase={phase}>
+  {phase === 'error' ? <ErrorState title={message} description={recovery} showGraphic={false} announce="polite" headingLevel={3}><Button data-media-processing-action="retry">{retryLabel}</Button></ErrorState> : <p role="status">{message}</p>}
+  {phase === 'pending' && (
+<>
+    {progress !== undefined && Number.isFinite(progress) && <Progress aria-label={progressLabel} value={Math.min(100, Math.max(0, progress))} />}
+    <Button variant="outline" data-media-processing-action="cancel">{cancelLabel}</Button>
+  </>
+)}
+  {phase !== 'pending' && phase !== 'error' && <Button data-media-processing-action="start">{startLabel}</Button>}
+</Stack>
+
+<script>
+  for (const panel of document.querySelectorAll<HTMLElement>('[data-media-processing]')) {
+    panel.addEventListener('click', event => {
+      if (!(event.target instanceof Element)) return
+
+      const button = event.target.closest<HTMLButtonElement>('button[data-media-processing-action]')
+
+      if (!button || button.disabled || !panel.contains(button)) return
+
+      const action = button.dataset.mediaProcessingAction
+
+      if (action !== 'start' && action !== 'cancel' && action !== 'retry') return
+
+      panel.dispatchEvent(new CustomEvent('ui:media-processing-request', { bubbles: true, detail: { action } }))
+    })
+  }
+</script>

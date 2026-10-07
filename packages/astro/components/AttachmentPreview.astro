@@ -1,0 +1,51 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import {
+  type LumenAttachmentPreviewLabels,
+  lumenAttachmentPreviewLabels,
+  type LumenAttachmentPreviewState,
+  resolveLumenAstroProps,
+  resolveLumenAttachmentPreviewState
+} from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'figure'> {
+  alt: string
+  class?: string | null
+  className?: string
+  contentType?: string
+  labels?: Partial<LumenAttachmentPreviewLabels>
+  retryKey?: number | string
+  src?: string
+  state?: LumenAttachmentPreviewState
+}
+
+const { alt, class: classProp = '', className = '', contentType, labels, retryKey, src, state: requested, ...rest } = Astro.props
+const state = resolveLumenAttachmentPreviewState(src, contentType, requested)
+const canPreview = resolveLumenAttachmentPreviewState(src, contentType) === 'ready'
+const copy = { ...lumenAttachmentPreviewLabels, ...labels }
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-attachment-preview'], classProp, className)
+---
+
+<figure
+class:list={classList}
+{...passthrough}
+aria-busy={state === 'loading'}
+data-state={state}
+  data-ui-attachment-preview
+data-ui-attachment-preview-state={requested}
+  data-ui-attachment-preview-content-type={contentType}
+data-ui-attachment-preview-retry-key={retryKey}
+  data-ui-attachment-preview-error-label={copy.error}
+data-ui-attachment-preview-loading-label={copy.loading}
+  data-ui-attachment-preview-unavailable-label={copy.unavailable}
+>
+  <div data-slot="attachment-preview-media" hidden={state !== 'ready'}>
+    {/* Browser-owned private URLs and object URLs must not enter Astro's server image optimizer. */}
+    {canPreview && <img src={src} alt={alt} data-ui-attachment-preview-image loading="eager" />}
+  </div>
+  <p role="status" data-slot="attachment-preview-fallback" data-ui-attachment-preview-message hidden={state === 'ready'}>{state === 'ready' ? '' : copy[state]}</p>
+  {Astro.slots.has('caption') && <figcaption><slot name="caption" /></figcaption>}
+  <slot />
+  {Astro.slots.has('actions') && <div data-slot="attachment-preview-actions"><slot name="actions" /></div>}
+</figure>

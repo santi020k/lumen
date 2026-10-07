@@ -1,0 +1,42 @@
+---
+import '@santi020k/lumen/styles.css'
+
+import { Button, Form, Label, Stack, Typography } from '@santi020k/lumen-astro'
+
+const countries = [
+  { id: 'CO', labelX: 300, labelY: 220, name: 'Colombia', path: 'M0 0L10 0L10 10Z' },
+  { id: 'JP', labelX: 820, labelY: 140, name: 'Japan', path: 'M20 0L30 0L30 10Z' }
+]
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Elements document and form regression fixture</title>
+  </head>
+  <body>
+    <main>
+      <Stack gap="group">
+        <Typography><h1>Elements document and form regression fixture</h1></Typography>
+        <Form enhance={false} id="upload-form">
+          <Label for="upload-files">Upload files</Label>
+          <lumen-file-upload>
+            <input id="upload-files" type="file" multiple data-ui-file-upload-input />
+            <span aria-live="polite" data-ui-file-upload-files></span>
+          </lumen-file-upload>
+          <Button type="reset">Reset upload</Button>
+        </Form>
+        <lumen-world-map countries={JSON.stringify(countries)} interactive="true" label="Destinations"></lumen-world-map>
+        <lumen-bar-chart drilldown series={JSON.stringify([{ id: 'sales', label: 'Sales', data: [{ id: 'first', x: 'October', y: 20 }] }])}></lumen-bar-chart>
+        <lumen-media-viewport label="Media preview"><span>Preview content</span></lumen-media-viewport>
+      </Stack>
+    </main>
+    <script>
+      import { defineLumenElements } from '@santi020k/lumen-elements'
+
+      defineLumenElements(['FileUpload', 'WorldMap', 'BarChart', 'MediaViewport'])
+    </script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+---
+import type { ComponentProps } from 'astro/types'
+
+import ComparisonChart from '../internal/ComparisonChart.astro'
+
+type Props = Omit<ComponentProps<typeof ComparisonChart>, 'paired'>
+---
+<ComparisonChart {...Astro.props} class:list={['ui-dumbbell-chart', Astro.props.class, Astro.props.className]} paired={true} />

@@ -1,0 +1,30 @@
+name: Set up cached Playwright browsers
+description: Restore browser binaries and always install runner system dependencies.
+inputs:
+  browsers:
+    description: Space-separated Playwright browser names.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Select the workspace browser cache
+      shell: bash
+      run: echo "PLAYWRIGHT_BROWSERS_PATH=$GITHUB_WORKSPACE/.cache/ms-playwright" >> "$GITHUB_ENV"
+    - name: Restore Playwright browser binaries
+      id: browsers
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ github.workspace }}/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ runner.arch }}-${{ inputs.browsers }}-${{ hashFiles('pnpm-lock.yaml') }}
+    - name: Install browsers or refresh system dependencies
+      shell: bash
+      env:
+        BROWSERS: ${{ inputs.browsers }}
+        CACHE_HIT: ${{ steps.browsers.outputs.cache-hit }}
+      run: |
+        read -r -a browsers <<< "$BROWSERS"
+        if [[ "$CACHE_HIT" == "true" ]]; then
+          pnpm exec playwright install-deps "${browsers[@]}"
+        else
+          pnpm exec playwright install --with-deps "${browsers[@]}"
+        fi

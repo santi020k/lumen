@@ -8,29 +8,98 @@
 
 /* Begin PBXBuildFile section */
 		014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */; };
+		019C3E8E5EF979AF210970BC /* CommandParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CE65254E96890A73A14FCB /* CommandParityExample.swift */; };
+		085D5763C1D14A246C896486 /* TreeGridParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873A95F16EFE199CF8DE7CC /* TreeGridParityExample.swift */; };
+		0A78480519D1F79BCCB08A2B /* TreeSelectParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B137475D2B5E5290E2B7A32 /* TreeSelectParityExample.swift */; };
+		18FDAE1D340A6A85241B15B7 /* TableParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239C19188D453017567CDF10 /* TableParityExample.swift */; };
 		1AD09D6BAD61D64C9559FF33 /* LumenApplePlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */; };
+		1CD3097C0DDE5216F954C852 /* RichTextParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DBEBDBF0FB5D511CFAD7DB /* RichTextParityExample.swift */; };
+		1FD33D9C49CD77D173073503 /* AgendaParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7A36358D6E501DB29AA9C1 /* AgendaParityExample.swift */; };
+		2152E330D2F38DC10E5E5616 /* ScheduleParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF89347B50B6EABEC242B28 /* ScheduleParityExample.swift */; };
+		226AAB82E082BFACE85E0D71 /* TreeParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC5BEEFE1A80AB3992E8138 /* TreeParityExample.swift */; };
+		2554BDCFE0E381C7AADAA3F7 /* TimelineParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFA861238EAAF380F337102 /* TimelineParityExample.swift */; };
+		2A1662A587470DB05241B18D /* KanbanColumnParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6EC8792199429B0A3C6F02 /* KanbanColumnParityExample.swift */; };
+		2A3D0DA3291B0184C1657D8E /* QRCodeParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */; };
+		2CBD19EA76FAB9E2FEB5620C /* RatingParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D0AB5D763EB5ABEEEA9ECA /* RatingParityExample.swift */; };
+		302BA7A9A3B20BC59019A96E /* WorkspacePerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */; };
+		3223BAB34D21B5B139504B85 /* PlaygroundParityExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */; };
+		3322905321148FA091DAE0D5 /* CalendarParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */; };
 		335D2FA3C54ACA2B893F678F /* LumenWidgetPlayground.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98080257A4C04BB0ACA9566 /* LumenWidgetPlayground.swift */; };
+		3465F0C342BCB6E8BD62064F /* BreadcrumbParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5F44834DDC6CFA03FE0F30 /* BreadcrumbParityExample.swift */; };
 		3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */; };
 		3B161D679836623944870272 /* LumenWidgetPlayground.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3F78C1BF0A31445B3A1BC333 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
+		4C9A4892BC1BFDCB83E13957 /* PlaygroundMacCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */; };
+		4CDA689407D8CD8FC7256454 /* CommandParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CE65254E96890A73A14FCB /* CommandParityExample.swift */; };
+		4DABABE223E01D04ABDC04F0 /* BreadcrumbParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5F44834DDC6CFA03FE0F30 /* BreadcrumbParityExample.swift */; };
+		50973772004FC8B2ED994C03 /* PlaygroundMediaWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951AD2FE174282B2B72440D /* PlaygroundMediaWorkspaceView.swift */; };
+		538B3830DF6A8BDB14F42BB1 /* CarouselParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD50AF3AC7403C3CAC165F51 /* CarouselParityExample.swift */; };
+		577B1907638AAABD1C41F229 /* CascaderParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */; };
 		59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */; };
 		5A3B1829F40443C5D5FA6EC2 /* PlaygroundCatalog.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */; };
 		5BDA6D9FDFA3F1856259D5AA /* LumenApplePlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */; };
+		5D44BEDC71D11C2D620D83CF /* QRCodeParityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C59ED6B26980706A630860 /* QRCodeParityTests.swift */; };
+		5DC3FC97A4114A774113C43C /* MentionsParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1346B8612A775BBDCF663C53 /* MentionsParityExample.swift */; };
+		5E2A775AD4FDA189CC6BDDE2 /* PlaygroundWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */; };
+		601DDD093E4DF42D134ABE24 /* TreeSelectParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B137475D2B5E5290E2B7A32 /* TreeSelectParityExample.swift */; };
+		62BB5CE88AF95E32F3E9EFD1 /* KanbanColumnParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6EC8792199429B0A3C6F02 /* KanbanColumnParityExample.swift */; };
+		6A5CF4725FEBCD3EC376D6C8 /* CascaderParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */; };
 		6DBE1F8EBA5B6F1940CC680D /* LumenWidgetUI in Frameworks */ = {isa = PBXBuildFile; productRef = 49116D2CBE1F880540653F3E /* LumenWidgetUI */; };
+		75194820256C6494D85D146E /* KanbanBoardParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */; };
+		7609CFB764156B0FF4EABFAF /* CarouselParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD50AF3AC7403C3CAC165F51 /* CarouselParityExample.swift */; };
+		79C1AE37F0029B77EC9381F7 /* DataTableParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B29A8B858A3D7AC3B468CF /* DataTableParityExample.swift */; };
+		81D7A8F2D08567023C275929 /* TransferParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */; };
+		8B9E817F2C9ACF09C187BC6E /* PlaygroundParityExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */; };
+		91A2AF2E011BA885CFD033FF /* PlaygroundAdvancedInputsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */; };
+		98C1AA51CD562EA2E42CD67A /* PlaygroundWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */; };
+		9C0AADAE80963A40CF3F9D3D /* TreeGridParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3873A95F16EFE199CF8DE7CC /* TreeGridParityExample.swift */; };
 		A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
+		A14CCFACB71C261EC821F449 /* StepperParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F9CA8AF2936CE6EF5B7FEC /* StepperParityExample.swift */; };
+		A257CD4E73D4ECCC34DE5A9D /* PlaygroundMacCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */; };
+		A274D3205D7F8E1D119AA734 /* CalendarParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */; };
 		A27610862D252E7C15973614 /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 35416C9E579CDA363A493B7B /* LumenUI */; };
+		A3CA82E708CAD60F5C073498 /* TransferParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */; };
+		A70BD02D3F462353F61511A6 /* TooltipParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7746B4DABCDEEE4EBA0E6C29 /* TooltipParityExample.swift */; };
+		A98C8673AF53E2C9275F8432 /* ScheduleParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF89347B50B6EABEC242B28 /* ScheduleParityExample.swift */; };
+		AE068C7F33E573F5E263D2F9 /* CatalogParityInteractionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDD459A59B4A5E78B40659F /* CatalogParityInteractionTests.swift */; };
+		B7411FDED7A8E141F59C6454 /* StepperParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F9CA8AF2936CE6EF5B7FEC /* StepperParityExample.swift */; };
+		BB9196312625E40B8BAC0768 /* ColorPickerParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237EB6454952F828624C93F4 /* ColorPickerParityExample.swift */; };
+		BFBEB6E79F2A3F742940B992 /* TooltipParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7746B4DABCDEEE4EBA0E6C29 /* TooltipParityExample.swift */; };
 		C264FF30047BA1493B60697F /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 956081D903F21ACD6ECA2E5F /* LumenUI */; };
 		C6CEF83F16EE8556EC3DBD9E /* PlaygroundHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */; };
+		CB938ED74CB35895BD71AD06 /* QRCodeParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */; };
+		CC49DC4F6F98D56B09B8E001 /* TreeParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC5BEEFE1A80AB3992E8138 /* TreeParityExample.swift */; };
+		CFCF1EA85842549E0B5FFD33 /* AdvancedInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F138F7D00C2BD2E7A2AE6F2 /* AdvancedInputTests.swift */; };
+		D1F56E1CDBE696DA8A9FC3E2 /* ColorPickerParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 237EB6454952F828624C93F4 /* ColorPickerParityExample.swift */; };
 		D2F4C18E705C065824038B2A /* LumenUI in Frameworks */ = {isa = PBXBuildFile; productRef = 92444F6FFAE06F3DC42DB84A /* LumenUI */; };
+		D5FE907ED1443A88D0EB4E8F /* MentionsParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1346B8612A775BBDCF663C53 /* MentionsParityExample.swift */; };
+		DA79C0B99783F2C92D9CC68A /* TimelineParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFA861238EAAF380F337102 /* TimelineParityExample.swift */; };
 		DB50ECBEE184BDB2D1838CE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */; };
+		DBB7FFC94622EB5056EB6377 /* PlaygroundMediaWorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C951AD2FE174282B2B72440D /* PlaygroundMediaWorkspaceView.swift */; };
 		E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */; };
+		E2FF39D41C63B87410755362 /* DataTableParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B29A8B858A3D7AC3B468CF /* DataTableParityExample.swift */; };
+		E37A78B6EEFB51FBC4BCDEFC /* KanbanBoardParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */; };
 		E6E453BDD94FE3ED53037917 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */; };
+		E6E58627404A9B46C9CEC582 /* TourParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14C5591BD6B49FBACC095C4 /* TourParityExample.swift */; };
+		E8C8495E7FF73558F9242C62 /* AgendaParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7A36358D6E501DB29AA9C1 /* AgendaParityExample.swift */; };
 		EA8330549EDCCDB72343C25B /* PlaygroundCatalog.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */; };
 		EB0BAF57DA9822940D2A710A /* LumenWatchPlaygroundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */; };
+		F6FC73E55CFB20FC5A23B088 /* PlaygroundAdvancedInputsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */; };
 		F8E4ABC1A336A6607D841E29 /* PlaygroundShell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */; };
+		FA92D29F3686CB1C24013F88 /* TourParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14C5591BD6B49FBACC095C4 /* TourParityExample.swift */; };
+		FA9360479DDD26FC4936D801 /* RichTextParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DBEBDBF0FB5D511CFAD7DB /* RichTextParityExample.swift */; };
+		FD31C446CD8426AD60FE8B03 /* RatingParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D0AB5D763EB5ABEEEA9ECA /* RatingParityExample.swift */; };
+		FEF986FC3BE784755D60F89B /* TableParityExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 239C19188D453017567CDF10 /* TableParityExample.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0B36D67C28F79185B8422D9B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6D32CE28C8DD1B4872E3E316 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B87CA3EC27EB3E2B33212422;
+			remoteInfo = LumenApplePlayground;
+		};
 		DDA994642B3E72C7C8BD6EF4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6D32CE28C8DD1B4872E3E316 /* Project object */;
@@ -55,20 +124,54 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacePerformanceTests.swift; sourceTree = "<group>"; };
+		1346B8612A775BBDCF663C53 /* MentionsParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentionsParityExample.swift; sourceTree = "<group>"; };
+		1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeParityExample.swift; sourceTree = "<group>"; };
+		1DDD459A59B4A5E78B40659F /* CatalogParityInteractionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogParityInteractionTests.swift; sourceTree = "<group>"; };
+		1F138F7D00C2BD2E7A2AE6F2 /* AdvancedInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedInputTests.swift; sourceTree = "<group>"; };
+		237EB6454952F828624C93F4 /* ColorPickerParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerParityExample.swift; sourceTree = "<group>"; };
+		239C19188D453017567CDF10 /* TableParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableParityExample.swift; sourceTree = "<group>"; };
+		2B137475D2B5E5290E2B7A32 /* TreeSelectParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeSelectParityExample.swift; sourceTree = "<group>"; };
+		2EF89347B50B6EABEC242B28 /* ScheduleParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleParityExample.swift; sourceTree = "<group>"; };
+		33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanBoardParityExample.swift; sourceTree = "<group>"; };
+		33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CascaderParityExample.swift; sourceTree = "<group>"; };
+		3873A95F16EFE199CF8DE7CC /* TreeGridParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeGridParityExample.swift; sourceTree = "<group>"; };
 		399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = LumenWidgetPlayground.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		5128309A5EE62A8C5B16E7CD /* lumen */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lumen; path = ../..; sourceTree = SOURCE_ROOT; };
+		3A6EC8792199429B0A3C6F02 /* KanbanColumnParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KanbanColumnParityExample.swift; sourceTree = "<group>"; };
+		48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundAdvancedInputsView.swift; sourceTree = "<group>"; };
+		498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundParityExamplesView.swift; sourceTree = "<group>"; };
+		4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarParityExample.swift; sourceTree = "<group>"; };
 		581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundShell.swift; sourceTree = "<group>"; };
+		589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundMacCommands.swift; sourceTree = "<group>"; };
 		5DB685E8C1D6ED87B7329F1E /* LumenWatchPlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWatchPlaygroundApp.swift; sourceTree = "<group>"; };
 		63BB1942FA8B6D286F1A9EBE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundCatalog.generated.swift; sourceTree = "<group>"; };
+		72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundWorkspaceView.swift; sourceTree = "<group>"; };
+		75CE65254E96890A73A14FCB /* CommandParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandParityExample.swift; sourceTree = "<group>"; };
+		7746B4DABCDEEE4EBA0E6C29 /* TooltipParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipParityExample.swift; sourceTree = "<group>"; };
+		7AFA861238EAAF380F337102 /* TimelineParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineParityExample.swift; sourceTree = "<group>"; };
+		7B5F44834DDC6CFA03FE0F30 /* BreadcrumbParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreadcrumbParityExample.swift; sourceTree = "<group>"; };
 		7DE2955684DB72950680BA1F /* LumenApplePlayground.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LumenApplePlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		86F9CA8AF2936CE6EF5B7FEC /* StepperParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperParityExample.swift; sourceTree = "<group>"; };
+		8E7A36358D6E501DB29AA9C1 /* AgendaParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaParityExample.swift; sourceTree = "<group>"; };
+		98D0AB5D763EB5ABEEEA9ECA /* RatingParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingParityExample.swift; sourceTree = "<group>"; };
 		9D8A29BB3FCB9C15B321E3AE /* LumenMacPlayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumenMacPlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A14C5591BD6B49FBACC095C4 /* TourParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourParityExample.swift; sourceTree = "<group>"; };
 		A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundExamplesView.swift; sourceTree = "<group>"; };
 		A74CE400BC46C61E435CCDCB /* LumenWatchPlayground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumenWatchPlayground.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundSettingsView.swift; sourceTree = "<group>"; };
+		B0DBEBDBF0FB5D511CFAD7DB /* RichTextParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichTextParityExample.swift; sourceTree = "<group>"; };
 		B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundHomeView.swift; sourceTree = "<group>"; };
+		BD50AF3AC7403C3CAC165F51 /* CarouselParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselParityExample.swift; sourceTree = "<group>"; };
+		C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferParityExample.swift; sourceTree = "<group>"; };
+		C5DA55DE8BF4B4194947AAF6 /* lumen-release-consolidation */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "lumen-release-consolidation"; path = ../..; sourceTree = SOURCE_ROOT; };
+		C951AD2FE174282B2B72440D /* PlaygroundMediaWorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundMediaWorkspaceView.swift; sourceTree = "<group>"; };
+		D0B29A8B858A3D7AC3B468CF /* DataTableParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTableParityExample.swift; sourceTree = "<group>"; };
 		D98080257A4C04BB0ACA9566 /* LumenWidgetPlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenWidgetPlayground.swift; sourceTree = "<group>"; };
 		EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumenApplePlaygroundApp.swift; sourceTree = "<group>"; };
+		F3B760A456295F63FEB652B8 /* LumenApplePlaygroundUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = LumenApplePlaygroundUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8C59ED6B26980706A630860 /* QRCodeParityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeParityTests.swift; sourceTree = "<group>"; };
+		FDC5BEEFE1A80AB3992E8138 /* TreeParityExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeParityExample.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +227,7 @@
 				0AE262FA552586B5EF9A8058 /* LumenWidgetPlayground */,
 				DE258D8D5B5E09B006098DED /* Packages */,
 				DC5232210B3A8BE4F18A8383 /* Supporting */,
+				D34D651DB1AB9B9B1907A9F2 /* UITests */,
 				8FF15E17560DC8DEB07592CC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -141,11 +245,23 @@
 			isa = PBXGroup;
 			children = (
 				7DE2955684DB72950680BA1F /* LumenApplePlayground.app */,
+				F3B760A456295F63FEB652B8 /* LumenApplePlaygroundUITests.xctest */,
 				9D8A29BB3FCB9C15B321E3AE /* LumenMacPlayground.app */,
 				A74CE400BC46C61E435CCDCB /* LumenWatchPlayground.app */,
 				399D6F6E9C693782368B32EC /* LumenWidgetPlayground.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D34D651DB1AB9B9B1907A9F2 /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				1F138F7D00C2BD2E7A2AE6F2 /* AdvancedInputTests.swift */,
+				1DDD459A59B4A5E78B40659F /* CatalogParityInteractionTests.swift */,
+				F8C59ED6B26980706A630860 /* QRCodeParityTests.swift */,
+				0BB0D085D401FD296278ADC6 /* WorkspacePerformanceTests.swift */,
+			);
+			path = UITests;
 			sourceTree = "<group>";
 		};
 		DC5232210B3A8BE4F18A8383 /* Supporting */ = {
@@ -159,7 +275,7 @@
 		DE258D8D5B5E09B006098DED /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				5128309A5EE62A8C5B16E7CD /* lumen */,
+				C5DA55DE8BF4B4194947AAF6 /* lumen-release-consolidation */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -167,12 +283,41 @@
 		DF2CC21E680132A851141C3E /* LumenApplePlayground */ = {
 			isa = PBXGroup;
 			children = (
+				8E7A36358D6E501DB29AA9C1 /* AgendaParityExample.swift */,
+				7B5F44834DDC6CFA03FE0F30 /* BreadcrumbParityExample.swift */,
+				4C6713B0CADD67BC29E2E936 /* CalendarParityExample.swift */,
+				BD50AF3AC7403C3CAC165F51 /* CarouselParityExample.swift */,
+				33D07C5D814B076CDF538E41 /* CascaderParityExample.swift */,
+				237EB6454952F828624C93F4 /* ColorPickerParityExample.swift */,
+				75CE65254E96890A73A14FCB /* CommandParityExample.swift */,
+				D0B29A8B858A3D7AC3B468CF /* DataTableParityExample.swift */,
+				33722FDCBB7E6F155C53D08D /* KanbanBoardParityExample.swift */,
+				3A6EC8792199429B0A3C6F02 /* KanbanColumnParityExample.swift */,
 				EE69F938031E87BABC3FCC66 /* LumenApplePlaygroundApp.swift */,
+				1346B8612A775BBDCF663C53 /* MentionsParityExample.swift */,
+				48D0AE883A9D2E8CA87E712A /* PlaygroundAdvancedInputsView.swift */,
 				665A7EE097F09530030DCF0D /* PlaygroundCatalog.generated.swift */,
 				A61F6D18637F340320DB6A5D /* PlaygroundExamplesView.swift */,
 				B19CC216C8A44A82EF86293B /* PlaygroundHomeView.swift */,
+				589EA975D33D82FDDB65885C /* PlaygroundMacCommands.swift */,
+				C951AD2FE174282B2B72440D /* PlaygroundMediaWorkspaceView.swift */,
+				498DE581FB012C81BFFD8BE6 /* PlaygroundParityExamplesView.swift */,
 				AB065D953EB7775096F372DB /* PlaygroundSettingsView.swift */,
 				581FE601DC8DCCAACDE42246 /* PlaygroundShell.swift */,
+				72B8880B20E69D9623FBE419 /* PlaygroundWorkspaceView.swift */,
+				1D1D222933113F56FAA76A80 /* QRCodeParityExample.swift */,
+				98D0AB5D763EB5ABEEEA9ECA /* RatingParityExample.swift */,
+				B0DBEBDBF0FB5D511CFAD7DB /* RichTextParityExample.swift */,
+				2EF89347B50B6EABEC242B28 /* ScheduleParityExample.swift */,
+				86F9CA8AF2936CE6EF5B7FEC /* StepperParityExample.swift */,
+				239C19188D453017567CDF10 /* TableParityExample.swift */,
+				7AFA861238EAAF380F337102 /* TimelineParityExample.swift */,
+				7746B4DABCDEEE4EBA0E6C29 /* TooltipParityExample.swift */,
+				A14C5591BD6B49FBACC095C4 /* TourParityExample.swift */,
+				C071B6F5EF2E4F4825BC28DC /* TransferParityExample.swift */,
+				3873A95F16EFE199CF8DE7CC /* TreeGridParityExample.swift */,
+				FDC5BEEFE1A80AB3992E8138 /* TreeParityExample.swift */,
+				2B137475D2B5E5290E2B7A32 /* TreeSelectParityExample.swift */,
 			);
 			name = LumenApplePlayground;
 			path = Sources/LumenApplePlayground;
@@ -181,6 +326,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		547E857C496D57AAF4F20375 /* LumenApplePlaygroundUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1DA9A96844CAED130DFED27 /* Build configuration list for PBXNativeTarget "LumenApplePlaygroundUITests" */;
+			buildPhases = (
+				B8BDBAB7F12981F9BD553A6C /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				09A326FDDD9D50C087E03AE3 /* PBXTargetDependency */,
+			);
+			name = LumenApplePlaygroundUITests;
+			packageProductDependencies = (
+			);
+			productName = LumenApplePlaygroundUITests;
+			productReference = F3B760A456295F63FEB652B8 /* LumenApplePlaygroundUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		646E633DD983191F4D179E43 /* LumenWidgetPlayground */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A0F630C9F5C80AB97F22ED44 /* Build configuration list for PBXNativeTarget "LumenWidgetPlayground" */;
@@ -270,6 +433,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					547E857C496D57AAF4F20375 = {
+						TestTargetID = B87CA3EC27EB3E2B33212422;
+					};
 					646E633DD983191F4D179E43 = {
 						DevelopmentTeam = BY4995HQ3J;
 						ProvisioningStyle = Automatic;
@@ -303,6 +469,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				547E857C496D57AAF4F20375 /* LumenApplePlaygroundUITests */,
 				B87CA3EC27EB3E2B33212422 /* LumenApplePlayground */,
 				A1744112F1B4A2ED319D9D98 /* LumenMacPlayground */,
 				646E633DD983191F4D179E43 /* LumenWidgetPlayground */,
@@ -343,12 +510,41 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8C8495E7FF73558F9242C62 /* AgendaParityExample.swift in Sources */,
+				3465F0C342BCB6E8BD62064F /* BreadcrumbParityExample.swift in Sources */,
+				A274D3205D7F8E1D119AA734 /* CalendarParityExample.swift in Sources */,
+				7609CFB764156B0FF4EABFAF /* CarouselParityExample.swift in Sources */,
+				577B1907638AAABD1C41F229 /* CascaderParityExample.swift in Sources */,
+				D1F56E1CDBE696DA8A9FC3E2 /* ColorPickerParityExample.swift in Sources */,
+				019C3E8E5EF979AF210970BC /* CommandParityExample.swift in Sources */,
+				E2FF39D41C63B87410755362 /* DataTableParityExample.swift in Sources */,
+				75194820256C6494D85D146E /* KanbanBoardParityExample.swift in Sources */,
+				62BB5CE88AF95E32F3E9EFD1 /* KanbanColumnParityExample.swift in Sources */,
 				5BDA6D9FDFA3F1856259D5AA /* LumenApplePlaygroundApp.swift in Sources */,
+				5DC3FC97A4114A774113C43C /* MentionsParityExample.swift in Sources */,
+				F6FC73E55CFB20FC5A23B088 /* PlaygroundAdvancedInputsView.swift in Sources */,
 				EA8330549EDCCDB72343C25B /* PlaygroundCatalog.generated.swift in Sources */,
 				59CD3BCA61AEB946FF7A2882 /* PlaygroundExamplesView.swift in Sources */,
 				3720CAC58F48F17F4380823C /* PlaygroundHomeView.swift in Sources */,
+				A257CD4E73D4ECCC34DE5A9D /* PlaygroundMacCommands.swift in Sources */,
+				50973772004FC8B2ED994C03 /* PlaygroundMediaWorkspaceView.swift in Sources */,
+				3223BAB34D21B5B139504B85 /* PlaygroundParityExamplesView.swift in Sources */,
 				A0279D955040FE673FB268D5 /* PlaygroundSettingsView.swift in Sources */,
 				014EFFAD9348FEA0E0277DA9 /* PlaygroundShell.swift in Sources */,
+				5E2A775AD4FDA189CC6BDDE2 /* PlaygroundWorkspaceView.swift in Sources */,
+				2A3D0DA3291B0184C1657D8E /* QRCodeParityExample.swift in Sources */,
+				FD31C446CD8426AD60FE8B03 /* RatingParityExample.swift in Sources */,
+				1CD3097C0DDE5216F954C852 /* RichTextParityExample.swift in Sources */,
+				A98C8673AF53E2C9275F8432 /* ScheduleParityExample.swift in Sources */,
+				B7411FDED7A8E141F59C6454 /* StepperParityExample.swift in Sources */,
+				FEF986FC3BE784755D60F89B /* TableParityExample.swift in Sources */,
+				DA79C0B99783F2C92D9CC68A /* TimelineParityExample.swift in Sources */,
+				BFBEB6E79F2A3F742940B992 /* TooltipParityExample.swift in Sources */,
+				FA92D29F3686CB1C24013F88 /* TourParityExample.swift in Sources */,
+				A3CA82E708CAD60F5C073498 /* TransferParityExample.swift in Sources */,
+				9C0AADAE80963A40CF3F9D3D /* TreeGridParityExample.swift in Sources */,
+				CC49DC4F6F98D56B09B8E001 /* TreeParityExample.swift in Sources */,
+				601DDD093E4DF42D134ABE24 /* TreeSelectParityExample.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,12 +552,52 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FD33D9C49CD77D173073503 /* AgendaParityExample.swift in Sources */,
+				4DABABE223E01D04ABDC04F0 /* BreadcrumbParityExample.swift in Sources */,
+				3322905321148FA091DAE0D5 /* CalendarParityExample.swift in Sources */,
+				538B3830DF6A8BDB14F42BB1 /* CarouselParityExample.swift in Sources */,
+				6A5CF4725FEBCD3EC376D6C8 /* CascaderParityExample.swift in Sources */,
+				BB9196312625E40B8BAC0768 /* ColorPickerParityExample.swift in Sources */,
+				4CDA689407D8CD8FC7256454 /* CommandParityExample.swift in Sources */,
+				79C1AE37F0029B77EC9381F7 /* DataTableParityExample.swift in Sources */,
+				E37A78B6EEFB51FBC4BCDEFC /* KanbanBoardParityExample.swift in Sources */,
+				2A1662A587470DB05241B18D /* KanbanColumnParityExample.swift in Sources */,
 				1AD09D6BAD61D64C9559FF33 /* LumenApplePlaygroundApp.swift in Sources */,
+				D5FE907ED1443A88D0EB4E8F /* MentionsParityExample.swift in Sources */,
+				91A2AF2E011BA885CFD033FF /* PlaygroundAdvancedInputsView.swift in Sources */,
 				5A3B1829F40443C5D5FA6EC2 /* PlaygroundCatalog.generated.swift in Sources */,
 				3F78C1BF0A31445B3A1BC333 /* PlaygroundExamplesView.swift in Sources */,
 				C6CEF83F16EE8556EC3DBD9E /* PlaygroundHomeView.swift in Sources */,
+				4C9A4892BC1BFDCB83E13957 /* PlaygroundMacCommands.swift in Sources */,
+				DBB7FFC94622EB5056EB6377 /* PlaygroundMediaWorkspaceView.swift in Sources */,
+				8B9E817F2C9ACF09C187BC6E /* PlaygroundParityExamplesView.swift in Sources */,
 				E04C7AB2BD18952D8710CCB0 /* PlaygroundSettingsView.swift in Sources */,
 				F8E4ABC1A336A6607D841E29 /* PlaygroundShell.swift in Sources */,
+				98C1AA51CD562EA2E42CD67A /* PlaygroundWorkspaceView.swift in Sources */,
+				CB938ED74CB35895BD71AD06 /* QRCodeParityExample.swift in Sources */,
+				2CBD19EA76FAB9E2FEB5620C /* RatingParityExample.swift in Sources */,
+				FA9360479DDD26FC4936D801 /* RichTextParityExample.swift in Sources */,
+				2152E330D2F38DC10E5E5616 /* ScheduleParityExample.swift in Sources */,
+				A14CCFACB71C261EC821F449 /* StepperParityExample.swift in Sources */,
+				18FDAE1D340A6A85241B15B7 /* TableParityExample.swift in Sources */,
+				2554BDCFE0E381C7AADAA3F7 /* TimelineParityExample.swift in Sources */,
+				A70BD02D3F462353F61511A6 /* TooltipParityExample.swift in Sources */,
+				E6E58627404A9B46C9CEC582 /* TourParityExample.swift in Sources */,
+				81D7A8F2D08567023C275929 /* TransferParityExample.swift in Sources */,
+				085D5763C1D14A246C896486 /* TreeGridParityExample.swift in Sources */,
+				226AAB82E082BFACE85E0D71 /* TreeParityExample.swift in Sources */,
+				0A78480519D1F79BCCB08A2B /* TreeSelectParityExample.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B8BDBAB7F12981F9BD553A6C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFCF1EA85842549E0B5FFD33 /* AdvancedInputTests.swift in Sources */,
+				AE068C7F33E573F5E263D2F9 /* CatalogParityInteractionTests.swift in Sources */,
+				5D44BEDC71D11C2D620D83CF /* QRCodeParityTests.swift in Sources */,
+				302BA7A9A3B20BC59019A96E /* WorkspacePerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,6 +612,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		09A326FDDD9D50C087E03AE3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B87CA3EC27EB3E2B33212422 /* LumenApplePlayground */;
+			targetProxy = 0B36D67C28F79185B8422D9B /* PBXContainerItemProxy */;
+		};
 		7257008578C129A7DE6F3007 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 646E633DD983191F4D179E43 /* LumenWidgetPlayground */;
@@ -460,7 +701,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple.widget;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -481,12 +722,31 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		263AECDEC945E0D32D21DC5E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple.uitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LumenApplePlayground;
 			};
 			name = Release;
 		};
@@ -501,7 +761,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_WKApplication = YES;
 				INFOPLIST_KEY_WKWatchOnly = YES;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.watch;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -524,12 +784,31 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		AB2F961F47413DC98CD6D80B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple.uitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = LumenApplePlayground;
 			};
 			name = Debug;
 		};
@@ -549,7 +828,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				PRODUCT_NAME = "Lumen Playground";
 				SDKROOT = macosx;
@@ -574,7 +853,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				PRODUCT_NAME = "Lumen Playground";
 				SDKROOT = macosx;
@@ -652,7 +931,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple.widget;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -671,7 +950,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_WKApplication = YES;
 				INFOPLIST_KEY_WKWatchOnly = YES;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.watch;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -707,6 +986,15 @@
 			buildConfigurations = (
 				1008DF4D105B5A19146E9799 /* Debug */,
 				F570D9F0DE7CF08EF4CB6006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A1DA9A96844CAED130DFED27 /* Build configuration list for PBXNativeTarget "LumenApplePlaygroundUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB2F961F47413DC98CD6D80B /* Debug */,
+				263AECDEC945E0D32D21DC5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

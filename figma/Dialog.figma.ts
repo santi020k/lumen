@@ -1,11 +1,8 @@
 // url=https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9/Lumen-UI-Library?node-id=45-12
 // source=packages/astro/components/Dialog.astro
 // component=Dialog
-import _figma from 'figma'
+import figma from 'figma'
 
-import type { FigmaStatic } from './types.ts'
-
-const figma = _figma as unknown as FigmaStatic
 const instance = figma.selectedInstance
 const title = instance.getString('Title')
 const description = instance.getString('Description')

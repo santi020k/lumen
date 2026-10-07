@@ -1,12 +1,15 @@
 import { readdir, readFile, stat } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
+import { auditLumenTheme } from '@santi020k/lumen-core'
+
 import {
   consumerRolloutSucceeded,
   formatConsumerRollout,
   resolveConsumerRolloutTargets,
   runConsumerRollout
 } from './consumer-rollout.js'
+import { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade } from './consumer-upgrade-audit.js'
 import {
   createLumenSetup,
   formatLumenDiagnostics,
@@ -26,6 +29,7 @@ import {
 } from './registry.js'
 import { auditLumenTokenCss, type LumenTokenAuditFinding } from './token-audit.js'
 import { formatLumenV2Migration, migrateLumenV2 } from './v2-migration.js'
+import { formatLumenVersionMigration, migrateLumenVersion } from './version-migration.js'
 
 const args = process.argv.slice(2)
 const [command = 'help', name] = args
@@ -257,11 +261,14 @@ const help = [
   '  lumen add <name>       Install a recipe or component into the current project',
   '  lumen install          Print install commands',
   '  lumen audit-tokens     Report incompatible semantic color custom properties',
+  '  lumen audit-theme <json>  Check named semantic palettes and text contrast',
+  '  lumen audit-consumer   Review versions, local patches and Lumen CSS overrides',
   '  lumen doctor           Inspect styles, adapters, runtime mounts, and selector usage',
   '  lumen doctor-native    Inspect native versions, package pins, and theme placement',
   '  lumen init             Print canonical framework setup without changing files',
   '  lumen rollout [version] [repositories...]  Inventory or upgrade pnpm consumers',
-  '  lumen migrate v2       Preview or apply the candidate Lumen v2 source migrations',
+  '  lumen migrate v2|v3|v4 Preview source migrations and manual review findings',
+  '  --dependencies        Include coordinated pnpm upgrades for v3/v4 migrations',
   '',
   'Options:',
   '  --cwd <path>           Target directory for lumen add',
@@ -276,7 +283,7 @@ const help = [
   '  --tailwind             Include the verified Tailwind cascade setup in lumen init',
   '  --json                 Print lumen doctor output as JSON',
   '  --manifest <path>      Use a specific cross-platform release manifest',
-  '  --apply                Apply a rollout or v2 migration (migrations default to dry-run)',
+  '  --apply                Apply a rollout or supported migration (migrations default to dry-run)',
   '  --allow-dirty          Allow rollout after recording an uncommitted baseline',
   '  --exclude <path>       Exclude a repository (repeatable)',
   '  --no-verify            Skip downstream check, typecheck, build, and browser scripts',
@@ -293,6 +300,44 @@ const run = async () => {
     lumenRegistry
 
   switch (command) {
+    case 'audit-consumer': {
+      const report = await inspectLumenConsumerUpgrade(cwd ?? name ?? process.cwd())
+
+      output = json ? JSON.stringify(report, undefined, 2) : formatLumenConsumerUpgradeAudit(report)
+
+      break
+    }
+
+    case 'audit-theme': {
+      if (!name) throw new Error('Provide a JSON file mapping scope names to resolved semantic palettes.')
+
+      const value: unknown = JSON.parse(await readFile(resolve(cwd ?? process.cwd(), name), 'utf8'))
+
+      if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length === 0) throw new Error('Theme audit requires a nonempty scope-to-palette object.')
+
+      const palettes: [string, unknown][] = Object.entries(value)
+
+      const scopes = palettes.map(([scope, palette]) => {
+        if (!palette || typeof palette !== 'object' || Array.isArray(palette)) throw new Error(`Invalid palette for ${scope}.`)
+
+        const entries: [string, unknown][] = Object.entries(palette)
+
+        if (entries.some(([, channel]) => typeof channel !== 'string')) {
+          throw new Error(`Palette ${scope} must contain string HSL channels.`)
+        }
+
+        const tokens = Object.fromEntries(entries.map(([token, channel]) => [token, String(channel)]))
+
+        return { scope, ...auditLumenTheme(tokens) }
+      })
+
+      output = json ? JSON.stringify(scopes, undefined, 2) : scopes.map(scope => `${scope.scope}: ${scope.healthy ? 'passed' : 'needs review'}\n${scope.findings.map(item => `  [${item.rule}] ${item.message}`).join('\n')}`).join('\n')
+
+      if (scopes.some(scope => !scope.healthy)) process.exitCode = 1
+
+      break
+    }
+
     case 'audit-tokens': {
       output = await formatTokenAudit(name ?? cwd ?? process.cwd())
 
@@ -344,9 +389,23 @@ const run = async () => {
     }
 
     case 'migrate': {
-      if (name !== 'v2') throw new Error('Missing or invalid migration. Use lumen migrate v2.')
+      if (name !== 'v2' && name !== 'v3' && name !== 'v4') throw new Error('Missing or invalid migration. Use lumen migrate v2, v3 or v4.')
 
-      if (applyRollout && dryRun) throw new Error('Choose either --dry-run or --apply for lumen migrate v2.')
+      if (applyRollout && dryRun) throw new Error('Choose either --dry-run or --apply for lumen migrate.')
+
+      if (name !== 'v2') {
+        const report = await migrateLumenVersion({
+          allowDirty, apply: applyRollout, ...(cwd ? { cwd } : {}), dependencies: args.includes('--dependencies'), version: name
+        })
+
+        output = json ? JSON.stringify(report, undefined, 2) : formatLumenVersionMigration(report)
+
+        if (report.dependencies && !consumerRolloutSucceeded(report.dependencies)) process.exitCode = 1
+
+        break
+      }
+
+      if (args.includes('--dependencies')) throw new Error('For v2 dependencies, use lumen rollout separately.')
 
       const report = await migrateLumenV2({
         apply: applyRollout,

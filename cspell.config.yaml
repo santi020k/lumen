@@ -1,6 +1,433 @@
 version: "0.2"
 language: en
 words:
+  - noindex
+  - imac
+  - macbook
+  - Acercar
+  - Alejar
+  - Mapa
+  - trackpad
+  - zoomable
+  - Ashmore
+  - Barthélemy
+  - Burkina
+  - Cabo
+  - Caicos
+  - Côte
+  - Faso
+  - Futuna
+  - Kitts
+  - Leste
+  - Maarten
+  - Marino
+  - Rica
+  - Siachen
+  - Sint
+  - Swatini
+  - Tomé
+  - d'Ivoire
+  - Åland
+  - gsap
+  - hyperframes
+  - hanidec
+  - tanstack
+  - equirectangular
+  - Peucker
+  - Desactivar
+  - Detalle
+  - Monto
+  - Ningún
+  - Restablecer
+  - Simular
+  - caracteres
+  - decimales
+  - detalle
+  - estas
+  - estos
+  - filas
+  - financieras
+  - financiero
+  - guardado
+  - inténtalo
+  - límites
+  - menos
+  - monto
+  - otro
+  - reglas
+  - servidor
+  - solicita
+  - solicitud
+  - unidades
+  - ENDSWITH
+  - Acción
+  - Aprobación
+  - Cronología
+  - Invertir
+  - Marcador
+  - Preparación
+  - compilación
+  - conector
+  - controles
+  - elegida
+  - eventos
+  - extenso
+  - lanzamiento
+  - marcador
+  - personalizado
+  - sintética
+  - tiene
+  - Descripción
+  - Desplazamiento
+  - Diapositiva
+  - Diapositivas
+  - Faltante
+  - Identidades
+  - Menciones
+  - Responsable
+  - Segunda
+  - Sugerencias
+  - Unclipped
+  - Verificación
+  - autoplay
+  - coincidencias
+  - diapositiva
+  - diapositivas
+  - etiquetas
+  - extensas
+  - ingeniería
+  - inputmethod
+  - inválida
+  - inválidas
+  - línea
+  - líneas
+  - nonblank
+  - noninteger
+  - nonpositive
+  - nonsortable
+  - pantallas
+  - pequeñas
+  - región
+  - sugerencias
+  - truncar
+  - typechecks
+  - uniquing
+  - varias
+  - Progreso
+  - duplicados
+  - Atrás
+  - Siguiente
+  - Reiniciar
+  - Índice
+  - negativo
+  - finito
+  - experiencia
+  - Revisar
+  - controla
+  - Completado
+  - Biblioteca
+  - Plataformas
+  - compartidos
+  - Guías
+  - Ubicación
+  - Spacebar
+  - Calificación
+  - Calificar
+  - calificar
+  - sintético
+  - revisión
+  - Elementos
+  - personalizados
+  - adaptables
+  - bloqueado
+  - Paquete
+  - Plataforma
+  - Descargas
+  - orden
+  - Ascendente
+  - Descendente
+  - Ordenar
+  - aquí
+  - Deshabilitar
+  - seleccionados
+  - Paquetes
+  - sintéticos
+  - paquetes
+  - Seleccionar
+  - visibles
+  - Deseleccionar
+  - RGBA
+  - RRGGBB
+  - RRGGBBAA
+  - CFURL
+  - zxing
+  - grayscale
+  - failable
+  - nonopaque
+  - noncompact
+  - nonoverlapping
+  - nonselectable
+  - noninteractive
+  - barcodes
+  - symbologies
+  - generar
+  - Exceso
+  - Restaurar
+  - inválido
+  - Transparente
+  - Deshabilitado
+  - acento
+  - Azul
+  - Rojo
+  - Matiz
+  - Saturación
+  - Opacidad
+  - xhigh
+  - focusable
+  - tabindex
+  - inválidos
+  - Inicio
+  - Proceso
+  - Grupo
+  - Mediana
+  - constexpr
+  - Layoutable
+  - autocorrection
+  - Comparación
+  - Ciudad
+  - cita
+  - ciudades
+  - Medellín
+  - Alternar
+  - drilldown
+  - Columna
+  - Explorar
+  - detalles
+  - intervalos
+  - observaciones
+  - Máximo
+  - Mínimo
+  - Evolución
+  - Distribución
+  - Relación
+  - proyección
+  - Operaciones
+  - seguimiento
+  - pendientes
+  - periodo
+  - seleccionado
+  - perder
+  - contexto
+  - Ruta
+  - navegación
+  - página
+  - Exportar
+  - informe
+  - detallado
+  - Crear
+  - nuevo
+  - Activo
+  - operativos
+  - actualizados
+  - recientemente
+  - sección
+  - toda
+  - archivo
+  - pudo
+  - previa
+  - Descargar
+  - Documento
+  - posinset
+  - setsize
+
+  - Crea
+  - Incluye
+  - botón
+  - carga
+  - cierra
+  - componentes
+  - conserva
+  - debes
+  - devuelve
+  - diálogo
+  - encabezado
+  - enfoca
+  - entorno
+  - escritorio
+  - estilos
+  - foco
+  - habilidad
+  - implementar
+  - inicial
+  - instalados
+  - móvil
+  - necesarios
+  - públicos
+  - tipos
+  - título
+  - perfil
+  - accesible
+  - boton
+  - calendario
+  - eliminacion
+  - eliminar
+  - fecha
+  - fechas
+  - formulario
+  - notificacion
+  - oscuro
+  - paginada
+  - selector
+  - rango
+  - tabla
+  - Macrobenchmark
+  - fsmonitor
+  - apksigner
+  - androiddebugkey
+  - uiautomator
+  - sdcard
+  - screencap
+  - dumpsys
+  - gfxinfo
+  - framestats
+  - PROFILEDATA
+  - vsync
+  - cinco
+  - valores
+  - ejemplos
+  - Vacío
+  - Selecciona
+  - Volver
+  - Borrar
+  - búsqueda
+  - encontraron
+  - registros
+  - después
+  - guardar
+  - selección
+  - contrasena
+  - notificación
+  - eliminación
+  - Satteri
+  - AFRIKA
+  - Biolinum
+  - Cunha
+  - JUMUIYA
+  - MASHARIKI
+  - Lipiridis
+  - Panayiotis
+  - cefta
+  - dasharray
+  - dashoffset
+  - evenodd
+  - inkscape
+  - landxx
+  - miterlimit
+  - xlink
+  - nodpi
+
+  - Preferencias
+  - comunicación
+  - permisos
+  - espacio
+  - compartido
+  - Contraseña
+  - Ejemplo
+  - cuenta
+  - Mostrar
+  - Ocultar
+  - Código
+  - pega
+  - seis
+  - dígitos
+  - completo
+  - Esperando
+  - oculto
+  - Mantén
+  - pulsado
+  - icono
+  - ayuda
+  - Guardar
+  - Cerrar
+  - imágenes
+  - Después
+  - Ajusta
+  - ambas
+  - Revisa
+  - diseño
+  - Proyecto
+  - archivado
+  - reunión
+  - Elegir
+  - Confirmar
+  - Usar
+  - teclado
+  - reloj
+  - Elige
+  - dentro
+  - horario
+  - lectura
+  - Cantidad
+  - pasos
+  - número
+  - válido
+  - Aumentar
+  - Disminuir
+  - fuera
+  - máxima
+  - resultados
+  - Listo
+  - Cargando
+  - pudieron
+  - cargar
+  - proyectos
+  - buscar
+  - Buscando
+  - coincidentes
+  - Reintentar
+  - Selección
+  - ninguna
+  - Desliza
+  - hacia
+  - abajo
+  - actualizar
+  - Actualizando
+  - Actualizaciones
+  - completadas
+  - pulltorefresh
+  - Cambios
+  - guardados
+  - localmente
+  - Buscar
+  - ejemplo
+  - Espacio
+  - trabajo
+  - semanal
+  - dirección
+  - Nombre
+  - Notas
+  - obligatorio
+  - Resumen
+  - Contenido
+  - Vistas
+  - fflate
+  - valuetext
+  - Comparar
+  - ajustes
+  - Editada
+  - Lago
+  - montaña
+  - editar
+  - mismo
+  - cálida
+  - Cuentas
+  - Cartera
+  - Fenix
+  - KinJar
+  - Aplicar
+  - Cancelar
+  - Desde
+  - Períodos
   - Gantt
   - Pilcrow
   - Squircle
@@ -22,6 +449,7 @@ words:
   - appstoreconnect
   - SAMEORIGIN
   - SLSA
+  - RSASSA
   - swiftui
   - aaronmgz
   - activedescendant
@@ -121,6 +549,7 @@ words:
   - descriptions
   - Descriptions
   - desktopcomputer
+  - Detalles
   - deepmerge
   - dismissable
   - dogfooded
@@ -202,7 +631,6 @@ words:
   - npx
   - nums
   - overscan
-  - paintpalette
   - phonenumbers
   - pipefail
   - popconfirm
@@ -291,6 +719,11 @@ words:
   - xcodegen
   - xcodeproj
   - xcassets
+  - XCUI
+  - XCTOS
+  - udid
+  - xcresult
+  - xcresulttool
   - reactnative
   - reactjs
   - webdev
@@ -306,6 +739,9 @@ words:
   - appletvsimulator
   - subrange
   - APPL
+  - Leyenda
+  - Categoría
+  - Serie
 ignoreRegExpList:
   - luQW2pTQ3jGGxSFPAAsfa9
 ignorePaths:
@@ -335,3 +771,19 @@ ignorePaths:
   - apps/playground-apple/LumenApplePlayground.xcodeproj/**
   - apps/playground-apple/Supporting/Info.plist
   - apps/playground-apple/project.yml
+
+# Standard ARIA attribute suffixes used by virtualized collections.
+
+# Canonical icon identifiers and brand names remain checked against generated catalog vocabulary.
+dictionaryDefinitions:
+  - name: lumen-native-icons
+    path: ./icons/native-icon-words.generated.txt
+    addWords: false
+overrides:
+  - filename:
+      - packages/react-native/src/static-icons/*.generated.tsx
+      - packages/react-native/src/static-icon-exports.generated.ts
+      - registry/native-api-baseline.json
+      - icons/native-icon-words.generated.txt
+    dictionaries:
+      - lumen-native-icons

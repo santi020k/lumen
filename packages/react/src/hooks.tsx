@@ -1,11 +1,7 @@
-/* eslint-disable @eslint-react/no-context-provider, @eslint-react/no-use-context */
-/* eslint-disable react-refresh/only-export-components */
-/* Public hooks, explicit context providers, and their small helpers intentionally share this module. */
 'use client'
 
 import {
   type ComponentPropsWithRef,
-  createContext,
   type CSSProperties,
   type Dispatch,
   type JSX,
@@ -17,7 +13,6 @@ import {
   type RefObject,
   type SetStateAction,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useMemo,
@@ -31,20 +26,26 @@ import {
   createLumenKanbanMoveDetail,
   createThemeBuilderTokens,
   exportThemeBuilderValue,
+  getLumenDirectionalKey,
   getLumenLocalePair,
-  getLumenRichTextShortcut,
-  isLumenRichTextToggleCommand,
   type LumenKanbanMoveDetail,
   type LumenLocaleOption,
-  type LumenRichTextChangeDetail,
-  type LumenRichTextCommandDetail as CoreRichTextCommandDetail,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderMode,
   type LumenThemeBuilderResult,
   type LumenThemeBuilderScheme,
+  type LumenThemePreset,
   type LumenThemeTokens,
   normalizeLumenLocales,
   scrollLumenTabIntoView } from '@santi020k/lumen-core'
+import { isLumenDateBoundsValid as isCalendarBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels as resolveDateControlLabels, resolveLumenDateLocale as getCalendarLocale } from '@santi020k/lumen-core'
+
+import { useDialogLifecycle } from './dialog-lifecycle.js'
+import { type FloatingPanelOptions, useFloatingPanel } from './floating-panel.js'
+import { isLumenFormControl } from './form-workflow.js'
+import { useSelectFormReset } from './select-form.js'
+
+export { useToast } from './toast-context.js'
 
 type ChangeHandler<T> = (value: T) => void
 
@@ -66,12 +67,6 @@ const setRefValue = <Value,>(
   } else if (ref) {
     ref.current = value
   }
-}
-
-interface RichTextCommandDocument {
-  execCommand?: (command: string, showUi?: boolean, value?: string) => boolean
-  queryCommandState?: (command: string) => boolean
-  queryCommandValue?: (command: string) => string
 }
 
 export type ToastPlacement =
@@ -146,6 +141,8 @@ interface DisclosureController {
 
 export interface DialogOptions extends DisclosureOptions {
   alert?: boolean | undefined
+  dismissOnEscape?: boolean | undefined
+  dismissOnOutsidePress?: boolean | undefined
 }
 
 export interface DialogController {
@@ -159,11 +156,11 @@ export interface DialogController {
   triggerRef: RefObject<HTMLElement | null>
 }
 
-export type PopoverOptions = DisclosureOptions
+export type PopoverOptions = DisclosureOptions & FloatingPanelOptions
 
 export type PopoverController = DisclosureController
 
-export type DropdownMenuOptions = DisclosureOptions
+export type DropdownMenuOptions = DisclosureOptions & FloatingPanelOptions
 
 export type DropdownMenuController = DisclosureController
 
@@ -362,12 +359,14 @@ export interface CalendarDay {
 export interface CalendarOptions {
   defaultValue?: string | undefined
   disabled?: boolean | undefined
+  labels?: { previousMonth?: string, nextMonth?: string } | undefined
   locale?: string | undefined
   max?: string | undefined
   min?: string | undefined
   month?: string | undefined
   name?: string | undefined
   onValueChange?: ChangeHandler<string> | undefined
+  readOnly?: boolean | undefined
   value?: string | undefined
 }
 
@@ -413,27 +412,8 @@ export interface DateRangePickerController {
   syncRange: (root?: HTMLElement | null) => DateRangePickerChangeDetail
 }
 
-export type RichTextEditorCommandDetail = CoreRichTextCommandDetail
-
-export interface RichTextEditorOptions {
-  onChange?: ChangeHandler<LumenRichTextChangeDetail> | undefined
-  onCommand?: ChangeHandler<RichTextEditorCommandDetail> | undefined
-}
-
-export interface RichTextEditorController {
-  executeCommand: (
-    command: string,
-    root?: HTMLElement | null,
-    value?: string
-  ) => boolean
-  getCommandProps: (
-    command: string,
-    props?: LumenProps<'button'>
-  ) => LumenProps<'button'>
-  getEditableProps: (props?: ComponentPropsWithRef<'div'>) => LumenProps<'div'>
-  rootProps: LumenProps<'section'>
-  rootRef: RefObject<HTMLElement | null>
-}
+export type { RichTextEditorCommandDetail, RichTextEditorController, RichTextEditorOptions } from './rich-text-editor.js'
+export { useRichTextEditor } from './rich-text-editor.js'
 
 export interface ScheduleChangeDetail {
   eventId?: string
@@ -521,6 +501,12 @@ export interface ThemeBuilderExportDetail {
 }
 
 export interface ThemeBuilderOptions {
+  radiusScale?: number | undefined
+  spacingScale?: number | undefined
+  borderWidth?: number | undefined
+  preset?: LumenThemePreset | undefined
+  defaultPreset?: LumenThemePreset | undefined
+  onPresetChange?: ChangeHandler<LumenThemePreset | undefined> | undefined
   accentHue?: number | undefined
   defaultAccentHue?: number | undefined
   defaultExportFormat?: LumenThemeBuilderExportFormat | undefined
@@ -548,6 +534,8 @@ export interface ThemeBuilderOptions {
 }
 
 export interface ThemeBuilderController extends ThemeBuilderChangeDetail {
+  setPreset: Dispatch<SetStateAction<LumenThemePreset | undefined>>
+  getPresetProps: (preset: LumenThemePreset, props?: ComponentPropsWithRef<'button'>) => LumenProps<'button'>
   accentHueProps: LumenProps<'input'>
   copyExport: () => Promise<string>
   exportButtonProps: LumenProps<'button'>
@@ -580,11 +568,6 @@ export interface ThemeBuilderController extends ThemeBuilderChangeDetail {
   setSecondaryColor: Dispatch<SetStateAction<string>>
 }
 
-const defaultToastDuration = 5000
-const defaultToastMax = 5
-const closeDelay = 240
-const ToastContext = createContext<ToastApi | null>(null)
-
 const focusableSelector = [
   'a[href]',
   'button:not([disabled])',
@@ -606,8 +589,12 @@ const composeHandlers =
 
 const isElementVisible = (element: HTMLElement): boolean => {
   if (typeof element.checkVisibility === 'function') {
-    return element.checkVisibility()
+    return element.checkVisibility({ visibilityProperty: true })
   }
+
+  const visibility = getComputedStyle(element).visibility
+
+  if (visibility === 'hidden' || visibility === 'collapse') return false
 
   return element.offsetParent !== null || element.getClientRects().length > 0
 }
@@ -616,7 +603,7 @@ const getFocusable = (root: ParentNode | null): HTMLElement[] => {
   if (!root) return []
 
   return [...root.querySelectorAll<HTMLElement>(focusableSelector)].filter(
-    element => !element.hasAttribute('hidden') && isElementVisible(element)
+    element => !element.matches(':disabled') && !element.closest('[hidden], [inert]') && isElementVisible(element)
   )
 }
 
@@ -637,30 +624,29 @@ const getLoopedIndex = (
   return (currentIndex - 1 + itemCount) % itemCount
 }
 
-const getOwnedTarget = (event: Event): Node | null => event.target instanceof Node ? event.target : null
-
 const useSafeId = (prefix: string, id?: string): string => {
   const reactId = useId().replaceAll(':', '')
 
   return id ?? `${prefix}-${reactId}`
 }
 
-const useControllableState = <T,>({
+const useControllableState = <T extends string | number | boolean | undefined>({
   defaultValue,
   onChange,
   value
-}: ControllableOptions<T>): [T, Dispatch<SetStateAction<T>>] => {
+}: ControllableOptions<T>): [T, Dispatch<SetStateAction<T>>, (value: T) => void] => {
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
+  const pendingValueRef = useRef(defaultValue)
   const currentValue = value ?? uncontrolledValue
 
   const setValue = useCallback<Dispatch<SetStateAction<T>>>(
     next => {
-      const resolvedValue =
-        typeof next === 'function' ?
-          (next as (previous: T) => T)(currentValue) :
-          next
+      const previousValue = value === undefined ? pendingValueRef.current : currentValue
+      const resolvedValue = typeof next === 'function' ? next(previousValue) : next
 
       if (value === undefined) {
+        pendingValueRef.current = resolvedValue
+
         setUncontrolledValue(resolvedValue)
       }
 
@@ -668,7 +654,15 @@ const useControllableState = <T,>({
     }, [currentValue, onChange, value]
   )
 
-  return [currentValue, setValue]
+  const restoreValue = useCallback((next: T) => {
+    if (value !== undefined) return
+
+    pendingValueRef.current = next
+
+    setUncontrolledValue(next)
+  }, [value])
+
+  return [currentValue, setValue, restoreValue]
 }
 
 const focusFirstIn = (root: ParentNode | null): void => {
@@ -707,34 +701,45 @@ const getContextMenuPosition = (
   }
 }
 
+const isDisclosureEditableTarget = (target: EventTarget | null, panel: HTMLElement): boolean => {
+  const ElementType = panel.ownerDocument.defaultView?.Element
+
+  if (!ElementType || !(target instanceof ElementType)) return false
+
+  if (target.closest('input, textarea')) return true
+
+  const editable = target.closest('[contenteditable]')?.getAttribute('contenteditable')?.toLowerCase()
+
+  return editable === '' || editable === 'true' || editable === 'plaintext-only'
+}
+
 const useOutsideClose = (
   open: boolean,
   refs: RefObject<HTMLElement | null>[],
   onClose: () => void
 ): void => {
   useEffect(() => {
-    if (!open || typeof document === 'undefined') return
+    const owner = refs.find(ref => ref.current)?.current?.ownerDocument
+    const NodeType = owner?.defaultView?.Node
 
-    const handlePointerDown = (event: globalThis.PointerEvent): void => {
-      const target = getOwnedTarget(event)
+    if (!open || !owner || !NodeType) return
 
-      if (!target) return
+    const pointerDown = (event: globalThis.PointerEvent): void => {
+      const target = event.target
 
-      const isInside = refs.some(ref => ref.current?.contains(target))
-
-      if (!isInside) onClose()
+      if (target instanceof NodeType && !refs.some(ref => ref.current?.contains(target))) onClose()
     }
 
-    document.addEventListener('pointerdown', handlePointerDown)
+    owner.addEventListener('pointerdown', pointerDown)
 
     return () => {
-      document.removeEventListener('pointerdown', handlePointerDown)
+      owner.removeEventListener('pointerdown', pointerDown)
     }
   }, [onClose, open, refs])
 }
 
 const useDisclosureController = (
-  options: DisclosureOptions,
+  options: DisclosureOptions & FloatingPanelOptions,
   hasPopup: 'listbox' | 'menu'
 ): DisclosureController => {
   const rootRef = useRef<HTMLElement | null>(null)
@@ -758,15 +763,31 @@ const useDisclosureController = (
 
   useOutsideClose(open, [rootRef, triggerRef, panelRef], close)
 
+  useFloatingPanel(open, triggerRef, panelRef, close, options)
+
   const triggerProps: LumenProps<'button'> = {
     'aria-controls': panelId,
     'aria-expanded': open,
     'aria-haspopup': hasPopup,
     'data-ui-trigger': true,
-    onClick: () => {
+    onClick: event => {
+      if (event.defaultPrevented) return
+
+      focusTrigger(triggerRef.current)
+
       toggle()
     },
     onKeyDown: event => {
+      if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
+      if (event.key === 'Escape' && open) {
+        event.preventDefault()
+
+        close()
+
+        return
+      }
+
       if (
         event.key !== 'ArrowDown' &&
         event.key !== 'Enter' &&
@@ -789,6 +810,8 @@ const useDisclosureController = (
     hidden: !open,
     id: panelId,
     onKeyDown: event => {
+      if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -798,6 +821,8 @@ const useDisclosureController = (
 
         return
       }
+
+      if (isDisclosureEditableTarget(event.target, event.currentTarget)) return
 
       const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
 
@@ -813,9 +838,11 @@ const useDisclosureController = (
 
       const nextItem =
         items[
-          getLoopedIndex(event.key, Math.max(0, currentIndex), items.length, [
-            'ArrowDown'
-          ])
+          getLoopedIndex(
+            getLumenDirectionalKey(event.currentTarget, event.key), Math.max(0, currentIndex), items.length, [
+              'ArrowDown'
+            ]
+          )
         ]
 
       nextItem?.focus()
@@ -839,9 +866,22 @@ const useDisclosureController = (
   }
 }
 
+const isDialogBackdropPoint = (
+  dialog: HTMLDialogElement | null,
+  event: { clientX: number, clientY: number, target: EventTarget | null }
+): boolean => {
+  if (!dialog || event.target !== dialog) return false
+
+  const bounds = dialog.getBoundingClientRect()
+
+  return event.clientX < bounds.left || event.clientX >= bounds.right ||
+    event.clientY < bounds.top || event.clientY >= bounds.bottom
+}
+
 export const useDialog = (options: DialogOptions = {}): DialogController => {
   const dialogRef = useRef<HTMLDialogElement | null>(null)
   const triggerRef = useRef<HTMLElement | null>(null)
+  const outsidePointerRef = useRef<boolean | undefined>(undefined)
 
   const [open, setOpen] = useControllableState({
     defaultValue: options.defaultOpen ?? false,
@@ -849,45 +889,44 @@ export const useDialog = (options: DialogOptions = {}): DialogController => {
     value: options.open
   })
 
+  const consumeProgrammaticClose = useDialogLifecycle(open, dialogRef, triggerRef)
+
   const close = useCallback(() => {
     setOpen(false)
   }, [setOpen])
 
-  useEffect(() => {
-    const dialog = dialogRef.current
-
-    if (!dialog) return
-
-    if (open && !dialog.open) {
-      if (typeof dialog.showModal === 'function') {
-        dialog.showModal()
-      } else {
-        dialog.setAttribute('open', '')
-      }
-
-      focusFirstIn(dialog)
-
-      return
-    }
-
-    if (!open && dialog.open) {
-      dialog.close()
-    }
-  }, [open])
-
   const dialogProps: LumenProps<'dialog'> = {
     'aria-modal': true,
     'data-ui-alert-dialog': options.alert ? true : undefined,
+    'data-ui-bound': true,
     'data-ui-dialog': options.alert ? undefined : true,
-    onClick: event => {
-      if (event.target === dialogRef.current && !options.alert) {
-        close()
-      }
-    },
-    onClose: () => {
-      close()
+    onCancel: event => {
+      if (event.target !== dialogRef.current || event.defaultPrevented) return
 
-      focusTrigger(triggerRef.current)
+      event.preventDefault()
+
+      event.stopPropagation()
+
+      if (options.dismissOnEscape !== false) close()
+    },
+    onClick: event => {
+      const startedOutside = outsidePointerRef.current
+
+      outsidePointerRef.current = undefined
+
+      if (event.defaultPrevented || startedOutside === false || event.detail === 0) return
+
+      if (!(options.dismissOnOutsidePress ?? !options.alert)) return
+
+      if (isDialogBackdropPoint(dialogRef.current, event)) close()
+    },
+    onClose: event => {
+      if (event.target !== dialogRef.current || consumeProgrammaticClose()) return
+
+      close()
+    },
+    onPointerDown: event => {
+      outsidePointerRef.current = isDialogBackdropPoint(dialogRef.current, event)
     },
     ref: dialogRef,
     role: options.alert ? 'alertdialog' : 'dialog'
@@ -898,7 +937,9 @@ export const useDialog = (options: DialogOptions = {}): DialogController => {
     onClick: () => {
       setOpen(true)
     },
-    ref: triggerRef as Ref<HTMLButtonElement>,
+    ref: element => {
+      triggerRef.current = element
+    },
     type: 'button'
   }
 
@@ -1016,6 +1057,8 @@ export const useContextMenu = ({
     setOpen(false)
   }, [setOpen])
 
+  useOutsideClose(open, [triggerRef, menuRef], close)
+
   const openAt = useCallback<ContextMenuController['openAt']>(
     (x, y) => {
       const rect = menuRef.current?.getBoundingClientRect()
@@ -1060,14 +1103,23 @@ export const useContextMenu = ({
     hidden: !open,
     id: menuId,
     onClick: event => {
-      if (
-        event.target instanceof HTMLElement &&
-        event.target.closest('[role="menuitem"]')
-      ) {
-        close()
+      const ElementType = event.currentTarget.ownerDocument.defaultView?.Element
+
+      if (!ElementType) return
+
+      let item: Element | null
+
+      try {
+        item = ElementType.prototype.closest.call(event.target, '[role="menuitem"]')
+      } catch {
+        return
       }
+
+      if (item) close()
     },
     onKeyDown: event => {
+      if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -1086,16 +1138,11 @@ export const useContextMenu = ({
 
       event.preventDefault()
 
-      const activeElement =
-        typeof document === 'undefined' ? null : document.activeElement
-
-      const currentIndex =
-        activeElement instanceof HTMLElement ?
-          items.indexOf(activeElement) :
-          -1
+      const activeElement = event.currentTarget.ownerDocument.activeElement
+      const currentIndex = items.findIndex(item => item === activeElement)
 
       items[
-        getLoopedIndex(event.key, currentIndex, items.length, ['ArrowDown'])
+        getLoopedIndex(getLumenDirectionalKey(event.currentTarget, event.key), currentIndex, items.length, ['ArrowDown'])
       ]?.focus()
     },
     ref: menuRef,
@@ -1166,7 +1213,9 @@ export const useTabs = ({
           if (!keys.includes(event.key)) return
 
           const tabs = rootRef.current ?
-            [...rootRef.current.querySelectorAll<HTMLElement>('[role="tab"]')] :
+            [...rootRef.current.querySelectorAll<HTMLElement>('[role="tab"]')]
+              .filter(tab => tab.closest('[data-ui-tabs]') === rootRef.current &&
+                !tab.matches(':disabled, [aria-disabled="true"]')) :
             []
 
           if (!tabs.length) return
@@ -1181,7 +1230,7 @@ export const useTabs = ({
                 event.key,
                 Math.max(0, currentIndex),
                 tabs.length,
-                orientation === 'vertical' ? ['ArrowDown'] : ['ArrowRight']
+                orientation === 'vertical' ? ['ArrowDown'] : [getLumenDirectionalKey(event.currentTarget, 'ArrowRight')]
               )
             ]
 
@@ -1274,7 +1323,7 @@ export const useSelect = ({
 
   const [open, setOpen] = useState(false)
 
-  const [selectedValue, setSelectedValue] = useControllableState({
+  const [selectedValue, setSelectedValue, restoreSelectedValue] = useControllableState({
     defaultValue,
     onChange: onValueChange,
     value
@@ -1296,6 +1345,8 @@ export const useSelect = ({
   const openList = useCallback(() => {
     setOpen(true)
   }, [setOpen])
+
+  useSelectFormReset(rootRef, defaultValue, value, restoreSelectedValue, close)
 
   useOutsideClose(open, [rootRef, triggerRef, listRef], close)
 
@@ -1406,7 +1457,13 @@ export const useSelect = ({
 
       if (!option || option.disabled) return
 
-      setSelectedValue(nextValue)
+      const native = rootRef.current?.querySelector<HTMLSelectElement>('[data-ui-select-native]')
+
+      if (native) {
+        native.value = nextValue
+
+        native.dispatchEvent(new Event('change', { bubbles: true }))
+      } else setSelectedValue(nextValue)
 
       close()
 
@@ -1451,9 +1508,13 @@ export const useSelect = ({
       setOpen(current => !current)
     },
     onKeyDown: event => {
+      if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
       if (handleTypeahead(event)) return
 
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && open) {
+        event.preventDefault()
+
         close()
 
         return
@@ -1507,9 +1568,13 @@ export const useSelect = ({
         selectOption(option.value)
       }),
       onKeyDown: composeHandlers(props.onKeyDown, event => {
+        if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
         if (handleTypeahead(event, event.currentTarget)) return
 
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && open) {
+          event.preventDefault()
+
           close()
 
           focusTrigger(triggerRef.current)
@@ -1536,7 +1601,7 @@ export const useSelect = ({
       role: 'option',
       tabIndex: -1,
       type: props.type ?? 'button'
-    }), [close, focusOption, handleTypeahead, selectOption, selectedValue]
+    }), [close, focusOption, handleTypeahead, open, selectOption, selectedValue]
   )
 
   return {
@@ -1596,9 +1661,7 @@ const validityMessageAttributes = [
 
 const isNativeFormControl = (
   element: EventTarget | null
-): element is NativeFormControl => element instanceof HTMLInputElement ||
-  element instanceof HTMLSelectElement ||
-  element instanceof HTMLTextAreaElement
+): element is NativeFormControl => element !== null && isLumenFormControl(element)
 
 const getFieldRoot = (control: HTMLElement): HTMLElement | null => control.closest<HTMLElement>('.ui-field, [data-ui-field]')
 
@@ -1699,8 +1762,9 @@ export const useFormValidation = ({
       if (!form) return []
 
       return [
-        ...form.querySelectorAll<NativeFormControl>(formControlSelector)
-      ].filter(control => control.form === form && !control.disabled)
+        ...form.elements
+      ].filter(isNativeFormControl).filter(control => control.matches(formControlSelector) &&
+        control.form === form && !control.matches(':disabled'))
     }, []
   )
 
@@ -1832,72 +1896,61 @@ export const useFormValidation = ({
   }
 }
 
-/* eslint-disable @stylistic/padding-line-between-statements, complexity, no-nested-ternary -- Calendar mirrors Astro's UTC date grid and keyboard runtime. */
-const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/
+/* eslint-disable complexity -- Calendar mirrors Astro's UTC date grid and keyboard runtime. */
 const calendarMonthPattern = /^\d{4}-\d{2}$/
-
-const parseCalendarDate = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarDatePattern.test(value)) return null
-
-  const [year = Number.NaN, month = Number.NaN, day = Number.NaN] = value
-    .split('-')
-    .map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
-
-  return date.getUTCFullYear() === year &&
-    date.getUTCMonth() === month - 1 &&
-    date.getUTCDate() === day ?
-    date :
-    null
-}
 
 const parseCalendarMonth = (value: string | null | undefined): Date | null => {
   if (!value || !calendarMonthPattern.test(value)) return null
 
-  const [year = Number.NaN, month = Number.NaN] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, 1))
-
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 ?
-    date :
-    null
+  return parseCalendarDate(`${value}-01`)
 }
 
-const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
-const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
-const startOfCalendarMonth = (date: Date): Date => new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1))
-const addCalendarDays = (date: Date, days: number): Date => new Date(
-  Date.UTC(
-    date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
-  )
+const createCalendarDate = (year: number, month: number, day: number): Date => {
+  const date = new Date(0)
+
+  date.setUTCFullYear(year, month, day)
+
+  return date
+}
+
+const formatCalendarDate = (date: Date): string => date.toISOString().split('T')[0] ?? ''
+const formatCalendarMonth = (date: Date): string => formatCalendarDate(date).slice(0, -3)
+const startOfCalendarMonth = (date: Date): Date => createCalendarDate(date.getUTCFullYear(), date.getUTCMonth(), 1)
+
+const addCalendarDays = (date: Date, days: number): Date => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
 )
-const getCalendarDaysInMonth = (date: Date): number => new Date(
-  Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)
+
+const getCalendarDaysInMonth = (date: Date): number => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth() + 1, 0
 ).getUTCDate()
+
 const addCalendarMonths = (date: Date, months: number): Date => {
-  const targetMonth = new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1)
+  const targetMonth = createCalendarDate(
+    date.getUTCFullYear(), date.getUTCMonth() + months, 1
   )
+
   const day = Math.min(
     date.getUTCDate(), getCalendarDaysInMonth(targetMonth)
   )
 
-  return new Date(
-    Date.UTC(targetMonth.getUTCFullYear(), targetMonth.getUTCMonth(), day)
+  return createCalendarDate(
+    targetMonth.getUTCFullYear(), targetMonth.getUTCMonth(), day
   )
 }
 
 const getCalendarToday = (): Date => {
   const today = new Date()
 
-  return new Date(
-    Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
+  return createCalendarDate(
+    today.getFullYear(), today.getMonth(), today.getDate()
   )
 }
 
 const compareCalendarDates = (date: Date, other: Date | null): number => {
   if (!other) return 0
 
-  return formatCalendarDate(date).localeCompare(formatCalendarDate(other))
+  return Math.sign(date.getTime() - other.getTime())
 }
 
 const isCalendarDateDisabled = (
@@ -1922,20 +1975,6 @@ const clampCalendarDate = (
 }
 
 const getCalendarGridStart = (month: Date): Date => addCalendarDays(month, -((month.getUTCDay() + 6) % 7))
-
-const getCalendarLocale = (locale: string | undefined): string => {
-  if (locale) return locale
-
-  if (typeof document !== 'undefined' && document.documentElement.lang) {
-    return document.documentElement.lang
-  }
-
-  if (typeof navigator !== 'undefined' && navigator.language) {
-    return navigator.language
-  }
-
-  return 'en'
-}
 
 const coerceCalendarDate = (value: string | Date): Date | null => (
   value instanceof Date ? value : parseCalendarDate(value)
@@ -1971,47 +2010,105 @@ const getCalendarFocusDate = (
   return month
 }
 
+const formatSelectedCalendarDate = (value: Date | null): string => value ? formatCalendarDate(value) : ''
+
 export const useCalendar = ({
   defaultValue,
-  disabled = false,
+  disabled: requestedDisabled = false,
+  labels,
   locale,
   max,
   min,
   month,
   name,
   onValueChange,
+  readOnly = false,
   value: controlledValue
 }: CalendarOptions = {}): CalendarController => {
+  const disabled = requestedDisabled || !isCalendarBoundsValid(min, max)
   const rootRef = useRef<HTMLDivElement | null>(null)
   const generatedId = useId()
   const calendarId = `ui-calendar-${generatedId}`
   const labelId = `${calendarId}-label`
-  const minDate = parseCalendarDate(min)
-  const maxDate = parseCalendarDate(max)
+  const minDate = parseCalendarDate(min ?? '0001-01-01')
+  const maxDate = parseCalendarDate(max ?? '9999-12-31')
   const defaultDate = parseCalendarDate(defaultValue)
   const controlledDate = parseCalendarDate(controlledValue)
   const [uncontrolledValue, setUncontrolledValue] = useState(() => defaultDate ? formatCalendarDate(defaultDate) : '')
+
   const selectedValue =
     controlledValue === undefined ?
       uncontrolledValue :
-      controlledDate ?
-        formatCalendarDate(controlledDate) :
-        ''
+      formatSelectedCalendarDate(controlledDate)
+
   const selectedDate = parseCalendarDate(selectedValue)
+
   const initialMonth =
     parseCalendarMonth(month) ??
     (selectedDate ? startOfCalendarMonth(selectedDate) : null) ??
     startOfCalendarMonth(getCalendarToday())
+
   const [visibleMonthValue, setVisibleMonthValue] = useState(() => formatCalendarMonth(initialMonth))
+
   const visibleMonth =
     parseCalendarMonth(month ?? visibleMonthValue) ?? initialMonth
+
   const [focusValue, setFocusValue] = useState<string | null>(null)
+
+  useEffect(() => {
+    const root = rootRef.current
+    const owner = root?.closest('form')
+    let active = true
+    let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+
+    const reset = (event: Event) => {
+      globalThis.clearTimeout(resetTimer)
+
+      resetTimer = globalThis.setTimeout(() => {
+        if (!active || event.defaultPrevented || !root?.isConnected) return
+
+        const date = parseCalendarDate(defaultValue)
+
+        if (controlledValue === undefined) setUncontrolledValue(date ? formatCalendarDate(date) : '')
+
+        const resetMonth = parseCalendarMonth(month) ?? startOfCalendarMonth(date ?? getCalendarToday())
+
+        setVisibleMonthValue(formatCalendarMonth(resetMonth))
+
+        setFocusValue(null)
+      })
+    }
+
+    owner?.addEventListener('reset', reset)
+
+    return () => {
+      active = false
+
+      globalThis.clearTimeout(resetTimer)
+
+      owner?.removeEventListener('reset', reset)
+    }
+  }, [controlledValue, defaultValue, month])
+
   const focusDate = getCalendarFocusDate(
     disabled, visibleMonth, minDate, maxDate, selectedDate, parseCalendarDate(focusValue)
   )
+
   const focusIso = formatCalendarDate(focusDate)
+
+  useEffect(() => {
+    const root = rootRef.current
+
+    if (root?.contains(root.ownerDocument.activeElement) &&
+      root.ownerDocument.activeElement?.getAttribute('role') === 'gridcell') {
+      root.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus({ preventScroll: true })
+    }
+  }, [focusIso])
+
   const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
-  const currentLocale = getCalendarLocale(locale)
+  const currentLocale = getCalendarLocale(locale || 'en')
+  const navigationLabels = { ...resolveDateControlLabels(currentLocale), ...labels }
+
   const monthFormatter = useMemo(
     () => new Intl.DateTimeFormat(currentLocale, {
       month: 'long',
@@ -2019,6 +2116,7 @@ export const useCalendar = ({
       year: 'numeric'
     }), [currentLocale]
   )
+
   const dayFormatter = useMemo(
     () => new Intl.DateTimeFormat(currentLocale, {
       day: 'numeric',
@@ -2028,25 +2126,30 @@ export const useCalendar = ({
       year: 'numeric'
     }), [currentLocale]
   )
+
   const weekdayFormatter = useMemo(
     () => new Intl.DateTimeFormat(currentLocale, {
       timeZone: 'UTC',
       weekday: 'short'
     }), [currentLocale]
   )
+
   const todayIso = formatCalendarDate(getCalendarToday())
   const label = monthFormatter.format(visibleMonth)
+
   const weekdays = useMemo(
     () => Array.from(
       { length: 7 }, (_, index) => weekdayFormatter.format(new Date(Date.UTC(2026, 0, 5 + index)))
     ), [weekdayFormatter]
   )
+
   const weeks = useMemo(() => {
     const firstCell = getCalendarGridStart(visibleMonth)
 
     return Array.from({ length: 6 }, (_, rowIndex) => Array.from({ length: 7 }, (_, columnIndex): CalendarDay => {
       const date = addCalendarDays(firstCell, rowIndex * 7 + columnIndex)
       const dateIso = formatCalendarDate(date)
+
       const unavailable = isCalendarDateDisabled(
         disabled, date, minDate, maxDate
       )
@@ -2082,11 +2185,12 @@ export const useCalendar = ({
     const nextDate = clampCalendarDate(date, minDate, maxDate)
 
     setVisibleMonthValue(formatCalendarMonth(startOfCalendarMonth(nextDate)))
+
     setFocusValue(formatCalendarDate(nextDate))
   }
 
   const selectDate: CalendarController['selectDate'] = dateInput => {
-    if (disabled) return
+    if (disabled || readOnly) return
 
     const date = coerceCalendarDate(dateInput)
 
@@ -2103,12 +2207,15 @@ export const useCalendar = ({
     }
 
     setVisibleMonthValue(formatCalendarMonth(startOfCalendarMonth(nextDate)))
+
     setFocusValue(nextValue)
+
     onValueChange?.(nextValue)
   }
 
   const moveFocus = (currentDate: Date, key: string): void => {
     const column = (currentDate.getUTCDay() + 6) % 7
+
     const keyOffsets: Record<string, number> = {
       ArrowDown: 7,
       ArrowLeft: -1,
@@ -2126,7 +2233,8 @@ export const useCalendar = ({
       return
     }
 
-    const offset = keyOffsets[key]
+    const directionRoot = rootRef.current
+    const offset = keyOffsets[directionRoot ? getLumenDirectionalKey(directionRoot, key) : key]
 
     if (offset !== undefined) {
       focusCalendarDate(addCalendarDays(currentDate, offset))
@@ -2135,8 +2243,10 @@ export const useCalendar = ({
 
   const previousMonthLastDay = addCalendarDays(visibleMonth, -1)
   const nextMonthFirstDay = addCalendarMonths(visibleMonth, 1)
+
   const previousDisabled =
     disabled || compareCalendarDates(previousMonthLastDay, minDate) < 0
+
   const nextDisabled =
     disabled || compareCalendarDates(nextMonthFirstDay, maxDate) > 0
 
@@ -2196,6 +2306,7 @@ export const useCalendar = ({
     getDayProps,
     gridProps: {
       'aria-labelledby': labelId,
+      'aria-readonly': readOnly || undefined,
       className: 'ui-calendar__grid',
       'data-ui-calendar-grid': true,
       role: 'grid'
@@ -2215,16 +2326,19 @@ export const useCalendar = ({
     },
     month: formatCalendarMonth(visibleMonth),
     nextProps: {
-      'aria-label': 'Next month',
+      'aria-label': navigationLabels.nextMonth,
       className: 'ui-calendar__nav',
       'data-ui-calendar-next': true,
       disabled: nextDisabled,
       onClick: () => {
+        if (nextDisabled) return
+
         const nextMonth = startOfCalendarMonth(
           addCalendarMonths(visibleMonth, 1)
         )
 
         setVisibleMonthValue(formatCalendarMonth(nextMonth))
+
         setFocusValue(
           formatCalendarDate(
             getCalendarFocusDate(
@@ -2236,16 +2350,19 @@ export const useCalendar = ({
       type: 'button'
     },
     previousProps: {
-      'aria-label': 'Previous month',
+      'aria-label': navigationLabels.previousMonth,
       className: 'ui-calendar__nav',
       'data-ui-calendar-prev': true,
       disabled: previousDisabled,
       onClick: () => {
+        if (previousDisabled) return
+
         const previousMonth = startOfCalendarMonth(
           addCalendarMonths(visibleMonth, -1)
         )
 
         setVisibleMonthValue(formatCalendarMonth(previousMonth))
+
         setFocusValue(
           formatCalendarDate(
             getCalendarFocusDate(
@@ -2275,7 +2392,7 @@ export const useCalendar = ({
     weeks
   }
 }
-/* eslint-enable @stylistic/padding-line-between-statements, complexity, no-nested-ternary */
+/* eslint-enable complexity */
 
 const defaultInputOtpLength = 6
 const defaultInputOtpPattern = '[0-9]*'
@@ -2620,13 +2737,13 @@ const syncDateRangeInputs = (
 ): DateRangePickerChangeDetail => {
   if (!start || !end || start === end) return {}
 
-  syncDateInputConstraint(end, 'min', start.value)
-
-  syncDateInputConstraint(start, 'max', end.value)
-
   if (start.value && end.value && end.value < start.value) {
     end.value = start.value
   }
+
+  syncDateInputConstraint(end, 'min', start.value)
+
+  syncDateInputConstraint(start, 'max', end.value)
 
   return {
     ...(end.value ? { end: end.value } : {}),
@@ -2692,215 +2809,6 @@ export const useDateRangePicker = ({
     rootRef,
     startRef,
     syncRange
-  }
-}
-
-const richTextEditorContentSelector =
-  '[data-ui-rich-text-editable], [contenteditable="true"]'
-
-const getRichTextChangeDetail = (
-  root: HTMLElement | null
-): LumenRichTextChangeDetail | null => {
-  const editable = root?.querySelector<HTMLElement>(
-    richTextEditorContentSelector
-  )
-
-  if (!editable) return null
-
-  return {
-    html: editable.innerHTML,
-    text: editable.textContent
-  }
-}
-
-const executeRichTextDocumentCommand = (
-  commandDocument: RichTextCommandDocument | undefined,
-  command: string,
-  value?: string
-): boolean => {
-  if (typeof commandDocument?.execCommand !== 'function') return false
-
-  return value === undefined ?
-    commandDocument.execCommand(command) :
-    commandDocument.execCommand(command, false, value)
-}
-
-// eslint-disable-next-line complexity -- Command-state normalization covers toggle and value-bearing controls together.
-const syncRichTextCommandStates = (root: HTMLElement | null): void => {
-  if (!root || typeof document === 'undefined') return
-
-  const commandDocument = document as unknown as RichTextCommandDocument
-
-  for (const control of root.querySelectorAll<HTMLElement>(
-    '[data-ui-editor-command]'
-  )) {
-    const command = control.dataset.uiEditorCommand ?? ''
-    const value = control.dataset.uiEditorValue
-    let active = false
-
-    if (isLumenRichTextToggleCommand(command)) {
-      active = commandDocument.queryCommandState?.(command) ?? false
-
-      control.setAttribute('aria-pressed', String(active))
-    } else if (command === 'formatBlock' && value) {
-      const currentValue = commandDocument
-        .queryCommandValue?.(command)
-        .replaceAll(/[<>]/g, '')
-        .toLowerCase()
-
-      active = currentValue === value.replaceAll(/[<>]/g, '').toLowerCase()
-    }
-
-    control.dataset.state = active ? 'on' : 'off'
-  }
-}
-
-export const useRichTextEditor = ({
-  onChange,
-  onCommand
-}: RichTextEditorOptions = {}): RichTextEditorController => {
-  const rootRef = useRef<HTMLElement | null>(null)
-
-  const emitChange = useCallback(
-    (root: HTMLElement | null) => {
-      const detail = getRichTextChangeDetail(root)
-
-      if (!detail) return
-
-      if (typeof CustomEvent !== 'undefined') {
-        root?.dispatchEvent(
-          new CustomEvent<LumenRichTextChangeDetail>('ui:editor-change', {
-            bubbles: true,
-            detail
-          })
-        )
-      }
-
-      onChange?.(detail)
-    }, [onChange]
-  )
-
-  const executeCommand = useCallback<
-    RichTextEditorController['executeCommand']
-  >(
-    (command, root = rootRef.current, value) => {
-      if (!command) return false
-
-      const commandDocument =
-        typeof document === 'undefined' ?
-          undefined :
-          (document as unknown as RichTextCommandDocument)
-
-      const executed = executeRichTextDocumentCommand(
-        commandDocument, command, value
-      )
-
-      const detail: RichTextEditorCommandDetail = {
-        command,
-        executed,
-        ...(value === undefined ? {} : { value })
-      }
-
-      if (root && typeof CustomEvent !== 'undefined') {
-        root.dispatchEvent(
-          new CustomEvent<RichTextEditorCommandDetail>('ui:editor-command', {
-            bubbles: true,
-            detail
-          })
-        )
-      }
-
-      onCommand?.(detail)
-
-      syncRichTextCommandStates(root)
-
-      emitChange(root)
-
-      return executed
-    }, [emitChange, onCommand]
-  )
-
-  const getCommandProps = useCallback<
-    RichTextEditorController['getCommandProps']
-  >(
-    (command, props = {}) => ({
-      ...props,
-      'data-ui-editor-command': command,
-      onClick: composeHandlers(props.onClick, event => {
-        const root =
-          event.currentTarget.closest<HTMLElement>(
-            '[data-ui-rich-text-editor]'
-          ) ?? rootRef.current
-
-        executeCommand(
-          command, root, event.currentTarget.dataset.uiEditorValue
-        )
-      }),
-      type: props.type ?? 'button'
-    }), [executeCommand]
-  )
-
-  const getEditableProps = useCallback<
-    RichTextEditorController['getEditableProps']
-  >(
-    (props = {}) => ({
-      ...props,
-      'aria-multiline': props['aria-multiline'] ?? true,
-      contentEditable: props.contentEditable ?? true,
-      'data-ui-rich-text-editable': true,
-      onInput: composeHandlers(props.onInput, event => {
-        const root =
-          event.currentTarget.closest<HTMLElement>(
-            '[data-ui-rich-text-editor]'
-          ) ?? rootRef.current
-
-        syncRichTextCommandStates(root)
-
-        emitChange(root)
-      }),
-      onKeyDown: composeHandlers(props.onKeyDown, event => {
-        const command = getLumenRichTextShortcut(event)
-
-        if (!command) return
-
-        event.preventDefault()
-
-        const root =
-          event.currentTarget.closest<HTMLElement>(
-            '[data-ui-rich-text-editor]'
-          ) ?? rootRef.current
-
-        executeCommand(command, root)
-      }),
-      onKeyUp: composeHandlers(props.onKeyUp, event => {
-        syncRichTextCommandStates(
-          event.currentTarget.closest<HTMLElement>(
-            '[data-ui-rich-text-editor]'
-          ) ?? rootRef.current
-        )
-      }),
-      onMouseUp: composeHandlers(props.onMouseUp, event => {
-        syncRichTextCommandStates(
-          event.currentTarget.closest<HTMLElement>(
-            '[data-ui-rich-text-editor]'
-          ) ?? rootRef.current
-        )
-      }),
-      role: props.role ?? 'textbox',
-      suppressContentEditableWarning:
-        props.suppressContentEditableWarning ?? true
-    }), [emitChange, executeCommand]
-  )
-
-  return {
-    executeCommand,
-    getCommandProps,
-    getEditableProps,
-    rootProps: {
-      'data-ui-rich-text-editor': true,
-      ref: rootRef
-    },
-    rootRef
   }
 }
 
@@ -3312,19 +3220,15 @@ export const useKanban = ({
   }
 }
 
-/* eslint-disable @stylistic/padding-line-between-statements, @eslint-react/set-state-in-effect */
-/* eslint-disable @typescript-eslint/prefer-optional-chain, complexity, no-nested-ternary */
+/* eslint-disable @eslint-react/set-state-in-effect */
+/* eslint-disable complexity */
 /* Resizable mirrors Astro's compact pane sizing runtime. */
 const parseResizableNumberList = (
   value: number | number[] | undefined,
   count: number,
   fallback: number
 ): number[] => {
-  const values = Array.isArray(value) ?
-    value :
-    value === undefined ?
-      [] :
-      [value]
+  const values = typeof value === 'number' ? [value] : (value ?? [])
 
   return Array.from(
     { length: count }, (_, index) => values[index] ?? values[0] ?? fallback
@@ -3333,11 +3237,13 @@ const parseResizableNumberList = (
 
 const normalizeResizableSizes = (sizes: number[], count: number): number[] => {
   const fallbackSize = 100 / Math.max(1, count)
+
   const usableSizes = Array.from({ length: count }, (_, index) => {
     const size = sizes[index] ?? fallbackSize
 
     return Number.isFinite(size) && size > 0 ? size : fallbackSize
   })
+
   const total = usableSizes.reduce((sum, size) => sum + size, 0)
 
   if (total <= 0) return Array.from({ length: count }, () => fallbackSize)
@@ -3347,11 +3253,11 @@ const normalizeResizableSizes = (sizes: number[], count: number): number[] => {
 
 const serializeResizableSize = (
   value: number | number[] | undefined
-): string | undefined => Array.isArray(value) ?
-  value.join(',') :
-  value === undefined ?
-    undefined :
-    String(value)
+): string | undefined => {
+  if (value === undefined) return undefined
+
+  return Array.isArray(value) ? value.join(',') : String(value)
+}
 
 export const useResizable = ({
   defaultSizes,
@@ -3362,20 +3268,28 @@ export const useResizable = ({
   panelCount: panelCountOption = 2,
   resetOnDoubleClick = true
 }: ResizableOptions = {}): ResizableController => {
+  if (!Number.isFinite(panelCountOption) || panelCountOption > 1000) {
+    throw new RangeError('Resizable panelCount must be finite and at most 1000')
+  }
+
   const panelCount = Math.max(0, Math.floor(panelCountOption))
   const rootRef = useRef<HTMLDivElement | null>(null)
+
   const dragRef = useRef<{
     containerSize: number
     index: number
     startPosition: number
     startSize: number
   } | null>(null)
+
   const minSizes = useMemo(
     () => parseResizableNumberList(minSize, panelCount, 12), [minSize, panelCount]
   )
+
   const maxSizes = useMemo(
     () => parseResizableNumberList(maxSize, panelCount, 88), [maxSize, panelCount]
   )
+
   const initialSizes = useMemo(
     () => normalizeResizableSizes(
       parseResizableNumberList(
@@ -3383,14 +3297,18 @@ export const useResizable = ({
       ), panelCount
     ), [defaultSizes, panelCount]
   )
+
   const [sizes, setSizes] = useState(initialSizes)
   const axis = direction === 'horizontal' ? 'clientX' : 'clientY'
   const sizeProperty = direction === 'horizontal' ? 'width' : 'height'
+
   const separatorOrientation =
     direction === 'horizontal' ? 'vertical' : 'horizontal'
+
   const panelIndexes = useMemo(
     () => Array.from({ length: panelCount }, (_, index) => index), [panelCount]
   )
+
   const handleIndexes = useMemo(
     () => Array.from({ length: Math.max(0, panelCount - 1) }, (_, index) => index), [panelCount]
   )
@@ -3417,15 +3335,19 @@ export const useResizable = ({
         const nextSizes = [...currentSizes]
         const nextIndex = index + 1
         const total = (nextSizes[index] ?? 0) + (nextSizes[nextIndex] ?? 0)
+
         const min = Math.max(
           minSizes[index] ?? 0, total - (maxSizes[nextIndex] ?? 100)
         )
+
         const max = Math.min(
           maxSizes[index] ?? 100, total - (minSizes[nextIndex] ?? 0)
         )
+
         const paneSize = Math.min(max, Math.max(min, nextSize))
 
         nextSizes[index] = paneSize
+
         nextSizes[nextIndex] = total - paneSize
 
         return nextSizes
@@ -3466,6 +3388,7 @@ export const useResizable = ({
       }),
       onKeyDown: composeHandlers(props.onKeyDown, event => {
         const step = event.shiftKey ? 10 : 2
+
         const keyDeltas: Record<string, number> =
           direction === 'horizontal' ?
             { ArrowLeft: -step, ArrowRight: step } :
@@ -3487,7 +3410,7 @@ export const useResizable = ({
           return
         }
 
-        const delta = keyDeltas[event.key]
+        const delta = keyDeltas[getLumenDirectionalKey(event.currentTarget, event.key)]
 
         if (delta === undefined) return
 
@@ -3514,14 +3437,14 @@ export const useResizable = ({
         }
 
         event.currentTarget.dataset.active = 'true'
+
         event.currentTarget.setPointerCapture(event.pointerId)
       }),
       onPointerMove: composeHandlers(props.onPointerMove, event => {
         const drag = dragRef.current
 
         if (
-          !drag ||
-          drag.index !== index ||
+          drag?.index !== index ||
           event.currentTarget.dataset.active !== 'true'
         )
           return
@@ -3529,7 +3452,9 @@ export const useResizable = ({
         const delta =
           ((event[axis] - drag.startPosition) / drag.containerSize) * 100
 
-        resizePair(index, drag.startSize + delta)
+        const multiplier = direction === 'horizontal' && getLumenDirectionalKey(event.currentTarget, 'ArrowRight') === 'ArrowLeft' ? -1 : 1
+
+        resizePair(index, drag.startSize + delta * multiplier)
       }),
       onPointerUp: composeHandlers(props.onPointerUp, event => {
         if (event.currentTarget.dataset.active !== 'true') return
@@ -3586,9 +3511,15 @@ export const useResizable = ({
     sizes
   }
 }
-/* eslint-enable @stylistic/padding-line-between-statements, @eslint-react/set-state-in-effect, @typescript-eslint/prefer-optional-chain, complexity, no-nested-ternary */
+/* eslint-enable @eslint-react/set-state-in-effect, complexity */
 
 export const useThemeBuilder = ({
+  radiusScale,
+  spacingScale,
+  borderWidth,
+  preset,
+  defaultPreset,
+  onPresetChange,
   accentHue,
   defaultAccentHue = 54,
   defaultExportFormat = 'css',
@@ -3613,6 +3544,10 @@ export const useThemeBuilder = ({
   scheme,
   secondaryColor
 }: ThemeBuilderOptions = {}): ThemeBuilderController => {
+  const [currentPreset, setPreset] = useControllableState<LumenThemePreset | undefined>({
+    defaultValue: defaultPreset, onChange: onPresetChange, value: preset
+  })
+
   const [currentHue, setHue] = useControllableState({
     defaultValue: defaultHue,
     onChange: onHueChange,
@@ -3657,6 +3592,10 @@ export const useThemeBuilder = ({
 
   const result = useMemo(
     () => createThemeBuilderTokens({
+      radiusScale: radiusScale ?? null,
+      spacingScale: spacingScale ?? null,
+      borderWidth: borderWidth ?? null,
+      preset: currentPreset ?? null,
       accentHue: currentAccentHue,
       hue: currentHue,
       mode: currentMode,
@@ -3664,6 +3603,10 @@ export const useThemeBuilder = ({
       scheme: currentScheme,
       secondaryColor: currentSecondaryColor
     }), [
+      radiusScale,
+      spacingScale,
+      borderWidth,
+      currentPreset,
       currentAccentHue,
       currentHue,
       currentMode,
@@ -3711,6 +3654,18 @@ export const useThemeBuilder = ({
     return exportValue
   }, [exportDetail, exportValue, onThemeExport])
 
+  const getPresetProps = useCallback<ThemeBuilderController['getPresetProps']>(
+    (nextPreset, props = {}) => ({
+      ...props,
+      'aria-pressed': currentPreset === nextPreset,
+      'data-ui-theme-preset': nextPreset,
+      onClick: composeHandlers(props.onClick, () => {
+        setPreset(nextPreset)
+      }),
+      type: props.type ?? 'button'
+    }), [currentPreset, setPreset]
+  )
+
   const getModeProps = useCallback<ThemeBuilderController['getModeProps']>(
     (nextMode, props = {}) => ({
       ...props,
@@ -3751,6 +3706,8 @@ export const useThemeBuilder = ({
 
   return {
     ...result,
+    setPreset,
+    getPresetProps,
     accentHueProps: {
       'data-ui-theme-accent-hue': true,
       max: 359,
@@ -3836,18 +3793,14 @@ export const useTooltip = ({
   })
 
   const close = useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-    }
+    clearTimeout(timerRef.current)
 
     setIsOpen(false)
   }, [setIsOpen])
 
   const scheduleOpen = useCallback(
     (nextDelay: number) => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-      }
+      clearTimeout(timerRef.current)
 
       timerRef.current = setTimeout(() => {
         setIsOpen(true)
@@ -3857,9 +3810,7 @@ export const useTooltip = ({
 
   useEffect(
     () => () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-      }
+      clearTimeout(timerRef.current)
     }, []
   )
 
@@ -3869,11 +3820,18 @@ export const useTooltip = ({
     rootProps: {
       'aria-describedby': isOpen ? tooltipId : undefined,
       'data-ui-tooltip': true,
+      onBlur: event => {
+        if (!event.currentTarget.contains(event.relatedTarget)) close()
+      },
       onFocus: () => {
         scheduleOpen(0)
       },
       onKeyDown: event => {
-        if (event.key === 'Escape') {
+        if (event.defaultPrevented || event.nativeEvent.isComposing) return
+
+        if (event.key === 'Escape' && isOpen) {
+          event.preventDefault()
+
           close()
         }
       },
@@ -3889,305 +3847,6 @@ export const useTooltip = ({
       role: 'tooltip'
     }
   }
-}
-
-const createToastId = (): string => {
-  if (
-    typeof crypto !== 'undefined' &&
-    typeof crypto.randomUUID === 'function'
-  ) {
-    return `ui-toast-${crypto.randomUUID()}`
-  }
-
-  return `ui-toast-${Math.random().toString(36).slice(2)}`
-}
-
-const getToastVariantClass = (variant: ToastVariant): string | false => {
-  if (variant === 'success') return 'ui-toast--success'
-
-  if (variant === 'warning') return 'ui-toast--warning'
-
-  if (variant === 'destructive') return 'ui-toast--destructive'
-
-  return false
-}
-
-const createToastRecord = (
-  detail: ToastDetail,
-  placement: ToastPlacement
-): ToastRecord => ({
-  ...detail,
-  id: detail.id ?? createToastId(),
-  open: true,
-  placement: detail.placement ?? placement,
-  title: detail.title ?? 'Notification',
-  variant: detail.variant ?? 'default'
-})
-
-export const ToastProvider = ({
-  children,
-  maxCount = defaultToastMax,
-  placement = 'bottom-right'
-}: ToastProviderProps) => {
-  const [toasts, setToasts] = useState<ToastRecord[]>([])
-
-  const removeToast = useCallback((id: string) => {
-    setToasts(current => current.filter(toast => toast.id !== id))
-  }, [])
-
-  const dismiss = useCallback((id?: string) => {
-    setToasts(current => current.map(toast => {
-      if (id && toast.id !== id) return toast
-
-      return { ...toast, open: false }
-    }))
-  }, [])
-
-  const create = useCallback(
-    (detail: ToastDetail): string => {
-      const record = createToastRecord(detail, placement)
-      const stackMax = detail.max ?? maxCount
-
-      setToasts(current => {
-        const next = current.some(toast => toast.id === record.id) ?
-          current.map(toast => (toast.id === record.id ? record : toast)) :
-          [...current, record]
-
-        const samePlacement = next.filter(
-          toast => toast.placement === record.placement
-        )
-
-        const staleIds = samePlacement
-          .slice(0, Math.max(0, samePlacement.length - stackMax))
-          .map(toast => toast.id)
-
-        return next.map(toast => staleIds.includes(toast.id) ? { ...toast, open: false } : toast)
-      })
-
-      return record.id
-    }, [maxCount, placement]
-  )
-
-  const update = useCallback((id: string, detail: ToastDetail) => {
-    setToasts(current => current.map(toast => {
-      if (toast.id !== id) return toast
-
-      return {
-        ...toast,
-        ...detail,
-        id,
-        open: true,
-        placement: detail.placement ?? toast.placement,
-        title: detail.title ?? toast.title,
-        variant: detail.variant ?? toast.variant
-      }
-    }))
-  }, [])
-
-  const api = useMemo<ToastApi>(
-    () => ({
-      create,
-      dismiss,
-      toasts,
-      update
-    }), [create, dismiss, toasts, update]
-  )
-
-  const placements = [
-    ...new Set([placement, ...toasts.map(toast => toast.placement)])
-  ]
-
-  return (
-    <ToastContext.Provider value={api}>
-      {children}
-      {placements.map(item => (
-        // eslint-disable-next-line no-use-before-define -- ToastViewport is kept with the toast rendering helpers below.
-        <ToastViewport
-          key={item}
-          maxCount={maxCount}
-          placement={item}
-          removeToast={removeToast}
-          toasts={toasts.filter(toast => toast.placement === item)}
-        />
-      ))}
-    </ToastContext.Provider>
-  )
-}
-
-export const useToast = (): ToastApi => {
-  const api = useContext(ToastContext)
-
-  if (!api) {
-    throw new Error('useToast must be used inside a ToastProvider.')
-  }
-
-  return api
-}
-
-interface ToastViewportProps {
-  maxCount: number
-  placement: ToastPlacement
-  removeToast: (id: string) => void
-  toasts: ToastRecord[]
-}
-
-const ToastViewport = ({
-  maxCount,
-  placement,
-  removeToast,
-  toasts
-}: ToastViewportProps) => (
-  <div
-    aria-atomic="false"
-    aria-label="Notifications"
-    aria-live="polite"
-    className="ui-tvp"
-    data-placement={placement}
-    data-ui-toast-viewport
-    data-ui-toast-max={maxCount}
-  >
-    {toasts.map(toast => (
-      // eslint-disable-next-line no-use-before-define -- ToastItem is declared with the toast rendering helpers below.
-      <ToastItem
-        key={toast.id}
-        onDismiss={() => {
-          removeToast(toast.id)
-        }}
-        toast={toast}
-      />
-    ))}
-  </div>
-)
-
-interface ToastItemProps {
-  onDismiss: () => void
-  toast: ToastRecord
-}
-
-const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
-  const toastRef = useRef<HTMLElement | null>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
-  const remainingRef = useRef(toast.duration ?? defaultToastDuration)
-  const startedAtRef = useRef(0)
-  const dismiss = useToast().dismiss
-
-  const clearTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-    }
-  }, [])
-
-  const startTimer = useCallback(() => {
-    const remaining = remainingRef.current
-
-    clearTimer()
-
-    if (!Number.isFinite(remaining) || remaining <= 0) return
-
-    startedAtRef.current = Date.now()
-
-    timerRef.current = setTimeout(() => {
-      dismiss(toast.id)
-    }, remaining)
-  }, [clearTimer, dismiss, toast.id])
-
-  const pauseTimer = useCallback(() => {
-    clearTimer()
-
-    remainingRef.current = Math.max(
-      0, remainingRef.current - (Date.now() - startedAtRef.current)
-    )
-  }, [clearTimer])
-
-  const resumeTimer = useCallback(() => {
-    if (remainingRef.current > 0) {
-      startTimer()
-    }
-  }, [startTimer])
-
-  useEffect(() => {
-    remainingRef.current = toast.duration ?? defaultToastDuration
-
-    startTimer()
-
-    return clearTimer
-  }, [clearTimer, startTimer, toast.duration])
-
-  useEffect(() => {
-    if (!toast.open) {
-      const timer = setTimeout(onDismiss, closeDelay)
-
-      return () => {
-        clearTimeout(timer)
-      }
-    }
-  }, [onDismiss, toast.open])
-
-  const action = toast.action
-  const description = toast.description ?? ''
-  const variantClass = getToastVariantClass(toast.variant)
-
-  return (
-    <aside
-      aria-live={toast.variant === 'destructive' ? 'assertive' : 'polite'}
-      className={composeClassName('ui-toast', variantClass)}
-      data-description={description}
-      data-state={toast.open ? 'open' : 'closed'}
-      data-title={toast.title}
-      data-ui-toast
-      data-variant={toast.variant}
-      id={toast.id}
-      onFocus={pauseTimer}
-      onKeyDown={event => {
-        if (event.key !== 'Escape') return
-
-        event.preventDefault()
-
-        dismiss(toast.id)
-      }}
-      onMouseEnter={pauseTimer}
-      onMouseLeave={resumeTimer}
-      ref={toastRef}
-      role={toast.variant === 'destructive' ? 'alert' : 'status'}
-    >
-      <div className="ui-toast__body">
-        <strong>{toast.title}</strong>
-        {description && <p>{description}</p>}
-      </div>
-      {action?.label && (
-        <button
-          className="
-            ui-button ui-button--secondary ui-button--sm ui-toast__action
-          "
-          onClick={event => {
-            action.onClick?.(event, toastRef.current)
-
-            toastRef.current?.dispatchEvent(
-              new CustomEvent(action.event ?? 'ui:toast-action', {
-                bubbles: true,
-                detail: { id: toast.id, value: action.value }
-              })
-            )
-
-            dismiss(toast.id)
-          }}
-          type="button"
-        >
-          {action.label}
-        </button>
-      )}
-      <button
-        aria-label="Dismiss notification"
-        className="ui-toast__dismiss"
-        onClick={() => {
-          dismiss(toast.id)
-        }}
-        type="button"
-      >
-        Dismiss
-      </button>
-    </aside>
-  )
 }
 
 export const useThemeToggle = (defaultTheme = 'light') => {

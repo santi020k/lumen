@@ -4,86 +4,77 @@
 
 import {
   Alert,
-  AnimatedNumber,
   Badge,
   Button,
   ButtonGroup,
   ButtonLink,
   Card,
   Checkbox,
+  Code,
+  CodeTabs,
   Eyebrow,
   Field,
   Icon,
   Image,
   Input,
   Label,
+  Link,
   Marker,
   RevealGroup,
   ScrollReveal,
-  Stat,
-  Switch,
-  Tabs
-} from '@santi020k/lumen-astro'
+  Stack,
+  Stat } from '@santi020k/lumen-astro'
 
+import androidPlaygroundPreview from '../../../playground-android/Store/Screenshots/phone-04-components-dark.png'
+import applePlaygroundPreview from '../../../playground-apple/Store/Screenshots/iphone-02-examples-light.png'
+import HomePlatformShowcase from '../components/HomePlatformShowcase.astro'
 import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
-import type { DocsPlatformId } from '../data/platforms'
-import { productPlatformGuides } from '../data/platforms'
+import { getPlatformGuide } from '../data/platforms'
+import { showcaseProjects } from '../data/showcase'
 import { documentedComponentCount, primaryPageMetadata } from '../data/site-metadata'
 import BaseLayout from '../layouts/BaseLayout.astro'
 
 const componentCount = documentedComponentCount
 const aiSkillInstallCommand = 'npx skills add santi020k/lumen --skill lumen-ui'
 
-const installerIcons = {
-  astro: 'asterisk',
-  elements: 'blocks',
-  react: 'atom'
-} as const
-
 const heroInstallers = frameworkSetups.map(setup => ({
-  command: setup.installCommands.find(install => install.label === 'pnpm')?.command ?? '',
-  icon: installerIcons[setup.id],
-  id: setup.id,
-  label: setup.label
+  code: setup.installCommands.find(install => install.label === 'pnpm')?.command ?? '',
+  label: setup.label,
+  language: 'shell',
+  value: setup.id
 }))
 
-const platformPresentation = {
-  android: {
-    icon: 'bot',
-    preview: '/native-previews/android-compose.png',
-    runtime: 'Jetpack Compose · Material 3'
-  },
-  apple: {
-    icon: 'apple',
-    preview: '/native-previews/apple-native.png',
-    runtime: 'SwiftUI · five Apple platforms'
-  },
-  foundations: {
-    icon: 'layers-3',
-    preview: undefined,
-    runtime: 'One canonical token source'
-  },
-  'react-native': {
-    icon: 'smartphone',
-    preview: '/native-previews/react-native-android.png',
-    runtime: 'React Native · Expo ready'
-  },
-  web: {
+const playgrounds = [
+  {
+    description: 'Switch frameworks. Try the interactions. Find your starting point.',
     icon: 'panels-top-left',
-    preview: undefined,
-    runtime: 'Astro · React · Web Components'
+    id: 'web',
+    label: 'In your browser',
+    platform: 'Astro · React · Elements'
+  },
+  {
+    description: 'Explore native controls and themes on the device you use every day.',
+    icon: 'apple',
+    id: 'apple',
+    label: 'iPhone, iPad & Mac',
+    platform: 'SwiftUI'
+  },
+  {
+    description: 'Tap through Compose components and feel how they work together.',
+    icon: 'bot',
+    id: 'android',
+    label: 'Android',
+    platform: 'Compose · Phones & tablets'
+  },
+  {
+    description: 'Start in the browser. Take the Expo reference app into your own project.',
+    icon: 'smartphone',
+    id: 'react-native',
+    label: 'React Native & Expo',
+    platform: 'Browser preview · Local app'
   }
-} satisfies Record<DocsPlatformId, {
-  icon: string
-  preview: string | undefined
-  runtime: string
-}>
-
-const platformShowcase = productPlatformGuides.map(guide => ({
-  ...guide,
-  ...platformPresentation[guide.id]
-}))
+] as const
 
 const principles = [
   {
@@ -136,36 +127,20 @@ interface UseCase {
   stack: string
 }
 
-const useCases: readonly UseCase[] = [
-  {
-    category: 'Developer quality',
-    description: 'A deterministic Astro health-check toolkit spanning a CLI, ESLint plugin, editor extension, GitHub Action, docs, and agent skills.',
-    desktop: { height: 895, src: '/use-cases/astro-doctor-desktop-live.jpg', width: 1432 },
-    featured: true,
-    href: 'https://doctor.santi020k.com',
-    mobile: { height: 827, src: '/use-cases/astro-doctor-mobile-live.jpg', width: 382 },
-    name: 'Astro Doctor',
-    stack: 'Astro · TypeScript'
-  },
-  {
-    category: 'iOS photo studio',
-    description: 'An iPhone-first visual content studio with a cinematic product story for private, on-device photo selection, enhancement, and composition.',
-    desktop: { height: 900, src: '/use-cases/postlens-desktop-live.jpg', width: 1440 },
-    href: 'https://postlens.santi020k.com',
-    mobile: { height: 844, src: '/use-cases/postlens-mobile-live.jpg', width: 390 },
-    name: 'PostLens',
-    stack: 'Astro · SwiftUI'
-  },
-  {
-    category: 'macOS utility',
-    description: 'A safety-minded native Mac utility with a calm product surface for thermal monitoring and gradual, bounded fan control.',
-    desktop: { height: 900, src: '/use-cases/coolstead-desktop-live.jpg', width: 1440 },
-    href: 'https://coolstead.santi020k.com',
-    mobile: { height: 844, src: '/use-cases/coolstead-mobile-live.jpg', width: 390 },
-    name: 'Coolstead',
-    stack: 'Astro · SwiftUI'
-  }
-]
+const featuredProjects = ['Astro Doctor', 'PostLens', 'Coolstead']
+
+const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
+  const project = showcaseProjects.find(item => item.name === name)
+
+  return project ?
+[{
+    ...project,
+    desktop: { height: 1000, src: project.image, width: 1440 },
+    featured: name === 'Astro Doctor',
+    mobile: { height: 844, src: project.mobileImage, width: 390 }
+  }] :
+[]
+})
 
 ---
 
@@ -179,58 +154,32 @@ const useCases: readonly UseCase[] = [
       <RevealGroup class="home-hero__copy" stagger={70}>
         <Eyebrow class="home-hero__eyebrow">
           <Marker variant="success">Open source</Marker>
-          <span>{componentCount} crafted primitives</span>
+          <span>{componentCount} primitives</span>
         </Eyebrow>
         <h1>
-          Build interfaces<br />
-          people <em>want</em> to use.
+          The UI library<br />
+          built for <em>AI.</em>
         </h1>
         <p class="home-hero__lede">
-          A cross-platform UI system for Web, React Native, Apple platforms, and Android.
-          Accessible by default, beautifully tokenized, and native to every environment.
+          Accessible components for web and native apps, with skills and precise API guidance
+          for your coding agent. Designed to reduce repetitive UI code and unnecessary AI context.
         </p>
         <div class="home-hero__actions">
-          <ButtonLink class="home-button-lg" href="/docs" showArrow variant="primary">
-            Start building
+          <ButtonLink class="home-button-lg" href="/guides/build-ui-with-ai" showArrow variant="primary">
+            Build with AI
           </ButtonLink>
-          <ButtonLink class="home-button-lg" href="/docs/components" variant="secondary">
-            Explore components
+          <ButtonLink class="home-button-lg" href="#playgrounds" variant="secondary">
+            Try the playgrounds
           </ButtonLink>
         </div>
-        <Tabs class="home-installer" glass="subtle">
-          <span class="home-installer__label">Web quick install</span>
-          <div role="tablist" aria-label="Choose a web framework to install">
-            {heroInstallers.map((installer, index) => (
-              <button
-                aria-controls={`hero-install-panel-${installer.id}`}
-                aria-selected={index === 0 ? 'true' : 'false'}
-                id={`hero-install-tab-${installer.id}`}
-                role="tab"
-              >
-                <Icon name={installer.icon} size="sm" />
-                {installer.label}
-              </button>
-            ))}
-          </div>
-          {heroInstallers.map((installer, index) => (
-            <section
-              aria-labelledby={`hero-install-tab-${installer.id}`}
-              hidden={index !== 0}
-              id={`hero-install-panel-${installer.id}`}
-              role="tabpanel"
-            >
-              <Button
-                class="home-install"
-                data-copy-command={installer.command}
-                variant="ghost"
-              >
-                <Icon name="terminal" size="sm" />
-                <code>{installer.command}</code>
-                <span class="home-install__copy" data-copy-feedback>Copy</span>
-              </Button>
-            </section>
-          ))}
-        </Tabs>
+        <CodeTabs
+          ariaLabel="Choose a web framework to install"
+          class="home-installer"
+          codeLabel="Web install command"
+          copiedLabel="Install command copied"
+          copyLabel="Copy install command"
+          items={heroInstallers}
+        />
       </RevealGroup>
 
       <ScrollReveal animation="scale" class="home-hero__product" delay={140}>
@@ -247,20 +196,156 @@ const useCases: readonly UseCase[] = [
       <div class="home-container home-proof__inner">
         <p>One system. Every surface.</p>
         <div class="home-proof__stats">
-          <Stat label="components">
-            <span class="ui-stat-value"><AnimatedNumber value={componentCount} /></span>
-          </Stat>
-          <Stat label="product platforms">
-            <span class="ui-stat-value"><AnimatedNumber value={4} /></span>
-          </Stat>
-          <Stat label="runtime lock-in">
-            <span class="ui-stat-value"><AnimatedNumber value={0} /></span>
-          </Stat>
+          <Stat label="components" value={String(componentCount)} variant="bare" />
+          <Stat label="product platforms" value="4" variant="bare" />
+          <Stat label="runtime lock-in" value="0" variant="bare" />
         </div>
         <div class="home-proof__categories" aria-label="Component categories">
           {categories.map(category => <Badge variant="outline">{category}</Badge>)}
         </div>
       </div>
+    </section>
+
+    <section class="home-section home-container home-ai" id="ai-native" aria-labelledby="ai-title">
+      <ScrollReveal animation="slide-up">
+        <div class="home-section__head home-ai__copy">
+          <Eyebrow>Built for AI-assisted development</Eyebrow>
+          <h2 id="ai-title">Give your agent the pieces.<br />Keep your focus on the product.</h2>
+          <p>
+            Compose existing components, retrieve only the API guidance you need, and follow a
+            shared design language. The portable skill and MCP catalog guide your agent from a
+            product request to implementation and verification.
+          </p>
+          <div class="home-ai__actions">
+            <ButtonLink href="/docs/ai-skill" showArrow variant="primary">
+              Explore the AI skill
+            </ButtonLink>
+            <ButtonLink href="/docs/mcp" variant="inline">
+              Add live MCP context
+            </ButtonLink>
+          </div>
+          <p>
+            AI token usage depends on your model and task.{' '}
+            <Link href="/guides/measure-ai-ui-token-usage">See how we measure efficiency</Link>.
+          </p>
+        </div>
+      </ScrollReveal>
+      <ScrollReveal animation="scale" delay={100}>
+        <Card class="home-ai__terminal">
+          <Code
+            code={aiSkillInstallCommand}
+            copy
+            copiedLabel="AI skill install command copied"
+            copyLabel="Copy AI skill install command"
+            label="Agent Skills"
+            language="shell"
+            variant="block"
+            wrap
+          />
+          <div class="home-ai__agent-flow">
+            <span><Icon decorative name="scan-search" size="sm" /> Detect framework</span>
+            <span><Icon decorative name="blocks" size="sm" /> Select primitives</span>
+            <span><Icon decorative name="palette" size="sm" /> Apply tokens</span>
+            <span><Icon decorative name="shield-check" size="sm" /> Verify behavior</span>
+          </div>
+
+        </Card>
+      </ScrollReveal>
+    </section>
+
+    <section class="home-section home-container home-playgrounds" id="playgrounds" aria-labelledby="playgrounds-title">
+      <div class="home-playgrounds__experience">
+        <ScrollReveal animation="slide-up" class="home-playgrounds__copy">
+          <Eyebrow>The Lumen playgrounds</Eyebrow>
+          <h2 id="playgrounds-title">Great UI.<br /><span>In your hands.</span></h2>
+          <p class="home-playgrounds__lede">
+            Get a feel for your next app. Explore real components, switch themes, and discover
+            the patterns you’ll want to build with.
+          </p>
+          <div class="home-playgrounds__launch">
+            <ButtonLink href="/docs/web/playground" showArrow>
+              <Icon decorative name="play" size="sm" />
+              Launch web playground
+            </ButtonLink>
+            <ButtonLink href="#playground-apps" variant="inline">Get the native apps</ButtonLink>
+          </div>
+          <p class="home-playgrounds__assurance">
+            <Icon decorative name="circle-check" size="sm" />
+            Free & open source. No account required.
+          </p>
+        </ScrollReveal>
+        <ScrollReveal animation="scale" class="home-playgrounds__showcase" delay={100}>
+          <div class="home-playgrounds__halo" aria-hidden="true"></div>
+          <div class="home-playgrounds__phone home-playgrounds__phone--android">
+            <Image
+              alt="Lumen Playground on Android, showing the component catalog in dark mode"
+              radius="none"
+              src={androidPlaygroundPreview}
+              widths={[320, 640]}
+              sizes="(max-width: 760px) 160px, 220px"
+              format="webp"
+            />
+          </div>
+          <div class="home-playgrounds__phone home-playgrounds__phone--apple">
+            <Image
+              alt="Lumen Playground on iPhone, showing an interactive release form in light mode"
+              radius="none"
+              src={applePlaygroundPreview}
+              widths={[320, 640]}
+              sizes="(max-width: 760px) 160px, 220px"
+              format="webp"
+            />
+          </div>
+          <Badge class="home-playgrounds__caption" variant="secondary">
+            <Icon decorative name="smartphone" size="sm" />
+            Real apps. Built with Lumen.
+          </Badge>
+        </ScrollReveal>
+      </div>
+      <div class="home-playgrounds__chooser" id="playground-apps">
+        <h3>Choose your playground</h3>
+        <p>Try it today. Keep the source for your next build.</p>
+      </div>
+      <RevealGroup class="home-playgrounds__grid" stagger={60}>
+        {playgrounds.map(playground => {
+          const guide = getPlatformGuide(playground.id)
+          const store = guide.storeAvailability
+          const availableStore = store?.status === 'available' && store.href && store.linkLabel ? store : undefined
+          const guideHref = `${guide.href}/playground`
+          const browserPreview = playground.id === 'web' || playground.id === 'react-native'
+
+          return (
+            <Card as="article" class="home-playground" aria-labelledby={`playground-${playground.id}-title`}>
+              <div class="home-playground__heading">
+                <Icon class="home-playground__icon" decorative name={playground.icon} size="sm" />
+                <h4 id={`playground-${playground.id}-title`}>{playground.label}</h4>
+              </div>
+              <p class="home-playground__platform">{playground.platform}</p>
+              <p class="home-playground__description">{playground.description}</p>
+              <div class="home-playground__actions">
+                <ButtonLink
+                  href={availableStore?.href ?? `${guideHref}${playground.id === 'react-native' ? '#preview' : ''}`}
+                  newTab={Boolean(availableStore)}
+                  showArrow
+                  variant={playground.id === 'web' ? 'primary' : 'secondary'}
+                >
+                  {availableStore?.linkLabel ?? (browserPreview ? 'Try in browser' : 'Open playground guide')}
+                </ButtonLink>
+                <ButtonLink
+                  ariaLabel={playground.id === 'web' ? 'Browse web component examples' : `${guide.shortLabel} playground guide and source`}
+                  href={playground.id === 'web' ? '/docs/components' : `${guideHref}#reference`}
+                  variant="inline"
+                >
+                  {playground.id === 'web' ? 'Browse examples' : 'Guide & source'}
+                </ButtonLink>
+              </div>
+            </Card>
+          )
+        })}
+      </RevealGroup>
+      <p class="home-playgrounds__note">
+        Store apps follow their own release schedule. For the latest workspace examples, use the local setup in each guide.
+      </p>
     </section>
 
     <section class="home-section home-container home-platforms" aria-labelledby="platforms-title">
@@ -275,7 +360,7 @@ const useCases: readonly UseCase[] = [
               Share semantic color, type, spacing, motion, and component intent—then let each
               platform render and behave the way its users expect.
             </p>
-            <Marker variant="success">Native adapters are supported for Lumen 2</Marker>
+            <Marker variant="success">Shared foundations. Platform-native behavior.</Marker>
             <ButtonLink href="/docs/foundations" showArrow variant="inline">
               Explore shared foundations
             </ButtonLink>
@@ -283,54 +368,7 @@ const useCases: readonly UseCase[] = [
         </div>
       </ScrollReveal>
 
-      <RevealGroup class="home-platforms__grid" stagger={70}>
-        {platformShowcase.map((platform, index) => (
-          <Card
-            as="article"
-            class:list={[
-              'home-platform',
-              { 'home-platform--web': platform.id === 'web' }
-            ]}
-          >
-            <div class="home-platform__visual">
-              {platform.preview ?
-(
-                <Image
-                  alt={`${platform.label} Lumen component gallery`}
-                  height={platform.id === 'apple' ? 1440 : 1920}
-                  src={platform.preview}
-                  width={platform.id === 'apple' ? 1640 : 1080}
-                />
-              ) :
-(
-                <div class="home-platform__web-canvas" aria-hidden="true">
-                  <span><Icon decorative name="asterisk" size="sm" />Astro</span>
-                  <span><Icon decorative name="atom" size="sm" />React</span>
-                  <span><Icon decorative name="blocks" size="sm" />Elements</span>
-                  <div>
-                    <i></i><i></i><i></i>
-                  </div>
-                </div>
-              )}
-              <span class="home-platform__number" aria-hidden="true">0{index + 1}</span>
-            </div>
-            <div class="home-platform__body">
-              <div class="home-platform__meta">
-                <span><Icon decorative name={platform.icon} size="sm" />{platform.runtime}</span>
-                <div>
-                  <Marker variant="success">{platform.status}</Marker>
-                </div>
-              </div>
-              <h3>{platform.label}</h3>
-              <p>{platform.summary}</p>
-              <code>{platform.packageName}</code>
-              <ButtonLink href={platform.href} showArrow variant="inline">
-                Build for {platform.shortLabel}
-              </ButtonLink>
-            </div>
-          </Card>
-        ))}
-      </RevealGroup>
+      <HomePlatformShowcase />
     </section>
 
     <section class="home-section home-container" aria-labelledby="components-title">
@@ -378,17 +416,17 @@ const useCases: readonly UseCase[] = [
             <span>Forms</span>
             <Marker variant="success">Valid</Marker>
           </div>
-          <div class="home-specimen__form">
+          <Stack class="home-specimen__form" gap="md">
             <Field>
               <Label for="home-email">Work email</Label>
               <Input id="home-email" placeholder="you@company.com" type="email" />
             </Field>
-            <label>
+            <Label class="home-specimen__preference">
               <Checkbox checked />
               <span>Send me product updates</span>
-            </label>
+            </Label>
             <Button>Join the preview</Button>
-          </div>
+          </Stack>
         </Card>
 
         <Card class="home-specimen home-specimen--feedback">
@@ -417,7 +455,7 @@ const useCases: readonly UseCase[] = [
         <Card class="home-specimen home-specimen--tokens">
           <div class="home-specimen__label">
             <span>Semantic tokens</span>
-            <Switch aria-label="Enable brand theme" checked />
+            <Badge variant="secondary">Shared roles</Badge>
           </div>
           <div class="home-specimen__swatches" aria-label="Token colors">
             <span style="--swatch: hsl(var(--brand));">brand</span>
@@ -527,99 +565,14 @@ const useCases: readonly UseCase[] = [
       </div>
     </section>
 
-    <section class="home-section home-container home-ai" id="ai-native" aria-labelledby="ai-title">
-      <ScrollReveal animation="slide-up">
-        <div class="home-ai__copy">
-          <Eyebrow>AI-native UI</Eyebrow>
-          <h2 id="ai-title">Give your coding agent<br />the Lumen design system.</h2>
-          <p>
-            Install one portable skill for Codex, Claude Code, Cursor, Windsurf, and other Agent
-            Skills clients. It teaches your AI to choose real Lumen primitives, respect the current
-            framework, use semantic tokens, and verify accessible interactions.
-          </p>
-          <div class="home-ai__actions">
-            <ButtonLink href="/docs/ai-skill" showArrow variant="primary">
-              Explore the AI skill
-            </ButtonLink>
-            <ButtonLink href="/docs/mcp" variant="inline">
-              Add live MCP context
-            </ButtonLink>
-          </div>
-        </div>
-      </ScrollReveal>
-      <ScrollReveal animation="scale" delay={100}>
-        <Card class="home-ai__terminal" glass="subtle">
-          <div class="home-ai__terminal-head">
-            <div class="home-ai__terminal-dots" aria-hidden="true">
-              <span></span><span></span><span></span>
-            </div>
-            <Badge variant="outline">Agent Skills</Badge>
-          </div>
-          <div class="home-ai__terminal-line">
-            <span>$</span>
-            <code>{aiSkillInstallCommand}</code>
-          </div>
-          <div class="home-ai__agent-flow">
-            <span><Icon decorative name="scan-search" size="sm" /> Detect framework</span>
-            <span><Icon decorative name="blocks" size="sm" /> Select primitives</span>
-            <span><Icon decorative name="palette" size="sm" /> Apply tokens</span>
-            <span><Icon decorative name="shield-check" size="sm" /> Verify behavior</span>
-          </div>
-          <Button
-            class="home-ai__copy-command"
-            data-copy-command={aiSkillInstallCommand}
-            variant="ghost"
-          >
-            <Icon decorative name="copy" size="sm" />
-            <span data-copy-feedback>Copy install command</span>
-          </Button>
-        </Card>
-      </ScrollReveal>
-    </section>
-
   </main>
 </BaseLayout>
 
-<script>
-  const initHomeCopy = () => {
-    for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy-command]')) {
-      if (button.dataset.copyInit === 'true') continue
-
-      button.dataset.copyInit = 'true'
-
-      button.addEventListener('click', async () => {
-        const command = button.dataset.copyCommand
-
-        if (!command) return
-
-        try {
-          await navigator.clipboard.writeText(command)
-
-          const feedback = button.querySelector('[data-copy-feedback]')
-
-          if (!feedback) return
-
-          feedback.textContent = 'Copied'
-
-          setTimeout(() => {
-            feedback.textContent = 'Copy'
-          }, 1800)
-        } catch {
-          // Clipboard access can be unavailable in non-secure preview contexts.
-        }
-      })
-    }
-  }
-
-  initHomeCopy()
-
-  document.addEventListener('astro:page-load', initHomeCopy)
-</script>
-
 <style>
   .home {
-    overflow: hidden;
-    padding-bottom: clamp(5rem, 10vw, 9rem);
+    --home-section-space: clamp(4rem, 7vw, 7rem);
+    --home-content-gap: clamp(1.5rem, 3vw, 2.5rem);
+    overflow: clip;
   }
 
   .home-container {
@@ -629,7 +582,7 @@ const useCases: readonly UseCase[] = [
 
   .home-hero {
     position: relative;
-    padding: clamp(5rem, 10vw, 8.5rem) 0 0;
+    padding: var(--home-section-space) 0 0;
   }
 
   .home-hero__wash {
@@ -664,14 +617,14 @@ const useCases: readonly UseCase[] = [
   }
 
   .home-hero h1 {
-    max-width: 13ch;
+    max-width: 20ch;
     margin: 0;
     color: hsl(var(--ink));
     font-family: var(--app-font-display), "Montserrat", sans-serif;
-    font-size: clamp(3.25rem, 7.4vw, 6.65rem);
-    font-weight: 800;
+    font-size: clamp(3rem, 6vw, 5.25rem);
+    font-weight: 700;
     letter-spacing: -.045em;
-    line-height: .96;
+    line-height: 1.06;
   }
 
   .home-hero h1 em {
@@ -717,100 +670,15 @@ const useCases: readonly UseCase[] = [
   }
 
   .home-installer {
-    display: grid;
-    width: min(100%, 45rem);
-    margin-top: 1.1rem;
-    grid-template-columns: auto auto minmax(0, 1fr);
-    align-items: center;
-    gap: .35rem;
-    border: 1px solid hsl(var(--line) / .8);
-    border-radius: 999px;
-    background:
-      linear-gradient(180deg, hsl(var(--canvas) / .38), transparent),
-      hsl(var(--surface) / .66);
-    box-shadow:
-      0 12px 38px hsl(var(--ink) / .055),
-      inset 0 1px 0 hsl(var(--canvas) / .9);
-    padding: .3rem;
-    backdrop-filter: blur(18px);
-  }
-
-  .home-installer__label {
-    padding-inline: .8rem .45rem;
-    color: hsl(var(--ink-muted));
-    font-size: .62rem;
-    font-weight: 800;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .home-installer [role="tablist"] {
-    width: auto;
-    justify-content: start;
-    gap: .1rem;
-    border: 0;
-    border-radius: 999px;
-    background: hsl(var(--surface-muted) / .7);
-    padding: .18rem;
-  }
-
-  .home-installer [role="tab"] {
-    display: inline-flex;
-    min-width: 0;
-    align-items: center;
-    justify-content: center;
-    gap: .32rem;
-    border-radius: 999px;
-    padding: .34rem .55rem;
-    font-size: .72rem;
-  }
-
-  .home-installer [role="tab"][aria-selected="true"] {
-    background: hsl(var(--surface) / .92);
-    color: hsl(var(--brand));
-    box-shadow: 0 2px 10px hsl(var(--ink) / .08);
-  }
-
-  .home-installer [role="tabpanel"] {
-    min-width: 0;
-    border-left: 1px solid hsl(var(--line) / .8);
-  }
-
-  .home-install {
-    width: 100%;
-    min-width: 0;
-    justify-content: flex-start;
-    gap: .65rem;
-    border: 0;
-    border-radius: 999px;
-    background: transparent;
-    padding-inline: .8rem;
-  }
-
-  .home-install code {
-    min-width: 0;
-    overflow: hidden;
-    flex: 1;
-    color: hsl(var(--ink-soft));
-    font-size: .78rem;
+    width: min(100%, 34rem);
+    margin-top: 1.5rem;
     text-align: left;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .home-install__copy {
-    color: hsl(var(--brand));
-    font-size: .64rem;
-    font-weight: 800;
-    letter-spacing: .04em;
-    text-transform: uppercase;
   }
 
   .home-hero__product {
     position: relative;
-    width: min(100% - 2.5rem, 82rem);
-    margin: clamp(3.5rem, 7vw, 6rem) auto 0;
+    width: min(100% - 2.5rem, 74rem);
+    margin: var(--home-section-space) auto 0;
   }
 
   .home-hero__product::before {
@@ -830,7 +698,7 @@ const useCases: readonly UseCase[] = [
     margin: 0 0 .8rem .5rem;
     color: hsl(var(--ink-muted));
     font-size: .66rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: .08em;
     text-transform: uppercase;
   }
@@ -845,7 +713,7 @@ const useCases: readonly UseCase[] = [
     border-top: 1px solid hsl(var(--line) / .7);
     border-bottom: 1px solid hsl(var(--line) / .7);
     background: hsl(var(--surface-muted) / .35);
-    margin-top: 5rem;
+    margin-top: var(--home-section-space);
     padding: 2rem 0;
   }
 
@@ -860,7 +728,7 @@ const useCases: readonly UseCase[] = [
     margin: 0;
     color: hsl(var(--ink));
     font-family: var(--app-font-display), sans-serif;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .home-proof__stats {
@@ -875,12 +743,12 @@ const useCases: readonly UseCase[] = [
     color: hsl(var(--ink));
     font-family: var(--app-font-display), sans-serif;
     font-size: 1.4rem;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .home-proof__stats :global(.ui-stat-label) {
     color: hsl(var(--ink-muted));
-    font-size: .62rem;
+    font-size: .75rem;
   }
 
   .home-proof__categories {
@@ -891,7 +759,14 @@ const useCases: readonly UseCase[] = [
   }
 
   .home-section {
-    padding-top: clamp(6rem, 11vw, 10rem);
+    padding-top: var(--home-section-space);
+  }
+
+  @media screen {
+    .home-section {
+      content-visibility: auto;
+      contain-intrinsic-block-size: auto 60rem;
+    }
   }
 
   .home-section__head {
@@ -909,10 +784,11 @@ const useCases: readonly UseCase[] = [
     margin: 0;
     color: hsl(var(--ink));
     font-family: var(--app-font-display), "Montserrat", sans-serif;
-    font-size: clamp(2.2rem, 5vw, 4rem);
-    font-weight: 800;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    text-wrap: balance;
     letter-spacing: -.03em;
-    line-height: 1.08;
+    line-height: 1.15;
   }
 
   .home-section__aside {
@@ -931,8 +807,8 @@ const useCases: readonly UseCase[] = [
   .home-specimens {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: .9rem;
-    margin-top: 3rem;
+    gap: 1rem;
+    margin-top: var(--home-content-gap);
   }
 
   .home-specimen {
@@ -943,7 +819,7 @@ const useCases: readonly UseCase[] = [
     overflow: hidden;
     border-color: hsl(var(--line) / .86);
     box-shadow: none;
-    padding: 1.15rem;
+    padding: clamp(1rem, 2vw, 1.5rem);
   }
 
   .home-specimen--actions { grid-column: span 7; }
@@ -957,15 +833,15 @@ const useCases: readonly UseCase[] = [
     justify-content: space-between;
     gap: 1rem;
     color: hsl(var(--ink));
-    font-size: .74rem;
-    font-weight: 800;
+    font-size: .875rem;
+    font-weight: 700;
   }
 
   .home-specimen__center {
     display: grid;
     min-height: 10rem;
     place-items: center;
-    border-radius: .9rem;
+    border-radius: var(--ui-radius);
     background:
       linear-gradient(hsl(var(--line) / .35) 1px, transparent 1px),
       linear-gradient(90deg, hsl(var(--line) / .35) 1px, transparent 1px),
@@ -976,26 +852,24 @@ const useCases: readonly UseCase[] = [
   .home-specimen > p {
     margin: auto 0 0;
     color: hsl(var(--ink-muted));
-    font-size: .78rem;
+    font-size: .875rem;
     line-height: 1.6;
   }
 
   .home-specimen__form {
-    display: grid;
-    gap: .8rem;
     margin: auto 0;
     border: 1px solid hsl(var(--line) / .75);
-    border-radius: 1rem;
+    border-radius: var(--ui-radius);
     background: hsl(var(--surface-muted) / .45);
     padding: 1rem;
   }
 
-  .home-specimen__form > label {
+  .home-specimen__preference {
     display: flex;
     align-items: center;
     gap: .55rem;
     color: hsl(var(--ink-soft));
-    font-size: .72rem;
+    font-size: .875rem;
   }
 
   .home-specimen__form :global(.ui-input) {
@@ -1041,7 +915,7 @@ const useCases: readonly UseCase[] = [
   .home-specimen__swatches span::before {
     height: 5.5rem;
     border: 1px solid hsl(var(--line) / .5);
-    border-radius: .7rem;
+    border-radius: var(--ui-radius-sm);
     background: var(--swatch);
     content: "";
   }
@@ -1049,8 +923,8 @@ const useCases: readonly UseCase[] = [
   .home-use-cases__grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 1.25rem;
-    margin-top: 3rem;
+    gap: 1rem;
+    margin-top: var(--home-content-gap);
   }
 
   .home-use-case {
@@ -1061,7 +935,7 @@ const useCases: readonly UseCase[] = [
     overflow: hidden;
     border-color: hsl(var(--line) / .78);
     background: hsl(var(--surface) / .88);
-    box-shadow: 0 24px 64px -46px hsl(var(--ink) / .68);
+    box-shadow: none;
     padding: 0;
   }
 
@@ -1263,19 +1137,17 @@ const useCases: readonly UseCase[] = [
   }
 
   .home-principles {
-    margin-top: clamp(6rem, 11vw, 10rem);
+    margin-top: var(--home-section-space);
     border-top: 1px solid hsl(var(--line) / .7);
     border-bottom: 1px solid hsl(var(--line) / .7);
-    background:
-      radial-gradient(circle at 85% 15%, hsl(var(--brand) / .12), transparent 28%),
-      hsl(var(--surface-muted) / .42);
-    padding: clamp(5rem, 9vw, 8rem) 0;
+    background: hsl(var(--surface-muted) / .45);
+    padding: var(--home-section-space) 0;
   }
 
   .home-principles__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    margin-top: 3.5rem;
+    margin-top: var(--home-content-gap);
     border-top: 1px solid hsl(var(--line));
     border-bottom: 1px solid hsl(var(--line));
   }
@@ -1285,7 +1157,7 @@ const useCases: readonly UseCase[] = [
     display: grid;
     align-content: start;
     gap: 1rem;
-    min-height: 21rem;
+    min-height: 18rem;
     padding: 2rem;
   }
 
@@ -1302,7 +1174,7 @@ const useCases: readonly UseCase[] = [
   .home-principle > :global(.ui-icon) {
     width: 2rem;
     height: 2rem;
-    margin-top: 1.5rem;
+    margin-top: .5rem;
     color: hsl(var(--brand));
   }
 
@@ -1329,7 +1201,7 @@ const useCases: readonly UseCase[] = [
 
   .home-ai {
     display: grid;
-    grid-template-columns: minmax(0, .9fr) minmax(24rem, 1.1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(2rem, 6vw, 5rem);
     align-items: center;
   }
@@ -1338,16 +1210,6 @@ const useCases: readonly UseCase[] = [
     display: grid;
     justify-items: start;
     gap: 1rem;
-  }
-
-  .home-ai__copy h2 {
-    margin: 0;
-    color: hsl(var(--ink));
-    font-family: var(--app-font-display), "Montserrat", sans-serif;
-    font-size: clamp(2.2rem, 5vw, 3.8rem);
-    font-weight: 800;
-    letter-spacing: -.03em;
-    line-height: 1.08;
   }
 
   .home-ai__copy > p {
@@ -1368,53 +1230,12 @@ const useCases: readonly UseCase[] = [
 
   .home-ai__terminal {
     display: grid;
+    min-width: 0;
     gap: 1rem;
-    overflow: hidden;
-    border-color: hsl(var(--brand) / .22);
-    background:
-      radial-gradient(circle at 90% 0%, hsl(var(--brand) / .16), transparent 34%),
-      hsl(var(--surface) / .82);
-    box-shadow: 0 28px 72px -52px hsl(var(--ink) / .55);
-    padding: 1rem;
-  }
-
-  .home-ai__terminal-head {
-    display: flex;
-    align-items: center;
-    gap: .35rem;
-  }
-
-  .home-ai__terminal-dots {
-    display: flex;
-    gap: .35rem;
-  }
-
-  .home-ai__terminal-dots span {
-    width: .55rem;
-    height: .55rem;
-    border-radius: 999px;
-    background: hsl(var(--line));
-  }
-
-  .home-ai__terminal-head :global(.ui-badge) {
-    margin-left: auto;
-  }
-
-  .home-ai__terminal-line {
-    display: flex;
-    gap: .65rem;
-    overflow-x: auto;
-    border: 1px solid hsl(var(--line) / .8);
-    border-radius: .8rem;
-    background: hsl(var(--canvas) / .78);
-    padding: .9rem;
-    color: hsl(var(--brand));
-    font: 700 .76rem/1.5 var(--santi020k-font-mono, monospace);
-    white-space: nowrap;
-  }
-
-  .home-ai__terminal-line code {
-    color: hsl(var(--ink));
+    border-color: hsl(var(--line));
+    background: hsl(var(--surface));
+    box-shadow: none;
+    padding: clamp(1rem, 2vw, 1.5rem);
   }
 
   .home-ai__agent-flow {
@@ -1423,11 +1244,11 @@ const useCases: readonly UseCase[] = [
     gap: .55rem;
   }
 
-  .home-ai__agent-flow span {
+  .home-ai__agent-flow > span {
     display: flex;
     align-items: center;
     gap: .55rem;
-    border-radius: .7rem;
+    border-radius: var(--ui-radius-sm);
     background: hsl(var(--surface-muted) / .72);
     padding: .7rem;
     color: hsl(var(--ink-soft));
@@ -1439,237 +1260,260 @@ const useCases: readonly UseCase[] = [
     color: hsl(var(--brand));
   }
 
-  .home-ai__copy-command:global(.ui-button) {
-    justify-self: start;
+  .home-playgrounds {
+    scroll-margin-top: 5rem;
+  }
+
+  .home-playgrounds__experience {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding-block: 1rem 3rem;
+  }
+
+  .home-playgrounds__copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .home-playgrounds__copy h2 {
+    margin: 1.25rem 0 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: clamp(3rem, 5.4vw, 5.1rem);
+    font-weight: 800;
+    letter-spacing: -.055em;
+    line-height: 1.04;
+  }
+
+  .home-playgrounds__copy h2 span {
+    color: hsl(var(--brand));
+  }
+
+  .home-playgrounds__lede {
+    max-width: 29rem;
+    margin: 1.5rem 0 0;
     color: hsl(var(--ink-soft));
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .home-playgrounds__launch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    margin-top: 1.75rem;
+  }
+
+  .home-playgrounds__launch :global(.ui-button-link) {
+    min-height: 3rem;
+  }
+
+  .home-playgrounds__assurance {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 1.1rem 0 0;
+    color: hsl(var(--ink-soft));
+    font-size: .75rem;
+    line-height: 1.6;
+  }
+
+  .home-playgrounds__assurance :global(.ui-icon) {
+    flex: 0 0 auto;
+    color: hsl(var(--brand));
+  }
+
+  .home-playgrounds__showcase {
+    position: relative;
+    isolation: isolate;
+    min-width: 0;
+    height: clamp(29rem, 43vw, 37rem);
+  }
+
+  .home-playgrounds__halo {
+    position: absolute;
+    inset: 9% 0 4%;
+    z-index: -1;
+    border: 1px solid hsl(var(--brand) / .12);
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 40% 45%, hsl(var(--brand) / .2), hsl(var(--accent) / .08) 55%, transparent 72%);
+  }
+
+  .home-playgrounds__halo::after {
+    position: absolute;
+    inset: 10%;
+    border: 1px solid hsl(var(--brand) / .12);
+    border-radius: inherit;
+    content: "";
+  }
+
+  .home-playgrounds__phone {
+    position: absolute;
+    width: 46%;
+    overflow: hidden;
+    border: .35rem solid hsl(var(--surface-strong));
+    border-radius: 2rem;
+    background: hsl(var(--surface));
+    box-shadow: 0 1.5rem 3rem -.8rem hsl(var(--ink) / .25), 0 0 0 1px hsl(var(--line));
+  }
+
+  .home-playgrounds__phone :global(.ui-image) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .home-playgrounds__phone--apple {
+    top: 1%;
+    left: 6%;
+    transform: rotate(-8deg);
+  }
+
+  .home-playgrounds__phone--android {
+    top: 14%;
+    right: 3%;
+    width: 49%;
+    transform: rotate(9deg);
+  }
+
+  .home-playgrounds__caption {
+    position: absolute;
+    bottom: 1%;
+    left: 50%;
+    gap: .4rem;
+    width: max-content;
+    max-width: 100%;
+    transform: translateX(-50%);
+    border: 1px solid hsl(var(--line));
+    box-shadow: 0 .5rem 1.5rem hsl(var(--ink) / .08);
+    padding: .65rem .9rem;
+  }
+
+  .home-playgrounds__chooser {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+    scroll-margin-top: 7rem;
+    border-top: 1px solid hsl(var(--line));
+    padding-top: 1.5rem;
+  }
+
+  .home-playgrounds__chooser h3 {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .home-playgrounds__chooser p {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: .8rem;
+    line-height: 1.6;
+  }
+
+  .home-playgrounds__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .home-playground {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 1.25rem;
+  }
+
+  .home-playground__heading {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+
+  .home-playground__icon {
+    flex: 0 0 auto;
+    color: hsl(var(--brand));
+  }
+
+  .home-playground__platform {
+    margin: .6rem 0 0;
+    color: hsl(var(--ink-soft));
+    font-size: .75rem;
+    line-height: 1.5;
+  }
+
+  .home-playground h4 {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-family: var(--app-font-display), sans-serif;
+    font-size: 1rem;
+    font-weight: 750;
+    letter-spacing: -.02em;
+    line-height: 1.25;
+  }
+
+  .home-playground__description {
+    margin: 1rem 0 1.5rem;
+    color: hsl(var(--ink-soft));
+    font-size: .85rem;
+    line-height: 1.7;
+  }
+
+  .home-playground__actions {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .65rem;
+    margin-top: auto;
+  }
+
+  .home-playground__actions :global(.ui-button-link) {
+    max-width: 100%;
+    min-height: 2.75rem;
+    white-space: normal;
+  }
+
+  .home-playgrounds__note {
+    margin: 1.25rem 0 0;
+    color: hsl(var(--ink-soft));
+    font-size: .8rem;
+    line-height: 1.6;
   }
 
   .home-platforms {
     position: relative;
   }
 
-  .home-platforms::before {
-    position: absolute;
-    top: clamp(8rem, 15vw, 13rem);
-    right: -12%;
-    z-index: -1;
-    width: 28rem;
-    height: 28rem;
-    border-radius: 50%;
-    background: hsl(var(--brand) / .1);
-    filter: blur(90px);
-    content: "";
-    pointer-events: none;
-  }
-
-  .home-platforms__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-  }
-
-  .home-platform {
-    display: grid;
-    min-width: 0;
-    grid-template-rows: 18rem 1fr;
-    overflow: hidden;
-    border-color: hsl(var(--line) / .78);
-    background: hsl(var(--surface) / .9);
-    box-shadow: 0 26px 72px -58px hsl(var(--ink) / .72);
-    padding: 0;
-  }
-
-  .home-platform__visual {
-    position: relative;
-    display: grid;
-    min-width: 0;
-    place-items: end center;
-    overflow: hidden;
-    border-bottom: 1px solid hsl(var(--line) / .72);
-    background:
-      linear-gradient(hsl(var(--line) / .23) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--line) / .23) 1px, transparent 1px),
-      radial-gradient(circle at 50% 118%, hsl(var(--brand) / .22), transparent 48%),
-      hsl(var(--surface-muted) / .72);
-    background-size: 2rem 2rem, 2rem 2rem, auto, auto;
-    padding: 2.2rem 2.2rem 0;
-  }
-
-  .home-platform__visual::after {
-    position: absolute;
-    inset: auto 0 0;
-    height: 28%;
-    background: linear-gradient(transparent, hsl(var(--ink) / .08));
-    content: "";
-    pointer-events: none;
-  }
-
-  .home-platform__visual :global(.ui-image) {
-    position: relative;
-    z-index: 1;
-    display: block;
-    width: auto;
-    max-width: min(88%, 18rem);
-    height: calc(100% + .65rem);
-    border: 1px solid hsl(var(--line));
-    border-bottom: 0;
-    border-radius: 1.15rem 1.15rem 0 0;
-    background: hsl(var(--canvas));
-    box-shadow: 0 1.6rem 3.5rem -1.8rem hsl(var(--ink) / .65);
-    object-fit: cover;
-    object-position: top center;
-  }
-
-  .home-platform__number {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 2;
-    color: hsl(var(--ink-muted));
-    font: 700 .67rem/1 var(--santi020k-font-mono, monospace);
-    letter-spacing: .08em;
-  }
-
-  .home-platform__web-canvas {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    width: min(100%, 25rem);
-    height: calc(100% - .25rem);
-    grid-template-columns: repeat(3, auto);
-    grid-template-rows: auto 1fr;
-    justify-content: start;
-    gap: .55rem;
-    overflow: hidden;
-    border: 1px solid hsl(var(--line));
-    border-bottom: 0;
-    border-radius: 1.15rem 1.15rem 0 0;
-    background: hsl(var(--canvas));
-    box-shadow: 0 1.6rem 3.5rem -1.8rem hsl(var(--ink) / .65);
-    padding: 1rem;
-  }
-
-  .home-platform__web-canvas > span {
-    display: inline-flex;
-    align-items: center;
-    gap: .35rem;
-    border: 1px solid hsl(var(--line) / .8);
-    border-radius: 999px;
-    background: hsl(var(--surface));
-    padding: .4rem .55rem;
-    color: hsl(var(--ink-soft));
-    font-size: .64rem;
-    font-weight: 750;
-  }
-
-  .home-platform__web-canvas > span:first-child,
-  .home-platform__web-canvas > span:first-child :global(.ui-icon) {
-    color: hsl(var(--brand));
-  }
-
-  .home-platform__web-canvas > div {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: .7fr 1.3fr;
-    grid-template-rows: .65fr .35fr;
-    gap: .65rem;
-    border-top: 1px solid hsl(var(--line) / .72);
-    padding-top: 1rem;
-  }
-
-  .home-platform__web-canvas i {
-    display: block;
-    border: 1px solid hsl(var(--line) / .72);
-    border-radius: .65rem;
-    background: hsl(var(--surface-muted));
-  }
-
-  .home-platform__web-canvas i:first-child {
-    grid-row: 1 / -1;
-  }
-
-  .home-platform__web-canvas i:nth-child(2) {
-    background: linear-gradient(135deg, hsl(var(--brand-soft)), hsl(var(--surface)));
-  }
-
-  .home-platform__body {
-    display: flex;
-    min-width: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: clamp(1.25rem, 3vw, 1.75rem);
-  }
-
-  .home-platform__meta {
-    display: flex;
-    width: 100%;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-
-  .home-platform__meta > span {
-    display: inline-flex;
-    min-width: 0;
-    align-items: center;
-    gap: .45rem;
-    color: hsl(var(--ink-muted));
-    font-size: .68rem;
-    font-weight: 750;
-    letter-spacing: .03em;
-  }
-
-  .home-platform__meta > span :global(.ui-icon) {
-    flex: 0 0 auto;
-    color: hsl(var(--brand));
-  }
-
-  .home-platform__meta > div {
-    display: flex;
-    flex: 0 0 auto;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: .35rem;
-  }
-
-  .home-platform h3 {
-    margin: 1.65rem 0 0;
-    color: hsl(var(--ink));
-    font-family: var(--app-font-display), sans-serif;
-    font-size: clamp(1.55rem, 3vw, 2.1rem);
-    font-weight: 780;
-    letter-spacing: -.025em;
-    line-height: 1.08;
-  }
-
-  .home-platform__body > p {
-    max-width: 35rem;
-    margin: .75rem 0 1.35rem;
-    color: hsl(var(--ink-soft));
-    font-size: .84rem;
-    line-height: 1.65;
-  }
-
-  .home-platform__body > code {
-    max-width: 100%;
-    overflow: hidden;
-    border: 1px solid hsl(var(--line) / .78);
-    border-radius: .55rem;
-    background: hsl(var(--surface-muted) / .72);
-    padding: .46rem .58rem;
-    color: hsl(var(--ink-soft));
-    font-size: .65rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .home-platform__body > :global(.ui-button-link) {
-    margin-top: auto;
-    padding-top: 1.35rem;
-  }
-
   @media (max-width: 960px) {
+    .home-playgrounds__experience {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .home-playgrounds__copy {
+      max-width: 38rem;
+    }
+
+    .home-playgrounds__showcase {
+      width: min(100%, 33rem);
+      height: 36rem;
+      justify-self: center;
+    }
+
+    .home-playgrounds__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .home-proof__inner {
       grid-template-columns: 1fr auto;
     }
@@ -1713,10 +1557,37 @@ const useCases: readonly UseCase[] = [
   }
 
   @media (max-width: 720px) {
+    .home-playgrounds__copy h2 {
+      font-size: clamp(2.75rem, 10.5vw, 4rem);
+    }
+
+    .home-playgrounds__lede {
+      font-size: .95rem;
+    }
+
+    .home-playgrounds__showcase {
+      height: auto;
+      aspect-ratio: .92;
+    }
+
+    .home-playgrounds__phone {
+      border-width: .2rem;
+      border-radius: 1.35rem;
+    }
+
+    .home-playgrounds__caption {
+      font-size: .65rem;
+      padding: .5rem .7rem;
+    }
+
+    .home-playgrounds__grid {
+      grid-template-columns: 1fr;
+    }
+
     .home-container,
     .home-hero__copy,
     .home-hero__product {
-      width: min(100% - 1.5rem, 74rem);
+      width: min(100% - 2rem, 74rem);
     }
 
     .home-hero {
@@ -1724,42 +1595,11 @@ const useCases: readonly UseCase[] = [
     }
 
     .home-hero h1 {
-      font-size: clamp(3.15rem, 15vw, 5rem);
+      font-size: clamp(2.5rem, 10.5vw, 4rem);
     }
 
     .home-hero__lede {
       font-size: .98rem;
-    }
-
-    .home-installer {
-      grid-template-columns: 1fr;
-      gap: .25rem;
-      border-radius: calc(var(--ui-radius) + .35rem);
-      padding: .38rem;
-    }
-
-    .home-installer__label {
-      display: none;
-    }
-
-    .home-installer [role="tablist"] {
-      width: 100%;
-      justify-content: stretch;
-    }
-
-    .home-installer [role="tab"] {
-      flex: 1;
-      padding-inline: .45rem;
-      font-size: .78rem;
-    }
-
-    .home-installer [role="tabpanel"] {
-      border-top: 1px solid hsl(var(--line) / .75);
-      border-left: 0;
-    }
-
-    .home-install {
-      min-height: 2.65rem;
     }
 
     .home-proof__inner {
@@ -1821,22 +1661,6 @@ const useCases: readonly UseCase[] = [
       grid-template-columns: 1fr;
     }
 
-    .home-platforms__grid {
-      grid-template-columns: 1fr;
-    }
-
-    .home-platform {
-      grid-template-rows: 15rem 1fr;
-    }
-
-    .home-platform__visual {
-      padding: 1.75rem 1rem 0;
-    }
-
-    .home-platform__body {
-      min-height: 20rem;
-    }
-
     .home-specimen__swatches span::before {
       height: 4rem;
     }
@@ -1858,29 +1682,8 @@ const useCases: readonly UseCase[] = [
     }
 
     .home-specimen__center :global(.ui-button-group) {
-      transform: scale(.86);
-    }
-
-    .home-platform__meta {
-      display: grid;
-    }
-
-    .home-platform__meta > div {
-      justify-content: flex-start;
-    }
-
-    .home-platform__web-canvas {
-      grid-template-columns: repeat(3, 1fr);
-      padding: .8rem;
-    }
-
-    .home-platform__web-canvas > span {
+      flex-wrap: wrap;
       justify-content: center;
-      padding-inline: .35rem;
-    }
-
-    .home-platform__web-canvas > span :global(.ui-icon) {
-      display: none;
     }
   }
 </style>

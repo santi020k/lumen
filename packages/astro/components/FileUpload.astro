@@ -8,6 +8,7 @@ interface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'size'> {
   className?: string
   label?: string
   hint?: string
+  selectedFilesLabel?: string
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   className = '',
   label = 'Choose a file or drag it here',
   hint,
+  selectedFilesLabel = '{count} files selected',
   id,
   ...rest
 } = Astro.props
@@ -24,7 +26,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<label class:list={classList} data-ui-file-upload for={id}>
+<label class:list={classList} data-ui-file-upload data-ui-selected-files-label={selectedFilesLabel} for={id}>
   <input class="ui-file-upload__input" data-ui-file-upload-input id={id} type="file" {...passthrough} />
   <svg
     aria-hidden="true"

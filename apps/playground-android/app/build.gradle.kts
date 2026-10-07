@@ -1,7 +1,15 @@
+// cspell:words keyboardqualification performancequalification
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
 }
+
+val qualificationInstall = providers.gradleProperty("lumenQualification")
+    .map { value ->
+        require(value == "true" || value == "false") { "lumenQualification must be true or false." }
+        value == "true"
+    }
+    .orElse(false)
 
 val lumenComposeVersion = providers.gradleProperty("lumenComposeVersion")
 val releaseVersionCode = providers
@@ -36,6 +44,7 @@ android {
     defaultConfig {
         applicationId = "com.santi020k.lumen.playground.compose"
         minSdk = 23
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         targetSdk = 37
         versionCode = releaseVersionCode.get()
         versionName = releaseVersionName.get()
@@ -58,14 +67,26 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            if (qualificationInstall.get()) {
+                applicationIdSuffix = ".keyboardqualification"
+            }
+        }
         getByName("release") {
             signingConfig = signingConfigs.findByName("release")
+        }
+        create("benchmark") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".performancequalification"
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = false
+            matchingFallbacks += "release"
         }
     }
 }
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
+    val composeBom = platform("androidx.compose:compose-bom:2026.09.00")
 
     implementation("com.santi020k:lumen-compose:${lumenComposeVersion.get()}")
     implementation(composeBom)
@@ -74,6 +95,12 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui")
+    androidTestImplementation(composeBom)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test:runner:1.7.0")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
 
 tasks.register("verifyLumenArtifactIsolation") {

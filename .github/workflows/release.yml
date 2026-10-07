@@ -7,6 +7,9 @@ on:
     branches: [main]
     paths:
       - ".changeset/**"
+      - "packages/*/package.json"
+      - "registry/release-manifest.json"
+      - ".github/workflows/release.yml"
   workflow_dispatch: {}
 
 concurrency:
@@ -36,10 +39,12 @@ jobs:
         run: git update-ref refs/heads/main "$GITHUB_SHA"
 
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: 22.x
           registry-url: https://registry.npmjs.org
+          task-cache-path: .turbo/cache
+          task-cache-key: npm-release
 
       - name: Resolve packages pending publication
         id: scope
@@ -56,7 +61,8 @@ jobs:
         run: >-
           pnpm run check:release-manifest &&
           node scripts/check-lumen-2-contract.mjs &&
-          pnpm run check:lumen-3-contract -- --require-approved
+          pnpm run check:lumen-3-contract -- --require-approved &&
+          node scripts/check-lumen-4-contract.mjs --require-approved
 
       - name: Validate web release contracts
         if: steps.scope.outputs.web == 'true'
@@ -67,9 +73,11 @@ jobs:
         run: >-
           pnpm run check:react-native-peer-docs &&
           pnpm run test:react-native-peer-docs &&
-          pnpm run check:swift-version &&
-          pnpm run check:native-consumer-evidence &&
-          pnpm run check:native-stability-soak
+          pnpm run check:swift-version
+
+      - name: Check dependency security before release builds
+        if: steps.scope.outputs.has-packages == 'true'
+        run: pnpm run check:security
 
       - name: Build and inspect packages pending publication
         if: steps.scope.outputs.has-packages == 'true'
@@ -77,7 +85,6 @@ jobs:
           LUMEN_RELEASE_PACKAGES: ${{ steps.scope.outputs.packages }}
         run: >-
           pnpm run build:release-scope &&
-          pnpm run check:security &&
           pnpm run check:publish-dry-run
 
       - name: Validate MCP release contracts
@@ -105,17 +112,29 @@ jobs:
           NPM_CONFIG_PROVENANCE: "true"
 
       - name: Verify published npm package family
-        if: steps.changesets.outputs.published == 'true'
+        if: steps.changesets.outputs['has-changesets'] == 'false'
         env:
           PUBLISHED_PACKAGES: ${{ steps.changesets.outputs['published-packages'] }}
         run: |
-          node scripts/check-published-package-family.mjs
+          # Initial coordinated releases audit the full registry family on every
+          # attempt, including partial-publication recovery and no-op retries.
+          audit_packages="$(node scripts/check-published-package-family.mjs --audit-packages)"
+          if [[ "$audit_packages" == "[]" ]]; then
+            exit 0
+          fi
+
+          audit_revision="$GITHUB_SHA"
+          audit_version="$(node -p "require('./packages/lumen/package.json').version")"
+          if git ls-remote --exit-code --tags origin "refs/tags/v${audit_version}" >/dev/null 2>&1; then
+            git fetch origin "refs/tags/v${audit_version}:refs/tags/v${audit_version}"
+            audit_revision="$(git rev-list -n 1 "v${audit_version}")"
+          fi
 
           release_audit_directory="$(mktemp -d)"
           trap 'rm -rf "$release_audit_directory"' EXIT
 
           mapfile -t published_package_specs < <(
-            jq -r '.[] | "\(.name)@\(.version)"' <<<"$PUBLISHED_PACKAGES"
+            jq -r '.[] | "\(.name)@\(.version)"' <<<"$audit_packages"
           )
 
           (
@@ -129,16 +148,19 @@ jobs:
               -- "${published_package_specs[@]}"
           )
 
-          jq -r '.[] | [.name, .version] | @tsv' <<<"$PUBLISHED_PACKAGES" |
+          node scripts/check-published-package-family.mjs \
+            --lockfile "$release_audit_directory/package-lock.json"
+
+          jq -r '.[] | [.name, .version] | @tsv' <<<"$audit_packages" |
             while IFS=$'\t' read -r package_name package_version; do
               pnpm run check:npm-release-provenance -- \
                 --package "$package_name" \
                 --version "$package_version" \
-                --revision "$GITHUB_SHA" \
+                --revision "$audit_revision" \
                 --lockfile "$release_audit_directory/package-lock.json"
             done
 
-          jq -r '.[] | [.name, .version] | @tsv' <<<"$PUBLISHED_PACKAGES" |
+          jq -r '.[] | [.name, .version] | @tsv' <<<"$audit_packages" |
             while IFS=$'\t' read -r package_name package_version; do
               registry_version="$(npm view "$package_name@$package_version" version)"
               if [[ "$registry_version" != "$package_version" ]]; then

@@ -3,7 +3,8 @@
 **Status: active package.** The `@lumenui.dev` Instagram profile and plugin-launch announcement are
 live. `PUBLISHING_QUEUE.md` records publication evidence for each item; other drafts require
 their own approval.
-Every claim below was checked against the current repository state on 2026-09-03. Re-verify the
+The AI positioning and efficiency boundaries were updated on 2026-10-04. Other claims retain their
+individual evidence dates. Re-verify the
 claim ledger before reusing any sentence publicly — package versions, playground availability, and
 release status change frequently in this repository.
 
@@ -16,21 +17,35 @@ public copy.
 Use this sentence exactly, everywhere. Do not paraphrase it in ways that drop "web," "native
 platforms," "Figma," or "AI-assisted development":
 
-> Lumen is an open-source UI system that keeps accessible product interfaces consistent across
-> web, native platforms, Figma, and AI-assisted development.
+> Lumen is an open-source UI library built for AI-assisted development, with accessible components
+> and a shared design language across web, native platforms, and Figma.
 
 ## Audience and primary intent
 
 | Audience | What they need to see first | Primary CTA | Destination |
 | --- | --- | --- | --- |
-| Developers evaluating a UI library | A real, runnable component example and a one-line install | Install a package or try a template | `/templates`, package quick starts in the root README |
+| Developers evaluating a UI library | A real, runnable component example and a one-line install | Try a playground, then build from its reference | `/#playgrounds`, `/templates`, package quick starts in the root README |
 | Design-system engineers | Shared semantic tokens and cross-platform contract, not just visual styling | Read the shared foundations | `/docs/foundations`, [`docs/cross-platform.md`](../cross-platform.md) |
-| AI-assisted builders | A deterministic, agent-usable catalog instead of guesswork | Install the skill or connect the MCP server | `/docs/ai-skill`, `/docs/mcp` |
+| AI-assisted builders | A working interface, precise component guidance, and an honest efficiency method | Build the AI example, then connect the skill or MCP | `/guides/build-ui-with-ai`, `/docs/ai-skill`, `/docs/mcp` |
 | Product teams evaluating adoption | A low-risk, evidence-driven path with no sales gate | Start a scoped evaluation | `/teams` |
 
 These four audiences are the only ones this package targets. Do not broaden scope to
 general consumer marketing, growth hacking, or paid acquisition; this package covers organic and
 community channels only, consistent with the existing [exposure playbook](../exposure-playbook.md).
+
+## Playgrounds as an adoption path
+
+The homepage's `/#playgrounds` section gives developers a direct path from discovery to evaluation:
+try a browser demo or install a native gallery, inspect component states and themes, then follow the
+guide to the app source and package setup. Treat these apps as useful implementation references
+and an ongoing reason to return to the documentation. The platform chooser and canonical links
+live in [`docs/playgrounds.md`](../playgrounds.md#try-lumen-and-use-it-as-a-reference).
+
+Promote the public App Store and Google Play listings for the SwiftUI and Compose galleries.
+Lead React Native visitors to its browser preview and local Expo guide; do not promote its
+SDK-dependent Expo Go link as a universal installation path. Keep store builds distinct from
+unpublished repository candidates and recheck availability before publication. Playground
+availability demonstrates Lumen's own implementation, not independent product adoption.
 
 ## Message pillars
 
@@ -39,6 +54,7 @@ community channels only, consistent with the existing [exposure playbook](../exp
 | One accessible product language across frameworks | Astro, React, and Web Components share tokens, component contracts, and accessibility behavior | C-01, C-13 |
 | Native foundations, not only web | Generated React Native, SwiftUI, and Jetpack Compose foundations; coordinated Lumen 2 publication | C-02, C-10 |
 | Built for AI-assisted development | Portable Agent Skill, MCP server, `llms.txt`, machine-readable registry | C-05 |
+| Purposeful AI context | Reusable primitives, targeted usage retrieval, and reproducible efficiency measurement | C-15 |
 | Free, with no adoption gate | MIT licensed, no waiting list, no account required to evaluate | C-03 |
 | Localization-ready primitives | `LanguageToggle` component with demonstrated English and Spanish defaults | C-04 |
 | Proven by real use, not claims | Dogfooded across the maintainer's own sibling projects; public showcase entries | C-08, C-09 |
@@ -88,6 +104,24 @@ must not appear in public copy at all.
 | C-12 | Lumen UI 1.0.0 is published in the shared ChatGPT and Codex Plugins Directory | [`../openai-plugin-submission.md`](../openai-plugin-submission.md), verified public listing on 2026-09-08 | SUPPORTED | May say published and available; link to the exact directory listing or instruct readers to search Plugins for Lumen UI. Do not imply OpenAI endorsement or private-repository access. |
 | C-13 | Live CI, CodeQL, and npm badges expose current status | README badges section | CONDITIONAL | Link to the live GitHub Actions and npm pages. Never restate a green or current status without checking it at publication time. |
 | C-14 | The Android Compose playground is live on Google Play | [`../playground-publication.md`](../playground-publication.md) Android production record; [current public Google Play listing](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose) | SUPPORTED | Link to the exact public listing. Do not infer a specific install count or independent production adoption from the playground listing. |
+| C-15 | Designed to reduce repetitive UI code and unnecessary AI context | Public primitives; MCP summary/usage/source detail; [`../ai-efficiency.md`](../ai-efficiency.md) | CONDITIONAL | A design goal, not measured savings on every task. Explain that discovery, tools, and retries consume tokens too. |
+| C-16 | A fixed percentage of AI token or cost savings | No generalizable comparison establishes this claim | BLOCKED | Do not promise a percentage, lower bills, fewer corrections, or superiority over another library. Any future numerical result must name its model, tasks, run count, checks, and limitations. |
+| C-17 | The October 4, 2026 local comparison did not show lower token usage with Lumen | `/guides/measure-ai-ui-token-usage`; `/benchmarks/ai-efficiency-2026-10-04.json`; [`../ai-efficiency.md`](../ai-efficiency.md) | SUPPORTED | Scope to the recorded model, local v4 candidate, two React tasks, three repetitions per approach, and verification/repair protocol. All 18 runs passed within two attempts. Do not generalize to all models, interfaces, frameworks, or billing. |
+
+## AI discovery and search intent
+
+The homepage leads with the UI library's AI workflow while retaining the working component showcase
+and web/native coverage. The practical adoption path is `/guides/build-ui-with-ai` → `/docs/ai-skill`
+and `/docs/mcp` → platform/component references. The efficiency explanation lives at
+`/guides/measure-ai-ui-token-usage`.
+
+Candidate search intents are "UI library for AI coding agents," "build React UI with AI,"
+"Astro AI components," and "measure AI coding token usage." These are editorial hypotheses, not
+verified search-volume or ranking claims. Validate them in existing Search Console reports after
+deployment, following [measurement](MEASUREMENT.md); do not add tracking as part of this change.
+Use useful worked examples, descriptive titles, internal links, and metadata matching visible copy.
+`llms.txt` and MCP help agents consume Lumen; neither is a promised Google ranking signal.
+See [Google's AI search guidance](https://developers.google.com/search/docs/appearance/ai-features).
 
 Add new claims here with the same fields before using them anywhere else in this package. If a claim
 cannot be verified against a current file, route, or check, it does not get an ID and must not be

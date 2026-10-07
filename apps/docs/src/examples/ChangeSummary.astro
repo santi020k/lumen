@@ -1,0 +1,11 @@
+---
+import { ChangeSummary } from '@santi020k/lumen-astro'
+---
+<ChangeSummary
+label="Review changes"
+summary="1 changed field"
+items={[
+  { id: 'owner', label: 'Owner', before: 'Alice', after: 'Bob', changed: true },
+  { id: 'status', label: 'Status', before: 'Active', after: 'Active', changed: false }
+]}
+/>

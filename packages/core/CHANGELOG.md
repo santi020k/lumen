@@ -1,5 +1,294 @@
 # @santi020k/lumen-core
 
+## 4.0.0
+
+- Reject malformed restored date ranges and attachment metadata without throwing. Preserve WorldMap center, pointer zoom anchors, and highlighted-country fitting in RTL scroll containers.
+
+- Normalize malformed decoded MediaViewport values safely and preserve media action buttons across document adoption.
+
+- Add mouse and pen drag panning and extend WorldMap zoom to 800%. Render the selection outline above all country fills with rounded joins so neighboring regions cannot clip it or produce spikes at high zoom.
+
+- Rebuild DeviceFrame hardware with tapered laptop decks, curved desktop stands, rounded phone glass, separate side rails and controls, and tablet home recesses. Support white, black, and custom hex finishes through the color prop or attribute while preserving screen content and iframe viewports.
+
+- Add separate MacBook Air and iPad Pro device presets with a tapered deck and even tablet bezels, and refine MacBook Pro hardware with a display notch and full front edge. Improve DeviceFrame documentation with individual device slides, Lumen content, finish controls, and copyable image, HTML, and iframe examples.
+
+- Add accessible WorldMap zoom in, zoom out, and reset controls across web adapters, with center-preserving scaling, native viewport scrolling, bounded zoom, and localized control labels. Split the dotted and solid documentation examples into independent framework code panels using Lumen semantic colors.
+
+- Add cursor-centered modified-wheel zoom and fitting to highlighted countries, with an optional regional initial view and localized fit controls. Organize npm packages by purpose and add dedicated WorldMap navigation and destination guides with separate framework examples.
+
+- Recognize the selected locale's numbering-system digits when parsing exact decimal drafts. Chinese decimal numerals now support bounds validation and repeated stepping without rejecting formatted values.
+
+### Minor Changes
+
+- Add controlled media viewport, thumbnail and filmstrip primitives, persistent comparison modes, and installable Studio workspace, adjustment and processing recipes. Keep media services and export host-owned. Include interactive qualification examples and native adapter contracts.
+
+- Add coordinated keyed motion, optional semantic visual effects, chart continuity, and application-owned AI surfaces across web adapters. Include installable product blocks, an interactive visual playground, and optional Motion and Rive integration entry points.
+
+- Add WorldMap for Astro, React, and Web Components with dotted and solid styles, highlighted countries, labeled markers, country selection, theme customization, and reduced motion. Ship public-domain country geometry behind an explicit core subpath, with no runtime requests or new dependencies.
+
+### Patch Changes
+
+- Refine DeviceFrame with MacBook Pro, iMac, and Pixel presets, minimalist matte frames, camera details, side buttons, and simple bases. Reserve hardware space for live HTML and iframe content, and let phone images fill the glass. Refresh the interactive gallery and retain all generic device presets.
+
+
+- Preserve reserved filter names when parsing data view state and append server request parameters before endpoint fragments.
+
+- [#95](https://github.com/santi020k/lumen/pull/95) [`c8d7a4b`](https://github.com/santi020k/lumen/commit/c8d7a4b7a529d6f7a06209103c0ee9790a040ca2) Thanks [@santi020k](https://github.com/santi020k)! - Preserve focused controls and reusable keyed content in data-mode virtual collections inside
+  same-origin iframes, including adopted elements. Use the root document for range events and
+  resize observation.
+
+- Add DeviceFrame for laptop, desktop, iPhone-style, Android-style, and tablet demonstrations with
+  slotted HTML, images, fixed iframe viewports, orientation, shell tones, and configurable screen sizes.
+
+- Add dependency-free presence motion with shared timing, fade/slide/scale presets, abortable enter/exit effects, and reduced-motion support. Smooth native disclosure transitions progressively enhance supporting browsers while retaining immediate native toggles elsewhere. Add a local reduced-motion scope and an interactive motion playground for component entrances, dialogs, feedback, and list changes.
+
+- Keep recurring schedule instants stable across host time zones and daylight-saving transitions. Refresh amount reset roots after document adoption and fall back to deterministic English number formatting for invalid locale identifiers.
+
+- Reset amount drafts to the current default without replacing active edits when that default changes.
+
+- Follow the current amount form owner on reset, respect inherited disabled state, and preserve adopted attachment previews.
+
+- Exclude effectively disabled combobox options from keyboard selection.
+
+- Preserve combobox pointer selection, focus and visibility for nodes adopted into a different document.
+
+- Validate decoded scatter annotations and use the owning document for combobox events and lifecycle resources.
+
+- Reject malformed decoded heatmap containers before geometry calculation.
+
+- Reject non-array comparison and interval chart datasets before iteration. Reject fractional group separators in strict localized amount pastes.
+
+### Minor Changes
+
+- Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
+  Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
+  review signals, semantic theme diagnostics, and installable React form and operational-record recipes.
+
+- Reject non-array decoded calendar heatmap, funnel, and box-plot collections before iteration.
+
+- Fail closed on malformed decoded line-chart series and datum collections before deriving categories or geometry.
+
+### Patch Changes
+
+- Preserve focused controls and reusable keyed content in data-mode virtual collections inside same-origin iframes, including adopted elements. Use the root document for range events and resize observation.
+
+- Safely validate unknown decoded time selections before checking time bounds.
+
+- Keep chart annotation IDs unique, preserve RTL range calendar navigation, and associate phone country values with explicit external forms.
+
+- Reject overflowing theme dimension scales, preserve iframe virtual-list focus and control reuse, and count only measured days in Swift calendar heatmap summaries.
+
+- Validate decoded chart annotations, restore chart legend inspection state on teardown, refresh external image-comparison reset values, restore iframe dialog focus, and preserve uncontrolled filter disclosure state.
+
+### Minor Changes
+
+- Add CalendarHeatmap, FunnelChart, and BoxPlot across web and native adapters with shared validation,
+  semantic chart colors, localized formatting, responsive layouts, and accessible exact data.
+  Calendar heatmaps use explicit Gregorian date-only ranges; funnels preserve supplied stage order;
+  box plots accept precomputed quartiles, whiskers, and outliers without performing application statistics.
+
+- Add canonical Default, Studio and Glass appearance presets, scoped web styling and ThemeBuilder radius, spacing and border customization. Native adapters expose preset palettes and explicit surface material with opaque fallbacks. Swift and Compose consumers must rebuild for the updated theme and surface signatures; see the appearance presets guide.
+
+- Add opt-in Astro chart drilldown with matching pointer and native keyboard actions, localized
+  action labels, and validated data identity events. Keep actions available when tables are hidden.
+
+- Add attachment list and browser-owned image preview composition with localized fallback states,
+  retry identity, safe state events, and independent application-owned file actions.
+
+- Add BulletChart across Astro, React, Web Components, React Native, SwiftUI, and Compose.
+  Compare actual values with targets and labeled qualitative ranges using an honest zero-inclusive
+  domain. Preserve missing measurements, localized exact data, responsive typography, and native
+  accessibility. Existing chart APIs remain compatible.
+
+- Add validated chart datum activation payloads and a DOM event controller for series points,
+  heatmap cells, and ranges. Preserve raw data identities and reject unavailable values.
+
+- Add dashboard filter and change-summary composition, richer responsive React DataTable records and
+  shared sorting controls, top-layer React overlays with collision placement and focus handoff, and
+  ScatterChart logarithmic X scales, independent formatting, explicit domains, and labeled references.
+  Document host-owned freshness, import review, activity inbox, and persistent Kanban recipes.
+  Keep controlled filter disclosure under host ownership and advance manual table sorting from the
+  authored header state without changing server row order.
+
+- Add DialogHeader, DialogTitle, DialogBody, DialogFooter, and DialogClose across the web adapters. Compound dialogs keep their header and actions visible while long task content scrolls. Close actions honor cancelled clicks and disabled controls.
+
+  FileUpload accepts localized selected-file count labels and clears selected-file feedback after an accepted native form reset.
+
+- Close advanced-input and media gaps across React Native, SwiftUI and Compose with number, time,
+  autocomplete, password, numeric OTP and image comparison controls. Preserve controlled state,
+  localized drafts, native secure entry and autofill hints, explicit cancellation and accessible
+  adjustment. Add exact bounded decimal, numeric OTP and same-day time helpers for web and native
+  consumers, plus bilingual native playground examples and a form-submission error recipe.
+
+- Repair chart data disclosures with full-width controls, bounded keyboard scrolling, and sticky
+  headers across the web adapters. Add WaterfallChart and Histogram to React Native, SwiftUI, and
+  Compose, with matching invalid-input behavior, exact values, and native expandable data lists.
+
+- Bring labeled sequential and diverging heatmaps to React Native, SwiftUI, and Compose with
+  numeric legends, explicit missing-value markers, responsive axes, and consistent exact-value
+  disclosures. Keep duplicate coordinates deterministic and numeric scaling finite at extreme values.
+
+  Swift and Compose consumers should rebuild for the defaulted heatmap options added in v4.
+
+- Add DescriptionItem, DescriptionTerm, and DescriptionDetail for rich description values across the web adapters. Astro and React preserve native definition-list markup; Web Components provide explicit group, term, and definition roles. Long values wrap within their grid column.
+
+- Add Histogram and WaterfallChart to the web catalog with explicit data contracts, shared geometry,
+  validation, accessible summaries, and source tables. Add continuous numeric and time axes,
+  reference annotations, optional keyboard and pointer inspection, interactive legends, and cursor
+  synchronization to LineChart. React supports controlled cursor selection.
+
+  Heatmaps now label axes, display a sequential or diverging color legend, and mark missing cells
+  distinctly from measured zero. Duplicate coordinates use the first observation consistently.
+  Existing category line spacing remains the default. Native component coverage is unchanged.
+
+- Add ImageComparison for Astro, React, and Web Components with aligned media clipping, a labelled native range control, localized accessible values, and controlled React state. Preserve media framing across reveal changes and support writing direction without pointer-only interaction.
+
+- Add LollipopChart and DumbbellChart across Astro, React, Elements, React Native, SwiftUI, and Compose.
+  The charts preserve missing values, share a zero-inclusive domain, and provide readable exact data.
+  Refine BulletChart with a slimmer track, quieter range bands, and a capped target marker.
+
+### Patch Changes
+
+- Keep complete scatter bubbles inside automatically derived plot bounds for linear, logarithmic, and time scales. Explicit domain limits remain exact.
+
+- Reject sparse calendar heatmap, funnel, box-plot, and comparison datasets instead of silently
+  skipping empty array slots. Reject sparse box-plot outliers while preserving explicit missing
+  measurements and caller-owned data.
+
+- Prevent combobox option clicks from submitting forms, preserve application-hidden options during
+  filtering, and restore filter-owned visibility on cleanup. Support mounted virtual lists in
+  same-origin iframe documents. Respect disabled fieldset ancestors and current form ownership for
+  combobox resets. Bind Web Component comboboxes when children arrive or are replaced after connection.
+
+  Compose consecutive functional updates through uncontrolled React hook setters without losing earlier updates or duplicating change notifications.
+
+- Reject unsafe external component names before wrapper generation. Keep schedule availability
+checks conservative for malformed intervals and report invalid resize or recurrence inputs
+explicitly without changing persisted event records.
+
+- Prevent a shared Combobox observer loop when an open field becomes disabled or read-only. Keep Android TimeField bounds, error labels, and callbacks current while its native dialog is open. Preserve localized negative Swift NumberField drafts and repeated stepping in Arabic and Persian locales.
+
+- Reject malformed Astro action errors and inherited icon names, preserve plain markup prose without syntax highlighting, and normalize form-error records whose field is named `fields`, exclude blank numeric chart coordinates, preserve literal slash-star text during markup migrations, and detect existing recipe conflicts before writing files.
+
+  Validate externally associated native form controls on submission in Astro and Web Components.
+
+  Keep timed toasts paused while hovered or focused, without subtracting elapsed time twice.
+
+  Preserve localized password-toggle labels, accessible avatar fallback names and tree levels,
+  correct listbox ownership, tolerate non-finite animation precision, and apply the final batched
+  scroll-reveal visibility state.
+
+  Restrict schedule drops to their actively dragged event, clear interrupted resizing state, and
+  generate unique Astro runtime IDs without depending on `crypto.randomUUID`.
+
+  Reject inherited search-alias dictionary properties instead of crashing MCP search.
+
+- Refine web chart presentation with responsive plots, fading area fills, quieter grids, compact
+  legends, clearer typography, and a floating inspection panel that stays inside the chart. Improve
+  heatmap legend alignment and preserve all row labels at narrow sizes. The default line aspect ratio
+  is wider and pie charts are more compact; existing data contracts and imports remain unchanged.
+
+- Preserve reserved filter names when parsing data view state and append server request parameters before endpoint fragments.
+
+- Close shared Combobox options and clear stale active-option state after an accepted native form reset. Refilter against the restored input value, preserve canceled resets, and cancel deferred work when the controller is destroyed.
+
+- Correct Astro runtime metadata for overlay, selection, navigation, and form primitives so tooling and generated integration guidance include UIPrimitives when their interactions require it.
+
+- Polish shared Select keyboard activation, accessible popup names, and focus-leave dismissal.
+  Use enhanced Lumen selectors for documentation theme and scope controls, retaining progressive
+  enhancement and resilient preference handling.
+
+  Refresh compatible dependencies and remove unused MDX support, the duplicate root Next
+  declaration, the monolithic MCP SDK, and obsolete dependency overrides. Migrate MCP to the
+  split v2 SDK with unchanged stdio, HTTP, and Worker wire contracts. Programmatic consumers
+  must use v2 SDK transports and types with the returned server object; see the v4 migration guide.
+
+  Regenerate the shared Lucide catalog with four additional icon names and updated nut artwork.
+  Swift exhaustive icon switches must handle the new cases or provide an unknown default.
+
+  Batch React ImageComparison form resets into one scheduled update and cancel pending work
+  during cleanup, preserving controlled values and canceled resets.
+
+- Preserve a positive line-chart plotting width with verbose value formatters in narrow frames, keeping category ticks and rendered coordinates aligned.
+
+- Validate malformed decoded waterfall and histogram rows before accumulation or sorting, and fail closed with empty geometry. Reset Elements calendars to their latest configured value and focus form-owned external controls from error summaries. Align image-comparison crops and dividers with native range direction in LTR and RTL. Preserve decorative and custom accessibility descriptions for Compose flag text fallbacks.
+
+- Validate decoded heatmap cells through the shared normalizeLumenHeatmapData helper before geometry or native category formatting. Fail closed for malformed rows while preserving unavailable measurements. Execute React rich-text toolbar and keyboard commands in the editor root's owning document, including same-origin iframe portals.
+
+- Validate decoded BulletChart range containers and avoid formatting invalid measurements. Fall back safely for malformed decimal locale tags. Resume React toast timeouts after keyboard focus leaves while preserving overlapping hover pauses. Remove only enhancer-owned Code copy controls and focus attributes when configuration changes, and cancel stale clipboard feedback.
+
+### Native Advanced Inputs
+
+- Add React Native and SwiftUI number, time, autocomplete, password, numeric OTP and image comparison
+  controls alongside Compose. Add exact decimal, numeric OTP and same-day time helpers in Core,
+  bilingual playground examples and an application-owned form-error summary recipe.
+
+### Migration, Direction and Data Collections
+
+- Add v3 and v4 source migration previews with optional coordinated pnpm dependency upgrades. Preserve
+  explicit v3 layout gaps, report product and native review boundaries, and prevent repeated v4 applies
+  from rewriting spacing twice.
+
+  Correct inherited RTL horizontal navigation in tabs, calendars and pane resizing. Add an opt-in
+  VirtualList data renderer that mounts only the visible window and focused neighbors, with stable
+  keys and a shared DOM controller for Astro and Elements.
+
+### Appearance Presets
+
+- Add Default, Studio and Glass appearance presets with semantic palette and surface customization.
+  Glass remains explicit per surface with opaque native fallbacks. See the appearance presets guide;
+  Swift and Compose consumers must rebuild for the updated initializer signatures.
+
+### Phone Input Improvements
+
+- Polish international phone inputs with shared offline flag artwork, compact country selectors,
+  continuous borders, consistent spacing, visible validation, and complete disabled/read-only states.
+  Expose input attributes and refs directly, and add reusable country flags and read-only phone views.
+
+  In v4, Astro and React PhoneInput `id` labels the actual number input. Web Components expose
+  `input-id` and render the visual phone frame inside the host. Remove consumer flag overlays and
+  DOM attribute patches; use the public props and stable phone parts instead.
+
+### Major Changes
+
+- Finalize web form visual sizing with visualSize/visual-size on Select, PhoneInput and Segmented, preserving native numeric size. Add conservative literal migration previews and a complete machine-readable v4 breaking inventory. Fix controlled Segmented ownership, Select accessibility/callback/reset behavior, Elements scalar reconnection and reset defaults, and multiple-select submission. Add selective React component and Elements VirtualList imports with measured bundle and packed-consumer checks. Existing root imports remain supported.
+
+- Preserve VirtualList scroll height with fixed-height row windows and inert spacers across web
+  adapters. Refresh changing rows and resized containers, retain keyboard focus, and restore row
+  state on cleanup. Range endpoints are inclusive; empty lists report endIndex -1.
+
+  Add cancelable rich-text command requests and a React commandHandler option so external engines
+  can execute commands once without a browser fallback. Existing command events report completion.
+
+- Prepare the coordinated Lumen 4 family from twenty real consumer audits.
+
+  - Make chart axes readable, preserve complete detail labels, center single observations, use
+    deterministic duplicate handling, and expose formatted native axes and compact plot layouts.
+  - Add controlled date-range drafting with strict calendar bounds, localized labels, and safe
+    disabled/read-only behavior. Keep form labels and keyboard focus attached to the active control.
+  - Keep server-paginated tables in supplied order with controlled manual sorting, and make dialog
+    dismissal and opener restoration explicit for pending and nested workflows.
+  - Preserve native hidden semantics, loading-button dimensions, and disabled slotted activation.
+  - Give code-copy actions localized success and failure feedback, preserve normal navigation Tab
+    order, and improve readable prose and code-theme defaults.
+  - Add ImageComparison with a fixed image frame, native range control, RTL support, and matching
+    Astro, React, and Web Component contracts.
+  - Improve native slider announcements, long text layout, and contextual symbol selection.
+  - Refresh usage examples, migration guidance, machine-readable contracts, and the public consumer
+    showcase. Token, icon, and form-integration packages join the coordinated major family.
+
+  Migration: use unique stable chart X values, rebuild native consumers for updated initializer
+  contracts, and review custom button selectors against the content wrapper. Loading actions now
+  prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
+  application data migration is performed, and this candidate is not publication authorization.
+
+- Keep editable Combobox focus in the input with active-descendant navigation, composition-safe
+  shortcuts and live option updates. Report React selection through onChange for controlled forms.
+  Dismiss only the innermost active popup on Escape and preserve canceled events and text editing.
+
+  Migration: use aria-activedescendant and aria-selected instead of focusing option buttons. Enter
+  commits only an active option in an open list; otherwise native form behavior remains available.
+
 ## 3.0.1
 
 ### Patch Changes

@@ -55,7 +55,7 @@ describe('component docs snippets', () => {
   })
 
   test('include a live example file for every documented component', () => {
-    expect(sortByName(exampleFileNames)).toEqual(sortByName(documentedComponentNames))
+    expect(sortByName(exampleFileNames)).toEqual(sortByName([...documentedComponentNames, 'WorldMapSolid', 'WorldMapRegions']))
   })
 
   test('distinguish commonly confused component families', () => {
@@ -89,6 +89,17 @@ describe('component docs snippets', () => {
       expect(component?.guidance?.when, `${name} needs "use it when" guidance`).toBeTruthy()
       expect(component?.guidance?.distinction, `${name} needs comparison guidance`).toBeTruthy()
     }
+  })
+
+  test('documents adapter differences beside their examples', () => {
+    for (const name of ['AnimatedPortrait', 'ButtonLink', 'Combobox', 'CoverImage', 'Dialog', 'PhoneInput', 'Tabs', 'Textarea', 'ThemeToggle', 'Toast']) {
+      const component = componentDocs.find(entry => entry.name === name)
+
+      expect(component?.adapterNotes?.some(note => note.framework === 'React')).toBe(true)
+    }
+
+    expect(componentDocs.find(entry => entry.name === 'PieChart')?.adapterNotes?.[0]?.text)
+      .toContain('array containing its series')
   })
 
   test('group similar components into valid comparison collections', () => {

@@ -8,7 +8,24 @@
 
 <main class="lumen-template lumen-template__form-shell">
   <lumen-card class="lumen-template__form">
-    <lumen-stepper current-step="1"></lumen-stepper>
+    <lumen-stepper role="list" aria-label="Setup steps">
+      <div class="ui-stepper__step" data-state="complete" role="listitem">
+        <span class="ui-stepper__marker">1</span>
+        <span class="ui-stepper__content"><span class="ui-stepper__title">Account</span></span>
+      </div>
+      <div aria-current="step" class="ui-stepper__step" data-state="current" role="listitem">
+        <span class="ui-stepper__marker">2</span>
+        <span class="ui-stepper__content"><span class="ui-stepper__title">Workspace</span></span>
+      </div>
+      <div class="ui-stepper__step" data-state="upcoming" role="listitem">
+        <span class="ui-stepper__marker">3</span>
+        <span class="ui-stepper__content"><span class="ui-stepper__title">Preferences</span></span>
+      </div>
+      <div class="ui-stepper__step" data-state="upcoming" role="listitem">
+        <span class="ui-stepper__marker">4</span>
+        <span class="ui-stepper__content"><span class="ui-stepper__title">Invite</span></span>
+      </div>
+    </lumen-stepper>
     <header><p class="lumen-template__muted">Step 2 of 4</p><h1>Create your workspace</h1><p class="lumen-template__muted">We’ll prepare the right starting point.</p></header>
     <form class="lumen-template__form">
       <lumen-field class="lumen-template__field"><label for="workspace-name">Workspace name</label><lumen-input id="workspace-name" name="workspace" placeholder="Northstar Labs" required></lumen-input></lumen-field>
@@ -19,4 +36,44 @@
       <div class="lumen-template__actions"><lumen-button variant="ghost">Back</lumen-button><lumen-button type="submit">Continue</lumen-button></div>
     </form>
   </lumen-card>
+  <section class="lumen-login-examples" aria-labelledby="login-examples-title">
+    <header>
+      <p>Returning members</p>
+      <h2 id="login-examples-title">A familiar way back in.</h2>
+      <p>Email codes and passkeys, composed with Lumen. These visual examples do not send codes or sign you in.</p>
+    </header>
+    <lumen-grid class="lumen-login-examples__grid">
+      <lumen-card class="lumen-login-examples__card">
+        <h3>Welcome back</h3>
+        <p>Use a saved passkey or receive a code by email.</p>
+        <lumen-button disabled type="button">Sign in with a passkey</lumen-button>
+        <lumen-field>
+          <label for="login-email">Email address</label>
+          <lumen-input autocomplete="email" id="login-email" name="login-email" readonly type="email" value="member@example.com"></lumen-input>
+        </lumen-field>
+        <lumen-button disabled type="button">Send sign-in code</lumen-button>
+        <p>No password to remember.</p>
+      </lumen-card>
+      <lumen-card class="lumen-login-examples__card">
+        <h3>Check your inbox</h3>
+        <p>If this address can sign in, a code will arrive shortly.</p>
+        <lumen-field>
+          <label for="login-code">Email code</label>
+          <lumen-input aria-describedby="login-code-hint" autocomplete="one-time-code" id="login-code" inputmode="numeric" name="login-code" placeholder="Enter your code" readonly></lumen-input>
+          <p id="login-code-hint">Paste the complete code from your email.</p>
+        </lumen-field>
+        <lumen-button disabled type="button">Verify and continue</lumen-button>
+        <lumen-button disabled type="button" variant="outline">Resend code</lumen-button>
+        <p>Entered the wrong address? Return to email sign-in.</p>
+      </lumen-card>
+      <lumen-card class="lumen-login-examples__card">
+        <h3>Try another way</h3>
+        <lumen-alert variant="destructive">Passkey sign-in was canceled. You can try again or request a code by email.</lumen-alert>
+        <p>You can still use email when your passkey is unavailable.</p>
+        <lumen-button disabled type="button">Try passkey again</lumen-button>
+        <lumen-button disabled type="button" variant="outline">Use an email code</lumen-button>
+        <p>Your existing account and workspace stay the same.</p>
+      </lumen-card>
+    </lumen-grid>
+  </section>
 </main>

@@ -90,7 +90,12 @@ const parseDataViewFilters = (params: URLSearchParams): Record<string, string> =
 
   for (const [key, filterValue] of params.entries()) {
     if (key.startsWith('filter.')) {
-      filters[key.slice('filter.'.length)] = filterValue
+      Object.defineProperty(filters, key.slice('filter.'.length), {
+        configurable: true,
+        enumerable: true,
+        value: filterValue,
+        writable: true
+      })
     }
   }
 
@@ -142,9 +147,14 @@ export const getVirtualRange = (
   itemCount: number,
   overscan = 4
 ) => {
-  const startIndex = Math.max(0, Math.floor(scrollOffset / itemSize) - overscan)
-  const visibleCount = Math.ceil(viewportSize / itemSize) + overscan * 2
-  const endIndex = Math.min(itemCount - 1, startIndex + visibleCount)
+  const count = Number.isSafeInteger(itemCount) && itemCount > 0 ? itemCount : 0
+  const size = Number.isFinite(itemSize) && itemSize > 0 ? itemSize : 44
+  const viewport = Number.isFinite(viewportSize) && viewportSize > 0 ? viewportSize : 0
+  const extra = Number.isFinite(overscan) ? Math.max(0, Math.trunc(overscan)) : 4
+  const maximumOffset = Math.max(0, count * size - viewport)
+  const offset = Number.isFinite(scrollOffset) ? Math.min(maximumOffset, Math.max(0, scrollOffset)) : 0
+  const startIndex = Math.max(0, Math.floor(offset / size) - extra)
+  const endIndex = Math.min(count - 1, Math.max(startIndex, Math.ceil((offset + viewport) / size) - 1) + extra)
 
   return {
     endIndex,
@@ -282,7 +292,14 @@ export const createDataViewRequestUrl = (
 
   if (!query) return endpoint
 
-  return `${endpoint}${endpoint.includes('?') ? '&' : '?'}${query}`
+  const fragmentIndex = endpoint.indexOf('#')
+  const path = fragmentIndex < 0 ? endpoint : endpoint.slice(0, fragmentIndex)
+  const fragment = fragmentIndex < 0 ? '' : endpoint.slice(fragmentIndex)
+  let separator = path.includes('?') ? '&' : '?'
+
+  if (path.endsWith('?') || path.endsWith('&')) separator = ''
+
+  return `${path}${separator}${query}${fragment}`
 }
 
 export const createDataViewServerRequest = (

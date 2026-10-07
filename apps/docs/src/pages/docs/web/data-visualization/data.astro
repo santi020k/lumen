@@ -1,0 +1,64 @@
+---
+import { Callout, Collapsible, Link, LollipopChart } from '@santi020k/lumen-astro'
+import type { LumenComparisonDatum } from '@santi020k/lumen-core'
+
+import CodeBlock from '../../../../components/CodeBlock.astro'
+import ChartGuideLayout from '../../../../layouts/ChartGuideLayout.astro'
+
+const revenue = [
+  { id: 'monday', label: 'Monday', value: 840 },
+  { id: 'tuesday', label: 'Tuesday', value: 0 },
+  { id: 'wednesday', label: 'Wednesday', value: null }
+] satisfies readonly LumenComparisonDatum[]
+
+const dollars = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
+const formatValue = (value: number): string => dollars.format(value)
+
+const dataCode = `const revenue = [
+  { id: 'monday', label: 'Monday', value: 840 },
+  { id: 'tuesday', label: 'Tuesday', value: 0 },
+  { id: 'wednesday', label: 'Wednesday', value: null }
+]
+
+const dollars = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0
+})
+const formatValue = (value: number): string => dollars.format(value)
+
+// Astro and React: pass revenue to data and this formatter
+// to the formatValue prop.
+// Elements: chart.valueFormatter = formatValue.`
+---
+<ChartGuideLayout title="Prepare chart data" description="Choose honest domains, format values, preserve missing measurements, and validate chart data.">
+  <section id="chart-data" aria-labelledby="chart-data-title">
+    <header class="chart-guide-heading">
+      <span class="chart-guide-step">04 / Prepare</span>
+      <h2 id="chart-data-title">Keep the data honest.</h2>
+      <p>Lumen draws the measurements you provide. Your application owns fetching, aggregation, sorting, units, and the meaning of a change.</p>
+    </header>
+    <LollipopChart
+      aria-label="Daily revenue in US dollars for August 3 through 5, 2026, with a measured zero and a missing observation"
+      heading="A zero is still a result."
+      description="Illustrative daily revenue · USD · August 3–5, 2026"
+      caption="Tuesday recorded $0. Wednesday has no measurement, so its row remains labeled without a dot."
+      data={revenue}
+      domain={{ min: 0, max: 1000 }}
+      {formatValue}
+      valueLabel="Revenue"
+      labels={{ notAvailable: 'Not recorded' }}
+    />
+    <Collapsible class="chart-data-code">
+      <summary>View numeric data and currency formatting</summary>
+      <CodeBlock code={dataCode} lang="ts" title="Data and formatter" />
+    </Collapsible>
+    <div class="chart-guidance-grid">
+      <div><h3>Zero is a measurement.</h3><p>Use <code>null</code> for unavailable observations and <code>0</code> for a real zero. Comparison rows keep their labels when a value is missing. An empty array shows the empty state; it does not indicate loading.</p></div>
+      <div><h3>Use one meaningful scale.</h3><p>Comparison and bullet domains must contain zero and all displayed measurements. Use a common domain across cards you want readers to compare. Omit <code>domain</code> to let Lumen derive it.</p></div>
+      <div><h3>Format at the boundary.</h3><p>Keep data numeric. Use <code>formatValue</code> in Astro and React, or the <code>valueFormatter</code> property in Elements. The same formatter labels visible values and exact data.</p><p>The <Link href="/docs/components/bullet-chart">BulletChart example</Link> stores 86 as a percentage point value and appends %. If using <code>Intl.NumberFormat</code> with <code>style: 'percent'</code>, store 0.86 instead and use a matching 0–1 domain.</p></div>
+      <div><h3>Validate before rendering.</h3><p>Comparison rows need unique, non-empty IDs, non-empty labels, and finite numbers or <code>null</code>. Invalid input or a truncated domain shows an invalid-data message. Handle network errors and loading in your application with <Link href="/docs/components/error-state">ErrorState</Link> and <Link href="/docs/components/skeleton">Skeleton</Link>.</p></div>
+    </div>
+    <Callout><p><strong>Time series use a different contract.</strong> <Link href="/docs/components/line-chart">LineChart</Link> accepts series of <code>{'{ x, y }'}</code> points. Use <code>xScale="time"</code> for elapsed-time spacing, stable timestamps for identity, and an explicit locale and time zone for labels. A comparison chart uses <code>{'{ id, label, value, reference? }'}</code> rows.</p></Callout>
+  </section>
+</ChartGuideLayout>

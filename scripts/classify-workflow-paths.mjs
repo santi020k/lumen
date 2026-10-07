@@ -29,7 +29,8 @@ export const classifyChangedNpmPackages = paths => {
     /^package\.json$/u,
     /^pnpm-workspace\.yaml$/u,
     /^turbo\.json$/u,
-    /^scripts\/(check-bundle-size|smoke-consumer-packages)\.mjs$/u,
+    /^scripts\/(check-bundle-size(?:\.test)?|smoke-consumer-packages)\.mjs$/u,
+    /^scripts\/lib\/bundle-size\.mjs$/u,
     /^scripts\/(check-publish-dry-run|sync-registry|validate-registry)\.mjs$/u,
     /^\.github\/workflows\/ci\.yml$/u
   ])
@@ -51,7 +52,8 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^apps\/(next-smoke|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|templates|tokens)\//u,
     /^registry\//u,
-    /^scripts\/(check-bundle-size|check-framework-contracts|check-publish-dry-run|smoke-consumer-packages|sync-registry|validate-registry)\.mjs$/u,
+    /^scripts\/lib\/bundle-size\.mjs$/u,
+    /^scripts\/(check-bundle-size(?:\.test)?|check-framework-contracts|check-publish-dry-run|smoke-consumer-packages|sync-registry|validate-registry)\.mjs$/u,
     /^eslint\.config\.js$/u,
     /^tsconfig[^/]*\.json$/u,
     /^vitest\.config\.ts$/u,
@@ -60,6 +62,13 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   ])
 
   const mcp = matchesAny(paths, [
+    /^\.github\/workflows\/deploy-mcp\.yml$/u,
+    /^scripts\/check-hosted-mcp(?:\.test)?\.mjs$/u,
+    /^(skills|plugins|\.claude-plugin)\//u,
+    /^scripts\/(?:generate-plugin-package|check-plugin-package|plugin-contract\.test|evaluate-ai-agents|generate-v4-migration)\.mjs$/u,
+    /^scripts\/(?:lib\/plugin-contract\.mjs|schemas\/agent-[^/]+\.json)$/u,
+    /^docs\/(?:ai-usage|claude-code-plugin|lumen-4-ai)\.md$/u,
+    /^registry\/lumen-4-contract\.json$/u,
     /^packages\/(astro|core|elements|lumen|mcp|react|tokens)\//u,
     /^tokens\//u,
     /^registry\/lumen\.registry\.json$/u,
@@ -70,9 +79,10 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   ])
 
   const playwright = matchesAny(paths, [
-    /^apps\/(docs|templates)\//u,
+    /^\.github\/actions\/setup-playwright\//u,
+    /^apps\/(docs|figma-plugin|motion|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates)\//u,
-    /^tests\/(a11y|visual)\//u,
+    /^tests\/(a11y|figma|motion|visual)\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,
     /^\.github\/workflows\/ci\.yml$/u,
     sharedConfiguration
@@ -92,9 +102,9 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^apps\/playground-(android|apple|react-native)\//u,
     /^packages\/(compose|core|react-native|swift|swift-widget|tokens)\//u,
     /^tokens\//u,
-    /^registry\/(compose-api-classification|lumen-3-contract|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$/u,
+    /^registry\/(compose-api-classification|lumen-[34]-contract|native-api-baseline|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$/u,
     /^apps\/docs\/(public\/native-components\/|scripts\/sync-native-component-captures\.mjs|src\/data\/native-component-captures\.json)/u,
-    /^scripts\/(check-compose-api-classification|check-native-consumer-evidence|check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$/u,
+    /^scripts\/(check-compose-api-classification|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$/u,
     /^Package\.swift$/u,
     /^\.github\/workflows\/(ci|publish-compose)\.yml$/u,
     sharedConfiguration
@@ -104,9 +114,9 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^apps\/playground-apple\//u,
     /^packages\/(swift|swift-widget|tokens)\//u,
     /^tokens\//u,
-    /^registry\/(lumen-3-contract|native-api-baseline|native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline)\.json$/u,
+    /^registry\/(lumen-[34]-contract|native-api-baseline|swift-api-baseline|swift-widget-api-baseline)\.json$/u,
     /^apps\/docs\/(public\/native-components\/|scripts\/sync-native-component-captures\.mjs|src\/data\/native-component-captures\.json)/u,
-    /^scripts\/(check-native-device-evidence|check-native-stability-soak|check-(native|swift)-api-baseline|check-playground-apple-release(?:\.test)?|generate-platform-tokens)\.mjs$/u,
+    /^scripts\/(check-(native|swift)-api-baseline|check-playground-apple-release(?:\.test)?|generate-platform-tokens)\.mjs$/u,
     /^\.github\/scripts\/monitor-xcode-cloud(?:\.test)?\.mjs$/u,
     /^Package\.swift$/u,
     /^\.github\/workflows\/(ci|monitor-playground-(apple|macos)|release-playground-(apple|macos))\.yml$/u,
@@ -117,16 +127,17 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^apps\/playground-android\//u,
     /^packages\/(compose|tokens)\//u,
     /^tokens\//u,
-    /^registry\/(compose-api-classification|native-api-baseline|native-device-evidence|native-stability-soak|wear-api-classification)\.json$/u,
+    /^registry\/(compose-api-classification|native-api-baseline|wear-api-classification)\.json$/u,
     /^apps\/docs\/(public\/native-components\/|scripts\/sync-native-component-captures\.mjs|src\/data\/native-component-captures\.json)/u,
-    /^scripts\/(check-compose-api-classification|check-native-device-evidence|check-native-stability-soak|check-wear-api-classification|check-native-api-baseline|generate-platform-tokens)\.mjs$/u,
+    /^scripts\/(check-compose-api-classification|check-wear-api-classification|check-native-api-baseline|generate-platform-tokens)\.mjs$/u,
     /^\.github\/workflows\/(ci|publish-compose)\.yml$/u,
     sharedConfiguration
   ])
 
   const bundleSize = matchesAny(paths, [
     /^packages\/(astro|core|elements|lumen|react)\//u,
-    /^scripts\/check-bundle-size\.mjs$/u,
+    /^scripts\/check-bundle-size(?:\.test)?\.mjs$/u,
+    /^scripts\/lib\/bundle-size\.mjs$/u,
     sharedConfiguration
   ])
 
@@ -174,11 +185,12 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
   }
 
   const web = matchesAny(paths, [
+    /^\.github\/actions\/setup-playwright\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)\//u,
     /^apps\/(docs|next-smoke|playground-react-native|templates)\//u,
     /^docs\/(native-compatibility|native-device-validation|playgrounds|web-consumer-validation)\.md$/u,
-    /^registry\/(compose-api-classification|lumen-[23]-contract|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|release-manifest|swift-api-baseline|swift-widget-api-baseline|wear-api-classification|web-api-baseline|web-consumer-evidence)\.json$/u,
-    /^scripts\/(check-approved-release-revision(?:\.test)?|check-coordinated-release-revision(?:\.test)?|check-graduated-release-revision(?:\.test)?|check-lumen-[23]-contract(?:\.test)?|check-maven-(pom-metadata|release-artifacts)(?:\.test)?|maven-pom-metadata|check-npm-release-provenance(?:\.test)?|check-published-package-family(?:\.test)?|check-native-consumer-evidence(?:\.test)?|check-native-device-evidence(?:\.test)?|check-native-stability-soak(?:\.test)?|check-native-stable-readiness(?:\.test)?|check-playground-eas-version(?:\.test)?|check-react-native-peer-docs(?:\.test)?|check-v2-release-workflows\.test|check-web-api-baseline(?:\.test)?|check-web-consumer-evidence(?:\.test)?|generate-release-manifest(?:\.test)?|smoke-consumer-packages|smoke-react-native-native-package|sync-coordinated-v2-versions(?:\.test)?)\.mjs$/u,
+    /^registry\/(compose-api-classification|lumen-[234]-contract|native-api-baseline|release-manifest|swift-api-baseline|swift-widget-api-baseline|wear-api-classification|web-api-baseline|web-consumer-evidence)\.json$/u,
+    /^scripts\/(check-approved-release-revision(?:\.test)?|check-coordinated-release-revision(?:\.test)?|check-graduated-release-revision(?:\.test)?|check-lumen-[234]-contract(?:\.test)?|check-maven-(pom-metadata|release-artifacts)(?:\.test)?|maven-pom-metadata|check-npm-release-provenance(?:\.test)?|check-published-package-family(?:\.test)?|check-playground-eas-version(?:\.test)?|check-react-native-peer-docs(?:\.test)?|check-v2-release-workflows\.test|check-web-api-baseline(?:\.test)?|check-web-consumer-evidence(?:\.test)?|generate-release-manifest(?:\.test)?|smoke-consumer-packages|smoke-react-native-native-package|sync-coordinated-v2-versions(?:\.test)?)\.mjs$/u,
     /^scripts\/prepare-packed-react-native-canary\.mjs$/u,
     /^\.github\/workflows\/(publish-compose|release|release-canary|verify-native-release)\.yml$/u,
     sharedConfiguration
@@ -191,8 +203,8 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^apps\/docs\/src\/data\/platforms\.ts$/u,
     /^docs\/(ai-usage|native-components|playgrounds)\.md$/u,
     /^tokens\//u,
-    /^registry\/(lumen-3-contract|native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline|release-manifest)\.json$/u,
-    /^scripts\/(check-lumen-3-contract(?:\.test)?|check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-playground-apple-release(?:\.test)?|check-swift-api-baseline|check-swift-source-compatibility(?:\.test)?|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate|sync-coordinated-v2-versions(?:\.test)?|sync-swift-version(?:\.test)?)\.mjs$/u,
+    /^registry\/(lumen-[34]-contract|swift-api-baseline|swift-widget-api-baseline|release-manifest)\.json$/u,
+    /^scripts\/(check-lumen-[34]-contract(?:\.test)?|check-playground-apple-release(?:\.test)?|check-swift-api-baseline|check-swift-source-compatibility(?:\.test)?|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|smoke-swift-package-candidate|sync-coordinated-v2-versions(?:\.test)?|sync-swift-version(?:\.test)?)\.mjs$/u,
     /^\.github\/scripts\/monitor-xcode-cloud(?:\.test)?\.mjs$/u,
     /^\.github\/workflows\/(monitor-playground-(apple|macos)|release-canary|release-playground-(apple|macos)|verify-native-release)\.yml$/u,
     sharedConfiguration
@@ -202,16 +214,18 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^packages\/(compose|tokens)\//u,
     /^apps\/playground-android\//u,
     /^tokens\//u,
-    /^registry\/(compose-api-classification|native-consumer-evidence|native-device-evidence|native-stability-soak|wear-api-classification|release-manifest)\.json$/u,
-    /^scripts\/(check-approved-release-revision(?:\.test)?|check-compose-api-classification|check-coordinated-release-revision(?:\.test)?|check-graduated-release-revision(?:\.test)?|check-maven-(pom-metadata|release-artifacts)(?:\.test)?|maven-pom-metadata|check-native-consumer-evidence|check-native-device-evidence|check-native-stability-soak|check-native-stable-readiness|check-wear-api-classification|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|sync-coordinated-v2-versions(?:\.test)?)\.mjs$/u,
+    /^registry\/(compose-api-classification|wear-api-classification|release-manifest)\.json$/u,
+    /^scripts\/(check-approved-release-revision(?:\.test)?|check-compose-api-classification|check-coordinated-release-revision(?:\.test)?|check-graduated-release-revision(?:\.test)?|check-maven-(pom-metadata|release-artifacts)(?:\.test)?|maven-pom-metadata|check-wear-api-classification|generate-platform-tokens|generate-release-manifest|smoke-react-native-native-package|sync-coordinated-v2-versions(?:\.test)?)\.mjs$/u,
     /^\.github\/workflows\/(release-canary|verify-native-release)\.yml$/u,
     sharedConfiguration
   ])
 
   const browser = matchesAny(paths, [
+    /^\.github\/workflows\/release-canary\.yml$/u,
+    /^\.github\/actions\/setup-playwright\//u,
     /^apps\/(docs|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates|tokens)\//u,
-    /^tests\/(a11y|visual)\//u,
+    /^tests\/(a11y|motion|visual)\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,
     sharedConfiguration
   ])
@@ -234,7 +248,7 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^apps\/playground-(android|apple|react-native)\//u,
     /^packages\/(compose|core|react-native|swift|swift-widget|tokens)\//u,
     /^tokens\//u,
-    /^registry\/(compose-api-classification|lumen-3-contract|native-api-baseline|native-consumer-evidence|native-device-evidence|native-stability-soak|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$/u,
+    /^registry\/(compose-api-classification|lumen-[34]-contract|native-api-baseline|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$/u,
     /^scripts\/prepare-packed-react-native-canary\.mjs$/u,
     sharedConfiguration
   ])

@@ -1,0 +1,60 @@
+---
+import '@santi020k/lumen-astro/styles.css'
+import '../styles/preview.css'
+
+import { Badge, Button, Image, Link } from '@santi020k/lumen-astro'
+
+import { appearances, duration, outroStart } from '../composition'
+---
+
+<!doctype html>
+<html lang="en" data-theme="lumen-light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Lumen motion studio — One interface, four appearances</title>
+    <meta name="description" content="Preview a locally rendered Lumen UI composition in vertical, square, and landscape formats." />
+  </head>
+  <body>
+    <main class="preview-shell">
+      <header class="preview-header">
+        <Image src="/assets/logo.svg" alt="Lumen UI" width={194} height={50} loading="eager" />
+        <Badge variant="outline">Local pilot · {duration} seconds</Badge>
+      </header>
+      <div class="preview-layout">
+        <section class="preview-copy" aria-labelledby="preview-title">
+          <p class="preview-eyebrow">LUMEN MOTION STUDIO</p>
+          <h1 id="preview-title">One interface.<br />Four appearances.</h1>
+          <p>Watch the same interface build, change appearance, and adapt from a laptop workspace to an iPhone-style mobile screen.</p>
+          <div class="controls" role="group" aria-label="Video format">
+            <Button data-format="portrait" aria-pressed="true">Vertical</Button>
+            <Button data-format="square" variant="outline" aria-pressed="false">Square</Button>
+            <Button data-format="landscape" variant="outline" aria-pressed="false">Landscape</Button>
+          </div>
+          <div class="controls" role="group" aria-label="Choose appearance">
+            {appearances.map((appearance, index) => <Button data-time={appearance.still} data-start={appearance.start} data-name={appearance.name} variant="outline" aria-pressed={index === 0}>{appearance.label}</Button>)}
+            <Button data-time="14" data-start={outroStart} data-name="Brand ending" variant="outline" aria-pressed="false">Brand ending</Button>
+          </div>
+          <div class="controls" role="group" aria-label="Playback">
+            <Button id="play">Play animation</Button>
+            <Button id="pause" variant="outline">Pause</Button>
+          </div>
+          <p id="playback-status" role="status">Paused · Lumen Light</p>
+          <p id="motion-preference" hidden>Reduced motion is enabled. Choose an appearance to view a still frame.</p>
+          <p class="preview-note">Illustrative workspace with sample data. The composition is silent and uses local assets.</p>
+          <Link href="https://lumen.santi020k.com/docs/theme-playground" newTab>Explore the theme playground ↗</Link>
+        </section>
+        <section class="preview-stage" aria-label="Animation preview">
+          <div class="frame-container" data-preview-format="portrait">
+            <iframe id="composition" data-duration={duration} src="/portrait/" title="Lumen UI theme animation" width="1080" height="1920"></iframe>
+          </div>
+        </section>
+      </div>
+      <footer class="preview-footer">Created with Lumen UI and HyperFrames · <Link href="https://santi020k.com" newTab>santi020k</Link></footer>
+    </main>
+    <script>
+      import '../scripts/preview'
+    </script>
+  </body>
+</html>

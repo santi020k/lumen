@@ -446,8 +446,8 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(Empty({ glass: true }) as ReactElement).className).toBe('ui-empty ui-empty--glass')
     expect(propsOf(Item({ glass: 'strong' }) as ReactElement).className).toBe('ui-item ui-item--glass ui-glass-strong')
     expect(propsOf(ScrollArea({}) as ReactElement).className).toBe('ui-scroll-area')
-    expect(propsOf(MessageScroller({ glass: 'subtle' }) as ReactElement).className)
-      .toBe('ui-message-scroller ui-message-scroller--glass ui-glass-subtle')
+    expect(renderToStaticMarkup(createElement(MessageScroller, { glass: 'subtle' })))
+      .toContain('class="ui-message-scroller ui-message-scroller--glass ui-glass-subtle"')
   })
 
   test('renders a labelled recovery state with explicit announcement policy', () => {
@@ -701,29 +701,37 @@ describe('@santi020k/lumen-react components', () => {
       series: [{ data: series[0]?.data ?? [], id: 'downloads', label: 'Downloads', mark: 'line' }]
     }) as ReactElement
 
-    expect(bars.type).toBe(Chart)
+    expect(renderToStaticMarkup(bars)).toContain('<figure')
     expect(propsOf(bars).className).toBe('ui-bar-chart')
     expect(propsOf(bars).heading).toBe('Package downloads')
-    expect(line.type).toBe(Chart)
+    expect(renderToStaticMarkup(line)).toContain('<figure')
     expect(propsOf(line).className).toBe('ui-line-chart')
-    expect(pie.type).toBe(Chart)
+    expect(renderToStaticMarkup(pie)).toContain('<figure')
     expect(propsOf(pie).className).toBe('ui-pie-chart ui-pie-chart--donut')
     expect(sparkline.type).toBe('span')
     expect(propsOf(sparkline).role).toBe('img')
     expect(propsOf(sparkline)['aria-label']).toBe('Downloads increased from 4 to 8')
     expect(propsOf(sparkline).className).toBe('ui-sparkline ui-chart-tone--series-1')
+    const sparklineMarkup = renderToStaticMarkup(sparkline)
+    expect(sparklineMarkup).toContain('</svg><span aria-hidden="true" class="ui-sparkline__endpoint" style="left:97.5%;top:7.5%"')
+    expect(renderToStaticMarkup(Sparkline({ showEndpoint: false, values: [4, 8] })))
+      .not.toContain('ui-sparkline__endpoint')
+    expect(renderToStaticMarkup(Sparkline({ values: [] }))).not.toContain('ui-sparkline__endpoint')
     expect(propsOf(scatter).className).toBe('ui-scatter-chart')
     expect(propsOf(heatmap).className).toBe('ui-heatmap')
     expect(propsOf(range).className).toBe('ui-range-chart ui-chart-tone--series-1')
     expect(propsOf(combo).className).toBe('ui-combo-chart')
   })
 
-  test('omits unavailable heatmap cells from the SVG while preserving table gaps', () => {
+  test('marks unavailable heatmap cells distinctly while preserving table gaps', () => {
     const heatmap = Heatmap({
       data: [
         { value: 8, x: 'Mon', y: 'Morning' },
         { value: null, x: 'Tue', y: 'Morning' },
-        { value: Number.POSITIVE_INFINITY, x: 'Wed', y: 'Morning' }
+        { value: Number.POSITIVE_INFINITY, x: 'Wed', y: 'Morning' },
+        { value: NaN, x: 'Thu', y: 'Morning' },
+        { value: Number.NEGATIVE_INFINITY, x: 'Fri', y: 'Morning' },
+        { value: 0, x: 'Sat', y: 'Morning' }
       ]
     }) as ReactElement
     const descendants = descendantsOf(heatmap)
@@ -732,8 +740,57 @@ describe('@santi020k/lumen-react components', () => {
       .filter(element => element.type === 'td')
       .map(element => propsOf(element).children)
 
-    expect(cells).toHaveLength(1)
-    expect(tableValues.filter(value => value === 'Not available')).toHaveLength(2)
+    expect(cells).toHaveLength(6)
+    expect(descendants.filter(element => propsOf(element).className === 'ui-heatmap__missing')).toHaveLength(4)
+    expect(tableValues.filter(value => value === 'Not available')).toHaveLength(4)
+    expect(tableValues).toContain('0')
+  })
+
+  test('centers singleton chart labels and keeps full dates in details', () => {
+    const series = [{ data: [{ x: '2026-09-01', xLabel: 'Sep 1', y: 4 }], id: 'daily', label: 'Daily' }]
+    const chart = LineChart({ formatCategory: () => 'September 1, 2026', series }) as ReactElement
+    const descendants = descendantsOf(chart)
+    const mark = descendants.find(element => element.type === 'circle')
+    const label = descendants.find(element => element.type === 'text' && propsOf(element).children === 'Sep 1')
+    const html = renderToStaticMarkup(chart)
+
+    expect(propsOf(label).x).toBe(propsOf(mark).cx)
+    expect(propsOf(label).textAnchor).toBe('middle')
+    expect(html).toContain('<title>September 1, 2026 · Daily: 4</title>')
+    expect(html).toContain('<th scope="row">September 1, 2026</th>')
+    expect(html).toContain('role="region" tabindex="0"')
+  })
+
+  test('renders matching categorical values in marks, summaries, and disclosure tables', () => {
+    const series = [{ data: [{ x: 'A', y: 100 }, { x: 'A', y: 160 }, { x: 'B', y: 220 }], id: 'daily', label: 'Daily' }]
+
+    for (const chart of [LineChart({ series }), BarChart({ series })]) {
+      const html = renderToStaticMarkup(chart)
+
+      expect(html).toContain('1 series, 2 points. Values range from 160 to 220.')
+      expect(html).toContain('<td>160</td>')
+      expect(html).not.toContain('<td>100</td>')
+      expect(html).toContain('Daily: 160</title>')
+    }
+  })
+
+  test('formats bar category and value axes without colliding repeated label keys', () => {
+    const series = [{ data: [{ x: 'a', xLabel: 'Same', y: -3_000_000 }, { x: 'b', xLabel: 'Same', y: 4_000_000 }], id: 'money', label: 'Money' }]
+    const chart = BarChart({ formatCategory: key => `Full ${key}`, formatValue: value => `$ ${value}`, series }) as ReactElement
+    const labels = descendantsOf(chart).filter(element => element.type === 'text')
+    const html = renderToStaticMarkup(chart)
+
+    expect(labels.filter(element => propsOf(element).children === 'Same')).toHaveLength(2)
+    expect(labels.some(element => String(propsOf(element).children).startsWith('$ '))).toBe(true)
+    expect(html).toContain('<title>Full a · Money: $ -3000000</title>')
+    expect(html).toContain('<th scope="row">Full b</th>')
+
+    const formatted = renderToStaticMarkup(BarChart({
+      formatCategory: value => `Category ${value}`,
+      series: [{ data: [{ x: 'raw', y: 4 }], id: 'formatted', label: 'Formatted' }]
+    }))
+
+    expect(formatted).toContain('>Category raw</text>')
   })
 
   test('preserves heatmap coordinate types in fallback keys', () => {
@@ -744,7 +801,7 @@ describe('@santi020k/lumen-react components', () => {
       ]
     }) as ReactElement
     const descendants = descendantsOf(heatmap)
-    const cellKeys = descendants.filter(element => element.type === 'rect').map(element => element.key)
+    const cellKeys = descendants.filter(element => element.type === 'g' && element.key !== null).map(element => element.key)
     const rowKeys = descendants
       .filter(element => element.type === 'tr' && element.key !== null)
       .map(element => element.key)
@@ -850,29 +907,33 @@ describe('@santi020k/lumen-react components', () => {
     expect(propsOf(scatter).summary).toBe('1 series, 1 point. Values range from 1 to 1.')
   })
 
-  test('aligns combo line points with bar category centers', () => {
-    const data = [
-      { x: 'Mon', y: 4 },
-      { x: 'Tue', y: 8 },
-      { x: 'Wed', y: 6 }
-    ]
-    const combo = ComboChart({
-      series: [
-        { data, id: 'bars', label: 'Bars', mark: 'bar' },
-        { data, id: 'line', label: 'Line', mark: 'line' }
-      ]
-    }) as ReactElement
-    const descendants = descendantsOf(combo)
-    const categoryCenters = descendants
-      .filter(element => element.type === 'rect')
-      .map(element => Number((Number(propsOf(element).x) + Number(propsOf(element).width) / 2).toFixed(3)))
-    const line = descendants.find(element => propsOf(element).className === 'ui-line-chart__line')
-    const lineXCoordinates = [...String(propsOf(line).d).matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
-      .map(match => Number(match[1]))
+  test.each([[0, 5, 10], [-10, -5, 0], [-5, 0, 5], [7]].map(values => ({ values })))(
+    'aligns combo line points with bar category centers and value endpoints for $values', ({ values }) => {
+      const data = values.map((y, x) => ({ x, y }))
+      const combo = ComboChart({
+        series: [
+          { data, id: 'bars', label: 'Bars', mark: 'bar' },
+          { data, id: 'line', label: 'Line', mark: 'line' }
+        ]
+      }) as ReactElement
+      const descendants = descendantsOf(combo)
+      const rectangles = descendants.filter(element => element.type === 'rect')
+      const categoryCenters = rectangles
+        .map(element => Number((Number(propsOf(element).x) + Number(propsOf(element).width) / 2).toFixed(3)))
+      const valueEndpoints = rectangles.map((element, index) => Number((
+        Number(propsOf(element).y) + ((values[index] ?? 0) < 0 ? Number(propsOf(element).height) : 0)
+      ).toFixed(3)))
+      const line = descendants.find(element => propsOf(element).className === 'ui-line-chart__line')
+      const lineXCoordinates = [...String(propsOf(line).d).matchAll(/[LM]\s+(-?\d+(?:\.\d+)?)/gu)]
+        .map(match => Number(match[1]))
+      const lineYCoordinates = [...String(propsOf(line).d).matchAll(/[LM]\s+-?\d+(?:\.\d+)?\s+(-?\d+(?:\.\d+)?)/gu)]
+        .map(match => Number(match[1]))
 
-    expect(categoryCenters).toHaveLength(3)
-    expect(lineXCoordinates).toEqual(categoryCenters)
-  })
+      expect(categoryCenters).toHaveLength(values.length)
+      expect(lineXCoordinates).toEqual(categoryCenters)
+      expect(lineYCoordinates).toEqual(valueEndpoints)
+    }
+  )
 
   test('renders the empty state when chart series contain no usable data', () => {
     const pieSeries = {
@@ -887,9 +948,7 @@ describe('@santi020k/lumen-react components', () => {
       LineChart({ series }),
       PieChart({ series: pieSeries })
     ]) {
-      const children = propsOf(chart as ReactElement).children
-      const elements = (Array.isArray(children) ? children : [children])
-        .filter(isValidElement)
+      const elements = descendantsOf(chart as ReactElement)
       const plot = elements.find(child => String(propsOf(child).className).includes('ui-chart__plot'))
 
       expect(elements.some(child => propsOf(child).className === 'ui-chart__empty')).toBe(true)

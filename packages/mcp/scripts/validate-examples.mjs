@@ -69,6 +69,7 @@ try {
     moduleResolution: ts.ModuleResolutionKind.NodeNext,
     noEmit: true,
     paths: {
+      '@santi020k/lumen-core/world-map-data': ['packages/core/dist/world-map-data.generated.d.ts'],
       '@santi020k/lumen-react': ['packages/react/dist/index.d.ts'],
       react: ['packages/react/node_modules/@types/react/index.d.ts'],
       'react/*': ['packages/react/node_modules/@types/react/*']

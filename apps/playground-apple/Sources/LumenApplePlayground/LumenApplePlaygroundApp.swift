@@ -1,3 +1,4 @@
+// cspell:words Capacidad
 import Foundation
 import LumenUI
 import SwiftUI
@@ -5,10 +6,21 @@ import SwiftUI
 @main
 struct LumenApplePlaygroundApp: App {
     var body: some Scene {
-        WindowGroup {
+        WindowGroup("Lumen Playground", id: "playground") {
             PlaygroundRootView()
+                #if os(macOS)
+                .frame(minWidth: 760, minHeight: 620)
+                #else
                 .frame(minWidth: 420, minHeight: 620)
+                #endif
         }
+        #if os(macOS)
+        .defaultSize(width: 1240, height: 860)
+        .commands {
+            SidebarCommands()
+            PlaygroundMacCommands()
+        }
+        #endif
     }
 }
 
@@ -27,6 +39,7 @@ struct ComponentsCatalogView: View {
             displayName: "Colombia"
         )
     )
+    @State private var capacityRange: ClosedRange<Double> = 20...80
     @State private var progress = 76.0
     @State private var query = ""
     @State private var releaseDate = Date()
@@ -50,8 +63,13 @@ struct ComponentsCatalogView: View {
     private let isDeterministicFilter: Bool
     private let componentNames = PlaygroundCatalog.componentNames
 
-    init(themePreference: Binding<PlaygroundThemePreference>, componentFilter: String? = nil) {
+    init(
+        themePreference: Binding<PlaygroundThemePreference>,
+        componentFilter: String? = nil,
+        initialCategory: PlaygroundComponentCategory = .all
+    ) {
         _themePreference = themePreference
+        _selectedCategory = State(initialValue: componentFilter == nil ? initialCategory : .all)
         _query = State(initialValue: componentFilter ?? "")
         _showAlertDialog = State(initialValue: componentFilter == "Alert dialog")
         _showSheet = State(initialValue: componentFilter == "Sheet")
@@ -67,6 +85,12 @@ struct ComponentsCatalogView: View {
                     LumenSearchField("Search components", text: $query)
                     catalogCountRow
                 } else {
+                    #if os(macOS)
+                    PlaygroundPageHeading(
+                        "Find your next building block.",
+                        subtitle: "Explore real SwiftUI controls, compare their states, and compose them into your next Mac app."
+                    )
+                    #endif
                     catalogHeader
                 }
 
@@ -75,6 +99,9 @@ struct ComponentsCatalogView: View {
                 } secondary: {
                     visualSection
                 }
+                PlaygroundMediaWorkspaceView(matches: { matches($0) })
+                PlaygroundAdvancedInputsView(matches: { matches($0) })
+                PlaygroundParityExamplesView(matches: { matches($0) })
                 AdaptiveColumns {
                     actionsSection
                 } secondary: {
@@ -109,15 +136,20 @@ struct ComponentsCatalogView: View {
                     LumenEmptyState(
                         "No matching component",
                         systemName: "magnifyingglass",
-                        description: "Try another component name."
-                    )
+                        description: "Try another component name or reset the catalog."
+                    ) {
+                        LumenButton("Reset filters", intent: .secondary) {
+                            query = ""
+                            selectedCategory = .all
+                        }
+                    }
                 }
 
                 LumenStatusBar("Built with LumenUI", tone: .success) {
                     LumenText("\(componentNames.count) components", variant: .caption, tone: .muted)
                 }
             }
-                .frame(maxWidth: 1040)
+                .frame(maxWidth: playgroundPageMaximumWidth)
                 .padding(isDeterministicFilter ? LumenSpacing.xl : LumenSpacing.lg)
                 .padding(.bottom, playgroundBottomScrollClearance)
                 .frame(maxWidth: .infinity)
@@ -135,7 +167,7 @@ struct ComponentsCatalogView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: LumenSpacing.sm) {
                             LumenBadge("\(componentNames.count) components", tone: .accent)
-                            LumenBadge("6 categories", tone: .neutral)
+                            LumenBadge("Lumen \(PlaygroundCatalog.lumenVersion)", tone: .neutral)
                             LumenBadge("3 platforms", tone: .success)
                         }
                     }
@@ -157,13 +189,19 @@ struct ComponentsCatalogView: View {
                     .padding(.vertical, 1)
                 }
                 catalogCountRow
+                if !query.isEmpty || selectedCategory != .all {
+                    LumenButton("Reset filters", intent: .quiet) {
+                        query = ""
+                        selectedCategory = .all
+                    }
+                }
             }
         }
     }
 
     private var catalogCountRow: some View {
         HStack {
-            LumenText("\(visibleCount) components", variant: .label)
+            LumenText("\(visibleCount) \(visibleCount == 1 ? "component" : "components")", variant: .label)
             Spacer()
             LumenText(
                 selectedCategory == .all ? "iOS · iPadOS · macOS" : LocalizedStringKey(selectedCategory.title),
@@ -259,7 +297,7 @@ struct ComponentsCatalogView: View {
                             showsExternalIndicator: true
                         )
                         LumenLink(
-                            "Support",
+                            "Feedback & support",
                             destination: playgroundURL("https://lumen.santi020k.com/support"),
                             showsExternalIndicator: true
                         )
@@ -467,6 +505,7 @@ struct ComponentsCatalogView: View {
             "Settings row",
             "Picker",
             "Slider",
+            "Range slider",
             "Date field",
             "Date range field",
             "Search field",
@@ -594,6 +633,13 @@ struct ComponentsCatalogView: View {
                             valueLabel: "\(Int(progress))%"
                         )
                     }
+                    if matches("Range slider") {
+                        LumenRangeSlider("Capacity", value: $capacityRange, in: 0...100, step: 10,
+                            formatValue: { "\(Int($0))%" })
+                        LumenRangeSlider("Capacidad", value: .constant(20...80), in: 0...100,
+                            readOnly: true, startLabel: "Mínimo", endLabel: "Máximo",
+                            formatValue: { "\(Int($0)) %" })
+                    }
                     if matches("Date field") {
                         LumenDateField(
                             "Release date",
@@ -706,7 +752,7 @@ struct ComponentsCatalogView: View {
 
     @ViewBuilder
     private var chartSection: some View {
-        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Heatmap", "Range chart", "Combo chart") {
+        if matches("Sparkline", "Line chart", "Bar chart", "Pie chart", "Scatter chart", "Waterfall chart", "Histogram", "Bullet chart", "Lollipop chart", "Dumbbell chart", "Calendar heatmap", "Funnel chart", "Box plot", "Heatmap", "Range chart", "Combo chart") {
             PlaygroundSection(
                 "Data visualization",
                 description: "Tokenized plots include a factual accessibility summary and readable fallback data."
@@ -780,15 +826,69 @@ struct ComponentsCatalogView: View {
                         ]
                     )
                 }
+
+                if isVisible("Waterfall chart") {
+                    LumenWaterfallChart(label: "Revenue movement", data: [
+                        .init(id: "opening", label: "Opening", value: 120, kind: .total),
+                        .init(id: "new", label: "New", value: 85),
+                        .init(id: "growth", label: "Growth", value: 35),
+                        .init(id: "costs", label: "Costs", value: -45),
+                        .init(id: "other", label: "Other", value: -10),
+                        .init(id: "closing", label: "Closing", value: 185, kind: .total)
+                    ], heading: "Revenue movement", description: "Opening balance to closing · USD, thousands", valueLabel: "USD, thousands")
+                }
+                if isVisible("Lollipop chart") {
+                    LumenLollipopChart(data: [.init(id: "design", label: "Design", value: 88, reference: 62), .init(id: "engineering", label: "Engineering", value: 91, reference: 76), .init(id: "support", label: "Support", value: 74, reference: 81), .init(id: "operations", label: "Operations", value: 83, reference: 54)], label: "Team performance", domain: 0...100, heading: "Team performance", valueLabel: "Current")
+                }
+                if isVisible("Dumbbell chart") {
+                    LumenDumbbellChart(data: [.init(id: "design", label: "Design", value: 88, reference: 62), .init(id: "engineering", label: "Engineering", value: 91, reference: 76), .init(id: "support", label: "Support", value: 74, reference: 81), .init(id: "operations", label: "Operations", value: 83, reference: 54)], label: "Progress by team", domain: 0...100, heading: "Progress by team", valueLabel: "Current")
+                }
+                if isVisible("Bullet chart") {
+                    LumenBulletChart(label: "Delivery performance", value: 86, target: 95, ranges: [
+                        LumenBulletRange(end: 70, label: "Developing"),
+                        LumenBulletRange(end: 90, label: "Consistent"),
+                        LumenBulletRange(end: 100, label: "Excellent")
+                    ], heading: "On-time delivery", description: "Actual performance against the service target", labels: LumenChartLabels(formatValue: { "\($0.formatted())%" }))
+                }
+                if isVisible("Calendar heatmap") {
+                    let calendarData: [LumenCalendarHeatmapDatum] = (1...30).filter { $0 != 12 }.map { (day: Int) -> LumenCalendarHeatmapDatum in
+                        let date = String(format: "2026-09-%02d", day)
+                        let amount = day == 1 ? 0 : (day * 7) % 18
+                        return LumenCalendarHeatmapDatum(date: date, value: Double(amount))
+                    }
+                    LumenCalendarHeatmap(data: calendarData, label: "Daily activity", startDate: "2026-09-01", endDate: "2026-11-30", heading: "Daily activity", description: "Missing days stay distinct from zero")
+                }
+                if isVisible("Funnel chart") {
+                    LumenFunnelChart(data: [
+                        .init(id: "visits", label: "Visits", value: 1200),
+                        .init(id: "trial", label: "Trial", value: 780),
+                        .init(id: "activated", label: "Activated", value: 420),
+                        .init(id: "subscribed", label: "Subscribed", value: 210)
+                    ], label: "Signup stages", heading: "Signup stages", description: "Observed counts in application-defined order")
+                }
+                if isVisible("Box plot") {
+                    LumenBoxPlot(data: [
+                        .init(id: "weekday", label: "Weekday", min: 12, q1: 28, median: 42, q3: 61, max: 82, outliers: [103]),
+                        .init(id: "weekend", label: "Weekend", min: 8, q1: 18, median: 29, q3: 46, max: 70, outliers: [91])
+                    ], label: "Response-time distribution", heading: "Response times", description: "Application-computed quartiles and outliers · milliseconds")
+                }
+                if isVisible("Histogram") {
+                    LumenHistogram(label: "Response times", data: [3, 8, 18, 34, 48, 57, 51, 37, 26, 15, 8, 3].enumerated().map { index, count in
+                        LumenHistogramBin(start: Double(index * 25), end: Double((index + 1) * 25), count: Double(count))
+                    }, heading: "Response time", description: "Distribution of requests · milliseconds")
+                }
                 if isVisible("Heatmap") {
                     LumenHeatmap(
-                        label: "Activity by day and period",
-                        data: [
-                            LumenHeatmapDatum(id: "mon-am", column: "Mon", row: "Morning", value: 18),
-                            LumenHeatmapDatum(id: "tue-am", column: "Tue", row: "Morning", value: 32),
-                            LumenHeatmapDatum(id: "mon-pm", column: "Mon", row: "Evening", value: 47),
-                            LumenHeatmapDatum(id: "tue-pm", column: "Tue", row: "Evening", value: nil)
-                        ]
+                        label: "Change in activity by day and hour",
+                        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].enumerated().flatMap { row, day in
+                            (0..<12).map { column in
+                                let value = row == 4 && column == 6 ? nil : row == 0 && column == 0 ? 0 :
+                                    (sin(Double(column - 3) / 2) * 14 + cos(Double(row)) * 6).rounded()
+                                return LumenHeatmapDatum(id: "\(row)-\(column)", column: "\(column + 8):00", row: day, value: value)
+                            }
+                        },
+                        heading: "Weekly activity", description: "Change from typical activity · by day and hour",
+                        colorScale: .diverging
                     )
                 }
                 if isVisible("Range chart") {
@@ -962,7 +1062,7 @@ struct ComponentsCatalogView: View {
     }
 
     private func isVisible(_ name: String) -> Bool {
-        let matchesQuery = query.isEmpty || name.localizedCaseInsensitiveContains(query)
+        let matchesQuery = PlaygroundComponentSearch.matches(name, query: query, exact: isDeterministicFilter)
         return matchesQuery && selectedCategory.contains(name)
     }
 }

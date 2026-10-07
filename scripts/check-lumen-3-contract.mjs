@@ -183,7 +183,7 @@ const validateApprovalFields = approval => {
   return failures
 }
 
-const validateApproval = contract => {
+export const validateContractApproval = contract => {
   if (contract.status === 'approved') return validateApprovalFields(contract.approval)
 
   return contract.approval === undefined ? [] : ['Draft contract must not contain an approval record.']
@@ -192,7 +192,7 @@ const validateApproval = contract => {
 export const validateLumen3Contract = (contract, { requireApproved = false } = {}) => [
   ...validateMetadata(contract, requireApproved),
   ...validateSwiftBreakages(contract),
-  ...validateApproval(contract)
+  ...validateContractApproval(contract)
 ]
 
 const run = async () => {

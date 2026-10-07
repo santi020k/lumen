@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'h2'> {
+  as?: 'h2' | 'h3' | 'h4'
+  class?: string | null
+  className?: string
+}
+
+const { as: Tag = 'h2', class: classProp = '', className = '', ...rest } = Astro.props
+
+const { classList, passthrough } = resolveLumenAstroProps(
+  rest, ['ui-dialog-title'], classProp, className
+)
+---
+
+<Tag class:list={classList} data-slot="dialog-title" {...passthrough}>
+  <slot />
+</Tag>

@@ -73,6 +73,7 @@ interface ComponentDefinition {
   maturity?: Partial<Record<NativePlatformId, 'Experimental' | 'Supported'>>
   name: string
   properties: ComponentProperty[]
+  platformProperties?: Partial<Record<NativePlatformId, ComponentProperty[]>>
   slug: string
   summary: string
 }
@@ -121,6 +122,28 @@ const applePhoneAndTabletTargets = [
 
 const applePhoneTabletAndMacOnlySlugs = new Set([
   'backdrop',
+  'tree',
+  'cascader',
+  'qr-code',
+  'calendar',
+  'agenda',
+  'schedule',
+  'color-picker',
+  'tree-select',
+  'transfer',
+  'tooltip',
+  'carousel',
+  'command',
+  'tree-grid',
+  'table',
+  'data-table',
+  'rating',
+  'breadcrumb',
+  'stepper',
+  'timeline',
+  'tour',
+  'kanban-board',
+  'kanban-column',
   'checkbox',
   'date-field',
   'date-range-field',
@@ -136,10 +159,24 @@ const applePhoneTabletAndMacOnlySlugs = new Set([
   'settings-row',
   'skeleton',
   'slider',
+  'range-slider',
+  'multi-select',
+  'time-field',
+  'autocomplete',
+  'number-field',
+  'password-field',
+  'input-otp',
+  'image-comparison',
+  'media-viewport',
+  'media-thumbnail',
+  'media-filmstrip',
   'tabs',
   'textarea',
   'toggle'
 ])
+
+const appleMacOnlySlugs = new Set(['shortcut-recorder', 'symbol-picker'])
+const applePhoneOnlySlugs = new Set(['tab-accessory', 'tab-bar-minimization'])
 
 const appleWidgetSlugs = new Set([
   'widget-badge',
@@ -149,7 +186,11 @@ const appleWidgetSlugs = new Set([
 ])
 
 const getAppleAvailability = (slug: string): AppleEcosystemTarget[] => {
-  if (slug === 'shortcut-recorder' || slug === 'symbol-picker') {
+  if (slug === 'mentions') {
+    return [appleEcosystemTargets.ios, appleEcosystemTargets.ipad, appleEcosystemTargets.visionos]
+  }
+
+  if (appleMacOnlySlugs.has(slug)) {
     return [appleEcosystemTargets.macos]
   }
 
@@ -166,7 +207,7 @@ const getAppleAvailability = (slug: string): AppleEcosystemTarget[] => {
     ]
   }
 
-  if (slug === 'tab-accessory' || slug === 'tab-bar-minimization') {
+  if (applePhoneOnlySlugs.has(slug)) {
     return applePhoneAndTabletTargets
   }
 
@@ -231,7 +272,7 @@ const createComponent = (
     }
 
     implementations[platform] = {
-      api: definition.properties.map(item => ({
+      api: (definition.platformProperties?.[platform] ?? definition.properties).map(item => ({
         defaultValue: platformValue(item.defaultValue, platform),
         description: item.description,
         name: platformValue(item.name, platform),
@@ -347,12 +388,192 @@ const chartDefinitions: ComponentDefinition[] = [
     'Provides a factual summary and readable fallback data while decorative marks remain hidden.'
   ),
   chartDefinition(
+    'Waterfall chart',
+    'waterfall-chart',
+    'data',
+    'balanceChanges',
+    'Explain a balance using signed changes and explicit totals.',
+    'Provides labeled axes, a factual summary, and expandable source values; invalid changes fail closed.'
+  ),
+  {
+    name: 'Lollipop chart',
+    slug: 'lollipop-chart',
+    category: 'Data display',
+    summary: 'Rank categories using a dot and a zero-based stem.',
+    accessibility: 'Keeps category labels and exact values available independently of the decorative stems and dots.',
+    guidance: 'Preserve missing measurements as null and provide a zero-inclusive domain. The application owns row ordering.',
+    exports: { android: 'LumenLollipopChart', apple: 'LumenLollipopChart', 'react-native': 'LumenLollipopChart' },
+    examples: {
+      android: `LumenLollipopChart(
+  data = listOf(LumenComparisonDatum("design", "Design", 88.0)),
+  label = "Team scores, current quarter",
+  domain = 0.0..100.0,
+  heading = "Team performance",
+  valueLabel = "Score"
+)`,
+      apple: `LumenLollipopChart(
+  data: [.init(id: "design", label: "Design", value: 88)],
+  label: "Team scores, current quarter",
+  domain: 0...100,
+  heading: "Team performance",
+  valueLabel: "Score"
+)`,
+      'react-native': `<LumenLollipopChart
+  label="Team scores, current quarter"
+  heading="Team performance"
+  data={[{ id: 'design', label: 'Design', value: 88 }]}
+  domain={{ min: 0, max: 100 }}
+  valueLabel="Score"
+/>`
+    },
+    properties: [
+      property('data', 'LumenComparisonDatum[]', 'Required', 'Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.'),
+      property('label, heading, description', 'String', 'label required', 'Provides the accessible name and optional visible context.'),
+      property('domain', 'Finite numeric range', 'Automatic', 'Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.'),
+      property('valueLabel, labels', 'Localized chart labels', 'English', 'Names the measure and localizes empty, missing, invalid, and disclosure text.'),
+      property('formatValue / labels.formatValue', 'Number formatter', 'Platform default', 'React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.'),
+      property('showData', 'Boolean', 'true', 'Provides the expandable exact values.')
+    ]
+  },
+  {
+    name: 'Dumbbell chart',
+    slug: 'dumbbell-chart',
+    category: 'Data display',
+    summary: 'Compare two measurements per category with connected dots.',
+    accessibility: 'Keeps exact values available and uses filled and outlined dots for paired measurements.',
+    guidance: 'Preserve missing measurements as null and provide a zero-inclusive domain. The application owns row ordering.',
+    exports: { android: 'LumenDumbbellChart', apple: 'LumenDumbbellChart', 'react-native': 'LumenDumbbellChart' },
+    examples: {
+      android: `LumenDumbbellChart(
+  data = listOf(
+    LumenComparisonDatum("design", "Design", value = 88.0, reference = 62.0),
+    LumenComparisonDatum("support", "Support", value = 74.0, reference = 81.0)
+  ),
+  label = "Team scores, previous and current quarter",
+  domain = 0.0..100.0,
+  heading = "Progress by team",
+  referenceLabel = "Previous",
+  valueLabel = "Current"
+)`,
+      apple: `LumenDumbbellChart(
+  data: [
+    .init(id: "design", label: "Design", value: 88, reference: 62),
+    .init(id: "support", label: "Support", value: 74, reference: 81)
+  ],
+  label: "Team scores, previous and current quarter",
+  domain: 0...100,
+  heading: "Progress by team",
+  referenceLabel: "Previous",
+  valueLabel: "Current"
+)`,
+      'react-native': `<LumenDumbbellChart
+  label="Team scores, previous and current quarter"
+  heading="Progress by team"
+  data={[
+    { id: 'design', label: 'Design', value: 88, reference: 62 },
+    { id: 'support', label: 'Support', value: 74, reference: 81 }
+  ]}
+  domain={{ min: 0, max: 100 }}
+  referenceLabel="Previous"
+  valueLabel="Current"
+/>`
+    },
+    properties: [
+      property('data', 'LumenComparisonDatum[]', 'Required', 'Unique id, category label, nullable finite value, optional reference and tone. Input order is preserved.'),
+      property('label, heading, description', 'String', 'label required', 'Provides the accessible name and optional visible context.'),
+      property('domain', 'Finite numeric range', 'Automatic', 'Includes zero and all displayed measurements. React Native uses { min, max }; SwiftUI and Compose use closed ranges.'),
+      property('valueLabel, labels', 'Localized chart labels', 'English', 'Names the measure and localizes empty, missing, invalid, and disclosure text. DumbbellChart also accepts referenceLabel (Before).'),
+      property('formatValue / labels.formatValue', 'Number formatter', 'Platform default', 'React Native accepts formatValue; SwiftUI and Compose use labels.formatValue.'),
+      property('showData', 'Boolean', 'true', 'Provides the expandable exact values.')
+    ]
+  },
+  {
+    name: 'Calendar heatmap',
+    slug: 'calendar-heatmap',
+    category: 'Data display',
+    summary: 'Shows daily activity with explicit missing dates and a numeric intensity legend.',
+    accessibility: 'Retains exact date and value facts, including when the visible data list is hidden.',
+    guidance: 'Use Gregorian date-only identities and an inclusive range of at most 3660 days. Missing days stay distinct from zero.',
+    exports: { android: 'LumenCalendarHeatmap', apple: 'LumenCalendarHeatmap', 'react-native': 'LumenCalendarHeatmap' },
+    examples: {
+      android: 'LumenCalendarHeatmap(data = listOf(LumenCalendarHeatmapDatum("2026-08-01", 3.0)), label = "Daily activity", startDate = "2026-08-01", endDate = "2026-08-28")',
+      apple: 'LumenCalendarHeatmap(data: [.init(date: "2026-08-01", value: 3)], label: "Daily activity", startDate: "2026-08-01", endDate: "2026-08-28")',
+      'react-native': '<LumenCalendarHeatmap label="Daily activity" startDate="2026-08-01" endDate="2026-08-28" data={[{ date: "2026-08-01", value: 3 }]} />'
+    },
+    properties: [
+      property('data', 'LumenCalendarHeatmapDatum[]', 'Required', 'Date-only identity and nullable finite value.'),
+      property('startDate, endDate', 'YYYY-MM-DD', 'Required', 'Inclusive range. Duplicate, invalid or out-of-range dates fail closed.'),
+      property('weekStartsOn', '0 or 1', '0', 'Sunday or Monday. weekdayLabels is always Sunday-indexed.'),
+      property('formatDate, labels', 'Localized formatters and labels', 'Platform defaults', 'Formats dates and exact measurements consistently.'),
+      property('showData', 'Boolean', 'true', 'Provides the visible expandable exact values.')
+    ]
+  },
+  {
+    name: 'Funnel chart',
+    slug: 'funnel-chart',
+    category: 'Data display',
+    summary: 'Compares ordered nonnegative conversion stages with exact measurements.',
+    accessibility: 'Visible values and an expandable data list distinguish missing stages from zero.',
+    guidance: 'Preserve input order and use aligned cohorts. Applications own conversion percentages and aggregation.',
+    exports: { android: 'LumenFunnelChart', apple: 'LumenFunnelChart', 'react-native': 'LumenFunnelChart' },
+    examples: {
+      android: 'LumenFunnelChart(data = listOf(LumenFunnelDatum("visits", "Visits", 4800.0)), label = "Activation funnel")',
+      apple: 'LumenFunnelChart(data: [.init(id: "visits", label: "Visits", value: 4800)], label: "Activation funnel")',
+      'react-native': '<LumenFunnelChart label="Activation funnel" data={[{ id: "visits", label: "Visits", value: 4800 }]} />'
+    },
+    properties: [property('data', 'LumenFunnelDatum[]', 'Required', 'Unique nonempty IDs, labels, nullable nonnegative finite values, and optional tone.'), property('labels', 'Localized chart labels', 'English', 'Formats exact values and empty/invalid/missing states.'), property('showData', 'Boolean', 'true', 'Provides the visible expandable exact values.')]
+  },
+  {
+    name: 'Box plot',
+    slug: 'box-plot',
+    category: 'Data display',
+    summary: 'Shows precomputed quartiles, whiskers and outliers on one numeric scale.',
+    accessibility: 'Provides exact statistics with a contrasting median and outlined outliers.',
+    guidance: 'Supply ordered statistics or five null values for a missing summary. Applications own statistical methods.',
+    exports: { android: 'LumenBoxPlot', apple: 'LumenBoxPlot', 'react-native': 'LumenBoxPlot' },
+    examples: {
+      android: 'LumenBoxPlot(data = listOf(LumenBoxPlotDatum("north", "North", 12.0, 22.0, 31.0, 44.0, 61.0)), label = "Response distribution")',
+      apple: 'LumenBoxPlot(data: [.init(id: "north", label: "North", min: 12, q1: 22, median: 31, q3: 44, max: 61)], label: "Response distribution")',
+      'react-native': '<LumenBoxPlot label="Response distribution" data={[{ id: "north", label: "North", min: 12, q1: 22, median: 31, q3: 44, max: 61 }]} />'
+    },
+    properties: [property('data', 'LumenBoxPlotDatum[]', 'Required', 'Precomputed min/q1/median/q3/max plus optional finite outliers. min/max are whisker bounds.'), property('domain', 'Finite numeric range', 'Automatic', 'Encloses every statistic and outlier.'), property('statisticLabels, labels', 'Localized statistic names and formatting', 'English', 'Names quartiles, median, whiskers and outliers.'), property('showData', 'Boolean', 'true', 'Provides the visible expandable exact statistics.')]
+  },
+  {
+    name: 'Bullet chart',
+    slug: 'bullet-chart',
+    category: 'Data display',
+    summary: 'Compare an actual value with a target and labeled performance ranges.',
+    accessibility: 'Exposes exact actual, target, and range values; missing values remain distinct from zero.',
+    guidance: 'Use a domain that includes zero and every supplied measurement. Localize targetLabel and labels for the application.',
+    exports: { android: 'LumenBulletChart', apple: 'LumenBulletChart', 'react-native': 'LumenBulletChart' },
+    examples: {
+      android: 'LumenBulletChart(value = 86.0, target = 95.0, label = "On-time delivery", domain = 0.0..100.0)',
+      apple: 'LumenBulletChart(label: "On-time delivery", value: 86, target: 95, domain: 0...100)',
+      'react-native': '<LumenBulletChart label="On-time delivery" value={86} target={95} domain={{ min: 0, max: 100 }} />'
+    },
+    properties: [
+      property('value, target', 'Nullable measurement, finite target', 'Required', 'Null is unavailable; zero is a measured value.'),
+      property('ranges', 'LumenBulletRange[]', '[]', 'Uses labeled finite range ends sorted without changing the source data.'),
+      property('domain', 'Finite numeric range', 'Automatic', 'Includes zero, target, actual, and all ranges; invalid input fails closed.'),
+      property('labels, targetLabel, valueLabel', 'Localized chart labels', 'English', 'Labels the summary, visible measurements, and exact data list.'),
+      property('showData', 'Boolean', 'true', 'Provides the expandable actual, target, and range boundaries.')
+    ]
+  },
+  chartDefinition(
+    'Histogram',
+    'histogram',
+    'data',
+    'responseTimeBins',
+    'Show a distribution with explicit bins, accurate interval widths, and count or density.',
+    'Provides labeled axes and expandable bin boundaries, plotted values, and original counts.'
+  ),
+  chartDefinition(
     'Heatmap',
     'heatmap',
     'data',
     'activityCells',
-    'Encode a two-dimensional matrix with the canonical sequential scale.',
-    'Presents a concise summary while applications retain labels for every cell.'
+    'Encode a matrix with sequential or diverging color scales, labeled axes, and a numeric legend.',
+    'Distinguishes missing cells from zero and provides an expandable list of exact measurements.'
   ),
   chartDefinition(
     'Range chart',
@@ -1507,6 +1728,12 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
         'Shows that the grouped answer is required.'
       ),
       property(
+        { android: 'requiredLabel', 'react-native': 'requiredLabel' },
+        'String',
+        'required',
+        'Localizes the spoken required-field description. SwiftUI resolves the Required key through application localization.'
+      ),
+      property(
         'content',
         'Native content',
         'Required',
@@ -1607,7 +1834,7 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
         'orientation',
         'horizontal · vertical',
         'horizontal',
-        'Controls action layout.'
+        'Prefers horizontal or vertical actions. Horizontal groups wrap or stack when space or accessibility text requires it.'
       ),
       property(
         'content',
@@ -2442,6 +2669,12 @@ const [phone, setPhone] = useState(() =>
     name: 'Tabs',
     properties: [
       property('label', 'String', 'Required', 'Names the tab list for assistive technology.'),
+      property(
+        { android: 'panelAccessibilityLabel', 'react-native': 'panelAccessibilityLabel' },
+        'String?',
+        'Selected tab label',
+        'Names the active panel using application-localized text without appending an English role description.'
+      ),
       property(
         'options',
         {
@@ -4341,6 +4574,14 @@ Scaffold(
       'Use for supplemental editing or detail that should not replace the current screen. Keep form state and dismissal decisions application-owned.',
     name: 'Sheet',
     properties: [
+      property('dismissible', 'Boolean', 'true', 'Allows platform gestures, back actions, and backdrop dismissal. Set false while application work requires the sheet to remain open.'),
+      property('scrollable', 'Boolean', 'true', 'Scrolls content with reachable actions. Short windows and accessibility text sizes may scroll the complete sheet; set false for application-owned lazy or virtualized containers.'),
+      property(
+        { 'react-native': 'initialFocusRef / returnFocusRef' },
+        'RefObject<HostInstance | null>',
+        'undefined',
+        'Optionally focuses an accessible application-owned control after presentation and restores its trigger after closing.'
+      ),
       property(
         { android: 'visible', apple: 'isPresented', 'react-native': 'visible' },
         {
@@ -4738,9 +4979,949 @@ fun TimerHistoryRow() {
   }
 ]
 
+const advancedInputDefinitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Names the selected time and native dialog actions; confirmation publishes the draft, cancellation preserves the value, and disabled or read-only fields cannot open selection.',
+    category: 'Forms',
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenTimeField, type LumenTimeSelection } from '@santi020k/lumen-react-native/datetime'
+
+export function MeetingTime() {
+  const [time, setTime] = useState<LumenTimeSelection | null>(null)
+  return <LumenTimeField label="Meeting time" value={time} onValueChange={setTime}
+    minTime={{ hour: 8, minute: 30 }} maxTime={{ hour: 17, minute: 0 }}
+    confirmLabel="Confirm" dismissLabel="Cancel" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct MeetingTime: View {
+    @State private var time: LumenTimeSelection? = nil
+    var body: some View {
+        LumenTimeField("Meeting time", selection: $time,
+            minTime: LumenTimeSelection(hour: 8, minute: 30),
+            maxTime: LumenTimeSelection(hour: 17, minute: 0))
+    }
+}`,
+      android: `LumenTimeField(
+    label = "Meeting time",
+    value = meetingTime,
+    onValueChange = { meetingTime = it },
+    minTime = LumenTimeSelection(8, 30),
+    maxTime = LumenTimeSelection(17, 0)
+)` },
+    exports: { android: 'LumenTimeField', apple: 'LumenTimeField', 'react-native': 'LumenTimeField' },
+    guidance: 'Use a local wall-clock value rather than an epoch timestamp. Keep dates, time zones, overnight scheduling, and translated labels in the application.',
+    name: 'Time field',
+    platformProperties: {
+      'react-native': [
+        property('label', 'string', 'Required', 'Names the time field.'),
+        property('value / onValueChange', 'LumenTimeSelection | null / (LumenTimeSelection) => void', 'Required', 'Controls confirmed local hour and minute.'),
+        property('minTime / maxTime', 'LumenTimeSelection', 'undefined', 'Inclusive same-day bounds; minimum must not exceed maximum.'),
+        property('is24Hour / locale', 'boolean / string', 'System preference / undefined', 'Formats the selected time.'),
+        property('placeholder / confirmLabel / dismissLabel / rangeErrorLabel', 'string', 'Choose a time / Confirm / Cancel / Choose a time within the allowed range', 'Localizes empty, confirmation, cancellation and validation copy.'),
+        property('safeAreaInsets', 'LumenSafeAreaInsets', 'Zero insets', 'Supplies application safe-area insets for the iOS sheet.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label', 'String', 'Required', 'Names the time field.'),
+        property('selection', 'Binding<LumenTimeSelection?>', 'Required', 'Controls confirmed hour and minute.'),
+        property('minTime / maxTime', 'LumenTimeSelection?', 'nil', 'Inclusive same-day bounds; minimum must not exceed maximum.'),
+        property('placeholder / confirmLabel / dismissLabel / rangeErrorLabel', 'String', 'Choose a time / Confirm / Cancel / Choose a time within the allowed range', 'Localizes empty, confirmation, cancellation and validation copy.'),
+        property('.environment(\\.locale, ...)', 'Locale', 'Environment', 'Formats the selected time with the native locale.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
+    properties: [
+      property('label', 'String', 'Required', 'Names the field and selection dialog.'),
+      property('value / onValueChange', 'LumenTimeSelection? / (LumenTimeSelection) -> Unit', 'Required', 'Controls the confirmed local hour and minute.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics to the field group.'),
+      property('minTime / maxTime', 'LumenTimeSelection?', 'null', 'Inclusive same-day bounds; minimum must not exceed maximum.'),
+      property('is24Hour', 'Boolean?', 'null', 'Follows the system preference unless explicitly set.'),
+      property('description / errorMessage', 'String?', 'null', 'Shows supporting context or host validation.'),
+      property('placeholder', 'String', 'Choose a time', 'Displays the empty state.'),
+      property('confirmLabel / dismissLabel', 'String', 'Confirm / Cancel', 'Names the native confirmation and cancellation actions.'),
+      property('inputLabel / dialLabel', 'String', 'Use keyboard / Use clock', 'Names the input mode switch.'),
+      property('rangeErrorLabel', 'String', 'Choose a time within the allowed range', 'Explains invalid draft selection.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls editing and dismisses open selection when editing becomes unavailable.')
+    ],
+    slug: 'time-field',
+    summary: 'Choose a local time with native clock or keyboard input and explicit confirmation.'
+  },
+  {
+    accessibility: 'Preserves native editable dropdown focus, selected and disabled option semantics, and announced loading, empty, and recovery states.',
+    category: 'Forms',
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenAutocomplete } from '@santi020k/lumen-react-native'
+
+const projects = [{ value: 'lumen', label: 'Lumen' }, { value: 'studio', label: 'Studio' }]
+export function ProjectSearch() {
+  const [query, setQuery] = useState('')
+  const [selected, setSelected] = useState<string>()
+  const matches = projects.filter(option => option.label.toLowerCase().includes(query.toLowerCase()))
+  return <LumenAutocomplete label="Project" query={query}
+    onQueryChange={next => { setQuery(next); setSelected(undefined) }}
+    options={matches} value={selected} onValueChange={setSelected}
+    emptyLabel="No projects" dismissLabel="Close results" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct ProjectSearch: View {
+    @State private var query = ""
+    @State private var selected: String? = nil
+    private let projects = [LumenAutocompleteOption(value: "lumen", label: "Lumen"),
+                            LumenAutocompleteOption(value: "studio", label: "Studio")]
+    var body: some View {
+        LumenAutocomplete("Project", query: $query, selection: $selected,
+            options: projects.filter { query.isEmpty || $0.label.localizedCaseInsensitiveContains(query) },
+            emptyLabel: "No projects", dismissLabel: "Close results")
+    }
+}`,
+      android: `LumenAutocomplete(
+    label = "Project",
+    query = query,
+    onQueryChange = { query = it; selectedProject = null },
+    options = matchingProjects,
+    value = selectedProject,
+    onValueChange = { selectedProject = it },
+    loading = searching,
+    resultsErrorMessage = searchError,
+    onRetry = ::retrySearch
+)` },
+    exports: { android: 'LumenAutocomplete', apple: 'LumenAutocomplete', 'react-native': 'LumenAutocomplete' },
+    guidance: 'The application supplies filtered results with unique non-null values, owns request cancellation, and clears stale selection after query edits. React Native and Compose selection emit the option label before the selected value; SwiftUI updates bindings directly.',
+    name: 'Autocomplete',
+    platformProperties: {
+      'react-native': [
+        property('label', 'string', 'Required', 'Names the search field.'),
+        property('query / onQueryChange', 'string / (string) => void', 'Required', 'Controls query text; the host filters results.'),
+        property('value / onValueChange', 'string | undefined / (string) => void', 'undefined / Required', 'Controls selection; clear stale selection in the query handler.'),
+        property('options', 'readonly LumenAutocompleteOption[]', 'Required', 'Unique string values with label, description and disabled state.'),
+        property('loading / resultsErrorMessage / onRetry', 'boolean / string / () => void', 'false / undefined / undefined', 'Hides stale results and offers application-owned recovery.'),
+        property('loadingLabel / emptyLabel / retryLabel / dismissLabel', 'string', 'Loading results / No results / Retry / Close results', 'Localizes status and result dismissal.'),
+        property('ref / TextInput props', 'LumenTextInputRef / TextInputProps', 'undefined', 'Forwards native input focus and supported input options.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label', 'String', 'Required', 'Names the editable search field.'),
+        property('query / selection', 'Binding<String> / Binding<Value?>', 'Required', 'Controls query and selected identity; the component clears selection on query edits.'),
+        property('options', '[LumenAutocompleteOption<Value>]', 'Required', 'Unique Hashable values with label, description and disabled state.'),
+        property('loading / resultsErrorMessage / onRetry', 'Bool / String? / (() -> Void)?', 'false / nil / nil', 'Hides stale results and offers application-owned recovery.'),
+        property('loadingLabel / emptyLabel / retryLabel / dismissLabel', 'String', 'Loading results / No results / Retry / Close results', 'Localizes status and result dismissal.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
+    properties: [
+      property('label', 'String', 'Required', 'Names the editable field.'),
+      property('query / onQueryChange', 'String / (String) -> Unit', 'Required', 'Controls the editable search text.'),
+      property('options', 'List<LumenAutocompleteOption<T>>', 'Required', 'Supplies current results with value, label, optional description, and enabled state.'),
+      property('value / onValueChange', 'T? / (T) -> Unit', 'null / Required', 'Controls selected result identity; option values must be unique and non-null.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics to the dropdown container.'),
+      property('description / errorMessage', 'String?', 'null', 'Shows supporting text or field validation.'),
+      property('loading', 'Boolean', 'false', 'Shows loading feedback instead of stale results.'),
+      property('resultsErrorMessage / onRetry', 'String? / (() -> Unit)?', 'null', 'Shows a result failure and optional application-owned retry.'),
+      property('loadingLabel / emptyLabel / retryLabel', 'String', 'Loading results / No results / Retry', 'Localizes result status and recovery.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls query edits and dismisses open results when editing becomes unavailable.')
+    ],
+    slug: 'autocomplete',
+    summary: 'Select from application-provided search results with loading, empty, and retry feedback.'
+  },
+  {
+    accessibility: 'Labels the editable numeric draft and step actions, exposes invalid or out-of-range context, and disables unavailable or read-only steps.',
+    category: 'Forms',
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenNumberField } from '@santi020k/lumen-react-native'
+
+export function Quantity() {
+  const [draft, setDraft] = useState('1')
+  return <LumenNumberField label="Quantity" value={draft} onValueChange={setDraft}
+    min="0" max="10" step="0.5" locale="en-US"
+    incrementLabel="Increase quantity" decrementLabel="Decrease quantity" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct Quantity: View {
+    @State private var draft = "1"
+    var body: some View {
+        LumenNumberField("Quantity", text: $draft, min: "0", max: "10", step: "0.5",
+            incrementLabel: "Increase quantity", decrementLabel: "Decrease quantity")
+            .environment(\\.locale, Locale(identifier: "en_US"))
+    }
+}`,
+      android: `LumenNumberField(
+    label = "Quantity",
+    value = quantityDraft,
+    onValueChange = { quantityDraft = it },
+    min = java.math.BigDecimal.ZERO,
+    max = java.math.BigDecimal.TEN,
+    step = java.math.BigDecimal("0.5")
+)` },
+    exports: { android: 'LumenNumberField', apple: 'LumenNumberField', 'react-native': 'LumenNumberField' },
+    guidance: 'Preserve the raw localized String draft, including unfinished sign or decimal input. Grouping and exponent notation are unsupported. Keep currency, units, required validation, and submission parsing application-owned.',
+    name: 'Number field',
+    platformProperties: {
+      'react-native': [
+        property('label', 'string', 'Required', 'Names the numeric field.'),
+        property('value / onValueChange', 'string / (string) => void', 'Required', 'Retains raw localized drafts; invalid drafts remain editable.'),
+        property('min / max / step', 'string', 'undefined / undefined / 1', 'Uses exact decimal strings for inclusive bounds and positive steps.'),
+        property('locale', 'string', 'undefined', 'Selects accepted decimal separator and digits.'),
+        property('incrementLabel / decrementLabel', 'string', 'Increase value / Decrease value', 'Names step actions.'),
+        property('invalidNumberLabel / outOfRangeLabel', 'string', 'Enter a valid number / Enter a number within the allowed range', 'Localizes draft validation.'),
+        property('showStepper', 'boolean', 'true', 'Shows step actions.'),
+        property('ref / TextInput props', 'LumenTextInputRef / TextInputProps', 'undefined', 'Forwards input focus and supported native options.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label / text', 'String / Binding<String>', 'Required', 'Names the field and retains raw localized drafts.'),
+        property('min / max / step', 'String? / String? / String', 'nil / nil / 1', 'Uses exact decimal strings; the application owns units and submission parsing.'),
+        property('incrementLabel / decrementLabel', 'String', 'Increase value / Decrease value', 'Names step actions.'),
+        property('invalidNumberLabel / outOfRangeLabel', 'String', 'Enter a valid number / Enter a number within the allowed range', 'Localizes draft validation.'),
+        property('showStepper', 'Bool', 'true', 'Shows step actions.'),
+        property('focused', 'FocusState<Bool>.Binding?', 'nil', 'Connects application-owned input focus.'),
+        property('.environment(\\.locale, ...)', 'Locale', 'Environment', 'Selects decimal separator and displayed digits.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
+    properties: [
+      property('label', 'String', 'Required', 'Names the numeric field.'),
+      property('value / onValueChange', 'String / (String) -> Unit', 'Required', 'Controls raw localized ungrouped input; drafts beyond 128 characters are invalid.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout to the field and step actions.'),
+      property('min / max', 'java.math.BigDecimal?', 'null', 'Inclusive exact decimal bounds; minimum must not exceed maximum.'),
+      property('step', 'java.math.BigDecimal', 'BigDecimal.ONE', 'Positive exact increment; precision and scale are bounded to 128.'),
+      property('locale', 'java.util.Locale', 'Locale.getDefault()', 'Selects accepted decimal separator and displayed digits.'),
+      property('description / errorMessage', 'String?', 'null', 'Shows supporting text; supplied errors take priority over draft validation.'),
+      property('invalidNumberLabel / outOfRangeLabel', 'String', 'Enter a valid number / Enter a number within the allowed range', 'Localizes draft and bound errors.'),
+      property('incrementLabel / decrementLabel', 'String', 'Increase value / Decrease value', 'Names step actions.'),
+      property('showStepper', 'Boolean', 'true', 'Shows optional increment and decrement actions.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls edits and steps without discarding the current value.')
+    ],
+    slug: 'number-field',
+    summary: 'Edit localized numeric drafts with exact decimal steps and inclusive bounds.'
+  },
+  {
+    accessibility: 'Provides a named refresh accessibility action alongside the native gesture, announces progress, and removes refresh actions while disabled or busy.',
+    category: 'Feedback',
+    examples: { android: `LumenPullToRefresh(
+    isRefreshing = refreshing,
+    onRefresh = ::refreshProjects,
+    refreshLabel = "Refresh projects",
+    refreshingLabel = "Refreshing projects"
+) {
+    LazyColumn { /* application-owned rows */ }
+}` },
+    exports: { android: 'LumenPullToRefresh' },
+    guidance: 'Wrap the existing scrollable content. Keep requests, cancellation, retry policy, and completion in application code. Disabled state removes gestures while an already-running host operation retains feedback.',
+    name: 'Pull to refresh',
+    properties: [
+      property('isRefreshing / onRefresh', 'Boolean / () -> Unit', 'Required', 'Controls progress and starts application-owned refresh work.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies container layout and accessibility.'),
+      property('enabled', 'Boolean', 'true', 'Enables the refresh gesture and accessible action when idle.'),
+      property('refreshLabel / refreshingLabel', 'String', 'Refresh / Refreshing', 'Localizes the action and progress state.'),
+      property('content', '@Composable BoxScope.() -> Unit', 'Required', 'Renders application-owned scrolling content.')
+    ],
+    slug: 'pull-to-refresh',
+    summary: 'Refresh existing scrollable content with native gestures and accessible progress.'
+  }
+]
+
+const authenticationAndMediaDefinitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Preserves password semantics and native autofill hints; labels visibility actions and hides on blur or disabled state.',
+    category: 'Forms',
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenPasswordField } from '@santi020k/lumen-react-native'
+
+export function RegistrationPassword() {
+  const [password, setPassword] = useState('')
+  return <LumenPasswordField label="Password" value={password} onValueChange={setPassword}
+    newPassword showLabel="Show password" hideLabel="Hide password" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct RegistrationPassword: View {
+    @State private var password = ""
+    var body: some View {
+        LumenPasswordField("Password", text: $password,
+            showLabel: "Show password", hideLabel: "Hide password", newPassword: true)
+    }
+}`,
+      android: `LumenPasswordField(
+    label = "Password", value = password,
+    onValueChange = { password = it },
+    showLabel = "Show password", hideLabel = "Hide password"
+)` },
+    exports: { android: 'LumenPasswordField', apple: 'LumenPasswordField', 'react-native': 'LumenPasswordField' },
+    guidance: 'Keep authentication and credential lifecycle in the application. Visibility is transient and never saved. Use newPassword for registration; provider autofill needs device configuration.',
+    name: 'Password field',
+    platformProperties: {
+      'react-native': [
+        property('label / value / onValueChange', 'string / string / (string) => void', 'Required', 'Names and controls secure entry.'),
+        property('showLabel / hideLabel', 'string', 'Show password / Hide password', 'Names transient visibility actions.'),
+        property('newPassword', 'boolean', 'false', 'Selects registration autofill hints.'),
+        property('ref / onSubmitEditing / TextInput props', 'LumenTextInputRef / TextInputProps', 'undefined', 'Forwards input focus and native submission events; the host authenticates.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label / text', 'String / Binding<String>', 'Required', 'Names and controls secure entry.'),
+        property('showLabel / hideLabel', 'String', 'Show password / Hide password', 'Names visibility actions; visibility clears on blur or editing becoming unavailable.'),
+        property('newPassword', 'Bool', 'false', 'Selects native registration autofill hints where supported.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
+    properties: [
+      property('label / value / onValueChange', 'String / String / (String) -> Unit', 'Required', 'Names the native field and controls its value.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics.'),
+      property('description / errorMessage', 'String?', 'null', 'Provides translated help or validation.'),
+      property('showLabel / hideLabel', 'String', 'Show password / Hide password', 'Names the visibility action.'),
+      property('newPassword', 'Boolean', 'false', 'Uses Android new-password instead of existing-password autofill hints.'),
+      property('onSubmit', '(() -> Unit)?', 'null', 'Handles the IME Done action without automatic authentication.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls editing and visibility actions.')
+    ],
+    slug: 'password-field',
+    summary: 'Enter passwords with transient visibility and native credential autofill hints.'
+  },
+  {
+    accessibility: 'Uses one native input for paste, selection, deletion, and SMS code autofill; supports errors and optional masking.',
+    category: 'Forms',
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenInputOTP } from '@santi020k/lumen-react-native'
+
+export function VerificationCode() {
+  const [code, setCode] = useState('')
+  return <LumenInputOTP label="Verification code" value={code} onValueChange={setCode}
+    length={6} description="Enter or paste six digits" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct VerificationCode: View {
+    @State private var code = ""
+    var body: some View {
+        LumenInputOTP("Verification code", text: $code, length: 6,
+            description: "Enter or paste six digits")
+    }
+}`,
+      android: `LumenInputOTP(
+    label = "Verification code", value = code,
+    onValueChange = { code = it }, length = 6,
+    description = "Enter or paste six digits"
+)` },
+    exports: { android: 'LumenInputOTP', apple: 'LumenInputOTP', 'react-native': 'LumenInputOTP' },
+    guidance: 'The application verifies codes and owns submission. Normalize localized digit input into ASCII; reject invalid or excess input without truncating. Never send or persist credentials from the component.',
+    name: 'Input OTP',
+    platformProperties: {
+      'react-native': [
+        property('label / value / onValueChange', 'string / string / (string) => void', 'Required', 'Controls at most length ASCII digits; localized edits normalize to ASCII.'),
+        property('length', 'number', '6', 'Accepts code lengths from one through twelve.'),
+        property('masked', 'boolean', 'false', 'Hides displayed digits.'),
+        property('onComplete', '(string) => void', 'undefined', 'Reports a newly completed edit; the host verifies and submits.'),
+        property('ref / TextInput props', 'LumenTextInputRef / TextInputProps', 'undefined', 'Preserves native paste, selection and focus.'),
+        property('description / errorMessage', 'string', 'undefined', 'Provides localized supporting copy or host validation.'),
+        property('enabled / readOnly', 'boolean', 'true / false', 'Blocks changes without clearing controlled state.')
+      ],
+      apple: [
+        property('_ label / text', 'String / Binding<String>', 'Required', 'Controls at most length ASCII digits; localized edits normalize to ASCII.'),
+        property('length', 'Int', '6', 'Accepts code lengths from one through twelve.'),
+        property('masked', 'Bool', 'false', 'Hides displayed digits.'),
+        property('onComplete', '(String) -> Void', 'Empty closure', 'Reports a newly completed edit; the host verifies and submits.'),
+        property('description / errorMessage', 'String?', 'nil', 'Provides localized supporting copy or host validation.'),
+        property('readOnly / .disabled(...)', 'Bool', 'false', 'Blocks editing; disabled state comes from the SwiftUI environment.')
+      ]
+    },
+    properties: [
+      property('label / value / onValueChange', 'String / String / (String) -> Unit', 'Required', 'Names the field and controls an ASCII digit value.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout and semantics.'),
+      property('length', 'Int', '6', 'Sets a bounded code length from one through twelve.'),
+      property('description / errorMessage', 'String?', 'null', 'Provides translated help or validation.'),
+      property('masked', 'Boolean', 'false', 'Hides displayed digits and applies password semantics.'),
+      property('onComplete', '((String) -> Unit)?', 'null', 'Reports a newly completed edit without verifying or submitting.'),
+      property('enabled / readOnly', 'Boolean', 'true / false', 'Controls native editing.')
+    ],
+    slug: 'input-otp',
+    summary: 'Enter numeric verification codes with native paste and autofill integration.'
+  },
+  {
+    accessibility: 'Keeps the anchor independently named and delegates long-press, pointer, and popup dismissal to Material.',
+    category: 'Actions',
+    examples: { apple: 'LumenTooltip("Project help", text: "Save this project", isPresented: $visible)', 'react-native': '<LumenTooltip label="Project help" text="Save this project" visible={visible} onVisibleChange={setVisible} />', android: `LumenTooltip("Save this project") {
+    LumenIconButton(LumenIconName.Bookmark, "Save", onClick = ::saveProject, size = LumenControlSize.Lg)
+}` },
+    exports: { android: 'LumenTooltip', apple: 'LumenTooltip', 'react-native': 'LumenTooltip' },
+    guidance: 'Use brief supplemental help. Essential instructions belong in visible content. Pass LumenTooltipState for explicit Compose show/dismiss controls; React Native uses visible/onVisibleChange and SwiftUI uses isPresented binding. Disabling dismisses help without removing the anchor.',
+    name: 'Tooltip',
+    properties: [
+      property('text', 'String', 'Required', 'Provides non-empty translated contextual help.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies anchor-container layout.'),
+      property('state', 'LumenTooltipState', 'rememberLumenTooltipState()', 'Supports application-controlled visibility with Lumen state backed by Material.'),
+      property('enabled', 'Boolean', 'true', 'Enables help and dismisses it when disabled.'),
+      property('content', '@Composable () -> Unit', 'Required', 'Provides an independently labeled native anchor.')
+    ],
+    slug: 'tooltip',
+    summary: 'Show native contextual help around an independently accessible anchor.'
+  },
+  {
+    accessibility: 'Exposes a named native slider with localized percentage state for touch, keyboard, and screen-reader adjustment.',
+    category: 'Data display',
+    examples: {
+      'react-native': `import { useState } from 'react'
+import { LumenImageComparison } from '@santi020k/lumen-react-native'
+
+export function CompareEdits() {
+  const [position, setPosition] = useState(0.5)
+  return <LumenImageComparison label="Compare edits"
+    before={require('./before.png')} after={require('./after.png')}
+    value={position} onValueChange={setPosition}
+    beforeLabel="Before" afterLabel="After" />
+}`,
+      apple: `import LumenUI
+import SwiftUI
+
+struct CompareEdits: View {
+    @State private var position = 0.5
+    var body: some View {
+        LumenImageComparison("Compare edits", value: $position,
+            beforeLabel: "Before", afterLabel: "After") {
+            Image("before").resizable().scaledToFill()
+        } after: {
+            Image("after").resizable().scaledToFill()
+        }
+    }
+}`,
+      android: `LumenImageComparison(
+    label = "Compare edits", before = beforePainter, after = afterPainter,
+    value = position, onValueChange = { position = it },
+    beforeLabel = "Before", afterLabel = "After"
+)` },
+    exports: { android: 'LumenImageComparison', apple: 'LumenImageComparison', 'react-native': 'LumenImageComparison' },
+    guidance: 'The value is the visible after fraction, clamped to zero through one; nonfinite input falls back to one half. The application owns image loading, errors, cache, fit and descriptions; provide React Native sources, SwiftUI content builders or Compose painters.',
+    name: 'Image comparison',
+    platformProperties: {
+      'react-native': [
+        property('label', 'string', 'Required', 'Names the adjustable reveal.'),
+        property('before / after', 'ImageSourcePropType', 'Required', 'Application-owned sources; provide assets and loading policy.'),
+        property('value / onValueChange', 'number / (number) => void', 'Required', 'Controls the visible after fraction, zero through one.'),
+        property('beforeLabel / afterLabel', 'string', 'Before / After', 'Localizes image labels and adjustment state.'),
+        property('aspectRatio', 'number', '16 / 9', 'Accepts 0.1 through 10; otherwise uses 16:9.'),
+        property('fit', 'LumenImageFit', 'cover', 'Chooses cover or contain image behavior.'),
+        property('locale', 'string', 'undefined', 'Formats the percentage.'),
+        property('enabled', 'boolean', 'true', 'Disables adjustment while preserving images.'),
+        property('style / View props', 'ViewProps', 'undefined', 'Applies native layout and accessibility props.')
+      ],
+      apple: [
+        property('_ label', 'String', 'Required', 'Names the adjustable reveal.'),
+        property('value', 'Binding<Double>', 'Required', 'Controls the visible after fraction, zero through one.'),
+        property('before / after', '@ViewBuilder closures', 'Required', 'Provides application-owned SwiftUI image content and image fit modifiers.'),
+        property('beforeLabel / afterLabel', 'String', 'Before / After', 'Localizes image labels and adjustment state.'),
+        property('aspectRatio', 'CGFloat', '16 / 9', 'Accepts 0.1 through 10; otherwise uses 16:9.'),
+        property('.environment(\\.locale, ...)', 'Locale', 'Environment', 'Formats the percentage.'),
+        property('.disabled(...)', 'Bool', 'false', 'Disables the native slider while preserving images.')
+      ]
+    },
+    properties: [
+      property('label', 'String', 'Required', 'Names the comparison adjustment.'),
+      property('before / after', 'Painter', 'Required', 'Provides native images with application-owned loading.'),
+      property('value / onValueChange', 'Float / (Float) -> Unit', 'Required', 'Controls the visible after fraction from zero through one.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies layout.'),
+      property('beforeLabel / afterLabel', 'String', 'Before / After', 'Describes each image and the adjustment state.'),
+      property('aspectRatio', 'Float', '16f / 9f', 'Uses ratios from 0.1 through 10; other input falls back to 16:9.'),
+      property('fit', 'LumenImageFit', 'Cover', 'Chooses crop or contain behavior for both images.'),
+      property('locale', 'Locale', 'Locale.getDefault()', 'Formats the visible fraction as a localized percentage.'),
+      property('enabled', 'Boolean', 'true', 'Disables adjustment while retaining both images.')
+    ],
+    slug: 'image-comparison',
+    summary: 'Compare two images with a controlled reveal and native adjustable slider.'
+  },
+  {
+    accessibility: 'Localized zoom and visible actions complement native gestures.',
+    category: 'Data display',
+    examples: { 'react-native': '<LumenMediaViewport label="Inspect photo" value={viewport} onValueChange={setViewport}><Image source={photo} /></LumenMediaViewport>', apple: 'LumenMediaViewport("Inspect photo", value: $viewport) { Image("photo").resizable().scaledToFill() }', android: 'LumenMediaViewport("Inspect photo", value = viewport, onValueChange = { viewport = it }) { Image(painter = photo, contentDescription = "Photo") }' },
+    exports: { android: 'LumenMediaViewport', apple: 'LumenMediaViewport', 'react-native': 'LumenMediaViewport' },
+    guidance: 'Applications own media loading, edits, selection, persistence and task lifetimes. Compose localized LumenButton move actions beside thumbnails. See the Studio media workspace guide for exact adapter contracts and supported Apple form factors.',
+    name: 'Media viewport',
+    properties: [property('label / content', 'String / native content', 'Required', 'Names the media surface and provides application-owned content.')],
+    slug: 'media-viewport',
+    summary: 'Inspect media with controlled bounded zoom, pan and fit.'
+  },
+  {
+    accessibility: 'Selected and disabled state accompanies a visible media label.',
+    category: 'Data display',
+    examples: { 'react-native': '<LumenMediaThumbnail label="Landscape" selected={selected} onSelectionChange={setSelected}><Image source={photo} /></LumenMediaThumbnail>', apple: 'LumenMediaThumbnail("Landscape", selected: selected, onSelectionChange: { selected = $0 }) { Image("photo").resizable().scaledToFit() }', android: 'LumenMediaThumbnail("Landscape", selected = selected, onSelectionChange = { selected = it }) { Image(painter = photo, contentDescription = null) }' },
+    exports: { android: 'LumenMediaThumbnail', apple: 'LumenMediaThumbnail', 'react-native': 'LumenMediaThumbnail' },
+    guidance: 'Applications own media loading, edits, selection, persistence and task lifetimes. Compose localized LumenButton move actions beside thumbnails. See the Studio media workspace guide for exact adapter contracts and supported Apple form factors.',
+    name: 'Media thumbnail',
+    properties: [property('label / content', 'String / native content', 'Required', 'Names the media surface and provides application-owned content.')],
+    slug: 'media-thumbnail',
+    summary: 'Select media with a named button, order and explicit loading/error state.'
+  },
+  {
+    accessibility: 'The collection label and selection status describe host-controlled media.',
+    category: 'Data display',
+    examples: { 'react-native': '<LumenMediaFilmstrip label="Photos" selectionLabel="1 photo selected">{thumbnails}</LumenMediaFilmstrip>', apple: 'LumenMediaFilmstrip("Photos", selectionLabel: "1 photo selected") { thumbnails }', android: 'LumenMediaFilmstrip("Photos", selectionLabel = "1 photo selected") { thumbnails() }' },
+    exports: { android: 'LumenMediaFilmstrip', apple: 'LumenMediaFilmstrip', 'react-native': 'LumenMediaFilmstrip' },
+    guidance: 'Applications own media loading, edits, selection, persistence and task lifetimes. Compose localized LumenButton move actions beside thumbnails. See the Studio media workspace guide for exact adapter contracts and supported Apple form factors.',
+    name: 'Media filmstrip',
+    properties: [property('label / content', 'String / native content', 'Required', 'Names the media surface and provides application-owned content.')],
+    slug: 'media-filmstrip',
+    summary: 'Browse ordered media with host-formatted selected count and sibling move actions.'
+  }
+]
+
+const composeProductDefinitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Exposes a screen heading and preserves native navigation, action, and window-inset semantics.',
+    category: 'Navigation',
+    examples: { android: `val behavior = rememberLumenTopAppBarScrollBehavior(LumenTopAppBarScrollMode.EnterAlways)
+// Attach Modifier.nestedScroll(behavior.nestedScrollConnection) to the screen container.
+LumenTopAppBar("Projects", scrollBehavior = behavior,
+    navigationIcon = { LumenIconButton(LumenIconName.ArrowLeft, "Back", onClick = ::goBack) })` },
+    exports: { android: 'LumenTopAppBar' },
+    guidance: 'Use a remembered scrolling behavior and attach its nested-scroll connection above native scroll content. The application owns routing and Scaffold content padding.',
+    name: 'Top app bar',
+    properties: [
+      property('title', 'String', 'Required', 'Provides the visible screen heading.'),
+      property('size', 'LumenTopAppBarSize', 'Small', 'Selects Small, Medium, or Large native geometry.'),
+      property('scrollBehavior', 'LumenTopAppBarScrollBehavior?', 'null', 'Coordinates Pinned, EnterAlways, or ExitUntilCollapsed behavior.'),
+      property('navigationIcon / actions', '@Composable slots', 'Empty', 'Provides independently named application actions.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies bar layout.')
+    ],
+    slug: 'top-app-bar',
+    summary: 'Present native screen titles, navigation, and scrolling app bars.'
+  },
+  {
+    accessibility: 'Provides RTL-aware gestures, named custom accessibility actions, and visible keyboard-usable action buttons.',
+    category: 'Actions',
+    examples: { android: `LumenSwipeActions(
+    startAction = LumenSwipeAction("Favorite", ::favorite),
+    endAction = LumenSwipeAction("Delete", ::requestDeleteConfirmation, destructive = true)
+) { LumenText("Quarterly report") }` },
+    exports: { android: 'LumenSwipeActions' },
+    guidance: 'Use stable record keys. Transient gesture state resets before callbacks and never restores an operation. The application owns confirmation, undo, removal, and persistence.',
+    name: 'Swipe actions',
+    properties: [
+      property('startAction / endAction', 'LumenSwipeAction?', 'null', 'Provides a non-empty label, callback, enabled flag, and optional destructive intent.'),
+      property('enabled', 'Boolean', 'true', 'Disables gestures, buttons, and custom actions while busy.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies outer layout.'),
+      property('content', '@Composable () -> Unit', 'Required', 'Provides native record content.')
+    ],
+    slug: 'swipe-actions',
+    summary: 'Expose logical start and end row actions with gesture alternatives.'
+  },
+  {
+    accessibility: 'Uses a native dialog with named checkbox options, removal actions, validation, and read-only or disabled behavior.',
+    category: 'Forms',
+    examples: {
+      apple: 'LumenMultiSelect("Teams", values: $teams, query: $query, options: matchingTeams)',
+      'react-native': `<LumenMultiSelect label="Teams" values={teams} onValuesChange={setTeams}
+  query={query} onQueryChange={setQuery} options={matchingTeams} />`,
+      android: `LumenMultiSelect(
+    label = "Teams", options = matchingTeams, values = selectedTeams,
+    onValuesChange = { selectedTeams = it }, query = query, onQueryChange = { query = it },
+    loading = searching, resultsErrorMessage = searchError, onRetry = ::retrySearch
+)` },
+    exports: { android: 'LumenMultiSelect', apple: 'LumenMultiSelect', 'react-native': 'LumenMultiSelect' },
+    guidance: 'Selection applies immediately. The host owns search, asynchronous results, cancellation, and persistence. Missing selected options retain their raw value as a chip label. Localize every string and count/removal formatter.',
+    name: 'Multi select',
+    properties: [
+      property('label / options', { android: 'String / List<LumenSelectionOption>', apple: 'String / [LumenAutocompleteOption<String>]', 'react-native': 'string / readonly LumenAutocompleteOption[]' }, 'Required', 'Names the field and supplies uniquely identified, readable results.'),
+      property({ android: 'values / onValuesChange', apple: 'values', 'react-native': 'values / onValuesChange' }, { android: 'Set<String> / (Set<String>) -> Unit', apple: 'Binding<Set<String>>', 'react-native': 'ReadonlySet<string> / (values: Set<string>) => void' }, 'Required', 'Controls selection independently from visible results.'),
+      property({ android: 'query / onQueryChange', apple: 'query', 'react-native': 'query / onQueryChange' }, { android: 'String / (String) -> Unit', apple: 'Binding<String>', 'react-native': 'string / callback' }, 'Required', 'Controls caller-owned search.'),
+      property('loading / resultsErrorMessage / onRetry', { android: 'Boolean / String? / (() -> Unit)?', apple: 'Bool / String? / (() -> Void)?', 'react-native': 'boolean / string / callback' }, 'false / null / null', 'Provides loading, safe error, and recovery states.'),
+      property('description / errorMessage', { android: 'String?', apple: 'String?', 'react-native': 'string' }, 'None', 'Provides help and separate form validation.'),
+      property({ android: 'enabled / readOnly', apple: 'disabled / readOnly', 'react-native': 'enabled / readOnly' }, { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' }, 'true / false', 'Blocks editing and dismisses selection.'),
+      property('chooseLabel / searchLabel / clearSearchLabel / doneLabel', { android: 'String', apple: 'String', 'react-native': 'string' }, 'English defaults', 'Localizes selection and dialog actions.'),
+      property('emptyLabel / loadingLabel / retryLabel', { android: 'String', apple: 'String', 'react-native': 'string' }, 'English defaults', 'Localizes result states.'),
+      property('selectionLabel / removeLabel', { android: '(Int) -> String / (String) -> String', apple: '(Int) -> String / (String) -> String', 'react-native': '(count: number) => string / (label: string) => string' }, 'English formatters', 'Localizes counts and chip removal.'),
+      property({ 'react-native': 'safeAreaInsets' }, { 'react-native': 'LumenSafeAreaInsets' }, 'None', 'Passes the application safe-area provider insets into the native sheet.'),
+      property({ android: 'modifier' }, { android: 'Modifier' }, { android: 'Modifier' }, 'Applies field layout.')
+    ],
+    slug: 'multi-select',
+    summary: 'Select multiple searchable options with controlled values and result states.'
+  },
+  {
+    accessibility: 'Exposes separately named lower and upper native thumbs with formatted spoken values and keyboard adjustment.',
+    category: 'Forms',
+    examples: {
+      apple: `LumenRangeSlider("Capacity", value: $capacity, in: 0...100, step: 10,
+    formatValue: { "\\(Int($0))%" })`,
+      'react-native': `<LumenRangeSlider label="Capacity" value={capacity} onValueChange={setCapacity}
+  min={0} max={100} step={10} formatValue={value => String(value) + '%'} />`,
+      android: `LumenRangeSlider("Capacity", capacity, { capacity = it },
+    valueRange = 0f..100f, steps = 9, startLabel = "Minimum", endLabel = "Maximum",
+    formatValue = { "\${it.toInt()}%" })` },
+    exports: { android: 'LumenRangeSlider', apple: 'LumenRangeSlider', 'react-native': 'LumenRangeSlider' },
+    guidance: 'Bounds must be finite, increasing, and have a finite span. Nonfinite values fall back to bounds; reversed endpoints reorder for display without changing host state. Keep exact financial arithmetic in the application.',
+    name: 'Range slider',
+    properties: [
+      property({ android: 'label / value / onValueChange', apple: 'label / value', 'react-native': 'label / value / onValueChange' },
+        { android: 'String / ClosedFloatingPointRange<Float> / callback', apple: 'LocalizedStringKey / Binding<ClosedRange<Double>>', 'react-native': 'string / readonly [number, number] / callback' },
+        'Required',
+        'Names and controls the numeric interval.'),
+      property({ android: 'valueRange', apple: 'in', 'react-native': 'min / max' },
+        { android: 'ClosedFloatingPointRange<Float>', apple: 'ClosedRange<Double>', 'react-native': 'number' },
+        { android: '0f..1f', apple: '0...100', 'react-native': '0 / 100' },
+        'Provides valid inclusive bounds.'),
+      property({ android: 'steps', apple: 'step', 'react-native': 'step' },
+        { android: 'Int', apple: 'Double?', 'react-native': 'number' },
+        { android: '0', apple: 'nil', 'react-native': 'span / 100' },
+        'Compose counts intermediate stops; Swift and React Native use positive increments.'),
+      property('startLabel / endLabel / formatValue',
+        { android: 'String / String / (Float) -> String', apple: 'LocalizedStringKey / LocalizedStringKey / (Double) -> String', 'react-native': 'string / string / (number) => string' },
+        'Minimum / Maximum / numeric text',
+        'Localizes both endpoint names and values.'),
+      property({ android: 'enabled / readOnly', apple: 'disabled / readOnly', 'react-native': 'enabled / readOnly' },
+        { android: 'Boolean', apple: 'Bool', 'react-native': 'boolean' },
+        'Enabled / editable',
+        'Blocks adjustment while retaining values.'),
+      property({ android: 'onValueChangeFinished' }, { android: '(() -> Unit)?' }, { android: 'null' }, 'Reports the end of native adjustment.'),
+      property({ android: 'modifier', 'react-native': 'style' },
+        { android: 'Modifier', 'react-native': 'StyleProp<ViewStyle>' },
+        'None',
+        'Applies control layout.')
+    ],
+    slug: 'range-slider',
+    summary: 'Choose bounded numeric intervals with independently adjustable native endpoints.'
+  },
+  {
+    accessibility: 'Names both panes and exposes compact back navigation without owning application routing or selection.',
+    category: 'Layout',
+    examples: { android: `LumenAdaptiveListDetailScaffold(
+    selectedKey = selectedKey, onBack = { selectedKey = null },
+    listLabel = "Projects", detailLabel = "Project details",
+    listPane = { ProjectList(onSelect = { selectedKey = it }) },
+    emptyDetail = { LumenEmptyState("Choose a project") }
+) { key, detailOnly ->
+    BackHandler(enabled = detailOnly) { selectedKey = null }
+    ProjectDetails(key)
+}` },
+    exports: { android: 'LumenAdaptiveListDetailScaffold' },
+    guidance: 'Use as a full-window layout. Material adapts to window size and separating hinges. Save selection and pane state in the host; wire system BackHandler through detailOnly and apply screen content insets outside the scaffold.',
+    name: 'Adaptive list detail scaffold',
+    properties: [
+      property('selectedKey / onBack', 'String? / () -> Unit', 'Required', 'Controls selection; null prioritizes the list.'),
+      property('listLabel / detailLabel / backLabel', 'String', 'Required / Required / Back', 'Names panes and compact navigation.'),
+      property('listPane / emptyDetail', '@Composable () -> Unit', 'Required', 'Provides native lists and wide-window empty detail.'),
+      property('detailPane', '@Composable (String, Boolean) -> Unit', 'Required', 'Receives the selected key and whether detail is the only visible pane.'),
+      property('modifier', 'Modifier', 'Modifier', 'Applies full-window layout.')
+    ],
+    slug: 'adaptive-list-detail-scaffold',
+    summary: 'Arrange application-owned lists and details across phones, tablets, and foldable devices.'
+  }
+]
+
+const catalogParityDefinitions: ComponentDefinition[] = [
+  {
+    accessibility: 'Named multiline input and enabled suggestion actions with controlled selection.',
+    category: 'Forms',
+    examples: { apple: 'LumenMentions("Message", value: $value, options: options)', android: 'LumenMentions("Message", value, onValueChange, options)', 'react-native': '<LumenMentions label="Message" value={value} onValueChange={setValue} options={options} />' },
+    exports: { apple: 'LumenMentions', android: 'LumenMentions', 'react-native': 'LumenMentions' },
+    guidance: 'Hosts control text and UTF-16 selection atomically. Native iOS and Android composition is preserved; React Native hosts supply isComposing when available. ASCII mention values use literal filtering and safe token boundaries.',
+    name: 'Mentions',
+    slug: 'mentions',
+    summary: 'Insert literal mention suggestions into controlled native multiline text.',
+    properties: [property('value / options / trigger', 'Controlled text and selection / stable suggestions / literal trigger', 'Required / required / @', 'Preserves host state and inserts enabled validated suggestions.')]
+  },
+  {
+    accessibility: 'Named native guidance with measured target highlights and always usable dismissal.',
+    category: 'Navigation',
+    examples: { apple: 'LumenTour("Guide", steps: steps, anchors: anchors, open: $open, index: $index, onFinish: finish) { content }', android: 'LumenTour("Guide", steps, anchors, open, onOpenChange, index, onIndexChange, finish) { content() }', 'react-native': '<LumenTour label="Guide" steps={steps} anchors={anchors} open={open} onOpenChange={setOpen} index={index} onIndexChange={setIndex} onFinish={finish}>{content}</LumenTour>' },
+    exports: { apple: 'LumenTour', android: 'LumenTour', 'react-native': 'LumenTour' },
+    guidance: 'Hosts measure targets relative to the native Tour container. Missing or offscreen targets retain dismissible guidance. Controlled indices and host data are never rewritten.',
+    name: 'Tour',
+    slug: 'tour',
+    summary: 'Guide users through controlled steps around measured native targets.',
+    properties: [property('steps / anchors / open / index', 'Stable steps / measured rectangles / controlled state', 'Required', 'Controls guidance around host-native layout targets.')]
+  },
+  {
+    accessibility: 'Host-formatted stable records in phone-friendly labeled cells.',
+    category: 'Data display',
+    examples: { apple: 'LumenTable("Packages", columns: columns, rows: rows)', android: 'LumenTable("Packages", columns, rows)', 'react-native': '<LumenTable label="Packages" columns={columns} rows={rows} />' },
+    exports: { apple: 'LumenTable', android: 'LumenTable', 'react-native': 'LumenTable' },
+    guidance: 'Host-formatted stable records in phone-friendly labeled cells. Hosts own application state and business actions.',
+    name: 'Table',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'table',
+    summary: 'Host-formatted stable records in phone-friendly labeled cells.'
+  },
+  {
+    accessibility: 'Controlled sorting and selection retain hidden IDs and respect disabled rows.',
+    category: 'Data display',
+    examples: { apple: 'LumenDataTable("Packages", columns: columns, rows: rows, sort: $sort, selection: $selectedIds)', android: 'LumenDataTable("Packages", columns, rows, sort = sort, onSortChange = onSortChange, selectedIds = selectedIds, onSelectionChange = onSelectionChange)', 'react-native': '<LumenDataTable label="Packages" columns={columns} rows={rows} sort={sort} onSortChange={setSort} selectedIds={selectedIds} onSelectionChange={setSelectedIds} />' },
+    exports: { apple: 'LumenDataTable', android: 'LumenDataTable', 'react-native': 'LumenDataTable' },
+    guidance: 'Controlled sorting and selection retain hidden IDs and respect disabled rows. Hosts own application state and business actions.',
+    name: 'Data table',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'data-table',
+    summary: 'Controlled sorting and selection retain hidden IDs and respect disabled rows.'
+  },
+  {
+    accessibility: 'Named whole-number rating options with controlled values and read-only support.',
+    category: 'Forms',
+    examples: { apple: 'LumenRating("Rating", value: $rating)', android: 'LumenRating("Rating", rating, onValueChange)', 'react-native': '<LumenRating label="Rating" value={rating} onValueChange={setRating} />' },
+    exports: { apple: 'LumenRating', android: 'LumenRating', 'react-native': 'LumenRating' },
+    guidance: 'Named whole-number rating options with controlled values and read-only support. Hosts own application state and business actions.',
+    name: 'Rating',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'rating',
+    summary: 'Named whole-number rating options with controlled values and read-only support.'
+  },
+  {
+    accessibility: 'Named ancestor navigation with a noninteractive current destination.',
+    category: 'Navigation',
+    examples: { apple: 'LumenBreadcrumb("Path", items: items, onNavigate: navigate)', android: 'LumenBreadcrumb("Path", items, navigate)', 'react-native': '<LumenBreadcrumb label="Path" items={items} onNavigate={navigate} />' },
+    exports: { apple: 'LumenBreadcrumb', android: 'LumenBreadcrumb', 'react-native': 'LumenBreadcrumb' },
+    guidance: 'Named ancestor navigation with a noninteractive current destination. Hosts own application state and business actions.',
+    name: 'Breadcrumb',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'breadcrumb',
+    summary: 'Named ancestor navigation with a noninteractive current destination.'
+  },
+  {
+    accessibility: 'Host-owned step progress with localized complete, current and upcoming states.',
+    category: 'Feedback',
+    examples: { apple: 'LumenStepper("Progress", steps: steps, currentStep: currentStep)', android: 'LumenStepper("Progress", steps, currentStep)', 'react-native': '<LumenStepper label="Progress" steps={steps} currentStep={currentStep} />' },
+    exports: { apple: 'LumenStepper', android: 'LumenStepper', 'react-native': 'LumenStepper' },
+    guidance: 'Host-owned step progress with localized complete, current and upcoming states. Hosts own application state and business actions.',
+    name: 'Stepper',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'stepper',
+    summary: 'Host-owned step progress with localized complete, current and upcoming states.'
+  },
+  {
+    accessibility: 'Named chronological content retaining host controls and decorative connectors.',
+    category: 'Data display',
+    examples: { apple: 'LumenTimeline("Activity") { LumenTimelineItem { LumenText("Created") } }', android: 'LumenTimeline("Activity") { LumenTimelineItem { LumenText("Created") } }', 'react-native': '<LumenTimeline label="Activity"><LumenTimelineItem><LumenText>Created</LumenText></LumenTimelineItem></LumenTimeline>' },
+    exports: { apple: 'LumenTimeline', android: 'LumenTimeline', 'react-native': 'LumenTimeline' },
+    guidance: 'Named chronological content retaining host controls and decorative connectors. Hosts own application state and business actions.',
+    name: 'Timeline',
+    properties: [property('host content and state', 'Adapter-specific public contract', 'Required', 'Keeps application data and behavior in the host.')],
+    slug: 'timeline',
+    summary: 'Named chronological content retaining host controls and decorative connectors.'
+  },
+  {
+    accessibility: 'Named command search, enabled highlight navigation and a usable close path.',
+    category: 'Actions',
+    examples: { apple: 'LumenCommand("Commands", groups: groups, open: $open, query: $query, activeId: $activeId, onSelect: run)', android: 'LumenCommand("Commands", groups, open, onOpenChange, query, onQueryChange, activeId, onActiveIdChange, run)', 'react-native': '<LumenCommand label="Commands" groups={groups} open={open} query={query} activeId={activeId} onOpenChange={setOpen} onQueryChange={setQuery} onActiveIdChange={setActiveId} onSelect={run} />' },
+    exports: { apple: 'LumenCommand', android: 'LumenCommand', 'react-native': 'LumenCommand' },
+    guidance: 'Hosts own execution and modal presentation. Grouped literal search retains controlled query and highlight; disabled or stale commands cannot execute.',
+    name: 'Command',
+    properties: [property('controlled state', 'Stable records and host state', 'Required', 'Retains host values and emits intentional user changes.')],
+    slug: 'command',
+    summary: 'Named command search, enabled highlight navigation and a usable close path.'
+  },
+  {
+    accessibility: 'Named hierarchical disclosures and labeled cells with inherited disabled state.',
+    category: 'Data display',
+    examples: { apple: 'LumenTreeGrid("Status", columns: columns, records: records, expandedIds: $expandedIds)', android: 'LumenTreeGrid("Status", columns, records, expandedIds, onExpandedChange)', 'react-native': '<LumenTreeGrid label="Status" columns={columns} records={records} expandedIds={expandedIds} onExpandedChange={setExpandedIds} />' },
+    exports: { apple: 'LumenTreeGrid', android: 'LumenTreeGrid', 'react-native': 'LumenTreeGrid' },
+    guidance: 'Hosts format cells and control expansion. Unknown and hidden expansion IDs are retained. Custom interactive cells must honor disabled/read-only context.',
+    name: 'Tree grid',
+    properties: [property('controlled state', 'Stable records and host state', 'Required', 'Retains host values and emits intentional user changes.')],
+    slug: 'tree-grid',
+    summary: 'Named hierarchical disclosures and labeled cells with inherited disabled state.'
+  },
+  {
+    accessibility: 'Localized slide positions, named previous/next and selected indicators with native paging.',
+    category: 'Data display',
+    examples: {
+      apple: 'LumenCarousel("Project slides", slides: slides, index: $index) { slide, _ in LumenText(.verbatim(slide.label)) }',
+      android: 'LumenCarousel("Project slides", slides, index, { index = it }) { slide, _ -> LumenText(slide.label) }',
+      'react-native': '<LumenCarousel label="Project slides" slides={slides} index={index} onIndexChange={setIndex} renderSlide={slide => <LumenText>{slide.label}</LumenText>} />'
+    },
+    exports: { apple: 'LumenCarousel', android: 'LumenCarousel', 'react-native': 'LumenCarousel' },
+    guidance: 'Hosts own stable slide identities and rich content. Native paging requests bounded index changes; there is no autoplay or wrapping. Invalid host indices show recovery without rewriting state.',
+    name: 'Carousel',
+    properties: [
+      property('slides / index', 'Stable LumenCarouselSlide records / controlled integer', 'Required', 'Controls the dataset and current visible page.'),
+      property('height / disabled / status', 'Numeric height / boolean / ready-loading-error', '200 / false / ready', 'Bounds the viewport and guards native paging and result states.')
+    ],
+    slug: 'carousel',
+    summary: 'Page through controlled native slides with accessible navigation.'
+  },
+  {
+    accessibility: 'Localized selected/checked and disabled controls with guarded native actions and safe status presentation.',
+    category: 'Forms',
+    examples: { apple: 'LumenTransfer("Project access", items: items, value: $value)', android: 'LumenTransfer("Project access", items, value, { value = it })', 'react-native': '<LumenTransfer label="Project access" items={items} value={value} onValueChange={setValue} />' },
+    exports: { apple: 'LumenTransfer', android: 'LumenTransfer', 'react-native': 'LumenTransfer' },
+    guidance: 'The host controls membership and staged checks atomically. Moves preserve unknown and disabled IDs and clear only moved checks. The reference provides bidirectional selection and moves.',
+    name: 'Transfer',
+    properties: [property('value', 'LumenTransferValue', 'Required controlled value', 'Retains host state and emits intentional user changes.')],
+    slug: 'transfer',
+    summary: 'Select controlled native transfer values with stable identities.'
+  },
+  {
+    accessibility: 'Localized selected/checked and disabled controls with guarded native actions and safe status presentation.',
+    category: 'Forms',
+    examples: { apple: 'LumenTreeSelect("Destination", nodes: nodes, value: $value)', android: 'LumenTreeSelect("Destination", nodes, value, { value = it })', 'react-native': '<LumenTreeSelect label="Destination" nodes={nodes} value={value} onValueChange={setValue} />' },
+    exports: { apple: 'LumenTreeSelect', android: 'LumenTreeSelect', 'react-native': 'LumenTreeSelect' },
+    guidance: 'All hierarchy levels are selectable when enabled. The host retains unknown values; read-only permits browsing. Use the existing validated Tree graph and localize option paths.',
+    name: 'Tree select',
+    properties: [property('value', 'Nullable stable ID', 'Required controlled value', 'Retains host state and emits intentional user changes.')],
+    slug: 'tree-select',
+    summary: 'Select controlled native tree select values with stable identities.'
+  },
+  {
+    accessibility: 'Localized channel and palette names, validation feedback and native disabled/read-only controls.',
+    category: 'Forms',
+    examples: {
+      apple: 'LumenColorPicker("Accent color", value: $color)',
+      android: 'LumenColorPicker("Accent color", color, { color = it })',
+      'react-native': '<LumenColorPicker label="Accent color" value={color} onValueChange={setColor} />'
+    },
+    exports: { apple: 'LumenColorPicker', android: 'LumenColorPicker', 'react-native': 'LumenColorPicker' },
+    guidance: 'Use bounded hex or rgba values; unsupported CSS strings remain visible as invalid drafts. Hosts own the value and optional named palette. Enable alpha explicitly; latent hue survives black or gray channel edits.',
+    name: 'Color picker',
+    properties: [
+      property('value / onValueChange', 'Controlled color text / native binding or callback', 'Required', 'Requests canonical color changes without replacing invalid host input.'),
+      property('allowAlpha / palette / labels', 'Boolean / named swatches / localized labels', 'false / empty / English', 'Controls opacity support and accessible channel names.')
+    ],
+    slug: 'color-picker',
+    summary: 'Edit controlled native colors with validated text, channels and optional alpha.'
+  },
+  {
+    accessibility: 'Localized event day/time names, collision-safe native targets and accessible move controls.',
+    category: 'Data display',
+    examples: {
+      apple: 'LumenSchedule("Project schedule", selectedDay: $day, events: events)',
+      android: 'LumenSchedule("Project schedule", day, { day = it }, events)',
+      'react-native': '<LumenSchedule label="Project schedule" selectedDay={day} onSelectedDayChange={setDay} events={events} />'
+    },
+    exports: { apple: 'LumenSchedule', android: 'LumenSchedule', 'react-native': 'LumenSchedule' },
+    guidance: 'Hosts own civil-day conversion and rescheduling. Timed overlaps occupy lanes with minimum touch rectangles; dense days scroll horizontally. Accessible move requests are available; pointer drag rescheduling is absent.',
+    name: 'Schedule',
+    properties: [
+      property('selectedDay / events', 'Controlled civil day / LumenAgendaEvent records', 'Required', 'Controls the first day and host event dataset.'),
+      property('dayCount / startHour / endHour', 'Bounded integers', '7 / 8 / 18', 'Sets a one-to-seven-day civil wall-clock window.'),
+      property('onEventPress / onEventMove', 'Optional callbacks', 'Static presentation', 'Requests host detail or rescheduling actions without dataset mutation.')
+    ],
+    slug: 'schedule',
+    summary: 'Present timed native day columns with all-day bands and overlap lanes.'
+  },
+  {
+    accessibility: 'Localized labels, native controls, selected or disabled state and safe loading/error/empty presentation.',
+    category: 'Forms',
+    examples: { apple: 'LumenCalendar("Project calendar", visibleMonth: $month, selectedDay: $day)', android: 'LumenCalendar("Project calendar", month, { month = it }, selectedDay = day, onSelectedDayChange = { day = it })', 'react-native': '<LumenCalendar label="Project calendar" visibleMonth={month} onVisibleMonthChange={setMonth} selectedDay={day} onSelectedDayChange={setDay} />' },
+    exports: { apple: 'LumenCalendar', android: 'LumenCalendar', 'react-native': 'LumenCalendar' },
+    guidance: 'Hosts control visibleMonth and selectedDay. Civil date models avoid guessed timezone conversion; localize every date formatter.',
+    name: 'Calendar',
+    properties: [property('visibleMonth / selectedDay', 'Controlled civil day / optional civil day', 'Required', 'Retains host ownership of stable values and callbacks.')],
+    slug: 'calendar',
+    summary: 'Select bounded Gregorian civil dates in a controlled month grid.'
+  },
+  {
+    accessibility: 'Localized labels, native controls, selected or disabled state and safe loading/error/empty presentation.',
+    category: 'Data display',
+    examples: { apple: 'LumenAgenda("Project agenda", selectedDay: $day, events: events)', android: 'LumenAgenda("Project agenda", day, { day = it }, events)', 'react-native': '<LumenAgenda label="Project agenda" selectedDay={day} onSelectedDayChange={setDay} events={events} />' },
+    exports: { apple: 'LumenAgenda', android: 'LumenAgenda', 'react-native': 'LumenAgenda' },
+    guidance: 'Hosts control the first selectedDay, event dataset and timezone conversion. Timed interval ends are exclusive; all-day civil endpoints are inclusive.',
+    name: 'Agenda',
+    properties: [property('selectedDay / events', 'Controlled civil day / LumenAgendaEvent records', 'Required', 'Retains host ownership of stable values and callbacks.')],
+    slug: 'agenda',
+    summary: 'Present chronological timed and all-day events under civil-day headings.'
+  },
+  {
+    accessibility: 'Localized labels, native controls, selected or disabled state and safe loading/error/empty presentation.',
+    category: 'Data display',
+    examples: { apple: 'LumenKanbanBoard("Project board", columns: $columns)', android: 'LumenKanbanBoard("Project board", columns, { columns = it })', 'react-native': '<LumenKanbanBoard label="Project board" columns={columns} onColumnsChange={setColumns} />' },
+    exports: { apple: 'LumenKanbanBoard', android: 'LumenKanbanBoard', 'react-native': 'LumenKanbanBoard' },
+    guidance: 'Hosts own immutable columns and persistence. Invalid IDs and full targets reject moves. Accessible move controls reach columns outside the viewport; drag auto-scrolling is unavailable.',
+    name: 'Kanban board',
+    properties: [property('columns', 'Controlled LumenKanbanColumnData records', 'Required', 'Retains host ownership of stable values and callbacks.')],
+    slug: 'kanban-board',
+    summary: 'Move controlled cards between capacity-limited native board columns.'
+  },
+  {
+    accessibility: 'Localized labels, native controls, selected or disabled state and safe loading/error/empty presentation.',
+    category: 'Data display',
+    examples: { apple: 'LumenKanbanColumn(column: $column)', android: 'LumenKanbanColumn(column, { column = it })', 'react-native': '<LumenKanbanColumn column={column} onColumnChange={setColumn} />' },
+    exports: { apple: 'LumenKanbanColumn', android: 'LumenKanbanColumn', 'react-native': 'LumenKanbanColumn' },
+    guidance: 'Use stable card identities and capacity. Native dragging and localized reorder actions request host state changes. Read-only blocks mutations while allowing details.',
+    name: 'Kanban column',
+    properties: [property('column', 'Controlled LumenKanbanColumnData', 'Required', 'Retains host ownership of stable values and callbacks.')],
+    slug: 'kanban-column',
+    summary: 'Reorder rich native cards within a controlled standalone column.'
+  },
+  {
+    accessibility: 'Named image value, visible caption and localized error recovery with scanner-safe contrast.',
+    category: 'Data display',
+    examples: {
+      apple: 'LumenQRCode("Project link", value: "https://lumen.santi020k.com")',
+      android: 'LumenQRCode(value = "https://lumen.santi020k.com", label = "Project link")',
+      'react-native': '<LumenQRCode label="Project link" value="https://lumen.santi020k.com" />'
+    },
+    exports: { android: 'LumenQRCode', apple: 'LumenQRCode', 'react-native': 'LumenQRCode' },
+    guidance: 'Encoding stays offline. Keep the four-module quiet zone and high contrast; hosts own navigation and scanning. Capacity errors retain the input value. See the native QRCode contract for correction levels and matrix APIs.',
+    name: 'QR code',
+    properties: [
+      property('label / value', 'String / string', 'Required', 'Names and controls the locally encoded value.'),
+      property('size / quietZone', 'Numeric size / integer modules', '160 / 4', 'Keeps a bounded image size and standards-compatible border.'),
+      property('correction / errorLabel / showValue', 'Platform correction enum / text / boolean', 'M / English error / true', 'Controls error correction and accessible recovery.')
+    ],
+    slug: 'qr-code',
+    summary: 'Render accessible offline QR codes from controlled Unicode values.'
+  },
+  {
+    accessibility: 'Localized disclosure and depth with native selection controls and inherited disabled state.',
+    category: 'Data display',
+    examples: {
+      apple: 'LumenTree("Files", nodes: nodes, expandedIds: $expanded, selectedIds: $selected)',
+      android: 'LumenTree("Files", nodes, expanded, { expanded = it }, selectedIds = selected, onSelectionChange = { selected = it })',
+      'react-native': '<LumenTree label="Files" nodes={nodes} expandedIds={expanded} onExpandedChange={setExpanded} selectedIds={selected} onSelectionChange={setSelected} />'
+    },
+    exports: { android: 'LumenTree', apple: 'LumenTree', 'react-native': 'LumenTree' },
+    guidance: 'Use stable flat graph identities. Invalid graphs fail closed; state edits retain unknown host IDs. Read-only selection still permits disclosure. Localize depth and disclosure formatters.',
+    name: 'Tree',
+    properties: [
+      property('nodes', 'LumenTreeNode records', 'Required', 'Defines stable identity, parent, label and disabled/selectable state.'),
+      property('expandedIds / selectedIds', 'Controlled sets', 'Required expansion / optional selection', 'Preserves host state through hidden and unavailable nodes.'),
+      property('loading / error / readOnly', 'Platform state values', 'Ready / no error / editable', 'Hides stale controls during result states and guards mutations.')
+    ],
+    slug: 'tree',
+    summary: 'Browse hierarchical records with controlled disclosure and selection.'
+  },
+  {
+    accessibility: 'Localized branch and back navigation with controlled leaf selection and safe status states.',
+    category: 'Forms',
+    examples: {
+      apple: 'LumenCascader("Destination", nodes: nodes, selectedPath: $path)',
+      android: 'LumenCascader("Destination", nodes, path, { path = it })',
+      'react-native': '<LumenCascader label="Destination" nodes={nodes} selectedPath={path} onSelectionChange={setPath} />'
+    },
+    exports: { android: 'LumenCascader', apple: 'LumenCascader', 'react-native': 'LumenCascader' },
+    guidance: 'Branches browse and enabled selectable leaves emit full canonical paths. Retain unknown paths until the host replaces them. Read-only selection permits browsing; app routing stays in the host.',
+    name: 'Cascader',
+    properties: [
+      property('nodes / selectedPath', 'LumenTreeNode records / controlled ordered IDs', 'Required', 'Controls a canonical path over the validated shared tree model.'),
+      property('readOnly / loading / error', 'Platform state values', 'Editable / ready / no error', 'Guards selection and hides stale result controls.'),
+      property('backLabel / formatDisclosure', 'Localized text / formatter', 'English defaults', 'Names native drill-down navigation.')
+    ],
+    slug: 'cascader',
+    summary: 'Select a stable leaf path through native branch drill-down.'
+  }
+]
+
 export const nativeComponentDocs = [
   ...sharedDefinitions,
-  ...additionalDefinitions
+  ...additionalDefinitions,
+  ...advancedInputDefinitions,
+  ...authenticationAndMediaDefinitions,
+  ...composeProductDefinitions,
+  ...catalogParityDefinitions
 ].map(createComponent)
 
 export const nativeComponentCategories: NativeComponentCategory[] = [

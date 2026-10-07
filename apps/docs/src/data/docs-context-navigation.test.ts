@@ -1,12 +1,25 @@
 import { describe, expect, test } from 'vitest'
 
 import {
+  getCurrentDocsContextLink,
   getDocsContextLinks,
   isDocsContextLinkCurrent,
   sharedDocumentationLinks
 } from './docs-context-navigation'
 
 describe('documentation context navigation', () => {
+  test('marks the migration collection current on every version guide', () => {
+    const links = getDocsContextLinks(undefined)
+
+    const routes = [
+      '/docs/migrations', '/docs/migrations/v1-to-v2', '/docs/migrations/v2-to-v3', '/docs/migrations/v3-to-v4'
+    ]
+
+    for (const route of routes) {
+      expect(getCurrentDocsContextLink(links, route)?.label).toBe('Migration guides')
+    }
+  })
+
   test('gives every platform a focused overview and deeper navigation', () => {
     for (const platform of ['web', 'react-native', 'apple', 'android', 'foundations'] as const) {
       const links = getDocsContextLinks(platform)
@@ -56,5 +69,36 @@ describe('documentation context navigation', () => {
     expect(hooks?.href).toBe('/docs/react-native/hooks')
     expect(hooks && isDocsContextLinkCurrent(hooks, '/docs/react-native/hooks')).toBe(true)
     expect(getDocsContextLinks('apple').some(link => link.label === 'Hooks')).toBe(false)
+  })
+})
+
+describe('current documentation destination', () => {
+  test.each([
+    ['', 'Overview'],
+    ['#tokens-in-use', 'Color roles'],
+    ['#composition-in-use', 'Composition'],
+    ['#installation', 'Use the tokens'],
+    ['#components', 'Coverage'],
+    ['#component%73', 'Coverage'],
+    ['#principles', 'Principles'],
+    ['#unknown', 'Overview'],
+    ['#%', 'Overview']
+  ])('selects exactly one foundations destination for %s', (hash, label) => {
+    expect(getCurrentDocsContextLink(getDocsContextLinks('foundations'), '/docs/foundations/', hash)?.label).toBe(label)
+  })
+
+  test('selects dedicated native guides without leaking their state into component pages', () => {
+    const links = getDocsContextLinks('apple')
+
+    expect(getCurrentDocsContextLink(links, '/docs/apple/installation')?.label).toBe('Install')
+    expect(getCurrentDocsContextLink(links, '/docs/apple/theming')?.label).toBe('Theme')
+    expect(getCurrentDocsContextLink(links, '/docs/apple/components/button', '#theme')?.label).toBe('Components')
+  })
+
+  test('preserves prefix sections for child routes and rejects partial path matches', () => {
+    const links = getDocsContextLinks('web')
+
+    expect(getCurrentDocsContextLink(links, '/docs/components/button', '#api')?.label).toBe('Components')
+    expect(getCurrentDocsContextLink(links, '/docs/components-extra', '#api')).toBeUndefined()
   })
 })

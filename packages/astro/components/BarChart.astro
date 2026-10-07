@@ -1,9 +1,14 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import {
+import {   alignLumenChartSeries,
   createLumenBarGeometry,
+createLumenChartDatumActivation,
   formatLumenChartSummary,
+  getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
+  getLumenChartMotionKey,
   getLumenChartTicks,
   getLumenChartToneClassName,
   hasLumenChartData,
@@ -15,7 +20,10 @@ import {
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
 
+import { createChartDatumAction } from '../runtime/chart-actions'
+
 import Chart from './Chart.astro'
+import ChartDatumActions from './ChartDatumActions.astro'
 
 interface Props extends HTMLAttributes<'figure'> {
   caption?: string
@@ -23,6 +31,7 @@ interface Props extends HTMLAttributes<'figure'> {
   class?: string | null
   className?: string
   description?: string
+  drilldown?: boolean
   emptyLabel?: string
   formatCategory?: (category: number | string) => string
   formatValue?: (value: number) => string
@@ -44,8 +53,9 @@ const {
   class: classProp = '',
   className = '',
   description,
+  drilldown = false,
   emptyLabel,
-  formatCategory = String,
+  formatCategory,
   formatValue = String,
   glass = false,
   heading,
@@ -60,11 +70,41 @@ const {
 } = Astro.props
 
 const resolvedLabels = resolveLumenChartLabels(labels)
-const summary = summaryProp ?? formatLumenChartSummary(series, formatValue, resolvedLabels)
-const geometry = createLumenBarGeometry(series, { categoryWidth, layout, orientation })
-const hasData = hasLumenChartData(series)
+const categories = getLumenChartCategories(series)
+const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
+
+const motionKeys = new Map(alignedSeries.flatMap(item => item.data.map(point => [
+  JSON.stringify([item.id, point.x]), getLumenChartMotionKey(item.id, point)
+] as const)))
+
+const summary = summaryProp ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)
+
+const geometry = createLumenBarGeometry(alignedSeries, {
+  width: 480,
+  height: 240,
+  categoryWidth: categoryWidth ?? 160,
+  ...(formatCategory === undefined ? {} : { formatCategory }),
+  formatValue,
+  layout,
+  orientation
+})
+
+const hasData = hasLumenChartData(alignedSeries)
 const ticks = getLumenChartTicks(geometry.domain)
-const categories = geometry.categories.map(category => category.category)
+const margin = geometry.margin
+
+const categoryTicks = getLumenChartCategoryTicks(geometry.categories.map(category => String(category.label)), {
+  end: geometry.width - margin.right,
+  positions: geometry.categories.map(category => category.x),
+  start: margin.left
+})
+
+const valueTicks = getLumenChartCategoryTicks(ticks.map(tick => formatValue(tick)), {
+  end: geometry.width - margin.right,
+  minimumGap: 48,
+  positions: ticks.map(tick => scaleLumenChartValue(tick, geometry.domain, margin.left, geometry.width - margin.right)),
+  start: margin.left
+})
 
 const datumFor = (item: LumenChartSeries, category: number | string) => (
   item.data.find(datum => datum.x === category)
@@ -84,15 +124,23 @@ const formattedValueFor = (item: LumenChartSeries, category: number | string) =>
   return value === null || !Number.isFinite(value) ? resolvedLabels.notAvailable : formatValue(value)
 }
 
-const categoryLabelFor = (category: number | string) => {
-  const label = series.flatMap(item => item.data).find(datum => datum.x === category)?.xLabel
+const categoryLabelFor = (category: number | string) => getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')
 
-  return label ?? formatCategory(category)
-}
+const datumActions = drilldown ?
+geometry.marks.map(mark => {
+  const item = alignedSeries.find(candidate => candidate.id === mark.seriesId)
+  const datum = item?.data.find(candidate => candidate.x === mark.category)
 
-const margin = orientation === 'horizontal' ?
-  { bottom: 24, left: Math.max(64, Math.min(240, categoryWidth ?? 112)), right: 20, top: 16 } :
-  { bottom: 52, left: 52, right: 16, top: 16 }
+  return item && datum ?
+createChartDatumAction(
+    createLumenChartDatumActivation(item.id, datum),
+    `${categoryLabelFor(mark.category)} · ${mark.seriesLabel}: ${formatValue(mark.value)}`,
+    resolvedLabels
+  ) :
+null
+}) :
+[]
+
 ---
 
 <Chart
@@ -103,6 +151,7 @@ const margin = orientation === 'horizontal' ?
   {heading}
   {summary}
   {...rest}
+  data-ui-chart-activation={drilldown || undefined}
 >
   {
     showLegend && hasData && (
@@ -117,7 +166,7 @@ const margin = orientation === 'horizontal' ?
     )
   }
   {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel ?? resolvedLabels.empty}</p>}
-  <div class="ui-chart__plot" hidden={!hasData}>
+  <div aria-label={resolvedLabels.chartData} class="ui-chart__plot" role="region" tabindex="0" hidden={!hasData}>
     <svg
       aria-hidden="true"
       preserveAspectRatio="xMidYMid meet"
@@ -145,36 +194,40 @@ const margin = orientation === 'horizontal' ?
                 />
               ) :
               (
-                <line
-                  x1={margin.left}
-                  x2={geometry.width - margin.right}
-                  y1={coordinate}
-                  y2={coordinate}
-                />
+                <>
+                  <line x1={margin.left} x2={geometry.width - margin.right} y1={coordinate} y2={coordinate} />
+                  <text x={margin.left - 8} y={coordinate}>{formatValue(tick)}</text>
+                </>
               )
           })
         }
       </g>
       <g class="ui-chart__axis-labels">
         {
-          geometry.categories.map(category => (
-            <text
-              dominant-baseline={orientation === 'horizontal' ? 'middle' : undefined}
-              text-anchor={orientation === 'horizontal' ? 'end' : 'middle'}
-              x={category.x}
-              y={category.y}
-            >
-              {String(category.label)}
+          orientation === 'horizontal' ?
+geometry.categories.map(category => (
+            <text dominant-baseline="middle" text-anchor="end" x={category.x} y={category.y}>
+              {getLumenChartCategoryTicks([String(category.label)], { end: margin.left - 16, start: 0 })[0]?.label}
             </text>
+          )) :
+categoryTicks.map(tick => (
+            <text text-anchor={tick.textAnchor} x={tick.position} y={geometry.height - 20}>{tick.label}</text>
           ))
         }
       </g>
+      {orientation === 'horizontal' && (
+<g class="ui-chart__axis-labels">{valueTicks.map(tick => (
+        <text text-anchor={tick.textAnchor} x={tick.position} y={geometry.height - 6}>{tick.label}</text>
+      ))}</g>
+)}
       <g class="ui-bar-chart__marks">
         {
-          geometry.marks.map(mark => (
+          geometry.marks.map((mark, index) => (
             <rect
               class={getLumenChartToneClassName(mark.tone)}
+              data-ui-chart-motion-key={motionKeys.get(JSON.stringify([mark.seriesId, mark.category]))}
               height={mark.height}
+              data-ui-chart-datum={datumActions[index]?.serialized}
               rx="4"
               width={mark.width}
               x={mark.x}
@@ -186,6 +239,16 @@ const margin = orientation === 'horizontal' ?
             </rect>
           ))
         }
+{drilldown && geometry.marks.map((mark, index) => (
+  <rect
+class="ui-chart__datum-hit"
+width={Math.max(12, mark.width)}
+height={Math.max(12, mark.height)}
+    x={mark.x - Math.max(0, 12 - mark.width) / 2}
+y={mark.y - Math.max(0, 12 - mark.height) / 2}
+    data-ui-chart-datum={datumActions[index]?.serialized}
+  />
+))}
       </g>
     </svg>
   </div>
@@ -193,7 +256,7 @@ const margin = orientation === 'horizontal' ?
     showTable && hasData && (
       <details class="ui-chart__data">
         <summary>{resolvedLabels.viewData}</summary>
-        <div>
+        <div role="group" tabindex="0" aria-label={resolvedLabels.chartData}>
           <table>
             <thead>
               <tr>
@@ -205,7 +268,7 @@ const margin = orientation === 'horizontal' ?
               {categories.map(category => (
                 <tr>
                   <th scope="row">{categoryLabelFor(category)}</th>
-                  {series.map(item => (
+                  {alignedSeries.map(item => (
                     <td>
                       {labelFor(item, category) ?? formattedValueFor(item, category)}
                     </td>
@@ -218,4 +281,5 @@ const margin = orientation === 'horizontal' ?
       </details>
     )
   }
+  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
 </Chart>

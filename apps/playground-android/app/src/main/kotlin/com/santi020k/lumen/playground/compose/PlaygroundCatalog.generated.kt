@@ -8,6 +8,8 @@ internal data class PlaygroundSection(
     val title: String
 )
 
+internal const val playgroundLumenVersion = "4.0.0"
+
 internal val playgroundSections = listOf(
     PlaygroundSection(
         title = "Foundations",
@@ -33,7 +35,10 @@ internal val playgroundSections = listOf(
             "Chip",
             "Menu",
             "Share button",
-            "Floating action button"
+            "Tooltip",
+            "Command",
+            "Floating action button",
+            "Swipe actions"
         )
     ),
     PlaygroundSection(
@@ -54,7 +59,20 @@ internal val playgroundSections = listOf(
             "Segmented control",
             "Tabs",
             "Picker",
-            "Slider"
+            "Slider",
+            "Range slider",
+            "Time field",
+            "Autocomplete",
+            "Number field",
+            "Password field",
+            "Input OTP",
+            "Multi select",
+            "Rating",
+            "Cascader",
+            "Color picker",
+            "Tree select",
+            "Transfer",
+            "Mentions"
         )
     ),
     PlaygroundSection(
@@ -70,7 +88,10 @@ internal val playgroundSections = listOf(
             "Skeleton",
             "Empty state",
             "Error state",
-            "Banner"
+            "Banner",
+            "Stepper",
+            "Timeline",
+            "Pull to refresh"
         )
     ),
     PlaygroundSection(
@@ -83,6 +104,8 @@ internal val playgroundSections = listOf(
             "Bar chart",
             "Pie chart",
             "Scatter chart",
+            "Waterfall chart",
+            "Histogram",
             "Heatmap",
             "Range chart",
             "Combo chart",
@@ -92,7 +115,28 @@ internal val playgroundSections = listOf(
             "Stat",
             "Section header",
             "Status bar",
-            "Gauge"
+            "Gauge",
+            "Image comparison",
+            "Media viewport",
+            "Media thumbnail",
+            "Media filmstrip",
+            "Bullet chart",
+            "Lollipop chart",
+            "Dumbbell chart",
+            "Calendar heatmap",
+            "Funnel chart",
+            "Box plot",
+            "Table",
+            "Data table",
+            "Tree",
+            "QR code",
+            "Calendar",
+            "Agenda",
+            "Kanban board",
+            "Kanban column",
+            "Schedule",
+            "Carousel",
+            "Tree grid"
         )
     ),
     PlaygroundSection(
@@ -102,9 +146,13 @@ internal val playgroundSections = listOf(
             "Alert dialog",
             "Sheet",
             "Navigation bar",
+            "Breadcrumb",
+            "Tour",
             "Navigation bar scroll behavior",
             "Navigation bar accessory",
-            "Adaptive navigation scaffold"
+            "Adaptive navigation scaffold",
+            "Top app bar",
+            "Adaptive list detail scaffold"
         )
     )
 )

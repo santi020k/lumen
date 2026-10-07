@@ -6,7 +6,7 @@ import {
   type ElementType
 } from 'react'
 
-import { composeClassName } from '@santi020k/lumen-core'
+import { composeClassName, type LumenControlVisualSize } from '@santi020k/lumen-core'
 
 export type LumenGlassProp = boolean | 'strong' | 'subtle'
 
@@ -62,6 +62,7 @@ type CardVariant = 'default' | 'glass' | 'interactive' | 'muted' | 'unstyled'
 export type CardProps<T extends ElementType = 'div'> =
   LumenPrimitiveProps<T> & {
     'data-variant'?: CardVariant
+    density?: 'comfortable' | 'compact' | 'spacious'
     glass?: LumenGlassProp
     variant?: CardVariant
   }
@@ -69,6 +70,7 @@ export type CardProps<T extends ElementType = 'div'> =
 export const Card = <T extends ElementType = 'div'>({
   as,
   className,
+  density = 'comfortable',
   glass = false,
   variant = 'default',
   ...props
@@ -76,6 +78,7 @@ export const Card = <T extends ElementType = 'div'>({
   <Primitive
     {...(as ? { as } : {})}
     className={composeClassName(
+      `ui-card--${density}`,
       variant === 'muted' && 'ui-card--muted',
       variant === 'interactive' && 'ui-card--interactive',
       variant === 'unstyled' && 'ui-card--unstyled',
@@ -84,6 +87,7 @@ export const Card = <T extends ElementType = 'div'>({
       ),
       className
     )}
+    data-density={density}
     data-slot="card"
     data-variant={variant}
     {...props}
@@ -191,7 +195,7 @@ export const Direction = ({
 export interface GridProps extends ComponentPropsWithRef<'div'> {
   as?: ElementType
   columns?: 1 | 2 | 3 | 4 | 6 | 12 | 'auto'
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
+  gap?: '2xl' | '3xl' | 'group' | 'lg' | 'md' | 'none' | 'related' | 'section' | 'sm' | 'xl' | 'xs'
   minItemWidth?: string
 }
 
@@ -202,7 +206,7 @@ export const Grid = ({
   as = 'div',
   className,
   columns = 'auto',
-  gap = 'md',
+  gap = 'group',
   minItemWidth,
   style,
   ...props
@@ -224,7 +228,7 @@ export const Grid = ({
 }
 
 export interface InputProps extends ComponentPropsWithRef<'input'> {
-  visualSize?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
 }
 
 export const Input = ({
@@ -341,7 +345,7 @@ export interface StackProps extends ComponentPropsWithRef<'div'> {
   align?: 'center' | 'end' | 'start' | 'stretch'
   as?: ElementType
   direction?: Orientation
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
+  gap?: '2xl' | '3xl' | 'group' | 'lg' | 'md' | 'none' | 'related' | 'section' | 'sm' | 'xl' | 'xs'
   justify?: 'between' | 'center' | 'end' | 'start'
   wrap?: boolean
 }
@@ -351,7 +355,7 @@ export const Stack = ({
   as = 'div',
   className,
   direction = 'vertical',
-  gap = 'md',
+  gap = 'group',
   justify = 'start',
   wrap = false,
   ...props
@@ -410,4 +414,44 @@ export const VisuallyHidden = ({
     data-ui-visually-hidden
     {...props}
   />
+)
+
+export type DialogHeaderProps = ComponentPropsWithRef<'header'>
+export const DialogHeader = ({ className, ...props }: DialogHeaderProps) => (
+  <header {...props} className={composeClassName('ui-dialog-header', className)} data-slot="dialog-header" />
+)
+
+export type DialogTitleProps = ComponentPropsWithRef<'h2'> & { as?: 'h2' | 'h3' | 'h4' }
+export const DialogTitle = ({ as: Tag = 'h2', className, ...props }: DialogTitleProps) => (
+  <Tag {...props} className={composeClassName('ui-dialog-title', className)} data-slot="dialog-title" />
+)
+
+export type DialogBodyProps = ComponentPropsWithRef<'div'>
+export const DialogBody = ({ className, ...props }: DialogBodyProps) => (
+  <div {...props} className={composeClassName('ui-dialog-body', className)} data-slot="dialog-body" />
+)
+
+export type DialogFooterProps = ComponentPropsWithRef<'footer'>
+export const DialogFooter = ({ className, ...props }: DialogFooterProps) => (
+  <footer {...props} className={composeClassName('ui-dialog-footer', className)} data-slot="dialog-footer" />
+)
+
+export type DescriptionItemProps = ComponentPropsWithRef<'div'>
+export const DescriptionItem = ({ className, ...props }: DescriptionItemProps) => (
+  <div {...props} className={composeClassName('ui-description-item', 'ui-descriptions__item', className)} data-slot="description-item" />
+)
+
+export type DescriptionTermProps = ComponentPropsWithRef<'dt'>
+export const DescriptionTerm = ({ className, ...props }: DescriptionTermProps) => (
+  <dt {...props} className={composeClassName('ui-description-term', 'ui-descriptions__term', className)} data-slot="description-term" />
+)
+
+export type DescriptionDetailProps = ComponentPropsWithRef<'dd'>
+export const DescriptionDetail = ({ className, ...props }: DescriptionDetailProps) => (
+  <dd {...props} className={composeClassName('ui-description-detail', 'ui-descriptions__detail', className)} data-slot="description-detail" />
+)
+
+export type AttachmentListProps = ComponentPropsWithRef<'ul'>
+export const AttachmentList = ({ className, ...props }: AttachmentListProps) => (
+  <ul {...props} className={composeClassName('ui-attachment-list', className)} data-slot="attachment-list" />
 )

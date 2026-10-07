@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { getLumenPhoneFlagSource } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'span'> {
+  regionCode: string
+  decorative?: boolean
+}
+
+const { regionCode, decorative = false, class: className, ...props } = Astro.props
+const source = getLumenPhoneFlagSource(regionCode)
+---
+<span
+{...props}
+aria-hidden={decorative || undefined}
+aria-label={decorative ? undefined : props['aria-label'] ?? regionCode.toUpperCase()}
+class:list={['ui-country-flag', className]}
+data-slot="country-flag"
+role={decorative ? undefined : 'img'}
+>
+  {source ? <img alt="" height="18" src={source} width="24" /> : regionCode.toUpperCase().slice(0, 2)}
+</span>

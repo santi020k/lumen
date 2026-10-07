@@ -34,9 +34,10 @@ The approved production deployment returns HTTP 404 for `/ready`; use `/health` 
 initialization, `tools/list`, and `lumen_diagnose` to verify that deployment. The newer repository
 server provides `/ready`, but publishing the approved listing does not redeploy the MCP server.
 
-For future changes to reviewed MCP metadata or skill snapshots, scan the server, submit a new
-version for review, and publish that approved version. Portal publication changes external state
-and is deliberately not automated by repository validation.
+For future skill or plugin metadata changes, generate and upload a new plugin ZIP for review.
+Eligible server-only updates are picked up from the deployed endpoint after automated checks;
+they do not require a new ZIP. Follow the current official submission guidance linked above.
+Portal publication changes external state and is deliberately not automated by repository validation.
 
 ## Public listing
 
@@ -202,3 +203,56 @@ updates, deletes, sends, publishes, enqueues, logs user content, or changes exte
 - After approval, deliberately select **Publish** in the portal.
 - Once publication is confirmed, replace the under-review notice in the README and documentation
   site with the public directory link.
+
+## Next candidate: plugin 1.1.0 and Lumen 4
+
+The local candidate uses portable `plugin.json` and `mcp.json` manifests and generated Codex/Claude
+wrappers. Both client manifests carry version 1.1.0. The local stdio configuration pins
+`@santi020k/lumen-mcp@4.0.0`; publish that package before distributing the plugin update.
+
+The candidate includes three skills (build, review, migration), fourteen read-only catalog tools,
+and an optional read-only Claude reviewer. It adds installed-version compatibility checks, v4
+migration discovery, concrete nested schemas, and English/Spanish search. No hooks or new credentials
+are required. The published 1.0.0 record above describes the previous release.
+
+Before submission, rerun strict schema/package validation, the actual agent benchmarks in
+[lumen-4-ai.md](lumen-4-ai.md), and hosted endpoint smoke tests. Confirm all fourteen tools and
+plugin capabilities in the disclosure. Publication, deployment, and directory review remain external
+gates; local validation does not establish that the candidate is publicly available.
+
+Generate the upload with `pnpm run package:plugin`. The Codex archive at
+`dist/plugins/lumen-ui-1.1.0-codex.zip` replaces the local stdio connection with the production
+HTTPS endpoint while retaining the canonical metadata and three skills. It excludes Claude
+agents and local compatibility files. The command also produces a Claude archive for installation
+checks. Archive generation validates snapshots first, includes only explicit plugin assets, and
+preserves existing output. It requires the system `zip` executable.
+
+Before uploading, verify the deployed catalog reports 4.0.0 and exposes all fourteen tools,
+including `lumen_check_compatibility` and `lumen_get_migration`. Check both a matching v4 consumer
+and an older consumer: the latter must use installed contracts without silently upgrading.
+
+## Automated catalog rollout
+
+The `Deploy MCP` GitHub workflow follows a successful `Release` run on `main`. It checks out that
+release's exact revision and uses a read-only publication job to skip revisions without their
+matching version tag before entering production approval. The deployment job requires the approved v4 contract and an immutable version tag at that
+revision, and rejects a revision that is no longer the current `main`. It also requires the exact
+MCP npm version to exist before deployment. A manual rerun is restricted to `main` and enforces the
+same gates. A successful release-preparation run without a published tag cannot deploy.
+
+The production job reuses the existing `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository
+secrets used by docs deployment. The token must permit Worker deployment for the configured account;
+secret-name availability alone does not establish that permission. No new secret values are created
+or copied by this workflow. The existing Worker configuration and verification challenge remain
+owned by the deployment environment.
+
+After deployment, `node scripts/check-hosted-mcp.mjs` checks health, server version, the exact catalog
+hash and component counts, compatibility/migration tool discovery, catalog integrity, and usage
+retrieval for existing components and the visualization catalog. Use `--published-only` for the npm
+preflight. Failed deployment or smoke checks leave the rollout incomplete; diagnose and rerun the
+workflow. Correct faulty released behavior with a new reviewed commit/version rather than moving a
+published tag. This job does not merge the release PR or approve a draft contract.
+
+Only after hosted smoke checks pass, upload the generated Codex archive for directory review and
+publish the approved plugin version. Directory submission and approval remain a human boundary;
+archive generation and local checks do not update users' installed plugins or skills automatically.

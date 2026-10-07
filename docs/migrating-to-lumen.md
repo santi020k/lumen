@@ -79,16 +79,27 @@ Lumen components communicate using standard DOM CustomEvents, primarily prefixed
 
 Listen to these events on the document, or on the component root `[data-ui-*]` elements.
 
+### Major-version upgrades
+
+Use the guide for your starting version:
+
+- [Lumen 1 → 2](migrating-v1-to-v2.md): source migration, removed aliases, and Swift enum additions.
+- [Lumen 2 → 3](migrating-v2-to-v3.md): coordinated package updates and Swift icon switches.
+- [Lumen 3 → 4](migrating-v3-to-v4.md): the unpublished v4 candidate, spacing changes,
+  component behavior, native signatures, and consumer verification.
+
+When skipping major versions, complete and verify each step in order. The `lumen migrate v2`
+command migrates v1 contracts to v2; it does not automate either later upgrade.
+
+### Migrating from version 3 to version 4
+
+See the [dedicated v3 → v4 migration guide](migrating-v3-to-v4.md). It includes the content-flow
+spacing map, component review checklist, native API changes, and candidate installation policy.
+
 ### Migrating from version 2 to version 3
 
-Lumen 3 synchronizes the expanded interface icon catalog across native adapters. Existing
-component calls and existing `LumenIconName` cases remain available. Swift consumers that switch
-exhaustively over `LumenIconName` must handle the newly synchronized cases or include an
-`@unknown default` branch before updating their package pin to `3.0.0`.
-
-No web, React Native, or Compose component migration is required solely for the major-version
-change. Update coordinated package pins together, rebuild generated clients, and run the
-application's native compile and accessibility checks before release.
+See the [dedicated v2 → v3 migration guide](migrating-v2-to-v3.md). Existing component calls remain
+available; Swift exhaustive icon switches need review before rebuilding.
 
 ### Version 1 compatibility removals
 
@@ -105,27 +116,8 @@ replacement.
 
 ### Preparing for version 2
 
-Use the v2 migration preview before changing package versions:
-
-```bash
-lumen migrate v2 --cwd ./src --dry-run
-```
-
-The migration currently covers the accepted breaking-contract candidates:
-
-| Lumen 1.x contract | Lumen 2 contract |
-| --- | --- |
-| Named `UIPrimitives` import from `@santi020k/lumen-astro` | Default import from `@santi020k/lumen-astro/runtime` |
-| Literal visual `size` aliases on `Input` and `NativeSelect` | `visualSize` in Astro or `visual-size` in Elements |
-| `Sonner` / `SonnerProps` | `ToastViewport` / `ToastViewportProps` |
-| `<lumen-sonner>` | `<lumen-toast-viewport>` |
-| React Native date exports from `@santi020k/lumen-react-native` | Import from `@santi020k/lumen-react-native/datetime` and install the optional datetime-picker peer only when used |
-
-The Sonner rename preserves placement, maximum-count configuration, and children because
-`ToastViewport` is the same viewport contract under a precise public name. Ambiguous imports and
-dynamic visual-size values remain manual-review findings instead of being rewritten speculatively.
-React Native datetime imports are split from mixed root imports while preserving aliases and
-type-only specifiers; an existing datetime-subpath import is left for manual merging.
+See the [dedicated v1 → v2 migration guide](migrating-v1-to-v2.md) for the source migration,
+removed aliases, React Native date subpath, Swift enum additions, verification, and rollback.
 
 For mixed Astro and React workspaces, migrate each package at its own integration boundary. Load
 `@santi020k/lumen-astro/styles.css` once in the Astro layout, mount the default runtime from
@@ -211,3 +203,15 @@ links; keep the site logo, theme switch, account menu, and unrelated utility act
 root so they retain independent Tab stops. Use `variant="unstyled"` when adopting the navigation
 semantics and runtime inside an established visual system. `Sidebar variant="unstyled"` and
 `Link variant="inherit"` provide the matching low-presentation migration path.
+
+## V4 appearance configuration
+
+Named Default, Studio and Glass presets are opt-in; existing calls preserve their color defaults. See [appearance presets](appearance-presets.md). Rebuild Swift and Compose consumers for defaulted initializer changes. React Native numeric theme scales accept custom values without casts. Keep explicit foreground/background pairs readable and retain opaque material fallbacks. No application data migration is involved.
+
+### Native heatmap color scales
+
+Rebuild SwiftUI and Compose consumers for the defaulted `LumenHeatmap` initializer parameters in v4.
+Existing named calls remain valid. Add `colorScale`, `domain`, and `midpoint` to compare signed data;
+use `heading` and `description` for visible context. React Native accepts the equivalent options.
+Heatmaps now keep the first measurement at each coordinate in both the plot and data disclosure.
+Missing measurements remain explicit and finite zero is rendered as data.

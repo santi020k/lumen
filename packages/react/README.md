@@ -1,11 +1,90 @@
-# @santi020k/lumen-react
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
 
-React primitives for Lumen UI.
+<h1 align="center">Lumen UI · React</h1>
 
-This package provides React components for the shared Lumen primitive catalog using the standalone
-Lumen stylesheet.
+<p align="center">React primitives · Shared styles · Typed component APIs</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react"><img src="https://img.shields.io/npm/v/@santi020k/lumen-react?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/frameworks/react">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/react">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-react`
+
+**On this page:** [Install](#install) · [Usage](#usage) · [Appearance presets](#appearance-presets) · [Resources](#resources)
+
+<details>
+<summary>Browse all sections</summary>
+
+- [Install](#install)
+- [Selective imports](#selective-imports)
+- [Appearance presets](#appearance-presets)
+- [Usage](#usage)
+- [Dropdown menus](#dropdown-menus)
+- [Language selection](#language-selection)
+- [Forms](#forms)
+- [Error states](#error-states)
+- [Data visualization](#data-visualization)
+- [Next.js and server components](#nextjs-and-server-components)
+- [Compatibility wrappers](#compatibility-wrappers)
+- [Context navigation](#context-navigation)
+- [Optimized images](#optimized-images)
+- [Kanban boards](#kanban-boards)
+- [Motion](#motion)
+- [Glass surfaces](#glass-surfaces)
+- [Semantic stat roots](#semantic-stat-roots)
+- [Consumer composition recipes](#consumer-composition-recipes)
+- [Exact amount fields](#exact-amount-fields)
+- [Inline date range calendar](#inline-date-range-calendar)
+- [Input-attached date range selection](#input-attached-date-range-selection)
+- [Phone presentation in v4](#phone-presentation-in-v4)
+- [Combobox keyboard behavior](#combobox-keyboard-behavior)
+- [Content flow](#content-flow)
+- [Attachment composition](#attachment-composition)
+- [Chart datum actions](#chart-datum-actions)
+- [Dashboard composition](#dashboard-composition)
+- [Hook state updates](#hook-state-updates)
+- [Advanced table views](#advanced-table-views)
+- [Advanced form workflows](#advanced-form-workflows)
+- [Device demonstrations](#device-demonstrations)
+- [Visual interactions](#visual-interactions)
+- [World map](#world-map)
+- [Operational workflows](#operational-workflows)
+- [Studio media workspace](#studio-media-workspace)
+- [Resources](#resources)
+
+</details>
+
+React components and behavior hooks for Lumen UI, using the shared standalone stylesheet.
+Start with one CSS import, then compose public primitives in your existing React application.
+
+See the [shared web form contracts](https://github.com/santi020k/lumen/blob/main/docs/form-controls.md) for value ownership, reset,
+submission, disabled state, and event behavior.
+
+Form controls use `visualSize` (`visual-size` in Elements) with `default`, `sm` and `lg`.
+Select, PhoneInput and Segmented follow Input and NativeSelect; numeric input/select `size` keeps
+its native meaning. See the [v4 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v3-to-v4.md#form-control-visual-sizing).
 
 ## Install
+
+Requires React 19 or newer in the consuming application.
 
 ```bash
 pnpm add @santi020k/lumen-react
@@ -32,15 +111,41 @@ The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI",
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
 your preferred delivery path, or override `--ui-font` in application CSS.
 
+## Selective imports
+
+Production builds compact component JavaScript without renaming identifiers or changing the
+ES2022 target. Declaration files and public imports retain their existing contracts.
+
+Root imports remain supported. Standalone component entrypoints include `/components/attachments`,
+`/components/bullet-chart`, `/components/comparison-chart`, `/components/data-table`,
+`/components/date-range-calendar`, `/components/date-range-input`, `/components/expanded-charts`,
+`/components/image-comparison`, `/components/interval-charts`, and `/components/virtual-list`.
+Import behavior hooks from `/hooks`; use `/server` for the server-safe primitive catalog.
+Load the existing stylesheet once, regardless of the import path.
+
+```tsx
+import { ImageComparison } from '@santi020k/lumen-react/components/image-comparison'
+import { VirtualList } from '@santi020k/lumen-react/components/virtual-list'
+```
+
+These entries use the same implementation and types as root imports. Interactive entries retain
+`use client` for React Server Component consumers. A smaller module graph does not guarantee a
+smaller final bundle: a bundler can already remove unused root exports. Run the repository's
+`pnpm run measure:selective-imports` benchmark for the measured comparison.
+
+## Appearance presets
+
+Use a scoped `data-lumen-preset="studio"` container, or select a preset with `useThemeBuilder`. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for theme overrides and explicit glass surfaces.
+
 ## Usage
 
 ```tsx
-import { Button, Card, Input } from "@santi020k/lumen-react";
+import { Button, Card, Input, Label } from "@santi020k/lumen-react";
 
 export function SubscribeForm() {
   return (
     <Card>
-      <label htmlFor="email">Email</label>
+      <Label htmlFor="email">Email</Label>
       <Input id="email" type="email" placeholder="you@example.com" />
       <Button>Subscribe</Button>
     </Card>
@@ -65,6 +170,13 @@ const [phone, setPhone] = useState(() => createEmptyLumenPhoneNumber(colombia))
 Compose dropdown menus from the public trigger, content, item, and separator parts. Items close the
 menu after a successful selection; preventing the item's click event keeps it open. Disabled items
 remain unavailable, and `status` adds short trailing context to the item.
+
+Disclosure keyboard navigation skips hidden or inert regions, invisible controls, and native
+disabled controls, including a disabled fieldset. Available controls in a fieldset's first legend
+retain their native keyboard behavior; removing `inert` makes a region available again.
+
+Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
+buttons are excluded from the Tab sequence while Enter and pointer selection still insert a mention.
 
 ```tsx
 import {
@@ -122,6 +234,13 @@ and Spanish defaults when `locales` is omitted.
 accessibility contract without replacing form state. Native-backed controls forward refs to their
 submitted DOM controls and work directly with React Hook Form's `register()`.
 
+Native form resets defer past the browser's default action and honor a cancelled `reset` event:
+`DatePicker`, `DateRangeInput`, `PhoneInput`, and `Combobox` only restore uncontrolled defaults when
+the reset is not prevented, and leave a controlled `value` untouched. `DatePicker` calendar
+selection fires the native `onChange` exactly once, matching typed input. `DateRangeInput` attaches
+its reset listener even without `name`, honoring an explicit `form` id as well as the nearest
+ancestor form.
+
 For controlled composites, install the optional adapter:
 
 ```bash
@@ -152,7 +271,7 @@ diagnostics, or decide whether retrying is safe.
 />
 ```
 
-See the repository [React error-handling guide](../../docs/error-handling.md#react) for the complete
+See the repository [React error-handling guide](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md#react) for the complete
 example, error-boundary ownership, announcement behavior, and verification guidance.
 
 For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an
@@ -188,7 +307,21 @@ either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
 customize its visible feedback while the localized label props remain the accessible announcement.
 Stable `data-slot` hooks expose the idle, copied, and error parts.
 
+Wrap React copy actions in `ToastProvider` to display their optional toast feedback. Target selectors
+resolve in the clicked button's owning document, including iframe portals. Updating a closing or moved
+toast reapplies the destination viewport limit without dismissing toasts in another placement.
+
 ## Data visualization
+
+The web visualization milestone adds `WaterfallChart` for signed changes and explicit totals, and
+`Histogram` for precomputed numeric bins (`frequency="density"` for unequal widths). Line charts
+support explicit continuous axes, annotations, optional keyboard/pointer/touch inspection, and
+synchronized cursors. Heatmaps show labeled axes, a color legend, and explicit missing cells.
+See the [visualization contracts](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md) and
+[interactive web example](https://lumen.santi020k.com/docs/web/data-visualization).
+
+Use `interactive`, `syncGroup`, and optional `cursor`/`onCursorChange` on `LineChart`. A supplied
+`cursor` is controlled; the owner must accept requests before the selection changes.
 
 `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `ScatterChart`, `Heatmap`, `RangeChart`, and
 `ComboChart` use the shared chart contracts and
@@ -196,7 +329,7 @@ render without an external charting dependency. Data charts expose a revealable 
 default. `PieChart` accepts one series and defaults to a donut presentation.
 
 Every chart includes a factual screen-reader summary by default and accepts `summary` for more
-useful domain context. See [data visualization](../../docs/data-visualization.md) for selection,
+useful domain context. See [data visualization](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md) for selection,
 missing-data, live-data, and accessibility guidance.
 
 ```tsx
@@ -384,15 +517,21 @@ ARIA, keyboard, Escape, dismissal, context menu, form
 validation, calendar grids, OTP segmentation, date range syncing, rich text command, schedule
 drag/drop, controlled Kanban move requests, theme export and switching, resizable pane sizing, and
 toast controller semantics for React applications.
-`useRichTextEditor` also provides `getEditableProps`, value-bearing commands, common formatting
+Toast timeouts pause while hovered or focused and resume only after both interactions end;
+moving focus between a toast's controls preserves its remaining duration. Updating a closing toast
+reopens it with a fresh lifetime using its current duration.
+`useRichTextEditor` honors consumer event cancellation before toolbar and shortcut commands.
+It also provides `getEditableProps`, value-bearing commands, common formatting
 shortcuts, active toolbar state, and `{ html, text }` change details.
 `DataTable` can render structured `columns` and `rows`; sortable columns use native header buttons,
 update `aria-sort`, and order string or numeric values without mutating the supplied rows. The
 shared selectable/sortable data attributes remain available for app-level adapters, and
-`VirtualList` exposes the shared range sizing attributes.
+`VirtualList` provides built-in fixed-height windowing with the shared sizing attributes.
 `useTabs` keeps the selected trigger visible when a narrow horizontal list scrolls. The package
 also exports `LumenTabsChangeDetail` and `LumenTabsChangeEvent` for integrations that consume the
 shared `ui:tabs-change` contract.
+
+Keyboard navigation stays within the current tab group when tabs are nested and skips disabled triggers.
 
 ## Kanban boards
 
@@ -446,7 +585,7 @@ or `variant="glass"` for selective translucency.
 
 ## Consumer composition recipes
 
-See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for static React icons, responsive
+See [consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md) for static React icons, responsive
 record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive editors, and
 asynchronous action states. Each recipe identifies the public primitives and the behavior that
 remains owned by the application.
@@ -462,3 +601,517 @@ import { Icon, Search } from '@santi020k/lumen-react/icons'
 The existing root `Icon name="search"` remains supported for runtime-selected names and icon packs.
 `Table layout="records"` opts into the responsive record recipe; its semantic child markup and
 shared mobile labels are documented in the consumer recipe linked above.
+
+## Exact amount fields
+
+`AmountField` accepts editable ASCII decimal strings, formats a requested locale, and submits a
+complete decimal string through its named hidden input. Use `defaultValue` for an uncontrolled
+field or `value` with `onValueChange` for application-owned drafts. It preserves precision and
+never rounds through a JavaScript number. Updating `defaultValue` changes the next reset baseline
+without replacing the active draft. Currency rules and limits remain application-owned.
+
+```tsx
+<AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />
+```
+
+See [consumer workflows](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#executable-consumer-workflows) for
+validation, reset, operational-record actions and opt-in MessageScroller following.
+
+## Inline date range calendar
+
+`DateRangeCalendar` is a controlled React range editor with two visible calendars,
+inclusive range highlighting, a preset sidebar and the keyboard behavior of `useCalendar`,
+including inherited RTL arrow navigation and focus movement in iframe documents.
+On narrow screens the presets scroll horizontally and the calendars stack. It uses the shared Lumen stylesheet.
+
+```tsx
+const [range, setRange] = useState({ start: '2026-09-01', end: '2026-09-30' })
+
+<DateRangeCalendar
+  value={range}
+  onValueChange={setRange}
+  locale="en-US"
+  min="2000-01-01"
+  max="2100-12-31"
+  labels={{ start: 'From', end: 'To', presets: 'Quick range' }}
+  presets={[{ label: 'September', value: { start: '2026-09-01', end: '2026-09-30' } }]}
+/>
+```
+
+Supply valid ISO date endpoints in ascending order. Choosing a start after the end,
+or an end before the start, moves the opposite endpoint to the chosen day.
+Presets outside `min`/`max` or in descending order are disabled. Only one matching
+preset is highlighted, including when multiple presets resolve to the same range. `formatDate` can customize
+the endpoint summaries without changing ISO values. The consumer owns draft state,
+Apply/Cancel actions and domain limits such as maximum report duration. Labels are required;
+`locale` controls month, weekday, navigation and day announcements. React date controls default
+to English on both the server and browser; pass the application locale explicitly for localized
+SSR and hydration.
+
+## Input-attached date range selection
+
+`DateRangeInput` wraps `DateRangeCalendar` in an anchored, non-modal popover.
+It measures and observes its owning viewport, including iframe documents. Apply and Cancel restore
+trigger focus, and native reset follows the current associated form. Outside-focus dismissal
+follows the owning document, including same-origin iframe and portal rendering. Use it
+when the range should be edited directly from an input-like control. It keeps draft
+changes internal and calls `onValueChange` only when the user chooses Apply.
+The existing `DateRangePicker` and inline `DateRangeCalendar` remain available.
+
+```tsx
+import { useState } from 'react'
+import { DateRangeInput } from '@santi020k/lumen-react'
+import '@santi020k/lumen-react/styles.css'
+
+export function ReportPeriod() {
+  const [range, setRange] = useState({ start: '2026-09-01', end: '2026-09-30' })
+
+  return (
+    <DateRangeInput
+      value={range}
+      onValueChange={setRange}
+      label="Report period"
+      locale="en-US"
+      labels={{ start: 'From', end: 'To', presets: 'Quick ranges', apply: 'Apply', cancel: 'Cancel' }}
+      presets={[{ label: 'September', value: { start: '2026-09-01', end: '2026-09-30' } }]}
+      name={{ start: 'from', end: 'to' }}
+      validate={draft => draft.start < '2026-01-01' ? 'Choose dates in 2026 or later.' : undefined}
+      renderSummary={draft => `${draft.start} through ${draft.end}`}
+    />
+  )
+}
+```
+
+- `value` must contain real, ascending ISO dates (`YYYY-MM-DD`). `min`, `max`,
+  `presets`, `locale`, and `formatDate` follow the inline calendar contract.
+- `label` names both the trigger and dialog. Supply localized start, end, presets,
+  apply, and cancel labels. For Spanish, use `Desde`, `Hasta`, `Períodos`, `Aplicar`,
+  and `Cancelar` with `locale="es-CO"`. Navigation announcements follow `locale`.
+- `validate` runs on the draft; return a localized error to disable Apply. The error
+  is announced politely and associated with the Apply button. Keep validation pure.
+- `renderSummary` optionally renders localized draft details. `formatDate` changes
+  visible dates, while optional hidden form fields always submit the applied ISO values.
+- Cancel, Escape, outside pointer interaction, or moving focus outside discard the
+  draft. Apply, Cancel, and Escape return focus to the trigger. Opening again starts
+  from the latest controlled value. Calendar arrows retain their date-navigation behavior.
+- The panel uses the browser Popover API top layer without a modal backdrop or focus
+  trap. A fixed-position fallback works where the API is unavailable; ancestor clipping
+  can affect that fallback. The page remains interactive.
+- The panel tracks viewport changes, scroll, and trigger size. Narrow screens scroll
+  the trigger into view, stack the calendars, and scroll presets horizontally.
+  Only the body scrolls vertically; confirmation actions stay visible.
+- `disabled` disables the trigger and optional form entries. `className` styles the
+  outer container. Import the shared stylesheet once at the application boundary.
+
+This component is currently React-only. Publication is separate from local implementation.
+
+### Accessible code examples
+
+`Code` and `CodeTabs` accept `copyLabel`, `copiedLabel`, `errorLabel`, and
+`codeLabel`. Copy controls work directly in React, emit `ui:copy-success` or
+`ui:copy-error`, and announce localized success or recovery guidance. Repeated
+clicks restart feedback; unmounting clears its timer. No Astro runtime is needed.
+
+Unwrapped code uses a named, keyboard-focusable region. `codeLabel` defaults to
+`Code example`; set a descriptive localized name when several examples are
+present. Highlighted `pre` children receive the same behavior while retaining
+authored names and tab order. Wrapped code does not add an extra tab stop.
+
+### Server-sorted tables
+
+`DataTable` accepts `sort` and `onSortChange` for controlled sorting, or
+`defaultSort` for an initial uncontrolled sort. A `DataTableSort` contains a
+column `key` and `direction: 'ascending' | 'descending'`; `null` means unsorted.
+Header buttons request the next direction, and `aria-sort` describes the applied
+state. Replacing `rows` does not reset that state.
+
+Use `sortMode="manual"` with server pagination. In this mode the table preserves
+the supplied row order, even when a header is activated. Apply the requested sort
+to the complete dataset on the server before selecting the page, then supply the
+returned rows and controlled sort. Keep authentication, query validation, loading
+state, and network errors in the application. The default `sortMode="client"`
+sorts a copy of the supplied rows.
+
+### Dialog dismissal and focus
+
+`Dialog`, `AlertDialog`, and `useDialog` accept `dismissOnOutsidePress` and
+`dismissOnEscape`. Ordinary dialogs allow both by default; alert dialogs ignore
+outside presses by default. Set both to `false` while an application requires an
+explicit decision or is completing a pending mutation. These policies govern
+implicit dismissal; explicit close actions remain under application control.
+
+Native Escape requests `onOpenChange(false)` without overriding a controlled
+`open` value. Content padding and a drag that begins inside the dialog do not
+count as backdrop dismissal. Consumer `onCancel` or `onClick` handlers can prevent
+the corresponding default action.
+
+A controlled dialog can open without hook trigger props: it captures the focused
+opener before opening and returns focus on close or unmount, including when rendered into an iframe.
+Focus capture and restoration use the dialog's own document. StrictMode replay
+preserves that opener, and cleanup does not steal focus from a nested or
+replacement dialog. Hook trigger props remain useful when the same component
+owns the opener and dialog. Keep an accessible dialog name and logical initial
+focus; native `autoFocus` can select the initial control.
+
+### Virtual list and editor ownership
+
+`VirtualList` displays fixed-height rows with inert spacers that retain the full scroll extent.
+Rows stay mounted; use pagination when the initial DOM cost matters. Scrolling, resizing, sizing
+changes and direct row changes refresh the window. Focused rows remain available. See the
+[fixed-height list contract](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md#fixed-height-virtual-lists).
+
+External rich-text engines should handle the cancelable `ui:editor-command-request` event before
+execution and use `ui:editor-command` only for completion notifications. React also supports
+`useRichTextEditor({ commandHandler })`. Disable native toolbar state syncing when the external
+engine owns it. See the [editor guidance](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md).
+
+With native state enabled, `useRichTextEditor` initializes toolbar toggle states on mount,
+including `aria-pressed`, before the first editing interaction. External command handlers
+disable this synchronization by default so the application can own toolbar state.
+Native toolbar and keyboard commands execute in the editor root's owning document, including
+editors portaled into a same-origin iframe.
+
+## Phone presentation in v4
+
+Phone inputs bundle the same offline flag artwork on every platform. The selected country shows
+its flag and calling code inside one continuous input border. Country names remain in the native
+picker and its accessible name; flags are supplementary. Unknown flag codes fall back to text.
+
+Astro and React `PhoneInput` accept `disabled`, `readOnly`, `required`, `errorMessage`,
+`showValidationError`, and `inputProps`. Their `id` targets the number input in v4; React also
+accepts `inputRef`. Web Components use `disabled`, `readonly`, `required`, `error-message`,
+`show-validation-error="false"`, and `input-id`, with native input attributes on the host.
+Both controls lock together and validation remains associated with the input. React forwards
+`inputProps.form` to the country picker and read-only country value as well as the number input,
+so an external form receives both values. Legacy `countries` pickers also retain their selected
+country while read-only and restore it after an accepted native form reset.
+
+The `phone-input`, `phone-country`, and `country-flag` styling parts plus `--ui-phone-height`,
+`--ui-phone-padding`, and `--ui-phone-country-gap` replace consumer CSS overlays.
+
+Astro and React also export `CountryFlag` (`regionCode`, optional `decorative`) and `PhoneNumber`
+(`value: LumenPhoneNumber`, optional `link`). A telephone link is rendered only for a complete
+E.164 value. Use the model returned by the phone normalizer; keep domain persistence in your app.
+Artwork attribution is shipped with the core package in `PHONE_FLAG_LICENSE.txt`.
+
+## Combobox keyboard behavior
+
+Decoded Combobox options must be a dense string collection; invalid collections expose no options.
+In v4, Combobox retains input focus and exposes its active option through `aria-activedescendant`.
+Enter commits an active option; text editing and composition remain native. Escape dismisses one
+nested control at a time. See the [shared keyboard contract](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md#combobox-keyboard-behavior-in-v4)
+for dynamic options, controlled inputs and migration guidance.
+
+Combobox also supports native form reset: resetting the owning form restores an uncontrolled
+`defaultValue`, closes the open option list, and clears the active selection without emitting
+`onChange`. A controlled `value` is left unchanged.
+
+## Content flow
+
+Stack and Grid own sibling spacing. Their gap accepts `related`, `group` (default) and `section`,
+or canonical `none`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl` sizes. Card owns the inset and gap
+between its visible parts; use `density="compact"`, `"comfortable"` (default) or `"spacious"`.
+Elements uses the same names as attributes. Use a nested Stack for CardContent groups and Field
+for label/control/feedback. See [content flow](https://github.com/santi020k/lumen/blob/main/docs/content-flow.md) and the
+[v4 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) for ownership and changed explicit gaps.
+
+### Reading and complete compositions
+
+Prose and Typography trim outer child margins and separate headings from preceding text.
+Container gutters grow from 16px to 32px with viewport width; override `--ui-container-gutter`
+when a product needs fixed gutters. Card allows interactive overflow; use AspectRatio to clip media.
+Install `content-flow-header`, `content-flow-settings`, `content-flow-list` or `content-flow-actions`
+with `lumen add <recipe> --target astro|react|elements`. MCP returns the same complete examples.
+Connect application actions and replace sample IDs before reuse. See
+[content flow](https://github.com/santi020k/lumen/blob/main/docs/content-flow.md) for composition and migration guidance.
+
+### Large fixed-height collections
+
+React `VirtualList` accepts typed `items`, `getKey` and `renderItem` for data mode.
+Only the visible window, overscan and focused neighbors mount. Stable keys retain row identity;
+applications own offscreen editing state. See [data rendering](https://github.com/santi020k/lumen/blob/main/docs/virtual-list-data.md) for
+setup, lifecycle, accessibility and the mounted-mode tradeoff.
+
+### Compound dialog tasks
+
+`DialogHeader`, `DialogTitle`, `DialogBody`, `DialogFooter`, and `DialogClose`
+compose long forms with fixed actions and an independently scrolling body. Keep
+`DialogBody` directly inside `Dialog`. Give `DialogTitle` an `id` and reference it
+from `Dialog aria-labelledby`; `as` supports `h2`, `h3`, and `h4`.
+`DialogClose` accepts Button props, honors `onClick` cancellation, and requests
+closure through the enclosing Dialog controller, including controlled dialogs.
+The four static structural parts are also exported from `@santi020k/lumen-react/server`.
+
+```tsx
+<Dialog open={open} onOpenChange={setOpen} aria-labelledby="record-title">
+  <DialogHeader><DialogTitle id="record-title">Edit record</DialogTitle></DialogHeader>
+  <DialogBody><Form id="record-form"><Input name="name" aria-label="Name" /></Form></DialogBody>
+  <DialogFooter>
+    <DialogClose variant="outline">Cancel</DialogClose>
+    <Button type="submit" form="record-form">Save</Button>
+  </DialogFooter>
+</Dialog>
+```
+
+`FileUpload selectedFilesLabel` accepts localized text containing `{count}`.
+FileUpload keeps its native file input uncontrolled: `value` and `defaultValue` are excluded from its props and ignored in decoded JavaScript input.
+Reset feedback follows the current native form owner, including replaced external forms.
+Accepted native form resets clear selected-file feedback; cancelled resets preserve it.
+
+### Rich description rows
+
+`DescriptionItem`, `DescriptionTerm`, and `DescriptionDetail` accept native props
+and refs and render `div`, `dt`, and `dd`. Compose them inside `Descriptions` for
+rich values, alongside the existing `items` array when needed. The three static
+parts are also available from `@santi020k/lumen-react/server` for use inside a native `dl`.
+
+```tsx
+<Descriptions>
+  <DescriptionItem>
+    <DescriptionTerm>Status</DescriptionTerm>
+    <DescriptionDetail><Badge variant="success">Active</Badge></DescriptionDetail>
+  </DescriptionItem>
+</Descriptions>
+```
+
+## Attachment composition
+
+Use `AttachmentList` to group native `li` children and `AttachmentPreview` for browser-owned images
+with localized loading, error, and unsupported-file states. Compose independent actions rather
+than nesting controls inside a linked Attachment. The application retains file validation,
+authorization, persistence, and object URL cleanup. See the
+[attachment composition recipe](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#attachment-previews-and-file-lists)
+for adapter props, slots, child contracts, retry identity, and safe state events.
+
+## Chart datum actions
+
+Pass `onDatumActivate(detail)` to BarChart, LineChart, PieChart, ScatterChart, ComboChart, Heatmap,
+or RangeChart to enable drilldown. The callback receives `LumenChartDatumActivationDetail`,
+exported from this package, with raw axes and optional datum IDs. Applications own navigation,
+filtering, detail views, and authorization. React charts use their own event handling and do not
+require `UIPrimitives`.
+
+Each available plotted datum has an equivalent native button in the actions disclosure, even
+with `showTable={false}` or hidden line markers. Translate `labels.exploreData` and
+`labels.formatDatumAction(context)` alongside the chart's existing labels and value formatters.
+Missing observations have no action and never reach datum-action value formatters; pie actions cover only positive slices. Updated values and
+callbacks take effect on rerender, while stable datum identities retain focused action buttons.
+Chart activation uses the owning document, including iframe rendering.
+The chart's native `onClick` can cancel activation with `event.preventDefault()`.
+
+## Dashboard composition
+
+`FilterBar` groups host-owned filtering controls, active criteria, reset actions, and a polite
+result announcement. `ChangeSummary` presents explicit before/after values and application-owned
+changed state. Neither component owns requests, persistence, parsing, or financial policy.
+Omit `FilterBar.open` for native disclosure ownership. Unrelated rerenders preserve native toggles
+when `defaultOpen` is unchanged. Pass `open` and `onOpenChange` for application-controlled disclosure.
+
+ScatterChart supports independent X/Y formatting, explicit domains, logarithmic positive X values,
+and labeled reference lines/regions. See [consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md)
+for dashboard tables, freshness, import review, activity inbox, and persistent Kanban patterns.
+
+React DataTable adds `layout="records"`, rich `column.render`, and expandable `renderDetails`.
+Use stable record IDs and controlled `expandedRowIds` across pages. Row identity uses `rowValue`,
+then `id`, then a legacy `value` fallback; ordinary value cells do not override explicit IDs.
+Rows without an explicit identity keep their original input index across client sorting.
+Decoded row and column collections are validated before sorting or rendering. Invalid rows, columns, identities,
+cell shapes, empty identities, and duplicate resolved identities fail closed to an empty table while
+the column headers remain available. Client sorting only applies to columns marked `sortable`.
+`DataTableSortControls` shares
+`sort`/`onSortChange` with table headers; manual sorting preserves server page order.
+Rows without an explicit `rowValue`, `value`, or `id` use their original input index as identity
+during client sorting, preserving expanded details and local edits. Supply stable IDs when replacing,
+filtering, or paginating the input rows.
+
+Popover and DropdownMenu support anchored top-layer placement, viewport collision handling, logical
+start/end alignment, and focus handoff in their owning document, including iframes.
+Set `positioning="none"` for application-owned placement. Context menus dismiss outside pointer
+presses; tooltips close when focus leaves their owner and cancel pending opening timers.
+
+### Actual-versus-target charts
+
+`BulletChart` compares a nullable actual `value` with a finite `target` and optional
+labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
+data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Invalid measurements do not reach `formatValue`.
+Null values stay distinct from zero. See the [chart guide](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#actual-values-and-targets)
+for the input, localization, and domain contracts.
+
+### Rankings and paired comparisons
+
+Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measurements (native
+`LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
+nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
+values and expose exact data. See the [shared visualization contract](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#rankings-and-paired-comparisons).
+
+### Calendar activity, ordered stages and distributions
+
+`CalendarHeatmap`, `FunnelChart`, and `BoxPlot` share validated geometry with every Lumen adapter.
+CalendarHeatmap takes date-only UTC `startDate`/`endDate`, nullable `{ date, value }` data and optional
+`weekStartsOn` (0 for Sunday or 1 for Monday). It fills omitted dates as missing, keeps zero distinct,
+and limits the inclusive range to 3,660 days. `weekdayLabels` always indexes Sunday through Saturday;
+`formatDate` customizes readable dates without changing their identity.
+
+FunnelChart takes ordered `{ id, label, value, tone? }` stages with nonnegative nullable values.
+Stages retain the supplied order, including increasing values; the chart derives no conversion rates.
+BoxPlot takes precomputed `{ id, label, min, q1, median, q3, max, outliers?, tone? }` statistics.
+Statistics must be ordered and finite, or all five must be null for a missing row. Explicit domains
+must contain all observations and outliers. `statisticLabels` localizes the six statistic names.
+
+All three accept `formatValue`, chart `labels`, `summary`, and `showTable` (default true).
+Exact data and missing measurements remain readable; invalid input fails closed instead of dropping
+observations or clipping the domain. Prefer retaining the data table for complete visual inspection.
+
+```tsx
+import { BoxPlot, CalendarHeatmap, FunnelChart } from '@santi020k/lumen-react'
+
+<CalendarHeatmap heading="Daily visits" startDate="2026-01-01" endDate="2026-01-31"
+  data={[{ date: '2026-01-01', value: 42 }]} />
+<FunnelChart heading="Checkout stages" data={[
+  { id: 'view', label: 'Viewed', value: 120 },
+  { id: 'paid', label: 'Paid', value: 32 }
+]} />
+<BoxPlot heading="Response times" data={[
+  { id: 'api', label: 'API', min: 20, q1: 45, median: 60, q3: 90, max: 140, outliers: [210] }
+]} />
+```
+
+## Hook state updates
+
+Public hook setters accept React functional updates. In uncontrolled mode, consecutive calls in
+one event compose against the latest pending value. Change callbacks run once per setter call,
+including under Strict Mode. Controlled values remain owned by the application.
+
+`useToast().dismiss()` closes only the newest open toast. Pass an ID to dismiss a specific toast.
+
+Highlighted Code updates generated region labels and removes its generated focus attributes when
+wrapping is enabled, while preserving consumer-owned accessibility attributes.
+
+## Advanced table views
+
+`DataTableView` is an opt-in TanStack Table companion for application-owned record tables. It adds
+search, exact column filters, column visibility, density, pagination and controlled sorting state
+while preserving your cells, details, actions and query ownership. Column keys must be nonempty
+and unique; column labels, accessors, boolean flags and dense filter-option arrays are validated before
+controls are constructed. Restored controlled and default snapshots require string search/filter values,
+boolean visibility/sort directions, valid density and integer pagination; malformed state is rejected
+before table processing. Import it from
+`@santi020k/lumen-react/components/data-table-view` or the package root. Load
+`@santi020k/lumen-react/styles/data-table-view.css` after the base stylesheet. See the
+[composition and server-mode guide](https://github.com/santi020k/lumen/blob/main/docs/data-table-views.md).
+
+Existing `Table` and `DataTable` APIs remain available. This integration is React-specific and does
+not change the Astro or Elements runtime.
+## Advanced form workflows
+
+Use the optional `@santi020k/lumen-react/forms` entry point for validation, dependent fields,
+unsaved edit tracking, step navigation, stable repeatable rows, and cancelable asynchronous checks.
+Controls associated from outside the form through `form="id"` participate in edit tracking,
+blur validation and dependent-field validation. Portaled controls use React form callbacks without
+repeating validation through native document listeners. Each native edit is processed once, and
+controls associated with another form are ignored even when React bubbles their portal events.
+Adopted native controls retain checkbox, multiple-selection and file details in dirty-state tracking.
+
+Accepted native reset buttons refresh dirty state after the browser restores defaults; canceled resets
+preserve the draft, errors, and attempted state, including cancellation by a native ancestor after
+React dispatch. `PromptComposer` keeps its standard `id` on the form for external submit controls
+and derives a separate labelled textarea ID.
+
+See [composable form workflows](https://github.com/santi020k/lumen/blob/main/docs/powerful-forms.md). Applications retain schemas, financial
+rules, requests, draft storage, and authorization. Do not combine validation owners on one form.
+
+`useResizable` accepts finite `panelCount` values up to 1,000. Fractions round down and negative values
+normalize to zero; non-finite or larger counts throw `RangeError` before allocating panel state.
+Context-menu item activation and keyboard focus follow the menu's owning document, including iframe
+portals. Date-range synchronization clamps an earlier end date before updating both input constraints.
+
+## Device demonstrations
+
+`DeviceFrame` presents slotted HTML, an image, or a titled iframe inside `macbook-pro`, `macbook-air`, `imac`,
+`iphone`, `pixel`, and `ipad-pro` frames, with generic `laptop`, `desktop`, `android`, and `tablet` options.
+Device-specific enclosures include a MacBook Pro display notch and full front edge, a tapered MacBook Air deck, curved iMac
+stand and chin, rounded phone glass with separate rails and buttons, and an iPad Pro with even
+bezels and no Home button. The generic `tablet` retains its classic enclosure.
+Shells are decorative and do not emulate device hardware. `orientation` selects portrait or landscape; `tone` selects
+light or dark chrome independently of the screen content. Use `color="white"`,
+`color="black"`, or a 3-, 4-, 6-, or 8-digit hex color such as `color="#a9b8ac"` for
+a custom hardware finish. `color` takes precedence over `tone`; invalid values fall back to the
+tone. The finish stays independent of the content theme. For CSS-driven updates, set
+`--ui-device-color` to a CSS color on the frame.
+
+Iframe layouts use the preset screen viewport and scale to the available width. Override
+`screenWidth` and `screenHeight` for a custom viewport (1–16384 CSS pixels). Slotted HTML shares
+the host viewport; container queries can adapt it to the screen. Images preserve their proportions.
+`scroll={false}` clips HTML overflow; an iframe manages its own scrolling.
+
+Supply image alternative text and iframe titles. Consumers own iframe `sandbox`, `allow`,
+loading, and referrer policies. Remote sites can refuse embedding through their response headers.
+The decorative shell does not alter focus or intercept interactions. Camera and home-indicator
+details occupy separate chrome outside live HTML and iframe viewports. Direct phone images extend
+under the decorative camera and home indicator for a full-bleed presentation.
+Screen presets are 1280 × 800 for MacBook Pro and MacBook Air, 1440 × 810 for iMac, 390 × 844 for iPhone,
+412 × 915 for Pixel, and 834 × 1194 for iPad Pro (1194 × 834 in landscape). These are demonstration
+viewports, not physical display specifications.
+
+```tsx
+import { DeviceFrame } from '@santi020k/lumen-react/components/device-frame'
+
+<DeviceFrame device="laptop" screenWidth={1440} screenHeight={900}>
+  <iframe src="/demo" title="Application demo" loading="lazy" />
+</DeviceFrame>
+```
+
+This component uses a client effect to maintain the scaled iframe viewport.
+## Visual interactions
+
+`MotionGroup`, `ChartMotion`, `VisualEffect`, `PromptComposer`, `StreamMessage`, `SourceCitation`,
+`ToolActivity`, and `ApprovalCard` are exported by the main package. `Tabs` accepts `indicator` for
+an optional moving selection underline. See [visual interactions](https://github.com/santi020k/lumen/blob/main/docs/visual-interactions.md).
+Install `motion@^14.0.0` only when using `@santi020k/lumen-react/motion`; its Motion wrappers remain
+separate from normal imports.
+
+## World map
+
+WorldMap supports highlighted countries, location markers, dotted or solid styles, country selection,
+and theme customization. Use `initialView="highlighted"` (Elements: `initial-view`) to start with a
+regional view. Zoom toward the cursor with Ctrl/Cmd-scroll, or fit highlighted countries using the
+map controls. Import geography explicitly from
+`@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
+[WorldMap usage guide](https://github.com/santi020k/lumen/blob/main/docs/world-map.md) for adapter examples, events, localization,
+accessibility, and customization.
+
+For controlled selection, pair `selectedCountry` with `onSelectedCountryChange(countryId)` and
+store the requested value in application state. An empty string clears the selection while keeping
+the map controlled. `onCountrySelect(detail)` remains the country-detail callback for nonempty selections.
+
+## Operational workflows
+
+Extend `DataTableView` with inclusive numeric/date ranges and explicit page-scoped selection.
+Use `DataTableSavedViews` for named preferences through application-owned persistence callbacks;
+`parseDataTableViewState` validates external preferences without retaining records or selection.
+See [table views](https://github.com/santi020k/lumen/blob/main/docs/data-table-views.md) for server pagination and selection boundaries.
+
+`useLumenReviewWorkflow` from the root or `/forms` guards review, confirmation, stale revisions,
+duplicate submission and uncertain outcomes. Compose it with the installable React
+`review-workflow`, `import-review` and `record-workspace` recipes.
+See [operational recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#installable-operational-workflows).
+
+## Studio media workspace
+
+Compose MediaViewport, MediaThumbnail, MediaFilmstrip and ImageComparison modes with the
+[Studio media workspace recipes](https://github.com/santi020k/lumen/blob/main/docs/studio-media-workspaces.md). Applications retain
+media loading, selection, adjustment algorithms, processing, export and persistence.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md) | Complete product compositions and application-owned behavior. |
+| [React Hook Form adapters](https://github.com/santi020k/lumen/blob/main/packages/react-hook-form/README.md) | Managed fields, composite controls, and schema validation. |
+| [Import and icon performance](https://github.com/santi020k/lumen/blob/main/docs/import-and-icon-performance.md) | Selective imports and reproducible bundle measurements. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

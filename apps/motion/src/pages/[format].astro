@@ -1,0 +1,92 @@
+---
+import '../styles/composition.css'
+import '@santi020k/lumen-astro/styles.css'
+
+import { DeviceFrame, Icon } from '@santi020k/lumen-astro'
+import { lumenEasings } from '@santi020k/lumen-core'
+import { transformSync } from 'esbuild'
+
+import LumenLogo from '../../../docs/src/components/LumenLogo.astro'
+import BrandOutro from '../components/BrandOutro.astro'
+import DesktopWorkspace from '../components/DesktopWorkspace.astro'
+import Workspace from '../components/Workspace.astro'
+import { appearances, duration, formats, outroStart } from '../composition'
+import timelineSource from '../scripts/timeline.ts?raw'
+
+export const getStaticPaths = () => formats.map(format => ({ params: { format } }))
+
+const format = Astro.params.format
+const width = format === 'landscape' ? 1920 : 1080
+const height = format === 'portrait' ? 1920 : 1080
+const timeline = transformSync(timelineSource, { loader: 'ts', format: 'iife' }).code
+
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>One interface, four appearances — Lumen UI</title>
+    <script is:inline src="/assets/gsap.min.js"></script>
+    <script is:inline src="/assets/CustomEase.min.js"></script>
+  </head>
+  <body>
+    <main
+      id="theme-pilot"
+      data-composition-id="theme-pilot"
+      data-width={width}
+      data-height={height}
+      data-duration={duration}
+      data-outro-start={outroStart}
+      data-ease={lumenEasings.emphasized.join(',')}
+      data-format={Astro.params.format}
+    >
+      {appearances.map((theme, index) => (
+        <section class="scene" data-scene-start={theme.start} data-theme={theme.theme} data-lumen-preset={theme.preset} data-lumen-scheme={theme.scheme}>
+          <div class="composition-header">
+            <LumenLogo markClass="pilot-logo-mark" />
+            <p class="edition">A SHARED VISUAL LANGUAGE</p>
+          </div>
+          <div class="intro">
+            <p class="eyebrow">ONE INTERFACE. FOUR APPEARANCES.</p>
+            <h1>{theme.headline}</h1>
+          </div>
+          <div class="theme-label"><span>{String(index + 1).padStart(2, '0')} / 04</span><strong>{theme.name}</strong></div>
+          <div class="composition-stage">
+            <div class="viewport">
+              <DeviceFrame
+device="macbook-pro"
+color="black"
+class="desktop-device"
+screenWidth={1000}
+screenHeight={650}
+scroll={false}
+              >
+                <div class="desktop-content">
+                  <div class="workspace-backdrop">
+                    {theme.preset === 'glass' && <div class="glass-light-field" aria-hidden="true"><span></span><span></span><span></span></div>}
+                    <DesktopWorkspace glass={theme.preset === 'glass'} />
+                  </div>
+                </div>
+              </DeviceFrame>
+              <DeviceFrame device="iphone" class="phone-device" screenWidth={390} screenHeight={844} scroll={false}>
+                <div class="phone-screen" aria-label="iPhone-style mobile workspace">
+                  <div class="phone-status" aria-hidden="true">
+                    <span>9:41</span>
+                    <div class="phone-status-icons"><Icon name="wifi" /><Icon name="battery-full" /></div>
+                  </div>
+                  <Workspace glass={theme.preset === 'glass'} />
+                </div>
+              </DeviceFrame>
+            </div>
+          </div>
+          <div class="composition-footer"><span>Same components. Every size.</span><strong>lumen.santi020k.com</strong></div>
+        </section>
+      ))}
+      <BrandOutro />
+    </main>
+    <script is:inline set:html={timeline}></script>
+  </body>
+</html>

@@ -1,0 +1,137 @@
+---
+import { ButtonLink, Card, Form, Icon, Input, Label, Link, Select } from '@santi020k/lumen-astro'
+
+import ChartGuideNavigation from '../../../components/ChartGuideNavigation.astro'
+import ChartPreviewTile from '../../../components/ChartPreviewTile.astro'
+import { chartGuides } from '../../../data/chart-guides'
+import { chartTopics } from '../../../data/chart-topics'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+
+const categories = [...new Set(chartGuides.map(guide => guide.category))]
+const guideAnchors = ['chart-setup', 'chart-gallery', 'chart-data', 'chart-accessibility', 'native-charts']
+---
+<DocsLayout title="Chart guides & data visualization — Lumen UI" description="Choose from 16 accessible chart types. Explore visual examples, copy Astro, React, and Web Component code, and learn each chart's data contract." breadcrumbs={[{ href: '/docs', label: 'Docs' }, { href: '/docs/web', label: 'Web' }, { href: '/docs/web/data-visualization', label: 'Data visualization' }]}>
+  <div class="chart-directory">
+    <header class="chart-directory-hero">
+      <p class="chart-directory-eyebrow">Lumen / Data visualization</p>
+      <h1>A chart for<br /><em>every question.</em></h1>
+      <p>Choose a visual, then explore its live example, code, data shape, and API on a dedicated page.</p>
+      <div class="chart-directory-actions">
+        <ButtonLink href="/docs/web/data-visualization/gallery" variant="primary">Open interactive gallery <Icon name="arrow-up-right" decorative size="sm" /></ButtonLink>
+        <Link href="/docs/web/data-visualization/setup">Set up your framework</Link>
+      </div>
+    </header>
+    <ChartGuideNavigation />
+    <section id="chart-recipes" aria-labelledby="choose-chart-title">
+      <div class="chart-directory-heading" id="choose-a-chart"><h2 id="choose-chart-title">Find the right chart.</h2><p data-chart-count aria-live="polite">{chartGuides.length} chart guides</p></div>
+      <Form enhance={false} class="chart-directory-filters" role="search" aria-label="Find a chart" onsubmit="return false">
+        <div><Label for="chart-search">Search charts</Label><Input id="chart-search" type="search" placeholder="Try trend, target, or distribution…" data-chart-search-input /></div>
+        <div><Label for="chart-category">Your question</Label><Select id="chart-category" data-chart-category-input><option value="">All chart types</option>{categories.map(category => <option value={category}>{category}</option>)}</Select></div>
+      </Form>
+      <div class="chart-directory-grid" data-docs-toc-ignore>{chartGuides.map(guide => <ChartPreviewTile guide={guide} />)}</div>
+      <p class="chart-directory-empty" data-chart-empty hidden>No charts match. Try another question or clear the search.</p>
+    </section>
+    <section aria-labelledby="chart-guides-title">
+      <div class="chart-directory-heading"><h2 id="chart-guides-title">Build with confidence.</h2><p>Focused guides for the details.</p></div>
+      <div class="chart-guide-links">
+        {chartTopics.slice(1).map((topic, index) => <Card id={guideAnchors[index]} variant="muted"><h3><Link href={topic.href}>{topic.label} <Icon name="arrow-up-right" decorative size="sm" /></Link></h3><p>{topic.description}</p></Card>)}
+      </div>
+    </section>
+    <p class="chart-directory-support">Need a compact metric or a custom figure? Explore <Link href="/docs/components/stat">Stat</Link>, <Link href="/docs/components/meter">Meter</Link>, and <Link href="/docs/components/chart">Chart</Link>.</p>
+  </div>
+</DocsLayout>
+<script>
+  const legacyTargets: Record<string, string> = {
+    'chart-gallery': '/docs/web/data-visualization/gallery',
+    'chart-setup': '/docs/web/data-visualization/setup',
+    'chart-data': '/docs/web/data-visualization/data',
+    'chart-accessibility': '/docs/web/data-visualization/accessibility',
+    'native-charts': '/docs/web/data-visualization/native'
+  }
+
+  const getLegacyTarget = (directory: HTMLElement): string | undefined => {
+    const anchor = window.location.hash.slice(1)
+    const legacyChart = [...directory.querySelectorAll<HTMLElement>('[data-chart-tile]')].find(card => card.id === anchor)
+
+    return legacyTargets[anchor] ?? legacyChart?.querySelector<HTMLAnchorElement>('a')?.getAttribute('href') ?? undefined
+  }
+
+  const initializeChartDirectory = () => {
+    const directory = document.querySelector<HTMLElement>('.chart-directory')
+
+    if (!directory) return
+
+    const target = getLegacyTarget(directory)
+
+    if (target) {
+ window.location.replace(target)
+
+ return
+}
+
+    if (directory.dataset.ready) return
+
+    directory.dataset.ready = 'true'
+
+    const search = directory.querySelector<HTMLInputElement>('[data-chart-search-input]')
+    const category = directory.querySelector<HTMLSelectElement>('[data-chart-category-input]')
+    const cards = [...directory.querySelectorAll<HTMLElement>('[data-chart-tile]')]
+    const count = directory.querySelector<HTMLElement>('[data-chart-count]')
+    const empty = directory.querySelector<HTMLElement>('[data-chart-empty]')
+
+    if (!search || !category || !count || !empty) return
+
+    const update = () => {
+      const query = search.value.trim().toLowerCase()
+      const selected = category.value
+      let visible = 0
+
+      for (const card of cards) {
+        const matchesQuery = card.dataset.chartSearch?.includes(query)
+        const matchesCategory = !selected || card.dataset.chartCategory === selected
+
+        card.hidden = !(matchesQuery && matchesCategory)
+
+        if (!card.hidden) visible += 1
+      }
+
+      count.textContent = `${visible} chart ${visible === 1 ? 'guide' : 'guides'}`
+
+      empty.hidden = visible > 0
+    }
+
+    search.addEventListener('input', update)
+
+    category.addEventListener('change', update)
+
+    update()
+  }
+
+  initializeChartDirectory()
+
+  document.addEventListener('astro:page-load', initializeChartDirectory)
+
+  window.addEventListener('hashchange', initializeChartDirectory)
+</script>
+<style>
+  .chart-directory, .chart-directory section { display: grid; gap: 1.5rem; min-width: 0; }
+  .chart-directory { gap: 2.5rem; }
+  .chart-directory-hero { display: grid; gap: 1.25rem; max-width: 48rem; }
+  .chart-directory h1 { margin: 0; font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: -.06em; line-height: 1.05; font-weight: 650; }
+  .chart-directory h1 em { font-style: normal; color: hsl(var(--brand)); }
+  .chart-directory-hero > p { max-width: 38rem; margin: 0; color: hsl(var(--ink-soft)); font-size: .9375rem; line-height: 1.8; }
+  .chart-directory-hero .chart-directory-eyebrow { color: hsl(var(--brand)); font-size: .6875rem; letter-spacing: .12em; text-transform: uppercase; }
+  .chart-directory-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; font-size: .8125rem; }
+  .chart-directory-heading { display: flex; flex-wrap: wrap; gap: .5rem 1rem; justify-content: space-between; align-items: baseline; }
+  .chart-directory h2 { margin: 0; font-size: 1.5rem; letter-spacing: -.035em; }
+  .chart-directory-heading p, .chart-directory-support, .chart-directory-empty { margin: 0; color: hsl(var(--ink-soft)); font-size: .8125rem; line-height: 1.75; }
+  .chart-directory-filters { display: grid; grid-template-columns: minmax(0,1fr) minmax(12rem,.45fr); gap: 1rem; }
+  .chart-directory-filters > div { display: grid; gap: .5rem; }
+  .chart-directory-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; }
+  .chart-directory-grid :global([hidden]) { display: none; }
+  .chart-guide-links { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; }
+  .chart-guide-links h3 { margin: 0 0 .75rem; font-size: .9375rem; }
+  .chart-guide-links p { margin: 0; color: hsl(var(--ink-soft)); font-size: .8125rem; line-height: 1.65; }
+  @media(max-width: 70rem) { .chart-directory-grid, .chart-guide-links { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+  @media(max-width: 40rem) { .chart-directory-grid, .chart-guide-links, .chart-directory-filters { grid-template-columns: minmax(0,1fr); } }
+</style>

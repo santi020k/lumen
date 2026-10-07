@@ -18,7 +18,7 @@ const captureByKey = new Map(
   captures.map(capture => [`${capture.platform}:${capture.slug}`, capture] as const)
 )
 
-export const findNativeComponentCapture = (
+const findNativeComponentCapture = (
   platform: NativePlatformId,
   slug: string
 ): NativeComponentCapture | undefined => captureByKey.get(`${platform}:${slug}`)

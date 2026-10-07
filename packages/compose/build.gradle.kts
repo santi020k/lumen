@@ -20,8 +20,10 @@ apiValidation {
     ignoredClasses.addAll(
         listOf(
             "com.santi020k.lumen.ComposableSingletons\$OverlayComponentsKt",
+            "com.santi020k.lumen.ComposableSingletons\$AppBarComponentsKt",
             "com.santi020k.lumen.R",
             "com.santi020k.lumen.R\$drawable",
+            "com.santi020k.lumen.R\$raw",
             "com.santi020k.lumen.wear.R"
         )
     )
@@ -45,12 +47,14 @@ fun Project.configureBinaryApiValidation() {
         }
         val checkApi = tasks.register<KotlinApiCompareTask>("apiCheck") {
             dependsOn(buildApi)
+            mustRunAfter("apiDump")
             generatedApiFile.set(generatedApi)
             projectApiFile.set(referenceApi)
         }
 
         tasks.register("apiDump") {
             dependsOn(buildApi)
+            inputs.file(generatedApi)
             outputs.file(referenceApi)
 
             doLast {
@@ -105,16 +109,18 @@ android {
 }
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
+    val composeBom = platform("androidx.compose:compose-bom:2026.09.00")
 
     implementation(composeBom)
     implementation("androidx.compose.animation:animation")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.3.0")
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.compose.ui:ui")
     implementation("com.googlecode.libphonenumber:libphonenumber:9.0.40")
+    implementation("com.google.zxing:core:3.5.4")
     androidTestImplementation(composeBom)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4-accessibility")

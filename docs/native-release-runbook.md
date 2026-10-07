@@ -4,7 +4,27 @@ This runbook turns the [Lumen 2 readiness plan](lumen-2-readiness.md) into an ex
 sequence. It does not authorize publishing, tagging, merging, or changing physical devices. Each
 external action still requires the maintainer's explicit approval.
 
-## Release policy
+## Current release policy
+
+Native real-consumer completion, physical-device evidence matrices, and the two-iteration stability
+soak are removed from release validation and publication. Their checkers, readiness commands, and
+completion warnings are removed; they are not offered as optional release steps. Existing historical
+evidence records remain preserved and do not define current launch requirements.
+
+Builds, automated tests, accessibility checks, package-consumer canaries, compatibility and migration
+checks, security checks, provenance, and explicit release approval remain required where configured.
+
+Android and public Apple store delivery run `check-approved-release-revision.mjs
+--require-current-approval` before production credentials are fetched. This mode always validates
+the matching approval contract and reviewed source, including after a library tag exists; ordinary
+publication shortcuts do not authorize later store uploads. Any source change requires refreshed
+exact-source approval before delivery. For patch and minor versions, retain the major milestone
+contract's target version and refresh its reviewed revision to cover the current source.
+
+## Historical Lumen 2 release plan
+
+The sections below preserve the original Lumen 2 qualification plan. Its evidence-completion
+requirements do not override the current release policy above.
 
 Continue publishing ordinary releases on the existing version lines while the supported Lumen 2
 contract gathers launch evidence. Do not create a separate version train solely for that evidence.

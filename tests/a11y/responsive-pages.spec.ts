@@ -15,6 +15,7 @@ const componentRoutes = readdirSync(examplesDirectory)
 
 const routes = [
   '/',
+  '/community',
   '/docs',
   '/docs/ai-skill',
   '/docs/components',

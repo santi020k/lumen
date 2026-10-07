@@ -194,3 +194,54 @@
     grid-template-columns: 1fr;
   }
 }
+
+.lumen-login-examples {
+  box-sizing: border-box;
+  grid-column: 1 / -1;
+  width: 100%;
+  min-width: 0;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  color: hsl(var(--ink));
+}
+
+.lumen-login-examples header {
+  max-width: 44rem;
+  margin-bottom: 1.5rem;
+}
+
+.lumen-login-examples p {
+  margin: 0;
+  color: hsl(var(--ink-soft));
+  line-height: 1.6;
+}
+
+.lumen-login-examples h2,
+.lumen-login-examples h3 {
+  margin: 0;
+  color: hsl(var(--ink));
+  line-height: 1.2;
+}
+
+.lumen-login-examples h2 {
+  margin-block: 0.5rem;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.lumen-login-examples__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1.25rem;
+}
+
+.lumen-login-examples__card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.lumen-login-examples__card .ui-field {
+  display: grid;
+  gap: 0.5rem;
+}

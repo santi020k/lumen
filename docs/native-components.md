@@ -1,13 +1,16 @@
 # Native component reference
 
+<!-- cspell:words Capacidad -->
+
 Lumen's React Native, SwiftUI, and Jetpack Compose adapters share semantic contracts while using
 each platform's rendering, image, focus, and accessibility systems. This reference covers setup,
 the supported component surface, platform mappings, and the checks required for a component to be
 considered supported.
 
-> **Supported for Lumen 2:** The native component APIs below are part of the frozen version 2
-> contract. Current artifacts remain release candidates until publication, physical-device, and
-> consumer-soak gates are complete.
+> **Lumen 4 candidate:** Version 4 install examples describe the prepared release and are not yet
+> available from public registries. Evaluate the local packages and read the
+> [migration guide](migrating-to-lumen.md). Current API classifications do not replace publication,
+> physical-device, or consumer-soak qualification of this revision.
 
 ## Install and consume
 
@@ -47,8 +50,8 @@ Shared icons use `name="search"`; applications can instead pass graphic componen
 ### SwiftUI
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and choose **Exact Version** `3.0.1` for a reproducible
-production build. Use **Up to Next Major Version** from `3.0.1` only when the application accepts
+`https://github.com/santi020k/lumen`, and choose **Exact Version** `4.0.0` for a reproducible
+production build. Use **Up to Next Major Version** from `4.0.0` only when the application accepts
 compatible updates, and reserve `main` for local evaluation. Add the `LumenUI` product to the
 application target. The repository-root `Package.swift` is the public package entry point; no
 CocoaPod or npm package is involved.
@@ -59,12 +62,12 @@ Projects with their own Swift package manifest can declare the dependency direct
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "3.0.1"
+        exact: "4.0.0"
     )
 ]
 ```
 
-Use `from: "3.0.1"` instead of `exact: "3.0.1"` for a compatible-version policy. Commit
+Use `from: "4.0.0"` instead of `exact: "4.0.0"` for a compatible-version policy. Commit
 `Package.resolved` for application and CI builds and verify that its version and revision match the
 intended release tag. XcodeGen and other deterministic project generators should keep the package
 requirement in their checked-in configuration and regenerate project files from that source.
@@ -140,7 +143,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:3.0.0")
+    implementation("com.santi020k:lumen-compose:4.0.0")
 }
 ```
 
@@ -154,7 +157,7 @@ mapped Lumen values when the application needs them independently.
 
 ### Cross-platform icon catalog
 
-The native adapters include all 1,860 canonical interface icon names and all 573 namespaced Font
+The native adapters include all 1,864 canonical interface icon names and all 573 namespaced Font
 Awesome Free brand entries used by Lumen on the web. Use a semantic Lumen name when the artwork
 should remain consistent across the product:
 
@@ -198,7 +201,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:3.0.0")
+    implementation("com.santi020k:lumen-compose-wear:4.0.0")
 }
 ```
 
@@ -209,7 +212,7 @@ complications, haptics, synchronization, health behavior, and background work re
 owned.
 
 `LumenWearTheme`, `LumenWearTone`, `LumenWearActionButton`, `LumenWearProgressRing`,
-`LumenWearStatus`, `LumenWearMetric`, and `LumenWearListRow` are Supported for Lumen 2.
+`LumenWearStatus`, `LumenWearMetric`, and `LumenWearListRow` retain their Supported API classification.
 
 ## Supported surface
 
@@ -267,6 +270,7 @@ owned.
 | Section header    | `LumenSectionHeader`    | `LumenSectionHeader`     | `LumenSectionHeader`    | Section identity, optional count, and trailing actions                        |
 | Status bar        | `LumenStatusBar`        | `LumenStatusBar`         | `LumenStatusBar`        | Wrapping status message with ordered trailing content at its intrinsic size     |
 | Picker            | `LumenPicker`           | `LumenPicker`            | `LumenPicker`           | Controlled single-value selection with native or accessible menu presentation |
+| Range slider | `LumenRangeSlider` | `LumenRangeSlider` | `LumenRangeSlider` | Controlled interval with independently named adjustable endpoints |
 | Slider            | `LumenSlider`           | `LumenSlider`            | `LumenSlider`           | Native or dependency-free continuous and stepped range input                  |
 | Gauge             | `LumenGauge`            | `LumenGauge`             | `LumenGauge`            | Clamped circular metric with a formatted accessible value                     |
 | Sheet             | `LumenSheet`            | `lumenSheet`             | `LumenSheet`            | Safe-area-aware supplemental surface with reachable actions                   |
@@ -653,11 +657,16 @@ LumenSlider(
     in: 1_000...5_000,
     step: 100,
     valueLabel: "\(Int(minimumSpeed)) RPM",
+    showsLabel: false,
     onEditingChanged: { editing in
         editing ? undoManager.beginUndoGrouping() : undoManager.endUndoGrouping()
     }
 )
 ```
+
+SwiftUI slider `valueLabel` is also the adjustable control's accessible value. `showsLabel: false`
+removes the separate visual heading while retaining the control's accessible name and formatted
+value. Omit `valueLabel` to retain the platform's default value announcement.
 
 SwiftUI pickers also accept rich label and current-value builders, so a product can preserve an
 icon-bearing setting label and a color-swatch selection without replacing the native picker. The
@@ -766,12 +775,46 @@ actions adapt from a row to a vertical stack when width or text size makes the r
 `success` button communicates a positive semantic outcome; `primary` remains the single default
 call to action for hierarchy.
 
+`LumenBulletChart` compares an actual value with a target and optional labeled ranges on all
+three native adapters. It retains a zero-inclusive baseline, distinguishes null from zero, and
+provides a readable value, target marker, and expandable exact measurements. See the
+[comparison contract](data-visualization.md#actual-values-and-targets).
+
+`LumenLollipopChart` presents ordered rankings with a zero-inclusive stem, while
+`LumenDumbbellChart` connects a previous and current value on the same scale. Both accept
+`LumenComparisonDatum` rows on React Native, SwiftUI, and Compose, preserve the supplied order,
+and keep missing measurements distinct from zero. Category labels, formatted values, and an
+expandable exact-data list remain available independently of the decorative marks. Set
+`referenceLabel` and `valueLabel` to describe the two measurements in a paired comparison.
+
+`LumenWaterfallChart` and `LumenHistogram` are available in React Native, SwiftUI, and Compose.
+Waterfalls preserve signed deltas and explicit total resets; invalid steps reject the whole plot.
+Histograms preserve numeric bin widths and gaps, require density for unequal widths, and retain
+original counts in the data disclosure. Every adapter supplies labeled axes and expandable exact
+values. Package READMEs contain platform-specific examples and formatter options.
+
 All native chart adapters accept replaceable chart labels. Finite zero is valid data; an all-zero
 series is therefore not empty, although an application may choose a scoreboard instead when the
 chart adds no value. Set `showData` to `false` only when the same values are already available in a
 nearby accessible table. Native line charts accept an optional labeled reference rule and
 per-datum `tone` plus `toneLabel`; always provide the visible or spoken tone label so color is not
 the only encoding.
+
+React Native line/bar axes keep category labels and formatted values visible independently of the
+readable list. `xLabel` supplies short axis text; explicit `formatCategory` supplies full detail
+text. `formatValue` also determines numeric-axis spacing. Pie data markers match the slice colors
+while retaining text labels.
+
+Compose uses `LumenChartLabels(formatX = ..., formatValue = ...)` for readable data and formats
+reference values with `formatValue`. Use `LumenChartX.Time(epochMillis)` rather than date strings
+for chronological line spacing. Provide `formatSummary` or explicit `summary` for localized
+summary sentences.
+
+Swift `LumenLineChart` and `LumenBarChart` accept `bare: true` to remove the outer surface and
+`height: 130` to set the plot's exact height in points. Supporting content stays outside that
+height; invalid heights fall back to 220. Other chart types and adapters do not share these two
+parameters. See the [Swift chart example](../packages/swift/README.md#data-visualization) and
+[Compose formatting example](../packages/compose/README.md#data-visualization).
 
 ### Metrics and dense desktop structure
 
@@ -808,8 +851,18 @@ LumenShortcutRecorder("Quick switch", shortcut: $shortcut) { candidate in
 common set. `LumenSymbolPickerButton` presents the picker in a compact native popover:
 
 ```swift
-LumenSymbolPickerButton("Workspace symbol", selectedName: $symbolName)
+LumenSymbolPickerButton(
+    "Workspace symbol",
+    selectedName: $symbolName,
+    tint: .orange,
+    onSelection: { name in saveSymbol(name) }
+)
 ```
+
+The binding updates before `onSelection` runs, including when the same symbol is selected again.
+The popover closes after selection by default; set `dismissOnSelection: false` for continued
+browsing. Embedded `LumenSymbolPicker` also accepts `tint` and `onSelection` without owning a
+popover. Keep workspace colors, catalog policy, and persistence in the application.
 
 ## Shared component contracts
 
@@ -902,6 +955,10 @@ LumenCard(
 }
 ```
 
+Compose default `LumenText` and `LumenIcon` content inside `LumenButton` inherit
+its native foreground, including disabled state. Explicit semantic tones and icon
+tints remain explicit; defaults outside buttons continue to use `ink`.
+
 ## Accessibility requirements
 
 - Icon-only controls require a concise action label; visible tooltips do not replace it.
@@ -942,3 +999,436 @@ the shared state or measurement contract on every adapter.
 
 Use the [native device validation matrix](native-device-validation.md) for VoiceOver, TalkBack,
 keyboard, text scaling, contrast, and reduced-motion verification on representative hardware.
+
+## Shared v4 advanced controls
+
+Each advanced control has a dedicated React Native, Apple and Android component page with its
+adapter-specific usage, API types and captured example. Start with the
+[React Native catalog](https://lumen.santi020k.com/docs/react-native/components),
+[Apple catalog](https://lumen.santi020k.com/docs/apple/components) or
+[Android catalog](https://lumen.santi020k.com/docs/android/components).
+React Native interactive previews and captures use Expo web; Apple phone captures use the iPhone
+simulator and Android captures use emulators. The four WidgetKit examples are explicitly labeled
+macOS SwiftUI previews, not extension or physical-device qualification.
+
+The documentation coverage test compares both shared and platform-specific contracts against the
+native registry. The capture check then requires an image for every documented adapter component,
+including WidgetKit, and verifies file digests and dimensions.
+
+React Native, SwiftUI and Compose provide `LumenNumberField`, `LumenTimeField`,
+`LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and `LumenImageComparison`.
+React Native time selection is exported from the optional `/datetime` entrypoint.
+Apple editing controls support iOS, macOS and visionOS. Values, queries, requests and submission
+policy stay in the application. SwiftUI reads locale from its environment; React Native accepts
+a locale identifier and Compose accepts `Locale`. Supply translated visible and spoken copy together.
+
+The descriptions below record the shared behavior, using Compose spelling for its native types.
+
+- `LumenTimeField` uses `LumenTimeSelection(hour, minute)` for a local wall-clock time without a
+  date or time zone. Optional `minTime` and `maxTime` are inclusive within one day; overnight
+  scheduling stays in the application. Selection is a draft until Confirm, and Cancel preserves
+  the controlled value. `is24Hour = null` follows the system preference. Supply translated field,
+  placeholder, confirmation, cancellation, input-mode, and range-error labels. Read-only and
+  disabled states dismiss open selection without committing.
+- `LumenAutocomplete` takes a controlled `query`, optional selected `value`, and a list of
+  `LumenAutocompleteOption` results with unique non-null values. The application filters the list,
+  cancels outdated requests, and controls loading and results errors. On selection, the component
+  sends the option label to `onQueryChange` before `onValueChange`; clear stale selection in the
+  application's query handler when appropriate. Loading hides stale results, empty results are
+  announced, and `resultsErrorMessage` can provide an application-owned Retry action. Validation
+  uses the separate `errorMessage`. Read-only and disabled controls dismiss the menu.
+- `LumenNumberField` keeps its controlled `value` as a raw String so empty, sign-only, and trailing
+  decimal drafts remain editable. It accepts localized decimal separators and digits, without
+  grouping, exponents, or whitespace. Invalid or incomplete drafts expose translated validation
+  and disable step actions. `min`, `max`, and positive `step` use `java.math.BigDecimal`; steps use
+  exact arithmetic and clamp to inclusive bounds. Drafts and configuration use a 128-character
+  limit with bounded precision and scale; values beyond that limit remain visible and invalid.
+  The application owns units, currency, required validation, persistence, and submission parsing.
+  Read-only fields retain their value and disable steps. Never convert money to Double merely to
+  consume this component.
+- `LumenPullToRefresh` wraps existing scrollable content with Material refresh behavior and a
+  named accessibility action. The application supplies `isRefreshing` and `onRefresh`; it owns
+  requests, cancellation, retry policy, and completion. Disabled controls remove the gesture and
+  action; a host operation already in progress retains its indicator. Refresh actions are
+  unavailable while busy. Supply translated `refreshLabel` and `refreshingLabel`.
+
+The native playgrounds include editable, bounded, read-only, result-loading, empty, retry, and
+English/Spanish examples. Run the package's unit, lint, ABI, and instrumentation gates. Emulator
+checks and screenshots remain separate from physical TalkBack and consumer qualification.
+
+### Authentication and media controls
+
+`LumenPasswordField`, `LumenInputOTP`, `LumenTooltip`, and `LumenImageComparison` complete the
+additional Compose controls planned for this candidate. React Native and SwiftUI expose the
+advanced input contracts described below; adapter-specific APIs remain documented separately. See the [Compose package usage](../packages/compose/README.md)
+for controlled state, native autofill hints, OTP normalization, tooltip state, and comparison bounds.
+The playground uses synthetic credentials and locally drawn comparison images, with English/Spanish
+labels. Native autofill hints are integration contracts; emulator semantics tests do not prove
+provider suggestions, physical TalkBack behavior, or consumer qualification.
+
+### Compose v4 product controls
+
+The Android-specific catalog also includes `LumenTopAppBar`, `LumenSwipeActions`,
+and `LumenAdaptiveListDetailScaffold`.
+
+- App bars provide small, medium, and large sizes and named navigation/action slots. Remember a
+  `LumenTopAppBarScrollBehavior` with `rememberLumenTopAppBarScrollBehavior`, then attach its
+  `nestedScrollConnection` to the screen container. Pinned, enter-always, and exit-until-collapsed
+  modes use native Material behavior. The bar handles top system insets; the application applies
+  Scaffold content padding and owns back navigation.
+- Swipe actions accept optional logical `startAction` and `endAction` values of `LumenSwipeAction`.
+  Gestures respect RTL and return the row to rest before invoking the action. Transient swipe state
+  is never restored, preventing operation replay. Visible buttons and custom accessibility actions
+  expose the same operations without gestures. Set `enabled = false` while busy. Destructive
+  actions use the danger intent; confirmation, undo, persistence and actual removal belong to the
+  application. Use stable lazy-list keys for each record.
+- Adaptive list/detail scaffolds are full-window layouts backed by Material Adaptive 1.3.0.
+  Window size, posture and separating hinges determine the pane arrangement. A null `selectedKey`
+  prioritizes the list and shows `emptyDetail` beside it in wide windows; a selection prioritizes
+  detail in compact windows. Supply localized pane labels and `backLabel`. Selection and data are
+  application-owned; save them with `rememberSaveable` or your existing state owner. The detail
+  slot receives `(selectedKey, detailOnly)`; use `BackHandler(enabled = detailOnly)` to route system
+  back through the same callback as the built-in compact Back button. The scaffold creates no
+  back stack, owns no scroll container, and makes no network requests. Use the full-window
+  List/detail playground pattern to verify resizing and selection restoration.
+
+See the [Compose examples](../packages/compose/README.md#v4-product-controls). These components do
+not expand the Wear artifact or imply equivalent APIs on other adapters. Emulator interactions and
+rendering are separate from physical-device TalkBack and foldable qualification.
+- `LumenPasswordField` starts masked, hides on blur or when editing is disabled, and uses native
+  password/autofill hints. The application owns authentication, validation and submission. React
+  Native retains native input props and refs; SwiftUI uses a String binding. New-password hints
+  use the native hint where available, with password fallback on macOS 13.
+- `LumenInputOTP` uses one native editor and a controlled value of at most 1–12 ASCII digits.
+  Pasted Unicode decimal digits, spaces and hyphens are normalized; unrelated text and excess
+  digits are rejected. Completion is emitted only for a changed full code and never verifies or
+  submits it. Disabled/read-only fields cannot emit changes. Masking is optional. Native autofill
+  hints require separate provider verification in the consuming application.
+- `LumenImageComparison` controls the visible after-image fraction from zero to one. It clamps
+  finite values and falls back to 0.5 for non-finite values, mirrors the reveal edge in RTL, and
+  exposes one named adjustable control with a localized after percentage. React Native accepts
+  native image sources, SwiftUI accepts view builders, and Compose accepts painters. Applications
+  own image loading, analysis and editing.
+- `LumenTooltip` and `LumenPullToRefresh` retain their Compose-specific entries.
+
+React Native and SwiftUI number bounds and steps use complete, ungrouped ASCII decimal strings;
+Compose uses `BigDecimal`. Every adapter preserves raw localized drafts and computes exact steps.
+SwiftUI uses bounded decimal digit arrays, preserving the 128-character contract without narrowing
+values through `Double` or Foundation `Decimal`.
+
+Web `NumberField` retains browser-native number entry. Applications needing exact localized drafts
+can compose a text input with Core `parseLumenDecimalDraft`, `isLumenDecimalInBounds` and
+`stepLumenDecimalDraft`. This makes the stronger policy available across web and React Native.
+
+SwiftUI autocomplete uses `Binding<Value?>` with Hashable option values; React Native uses strings.
+Selection updates the query label before the selection callback/binding. The host clears stale
+selection when queries change. Loading hides results; result errors can expose Retry. Disabling
+or making the field read-only dismisses results without reopening them after re-enabling.
+
+## Daily activity, conversion stages, and distributions
+
+`LumenCalendarHeatmap`, `LumenFunnelChart`, and `LumenBoxPlot` are supported across React Native,
+SwiftUI, and Compose. The calendar uses explicit Gregorian date-only bounds, funnels retain
+supplied stages, and box plots render precomputed statistics. Every chart preserves missing values
+and supplies a visible expandable exact data list plus an accessible alternative when hidden.
+See [data visualization](data-visualization.md#calendars-funnels-and-box-plots) for contracts,
+formatters, domain validation, and the boundary between application statistics and presentation.
+
+
+## Native range filters
+
+`LumenRangeSlider` is available in all three native adapters. React Native and SwiftUI compose two
+independent Lumen sliders vertically so both endpoints remain reachable without overlapping thumbs.
+Compose retains its Material two-thumb range slider. Both endpoints have independent localized
+names and formatted spoken values. Applications own the interval, units, filtering and persistence.
+
+Bounds must be finite, strictly increasing, and have a finite span. Values are clamped before display;
+React Native and Compose reorder reversed endpoints. Swift uses `ClosedRange<Double>`, which already
+requires ordered endpoints. Nonfinite values fall back to the corresponding bound. Display
+normalization never writes to host state. Adjustment preserves the opposite endpoint and prevents
+crossing; equal endpoints are valid. Read-only and disabled controls reject adjustment.
+
+React Native uses `readonly [number, number]`, `min`, `max`, and an optional positive numeric `step`
+(default: one hundredth of the span). SwiftUI uses a `Binding<ClosedRange<Double>>`, `in:`, and an
+optional positive `step` (default: continuous). React Native and Swift snap explicit steps against
+the full domain rather than changing the step origin when an endpoint moves. Compose uses
+`valueRange` and `steps` (0–10,000 intermediate stops; zero means continuous). For 0–100 in increments
+of ten, use `step={10}`, `step: 10`, or `steps = 9`, respectively. A step must be finite, positive,
+and representable in its domain. Keep exact monetary arithmetic in the application.
+
+```tsx
+<LumenRangeSlider label="Capacidad" value={capacity} onValueChange={setCapacity}
+  min={0} max={100} step={10} startLabel="Mínimo" endLabel="Máximo"
+  formatValue={value => `${value} %`} />
+```
+
+```swift
+LumenRangeSlider("Capacidad", value: $capacity, in: 0...100, step: 10,
+    startLabel: "Mínimo", endLabel: "Máximo", formatValue: { "\(Int($0)) %" })
+```
+
+```kotlin
+LumenRangeSlider("Capacidad", capacity, { capacity = it }, valueRange = 0f..100f,
+    steps = 9, startLabel = "Mínimo", endLabel = "Máximo", formatValue = { "${it.toInt()} %" })
+```
+
+## Native multiple selection
+
+`LumenMultiSelect` is shared across React Native, SwiftUI and Compose. Compose takes
+`LumenSelectionOption` results, while SwiftUI and React Native reuse their `LumenAutocompleteOption`
+models. A controlled string set holds selections. Selection is
+immediate; Done or outside dismissal closes the dialog without reverting changes. The application
+owns `query`, filtering, asynchronous results, cancellation and retry. Loading and results errors
+hide stale selectable results. Options require unique non-empty values and labels. Selections
+absent from current results remain visible with their raw value as a fallback label and can be
+removed; keep stable human-readable values or retain selected options in results when friendly
+chip labels are needed. Disabled options cannot be selected or removed while present. Read-only
+and disabled states dismiss selection and prevent edits. `errorMessage` is form validation;
+`resultsErrorMessage` is a separate recoverable search failure. Localize search, completion,
+empty/loading/retry, selection count and chip-removal labels.
+
+See the [complete web-to-native audit](lumen-4-web-native-audit.md) for the remaining catalog gaps.
+
+## Rating
+
+`LumenRating` provides controlled whole-star selection in React Native, SwiftUI and
+Compose. React Native takes `value`, `onValueChange`, `max`, `disabled`, `readOnly`
+and `label`. SwiftUI takes a `Binding<Int>`, `maximum`, `readOnly` and a title,
+using the environment for disabled state. Compose takes `value`, `onValueChange`,
+`maximum`, `enabled`, `readOnly` and `label`. Each adapter accepts `formatOption`
+for localized accessible option names. Zero denotes unrated. The resolved maximum
+is bounded to 1 through 100 and display values are clamped without host mutation.
+React Native's `resolveLumenRating` and native `LumenRatingModel` expose normalization
+for application validation. Only an enabled, editable selection invokes an update.
+
+Catalog integration and playground verification are tracked in
+[native catalog parity completion](native-catalog-parity-plan.md).
+
+## Stepper, timeline and breadcrumb
+
+`LumenStepper` presents a host-owned ordered workflow. Each `LumenStepItem` has a
+stable ID, title and optional description. The zero-based `currentStep` resolves
+to complete, current or upcoming (`LumenStepState`). Negative progress resolves
+to the first step; progress at or beyond the item count means all steps are complete.
+The component does not navigate or advance workflow state. Vertical layout is the
+native default; horizontal layout scrolls to retain large text. `formatState`
+localizes visible and accessible state labels. Duplicate or blank step IDs display the localized `invalidText` without partial steps. React Native accepts `orientation`;
+SwiftUI and Compose use `horizontal`. React Native and Compose expose
+`resolveLumenStepState`; SwiftUI exposes `LumenStepState.resolve`.
+
+`LumenTimeline` contains `LumenTimelineItem` children and a localized group label.
+Each item accepts application content and an optional decorative dot. Rich content
+and its actions remain host-owned and independently accessible. SwiftUI uses view
+builder slots and Compose uses a column content slot; React Native uses children.
+Pass `isLast: true` (SwiftUI/Compose) or `isLast={true}` (React Native) on the final item to omit its connector. Event ordering, date formatting and requests belong to the application.
+
+`LumenBreadcrumb` accepts a localized group label and stable `LumenBreadcrumbItem`
+locations. The final location is the current page and cannot navigate. Earlier
+locations emit their ID through `onNavigate`; the host performs routing. Disabled
+locations reject navigation. `currentLabel` localizes current-page semantics, and
+the trail scrolls horizontally. SwiftUI honors environment disabled state; React
+Native accepts `disabled` and Compose accepts `enabled`. Empty trails are valid.
+
+## Table and data table
+
+`LumenTable` displays a localized label, `LumenTableColumn` definitions and stable
+`LumenTableRow` records. Each `LumenTableCell` carries preformatted display text
+and an optional typed `LumenTableSortValue`. Column keys and row IDs must be
+nonempty and unique; invalid input displays `invalidLabel` without partial rows.
+Missing cells use `missingLabel`. Native defaults use labelled record cards;
+`layout` also supports a horizontally scrolling table with aligned columns.
+
+`LumenDataTable` adds controlled sorting and selection. Manual sorting is the
+default: sort requests do not reorder server rows. Explicit client mode sorts a
+copy, keeps equal values in input order and places missing/nonfinite values last
+in either direction. Mixed values have a consistent type order: numbers, booleans,
+then localized text (reversed for descending); missing values always remain last.
+`LumenTableSort` cycles ascending, descending and unsorted. Unknown keys and columns without sorting support do not reorder rows. `formatSort` localizes status labels.
+
+React Native and Compose accept `sort`, `onSortChange`, `selectedIds` and
+`onSelectionChange`; SwiftUI takes optional `sort` and `selection` bindings.
+Selection uses stable IDs, retains filtered-out IDs and never changes disabled
+records. The bulk action selects or deselects only visible enabled records, and
+its labels are localizable through `selectAllLabel` and `deselectAllLabel`.
+Disabled and read-only states block sort and selection changes.
+
+Loading and error states hide stale table controls. `loadingLabel`, `emptyLabel`,
+`error`, `retryLabel` and optional `onRetry` keep status and recovery host-owned.
+Persistence, pagination, remote sorting, requests and cell formatting remain
+application responsibilities. SwiftUI and Compose expose `LumenTableModel`,
+`LumenTableSortMode`, `LumenTableSortDirection` and `LumenTableLayout`.
+React Native exports `validateLumenTable`, `getLumenTableCell`,
+`nextLumenTableSort`, `sortLumenTableRows`, `toggleLumenTableRow` and
+`toggleLumenTableVisibleRows` for the same behaviors. JavaScript cell lookup
+excludes inherited properties; an invalid locale falls back to the device locale.
+
+```tsx
+import { useState } from 'react'
+import { LumenDataTable, type LumenTableSort } from '@santi020k/lumen-react-native'
+
+function RecordsExample() {
+  const [sort, setSort] = useState<LumenTableSort | null>(null)
+  const [selectedIds, setSelectedIds] = useState(new Set<string>())
+
+  return <LumenDataTable label="Records"
+    columns={[{ key: 'quantity', label: 'Quantity', sortable: true }]}
+    rows={[{ id: 'one', label: 'First record', cells: { quantity: { text: '2', sortValue: 2 } } }]}
+    sort={sort} onSortChange={setSort} sortMode="client"
+    selectedIds={selectedIds} onSelectionChange={setSelectedIds} />
+}
+```
+
+```swift
+struct RecordsExample: View {
+    @State private var sort: LumenTableSort?
+    @State private var selection: Set<String> = []
+
+    var body: some View {
+        LumenDataTable("Records",
+            columns: [LumenTableColumn(key: "quantity", label: "Quantity", sortable: true)],
+            rows: [LumenTableRow(id: "one", label: "First record",
+                cells: ["quantity": LumenTableCell("2", sortValue: .number(2))])],
+            sort: $sort, sortMode: .client, selection: $selection)
+    }
+}
+```
+
+```kotlin
+@Composable
+fun RecordsExample() {
+    var sort by remember { mutableStateOf<LumenTableSort?>(null) }
+    var selection by remember { mutableStateOf(emptySet<String>()) }
+    LumenDataTable("Records",
+        columns = listOf(LumenTableColumn("quantity", "Quantity", sortable = true)),
+        rows = listOf(LumenTableRow("one", "First record",
+            mapOf("quantity" to LumenTableCell("2", LumenTableSortValue.Number(2.0))))),
+        sort = sort, sortMode = LumenTableSortMode.Client, onSortChange = { sort = it },
+        selectedIds = selection, onSelectionChange = { selection = it })
+}
+```
+
+## Tree
+
+`LumenTree` provides controlled expansion and selection over a flat, validated
+graph of `LumenTreeNode` records. `LumenTreeModel` exposes iterative graph
+validation, paths, children, disabled inheritance, visible `LumenTreeRow` records
+and controlled state updates. React Native additionally exports `LumenTreeProps`.
+See the [Tree contract](native-parity/tree.md) for platform usage, status behavior,
+localization and adversarial graph limits.
+
+## QRCode and Cascader
+
+`LumenQRCode` renders offline scanner-compatible values with explicit capacity
+errors and localized accessible labels. Its React Native `LumenQRCodeProps`,
+`LumenQRCodeCorrection`, `LumenQRCodeResult`, `encodeLumenQRCode` and
+`lumenQRCodePath` contracts are detailed in the [QRCode guide](native-parity/qrcode.md).
+SwiftUI additionally exposes `LumenQRCodeMatrix` and `LumenQRCodeError`.
+
+`LumenCascader` uses `LumenCascaderModel` to browse branches and select controlled
+leaf paths while retaining invalid or hidden host state. React Native exports
+`LumenCascaderProps`. See the [Cascader guide](native-parity/cascader.md).
+
+
+## Calendar
+
+`LumenCalendar` controls a Gregorian month grid and selected civil day with
+localized labels, inclusive bounds and event indicators. `LumenCalendarDay` and
+`LumenCalendarEvent` describe civil dates and inclusive event intervals; hosts own
+display-zone conversions. React Native exports `LumenCalendarProps`,
+`isLumenCalendarDay`, `parseLumenCalendarDay`, `lumenCalendarDayKey`,
+`lumenCalendarOrdinal`, `lumenCalendarDaysInMonth`, `addLumenCalendarDays`,
+`addLumenCalendarMonths`, `lumenCalendarGrid`, `isLumenCalendarSelectable` and
+`lumenCalendarEventsForDay`. See the [Calendar contract](native-parity/calendar.md).
+
+## Civil calendar and native boards
+
+`LumenCalendar` controls Gregorian month and date selection with inclusive bounds.
+`LumenAgenda` groups timed and all-day events under civil-day headings; hosts own timezone conversion.
+`LumenKanbanBoard` requests immutable moves between capacity-limited columns, and
+`LumenKanbanColumn` provides standalone rich cards and controlled reorder. Both provide
+localized accessible move alternatives alongside native dragging; drag auto-scrolling is absent.
+
+See [Calendar](native-parity/calendar.md), [Agenda](native-parity/agenda.md),
+[KanbanBoard](native-parity/kanban-board.md), and [KanbanColumn](native-parity/kanban-column.md)
+for adapter APIs, state guards and validation boundaries.
+
+`LumenSchedule` uses the same civil event model in a day/week wall-clock grid with
+all-day bands, overlap lanes and accessible host move requests. Hosts own timezone
+conversion, persistence and rescheduling policy. Pointer drag rescheduling is absent.
+See the [Schedule contract](native-parity/schedule.md).
+
+`LumenColorPicker` provides controlled sRGB/HSV edits with optional alpha and
+localized palettes. Bounded hex/rgba parsing retains invalid drafts and preserves
+latent hue at black or grayscale. See the [ColorPicker contract](native-parity/color-picker.md).
+
+`LumenTreeSelect` reuses the validated Tree graph for hierarchical stable-ID
+selection in a lazy native disclosure panel. `LumenTransfer` performs controlled
+bidirectional moves while retaining unknown and disabled memberships. See the
+[TreeSelect](native-parity/tree-select.md) and [Transfer](native-parity/transfer.md) contracts.
+
+## Pending rich editor parity
+
+The initial SwiftUI and Compose `LumenRichTextEditor` supports controlled UTF-16
+selection and bold/italic/underline spans. Links, lists, headings, rich paste and
+caret formatting remain absent. React Native rich editing remains explicitly
+pending: the user declined a native editor dependency. The pure React Native
+span helpers do not supply a rendered editor. See the
+[limited editor contract](native-parity/rich-text-editor.md).
+
+`LumenCarousel` pages controlled stable-ID slides using native scrolling, named
+previous/next controls and selected indicators. Hosts render content; the component
+does not autoplay or wrap. `LumenTooltip` provides localized contextual help through
+controlled visibility on React Native/SwiftUI and native tooltip state on Compose.
+Compose focusable popup dismissal preserves the screen when Back is pressed. See the
+[Carousel](native-parity/carousel.md) and [Tooltip](native-parity/tooltip.md) contracts.
+
+`LumenCommand` supplies controlled grouped search, highlight navigation and activation
+requests. Hosts own execution and modal presentation. `LumenTreeGrid` reuses the Tree
+graph for controlled disclosure and labeled native records; custom interactive cells
+must honor disabled/read-only context. See the [Command](native-parity/command.md)
+and [TreeGrid](native-parity/tree-grid.md) contracts.
+
+`LumenTour` presents controlled native guided steps around host-measured targets.
+Hosts own anchor layout, open state and current index. Missing targets retain
+dismissible guidance; close remains usable during disabled/read-only/status states.
+
+`LumenMentions` controls multiline text and UTF-16 selection atomically with literal
+suggestion insertion. iOS/visionOS and Android preserve native composition. React Native
+hosts provide `isComposing` when available and insertion validates final native editing
+state. ASCII mention values and token boundaries are explicit native constraints.
+
+
+## Catalog parity completion guides
+
+Exact supported APIs and verification are recorded in the [Rating](native-parity/rating.md),
+[Table](native-parity/table.md), [DataTable](native-parity/data-table.md),
+[Breadcrumb](native-parity/breadcrumb.md), [Stepper](native-parity/stepper.md),
+[Timeline](native-parity/timeline.md), [Tour](native-parity/tour.md), and
+[Mentions](native-parity/mentions.md) guides. Native consumer, physical accessibility and release
+qualification are separate from focused local checks.
+
+## Progression compositions
+
+For accessible rating, step progression and chronological content, use the
+[native progression recipes](native-progression-recipes.md). They reuse the public Rating, Stepper and Timeline APIs with application-owned state, localization
+and content ordering.
+
+## Studio media workspace
+
+`LumenMediaViewport`, `LumenMediaThumbnail` and `LumenMediaFilmstrip` provide reusable media
+interaction in React Native, SwiftUI and Compose. See [Studio media workspaces](studio-media-workspaces.md)
+for composition, host ownership and verification boundaries. The viewport supports iOS, macOS
+and visionOS in SwiftUI; watchOS and tvOS hosts compose platform inspection controls.
+
+Viewport values use `zoom` from one through the configured maximum (one through sixteen),
+and normalized `x`/`y` from minus one through one. Fit clears pan. Nonfinite input normalizes
+to fit. Actions and gestures emit controlled values; the host owns image loading and edits.
+Pass translated `LumenMediaViewportLabels` and locale/environment formatting.
+
+Thumbnails take a visible label, controlled selected state, optional positive order and ready,
+loading or error state. Loading/error and disabled thumbnails cannot request selection. Supply
+localized state labels. Filmstrips take a collection label, a host-formatted selection label and
+native child content; compose named sibling LumenButton actions for reorder.
+
+`LumenImageComparisonMode` adds reveal, side-by-side, before and after modes. Mode changes
+retain the host-controlled reveal value. Only reveal mode exposes an adjustable slider.

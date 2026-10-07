@@ -1,0 +1,14 @@
+---
+import { Badge, Card, Stack } from '@santi020k/lumen-astro'
+
+import StudioWorkspacePreview from './StudioWorkspacePreview.astro'
+---
+
+<Card aria-labelledby="studio-reference-title" data-studio-reference>
+  <Stack direction="horizontal" align="center" justify="between" wrap>
+    <h3 id="studio-reference-title">Photo workspace</h3>
+    <Badge variant="secondary">Illustrative example</Badge>
+  </Stack>
+  <p>Try selection, ordering, comparison and inspection. Adjustments apply a local illustrative treatment; preview preparation uploads no media.</p>
+  <StudioWorkspacePreview showTitle={false} />
+</Card>

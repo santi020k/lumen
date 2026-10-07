@@ -51,6 +51,10 @@ const exerciseFramework = async (root: Locator, scenario: FrameworkScenario) => 
   const behavior = panel.getByRole('tab', { name: 'Behavior' })
   const delivery = panel.getByRole('tab', { name: 'Delivery' })
 
+  if (scenario.id === 'astro') {
+    await expect(panel.locator('[data-ui-tabs]')).toHaveAttribute('data-ui-bound', 'true')
+  }
+
   await behavior.focus()
   await behavior.press('ArrowRight')
 
@@ -65,6 +69,7 @@ test('web playground switches and exercises each real framework adapter', async 
   const playground = page.locator('.web-framework-playground')
 
   await expect(playground).toBeVisible()
+  await expect(playground).toHaveAttribute('data-ready', 'true')
 
   for (const framework of frameworks) {
     await exerciseFramework(playground, framework)
@@ -84,6 +89,7 @@ test('web playground loads optional framework runtimes only when selected', asyn
   const status = playground.locator('[data-framework-status]')
   const viewport = playground.locator('.web-framework-playground__viewport')
 
+  await expect(playground).toHaveAttribute('data-ready', 'true')
   await expect(status).toHaveText('Rendering with Astro')
   await expect(reactPanel.locator('[data-framework-runtime="react"]')).toHaveCount(0)
   await expect.poll(async () => page.evaluate(() => customElements.get('lumen-alert') !== undefined))

@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import { type LumenDateLabels, parseLumenDate, resolveLumenAstroProps, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 
 import Calendar from './Calendar.astro'
 
@@ -9,6 +9,8 @@ interface Props extends HTMLAttributes<'input'> {
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
+  labels?: Partial<Pick<LumenDateLabels, 'previousMonth' | 'nextMonth' | 'chooseDate'>>
+  locale?: string
   placeholder?: string
 }
 
@@ -18,6 +20,9 @@ const {
   disabled = false,
   glass = false,
   id,
+  labels,
+  locale,
+  readonly = false,
   max,
   min,
   name,
@@ -39,28 +44,28 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   glass === 'strong' && 'ui-glass-strong'
 ], classProp, className)
 
+const resolvedLocale = resolveLumenDateLocale(locale)
+const resolvedLabels = { ...resolveLumenDateLabels(resolvedLocale), ...labels }
 const selectedValue = value === undefined || value === null ? undefined : String(value)
-const hasSelectedValue = selectedValue !== undefined && selectedValue !== ''
-const placeholderText = placeholder ?? 'Choose a date'
+const selectedDate = parseLumenDate(selectedValue)
+const hasSelectedValue = selectedDate !== null
+const placeholderText = placeholder ?? resolvedLabels.chooseDate
 
-const selectedDate = hasSelectedValue ?
-  new Date(`${selectedValue}T00:00:00.000Z`) :
-  undefined
-
-const displayValue = selectedDate && !Number.isNaN(selectedDate.getTime()) ?
-  new Intl.DateTimeFormat('en', {
-    day: 'numeric',
-    month: 'short',
-    timeZone: 'UTC',
-    year: 'numeric'
+const displayValue = selectedDate ?
+  new Intl.DateTimeFormat(resolvedLocale, {
+    day: 'numeric', month: 'short', timeZone: 'UTC', year: 'numeric'
   }).format(selectedDate) :
-  placeholderText
+placeholderText
+
 ---
 
 <div
   class:list={classList}
   data-placeholder={hasSelectedValue ? undefined : 'true'}
   data-ui-date-picker
+  data-locale={locale}
+  data-choose-date-label={labels?.chooseDate}
+  data-placeholder-default={placeholder === undefined ? 'true' : undefined}
   data-ui-glass-track={glass ? true : undefined}
 >
   <input
@@ -71,7 +76,8 @@ const displayValue = selectedDate && !Number.isNaN(selectedDate.getTime()) ?
     max={max}
     min={min}
     name={name}
-    placeholder={placeholder}
+    placeholder={placeholderText}
+    readonly={readonly}
     required={required}
     type={type}
     value={value}
@@ -83,6 +89,7 @@ const displayValue = selectedDate && !Number.isNaN(selectedDate.getTime()) ?
       aria-controls={popoverId}
       aria-expanded="false"
       aria-haspopup="dialog"
+      aria-disabled={readonly ? 'true' : undefined}
       aria-required={required ? 'true' : undefined}
       class="ui-input ui-date-picker ui-date-picker__trigger"
       data-ui-date-picker-trigger
@@ -97,7 +104,7 @@ const displayValue = selectedDate && !Number.isNaN(selectedDate.getTime()) ?
     </button>
 
     <div
-      aria-label="Choose date"
+      aria-label={resolvedLabels.chooseDate}
       class="ui-date-picker__popover"
       data-state="closed"
       data-ui-date-picker-popover
@@ -105,7 +112,7 @@ const displayValue = selectedDate && !Number.isNaN(selectedDate.getTime()) ?
       id={popoverId}
       role="dialog"
     >
-      <Calendar max={typeof max === 'string' ? max : undefined} min={typeof min === 'string' ? min : undefined} value={selectedValue} />
+      <Calendar locale={locale} labels={labels} readOnly={readonly} max={typeof max === 'string' ? max : undefined} min={typeof min === 'string' ? min : undefined} value={selectedValue} />
     </div>
   </div>
 </div>

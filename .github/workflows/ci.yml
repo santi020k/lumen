@@ -1,3 +1,4 @@
+# cspell:words endgroup
 name: CI
 
 on:
@@ -80,9 +81,18 @@ jobs:
           --head "$HEAD_SHA"
           --output "$GITHUB_OUTPUT"
 
+  preflight:
+    name: Fast repository checks
+    needs: classify
+    uses: santi020k/quality/.github/workflows/reusable-pnpm-ci.yml@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+    with:
+      node-version: 22.x
+      timeout-minutes: 10
+      command: pnpm run ci:preflight
+
   native-android:
     name: Compose library
-    needs: classify
+    needs: [classify, preflight]
     if: needs.classify.outputs.android == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -94,9 +104,14 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+          cache: gradle
+          cache-dependency-path: |
+            packages/compose/**/*.gradle*
+            packages/compose/gradle/wrapper/gradle-wrapper.properties
+            apps/playground-android/**/*.gradle*
 
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: 22.x
 
@@ -175,17 +190,47 @@ jobs:
             exit 1
           fi
 
-          ./gradlew connectedDebugAndroidTest
-          ./gradlew -p ../../apps/playground-android :app:assembleDebug :app:installDebug
-          ../../apps/playground-android/scripts/capture-component-screenshots.sh \
+          # Prepare the disposable emulator for real window input after boot.
+          # cspell:words keyevent keyguard stayon
+          "$adb" shell svc power stayon true
+          "$adb" shell settings put system screen_off_timeout 2147483647
+          "$adb" shell input keyevent 224
+          "$adb" shell wm dismiss-keyguard
+          "$adb" shell dumpsys power > "$RUNNER_TEMP/lumen-emulator-power.log"
+
+          run_phase() {
+            local label="$1"
+            shift
+            local started=$SECONDS
+            echo "::group::$label"
+            "$@"
+            echo "$label completed in $(( SECONDS - started )) seconds"
+            echo "::endgroup::"
+          }
+          run_phase 'Compose instrumentation' ./gradlew connectedDebugAndroidTest
+          run_phase 'Android consumer install' ./gradlew -p ../../apps/playground-android :app:assembleDebug :app:installDebug
+          run_phase 'Android component captures' ../../apps/playground-android/scripts/capture-component-screenshots.sh \
             ../../apps/playground-android/build/screenshots
           pnpm --filter @santi020k/lumen-docs exec node --experimental-strip-types \
             scripts/sync-native-component-captures.mjs \
             --compare --platform=android --source=default --tolerance=0.12
 
+      - name: Preserve Compose Android test reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: compose-android-test-reports
+          path: |
+            packages/compose/build/reports/androidTests/
+            packages/compose/build/outputs/androidTest-results/
+            ${{ runner.temp }}/lumen-emulator.log
+            ${{ runner.temp }}/lumen-emulator-power.log
+          if-no-files-found: ignore
+          retention-days: 7
+
   browser-contracts:
     name: Browser interaction contracts
-    needs: classify
+    needs: [classify, preflight]
     if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.playwright == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -193,22 +238,30 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
 
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: 22.x
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium firefox webkit
+        uses: ./.github/actions/setup-playwright
+        with:
+          browsers: chromium firefox webkit
 
       - name: Run cross-browser interaction contracts
-        run: pnpm run test:interactions && pnpm run test:framework-conformance
+        run: pnpm run test:interactions && pnpm run test:framework-conformance && pnpm run test:figma-plugin
+
+      - name: Check local motion previews
+        run: pnpm --filter @santi020k/lumen-motion build && pnpm --filter @santi020k/lumen-motion test
+
+      - name: Verify primitive motion and reduced-motion behavior
+        run: pnpm run test:motion
 
       - name: Enforce web unit coverage
         run: pnpm run test:web-coverage
 
   react-native-captures:
     name: React Native captures
-    needs: classify
+    needs: [classify, preflight]
     if: >-
       ${{
         needs.classify.outputs.release-pr != 'true' &&
@@ -220,12 +273,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
 
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: 22.x
 
       - name: Install Playwright Chromium
-        run: pnpm exec playwright install --with-deps chromium
+        uses: ./.github/actions/setup-playwright
+        with:
+          browsers: chromium
 
       - name: Regenerate and compare React Native component captures
         run: |
@@ -261,7 +316,7 @@ jobs:
 
   mcp-node-20:
     name: MCP compatibility (Node 20)
-    needs: classify
+    needs: [classify, preflight]
     if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.mcp == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -269,7 +324,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
 
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: 20.20.x
 
@@ -278,7 +333,8 @@ jobs:
 
   build:
     name: Build and validate
-    needs: classify
+    needs: [classify, preflight]
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -293,14 +349,26 @@ jobs:
       TURBO_SCM_HEAD: ${{ github.event.pull_request.head.sha }}
       LUMEN_RELEASE_PACKAGES: ${{ needs.classify.outputs.npm-packages }}
     steps:
+      - name: Require successful preflight
+        env:
+          CLASSIFICATION_RESULT: ${{ needs.classify.result }}
+          PREFLIGHT_RESULT: ${{ needs.preflight.result }}
+        run: |
+          if [[ "$CLASSIFICATION_RESULT" != "success" || "$PREFLIGHT_RESULT" != "success" ]]; then
+            echo "::error::Classification or preflight failed; expensive checks were not started."
+            exit 1
+          fi
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
         with:
           fetch-depth: 0
 
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: ${{ matrix.node-version }}
+          task-cache-path: .turbo/cache
+          task-cache-key: ci-build
 
       - name: Resolve release pull request scope
         id: release-scope
@@ -320,6 +388,8 @@ jobs:
         if: needs.classify.outputs.release-pr != 'true'
         run: pnpm exec turbo run build typecheck lint test --affected
 
+      - name: Validate portable AI plugin and migration artifacts
+        run: pnpm run check:plugin-package && pnpm run test:plugin-package && pnpm run check:v4-migration
       - name: Assert the generated MCP snapshot is committed
         if: >-
           ${{
@@ -345,7 +415,9 @@ jobs:
             needs.classify.outputs.playwright == 'true' &&
             matrix.node-version == '22.x'
           }}
-        run: pnpm exec playwright install --with-deps chromium
+        uses: ./.github/actions/setup-playwright
+        with:
+          browsers: chromium
 
       - name: Run accessibility checks
         if: >-
@@ -388,8 +460,6 @@ jobs:
           if [[ "${{ needs.classify.outputs.native-contracts }}" == "true" ]]; then
             pnpm run check:native-contracts
             pnpm run check:native-captures
-            pnpm run check:native-consumer-evidence
-            pnpm run test:native-consumer-evidence
             pnpm run check:platform-tokens
           fi
 

@@ -1,0 +1,18 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenCitationHref } from '@santi020k/lumen-core'
+
+import Link from './Link.astro'
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'href'> { href: string, label: string }
+
+const { class: className, href, label, ...rest } = Astro.props
+const safeHref = resolveLumenCitationHref(href)
+---
+
+{safeHref ?
+<Link {...rest} class:list={['ui-source-citation', className]} href={safeHref} rel="noopener noreferrer">{label}<slot /></Link> :
+(
+<span class:list={['ui-source-citation', className]}>{label}<slot /></span>
+)}

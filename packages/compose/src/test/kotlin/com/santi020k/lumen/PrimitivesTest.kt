@@ -11,6 +11,24 @@ import org.junit.Test
 
 class PrimitivesTest {
     @Test
+    fun studioPresetsRetainStatusRolesAndAllowAppearanceOverrides() {
+        for (isDark in listOf(false, true)) {
+            val theme = LumenThemeValues.preset(LumenThemePreset.Studio, isDark)
+            val defaults = if (isDark) LumenColors.Dark else LumenColors.Light
+            assertEquals(theme.colors.ink, theme.colors.brandSolid)
+            assertEquals(defaults.danger, theme.colors.danger)
+            assertEquals(0.6f, theme.appearance.radiusScale)
+            assertEquals(0f, theme.appearance.elevationScale)
+            assertEquals(isDark, theme.isDark)
+        }
+        val custom = LumenThemeValues.preset(LumenThemePreset.Studio, false)
+            .copy(appearance = LumenAppearance(radiusScale = 2f, borderWidth = 0f))
+        assertEquals(2f, custom.appearance.radiusScale)
+        assertEquals(0f, custom.appearance.borderWidth)
+        assertThrows(IllegalArgumentException::class.java) { LumenAppearance(radiusScale = -1f) }
+    }
+
+    @Test
     fun validationMessagesImplyInvalidFieldState() {
         assertEquals(false, resolveLumenFieldError(error = false, errorMessage = null))
         assertEquals(true, resolveLumenFieldError(error = true, errorMessage = null))
@@ -76,6 +94,24 @@ class PrimitivesTest {
         assertEquals(LumenColors.Dark.surfaceStrong, material.surfaceContainerHigh)
         assertEquals(LumenColors.Dark.inkMuted, material.onSurfaceVariant)
         assertEquals(LumenColors.Dark.danger, material.error)
+    }
+
+    @Test
+    fun materialNavigationColorsFollowEveryLumenPresetInBothSchemes() {
+        for (preset in LumenThemePreset.entries) {
+            for (isDark in listOf(false, true)) {
+                val palette = preset.colors(isDark)
+                val material = palette.toMaterialColorScheme(isDark)
+                assertEquals(palette.surface, material.surfaceContainer)
+                assertEquals(palette.surface, material.surfaceContainerLow)
+                assertEquals(palette.canvas, material.surfaceContainerLowest)
+                assertEquals(palette.surfaceStrong, material.surfaceContainerHighest)
+                assertEquals(palette.brandSoft, material.secondaryContainer)
+                assertEquals(palette.brand, material.onSecondaryContainer)
+                assertEquals(palette.brand, material.surfaceTint)
+                assertEquals(palette.inkMuted, material.onSurfaceVariant)
+            }
+        }
     }
 
     @Test
@@ -148,9 +184,13 @@ class PrimitivesTest {
     fun sharedIconCatalogHasStableUniqueNames() {
         val icons = LumenIconName.entries
 
-        assertEquals(2_433, icons.size)
+        assertEquals(2_437, icons.size)
         assertTrue(LumenIconName.Album in icons)
         assertTrue(LumenIconName.Trash2 in icons)
+        assertTrue(LumenIconName.BangladeshiTaka in icons)
+        assertTrue(LumenIconName.LayoutGridCircles in icons)
+        assertTrue(LumenIconName.Letters in icons)
+        assertTrue(LumenIconName.Printer3d in icons)
         assertEquals(icons.size, icons.map { it.rawValue }.toSet().size)
         assertEquals(573, icons.count { it.rawValue.startsWith("brand:") })
         assertEquals(true, LumenIconName.Search in icons)

@@ -15,6 +15,92 @@ export const lumenRegistry = {
   ],
   items: [
     {
+      name: 'page-header',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Breadcrumb',
+        'Button',
+        'Link',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
+      name: 'section-header',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Button',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
+      name: 'content-flow-header',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/content-flow.md'
+      ]
+    },
+    {
+      name: 'content-flow-settings',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'CardHeader',
+        'CardTitle',
+        'CardDescription',
+        'CardContent',
+        'CardFooter',
+        'Field',
+        'Input',
+        'Label',
+        'Stack'
+      ],
+      files: [
+        'docs/content-flow.md'
+      ]
+    },
+    {
+      name: 'content-flow-list',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Card',
+        'CardHeader',
+        'CardTitle',
+        'CardContent',
+        'Stack'
+      ],
+      files: [
+        'docs/content-flow.md'
+      ]
+    },
+    {
+      name: 'content-flow-actions',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Stack'
+      ],
+      files: [
+        'docs/content-flow.md'
+      ]
+    },
+    {
       name: 'all-components',
       type: 'component-set',
       files: [
@@ -117,6 +203,8 @@ export const lumenRegistry = {
         'Heatmap',
         'RangeChart',
         'ComboChart',
+        'Histogram',
+        'WaterfallChart',
         'Stat',
         'Meter'
       ]
@@ -189,7 +277,8 @@ export const lumenRegistry = {
         'Alert',
         'Checkbox',
         'Progress',
-        'Button'
+        'Button',
+        'Grid'
       ]
     },
     {
@@ -247,7 +336,72 @@ export const lumenRegistry = {
         'Input',
         'NativeSelect',
         'Textarea',
+        'Button',
+        'ErrorSummary',
+        'AmountField',
+        'Alert'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
+      name: 'operational-records',
+      type: 'recipe',
+      components: [
+        'DataTable',
+        'DropdownMenu',
+        'Dialog',
         'Button'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
+      name: 'review-workflow',
+      type: 'recipe',
+      components: [
+        'Form',
+        'Field',
+        'ErrorSummary',
+        'ChangeSummary',
+        'Button',
+        'Alert'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
+      name: 'import-review',
+      type: 'recipe',
+      components: [
+        'Alert',
+        'Badge',
+        'Button',
+        'Card',
+        'ChangeSummary',
+        'Stack'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
+      ]
+    },
+    {
+      name: 'record-workspace',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Card',
+        'Descriptions',
+        'FormattedDate',
+        'Grid',
+        'Stack',
+        'Timeline'
+      ],
+      files: [
+        'docs/consumer-ui-recipes.md'
       ]
     },
     {
@@ -266,6 +420,87 @@ export const lumenRegistry = {
         'registry/figma-design-map.json',
         'docs/figma-design-to-code.md',
         'docs/figma.md'
+      ]
+    },
+    {
+      name: 'interactive-pricing',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'Grid',
+        'Stack',
+        'Typography',
+        'VisualEffect'
+      ],
+      files: [
+        'docs/visual-interactions.md'
+      ]
+    },
+    {
+      name: 'feature-preview',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'MotionGroup',
+        'Stack',
+        'Typography',
+        'VisualEffect'
+      ],
+      files: [
+        'docs/visual-interactions.md'
+      ]
+    },
+    {
+      name: 'guided-onboarding',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'Form',
+        'Input',
+        'Label',
+        'Stack',
+        'Typography'
+      ],
+      files: [
+        'docs/visual-interactions.md'
+      ]
+    },
+    {
+      name: 'command-center',
+      type: 'recipe',
+      components: [
+        'Command',
+        'Input',
+        'Typography'
+      ],
+      files: [
+        'docs/visual-interactions.md'
+      ]
+    },
+    {
+      name: 'media-workspace',
+      type: 'recipe',
+      components: [
+        'MediaThumbnail',
+        'MediaFilmstrip',
+        'MediaViewport',
+        'ImageComparison',
+        'Toolbar',
+        'Card',
+        'Field',
+        'Label',
+        'Slider',
+        'Badge',
+        'Button',
+        'Progress',
+        'ErrorState',
+        'Stack'
+      ],
+      files: [
+        'docs/studio-media-workspaces.md'
       ]
     }
   ],
@@ -353,6 +588,32 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'AttachmentList',
+      type: 'component',
+      description: 'Groups file rows with independent actions.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/AttachmentList.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'AttachmentPreview',
+      type: 'component',
+      description: 'Previews browser-owned images with localized fallback states.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/AttachmentPreview.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'Autocomplete',
       type: 'component',
       description: 'Captures searchable text connected to suggestions.',
@@ -426,9 +687,14 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/BarChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -923,6 +1189,75 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'DialogHeader',
+      type: 'component',
+      description: 'Groups the dialog title and description.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogHeader.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DialogTitle',
+      type: 'component',
+      description: 'Provides a semantic heading for dialog labeling.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogTitle.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DialogBody',
+      type: 'component',
+      description: 'Scrolls long task content while keeping actions visible.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogBody.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DialogFooter',
+      type: 'component',
+      description: 'Keeps dialog actions outside the scrolling body.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogFooter.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DialogClose',
+      type: 'component',
+      description: 'Closes the enclosing dialog through an accessible button.',
+      category: 'Overlays',
+      files: [
+        'packages/astro/components/DialogClose.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/components/Button.astro',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'Button',
+        'runtime'
+      ]
+    },
+    {
       name: 'Direction',
       type: 'component',
       description: 'Controls directional layout and text flow.',
@@ -1154,6 +1489,81 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'DeviceFrame',
+      type: 'component',
+      description: 'Frames images, HTML, and fixed-viewport iframe demos in detailed iPhone, Pixel, iMac, MacBook Pro, and generic device silhouettes.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DeviceFrame.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/react/src/device-frame.tsx',
+        'packages/elements/src/components/device-frame.ts'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'ImageComparison',
+      type: 'component',
+      description: 'Compares two media treatments with an accessible reveal control.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/ImageComparison.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'MediaViewport',
+      type: 'component',
+      description: 'Inspects application-owned media with bounded zoom, pan and keyboard alternatives.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/MediaViewport.astro',
+        'packages/astro/components/Button.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'Button',
+        'styles',
+        'runtime'
+      ]
+    },
+    {
+      name: 'MediaThumbnail',
+      type: 'component',
+      description: 'Selects application-owned media with visible labels and pressed selection.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/MediaThumbnail.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/components/Button.astro',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'Button',
+        'runtime'
+      ]
+    },
+    {
+      name: 'MediaFilmstrip',
+      type: 'component',
+      description: 'Groups ordered media thumbnails and a localized selection summary.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/MediaFilmstrip.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'Illustration',
       type: 'component',
       description: 'Renders a built-in semantic empty, success, error, or offline illustration.',
@@ -1300,10 +1710,17 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/LineChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/internal/ChartInspection.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
+        'packages/astro/runtime/controllers/charts.ts',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
         'Chart',
+        'Button',
         'styles'
       ]
     },
@@ -1411,6 +1828,21 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'AmountField',
+      type: 'component',
+      description: 'Formats localized decimal drafts without losing integer or fraction precision.',
+      category: 'Forms',
+      files: [
+        'packages/astro/components/AmountField.astro',
+        'packages/astro/styles/lumen.css',
+        'packages/astro/runtime/UIPrimitives.astro'
+      ],
+      dependencies: [
+        'styles',
+        'runtime'
+      ]
+    },
+    {
       name: 'NumberField',
       type: 'component',
       description: 'Captures constrained numeric values.',
@@ -1463,6 +1895,8 @@ export const lumenRegistry = {
       category: 'Forms',
       files: [
         'packages/astro/components/PhoneInput.astro',
+        'packages/astro/components/CountryFlag.astro',
+        'packages/astro/components/PhoneNumber.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
@@ -1480,9 +1914,14 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/PieChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -2424,6 +2863,45 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'DescriptionItem',
+      type: 'component',
+      description: 'Composes rich description item content.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DescriptionItem.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DescriptionTerm',
+      type: 'component',
+      description: 'Composes rich description term content.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DescriptionTerm.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'DescriptionDetail',
+      type: 'component',
+      description: 'Composes rich description detail content.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/DescriptionDetail.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
       name: 'Popconfirm',
       type: 'component',
       category: 'Overlays',
@@ -2534,10 +3012,15 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/ScatterChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css',
         'packages/react/src/components.tsx'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -2550,10 +3033,15 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/Heatmap.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css',
         'packages/react/src/components.tsx'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -2566,10 +3054,15 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/RangeChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css',
         'packages/react/src/components.tsx'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -2582,10 +3075,15 @@ export const lumenRegistry = {
       files: [
         'packages/astro/components/ComboChart.astro',
         'packages/astro/components/Chart.astro',
+        'packages/astro/components/ChartDatumActions.astro',
+        'packages/astro/runtime/chart-actions.ts',
+        'packages/astro/runtime/controllers/chart-activation.ts',
+        'packages/astro/runtime/UIPrimitives.astro',
         'packages/astro/styles/lumen.css',
         'packages/react/src/components.tsx'
       ],
       dependencies: [
+        'Button',
         'Chart',
         'styles'
       ]
@@ -2601,6 +3099,294 @@ export const lumenRegistry = {
       ],
       dependencies: [
         'styles'
+      ]
+    },
+    {
+      name: 'CalendarHeatmap',
+      type: 'component',
+      category: 'Data display',
+      description: 'Shows daily activity on a date-only calendar with explicit missing observations.',
+      files: [
+        'packages/astro/components/CalendarHeatmap.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'FunnelChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Compares ordered conversion stages without inferring conversion rates.',
+      files: [
+        'packages/astro/components/FunnelChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'BoxPlot',
+      type: 'component',
+      category: 'Data display',
+      description: 'Shows precomputed quartiles, whiskers, medians, and outliers on one numeric scale.',
+      files: [
+        'packages/astro/components/BoxPlot.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'BulletChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Compares an actual value with a target and optional labeled performance ranges.',
+      files: [
+        'packages/astro/components/BulletChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'LollipopChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Rank categories using a dot and a zero-based stem.',
+      files: [
+        'packages/astro/components/LollipopChart.astro',
+        'packages/astro/internal/ComparisonChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'DumbbellChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Compare two measurements per category with connected dots.',
+      files: [
+        'packages/astro/components/DumbbellChart.astro',
+        'packages/astro/internal/ComparisonChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'Histogram',
+      type: 'component',
+      category: 'Data display',
+      description: 'Shows application-supplied numeric bins using counts or frequency density.',
+      files: [
+        'packages/astro/components/Histogram.astro',
+        'packages/astro/internal/IntervalChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'WaterfallChart',
+      type: 'component',
+      category: 'Data display',
+      description: 'Explains signed changes and explicit totals with an accessible balance table.',
+      files: [
+        'packages/astro/components/WaterfallChart.astro',
+        'packages/astro/internal/IntervalChart.astro',
+        'packages/astro/components/Chart.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'Chart',
+        'styles'
+      ]
+    },
+    {
+      name: 'ChangeSummary',
+      type: 'component',
+      category: 'Data display',
+      description: 'Compares explicit current and proposed values with visible changed state.',
+      files: [
+        'packages/astro/components/ChangeSummary.astro',
+        'packages/react/src/change-summary.tsx',
+        'packages/elements/src/components/dashboard.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'FilterBar',
+      type: 'component',
+      category: 'Data display',
+      description: 'Composes host-owned dashboard filters, active criteria, and result announcements.',
+      files: [
+        'packages/astro/components/FilterBar.astro',
+        'packages/react/src/dashboard.tsx',
+        'packages/elements/src/components/dashboard.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'ChartMotion',
+      type: 'component',
+      category: 'Data display',
+      description: 'Animates decorative stable SVG marks while accessible data updates immediately.',
+      files: [
+        'packages/astro/components/ChartMotion.astro',
+        'packages/react/src/visual-interactions.tsx',
+        'packages/elements/src/components/visual-interactions.ts'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'MotionGroup',
+      type: 'component',
+      category: 'Interaction',
+      description: 'Animates stable keyed children while preserving application ownership of order.',
+      files: [
+        'packages/astro/components/MotionGroup.astro',
+        'packages/react/src/visual-interactions.tsx',
+        'packages/elements/src/components/visual-interactions.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'VisualEffect',
+      type: 'component',
+      category: 'Layout',
+      description: 'Optional semantic mesh, aurora, spotlight, grain, border, draw, and depth effects.',
+      files: [
+        'packages/astro/components/VisualEffect.astro',
+        'packages/react/src/visual-interactions.tsx',
+        'packages/elements/src/components/visual-interactions.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'ApprovalCard',
+      type: 'component',
+      category: 'AI',
+      description: 'Collects an explicit decision for an application-owned pending request.',
+      files: [
+        'packages/astro/components/ApprovalCard.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'PromptComposer',
+      type: 'component',
+      category: 'AI',
+      description: 'Accessible prompt input with submit and stop requests.',
+      files: [
+        'packages/astro/components/PromptComposer.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'SourceCitation',
+      type: 'component',
+      category: 'AI',
+      description: 'Named source link restricted to safe web URLs and local paths.',
+      files: [
+        'packages/astro/components/SourceCitation.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'StreamMessage',
+      type: 'component',
+      category: 'AI',
+      description: 'Separates streaming content from concise status announcements.',
+      files: [
+        'packages/astro/components/StreamMessage.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'ToolActivity',
+      type: 'component',
+      category: 'AI',
+      description: 'Discloses application-owned tool progress and results.',
+      files: [
+        'packages/astro/components/ToolActivity.astro',
+        'packages/react/src/ai-surfaces.tsx',
+        'packages/elements/src/components/ai-surfaces.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'WorldMap',
+      type: 'component',
+      description: 'An interactive dotted or solid world map with highlighted countries and location markers.',
+      category: 'Data display',
+      files: [
+        'packages/astro/components/WorldMap.astro',
+        'packages/astro/runtime/controllers/world-map.ts',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles',
+        'runtime'
       ]
     }
   ]

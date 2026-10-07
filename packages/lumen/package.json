@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -9,7 +9,9 @@
   "sideEffects": [
     "./layers.css",
     "./styles.css",
-    "./styles/critical.css"
+    "./styles/critical.css",
+    "./styles/motion.css",
+    "./styles/world-map.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -28,7 +30,9 @@
     "./styles.css": "./styles.css",
     "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./styles/motion.css": "./styles/motion.css",
+    "./styles/world-map.css": "./styles/world-map.css"
   },
   "files": [
     "bin",
@@ -38,8 +42,10 @@
     "release-manifest.json",
     "styles.css",
     "styles",
+    "templates",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "v4-migration.json"
   ],
   "bin": {
     "lumen": "./bin/lumen.mjs"
@@ -56,7 +62,8 @@
   },
   "dependencies": {
     "@santi020k/lumen-core": "workspace:^",
-    "semver": "catalog:"
+    "semver": "catalog:",
+    "typescript": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -65,8 +72,16 @@
     "@vitest/coverage-v8": "catalog:",
     "react": "catalog:",
     "tailwindcss": "catalog:",
-    "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "jsdom": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=19"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=22.12.0"

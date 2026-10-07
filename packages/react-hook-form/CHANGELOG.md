@@ -1,5 +1,45 @@
 # @santi020k/lumen-react-hook-form
 
+## 4.0.0
+
+### Minor Changes
+
+- Add exact localized AmountField drafts across web adapters and a React Hook Form controller.
+  Add opt-in MessageScroller following and reader-anchor preservation. Introduce consumer upgrade
+  review signals, semantic theme diagnostics, and installable React form and operational-record recipes.
+
+### Patch Changes
+
+- Updated dependencies [`cc91b3e`, `c71c50a`, `ef5187d`, `788125f`, `55a1032`, `19964b1`, `20aa235`, `85f332c`, `0ea4a4e`, `79d9b0a`, `4e80faa`, `bd11bc0`, `bd11bc0`, `1639935`, `059aae9`, `177aedf`, `aba0839`]:
+  - @santi020k/lumen-react@4.0.0
+
+- Updated dependencies []:
+  - @santi020k/lumen-react@4.0.0
+
+### Major Changes
+
+- Prepare the coordinated Lumen 4 family from twenty real consumer audits.
+
+  - Make chart axes readable, preserve complete detail labels, center single observations, use
+    deterministic duplicate handling, and expose formatted native axes and compact plot layouts.
+  - Add controlled date-range drafting with strict calendar bounds, localized labels, and safe
+    disabled/read-only behavior. Keep form labels and keyboard focus attached to the active control.
+  - Keep server-paginated tables in supplied order with controlled manual sorting, and make dialog
+    dismissal and opener restoration explicit for pending and nested workflows.
+  - Preserve native hidden semantics, loading-button dimensions, and disabled slotted activation.
+  - Give code-copy actions localized success and failure feedback, preserve normal navigation Tab
+    order, and improve readable prose and code-theme defaults.
+  - Add ImageComparison with a fixed image frame, native range control, RTL support, and matching
+    Astro, React, and Web Component contracts.
+  - Improve native slider announcements, long text layout, and contextual symbol selection.
+  - Refresh usage examples, migration guidance, machine-readable contracts, and the public consumer
+    showcase. Token, icon, and form-integration packages join the coordinated major family.
+
+  Migration: use unique stable chart X values, rebuild native consumers for updated initializer
+  contracts, and review custom button selectors against the content wrapper. Loading actions now
+  prevent repeated activation. See `docs/migrating-to-lumen.md` for the full v4 migration. No
+  application data migration is performed, and this candidate is not publication authorization.
+
 ## 3.0.0
 
 ### Major Changes

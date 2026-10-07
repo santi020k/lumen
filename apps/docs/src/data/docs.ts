@@ -1,6 +1,7 @@
 import type { LumenComponentName } from '@santi020k/lumen-core'
 
 export interface ComponentDoc {
+  adapterNotes?: readonly FrameworkUsageNote[]
   apiReference: ComponentApiRow[]
   name: string
   category:
@@ -20,6 +21,11 @@ export interface ComponentDoc {
   runtimeEvents?: RuntimeEventRow[]
   summary: string
   example: string
+}
+
+interface FrameworkUsageNote {
+  framework: 'Elements' | 'React'
+  text: string
 }
 
 interface ComponentGuidance {
@@ -144,7 +150,8 @@ const elementsUsage = `<script type="module">
 
 export const globalStyleSetups: GlobalStyleSetup[] = [
   {
-    code: `@import "tailwindcss";
+    code: `@import "@santi020k/lumen-astro/layers.css";
+@import "tailwindcss";
 @import "@santi020k/lumen-astro/styles.css";`,
     description:
       'Use the stylesheet exported by your framework package in your main CSS entry.',
@@ -483,6 +490,7 @@ export const componentCollections: ComponentCollection[] = [
       'Textarea',
       'SearchField',
       'NumberField',
+      'AmountField',
       'PhoneInput',
       'InputOTP',
       'Mentions'
@@ -517,6 +525,11 @@ export const componentCollections: ComponentCollection[] = [
       'Match the layer to the task: blocking, edge-mounted, anchored, or explanatory.',
     names: [
       'Dialog',
+      'DialogHeader',
+      'DialogTitle',
+      'DialogBody',
+      'DialogFooter',
+      'DialogClose',
       'AlertDialog',
       'Sheet',
       'Drawer',
@@ -560,6 +573,9 @@ export const componentCollections: ComponentCollection[] = [
       'Choose the lightest structure that supports the required hierarchy and interaction.',
     names: [
       'Descriptions',
+      'DescriptionItem',
+      'DescriptionTerm',
+      'DescriptionDetail',
       'Table',
       'DataTable',
       'Tree',
@@ -582,7 +598,15 @@ export const componentCollections: ComponentCollection[] = [
       'ScatterChart',
       'Heatmap',
       'RangeChart',
-      'ComboChart'
+      'ComboChart',
+      'Histogram',
+      'BulletChart',
+      'LollipopChart',
+      'DumbbellChart',
+      'WaterfallChart',
+      'CalendarHeatmap',
+      'FunnelChart',
+      'BoxPlot'
     ]
   },
   {
@@ -681,7 +705,7 @@ import '@santi020k/lumen-astro/styles.css'
   {
     body: [
       'React components mirror the same ui-* classes, data attributes, and prop names where React naming allows it.',
-      'DataTable renders the same structured row contract and VirtualList emits the shared sizing attributes for app-level adapters.',
+      'DataTable renders the same structured row contract and VirtualList provides built-in fixed-height windowing.',
       'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useKanban, useResizable, useThemeBuilder, useThemeToggle, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
@@ -751,6 +775,13 @@ const apiRow = (
   values
 })
 
+const chartDatumApiRows = [
+  apiRow('drilldown', 'boolean (Astro / Elements attribute)', 'false', 'Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Astro requires UIPrimitives; Elements owns its lifecycle.'),
+  apiRow('onDatumActivate', '(detail: LumenChartDatumActivationDetail) => void (React)', '-', 'Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.'),
+  apiRow('explore-data-label, datum-action-prefix, datumActionFormatter', 'string attributes, (context: string) => string property (Elements)', 'English labels', 'Localizes the Elements disclosure and datum actions.'),
+  apiRow('labels.exploreData, labels.formatDatumAction', 'string, (context: string) => string', 'English labels', 'Localizes the actions disclosure and each contextual datum button.')
+] as const
+
 const commonApiRows = [
   apiRow(
     'class, className', 'string', '""', 'Merges custom classes with the generated ui-* root classes.'
@@ -810,6 +841,17 @@ const rovingGroupKeyboardInteractions = keyboardRows(
 const keyboardInteractionsByComponent: Partial<
   Record<string, readonly KeyboardInteractionRow[]>
 > = {
+  BarChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  LineChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  PieChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  ScatterChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  ComboChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  Heatmap: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  RangeChart: keyboardRows(['Tab', 'Focus the actions disclosure and its native buttons in document order.'], ['Enter, Space', 'Toggle the disclosure or activate the focused datum button. Actions remain available when the data table is hidden.']),
+  WorldMap: keyboardRows(['Tab', 'Focus the native country chooser.'], ['Arrow keys', 'Choose a country using the native select.']),
+  MediaViewport: keyboardRows(['+ / -', 'Zoom in or out while the viewport is focused.'], ['Arrow keys', 'Pan the zoomed media.'], ['Home', 'Fit the media and reset pan.']),
+  MediaThumbnail: keyboardRows(['Enter / Space', 'Request selection using the named native button.']),
+  ImageComparison: keyboardRows(['Arrow keys', 'Adjust the reveal using the native range control; horizontal direction follows writing direction.'], ['Home / End', 'Reveal the full before / after image.']),
   Calendar: keyboardRows(
     [
       'Enter, Space on a day',
@@ -957,6 +999,12 @@ const keyboardInteractionsByComponent: Partial<
 }
 
 export const runtimeEvents: RuntimeEventRow[] = [
+  { name: 'ui:chart-cursor-change', target: 'LineChart', when: 'An interactive chart cursor changes through keyboard, pointer, or touch.', detail: '{ x: number | string | null }' },
+  { detail: 'LumenChartDatumActivationDetail: series { seriesId, x, y, datumId? }, heatmap { x, y, value, datumId? }, range { x, low, high, datumId? }', name: 'ui:chart-datum-activate', target: 'Astro chart figure or Elements data chart host', when: 'Fires once after a plotted datum or its native action button is activated. Requires drilldown. Astro uses UIPrimitives, Elements owns its lifecycle, and React uses onDatumActivate instead.' },
+  { detail: '{ state: "error" | "loading" | "ready" | "unavailable" }', name: 'ui:attachment-preview-change', target: 'AttachmentPreview root', when: 'Fires after a preview state changes. The event never includes the file URL.' },
+  { detail: '{ zoom: number, x: number, y: number }', name: 'ui:media-viewport-change', target: 'MediaViewport root', when: 'Reports an accepted zoom, pan or fit interaction.' },
+  { detail: '{ id: string, selected: boolean }', name: 'ui:media-selection-request', target: 'MediaThumbnail root', when: 'Requests host-owned selection; the host reflects accepted state.' },
+  { detail: '{ value: number }', name: 'ui:image-comparison-change', target: 'ImageComparison root', when: 'Fires as the native range changes the percentage of the after image revealed.' },
   {
     detail: '{ value: string }',
     name: 'ui:copy-success',
@@ -1010,6 +1058,12 @@ export const runtimeEvents: RuntimeEventRow[] = [
     name: 'ui:tag-remove',
     target: 'TagGroup root (.ui-tag-group or [data-ui-tag-group])',
     when: 'Fires after a [data-ui-tag-remove] control removes its closest tag or list item.'
+  },
+  {
+    detail: '{ command: string, executed: boolean, value?: string }',
+    name: 'ui:editor-command-request',
+    target: 'RichTextEditor root ([data-ui-rich-text-editor])',
+    when: 'Cancelable request before execution. Prevent default and set detail.executed for external engine ownership.'
   },
   {
     detail: '{ command: string, executed: boolean, value?: string }',
@@ -1101,6 +1155,19 @@ export const runtimeEvents: RuntimeEventRow[] = [
 const runtimeEventsByComponent: Partial<
   Record<string, readonly RuntimeEventRow[]>
 > = {
+  BarChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  LineChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate' || event.name === 'ui:chart-cursor-change'),
+  PieChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  ScatterChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  ComboChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  Heatmap: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  RangeChart: runtimeEvents.filter(event => event.name === 'ui:chart-datum-activate'),
+  AttachmentPreview: runtimeEvents.filter(event => event.name === 'ui:attachment-preview-change'),
+  WorldMap: [{ name: 'ui:world-map-select', target: 'WorldMap root', detail: '{ countryId: string, highlighted: boolean, label: string }', when: 'A different country is selected by pointer or native chooser.' }],
+  MediaViewport: runtimeEvents.filter(event => event.name === 'ui:media-viewport-change'),
+  MediaThumbnail: runtimeEvents.filter(event => event.name === 'ui:media-selection-request'),
+  ImageComparison: runtimeEvents.filter(event => event.name === 'ui:image-comparison-change'),
+  Cascader: runtimeEvents.filter(event => event.name === 'ui:cascader-change'),
   CopyButton: runtimeEvents.filter(event => event.name.startsWith('ui:copy-')),
   DataTable: runtimeEvents.filter(
     event => event.name === 'ui:data-table-selection-change'
@@ -1115,9 +1182,16 @@ const runtimeEventsByComponent: Partial<
     event => event.name === 'ui:schedule-change'
   ),
   TagGroup: runtimeEvents.filter(event => event.name === 'ui:tag-remove'),
+  Tabs: runtimeEvents.filter(event => event.name === 'ui:tabs-change'),
   ThemeBuilder: runtimeEvents.filter(
-    event => event.name === 'ui:theme-change' || event.name === 'ui:theme-export'
+    event => (event.name === 'ui:theme-change' && event.target.startsWith('ThemeBuilder')) ||
+      event.name === 'ui:theme-export'
   ),
+  ThemeToggle: runtimeEvents.filter(
+    event => event.name === 'ui:theme-change' && event.target.startsWith('ThemeToggle')
+  ),
+  Transfer: runtimeEvents.filter(event => event.name === 'ui:transfer-change'),
+  TreeSelect: runtimeEvents.filter(event => event.name === 'ui:tree-select-change'),
   Toast: runtimeEvents.filter(
     event => event.name === 'ui:toast' ||
       event.name === 'ui:toast-update' ||
@@ -1130,6 +1204,15 @@ const runtimeEventsByComponent: Partial<
 }
 
 const apiReferenceByComponent = {
+  DeviceFrame: [
+    apiRow('device', '"macbook-pro" | "macbook-air" | "imac" | "iphone" | "pixel" | "ipad-pro" | "laptop" | "desktop" | "android" | "tablet"', '"laptop"', 'Selects a decorative device silhouette and default screen dimensions.'),
+    apiRow('orientation', '"portrait" | "landscape"', 'device default', 'Orders the screen dimensions for the requested orientation.'),
+    apiRow('tone', '"light" | "dark"', '"dark"', 'Sets the shell tone independently of the content theme.'),
+    apiRow('color', '"white" | "black" | hex color', 'tone', 'Overrides the hardware finish. Accepts 3-, 4-, 6-, or 8-digit hex colors. Content keeps its own theme; invalid colors fall back to tone. CSS can override --ui-device-color.'),
+    apiRow('screenWidth / screenHeight', 'number', 'device preset', 'Sets the iframe layout viewport in CSS pixels; scales it to the available frame width. Elements uses screen-width and screen-height.'),
+    apiRow('scroll', 'boolean', 'true', 'Allows screen HTML to scroll. An iframe owns its own scrolling.'),
+    apiRow('children', 'Astro slot | ReactNode | child nodes', 'required', 'Provide an Image, titled iframe, or HTML. HTML shares the host viewport; iframe media queries use the screen viewport.')
+  ],
   Accordion: [
     apiRow(
       'variant', '"default" | "flush"', '"default"', 'Uses bordered cards by default or a compact, divider-led list with flush.'
@@ -1155,6 +1238,19 @@ const apiReferenceByComponent = {
     apiRow(
       'href', 'string', '-', 'Renders the root as a link when provided; otherwise renders an article.'
     )
+  ],
+  AttachmentList: [
+    apiRow('children / default slot', 'native li children', '-', 'Composes file rows with independent actions. Use Attachment without href when a row contains controls.')
+  ],
+  AttachmentPreview: [
+    apiRow('src', 'string', '-', 'Browser-owned image URL; the application owns authorization and object URL cleanup.'),
+    apiRow('alt', 'string', 'required', 'Accessible description of the image.'),
+    apiRow('contentType / content-type', 'string', '-', 'Non-image MIME types use a fallback instead of rendering an image.'),
+    apiRow('state', '"ready" | "loading" | "error" | "unavailable"', 'derived', 'Explicit loading, error and unavailable states override automatic image status.'),
+    apiRow('labels', 'Partial<LumenAttachmentPreviewLabels>', 'English labels', 'Localizes fallback messages. Elements uses error-label, loading-label and unavailable-label.'),
+    apiRow('retryKey / retry-key', 'string | number', '-', 'Changes the retry identity for the current image. Retry remains application controlled.'),
+    apiRow('caption / actions', 'React nodes / Astro named slots', '-', 'Composes a caption and independent download, replace or remove actions.'),
+    apiRow('onStateChange', '(state) => void', '-', 'React callback for transitions after the initial render; DOM adapters emit ui:attachment-preview-change with { state }.')
   ],
   Autocomplete: [
     apiRow(
@@ -1233,6 +1329,7 @@ const apiReferenceByComponent = {
     )
   ],
   BarChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries[]', 'required', 'Provides already-aggregated categorical values and stable series metadata.'
     ),
@@ -1243,7 +1340,7 @@ const apiReferenceByComponent = {
       'layout', '"grouped" | "stacked"', '"grouped"', 'Places series beside one another or combines their positive and negative totals.'
     ),
     apiRow(
-      'categoryWidth', 'number', '112', 'Reserves 64–240 SVG units for horizontal category labels.'
+      'categoryWidth', 'number', '160', 'Reserves 64–240 SVG units for horizontal category labels.'
     ),
     apiRow(
       'formatCategory, formatValue', 'formatter functions', 'String', 'Formats axes, SVG titles, and the accessible data table without changing data identity.'
@@ -1306,6 +1403,7 @@ const apiReferenceByComponent = {
     )
   ],
   Card: [
+    apiRow('density', '"compact" | "comfortable" | "spacious"', '"comfortable"', 'Controls surface inset and part spacing while preserving control sizes.'),
     apiRow(
       'as', '"div" | "article" | "section"', '"div"', 'Changes the rendered HTML element.'
     ),
@@ -1517,6 +1615,7 @@ const apiReferenceByComponent = {
     apiRow('type', 'HTML input type', '"text"', 'Sets the native input type.')
   ],
   ComboChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenComboSeries[]', '[]', 'Combines bar and line series over one ordered category domain.'
     ),
@@ -1551,6 +1650,11 @@ const apiReferenceByComponent = {
     apiRow('type', 'HTML input type', '"color"', 'Sets the native input type.')
   ],
   DataTable: [
+    apiRow('layout', '"records" | "scroll"', '"scroll"', 'Opt-in responsive record labels; rich authored Table children remain available.'),
+    apiRow('sortMode', '"client" | "manual"', '"client"', 'Manual mode requests host sorting and preserves supplied server order.'),
+    apiRow('column.render, renderDetails', 'React render callbacks', '-', 'Renders rich cells and stable record details without changing sort values.'),
+    apiRow('expandedRowIds, onExpandedRowIdsChange', 'controlled React expansion', '-', 'Preserves expansion by stable record ID across pages.'),
+    apiRow('DataTableSortControls', 'React component', '-', 'Shares controlled sort state with headers for a visible mobile sort path.'),
     apiRow(
       'columns', 'DataTableColumn[]', '[]', 'Generates table headers and maps row cells by column key when rows are provided.'
     ),
@@ -1597,6 +1701,18 @@ const apiReferenceByComponent = {
       'layout', '"centered" | "fullscreen"', '"centered"', 'Uses the standard centered panel or a viewport-filling native dialog shell.'
     ),
     ...dialogTriggerApiRows('dialog')
+  ],
+  DialogHeader: [apiRow('children', 'title and optional description', 'required', 'Keeps introductory content outside the scrolling body.')],
+  DialogTitle: [
+    apiRow('as', '"h2" | "h3" | "h4"', '"h2"', 'Matches the surrounding heading hierarchy. Elements use a native heading child.'),
+    apiRow('id', 'string', 'required for labeling', 'Reference this id from Dialog aria-labelledby. Explicit association also works before hydration.')
+  ],
+  DialogBody: [apiRow('children', 'task content', 'required', 'Scrolls long content independently when it is a direct child of Dialog.')],
+  DialogFooter: [apiRow('children', 'actions', 'required', 'Keeps actions visible. A submit button can target a form in DialogBody using its form attribute.')],
+  DialogClose: [
+    apiRow('children', 'accessible button label', 'required', 'Closes the enclosing dialog. Elements require a native button child.'),
+    apiRow('disabled / loading', 'boolean', 'false', 'Uses Button props in Astro and React. Elements set disabled on the native button.'),
+    apiRow('onClick', 'React mouse event handler', '-', 'Calling preventDefault cancels dismissal.')
   ],
   Direction: [
     apiRow(
@@ -1677,6 +1793,9 @@ const apiReferenceByComponent = {
     )
   ],
   Heatmap: [
+    apiRow('colorScale, midpoint', '"sequential" | "diverging", number', '"sequential", 0', 'Uses semantic color scales with an explicit midpoint for diverging values.'),
+    apiRow('showLegend', 'boolean', 'true', 'Shows scale endpoints and the distinct missing-data marker.'),
+    ...chartDatumApiRows,
     apiRow(
       'data', 'LumenHeatmapDatum[]', '[]', 'Provides labelled row, column, and intensity values for the heatmap cells.'
     ),
@@ -1701,6 +1820,52 @@ const apiReferenceByComponent = {
     apiRow(
       'size', '"default" | "sm" | "lg" | "xl"', '"default"', 'Controls the icon box size.'
     )
+  ],
+  WorldMap: [
+    apiRow('initialView', '"world" | "highlighted"', '"world"', 'Fits highlighted country geometry on enhancement. The Fit highlighted countries button repeats the fit; reset restores the world. Elements uses initial-view.'),
+    apiRow('zoomable', 'boolean', 'true', 'Shows zoom, fit, and reset controls. Buttons use 50% steps from 100% to 800%. Ctrl/Cmd-scroll zooms toward the cursor; drag or scroll to explore.'),
+    apiRow('zoomLabels', 'Partial<LumenWorldMapZoomLabels>', 'English labels', 'Localizes zoomIn, zoomOut, reset, level, fit and viewport. Elements accepts zoom-labels JSON.'),
+    apiRow('countries', 'readonly LumenWorldMapCountryGeometry[]', 'required', 'Import lumenWorldMapCountries explicitly from @santi020k/lumen-core/world-map-data. Custom geometry uses the fixed 1000 × 400 projection.'),
+    apiRow('label', 'string', 'required', 'Provides the accessible name for the map image.'),
+    apiRow('highlightedCountries', 'readonly string[]', '[]', 'Country codes to highlight; unknown codes and duplicates are dropped. Elements also accepts highlighted-countries as JSON.'),
+    apiRow('variant', '"dotted" | "solid"', '"dotted"', 'Chooses the map appearance.'),
+    apiRow('markers', 'readonly LumenWorldMapMarker[]', '[]', 'Labeled points with id, latitude and longitude. Invalid or off-map points are dropped.'),
+    apiRow('labels / listLabel', 'Record<string, string> / string', 'country names / "Choose a country"', 'Localizes country names and the native chooser. Elements uses labels JSON and list-label.'),
+    apiRow('selectedCountry', 'string', '-', 'Initial selection in Astro, reflected selected-country in Elements, controlled selection in React; React also supports defaultSelectedCountry.'),
+    apiRow('interactive / animated', 'boolean', 'true', 'Enable country selection and motion separately. Reduced motion disables animation automatically.'),
+    apiRow('onCountrySelect', '(detail: LumenWorldMapSelectDetail) => void', '-', 'React callback; Astro and Elements emit ui:world-map-select with countryId, highlighted and label.'),
+    apiRow('heading / description / caption', 'string', '-', 'Optional Astro and React figure content. Elements supports authored content outside the map.'),
+    apiRow('CSS variables', '--ui-world-map-land / --ui-world-map-highlight / --ui-world-map-marker / --ui-world-map-surface', 'semantic tokens', 'Accept any CSS color to customize the map while preserving theme defaults.')
+  ],
+  MediaThumbnail: [
+    apiRow('label / children', 'string / media content', 'required', 'Supplies a visible, accessible name and decorative media. Do not nest interactive controls in the thumbnail button.'),
+    apiRow('selected / order', 'boolean / positive integer', 'false / omitted', 'Shows pressed selection and an optional visible ordinal. Selection stays application-owned.'),
+    apiRow('mediaId', 'string', 'required in Astro / media-id in Elements', 'Identifies ui:media-selection-request detail { id, selected }. React uses the existing onClick callback.'),
+    apiRow('state / stateLabel / disabled', '"ready" | "loading" | "error" / string / boolean', '"ready" / English fallback / false', 'Loading and failed media retain framing and disable selection. Localize stateLabel for non-ready items.')
+  ],
+  MediaFilmstrip: [
+    apiRow('label / selectionLabel', 'string', 'required', 'Names the ordered collection and exposes a localized selection count or summary in a status region. Elements uses selection-label.'),
+    apiRow('children', 'native li elements', 'required', 'Each list item contains MediaThumbnail plus optional sibling move buttons. Never nest move buttons inside the thumbnail. Use moveLumenMediaItem and stable IDs to accept reorder requests.')
+  ],
+  MediaViewport: [
+    apiRow('label / labels', 'string / Partial<LumenMediaViewportLabels>', 'required / English action labels', 'Names the preview and localizes visible actions. Elements exposes a labels property.'),
+    apiRow('value / defaultValue', 'LumenMediaViewportValue / Partial<LumenMediaViewportValue>', 'fit at zoom 1', 'Zoom is relative to fit; x and y are bounded fractions (-1 to 1) of the pan extent. React value is controlled; defaultValue initializes local state. Astro value initializes data-zoom, data-pan-x and data-pan-y. Elements value is a reflected property.'),
+    apiRow('maxZoom / ratio', 'number', '4 / 16:9', 'Zoom limits normalize into 1–16. Preview ratio accepts 0.1–10; invalid ratios fall back to 16:9. Elements uses max-zoom.'),
+    apiRow('onValueChange', '(value: LumenMediaViewportValue) => void', '-', 'React callback; Astro and Elements emit ui:media-viewport-change with { zoom, x, y }.'),
+    apiRow('disabled / locale', 'boolean / string', 'false / environment locale', 'Disables gestures and actions; formats visible zoom percentage. Astro actions stay disabled until enhancement.'),
+    apiRow('children', 'media content', 'required', 'Supplies an image or noninteractive media view with meaningful alternative text. Loading, caching, retries and editing remain consumer-owned.')
+  ],
+  ImageComparison: [
+    apiRow('label', 'string', 'required', 'Provides the visible label for the native comparison range control.'),
+    apiRow('before / after', 'named Astro slots | ReactNode props | slotted child nodes', 'required', 'Supplies media with matching framing and meaningful alternative text. Media is clipped, never resized as the range moves.'),
+    apiRow('beforeLabel / afterLabel', 'string', '"Before" / "After"', 'Labels each side. Elements uses before-label and after-label attributes.'),
+    apiRow('value / defaultValue', 'number', '50', 'Percentage of the after image revealed (0–100). React value is controlled; defaultValue initializes local state. Astro value is the initial position; Elements value is reflected.'),
+    apiRow('onValueChange', '(value: number) => void', '-', 'React callback for user changes. Astro and Elements emit ui:image-comparison-change with { value }.'),
+    apiRow('ratio', 'number', '16 / 9', 'Sets a shared positive finite aspect ratio. Invalid values fall back to 16 / 9.'),
+    apiRow('fit', '"cover" | "contain"', '"cover"', 'Applies the same media fit to both layers.'),
+    apiRow('disabled', 'boolean', 'false', 'Disables the native range without hiding either image. Astro keeps the range disabled until UIPrimitives enhances the static comparison.'),
+    apiRow('locale', 'string', 'environment locale', 'Formats the accessible percentage. Localize label, beforeLabel, and afterLabel separately.'),
+    apiRow('mode', '"reveal" | "side-by-side" | "before" | "after"', '"reveal"', 'Changes the view without replacing media or resetting the reveal. Alternate views hide and disable the range. Change data-mode in enhanced Astro, mode in Elements, or the React prop.')
   ],
   Image: [
     apiRow(
@@ -1873,7 +2038,78 @@ const apiReferenceByComponent = {
       'target, rel', 'anchor attributes', '-', 'Forwards native navigation and relationship attributes.'
     )
   ],
+  LollipopChart: [
+    apiRow('data', 'readonly LumenComparisonDatum[]', 'required', 'Unique non-empty id, label, nullable finite value, and optional tone. Input order is preserved; reference is not plotted.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Must include zero and every displayed measurement.'),
+    apiRow('formatValue', '(value: number) => string', 'String', 'Formats numeric values, ticks, and exact data. Keep the source data numeric.'),
+    apiRow('labels', 'Partial<LumenChartLabels>', 'English', 'Localizes unavailable, empty, invalid-data, and data-disclosure text.'),
+    apiRow('valueLabel', 'string', 'labels.value', 'Names the measured value in the row header and exact table.'),
+    apiRow('heading, description, caption, summary', 'string', 'unset', 'Supplies visible context, a caption, and an optional screen-reader summary.'),
+    apiRow('presentation', '"default" | "bare"', '"default"', 'Uses bare inside a parent surface that already provides padding and a border.'),
+    apiRow('aria-label', 'string', 'unset', 'Names the chart figure; include the measurement and reporting period.'),
+    apiRow('showTable', 'boolean', 'true', 'Keeps the keyboard-accessible exact data disclosure available.')
+  ],
+  DumbbellChart: [
+    apiRow('data', 'readonly LumenComparisonDatum[]', 'required', 'Unique non-empty id, label, nullable finite value, optional nullable reference and tone. Input order is preserved.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Must include zero and every displayed measurement.'),
+    apiRow('formatValue', '(value: number) => string', 'String', 'Formats numeric values, ticks, and exact data. Keep the source data numeric.'),
+    apiRow('labels', 'Partial<LumenChartLabels>', 'English', 'Localizes unavailable, empty, invalid-data, and data-disclosure text.'),
+    apiRow('valueLabel, referenceLabel', 'string', 'Value / Before', 'Names the current and reference observations. Missing endpoints are never converted to zero.'),
+    apiRow('heading, description, caption, summary', 'string', 'unset', 'Supplies visible context, a caption, and an optional screen-reader summary.'),
+    apiRow('presentation', '"default" | "bare"', '"default"', 'Uses bare inside a parent surface that already provides padding and a border.'),
+    apiRow('aria-label', 'string', 'unset', 'Names the chart figure; include the measurement and reporting period.'),
+    apiRow('showTable', 'boolean', 'true', 'Keeps the keyboard-accessible exact data disclosure available.')
+  ],
+  CalendarHeatmap: [
+    apiRow('data', 'readonly LumenCalendarHeatmapDatum[]', 'required', 'ISO date-only identities and nullable finite values. Omitted dates remain missing.'),
+    apiRow('startDate, endDate', 'YYYY-MM-DD', 'required', 'Inclusive Gregorian range, at most 3660 days. Duplicate or out-of-range observations are invalid.'),
+    apiRow('weekStartsOn', '0 | 1', '0', 'Sunday or Monday. weekdayLabels always uses Sunday-first indexing.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Finite increasing domain enclosing every supplied observation.'),
+    apiRow('formatDate, formatValue, weekdayLabels, labels', 'Formatters and localized labels', 'date identity / English', 'Formats the date range, axes, summary and exact data alternative.'),
+    apiRow('showTable', 'boolean', 'true', 'Shows a keyboard-accessible table; hidden tables retain an exact screen-reader alternative.')
+  ],
+  FunnelChart: [
+    apiRow('data', 'readonly LumenFunnelDatum[]', 'required', 'Unique nonempty id and label with a nullable nonnegative finite value. Preserves input order.'),
+    apiRow('formatValue, labels', 'Formatter and chart labels', 'String / English', 'Uses the same units for visible values and accessible data.'),
+    apiRow('showTable', 'boolean', 'true', 'Shows exact stage values. Lumen does not infer conversion percentages.')
+  ],
+  BoxPlot: [
+    apiRow('data', 'readonly LumenBoxPlotDatum[]', 'required', 'Precomputed min, q1, median, q3, max and optional outliers. All five null represents a missing summary.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Includes all whiskers, quartiles and outliers. Invalid or unordered summaries fail closed.'),
+    apiRow('formatValue, statisticLabels, labels', 'Formatter and localized labels', 'English', 'Names and formats every statistic in visible and accessible content.'),
+    apiRow('showTable', 'boolean', 'true', 'Retains exact statistics and outliers in a keyboard-accessible data disclosure.')
+  ],
+  BulletChart: [
+    apiRow('value, target', 'number | null, number', 'required', 'Compares a measured value with a target. Null is unavailable, zero remains a real value.'),
+    apiRow('ranges', 'LumenBulletRange[]', '[]', 'Uses labeled, finite, unique range ends. Ranges are sorted without mutating input.'),
+    apiRow('domain', 'LumenChartDomain', 'automatic', 'Must include zero, the actual value, target, and all range ends. Invalid input fails closed.'),
+    apiRow('formatValue, valueLabel, targetLabel, labels', 'formatters and labels', 'String, Value, Target', 'Localizes the visible values and exact data inspection.'),
+    apiRow('heading, description, caption, summary', 'string', 'unset', 'Supplies visible context, a caption, and an optional screen-reader summary.'),
+    apiRow('presentation', '"default" | "bare"', '"default"', 'Uses bare inside a parent surface that already provides padding and a border.'),
+    apiRow('aria-label', 'string', 'unset', 'Names the chart figure; include the measurement and reporting period.'),
+    apiRow('showTable', 'boolean', 'true', 'Exposes the actual, target, and exact range boundaries.')
+  ],
+  Histogram: [
+    apiRow('bins', 'LumenHistogramBin[]', 'required', 'Supplies non-overlapping numeric start/end boundaries and nonnegative counts. The application owns binning.'),
+    apiRow('frequency', '"count" | "density"', '"count"', 'Density divides count by bin width. Unequal-width bins require density.'),
+    apiRow('formatBoundary, formatValue', 'formatter functions', 'String', 'Formats numeric boundaries and the plotted frequency.'),
+    apiRow('valueLabel, labels', 'string, Partial<LumenChartLabels>', 'localized defaults', 'Labels the measure and the accessible data table.'),
+    apiRow('showTable', 'boolean', 'true', 'Retains raw bin counts alongside the plotted frequency.')
+  ],
+  WaterfallChart: [
+    apiRow('data', 'LumenWaterfallDatum[]', 'required', 'Supplies stable IDs, labels, signed changes, and optional explicit total checkpoints.'),
+    apiRow('formatValue', 'formatter function', 'String', 'Formats chart values and start/end balances consistently.'),
+    apiRow('valueLabel, labels', 'string, Partial<LumenChartLabels>', 'localized defaults', 'Labels the measure and the accessible data table.'),
+    apiRow('showTable', 'boolean', 'true', 'Shows each supplied change and the resulting start/end balance.')
+  ],
   LineChart: [
+    apiRow('xScale', '"categorical" | "linear" | "time"', '"categorical"', 'Uses numeric or elapsed-time spacing, sorted against one shared X domain. Format dates explicitly for the application locale and time zone.'),
+    apiRow('domain, xDomain', 'Partial<LumenChartDomain>', 'automatic', 'Sets finite axis bounds shared by all series.'),
+    apiRow('interactive, syncGroup', 'boolean, string', 'false, unset', 'Enables keyboard/pointer/touch inspection, toggled legends, and exact-X cursor synchronization. Astro requires UIPrimitives.'),
+    apiRow('annotations', 'LumenChartAnnotation[]', '[]', 'Places labeled X events or Y reference lines in data coordinates.'),
+    apiRow('cursor, onCursorChange', 'React cursor identity and callback', 'uncontrolled', 'React can supply the active X identity and receive cursor changes. Astro and Elements emit ui:chart-cursor-change.'),
+    apiRow('width, height', 'number', '640, 320', 'Sets the SVG coordinate dimensions; narrow plots retain internal scrolling.'),
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries[]', 'required', 'Provides ordered, already-aggregated points; null y values create visible gaps.'
     ),
@@ -1906,6 +2142,8 @@ const apiReferenceByComponent = {
     )
   ],
   MessageScroller: [
+    apiRow('autoScroll / auto-scroll', 'boolean', 'false', 'Follows new messages only while the reader is at the end; keyed data-ui-message-item rows preserve position on prepend.'),
+    apiRow('scrollThreshold / scroll-threshold', 'number', '32', 'Distance in pixels considered near the end.'),
     apiRow(
       'children', 'Message elements or activity rows', 'required', 'Provides the ordered feed inside the scrollable region.'
     )
@@ -1935,6 +2173,15 @@ const apiReferenceByComponent = {
       'variant', '"default" | "unstyled"', '"default"', 'Keeps navigation semantics and roving focus while removing Lumen container and child presentation.'
     )
   ],
+  AmountField: [
+    apiRow('value / defaultValue', 'string', 'empty', 'ASCII decimal drafts; values remain exact strings, never floating-point amounts.'),
+    apiRow('locale', 'string', 'en-US', 'Controls display separators and localized digits; paste uses this locale.'),
+    apiRow('fractionDigits / fraction-digits', 'integer 0–20', '2', 'Rejects excess precision without rounding.'),
+    apiRow('allowNegative / allow-negative', 'boolean', 'false', 'Allows negative drafts when enabled.'),
+    apiRow('name', 'string', 'undefined', 'Submits complete ASCII decimal strings through the hidden native input.'),
+    apiRow('onValueChange / ui:amount-change', 'draft, { draft, value }', 'undefined', 'Returns editable drafts and a complete value when available.'),
+    apiRow('invalidMessage / invalid-message', 'string', 'English', 'Localizes incomplete or rejected input validation.')
+  ],
   NumberField: [
     apiRow(
       'type', 'HTML input type', '"number"', 'Sets the native input type.'
@@ -1949,6 +2196,10 @@ const apiReferenceByComponent = {
     )
   ],
   PhoneInput: [
+    apiRow('id / input-id', 'string', 'Generated', 'Associates a visible label with the number input; Web Components use input-id.'),
+    apiRow('inputProps / inputRef', 'input attributes / React ref', '-', 'Passes native number-input attributes and exposes its ref without DOM patches.'),
+    apiRow('disabled / readOnly / required', 'boolean', 'false', 'Locks both controls when disabled or read-only and supports native required validation.'),
+    apiRow('errorMessage / showValidationError', 'string / boolean', '- / true', 'Shows an associated field error or metadata validation feedback.'),
     apiRow(
       'countries', 'Array<string | { label, value, disabled? }>', 'International metadata', 'Overrides the generated country choices for legacy or specialized forms.'
     ),
@@ -1981,6 +2232,7 @@ const apiReferenceByComponent = {
     )
   ],
   PieChart: [
+    ...chartDatumApiRows,
     apiRow(
       'series', 'LumenChartSeries', 'required', 'Provides one already-aggregated series whose positive finite data points become slices.'
     ),
@@ -2035,6 +2287,7 @@ const apiReferenceByComponent = {
     )
   ],
   RangeChart: [
+    ...chartDatumApiRows,
     apiRow(
       'data', 'LumenRangeDatum[]', '[]', 'Provides ordered low and high values for each interval.'
     ),
@@ -2074,6 +2327,11 @@ const apiReferenceByComponent = {
     )
   ],
   ScatterChart: [
+    ...chartDatumApiRows,
+
+    apiRow('formatX, formatY', 'formatter callbacks', 'String, formatValue', 'Formats independent units without altering numeric geometry.'),
+    apiRow('xDomain, domain', 'Partial<LumenChartDomain>', 'derived', 'Provides explicit X and Y bounds; log X requires positive increasing values.'),
+    apiRow('references', 'readonly LumenScatterReference[]', '[]', 'Draws labeled reference lines or regions using the same scales as points.'),
     apiRow(
       'series', 'LumenChartSeries[]', '[]', 'Provides x/y points with optional labels and bubble sizes.'
     ),
@@ -2134,6 +2392,9 @@ const apiReferenceByComponent = {
     )
   ],
   RichTextEditor: [
+    apiRow(
+      'data-ui-editor-native-state', 'boolean string', '"true"', 'Set false when an external engine owns toolbar state; React commandHandler disables it by default.'
+    ),
     apiRow(
       'data-ui-editor-command', 'string', '-', 'Runs formatting, block, alignment, history, link, list, or custom commands and emits ui:editor-command.'
     ),
@@ -2238,6 +2499,7 @@ const apiReferenceByComponent = {
     )
   ],
   Tabs: [
+    apiRow('indicator', 'boolean', 'false', 'Adds a decorative moving marker to the selected tab. System and local reduced motion keep selection immediate.'),
     apiRow(
       '[role="tablist"]', 'child container', 'required', 'Groups the tab controls.'
     ),
@@ -2356,11 +2618,15 @@ const apiReferenceByComponent = {
     )
   ],
   VirtualList: [
+    apiRow('mode', '"mounted" | "data"', '"mounted"', 'Astro/Elements: initialize an empty data-mode root for the Core collection controller.'),
+    apiRow('items', 'readonly T[]', '-', 'React: enable data rendering with immutable records; do not supply children.'),
+    apiRow('getKey', '(item: T, index: number) => string | number', '-', 'React data mode: stable unique item identity.'),
+    apiRow('renderItem', '(item: T, index: number) => ReactNode', '-', 'React data mode: render only the visible window and focused neighbors.'),
     apiRow(
-      'itemSize', 'number | string', '-', 'Fixed size for items if all are uniform height/width. Used for virtual scroll calculation.'
+      'itemSize', 'number | string', '-', 'Fixed row height in pixels (default 44). Default mode retains mounted rows; data mode mounts a bounded window.'
     ),
     apiRow(
-      'overscan', 'number | string', '-', 'Number of items to render outside the viewport.'
+      'overscan', 'number | string', '-', 'Extra rows displayed on each side (default 4). Focused rows and neighbors remain available.'
     )
   ],
   Particles: [
@@ -2514,6 +2780,9 @@ const apiReferenceByComponent = {
   ],
   FileUpload: [
     apiRow(
+      'selectedFilesLabel', 'string', '"{count} files selected"', 'Localizes the multiple-file announcement. Use {count} for the count; Elements uses selected-files-label.'
+    ),
+    apiRow(
       'label', 'string', '"Choose a file"', 'Sets the visible upload action label.'
     ),
     apiRow(
@@ -2559,6 +2828,9 @@ const apiReferenceByComponent = {
       'aria-label, aria-labelledby', 'string', '-', 'Provides the toolbar accessible name.'
     )
   ],
+  DescriptionItem: [apiRow('children', 'rich content', 'required', 'Composes a description item. Astro and React render div; Elements expose group semantics on the host.')],
+  DescriptionTerm: [apiRow('children', 'rich content', 'required', 'Composes a description term. Astro and React render dt; Elements expose term semantics on the host.')],
+  DescriptionDetail: [apiRow('children', 'rich content', 'required', 'Composes a description detail. Astro and React render dd; Elements expose definition semantics on the host.')],
   Descriptions: [
     apiRow(
       'items', 'Array<{ label, value }>', '[]', 'Defines the labelled facts.'
@@ -2654,7 +2926,7 @@ const apiReferenceByComponent = {
       'as', '"article" | "div" | "main" | "section"', '"div"', 'Changes the semantic root.'
     ),
     apiRow(
-      'size', '"sm" | "md" | "lg" | "full"', '"lg"', 'Controls the maximum inline size.'
+      'size', '"sm" | "md" | "lg" | "full"', '"lg"', 'Controls the maximum inline size. Fluid side gutters grow from group to section spacing; full remains edge-to-edge.'
     )
   ],
   ErrorSummary: [
@@ -2692,7 +2964,7 @@ const apiReferenceByComponent = {
       'columns', '1 | 2 | 3 | 4 | 6 | 12 | "auto"', '"auto"', 'Controls the preferred column count.'
     ),
     apiRow(
-      'gap', '"none" | "sm" | "md" | "lg" | "xl"', '"md"', 'Controls spacing between items.'
+      'gap', '"none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "related" | "group" | "section"', '"group"', 'Controls spacing between items.'
     ),
     apiRow(
       'minItemWidth', 'CSS length', '-', 'Sets the responsive minimum item width in auto mode.'
@@ -2735,11 +3007,72 @@ const apiReferenceByComponent = {
       'direction', '"horizontal" | "vertical"', '"vertical"', 'Controls the primary layout axis.'
     ),
     apiRow(
-      'gap', '"none" | "sm" | "md" | "lg" | "xl"', '"md"', 'Controls spacing between children.'
+      'gap', '"none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "related" | "group" | "section"', '"group"', 'Controls spacing between children.'
     ),
     apiRow(
       'align, justify, wrap', 'layout props', 'stretch, start, false', 'Controls cross-axis alignment, distribution, and wrapping.'
     )
+  ],
+  ChangeSummary: [
+    apiRow('items', 'readonly LumenChangeSummaryItem[]', '[]', 'Explicit IDs, labels, before/after display values, and application-owned changed state.'),
+    apiRow('label, summary', 'string', 'Changes, optional', 'Names the comparison and supplies localized count text.'),
+    apiRow('beforeLabel, afterLabel, changedLabel, unchangedLabel', 'string', 'English labels', 'Localizes the visible comparison labels.')
+  ],
+  FilterBar: [
+    apiRow('label, resultLabel', 'string', 'Filters, optional', 'Names filters and announces a complete localized result count.'),
+    apiRow('pending, open', 'boolean', 'false, true', 'Marks pending results and controls the native disclosure.'),
+    apiRow('default slot, active slot, actions slot', 'content', 'optional', 'Composes public search/select controls, removable filters, and reset actions. The application owns requests and persistence.')
+  ],
+  ChartMotion: [
+    apiRow('duration', '\'fast\' | \'standard\' | \'slow\'', 'standard', 'Shared timing for decorative SVG updates. Accessible data updates immediately.')
+  ],
+  MotionGroup: [
+    apiRow('duration', '"fast" | "standard" | "slow"', '"standard"', 'Uses the shared duration and easing tokens for keyed layout updates.'),
+    apiRow('enterExit', 'boolean', 'true', 'Adds finite entrance and exit fades. Elements uses enter-exit="false" to disable them.'),
+    apiRow('data-ui-motion-key', 'unique string on each direct child', 'required for animated items', 'Preserves identity while applications add, remove, or reorder direct children. Duplicate identities skip ambiguous animation.'),
+    apiRow('UIPrimitives / reduced motion', 'Astro runtime / system preference', '-', 'Astro loads the controller only when the group exists. React and Elements own their lifecycle. Reduced motion keeps immediate DOM changes.')
+  ],
+  VisualEffect: [
+    apiRow('variant', '"mesh" | "aurora" | "spotlight" | "grain" | "border" | "draw" | "depth"', '"mesh"', 'Selects a token-based decorative treatment behind ordinary readable content.'),
+    apiRow('intensity', 'number (0–1)', '0.5', 'Bounds effect strength; nonfinite values use the default.'),
+    apiRow('animated', 'boolean', 'false', 'Opts into aurora movement, SVG path drawing, or scroll-linked depth. System and local reduced motion disable animation.'),
+    apiRow('draw children', 'SVG paths with pathLength="1"', '-', 'Normalizes drawing lengths without measuring or rewriting application-owned SVG paths.'),
+    apiRow('UIPrimitives', 'Astro runtime', 'spotlight only', 'Enhances pointer tracking. Other variants retain CSS or static fallbacks without a runtime.')
+  ],
+  ApprovalCard: [
+    apiRow('requestId', 'string', 'required', 'Identifies the application-owned proposal. Elements uses request-id.'),
+    apiRow('label, statusLabel', 'string', 'required', 'Names the proposal and gives localized, visible decision status.'),
+    apiRow('status', '"pending" | "approved" | "rejected"', '"pending"', 'Application-controlled decision state; completed proposals disable their actions.'),
+    apiRow('disabled', 'boolean', 'false', 'Disables both decision controls.'),
+    apiRow('approveLabel, rejectLabel', 'string', 'Approve, Reject', 'Localizes action labels.'),
+    apiRow('onResponse / ui:approval-response', '{ requestId: string; response: "approve" | "reject" }', '-', 'React callback or cancelable Astro/Elements runtime event. A decision event never authorizes or executes the actual operation.')
+  ],
+  PromptComposer: [
+    apiRow('label, sendLabel, stopLabel', 'string', 'Message, Send, Stop', 'Localizes the textarea and actions.'),
+    apiRow('value / defaultValue', 'string', 'empty', 'React supports controlled value and initial defaultValue. Astro value initializes the native textarea; Elements exposes a mutable value property.'),
+    apiRow('maxLength', 'positive integer', '4000', 'Bounds submission and the native textarea. Elements uses max-length. Blank or over-limit messages cannot submit.'),
+    apiRow('pending, disabled', 'boolean', 'false', 'Pending prevents another submission and reveals Stop. Disabled also prevents editing and stopping.'),
+    apiRow('submitOnEnter', 'boolean', 'false', 'Opts into Enter submission. Shift, other modifiers, composition, and canceled keys preserve normal textarea behavior.'),
+    apiRow('onPromptSubmit / ui:prompt-submit', '{ text: string }', '-', 'React callback or cancelable runtime event carrying trimmed text. Applications own transport and validation.'),
+    apiRow('onStop / ui:prompt-stop', 'callback / event', '-', 'Requests application-owned cancellation; the library does not abort a network request itself.'),
+    apiRow('action', 'native form destination', '-', 'An explicit action retains native POST submission. Without an action, UIPrimitives prevents navigation and emits the event bridge.')
+  ],
+  SourceCitation: [
+    apiRow('href, label', 'string', 'required', 'Provides a meaningful source link. Unsafe destinations render a text label without a link.'),
+    apiRow('destination policy', 'HTTP(S) URL or local absolute path', '-', 'Rejects executable schemes, credentials, protocol-relative paths, control characters, and backslashes.'),
+    apiRow('target', 'native anchor target', 'same context', 'External new-tab links carry noopener noreferrer.')
+  ],
+  StreamMessage: [
+    apiRow('label', 'string', 'Assistant', 'Names the message article.'),
+    apiRow('status', '"idle" | "streaming" | "complete" | "error" | "canceled"', '"idle"', 'Marks the content busy during streaming without announcing every token.'),
+    apiRow('statusLabel', 'string', 'required', 'Announces a localized state change separately from streamed content.'),
+    apiRow('content / text', 'children / Elements text property', '-', 'Applications render or append safely parsed content. Elements text replaces the content with plain text; the library never parses provider HTML.'),
+    apiRow('actions, sources', 'named Astro/Elements slots or ReactNode props', '-', 'Composes retry, stop, copy, and source citation controls owned by the application.')
+  ],
+  ToolActivity: [
+    apiRow('label, statusLabel', 'string', 'required', 'Names the actual application tool step and its localized status.'),
+    apiRow('status', '"queued" | "running" | "success" | "error" | "canceled"', '"queued"', 'Application-owned execution state.'),
+    apiRow('open', 'boolean', 'false', 'Controls a native keyboard-operable disclosure. Children describe observable tool results.')
   ],
   VisuallyHidden: [
     apiRow(
@@ -2752,6 +3085,42 @@ const apiReferenceByComponent = {
 } satisfies Record<LumenComponentName, readonly ComponentApiRow[]>
 
 const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
+  CalendarHeatmap: {
+    when: 'Use for daily observations where calendar position reveals a pattern. Supply strict date-only identities and an inclusive date range; missing days remain unavailable.',
+    distinction: 'Use Heatmap for an arbitrary matrix or LineChart for precise elapsed-time comparison. Format date-only identities with an explicit time zone to avoid shifting a day.'
+  },
+  FunnelChart: {
+    when: 'Use to compare nonnegative counts across ordered stages for a consistent cohort and time window. The supplied stage order is retained.',
+    distinction: 'Use BarChart for unrelated categories. The application defines conversion rates, cohort membership, and aggregation; Lumen does not infer them.'
+  },
+  BoxPlot: {
+    when: 'Use to compare precomputed distributions: quartiles, a median, whisker bounds, and explicit outliers. Apply the same statistical method to every group.',
+    distinction: 'Use Histogram to show bin counts or RangeChart for low/high intervals. min and max are whisker bounds; a custom domain must also enclose outliers.'
+  },
+  LollipopChart: {
+    when: 'Use for one value per category when ranking or comparing magnitudes on a shared zero-based scale. The application owns row order; sort before passing data.',
+    distinction: 'Use DumbbellChart for paired observations and BarChart for grouped or stacked series. Keep null measurements distinct from zero, and retain the exact data disclosure.'
+  },
+  DumbbellChart: {
+    when: 'Use to compare two observations per category in the same unit. Name both endpoints with referenceLabel and valueLabel; outlined and filled dots distinguish their roles.',
+    distinction: 'Use LineChart for a sequence of observations and BulletChart for one value against a target. A missing endpoint stays unavailable and does not produce a connector.'
+  },
+  BulletChart: {
+    when: 'Use to compare a measured value with a target and optional labeled performance ranges. Describe the unit and period, and keep the actual value distinct from a percent-of-target score.',
+    distinction: 'Use DumbbellChart to compare pairs across categories. An explicit bullet domain must contain zero, the actual, the target, and every range end; ranges do not infer success or failure.'
+  },
+  Card: {
+    when: 'Use for a distinct content surface. Card owns its inset and the gap between its visible parts; choose compact, comfortable or spacious density.',
+    distinction: 'Use Stack for unframed content groups. Use CardHeader, CardContent and CardFooter without extra external margins; nest Stack inside the body and let footer actions wrap. Card permits interactive overflow; use AspectRatio for media clipping.'
+  },
+  Stack: {
+    when: 'Use for a sequence of related content or controls. The parent owns sibling spacing; choose related, group or section gaps by content relationship.',
+    distinction: 'Use Grid for multiple columns and Field for label/control/feedback. Keep text rhythm inside Prose or Typography rather than adding another sibling gap.'
+  },
+  Grid: {
+    when: 'Use for responsive peer groups in columns. Choose canonical or semantic gaps and a minimum item width based on content.',
+    distinction: 'Use Stack for one sequence. Grid owns direct-child external spacing; keep surface padding inside each Card.'
+  },
   Accordion: {
     when: 'Use for a list of related sections when people may open and compare more than one section. Use the flush variant for FAQs and content-led lists.',
     distinction:
@@ -2838,9 +3207,9 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
       'It styles a paragraph and does not replace a semantic heading or act as a status Badge.'
   },
   Field: {
-    when: 'Use to group a form control with its label, description, and validation errors.',
+    when: 'Use to group a form control with its label, description, and validation errors. Field owns their related spacing; associate labels and descriptions with the control.',
     distinction:
-      'Use Field as the structural container for form elements, and Input for the interactive control itself.'
+      'Use Field as the structural container and Input as the interactive control. Use Stack between separate fields; do not add another gap or child margin inside the same Field relationship.'
   },
   FloatingBadge: {
     when: 'Use for a high-emphasis count or notification positioned over an icon, avatar, or control.',
@@ -3004,6 +3373,131 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
   }
 }
 
+const adapterNotesByComponent: Partial<Record<LumenComponentName, readonly FrameworkUsageNote[]>> = {
+  LollipopChart: [{ framework: 'Elements', text: 'Register LollipopChart, assign numeric rows to the data property or a JSON data attribute, and use domain-min/domain-max for a shared scale. Assign a function to valueFormatter for units; functions cannot be HTML attributes.' }],
+  DumbbellChart: [{ framework: 'Elements', text: 'Register DumbbellChart and assign rows with value and reference through the data property or a JSON data attribute. Use reference-label/value-label for the endpoint names and the valueFormatter property for units.' }],
+  BulletChart: [{ framework: 'Elements', text: 'Register BulletChart. Use numeric value/target attributes and a ranges property or JSON attribute; assign valueFormatter as a function. Remove the value attribute, or set the value property to null, for an unavailable observation.' }],
+  DataTable: [{
+    framework: 'React',
+    text: 'The React example demonstrates data rendering and sortable columns. The selection-count listener in the Astro demo is tied to Astro runtime events and is omitted from the React example.'
+  }],
+  KanbanBoard: [{
+    framework: 'React',
+    text: 'Connect useKanban to the board, columns, cards, and handles. Your application owns persistence and decides whether a requested move is accepted.'
+  }],
+  KanbanColumn: [{
+    framework: 'React',
+    text: 'Use a column inside KanbanBoard and connect both through useKanban. The example is shared with the board and hook reference.'
+  }],
+  RichTextEditor: [{
+    framework: 'React',
+    text: 'Connect useRichTextEditor rootProps, getCommandProps, and getEditableProps. The same example appears in the hook reference.'
+  }],
+  Schedule: [{
+    framework: 'React',
+    text: 'Connect slots and events with useSchedule. The application owns persistence; the hook reference supplies the same example.'
+  }],
+  ThemeBuilder: [{
+    framework: 'React',
+    text: 'Connect useThemeBuilder to the root, hue controls, output, and export button. Preview tokens are scoped through previewStyle; the hook reference supplies the same example.'
+  }],
+  AlertDialog: [{
+    framework: 'React',
+    text: 'Control open and onOpenChange with React state. Keep the actual destructive action in your application; the example only previews confirmation.'
+  }],
+  ContextMenu: [{
+    framework: 'React',
+    text: 'Spread useContextMenu triggerProps and menuProps onto the trigger button and menu. Astro trigger attributes do not connect the React components.'
+  }],
+  Drawer: [{
+    framework: 'React',
+    text: 'Use useDialog to connect triggerProps, dialogProps, and closeProps. The hook owns modal behavior while Drawer supplies the surface.'
+  }],
+  Sheet: [{
+    framework: 'React',
+    text: 'Use useDialog to connect triggerProps, dialogProps, and closeProps. The hook owns modal behavior while Sheet supplies the surface.'
+  }],
+  AnimatedPortrait: [{
+    framework: 'React',
+    text: 'Compose Image inside AnimatedPortrait. The React container does not accept the Astro image or floating-badge props.'
+  }],
+  ButtonLink: [{
+    framework: 'React',
+    text: 'Use standard target, rel, and aria-label attributes. Compose Icon as a child for an arrow; showArrow and newTab belong to the Astro adapter.'
+  }],
+  Combobox: [{
+    framework: 'React',
+    text: 'React options are strings. For separate labels and submitted values, use Select or compose the behavior hook instead.'
+  }],
+  CoverImage: [{
+    framework: 'React',
+    text: 'Compose Image inside CoverImage. Pass image dimensions, alt text, and loading behavior to Image rather than to the container.'
+  }],
+  Dialog: [{
+    framework: 'React',
+    text: 'Control open and onOpenChange with React state. Astro trigger attributes do not connect a React button to a dialog.'
+  }],
+  PhoneInput: [{
+    framework: 'React',
+    text: 'Use defaultCountryValue and defaultValue for initial values. Controlled value and onValueChange use the structured LumenPhoneNumber contract.'
+  }],
+  RevealGroup: [{
+    framework: 'React',
+    text: 'The React root is a div. Compose semantic content inside it; the Astro as prop is not part of the React API.'
+  }],
+  ScrollReveal: [{
+    framework: 'React',
+    text: 'The React root is a div. Compose a semantic section inside it when needed rather than copying the Astro as prop.'
+  }],
+  Tabs: [{
+    framework: 'React',
+    text: 'Use defaultValue for the initial selection, or value and onValueChange for controlled tabs. Astro names its initial selection initialValue.'
+  }],
+  Textarea: [{
+    framework: 'React',
+    text: 'Use defaultValue for initial text and readOnly for a read-only field. Astro supplies initial text through the component slot.'
+  }],
+  ThemeToggle: [{
+    framework: 'React',
+    text: 'Connect the button to useThemeToggle. The Astro controlled prop does not supply React behavior.'
+  }],
+  Toast: [{
+    framework: 'React',
+    text: 'Wrap the application with ToastProvider and call useToast inside that provider. The Astro global LumenToast API is not used in React.'
+  }, {
+    framework: 'Elements',
+    text: 'Register the elements and call the exported LumenToast API from your event handler. The Elements example includes its own button listener; the Astro demo controller is not required.'
+  }],
+  BarChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  ComboChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  Heatmap: [{
+    framework: 'Elements',
+    text: 'Pass data as a JSON attribute. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  LineChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  RangeChart: [{
+    framework: 'Elements',
+    text: 'Pass data as a JSON attribute. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  ScatterChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements example serializes the sample data with JSON.stringify; Astro expression bindings are not HTML attributes.'
+  }],
+  PieChart: [{
+    framework: 'Elements',
+    text: 'Pass series as a JSON attribute or through the public element property. The Elements pie chart expects an array containing its series; Astro and React accept one series object.'
+  }]
+}
+
 export const componentDocs: ComponentDoc[] = (
   [
     [
@@ -3041,6 +3535,18 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Displays a file attachment with metadata.',
       '<Attachment href="/logo.svg"><strong>lumen-logo.svg</strong><span>1 KB</span></Attachment>'
+    ],
+    [
+      'AttachmentList',
+      'Data display',
+      'Groups file rows with independent download, replacement and removal actions.',
+      '<AttachmentList aria-label="Files"><li><Attachment><strong>report.pdf</strong><Button type="button">Remove</Button></Attachment></li></AttachmentList>'
+    ],
+    [
+      'AttachmentPreview',
+      'Data display',
+      'Previews browser-owned images with localized loading, error and unsupported-file fallbacks.',
+      '<AttachmentPreview src="/logo.svg" contentType="image/svg+xml" alt="Lumen logo"><span slot="caption">Logo attachment</span><Button slot="actions" type="button">Replace</Button></AttachmentPreview>'
     ],
     [
       'Autocomplete',
@@ -3259,6 +3765,36 @@ export const componentDocs: ComponentDoc[] = (
       '<Button data-ui-dialog-trigger="profile-dialog">Edit profile</Button><Dialog id="profile-dialog"><p>Profile form</p><Button data-ui-dialog-close>Close</Button></Dialog>'
     ],
     [
+      'DialogHeader',
+      'Overlays',
+      'Groups the dialog title and description.',
+      '<DialogHeader><DialogTitle id="edit-title">Edit record</DialogTitle></DialogHeader>'
+    ],
+    [
+      'DialogTitle',
+      'Overlays',
+      'Provides a semantic heading for dialog labeling.',
+      '<DialogTitle id="edit-title">Edit record</DialogTitle>'
+    ],
+    [
+      'DialogBody',
+      'Overlays',
+      'Scrolls long task content while keeping actions visible.',
+      '<DialogBody><p>Task content</p></DialogBody>'
+    ],
+    [
+      'DialogFooter',
+      'Overlays',
+      'Keeps dialog actions outside the scrolling body.',
+      '<DialogFooter><DialogClose>Cancel</DialogClose><Button type="submit" form="record-form">Save</Button></DialogFooter>'
+    ],
+    [
+      'DialogClose',
+      'Overlays',
+      'Closes the enclosing dialog through an accessible button.',
+      '<DialogClose variant="outline">Cancel</DialogClose>'
+    ],
+    [
       'Direction',
       'Layout',
       'Controls directional layout and text flow.',
@@ -3353,6 +3889,37 @@ export const componentDocs: ComponentDoc[] = (
       'Data display',
       'Styles accessible images while preserving Astro, Next.js, and browser-native optimization.',
       '<Image alt="Lumen UI logo" layout="fixed" src="/logo.svg" />'
+    ],
+
+    [
+      'DeviceFrame',
+      'Data display',
+      'Presents HTML, images, and live iframe demos in responsive device silhouettes.',
+      '<DeviceFrame device="iphone"><iframe src="/demos/mobile" title="Mobile application demo" loading="lazy"></iframe></DeviceFrame>'
+    ],
+    [
+      'ImageComparison',
+      'Data display',
+      'Compares aligned before and after media with an accessible reveal control.',
+      '<ImageComparison label="Compare edits"><Image slot="before" src="/comparison-before.svg" alt="Original landscape illustration" width={960} height={600} /><Image slot="after" src="/comparison-after.svg" alt="Color-adjusted landscape illustration" width={960} height={600} /></ImageComparison>'
+    ],
+    [
+      'MediaViewport',
+      'Data display',
+      'Inspects application-owned media with bounded zoom, pan, fit and keyboard alternatives.',
+      '<MediaViewport label="Inspect the landscape"><Image src="/comparison-after.svg" alt="Illustrative landscape" width={960} height={600} /></MediaViewport>'
+    ],
+    [
+      'MediaThumbnail',
+      'Data display',
+      'Selects application-owned media with a visible label, pressed state and optional order.',
+      '<MediaThumbnail label="Lake landscape" mediaId="lake" selected order={1}><Image src="/comparison-after.svg" alt="" width={960} height={600} /></MediaThumbnail>'
+    ],
+    [
+      'MediaFilmstrip',
+      'Data display',
+      'Groups ordered media thumbnails and a localized selection summary.',
+      '<MediaFilmstrip label="Selected photos" selectionLabel="1 photo selected"><li><MediaThumbnail label="Lake landscape" mediaId="lake" selected order={1}><Image src="/comparison-after.svg" alt="" width={960} height={600} /></MediaThumbnail></li></MediaFilmstrip>'
     ],
     [
       'Illustration',
@@ -3461,6 +4028,12 @@ export const componentDocs: ComponentDoc[] = (
       'Navigation',
       'Builds grouped top-level navigation.',
       '<NavigationMenu><a href="/docs">Docs</a><a href="/docs/components">Components</a></NavigationMenu>'
+    ],
+    [
+      'AmountField',
+      'Forms',
+      'Formats localized amounts while preserving exact decimal drafts.',
+      '<AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />'
     ],
     [
       'NumberField',
@@ -3883,6 +4456,24 @@ export const componentDocs: ComponentDoc[] = (
       '<Descriptions items={[{ label: "Owner", value: "Alice" }, { label: "Status", value: "Active" }]} />'
     ],
     [
+      'DescriptionItem',
+      'Data display',
+      'Composes rich description item content.',
+      '<DescriptionItem>Record item</DescriptionItem>'
+    ],
+    [
+      'DescriptionTerm',
+      'Data display',
+      'Composes rich description term content.',
+      '<DescriptionTerm>Record term</DescriptionTerm>'
+    ],
+    [
+      'DescriptionDetail',
+      'Data display',
+      'Composes rich description detail content.',
+      '<DescriptionDetail>Record detail</DescriptionDetail>'
+    ],
+    [
       'Popconfirm',
       'Overlays',
       'Requests a brief confirmation beside the action that triggered it.',
@@ -3971,9 +4562,86 @@ export const componentDocs: ComponentDoc[] = (
       'Layout',
       'Keeps meaningful content available to assistive technology without displaying it.',
       '<Button><Icon name="search" decorative /><VisuallyHidden>Search</VisuallyHidden></Button>'
+    ],
+    [
+      'CalendarHeatmap',
+      'Data display',
+      'Shows daily patterns with explicit missing observations.',
+      '<CalendarHeatmap aria-label="Daily activity" startDate="2026-08-01" endDate="2026-08-28" data={[{ date: "2026-08-01", value: 3 }]} />'
+    ],
+    [
+      'FunnelChart',
+      'Data display',
+      'Compares ordered conversion stages without inferred percentages.',
+      '<FunnelChart aria-label="Activation funnel" data={[{ id: "visits", label: "Visits", value: 4800 }, { id: "paid", label: "Paid", value: 640 }]} />'
+    ],
+    [
+      'BoxPlot',
+      'Data display',
+      'Shows precomputed quartiles, whiskers and outliers.',
+      '<BoxPlot aria-label="Response distribution" data={[{ id: "north", label: "North", min: 12, q1: 22, median: 31, q3: 44, max: 61, outliers: [73] }]} />'
+    ],
+    [
+      'BulletChart',
+      'Data display',
+      'Compares a measured value with a target and optional labeled performance ranges.',
+      '<BulletChart aria-label="Delivery performance" heading="On-time delivery" value={86} target={95} ranges={[{ end: 70, label: "Developing" }, { end: 90, label: "Consistent" }, { end: 100, label: "Excellent" }]} formatValue={value => `${value}%`} />'
+    ],
+    [
+      'LollipopChart',
+      'Data display',
+      'Rank categories using a dot and a zero-based stem.',
+      '<LollipopChart aria-label="Team performance" data={[{ id: "design", label: "Design", value: 88 }, { id: "engineering", label: "Engineering", value: 91 }]} />'
+    ],
+    [
+      'DumbbellChart',
+      'Data display',
+      'Compare two measurements per category with connected dots.',
+      '<DumbbellChart aria-label="Team performance" data={[{ id: "design", label: "Design", reference: 62, value: 88 }, { id: "engineering", label: "Engineering", reference: 76, value: 91 }]} />'
+    ],
+    [
+      'Histogram',
+      'Data display',
+      'Shows a numeric distribution using explicit bins and an accessible frequency table.',
+      '<Histogram aria-label="Response times" bins={[{ start: 0, end: 100, count: 8 }, { start: 100, end: 200, count: 24 }]} />'
+    ],
+    [
+      'WaterfallChart',
+      'Data display',
+      'Explains signed changes and explicit total checkpoints.',
+      '<WaterfallChart aria-label="Balance changes" data={[{ id: "opening", label: "Opening", kind: "total", value: 120 }, { id: "expenses", label: "Expenses", value: -20 }]} />'
+    ],
+    [
+      'ChangeSummary',
+      'Data display',
+      'Compares explicit current and proposed values before a user confirms a change.',
+      '<ChangeSummary label="Review changes" items={[{ id: "owner", label: "Owner", before: "Alice", after: "Bob", changed: true }]} />'
+    ],
+    [
+      'FilterBar',
+      'Data display',
+      'Composes dashboard filtering, active criteria, and result announcements without owning queries.',
+      '<FilterBar label="Filters" resultLabel="12 records"><SearchField aria-label="Search records" /></FilterBar>'
+    ],
+    ['ChartMotion', 'Data display', 'Animates stable SVG marks without delaying accessible chart values.', '<ChartMotion><LineChart heading="Weekly progress" series={[{ id: "completed", label: "Completed tasks", data: [{ id: "mon", x: "Mon", y: 12 }, { id: "tue", x: "Tue", y: 18 }] }]} /></ChartMotion>'],
+    ['MotionGroup', 'Layout', 'Coordinates keyed list entrances, exits, and changes in position.', '<MotionGroup><Card data-ui-motion-key="overview">Overview</Card><Card data-ui-motion-key="activity">Activity</Card></MotionGroup>'],
+    ['VisualEffect', 'Brand', 'Adds optional token-based backgrounds, highlights, and drawing effects.', '<VisualEffect variant="mesh"><Typography>Build a calmer workspace.</Typography></VisualEffect>'],
+    ['ApprovalCard', 'Feedback', 'Presents an application-owned proposal and explicit decision controls.', '<ApprovalCard label="Review proposal" requestId="demo-proposal" statusLabel="Awaiting your decision"><p>Apply this change to the demonstration project.</p></ApprovalCard>'],
+    ['PromptComposer', 'Forms', 'Composes prompts with explicit submission and cancellation events.', '<PromptComposer label="Ask about your project" />'],
+    ['SourceCitation', 'Data display', 'Links to a safely validated source with a meaningful label.', '<SourceCitation href="https://lumen.santi020k.com/docs" label="Lumen documentation" />'],
+    ['StreamMessage', 'Data display', 'Separates streamed content from accessible state announcements.', '<StreamMessage status="complete" statusLabel="Response complete"><p>Your release preview is ready.</p></StreamMessage>'],
+    ['ToolActivity', 'Feedback', 'Discloses observable tool activity and application-owned results.', '<ToolActivity label="Read project documentation" status="success" statusLabel="Documentation retrieved"><p>Two relevant guides are available.</p></ToolActivity>'],
+    [
+      'WorldMap',
+      'Data display',
+      'Highlights countries and labeled locations on a reusable animated dotted or solid world map.',
+      '<WorldMap countries={lumenWorldMapCountries} label="Sample destinations" highlightedCountries={["CO", "JP"]} />'
     ]
   ] as const satisfies readonly ComponentDocTuple[]
 ).map(([name, category, summary, example]) => ({
+  ...(adapterNotesByComponent[name] ?
+    { adapterNotes: adapterNotesByComponent[name] } :
+    {}),
   apiReference: [
     ...(glassApiComponentNameSet.has(name) ? [glassApiRow] : []),
     ...apiReferenceByComponent[name],
@@ -4765,9 +5433,9 @@ export function Editor() {
   return (
     <RichTextEditor {...editor.rootProps}>
       <div role="toolbar" aria-label="Formatting">
-        <Button {...editor.getCommandProps('bold')} size="icon">B</Button>
-        <Button {...editor.getCommandProps('italic')} size="icon">I</Button>
-        <Button {...editor.getCommandProps('insertUnorderedList')} size="icon">•</Button>
+        <Button {...editor.getCommandProps('bold')} aria-label="Bold" size="icon">B</Button>
+        <Button {...editor.getCommandProps('italic')} aria-label="Italic" size="icon">I</Button>
+        <Button {...editor.getCommandProps('insertUnorderedList')} aria-label="Bulleted list" size="sm">List</Button>
       </div>
       <div {...editor.getEditableProps()}>
         <p>Start writing...</p>
@@ -4862,7 +5530,7 @@ export function EditorialBoard() {
 
   return (
     <KanbanBoard {...kanban.rootProps} aria-label="Editorial workflow">
-      <KanbanColumn {...kanban.getColumnProps('planned')}>
+      <KanbanColumn value="planned" {...kanban.getColumnProps('planned')}>
         <Card as="article" {...kanban.getItemProps('draft')}>
           <Button {...kanban.getHandleProps('draft')} aria-label="Move Draft article">
             Move
@@ -4870,7 +5538,7 @@ export function EditorialBoard() {
           <strong>Draft article</strong>
         </Card>
       </KanbanColumn>
-      <KanbanColumn {...kanban.getColumnProps('published')} />
+      <KanbanColumn value="published" {...kanban.getColumnProps('published')} />
     </KanbanBoard>
   )
 }`
@@ -5016,30 +5684,26 @@ export function SplitEditor() {
         'copyExport', '() => Promise<string>', '-', 'Copy the export value to clipboard and return it.'
       )
     ],
-    code: `import { ThemeBuilder, Card, Button, Slider } from '@santi020k/lumen-react'
+    code: `import { ThemeBuilder, Card, Button, Label, Slider, Textarea } from '@santi020k/lumen-react'
 import { useThemeBuilder } from '@santi020k/lumen-react'
 
 export function CustomThemeBuilder() {
-  const builder = useThemeBuilder({
-    defaultHue: 264,
-    defaultScheme: 'dark',
-    onThemeExport: ({ value, format }) =>
-      console.log(\`Exported \${format}:\`, value)
-  })
+  const builder = useThemeBuilder({ defaultHue: 264, defaultScheme: 'dark' })
 
   return (
     <ThemeBuilder {...builder.rootProps}>
       <div style={builder.previewStyle}>
         <Card glass>
-          <label>Brand hue</label>
-          <input type="range" {...builder.hueProps} min={0} max={359} />
-          <label>Accent hue</label>
-          <input type="range" {...builder.accentHueProps} min={0} max={359} />
+          <Label htmlFor="theme-brand-hue">Brand hue</Label>
+          <Slider {...builder.hueProps} id="theme-brand-hue" min={0} max={359} />
+          <Label htmlFor="theme-accent-hue">Accent hue</Label>
+          <Slider {...builder.accentHueProps} id="theme-accent-hue" min={0} max={359} />
           <div>
             <Button {...builder.getSchemeProps('light')}>Light</Button>
             <Button {...builder.getSchemeProps('dark')}>Dark</Button>
           </div>
-          <textarea {...builder.outputProps} readOnly rows={6} />
+          <Label htmlFor="theme-output">Generated theme CSS</Label>
+          <Textarea {...builder.outputProps} aria-label="Generated theme CSS" id="theme-output" readOnly rows={6} />
           <Button {...builder.exportButtonProps}>Copy CSS</Button>
         </Card>
       </div>

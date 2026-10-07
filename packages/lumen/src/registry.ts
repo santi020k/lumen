@@ -1,6 +1,6 @@
-/* eslint-disable complexity */
 import { readFile, stat } from 'node:fs/promises'
 
+import { isSafeRegistryComponentName } from './registry-component-name.js'
 import { lumenRegistry } from './registry-data.js'
 import { isSafeRegistryFilePath } from './registry-path.js'
 import type {
@@ -98,20 +98,30 @@ const isRegistryItem = (value: unknown): value is LumenRegistryItem => {
   )
 }
 
+const isNonEmptyString = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0
+
 const isRegistryComponent = (value: unknown): value is LumenRegistryComponent => {
   if (!value || typeof value !== 'object') return false
 
   const component = value as Partial<LumenRegistryComponent>
 
   return (
-    typeof component.name === 'string' && component.name.trim().length > 0 &&
+    isSafeRegistryComponentName(component.name) &&
     component.type === 'component' &&
-    typeof component.description === 'string' && component.description.trim().length > 0 &&
-    typeof component.category === 'string' && component.category.trim().length > 0 &&
+    isNonEmptyString(component.description) &&
+    isNonEmptyString(component.category) &&
     isRegistryFileArray(component.files) &&
     (component.dependencies === undefined || isStringArray(component.dependencies))
   )
 }
+
+const isRegistryComponents = (value: unknown): value is LumenRegistryComponent[] => (
+  Array.isArray(value) && value.every((component: unknown) => isRegistryComponent(component))
+)
+
+const isPositiveSafeInteger = (value: unknown): value is number => (
+  typeof value === 'number' && Number.isSafeInteger(value) && value > 0
+)
 
 const isLumenRegistry = (value: unknown): value is LumenRegistry => {
   if (!value || typeof value !== 'object') return false
@@ -119,15 +129,14 @@ const isLumenRegistry = (value: unknown): value is LumenRegistry => {
   const registry = value as Partial<LumenRegistry>
 
   return (
-    typeof registry.name === 'string' && registry.name.trim().length > 0 &&
-    typeof registry.version === 'number' &&
-    Number.isSafeInteger(registry.version) && registry.version > 0 &&
-    typeof registry.description === 'string' && registry.description.trim().length > 0 &&
+    isNonEmptyString(registry.name) &&
+    isPositiveSafeInteger(registry.version) &&
+    isNonEmptyString(registry.description) &&
     isStringArray(registry.packages) &&
     Array.isArray(registry.items) &&
     registry.items.every(item => isRegistryItem(item)) &&
     (registry.components === undefined ||
-      (Array.isArray(registry.components) && registry.components.every(component => isRegistryComponent(component))))
+      isRegistryComponents(registry.components))
   )
 }
 

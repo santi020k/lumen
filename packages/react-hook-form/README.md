@@ -1,4 +1,34 @@
-# @santi020k/lumen-react-hook-form
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · React Hook Form</h1>
+
+<p align="center">Composite controls · Managed field state · Typed adapters</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react-hook-form"><img src="https://img.shields.io/npm/v/@santi020k/lumen-react-hook-form?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/forms/react-hook-form">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react-hook-form">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/react-hook-form">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-react-hook-form`
+
+**On this page:** [Install](#install) · [Usage](#usage) · [Resources](#resources)
 
 Optional React Hook Form adapters for Lumen composite controls.
 
@@ -7,9 +37,17 @@ Use React Hook Form's `register()` directly with native-backed controls such as 
 `TimeField`, and `FileUpload`. Install this package only for composite controls whose public value
 is managed through `Controller`.
 
+## Install
+
+Requires React 19 or newer, React Hook Form 7.76 or newer within major 7, and a compatible
+Lumen React 4 release. Load `@santi020k/lumen-react/styles.css` once in the application entry;
+this adapter does not load global styles for you.
+
 ```bash
 pnpm add @santi020k/lumen-react @santi020k/lumen-react-hook-form react-hook-form
 ```
+
+## Usage
 
 ```tsx
 import { Button, Field, FieldError, Form, Label } from '@santi020k/lumen-react'
@@ -111,3 +149,30 @@ const form = useForm<yup.InferType<typeof schema>>({
 Read errors from `form.formState.errors` and pass them through `getLumenManagedFieldState` as in
 the adapter example above. React Hook Form remains the only validation owner; do not also mount
 Lumen's `useFormValidation` on the same form.
+
+## Exact amount drafts
+
+`LumenAmountFieldController` keeps React Hook Form's value as an ASCII decimal string while the
+visible field formats its locale. Use `getLumenManagedFieldState` to link host errors and supply
+host rules for required values, complete drafts and domain limits. Do not register the formatted
+visible input separately. React Hook Form remains the validation owner.
+
+```tsx
+<LumenAmountFieldController control={form.control} name="amount" locale="es-CO"
+  aria-label="Amount COP" rules={{ required: 'Enter an amount' }} />
+```
+
+Initialize `amount` to a string such as `"1234.50"`; `form.reset()` restores the managed draft.
+See [consumer workflows](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#executable-consumer-workflows).
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [React setup](https://github.com/santi020k/lumen/blob/main/packages/react/README.md) | React setup guidance and examples. |
+| [Error handling](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md) | Field feedback, summaries, alerts, and recovery surfaces. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

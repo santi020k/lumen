@@ -1,0 +1,145 @@
+diff --git a/ReactCommon/react/renderer/components/root/RootShadowNode.cpp b/ReactCommon/react/renderer/components/root/RootShadowNode.cpp
+index cf4b05bc10a39de128a62165f7a91c2090af6551..e06d9e19d9925bff8fa1ba376f49d0b59266d67a 100644
+--- a/ReactCommon/react/renderer/components/root/RootShadowNode.cpp
++++ b/ReactCommon/react/renderer/components/root/RootShadowNode.cpp
+@@ -19,7 +19,8 @@ bool RootShadowNode::layoutIfNeeded(
+     std::vector<const LayoutableShadowNode*>* affectedNodes) {
+   TraceSection s("RootShadowNode::layout");
+ 
+-  if (getIsLayoutClean()) {
++  if (getIsLayoutClean() &&
++      layoutFontSizeMultiplier_ == getConcreteProps().layoutContext.fontSizeMultiplier) {
+     return false;
+   }
+ 
+diff --git a/ReactCommon/react/renderer/components/text/ParagraphShadowNode.cpp b/ReactCommon/react/renderer/components/text/ParagraphShadowNode.cpp
+index 17b14c439f16534365c1fb41b3f10a4e12f59001..6581d714609adf7653509170be7e7499b2d18255 100644
+--- a/ReactCommon/react/renderer/components/text/ParagraphShadowNode.cpp
++++ b/ReactCommon/react/renderer/components/text/ParagraphShadowNode.cpp
+@@ -69,11 +69,12 @@ bool ParagraphShadowNode::shouldNewRevisionDirtyMeasurement(
+ 
+ const Content& ParagraphShadowNode::getContent(
+     const LayoutContext& layoutContext) const {
+-  if (content_.has_value()) {
++  if (content_.has_value() && contentFontSizeMultiplier_ == layoutContext.fontSizeMultiplier) {
+     return content_.value();
+   }
+ 
+   ensureUnsealed();
++  measuredLayouts_.clear();
+ 
+   auto textAttributes = TextAttributes::defaultTextAttributes();
+   textAttributes.fontSizeMultiplier = layoutContext.fontSizeMultiplier;
+@@ -87,6 +88,7 @@ const Content& ParagraphShadowNode::getContent(
+   buildAttributedString(textAttributes, *this, attributedString, attachments);
+   attributedString.setBaseTextAttributes(textAttributes);
+ 
++  contentFontSizeMultiplier_ = layoutContext.fontSizeMultiplier;
+   content_ = Content{
+       attributedString, getConcreteProps().paragraphAttributes, attachments};
+ 
+@@ -222,6 +224,10 @@ Size ParagraphShadowNode::rawContentSize() {
+ Size ParagraphShadowNode::measureContent(
+     const LayoutContext& layoutContext,
+     const LayoutConstraints& layoutConstraints) const {
++  if (contentFontSizeMultiplier_ != layoutContext.fontSizeMultiplier) {
++    getContent(layoutContext);
++  }
++
+   if constexpr (TextLayoutManagerExtended::supportsPreparedTextLayout()) {
+     for (const auto& layout : measuredLayouts_) {
+       if (layout.layoutConstraints == layoutConstraints) {
+diff --git a/ReactCommon/react/renderer/components/text/ParagraphShadowNode.h b/ReactCommon/react/renderer/components/text/ParagraphShadowNode.h
+index 704088cbaae601f77740420f465933c37d53b2de..6ed0e4a203e5621c543eb66ca8dc598fa26d1c03 100644
+--- a/ReactCommon/react/renderer/components/text/ParagraphShadowNode.h
++++ b/ReactCommon/react/renderer/components/text/ParagraphShadowNode.h
+@@ -131,6 +131,7 @@ class ParagraphShadowNode
+    * Cached content of the subtree started from the node.
+    */
+   mutable std::optional<Content> content_{};
++  mutable Float contentFontSizeMultiplier_{0};
+ 
+   /*
+    * Intermediate layout results generated during measurement, that may be
+diff --git a/ReactCommon/react/renderer/components/view/YogaLayoutableShadowNode.cpp b/ReactCommon/react/renderer/components/view/YogaLayoutableShadowNode.cpp
+index c630cb4201880cb474123328610d85a77544b861..79d8494c0c7df3d008955dd64e29b8a7f9f72e81 100644
+--- a/ReactCommon/react/renderer/components/view/YogaLayoutableShadowNode.cpp
++++ b/ReactCommon/react/renderer/components/view/YogaLayoutableShadowNode.cpp
+@@ -96,6 +96,7 @@ YogaLayoutableShadowNode::YogaLayoutableShadowNode(
+     const ShadowNode& sourceShadowNode,
+     const ShadowNodeFragment& fragment)
+     : LayoutableShadowNode(sourceShadowNode, fragment),
++      layoutFontSizeMultiplier_(static_cast<const YogaLayoutableShadowNode&>(sourceShadowNode).layoutFontSizeMultiplier_),
+       yogaConfig_(FabricDefaultYogaLog),
+       yogaNode_(
+           static_cast<const YogaLayoutableShadowNode&>(sourceShadowNode)
+@@ -467,9 +468,15 @@ void YogaLayoutableShadowNode::updateYogaProps() {
+ void YogaLayoutableShadowNode::configureYogaTree(
+     float pointScaleFactor,
+     YGErrata defaultErrata,
+-    bool swapLeftAndRight) {
++    bool swapLeftAndRight,
++    Float fontSizeMultiplier) {
+   ensureUnsealed();
+ 
++  if (layoutFontSizeMultiplier_ != fontSizeMultiplier) {
++    yogaNode_.setDirty(true);
++    layoutFontSizeMultiplier_ = fontSizeMultiplier;
++  }
++
+   // Set state on our own Yoga node
+   YGErrata errata = resolveErrata(defaultErrata);
+   YGConfigSetErrata(&yogaConfig_, errata);
+@@ -492,6 +499,7 @@ void YogaLayoutableShadowNode::configureYogaTree(
+     auto childErrata = YGConfigGetErrata(&child.yogaConfig_);
+ 
+     if (child.yogaTreeHasBeenConfigured_ &&
++        child.layoutFontSizeMultiplier_ == fontSizeMultiplier &&
+         childLayoutMetrics.pointScaleFactor == pointScaleFactor &&
+         childLayoutMetrics.wasLeftAndRightSwapped == swapLeftAndRight &&
+         childErrata == child.resolveErrata(errata)) {
+@@ -501,10 +509,10 @@ void YogaLayoutableShadowNode::configureYogaTree(
+     if (doesOwn(child)) {
+       auto& mutableChild = const_cast<YogaLayoutableShadowNode&>(child);
+       mutableChild.configureYogaTree(
+-          pointScaleFactor, child.resolveErrata(errata), swapLeftAndRight);
++          pointScaleFactor, child.resolveErrata(errata), swapLeftAndRight, fontSizeMultiplier);
+     } else {
+       cloneChildInPlace(i).configureYogaTree(
+-          pointScaleFactor, errata, swapLeftAndRight);
++          pointScaleFactor, errata, swapLeftAndRight, fontSizeMultiplier);
+     }
+   }
+ }
+@@ -602,7 +610,8 @@ void YogaLayoutableShadowNode::layoutTree(
+     configureYogaTree(
+         layoutContext.pointScaleFactor,
+         YGErrataAll /*defaultErrata*/,
+-        swapLeftAndRight);
++        swapLeftAndRight,
++        layoutContext.fontSizeMultiplier);
+   }
+ 
+   auto minimumSize = layoutConstraints.minimumSize;
+diff --git a/ReactCommon/react/renderer/components/view/YogaLayoutableShadowNode.h b/ReactCommon/react/renderer/components/view/YogaLayoutableShadowNode.h
+index 25714d5f489d1d2800e16067cc55e563dc441f25..098500033877d40d17beb3db4868632c480fa5bd 100644
+--- a/ReactCommon/react/renderer/components/view/YogaLayoutableShadowNode.h
++++ b/ReactCommon/react/renderer/components/view/YogaLayoutableShadowNode.h
+@@ -93,6 +93,8 @@ class YogaLayoutableShadowNode : public LayoutableShadowNode {
+   /*
+    * Yoga config associated (only) with this particular node.
+    */
++  Float layoutFontSizeMultiplier_{0};
++
+   yoga::Config yogaConfig_;
+ 
+   /*
+@@ -137,7 +139,7 @@ class YogaLayoutableShadowNode : public LayoutableShadowNode {
+    * ShadowTree has been constructed, but before it has been is laid out or
+    * committed.
+    */
+-  void configureYogaTree(float pointScaleFactor, YGErrata defaultErrata, bool swapLeftAndRight);
++  void configureYogaTree(float pointScaleFactor, YGErrata defaultErrata, bool swapLeftAndRight, Float fontSizeMultiplier);
+ 
+   /**
+    * Return an errata based on a `layoutConformance` prop if given, otherwise

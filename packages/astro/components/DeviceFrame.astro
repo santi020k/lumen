@@ -1,0 +1,79 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import {
+  type LumenDeviceFrameColor, type LumenDeviceFrameDevice, type LumenDeviceFrameOrientation, type LumenDeviceFrameTone,
+  resolveLumenAstroProps, resolveLumenDeviceFrame, resolveLumenDeviceFrameColor
+} from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'div'> {
+  device?: LumenDeviceFrameDevice
+  orientation?: LumenDeviceFrameOrientation
+  tone?: LumenDeviceFrameTone
+  color?: LumenDeviceFrameColor
+  screenWidth?: number
+  screenHeight?: number
+  scroll?: boolean
+  className?: string
+}
+
+const { device = 'laptop', orientation, tone = 'dark', color, screenWidth, screenHeight, scroll = true,
+  class: classProp, className, style: consumerStyle, ...rest } = Astro.props
+
+const size = resolveLumenDeviceFrame(device, orientation, screenWidth, screenHeight)
+const resolvedColor = resolveLumenDeviceFrameColor(color)
+
+const frameStyle = typeof consumerStyle === 'string' ?
+  `${consumerStyle}${resolvedColor ? `;--ui-device-color:${resolvedColor}` : ''}` :
+  { ...consumerStyle, ...(resolvedColor ? { '--ui-device-color': resolvedColor } : {}) }
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-device-frame'], classProp, className)
+---
+
+<div class:list={classList} data-device={device} data-tone={tone} data-orientation={orientation} style={frameStyle} {...passthrough}>
+  <div class="ui-device-frame__shell">
+    <span class="ui-device-frame__hardware" aria-hidden="true">
+      <span class="ui-device-frame__action" />
+      <span class="ui-device-frame__volume-up" />
+      <span class="ui-device-frame__volume-down" />
+      <span class="ui-device-frame__power" />
+      <span class="ui-device-frame__rail-left" />
+      <span class="ui-device-frame__rail-right" />
+    </span>
+    <div class="ui-device-frame__glass">
+    <span aria-hidden="true" class="ui-device-frame__camera"></span>
+    <lumen-device-screen
+class="ui-device-frame__screen"
+data-scroll={String(scroll)}
+data-ui-device-screen
+      data-screen-width={size.width}
+      style={`--ui-device-frame-width: ${size.width}px; --ui-device-frame-height: ${size.height}px; aspect-ratio: ${size.width} / ${size.height}`}
+    >
+      <slot />
+    </lumen-device-screen>
+    </div>
+  </div>
+  <span aria-hidden="true" class="ui-device-frame__base"></span>
+</div>
+
+<script>
+  import { observeLumenDeviceFrame } from '@santi020k/lumen-core'
+
+  class LumenDeviceScreen extends HTMLElement {
+    private cleanup: (() => void) | undefined
+
+    connectedCallback(): void {
+      this.cleanup?.()
+
+      this.cleanup = observeLumenDeviceFrame(this, Number(this.dataset.screenWidth))
+    }
+
+    disconnectedCallback(): void {
+      this.cleanup?.()
+
+      this.cleanup = undefined
+    }
+  }
+
+  if (!customElements.get('lumen-device-screen')) customElements.define('lumen-device-screen', LumenDeviceScreen)
+</script>

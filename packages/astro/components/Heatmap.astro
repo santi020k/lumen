@@ -1,16 +1,21 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { createLumenHeatmapGeometry, type LumenChartLabels, type LumenHeatmapDatum, resolveLumenChartLabels } from '@santi020k/lumen-core'
+import { createLumenHeatmapDatumActivation, createLumenHeatmapModel, getLumenHeatmapColor, type LumenChartLabels, type LumenHeatmapDatum, type LumenHeatmapOptions, resolveLumenChartLabels } from '@santi020k/lumen-core'
+
+import { createChartDatumAction } from '../runtime/chart-actions'
 
 import Chart from './Chart.astro'
+import ChartDatumActions from './ChartDatumActions.astro'
 
-interface Props extends HTMLAttributes<'figure'> {
+interface Props extends HTMLAttributes<'figure'>, LumenHeatmapOptions {
+  showLegend?: boolean
   caption?: string
   class?: string | null
   className?: string
   data: readonly LumenHeatmapDatum[]
   description?: string
+  drilldown?: boolean
   formatValue?: (value: number) => string
   heading?: string
   labels?: Partial<LumenChartLabels>
@@ -18,18 +23,62 @@ interface Props extends HTMLAttributes<'figure'> {
   summary?: string
 }
 
-const { caption, class: classProp = '', className = '', data, description, formatValue = String, heading, labels, showTable = true, summary: summaryProp, ...rest } = Astro.props
-const geometry = createLumenHeatmapGeometry(data)
-const hasData = geometry.cells.some(cell => cell.value !== null && Number.isFinite(cell.value))
+const { colorScale = 'sequential', midpoint = 0, domain, showLegend = true, caption, class: classProp = '', className = '', data, description, drilldown = false, formatValue = String, heading, labels, showTable = true, summary: summaryProp, ...rest } = Astro.props
+const geometry = createLumenHeatmapModel(data, { colorScale, midpoint, ...(domain ? { domain } : {}) })
+const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
+const hasData = availableCells.length > 0
 const resolvedLabels = resolveLumenChartLabels(labels)
-const summary = summaryProp ?? resolvedLabels.formatHeatmapSummary(geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).length)
+const summary = summaryProp ?? resolvedLabels.formatHeatmapSummary(availableCells.length)
+
+const datumActions = drilldown ?
+availableCells.map(cell => createChartDatumAction(
+  createLumenHeatmapDatumActivation(cell),
+  `${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`,
+  resolvedLabels
+)) :
+[]
+
+const datumActionByCell = new Map(availableCells.map((cell, index) => [cell, datumActions[index]]))
+
 ---
 
-<Chart class:list={['ui-heatmap', classProp, className]} {caption} {description} {heading} {summary} {...rest}>
+<Chart class:list={['ui-heatmap', classProp, className]} {caption} {description} {heading} {summary} {...rest} data-ui-chart-activation={drilldown || undefined}>
   {!hasData && <p class="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-  <div class="ui-chart__plot" hidden={!hasData}><svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}><g class="
-    ui-heatmap__cells
-  "
-                                                                                                                             >{geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value)).map(cell => <rect height={Math.max(0, cell.height - 2)} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}</g></svg></div>
-  {showTable && <details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div><table><thead><tr><th scope="col">{resolvedLabels.column}</th><th scope="col">{resolvedLabels.row}</th><th scope="col">{resolvedLabels.value}</th></tr></thead><tbody>{data.map(cell => <tr><th scope="row">{cell.xLabel ?? cell.x}</th><td>{cell.yLabel ?? cell.y}</td><td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? resolvedLabels.notAvailable : formatValue(cell.value))}</td></tr>)}</tbody></table></div></details>}
+  <div
+aria-label={rest['aria-label'] ?? heading ?? resolvedLabels.chartData}
+class="ui-chart__plot"
+role="region"
+tabindex="0"
+hidden={geometry.cells.length === 0}
+  >
+    <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
+      <g class="ui-chart__axis-labels">
+        {geometry.xTicks.map(tick => <text text-anchor={tick.textAnchor} x={tick.position} y="298">{tick.label}</text>)}
+        {geometry.yTicks.map(tick => <text class="ui-heatmap__row-label" text-anchor="end" dominant-baseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
+      </g>
+      <g class="ui-heatmap__cells">{geometry.cells.map(cell => {
+        const missing = cell.value === null || !Number.isFinite(cell.value)
+
+        return (
+<g>
+          <rect data-ui-chart-datum={datumActionByCell.get(cell)?.serialized} height={Math.max(0, cell.height - 2)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1} style={{ fill: getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint) }}>
+            <title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${missing ? resolvedLabels.notAvailable : cell.label ?? formatValue(cell.value ?? 0)}`}</title>
+          </rect>
+          {missing && <text class="ui-heatmap__missing" text-anchor="middle" dominant-baseline="middle" x={cell.xCoordinate + cell.width / 2} y={cell.yCoordinate + cell.height / 2}>×</text>}
+        </g>
+)
+      })}</g>
+    </svg>
+  </div>
+  {showLegend && geometry.cells.length > 0 && (
+<div class="ui-heatmap__legend" aria-label={resolvedLabels.chartLegend}>
+    <span>{formatValue(geometry.domain.min)}</span><span
+style={{ background: geometry.legendBackground }}
+class="ui-heatmap__scale"
+                                                   >{colorScale === 'diverging' && <span style={{ left: `${geometry.midpointPercent}%` }}>{formatValue(geometry.midpoint)}</span>}</span><span>{formatValue(geometry.domain.max)}</span>
+    <span>× {resolvedLabels.notAvailable}</span>
+  </div>
+)}
+  {showTable && <details class="ui-chart__data"><summary>{resolvedLabels.viewData}</summary><div role="group" tabindex="0" aria-label={resolvedLabels.chartData}><table><thead><tr><th scope="col">{resolvedLabels.column}</th><th scope="col">{resolvedLabels.row}</th><th scope="col">{resolvedLabels.value}</th></tr></thead><tbody>{geometry.cells.map(cell => <tr><th scope="row">{cell.xLabel ?? cell.x}</th><td>{cell.yLabel ?? cell.y}</td><td>{cell.label ?? (cell.value === null || !Number.isFinite(cell.value) ? resolvedLabels.notAvailable : formatValue(cell.value))}</td></tr>)}</tbody></table></div></details>}
+  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
 </Chart>

@@ -1,35 +1,65 @@
-# @santi020k/lumen-react-native
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
 
-> **Supported for Lumen 2:** This package uses the frozen version 2 contract. The current artifact
-> remains a release candidate until publication, physical-device, and consumer-soak gates complete.
+<h1 align="center">Lumen UI · React Native</h1>
 
-Maintainers can verify the exact packed package contents, peer installation, and strict external
-TypeScript consumption from the repository root with `pnpm run check:react-native-package`.
-Release canaries additionally generate clean Expo native projects from that tarball and require
-real debug binaries with `pnpm run check:react-native-native-package:android` and
-`pnpm run check:react-native-native-package:ios`. The iOS command requires CocoaPods.
-After publication, repeat the native proof against the exact npm artifact with
-`pnpm run check:react-native-native-release:android -- --version <version>` and
-`pnpm run check:react-native-native-release:ios -- --version <version>`.
+<p align="center">Native primitives · Semantic themes · Shared foundations</p>
 
-React Native foundations and primitives for Lumen UI. The package exposes canonical light and dark
-themes together with native Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField,
-Textarea, FieldGroup, Badge, Chip, Divider, Spinner, Card, Alert, Toast, Progress, Avatar, Toggle,
-SettingsRow, SearchField, DateField, DateRangeField, Checkbox, RadioGroup, SegmentedControl, Tabs, Skeleton, Graphic, Backdrop,
-Illustration, and Disclosure implementations.
-The structured tier also includes EmptyState, ErrorState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
-controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
-React Native-specific pull-to-refresh indicator using the active semantic theme.
-`useLumenNavigationBarVisibility` and `LumenCollapsibleNavigationBar` add an optional scroll-
-responsive treatment for native lists without introducing an animation or navigation dependency.
-`LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
-presentation and operating-system sharing. Overlays accept application-supplied safe-area insets,
-and sheets scroll application content by default so actions remain reachable with large text and
-short viewports. Set `scrollable={false}` when the child is already a virtualized scrolling
-container.
-Cards accept semantic `padding` and `radius` roles while preserving the extra-large/large defaults.
-Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
-a more specific symbol, so visual status is not conveyed by color alone.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react-native"><img src="https://img.shields.io/npm/v/@santi020k/lumen-react-native?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/react-native">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-react-native">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/react-native">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-react-native`
+
+**On this page:** [Install](#install) · [Usage](#usage) · [Appearance presets](#appearance-presets) · [Resources](#resources)
+
+<details>
+<summary>Browse all sections</summary>
+
+- [Install](#install)
+- [Usage](#usage)
+- [Custom themes](#custom-themes)
+- [Component catalog](#component-catalog)
+- [React hooks](#react-hooks)
+- [Appearance presets](#appearance-presets)
+- [Data visualization](#data-visualization)
+- [Consumer composition recipes](#consumer-composition-recipes)
+- [Small foundation imports](#small-foundation-imports)
+- [Advanced native inputs](#advanced-native-inputs)
+- [Multiple selection](#multiple-selection)
+- [Rating](#rating)
+- [Progress, history and location](#progress-history-and-location)
+- [Tables](#tables)
+- [Tree](#tree)
+- [QRCode and Cascader](#qrcode-and-cascader)
+- [Studio media workspace](#studio-media-workspace)
+- [Maintainer checks](#maintainer-checks)
+- [Resources](#resources)
+
+</details>
+
+> **Lumen 4 candidate:** This branch prepares the next major adapter contract. See the
+> [migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
+> publication, physical-device accessibility, or consumer-soak qualification.
+
+## Install
 
 Install the package and its required SVG peer in an existing Expo or React Native application:
 
@@ -45,11 +75,13 @@ the application uses that subpath:
 pnpm add @react-native-community/datetimepicker
 ```
 
+## Usage
+
 React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies. Mount one
 `LumenProvider` near the application root; no stylesheet, safe-area package, or web runtime is
 required:
 
-```ts
+```tsx
 import {
   createLumenTheme,
   LumenButton,
@@ -80,6 +112,8 @@ npx expo start
 # or: npx react-native start
 ```
 
+## Custom themes
+
 Applications can pass a custom color theme to `LumenProvider`. Start from
 `createLumenTheme(scheme)`, copy its `colors` or `chartColors`, and replace semantic roles such as
 `brand`, `brandSolid`, and `brandSoft`; components continue to consume the same named color contract
@@ -102,6 +136,36 @@ const productTheme: LumenTheme = {
 <LumenProvider theme={productTheme}>{children}</LumenProvider>
 ```
 
+## Component catalog
+
+React Native foundations and primitives for Lumen UI. The package exposes canonical light and dark
+themes together with native Text, Icon, IconButton, Surface, Button, ButtonGroup, TextField,
+Textarea, FieldGroup, Badge, Chip, Divider, Spinner, Card, Alert, Toast, Progress, Avatar, Toggle,
+SettingsRow, SearchField, DateField, DateRangeField, Checkbox, RadioGroup, SegmentedControl, Tabs, Skeleton, Graphic, Backdrop,
+Illustration, and Disclosure implementations.
+The structured tier also includes EmptyState, ErrorState, ListRow, Banner, Stat, SectionHeader, StatusBar, and a
+controlled NavigationBar for common product layouts without giving up native composition. `LumenRefreshControl` adds a
+React Native-specific pull-to-refresh indicator using the active semantic theme.
+Navigation destination labels wrap within their available width at accessibility text sizes
+(font scale 2 or greater), preserving their complete spoken names and native text scaling.
+`useLumenNavigationBarVisibility` and `LumenCollapsibleNavigationBar` add an optional scroll-
+responsive treatment for native lists without introducing an animation or navigation dependency.
+`LumenAlertDialog`, `LumenSheet`, `LumenMenu`, and `LumenShareButton` provide controlled native
+presentation and operating-system sharing. Overlays accept application-supplied safe-area insets,
+and sheets scroll application content by default so actions remain reachable with large text and
+short viewports. Set `scrollable={false}` when the child is already a virtualized scrolling
+container.
+Sheets use a full-content scrolling fallback at large accessibility text sizes or short window
+heights. `dismissible={false}` guards backdrop and platform dismissal while the application saves.
+Pass `initialFocusRef` and `returnFocusRef` when an accessible application-owned control should
+receive focus after presentation or closing. Both refs must point to mounted native controls;
+Lumen leaves the choice of field and trigger to the application.
+`LumenFieldGroup.requiredLabel` and `LumenTabs.panelAccessibilityLabel` accept translated spoken
+text. A tab panel otherwise uses its selected tab's visible label without an English suffix.
+Cards accept semantic `padding` and `radius` roles while preserving the extra-large/large defaults.
+Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
+a more specific symbol, so visual status is not conveyed by color alone.
+
 ## React hooks
 
 React Native applications can use React's built-in hooks and platform-neutral application hooks
@@ -112,7 +176,11 @@ normally. Lumen also exports native adaptations of reusable web behavior contrac
 - `useSelect` normalizes string or numeric options for `LumenPicker` and app-owned pickers;
 - `useLanguageToggle` cycles locale state without mutating the browser document or local storage;
 - `useThemeToggle` supplies explicit light/dark state that can be spread onto `LumenProvider`; and
-- `useToast` owns a bounded native notification queue rendered with `LumenToast`.
+- `useToast` owns a bounded native notification queue rendered with `LumenToast`. On Android,
+  automatic dismissal respects the system accessibility timeout and never shortens the requested
+  duration. If the native recommendation fails or is invalid, the requested duration is retained.
+  Zero, negative or nonfinite durations remain persistent until dismissed; iOS/web timing is unchanged.
+  Cleared, dismissed, evicted or unmounted toasts ignore late timeout responses.
 
 The package also exports `useLumenTheme` for semantic theme access and
 `useLumenNavigationBarVisibility` for native scroll-responsive navigation. Browser-specific hooks
@@ -181,7 +249,9 @@ the application supplies the active panel, so routing and data ownership stay ou
 
 Picker, Slider, and Gauge complete the shared phone control contract without adding another native
 dependency. Picker values remain controlled, Slider supports touch/drag plus screen-reader
-increment and decrement actions, and Gauge normalizes invalid ranges before exposing progress
+increment and decrement actions through one accessible adjustable track. Slider touch values follow the native right-to-left direction;
+its minimum and fill start at the leading edge, while accessibility increment always increases
+the numeric value. Gauge normalizes invalid ranges before exposing progress
 semantics:
 
 ```tsx
@@ -291,26 +361,409 @@ Attach the refresh control to a native scroll container without replacing its sc
 </ScrollView>
 ```
 
-See the [native component reference](../../docs/native-components.md) for the complete API matrix,
+See the [native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for the complete API matrix,
 state contracts, image-source mapping, and accessibility requirements. Use the shared
-[React Native error-handling guide](../../docs/error-handling.md#react-native) when integrating
+[React Native error-handling guide](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md#react-native) when integrating
 `LumenErrorState`; it covers error/offline classification, layouts, announcements, safe references,
 and loading-safe retries.
-See the [native compatibility matrix](../../docs/native-compatibility.md) for React and React Native
-baselines, and use the [native device validation matrix](../../docs/native-device-validation.md) for
+On iOS, Toast and ErrorState announce their title and description when mounted or when that copy
+changes. Polite announcements queue behind current speech; assertive errors interrupt it, and
+`announcement="off"` disables ErrorState announcements. Unchanged copy is not repeated on ordinary
+rerenders. Android and web retain live-region semantics. Diagnostic references and action labels
+are excluded from the explicit iOS announcement, and action controls remain independently operable.
+See the [native compatibility matrix](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) for React and React Native
+baselines, and use the [native device validation matrix](https://github.com/santi020k/lumen/blob/main/docs/native-device-validation.md) for
 VoiceOver and TalkBack evidence.
+
+## Appearance presets
+
+Start with `createLumenTheme(scheme, { preset: 'studio' })` or `<LumenProvider preset="studio">`. Theme options support custom numeric scales and semantic colors. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for the opaque material fallback.
 
 ## Data visualization
 
+`LumenCalendarHeatmap`, `LumenFunnelChart`, and `LumenBoxPlot` extend the chart catalog.
+Calendar heatmaps use inclusive UTC `YYYY-MM-DD` ranges (up to 3,660 days), preserve missing dates,
+and scroll week columns horizontally. Funnels preserve declared stage order and show supplied values;
+they do not infer conversion percentages. Box plots accept ordered five-number summaries with
+optional supplied outliers, which remain included in the numeric domain and readable disclosure.
+Missing measurements use × marks; exact values remain available through the expandable data list.
+Invalid input produces the invalid-data state before application formatters run. Pass translated
+chart labels, date/value formatters, and box-plot statistic labels for localized output.
+
+Heatmaps include labeled axes, a numeric color legend, and × markers for missing measurements.
+`LumenHeatmap.data` accepts arrays of unknown decoded rows and validates the complete collection
+before formatting categories. Malformed rows produce the empty state without calling application
+formatters. Use `LumenHeatmapDatum` to author typed rows; `null` and non-finite numeric measurements
+remain unavailable cells, while numeric coordinates must be finite.
+Use a diverging color scale around a meaningful midpoint for signed data. The plot and expandable
+list preserve zero and use the first measurement at each coordinate. See the
+[native heatmap options](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#native-heatmaps) for domain and formatting APIs.
+
 `LumenSparkline`, `LumenLineChart`, `LumenBarChart`, `LumenPieChart`, `LumenScatterChart`,
-`LumenHeatmap`, `LumenRangeChart`, and `LumenComboChart` use shared geometry and generated chart
-tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and a
-readable fallback list; selection remains controlled by the application. See the shared
-[data-visualization guide](../../docs/data-visualization.md).
+`LumenHeatmap`, `LumenRangeChart`, `LumenComboChart`, `LumenWaterfallChart`, and `LumenHistogram` use shared geometry and generated chart
+tokens while rendering with `react-native-svg`. Data charts expose a concise image summary and an
+expandable readable data list; selection remains controlled by the application. Line and bar charts render
+category and value axes even when the readable list is hidden. Dense axes select labels without
+removing data. Line, bar, scatter, range, and combo plots recompute geometry at the measured
+container width, keeping the full dataset visible on phones and resizing with split views or
+orientation changes. Axis text retains its size; chart data remains available in the disclosure.
+
+```tsx
+import { LumenBarChart, type LumenChartSeries } from '@santi020k/lumen-react-native'
+
+const scores: readonly LumenChartSeries[] = [{
+  id: 'scores',
+  label: 'Score',
+  data: [
+    { x: 'ana', xLabel: 'Ana', y: -4 },
+    { x: 'ben', xLabel: 'Ben', y: 8 }
+  ]
+}]
+
+export function FinalScores() {
+  return (
+    <LumenBarChart
+      label="Final scores"
+      series={scores}
+      formatValue={value => `${value} points`}
+      labels={{ chartData: 'Score details' }}
+    />
+  )
+}
+```
+
+Keep `x` as a stable category identity and use `xLabel` for a short axis label. An explicit
+`formatCategory` supplies full detail text without replacing `xLabel` on the axis. `formatValue`
+formats values and reserves space for the numeric axis. Pie data rows include markers matching
+their slices and retain readable text, so color is not the only association. Set `showData={false}`
+only when equivalent accessible values appear nearby; supply a factual `summary` when that helps
+explain the comparison. Translate the `labels` support copy in the application.
+
+See the shared [data-visualization guide](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md).
+
+`LumenWaterfallChart` draws signed changes with explicit total resets and connectors. Invalid
+steps reject the complete plot so later balances cannot become misleading. `LumenHistogram`
+preserves supplied bin widths and gaps; use density for unequal widths. Data disclosures retain
+start, end, plotted value, and original density-bin counts. Empty and invalid inputs have separate
+localized messages. Expanded data stays scrollable within the card.
+
+```tsx
+<LumenWaterfallChart label="Revenue movement" data={[
+  { id: 'opening', label: 'Opening', kind: 'total', value: 100 },
+  { id: 'growth', label: 'Growth', value: 40 },
+  { id: 'costs', label: 'Costs', value: -25 }
+]} />
+<LumenHistogram label="Response time" frequency="density" data={[
+  { start: 0, end: 10, count: 5 }, { start: 10, end: 30, count: 10 }
+]} />
+```
 
 ## Consumer composition recipes
 
-See [consumer UI recipes](../../docs/consumer-ui-recipes.md) for static React icons, responsive
+See [consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md) for static React icons, responsive
 record tables, keyboard-aware native sheets, whole-unit amount fields, adaptive editors, and
 asynchronous action states. Each recipe identifies the public primitives and the behavior that
-remains owned by the application.
+remains owned by the application. For long native row titles, status badges, and separate trailing
+actions, use the [dense identity row pattern](https://github.com/santi020k/lumen/blob/main/docs/native-patterns.md#pattern-dense-identity-row).
+`LumenListRow` and `LumenSectionHeader` allow text to shrink and constrain trailing content; keep
+unrelated actions independently named instead of making their parent row another button.
+
+### Phone presentation in v4
+
+`LumenPhoneInput` uses bundled flag artwork and a continuous control frame, and accepts `readOnly`
+in addition to `enabled`. Read-only fields also lock country selection. `LumenCountryFlag` and
+`LumenPhoneNumberView` expose the same artwork and normalized read-only phone presentation.
+Country names and calling codes remain the accessible selector label. The flag source and license
+are documented in [flags/README.md](https://github.com/santi020k/lumen/blob/main/flags/README.md); no external flag request is made.
+
+## Small foundation imports
+
+For screens using only text, surfaces, buttons, fields, badges, dividers, and spinners, use the
+optional foundations entrypoint. It shares the root implementation and theme context while avoiding
+the root catalog, chart, phone, and icon lookup imports. Mixing entrypoints uses the same provider.
+
+```tsx
+import { LumenButton, LumenProvider } from '@santi020k/lumen-react-native/foundations'
+
+<LumenProvider><LumenButton>Continue</LumenButton></LumenProvider>
+```
+
+Run `pnpm run measure:react-native-imports` from the repository to compare production Hermes
+bytecode for a platform baseline, root button, root icon, foundation button, and matching
+four-icon navigation fixtures using root or static graphics imports. Both static graphics
+fixtures and the public per-icon fixture use canonical generated artwork and retain the existing overhead budget. Build time is a
+local build measurement; it does not establish native startup latency or scrolling performance.
+
+### Static graphic imports
+
+For app-owned SVG components, import `LumenIcon` and `LumenIconButton` from
+`@santi020k/lumen-react-native/graphics`. This entrypoint shares the root rendering, theme,
+touch-target, and accessibility behavior without loading the named icon catalog. Its `icon` prop
+is required; named `name` lookups remain available from the package root. Graphic components accept
+`LumenIconGraphicProps` (`color`, `size`, and `strokeWidth`). Do not import the root catalog to
+construct a static graphic, since that restores its eager import cost.
+
+```tsx
+import { LumenIcon, LumenProvider } from '@santi020k/lumen-react-native/graphics'
+import { SearchGraphic } from './SearchGraphic'
+
+<LumenProvider>
+  <LumenIcon icon={SearchGraphic} label="Search records" />
+</LumenProvider>
+```
+
+### Canonical per-icon imports
+
+Use `@santi020k/lumen-react-native/icons/<name>` for canonical artwork without loading the full
+named catalog. Each module exports one graphic. Pair it with the `graphics` entrypoint:
+
+```tsx
+import { LumenIcon, LumenProvider } from '@santi020k/lumen-react-native/graphics'
+import { LumenSearchIconGraphic } from '@santi020k/lumen-react-native/icons/search'
+
+<LumenProvider>
+  <LumenIcon icon={LumenSearchIconGraphic} label="Search records" />
+</LumenProvider>
+```
+
+Icon paths use the catalog name; replace the brand namespace colon with a hyphen:
+`brand:github` becomes `icons/brand-github`, exporting `LumenBrandGithubIconGraphic`.
+The root `name` lookup remains available for dynamic choices and retains its full catalog.
+The generator emits both representations from the same artwork and rendering function; the root
+keeps its compact single-module layout to avoid thousands of module records in Hermes bundles.
+Labels, decorative treatment, themes and touch targets remain the responsibility of `LumenIcon`
+and `LumenIconButton`. The same `react-native-svg` peer is required.
+
+## Advanced native inputs
+
+`LumenNumberField`, `LumenAutocomplete`, `LumenPasswordField`, `LumenInputOTP` and
+`LumenImageComparison` are root exports. Image comparison percentage labels fall back to English formatting when a locale is malformed. `LumenTimeField` and `LumenTimeSelection` live in
+`@santi020k/lumen-react-native/datetime`, alongside the optional native picker integration. Time display falls back to English for malformed
+locale tags while preserving the requested 12-hour or 24-hour format. On iOS and web, changing the
+controlled value or time bounds dismisses an open sheet and resets its draft; reopen to edit the
+updated value. Android validates an open native picker against the latest bounds and callback.
+
+```tsx
+<LumenNumberField
+  label="Cantidad"
+  value={quantityDraft}
+  onValueChange={setQuantityDraft}
+  locale="es-CO"
+  min="0"
+  max="100"
+  step="0.1"
+  incrementLabel="Aumentar valor"
+  decrementLabel="Disminuir valor"
+  invalidNumberLabel="Ingresa un número válido"
+  outOfRangeLabel="Ingresa un número entre 0 y 100"
+/>
+```
+
+Number values remain raw localized strings, including unfinished drafts. Bounds and steps use
+complete ASCII decimal strings and exact arithmetic, with a 128-character limit. Units, currencies,
+required validation, persistence and submission parsing remain application-owned. Password visibility
+is transient and resets on blur or disabled/read-only state. OTP uses one editor with native code
+hints, normalizes pasted decimal digits and emits `onComplete` only for a changed full code; it never
+verifies or submits the value. Autofill hints require provider testing in the consuming app.
+
+Autocomplete takes `query`, `onQueryChange`, `options`, `onValueChange` and an optional selected
+`value`. Applications filter results, clear stale selection, cancel requests and supply `loading`
+or `resultsErrorMessage` plus `onRetry`. Selection sends the option label before its value. Supply
+localized loading, empty, retry and dismissal labels. Results are bounded in height; applications
+should limit suggestions to a useful small set. Disabling or making the field read-only dismisses
+results without reopening them after re-enabling.
+
+Time selection uses `{ hour, minute }`, inclusive same-day bounds, and explicit cancellation.
+Pass `safeAreaInsets` from the existing application provider. Android uses the system picker;
+other hosts use the native picker inside LumenSheet. Image comparison takes native `before` and
+`after` sources and a controlled `value` from zero to one for the visible after fraction. Its named
+slider provides touch, keyboard and screen-reader adjustment; supply localized image labels and
+`locale` for its percentage.
+
+See the [shared advanced contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md#shared-v4-advanced-controls)
+and the [native form-error recipe](https://github.com/santi020k/lumen/blob/main/docs/native-patterns.md#pattern-form-submission-errors).
+
+### Actual-versus-target charts
+
+`LumenBulletChart` compares a nullable actual `value` with a finite `target` and optional
+labeled `ranges`. A strong actual bar, target marker, readable value labels, and expandable exact
+data work together. Domains include zero and all measurements; invalid inputs fail closed.
+Null values stay distinct from zero. See the [chart guide](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#actual-values-and-targets)
+for the input, localization, and domain contracts.
+
+### React Native 0.86.3 live iOS text resizing
+
+This renderer version can retain stale text geometry after a live system Text Size change.
+The Lumen playground applies the exact-version source patch in
+`patches/react-native@0.86.3.patch` and builds iOS React Native from source. See
+[the playground instructions](https://github.com/santi020k/lumen/blob/main/apps/playground-react-native/README.md#live-ios-text-resizing)
+for the patch, rebuild requirements, and mounted-draft regression check. Installing Lumen alone
+does not change the host application's native renderer. Native font scaling remains enabled.
+
+### Rankings and paired comparisons
+
+Use `LollipopChart` for zero-based rankings and `DumbbellChart` for paired measurements (native
+`LumenLollipopChart` and `LumenDumbbellChart`). Supply ordered comparison data with `id`, `label`,
+nullable `value`, optional nullable `reference`, and optional `tone`. Both charts preserve missing
+values and expose exact data. See the [shared visualization contract](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#rankings-and-paired-comparisons).
+
+`LumenRangeSlider` provides a controlled numeric interval with independently named endpoints,
+localized value formatting, and disabled/read-only protection. See the
+[native range-filter contract](https://github.com/santi020k/lumen/blob/main/docs/native-components.md#native-range-filters) for each
+adapter's binding and step conventions.
+
+## Multiple selection
+
+`LumenMultiSelect` accepts a controlled `ReadonlySet<string>` and reuses `LumenAutocompleteOption`.
+`onValuesChange` receives a fresh `Set<string>`, so ordinary `useState(new Set<string>())` setters
+work without casts and the input set remains untouched. Pass `safeAreaInsets` from the application
+safe-area provider to keep modal actions clear of system indicators.
+The application supplies filtered options and owns query, requests, cancellation and persistence.
+Selection is immediate; closing does not revert it. Missing selected options retain their raw value
+and can be removed. Disabled options cannot be changed while present. Loading or search failure
+hides stale results; validation uses `errorMessage`, search failure uses `resultsErrorMessage` and
+`onRetry`. Read-only and disabled states close the sheet. Localize all action and result labels,
+`selectionLabel(count)` and `removeLabel(label)`.
+
+```tsx
+<LumenMultiSelect label="Teams" options={matchingTeams} values={teams} onValuesChange={setTeams}
+  query={query} onQueryChange={setQuery} loading={searching} />
+```
+
+## Rating
+
+`LumenRating` renders controlled whole-star selection. Zero means unrated; the
+maximum is clamped to 1 through 100. Out-of-range display values are clamped without
+rewriting host state. Disabled and read-only controls cannot emit edits. Supply
+`formatOption` to localize accessible option names (the neutral default is `3 / 5`).
+The host owns persistence and may reset the controlled value to zero.
+
+## Progress, history and location
+
+`LumenStepper` presents controlled complete/current/upcoming steps, stable IDs,
+descriptions and localized state labels. Vertical is the native default; horizontal
+layout scrolls. `LumenTimeline` and `LumenTimelineItem` retain host content and
+actions with optional decorative markers. `LumenBreadcrumb` reports ancestor IDs
+through `onNavigate`; current and disabled locations cannot navigate. Malformed decoded breadcrumb
+entries hide navigation while preserving the labeled container. The host
+owns routing, event ordering and workflow updates. See the
+[native component contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for platform parameters.
+
+## Tables
+
+`LumenTable` renders stable, labelled records using host-formatted cells, with a
+horizontal table layout available. `LumenDataTable` adds controlled sorting and
+row selection. Manual sorting preserves server order by default; explicit client
+sorting is stable and keeps missing values last. Selections retain filtered IDs;
+visible bulk actions skip disabled rows. Loading/error states hide stale controls.
+Controlled selections require a native Set of string IDs; malformed restored selections render
+`invalidLabel` before interactive controls are constructed.
+Supply localized labels and `formatSort`; the host owns requests and persistence.
+See the [native contracts](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) for parameter names
+and typed cell/column/row examples.
+
+## Tree
+
+`LumenTree` supports controlled expansion and selection with stable IDs,
+inherited disabled branches and localized status/disclosure labels. Its iterative
+`LumenTreeModel` rejects invalid graphs without changing application state. Controlled expansion
+requires a native Set of string IDs; malformed decoded expansion uses the existing invalid state.
+Malformed tour anchor collections are treated as unavailable targets.
+See the [native Tree contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tree.md).
+
+## QRCode and Cascader
+
+`LumenQRCode` generates accessible offline QR values with explicit capacity errors,
+quiet zones and scanner-safe contrast. See the [QRCode contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/qrcode.md).
+The Android adapter uses the Apache-2.0 ZXing core encoder; SwiftUI uses Core Image
+and React Native reuses the web catalog's uqr engine. No runtime request is needed.
+
+`LumenCascader` treats malformed decoded paths as unavailable selections, browses validated tree branches and emits controlled leaf paths,
+with localized navigation and safe loading/error states. See the
+[Cascader contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/cascader.md).
+
+### Calendar, Agenda and Kanban
+
+The public `LumenCalendar` and `LumenAgenda` provide controlled civil-date selection
+and chronological event presentation. Malformed decoded Agenda collections, event fields
+or timing values return an invalid dataset without rendering groups. `LumenKanbanBoard` and `LumenKanbanColumn`
+provide stable card identities, native dragging and localized accessible moves.
+Hosts retain dataset and persistence ownership. See the native contracts for
+[Calendar](https://github.com/santi020k/lumen/blob/main/docs/native-parity/calendar.md), [Agenda](https://github.com/santi020k/lumen/blob/main/docs/native-parity/agenda.md),
+[KanbanBoard](https://github.com/santi020k/lumen/blob/main/docs/native-parity/kanban-board.md), and
+[KanbanColumn](https://github.com/santi020k/lumen/blob/main/docs/native-parity/kanban-column.md).
+
+`LumenSchedule` adds a controlled day/week time grid using Agenda events, overlap
+lanes and accessible host move requests. See the [Schedule contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/schedule.md)
+for bounded ranges, wall-clock conversion ownership and adapter APIs.
+
+`LumenColorPicker` provides validated controlled color text, HSV channels and an
+optional named palette/alpha. Invalid drafts stay local. See the
+[ColorPicker contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/color-picker.md) for supported strings
+and latent hue behavior at black, grayscale and zero alpha.
+
+`LumenTreeSelect` selects a stable ID through a hierarchical disclosure panel.
+`LumenTransfer` controls source/target membership and staged checks with atomic moves.
+Both retain unknown host values and disabled records. See the
+[TreeSelect](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tree-select.md) and [Transfer](https://github.com/santi020k/lumen/blob/main/docs/native-parity/transfer.md)
+contracts for localization, state guards and adapter APIs.
+
+`LumenCarousel` provides controlled native slide paging and localized navigation.
+Malformed decoded slide collections, IDs or labels resolve to the existing invalid state before
+identity and keyboard state derivation. Decoded tree, table, command, transfer, kanban, tour, stepper
+and mentions collections are validated before models, hooks or renderers access their fields.
+Non-string QR values use the encoding-error state instead of rendering untrusted values.
+Command queries must be strings and calendar weekday labels must contain exactly seven strings.
+Malformed optional color swatches are ignored without disabling the editable color field.
+`LumenTooltip` provides contextual help with native dismissal and named anchors.
+See the [Carousel](https://github.com/santi020k/lumen/blob/main/docs/native-parity/carousel.md) and
+[Tooltip](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tooltip.md) contracts for adapter-specific state APIs.
+
+`LumenCommand` provides controlled grouped command search and host activation.
+`LumenTreeGrid` presents controlled hierarchical records with labeled native cells.
+See the [Command](https://github.com/santi020k/lumen/blob/main/docs/native-parity/command.md) and
+[TreeGrid](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tree-grid.md) contracts for state, localization and cell guards.
+
+`LumenTour` provides controlled native guidance around host-measured targets.
+See the [Tour contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/tour.md) for coordinate ownership,
+missing-target recovery and accessible dismissal.
+
+`LumenMentions` provides controlled multiline text and UTF-16 selection with literal
+suggestions. See the [Mentions contract](https://github.com/santi020k/lumen/blob/main/docs/native-parity/mentions.md)
+for composition, token boundaries and platform availability.
+
+See the [Rating](https://github.com/santi020k/lumen/blob/main/docs/native-parity/rating.md), [Table](https://github.com/santi020k/lumen/blob/main/docs/native-parity/table.md),
+[DataTable](https://github.com/santi020k/lumen/blob/main/docs/native-parity/data-table.md), [Breadcrumb](https://github.com/santi020k/lumen/blob/main/docs/native-parity/breadcrumb.md),
+[Stepper](https://github.com/santi020k/lumen/blob/main/docs/native-parity/stepper.md), and [Timeline](https://github.com/santi020k/lumen/blob/main/docs/native-parity/timeline.md)
+contracts for controlled state, localization, native composition and verification. Timeline items
+accept `isLast` to omit the final connector; application content and ordering remain host-owned.
+
+## Studio media workspace
+
+Compose MediaViewport, MediaThumbnail, MediaFilmstrip and ImageComparison modes with the
+[Studio media workspace recipes](https://github.com/santi020k/lumen/blob/main/docs/studio-media-workspaces.md). Applications retain
+media loading, selection, adjustment algorithms, processing, export and persistence.
+
+## Maintainer checks
+
+Maintainers can verify the exact packed package contents, peer installation, and strict external
+TypeScript consumption from the repository root with `pnpm run check:react-native-package`.
+Release canaries additionally generate clean Expo native projects from that tarball and require
+real debug binaries with `pnpm run check:react-native-native-package:android` and
+`pnpm run check:react-native-native-package:ios`. The iOS command requires CocoaPods.
+After publication, repeat the native proof against the exact npm artifact with
+`pnpm run check:react-native-native-release:android -- --version <version>` and
+`pnpm run check:react-native-native-release:ios -- --version <version>`.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Native component reference](https://github.com/santi020k/lumen/blob/main/docs/native-components.md) | Component coverage and native API responsibilities. |
+| [Native compatibility](https://github.com/santi020k/lumen/blob/main/docs/native-compatibility.md) | Supported operating systems, peers, and toolchains. |
+| [Device validation evidence](https://github.com/santi020k/lumen/blob/main/docs/native-device-validation.md) | Physical-device checks and outstanding qualification. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

@@ -3,6 +3,10 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
+This branch documents the locally prepared Lumen 4 candidate. Version 4 install examples become
+usable after publication; the public plugin and hosted MCP still describe their deployed version.
+Use the workspace packages and generated local MCP snapshot to evaluate this candidate.
+
 ## Install in ChatGPT or Codex
 
 The [Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
@@ -48,9 +52,9 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
-| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `3.0.1`  | `LumenUI`                                    | Not applicable                         |
-| Android / Compose          | Maven Central `com.santi020k:lumen-compose:3.0.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
-| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:3.0.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `4.0.0`  | `LumenUI`                                    | Not applicable                         |
+| Android / Compose          | Maven Central `com.santi020k:lumen-compose:4.0.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
+| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:4.0.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
 | Optional web brand icons   | `@santi020k/lumen-icons-brand`                                         | Register once, then use the framework `Icon` | Uses framework styles                  |
 
@@ -60,7 +64,7 @@ when you need its framework-neutral CLI or registry metadata.
 For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
 Swift Package product to the application target, use an exact or compatible release-version rule,
 and apply `.lumenTheme(...)` near the root. For Compose, install
-`com.santi020k:lumen-compose:3.0.0` from Maven Central and wrap content in `LumenTheme`. Native
+`com.santi020k:lumen-compose:4.0.0` from Maven Central and wrap content in `LumenTheme`. Native
 adapters do not load CSS or the Astro runtime.
 
 React Native can use ordinary React hooks and platform-neutral application hooks. Import native
@@ -71,7 +75,7 @@ import DOM-dependent hooks from `@santi020k/lumen-react` into a native bundle. S
 in an application workspace package and keep the Lumen rendering adapter at each app boundary.
 
 For watchOS, use the focused `LumenWatch*` contracts from the same Swift package. For Wear OS,
-install `com.santi020k:lumen-compose-wear:3.0.0` and wrap wearable content in `LumenWearTheme`
+install `com.santi020k:lumen-compose-wear:4.0.0` and wrap wearable content in `LumenWearTheme`
 inside the application-owned Wear Material theme. Keep complications, tiles, rotary input,
 Always On behavior, haptics, synchronization, navigation, and health or safety logic app-owned.
 
@@ -94,6 +98,66 @@ They still inherit the same Lumen size, alignment, `currentColor`, and accessibl
 the default icon catalog. React Native, SwiftUI, and Compose already include the corresponding
 complete brand catalog and accept `brand:github`, `.brandGithub`, and
 `LumenIconName.BrandGithub`, respectively, without a separate package.
+
+## Consumer composition in v4
+
+- For reporting filters, use React `DateRangeInput` with controlled `value`/`onValueChange`, localized
+  `labels`, bounds and explicit presets. Keep draft changes inside the picker until Apply. See the
+  [reporting example](https://lumen.santi020k.com/docs/web/reporting) and [migration guide](migrating-to-lumen.md).
+- Keep date-only values as validated `YYYY-MM-DD` strings. Do not round-trip a local date through
+  UTC timestamps. Use the native adapter's existing date field and application-owned calendar/time-zone rules.
+- Compose a metric card from `Card`, `Stat` and a chart with `presentation="bare"`; do not invent
+  MetricCard or Status components. Products own status labels, aggregation, currency units and rounding.
+- Use unique chart X identities, abbreviated `xLabel` text and full `formatCategory` labels.
+  Preserve absent observations explicitly; never turn missing data into a fabricated zero.
+- Compare two media treatments with `ImageComparison` and matching source dimensions. Supply a
+  visible localized control label and useful image alternatives. See [image comparison](image-comparison.md).
+- Use `Prose` for ordinary Markdown, `Code`/`CodeTabs` for examples, and `CopyButton` for dynamic
+  command output. Localize clipboard success/error feedback; do not swallow rejected writes.
+- Use public `asChild` composition when a semantic link needs button styling. Disable nested form
+  controls separately. On Input, native numeric `size` and Lumen `visualSize` have different meanings.
+- Map the complete semantic theme in light and dark modes, including `brand-solid`/`on-brand` and
+  `danger`/`on-danger`. Text-safe colors matter more than matching a decorative swatch.
+- NavigationMenu, Sidebar and Sheet compose a documentation shell. Keep ordinary links in normal
+  Tab order and application routing in the app. Do not rebuild primitives with `ui-*` classes.
+
+### Theme bootstrap and generated command output
+
+When the application owns theme state, use `ThemeToggle controlled` and its own click handler.
+Initialize the document in the head before paint; unavailable storage must not prevent rendering:
+
+```html
+<script>
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  try {
+    const saved = localStorage.getItem('application-theme')
+    if (saved === 'light' || saved === 'dark') theme = saved
+  } catch {
+    // Private browsing or storage policy can deny access.
+  }
+  document.documentElement.dataset.theme = theme
+  document.documentElement.classList.toggle('dark', theme === 'dark')
+</script>
+```
+
+The owner's click handler updates the document and the toggle's `aria-pressed` state, and persists
+inside a guarded storage write. Use a server-rendered theme when the application already has one.
+A controlled Lumen toggle does not read storage or change that state itself.
+
+For commands generated from a form, point `CopyButton` at the current output element. It reads the
+latest text when clicked, so the application only updates the output rather than managing clipboard
+promises or feedback timers:
+
+```astro
+---
+import { CopyButton } from '@santi020k/lumen-astro'
+---
+
+<output id="generated-command">pnpm run check</output>
+<CopyButton target="#generated-command" label="Copy command" copiedLabel="Command copied" errorLabel="Copy failed; select the command and copy it manually">
+  Copy command
+</CopyButton>
+```
 
 ## MCP-Assisted Workflow
 
@@ -343,7 +407,13 @@ The shared catalog includes:
   enabled unless the same values are already available in a nearby semantic table. Prefer a bar
   chart when precise slice comparison matters or the pie would exceed roughly seven categories.
   Use `ScatterChart` for numeric relationships, `Heatmap` for a labeled matrix, `RangeChart` for
-  low-to-high intervals, and `ComboChart` only when mixed marks share a meaningful domain. Use
+  low-to-high intervals, and `ComboChart` only when mixed marks share a meaningful domain.
+  Use `WaterfallChart` for signed balance changes, `LollipopChart` for ranking, `DumbbellChart`
+  for reference/current comparison, and `BulletChart` for actual/target comparison. Use `Histogram`
+  for supplied bins, `BoxPlot` for supplied distribution summaries, `CalendarHeatmap` for daily
+  activity, and `FunnelChart` for ordered cohort stages. Retrieve each specialized data contract;
+  these components do not all accept `LumenChartSeries`. Keep statistical and conversion policy
+  in the application, preserve missing days, and use density for unequal histogram bin widths. Use
   `Chart` as the custom SVG/canvas escape hatch. Preserve `null` gaps and the default accessible
   summary and fallback data. See `docs/data-visualization.md` for the full contract.
   Pass `labels` to replace every library-owned visible and assistive phrase. Finite zero is valid
@@ -384,9 +454,14 @@ The shared catalog includes:
   persists application data. The host owns validation, `aria-busy`, optimistic state, rollback,
   status names, and APIs. Use compact `Empty` states inside columns, preserve every column with
   `Skeleton` blocks while loading, and paginate large columns. See [Kanban composition and movement](kanban.md).
+- React applications can compose [TanStack-powered table views](data-table-views.md) through
+  `DataTableView`, preserving application-owned cells and server queries. Numeric/date ranges and
+  page-scoped selection are opt-in. Use `DataTableSavedViews` for explicit host-owned preference
+  persistence, and `useLumenReviewWorkflow` for reviewed commands with stale-revision and unknown-outcome
+  guards. Install `review-workflow`, `import-review` or `record-workspace` for executable React compositions.
 - Use `DataTable`, `Tree`, `TreeGrid`, `VirtualList`, `Pagination`, and `Command` for dense data
   collection workflows. Astro and Elements wire selectable/sortable `DataTable` behavior and
-  `VirtualList` range events; React emits the same data attributes for app-level adapters. `Tree`
+  `VirtualList` range events; React also provides built-in fixed-height list windowing. `Tree`
   and `TreeGrid` use roving keyboard focus, and `VirtualList` emits `ui:virtual-list-range` as the
   rendered range changes. Use `createDataViewState`,
   `serializeDataViewState`, `parseDataViewState`, `applyDataViewState`, and `getVirtualRange` for
@@ -411,15 +486,19 @@ The shared catalog includes:
   for theme import/export and accessibility checks. Use `suggestReadableInk`, `mergeThemeTokens`,
   and `tuneThemeContrast` when generated palettes need readable foreground repair.
 - Use `RichTextEditor` with `ButtonGroup`, `ToggleGroup`, and `Textarea` for editor compositions.
-  Controls with `data-ui-editor-command` dispatch browser editing commands and emit
-  `ui:editor-command`; use `data-ui-editor-value` for headings, links, and other value-bearing
-  commands. Editable surfaces support common formatting shortcuts, synchronize toggle
-  `aria-pressed` state, and emit `ui:editor-change` with HTML and plain text. Astro `UIPrimitives`
-  and registered Web Components bind those controls directly; React apps can use
-  `useRichTextEditor` for `rootProps`, `getCommandProps`, `getEditableProps`, and `executeCommand`.
-  For Tiptap, ProseMirror, Lexical, or Markdown engines, keep the external editor
-  package in the app and bridge toolbar buttons through the emitted command event instead of adding
-  the editor engine to Lumen.
+  Controls with `data-ui-editor-command` request formatting, block, history, link or list commands;
+  use `data-ui-editor-value` for value-bearing commands. Before the browser executes a command,
+  Lumen emits the bubbling, cancelable `ui:editor-command-request` event. External engines must
+  call `preventDefault()` and set `event.detail.executed` to their synchronous result. A failed
+  external command never falls back to the browser. The existing `ui:editor-command` event reports
+  completion; use it for notifications, not executing the command again.
+  Editable surfaces support formatting shortcuts and emit `ui:editor-change` with HTML and text.
+  Set `data-ui-editor-native-state="false"` when an external engine owns toolbar state.
+  React apps can use `useRichTextEditor({ commandHandler: ({ command, value }) => boolean })`;
+  providing a handler disables native toolbar state syncing by default. Use `nativeState` to
+  explicitly control that policy. Engine commands are synchronous; engines with asynchronous
+  work should manage completion themselves. Keep Tiptap, ProseMirror, Lexical and other engines
+  in the application.
 - Use `Autocomplete`, `SearchField`, `NumberField`, `TimeField`, `DateRangePicker`, `ColorPicker`,
   and `TagGroup` when forms need more than plain text inputs. Add `data-ui-form` to forms that
   should reflect native Constraint Validation API state into `Field` error slots on blur and submit.
@@ -458,6 +537,7 @@ uses these CustomEvents:
 | `ui:virtual-list-range`          | `VirtualList` root `[data-ui-virtual-list]`              | `{ startIndex: number, endIndex: number }`                                                                                     | The virtual list calculates its visible range on init or scroll.                                          |
 | `ui:kanban-move-request`         | `KanbanBoard` root `[data-ui-kanban]`                    | `{ itemId: string, fromColumn: string, toColumn: string, beforeId?: string, input: 'keyboard' \| 'pointer' }`                  | A handle requests a controlled move; the event is cancellable and never moves data or DOM.                |
 | `ui:tag-remove`                  | `TagGroup` root `.ui-tag-group` or `[data-ui-tag-group]` | `{ value?: string }`                                                                                                           | A `[data-ui-tag-remove]` control removes its closest tag or list item.                                    |
+| `ui:editor-command-request` | `RichTextEditor` root `[data-ui-rich-text-editor]` | `{ command: string, executed: boolean, value?: string }` | Cancel before execution and set executed for external engine ownership. |
 | `ui:editor-command`              | `RichTextEditor` root `[data-ui-rich-text-editor]`       | `{ command: string, executed: boolean, value?: string }`                                                                       | A toolbar control or keyboard shortcut runs an editor command.                                            |
 | `ui:editor-change`               | `RichTextEditor` root `[data-ui-rich-text-editor]`       | `{ html: string, text: string }`                                                                                               | Editable content changes or an editor command runs.                                                       |
 | `ui:theme-change`                | `ThemeBuilder` root `[data-ui-theme-builder]`            | `{ hue: number, accentHue: number, mode: 'generated' \| 'manual', scheme: 'dark' \| 'light', tokens: Record<string, string> }` | Hue, manual color, mode, or scheme controls update generated tokens.                                      |
@@ -524,8 +604,35 @@ attributes, and accessible markup.
 
 ## Styling Rules for Generated Code
 
+- Read the [content flow contract](content-flow.md). Stack and Grid own sibling gaps; surfaces own
+  padding; Field owns label/control/feedback spacing. Do not add another child margin for the same
+  relationship. Use `gap="related"` for closely related controls, `gap="group"` for separate groups
+  and `gap="section"` for major sections. Retrieve spacing tokens through MCP.
+- Use Card parts for header/body/actions and a nested Stack inside complex CardContent. Card
+  handles missing or hidden parts and wraps footer actions. Choose `density="compact"`,
+  `"comfortable"` (default) or `"spacious"` instead of scattering padding overrides.
+- Keep text rhythm inside Prose or Typography. Verify long and translated text, enlarged text,
+  validation states, optional sections and mobile wrapping before calling a composition finished.
+- Use the `page-header` and `section-header` recipes for dashboard identity, optional breadcrumbs,
+  status/count badges and independent actions. Keep headings in document order, pass translated
+  navigation/action labels and unique heading ids, and connect buttons to application-owned handlers.
+- Retrieve complete `content-flow-header`, `content-flow-settings`, `content-flow-list` and
+  `content-flow-actions` examples with `lumen_get_recipe`; the CLI installs the same compositions.
+  Keep one outer Container for fluid gutters. Card permits interactive overflow; use AspectRatio
+  to clip media. Reading blocks trim their outer margins, so avoid compensating offsets.
+
 - Do not require consumers to configure Tailwind for Lumen components.
 - Prefer component props and composition before adding custom CSS.
+- Assign each visible outer edge to one container. For flush content inside a rounded frame,
+  let the frame own the border and corner clipping; remove child rounding with supported props.
+  For example, use `<Image radius="none" ... />` below a framed header: `Image` defaults to
+  `radius="lg"`, which otherwise leaves rounded gaps at the shared edge. Keep standalone image
+  rounding when appropriate.
+- Use a single divider between header and body rather than overlapping full borders. Inset
+  surfaces with padding may have their own radius; account for the inset so their curves align.
+  Clip artwork at its frame, not an entire interactive surface where focus rings or overlays
+  could be cut off. Verify shared corners, borders, and keyboard focus at phone and desktop
+  widths in both light and dark themes.
 - Use the shared token names for custom surfaces: `canvas`, `surface`, `surface-muted`,
   `surface-strong`, `line`, `ink`, `ink-soft`, `ink-muted`, `brand`, `brand-solid`, `brand-soft`,
   `accent`, `success`, `warning`, and `danger`.
@@ -547,3 +654,118 @@ token JSON for token importers. See [docs/figma.md](figma.md) for the recommende
 - Update the relevant package README when public usage changes.
 - Add tests beside package code as `*.test.ts` when behavior, exported metadata, or component
   contracts change.
+
+### React inline range calendar
+
+For a range editor with both endpoint calendars visible, use the React-only
+`DateRangeCalendar` export. Pass `value={{ start, end }}`, `onValueChange`, required
+`labels={{ start, end, presets }}`, `locale`, optional `min`/`max`, and optional
+`presets={[{ label, value: { start, end } }]}`. `formatDate` customizes the displayed
+endpoint summaries. Keep a draft in the consuming application and apply it only
+when confirmed. ISO endpoints must be valid and ascending. Crossing a boundary
+moves the other endpoint; presets outside the bounds are disabled. The component
+shares `useCalendar` keyboard behavior and stacks its calendars on narrow screens.
+
+For React input-attached range selection, import `DateRangeInput` from
+`@santi020k/lumen-react`. Pass controlled ISO `value`/`onValueChange`, an accessible
+`label`, and localized `labels` containing `start`, `end`, `presets`, `apply`, and
+`cancel`. It owns draft state and confirmation, anchors a non-modal popover to its
+trigger, and supports keyboard dismissal and responsive scrolling. Use `validate`
+for domain restrictions and `renderSummary` for draft details. Optional
+`name={{ start: 'from', end: 'to' }}` submits applied ISO values through hidden inputs.
+See the React README for the complete usage and browser fallback contract.
+
+## Fixed-height virtual lists
+
+`VirtualList` uses the same DOM windowing controller in Astro, React and Elements. All rows remain
+mounted; offscreen rows are hidden, and inert spacers preserve the complete scroll height. This
+reduces displayed rows, not the cost of creating the initial DOM. Use pagination or an application
+renderer when retaining the entire dataset in the DOM is too expensive.
+
+Use `itemSize` (Astro/React) or `item-size` (Elements) for a fixed row height in pixels, defaulting
+to 44. `overscan` defaults to four rows on each side. Every direct element child is a row; put
+controls inside it, and keep headers or empty-state actions outside the list. Rows must fit the
+configured height; variable-height measurement is not supported. Do not add external row margins
+or gaps. Initially hidden rows remain hidden and are excluded from the window.
+
+The controller refreshes on scrolling, resizing, direct child changes and sizing attribute changes.
+A focused row and its neighboring rows remain available for native Tab navigation, which can extend
+the displayed window until focus moves. Name the scroll container using `aria-label` or
+`aria-labelledby`; it is keyboard-focusable by default. `ui:virtual-list-range` reports inclusive
+`startIndex` and `endIndex` when the displayed range or item count changes. Empty lists use
+`{ startIndex: 0, endIndex: -1 }`. `data-ui-range-start` and `data-ui-range-end` mirror the current
+window. Elements disconnect and React unmount restore original row styles and hidden state.
+
+## NumberField boundary
+
+`NumberField` remains a native number-input wrapper. The v4 consumer audits do not establish a
+shared requirement for a locale-aware draft parser. Applications needing decimal-comma entry,
+lossless monetary drafts or currency rules should retain their explicit parsing and validation
+policy; Lumen must not infer currency units or precision from locale.
+
+
+## Combobox keyboard behavior in v4
+
+Combobox keeps DOM focus in its input while Arrow Up/Down changes the active option through
+`aria-activedescendant`. Enter commits the active option only while the list is open; without an
+active option, normal form submission remains available. Home, End, Left and Right retain native
+text editing. Composition input and canceled keyboard events do not trigger selection or dismissal.
+Escape closes the innermost open control first, preserving an enclosing popup or dialog until the
+next Escape. Tab dismisses the list when focus leaves the component.
+
+Astro and Elements observe added, removed, relabeled and disabled options, and delegate pointer
+selection to the current list. React derives options from its current props and reports committed
+selections through `onChange`, including controlled inputs. Disabled and read-only inputs stay closed.
+Applications should keep focus on the input and observe `aria-activedescendant` instead of calling
+focus on option buttons. The DOM adapters match both option labels and values.
+
+## Appearance presets
+
+Choose `default`, `studio` or `glass` at the theme boundary. See [appearance presets](appearance-presets.md) for exact framework APIs. Studio follows the neutral PostLens look. Glass remains explicit per supporting surface; React Native and Compose retain solid fallbacks without adding blur dependencies. Customize semantic colors, typography and surface dimensions through public theme APIs.
+
+## Version-aware build, review, and migration
+
+The portable skills are `lumen-ui` for implementation, `lumen-review` for a read-only audit, and
+`lumen-migrate` for an explicitly requested upgrade. Their canonical sources live under `skills/`;
+`pnpm run generate:plugin-package` produces the client snapshots. Both client manifests use plugin
+1.1.0 and pin the v4 catalog. This candidate is not proof of publication or directory approval.
+
+Before applying MCP contracts, call `lumen_check_compatibility` with resolved versions from installed
+metadata or native lock files. A manifest range is not an installed version. When versions differ,
+inspect installed public types and README or use a matching MCP package. Do not silently upgrade.
+Search supports English and Spanish queries with framework and platform filters.
+
+For a v4 upgrade, read `lumen_get_migration` and preview `lumen migrate v4 --dry-run --json` locally.
+`--apply` rewrites only known static SDK import paths in JavaScript and TypeScript. It preserves
+comments and examples and reports UI/native review triggers. Dependency updates and application-owned
+workarounds require review; the CLI does not infer that a workaround can be removed. JSX, Astro,
+native source, dynamic imports, and dependency manifests are not automatically rewritten by the
+SDK import transform.
+
+See [v4 AI verification](lumen-4-ai.md) for actual agent benchmark coverage and release evidence.
+
+The integrated `lumen migrate v4` command also retains the release's web spacing migrations and
+optional coordinated dependency workflow. SDK edits compose into that command's source transform,
+so its apply ledger fingerprints the final source and repeat runs do not rewrite spacing twice.
+SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
+separate documented JSX/Astro spacing migration. The JSON report includes installed package
+versions and explicit SDK dependency-review findings.
+
+
+## Login examples and Auth
+
+Use the `auth-onboarding` recipe for visual email-code sign-in, code verification, and passkey
+recovery states in Astro, React, or Elements. The preview controls are disabled and do not authenticate.
+Lumen supplies the UI; the optional `@santi020k/auth-client` supplies protocol operations.
+See the [login integration reference](../packages/templates/README.md#login-examples-and-auth)
+for helper calls, safe result handling, and the application-owned server and session requirements.
+## Complex React forms
+
+Use the optional `@santi020k/lumen-react/forms` hooks with public form primitives for dependent
+validation, unsaved edits, stable repeatable rows, step navigation, and cancellation-safe checks.
+Read [composable form workflows](powerful-forms.md) before implementation. Choose one validation
+owner; keep schemas, financial policy, requests, authorization, and draft storage in the consumer.
+
+For photo and media editors, install the `media-workspace` recipe and follow
+[Studio media workspaces](studio-media-workspaces.md). Reuse public media controls; keep
+image processing, storage and export in the consumer application.

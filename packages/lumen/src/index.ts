@@ -201,6 +201,7 @@ export const lumen = {
   scope: '@santi020k'
 } as const
 
+export { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
 export {
   createLumenSetup,
   formatLumenDiagnostics,
@@ -223,3 +224,13 @@ export {
   migrateLumenV2,
   migrateLumenV2Source
 } from './v2-migration.js'
+export {
+  formatLumenVersionMigration,
+  type LumenMigrationVersion,
+  type LumenVersionMigrationFinding,
+  type LumenVersionMigrationOptions,
+  type LumenVersionMigrationReport,
+  type LumenVersionSourceMigration,
+  migrateLumenVersion,
+  migrateLumenVersionSource } from './version-migration.js'
+export { animateLumenPresence, type LumenMotionDuration, type LumenMotionPreset, type LumenMotionResult, type LumenPresenceOptions } from '@santi020k/lumen-core'

@@ -38,7 +38,7 @@ test("rejects a future Xcode and SDK before upload", () => {
 
   assert.equal(result.status, 1);
 
-  assert.match(result.stderr, /must use stable Xcode 26 with the iOS 26 SDK/u);
+  assert.match(result.stderr, /require a stable Xcode release/u);
 });
 
 test("rejects a prerelease macOS build before upload", () => {
@@ -50,4 +50,29 @@ test("rejects a prerelease macOS build before upload", () => {
   assert.equal(result.status, 1);
 
   assert.match(result.stderr, /must run on a stable macOS image/u);
+});
+
+
+test("accepts the verified stable Xcode 27 release on stable macOS 27", () => {
+  const result = runChecker({
+    LUMEN_XCODE_VERSION_OUTPUT: "Xcode 27.0\nBuild version 27A266a",
+    LUMEN_IPHONEOS_SDK_VERSION: "27.0",
+    LUMEN_MACOS_PRODUCT_VERSION: "27.0",
+    LUMEN_MACOS_BUILD_VERSION: "26A428",
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+});
+
+test("rejects unverified Xcode 27 builds and mismatched SDKs", () => {
+  for (const override of [
+    { LUMEN_XCODE_VERSION_OUTPUT: "Xcode 27.0\nBuild version 27A5000a" },
+    { LUMEN_XCODE_VERSION_OUTPUT: "Xcode 27.0\nBuild version 27A266a", LUMEN_IPHONEOS_SDK_VERSION: "27.2" },
+  ]) {
+    const result = runChecker(override);
+
+    assert.equal(result.status, 1);
+
+    assert.match(result.stderr, /verified stable/u);
+  }
 });

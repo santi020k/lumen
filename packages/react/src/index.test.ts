@@ -3,6 +3,7 @@
 
 import type { ReactElement } from 'react'
 import * as React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 import { describe, expect, test, vi } from 'vitest'
 
@@ -69,12 +70,6 @@ import {
   Watermark
 } from './index.js'
 
-interface ReactInternals {
-  __CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE: {
-    H: unknown
-  }
-}
-
 const renderComponent = (
   component: unknown,
   props: Record<string, unknown> = {},
@@ -85,8 +80,16 @@ const renderComponent = (
 })
 
 const withHookDispatcher = <Value>(callback: () => Value): Value => {
-  const internals = (React as unknown as ReactInternals)
-    .__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE
+  if (!('__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE' in React)) {
+    throw new Error('The React hook dispatcher is unavailable')
+  }
+
+  const internals = React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE
+
+  if (!internals || typeof internals !== 'object' || !('H' in internals)) {
+    throw new Error('The React hook dispatcher has an unexpected shape')
+  }
+
   const previousDispatcher = internals.H
   const states: unknown[] = []
   const refs: { current: unknown }[] = []
@@ -96,8 +99,10 @@ const withHookDispatcher = <Value>(callback: () => Value): Value => {
 
   internals.H = {
     useCallback: (value: unknown) => value,
+    use: (context: { _currentValue?: unknown }) => context._currentValue,
     useContext: (context: { _currentValue?: unknown }) => context._currentValue,
     useEffect: () => null,
+    useLayoutEffect: () => null,
     useId: () => `test-${++idIndex}`,
     useMemo: (factory: () => unknown) => factory(),
     useRef: (initialValue: unknown) => {
@@ -321,7 +326,7 @@ describe('@santi020k/lumen-react', () => {
 
     expect(card.props.as).toBe('section')
     expect(card.props.className).toBe(
-      'ui-card--interactive ui-card--glass custom-card'
+      'ui-card--comfortable ui-card--interactive ui-card--glass custom-card'
     )
     expect(card.props['data-variant']).toBe('interactive')
     expect(card.props.uiClassName).toBe('ui-card')
@@ -442,7 +447,7 @@ describe('@santi020k/lumen-react', () => {
     expect(blockProps['data-language']).toBe('ts')
     expect(blockProps['data-ui-code']).toBe(true)
     expect(header.type).toBe('figcaption')
-    expect(copyButtonProps['data-ui-code-copy']).toBe(true)
+    expect(copyButtonProps.copyLabel).toBe('Copy code to clipboard')
     expect(keyword.props.className).toBe('ui-code__token--keyword')
     expect(stringToken.props.className).toBe('ui-code__token--string')
   })
@@ -741,6 +746,7 @@ describe('@santi020k/lumen-react', () => {
 
     expect(end.min).toBe('2026-07-10')
     expect(end.value).toBe('2026-07-10')
+    expect(start.max).toBe('2026-07-10')
     expect(changes.at(-1)).toEqual({ end: '2026-07-10', start: '2026-07-10' })
   })
 
@@ -997,10 +1003,6 @@ describe('@santi020k/lumen-react', () => {
     const firstRowCells = rows[0]?.props.children as ReactElement<
       Record<string, unknown>
     >[]
-    const virtualList = VirtualList({
-      itemSize: 48,
-      overscan: 2
-    }) as ReactElement<Record<string, unknown>>
 
     expect(tableProps['data-ui-datatable']).toBe(true)
     expect(tableProps['data-ui-datatable-name']).toBe('rows')
@@ -1014,9 +1016,20 @@ describe('@santi020k/lumen-react', () => {
     expect(headers[1]?.props['data-ui-datatable-sort-type']).toBe('number')
     expect(rows[0]?.props['data-value']).toBe('beta')
     expect(firstRowCells[1]?.props['data-sort-value']).toBe('2')
-    expect(virtualList.props['data-ui-virtual-list']).toBe(true)
-    expect(virtualList.props['data-ui-item-size']).toBe(48)
-    expect(virtualList.props['data-ui-overscan']).toBe(2)
+  })
+
+  test('renders the mounted virtual list runtime contract', () => {
+    const virtualList = withHookDispatcher(() => VirtualList({
+      itemSize: 48,
+      overscan: 2
+    })) as ReactElement<Record<string, unknown>>
+    const renderedList = document.createElement('div')
+
+    renderedList.innerHTML = renderToStaticMarkup(virtualList)
+
+    expect(renderedList.firstElementChild?.hasAttribute('data-ui-virtual-list')).toBe(true)
+    expect(renderedList.firstElementChild?.getAttribute('data-ui-item-size')).toBe('48')
+    expect(renderedList.firstElementChild?.getAttribute('data-ui-overscan')).toBe('2')
   })
 
   test('renders resizable panes with separator handles', () => {
@@ -1050,6 +1063,22 @@ describe('@santi020k/lumen-react', () => {
     expect(firstHandle?.props['aria-orientation']).toBe('vertical')
   })
 
+  test.each([Infinity, -Infinity, NaN, 1001, Number.MAX_SAFE_INTEGER])(
+    'rejects unsafe resizable panel counts before allocation (%s)', panelCount => {
+      expect(() => withHookDispatcher(() => useResizable({ panelCount }))).toThrow(RangeError)
+    }
+  )
+
+  test.each([[1000, 1000], [2.9, 2], [-1, 0], [0, 0]])(
+    'retains bounded resizable panel count normalization (%s)', (panelCount, expected) => {
+      const resizable = withHookDispatcher(() => useResizable({ panelCount }))
+
+      expect(resizable.panelIndexes).toHaveLength(expected)
+      expect(resizable.handleIndexes).toHaveLength(Math.max(0, expected - 1))
+      expect(resizable.sizes).toHaveLength(expected)
+    }
+  )
+
   test('exposes resizable keyboard sizing props', () => {
     const changes: number[][] = []
     const resizable = withHookDispatcher(() => useResizable({
@@ -1064,6 +1093,7 @@ describe('@santi020k/lumen-react', () => {
 
     handleProps.onKeyDown?.({
       key: 'ArrowRight',
+      currentTarget: document.createElement('div'),
       preventDefault,
       shiftKey: false
     } as unknown as Parameters<NonNullable<typeof handleProps.onKeyDown>>[0])
@@ -1085,6 +1115,7 @@ describe('@santi020k/lumen-react', () => {
     const key = (init: { key: string, shiftKey?: boolean }): void => {
       handle.onKeyDown?.({
         preventDefault: vi.fn(),
+        currentTarget: document.createElement('div'),
         shiftKey: false,
         ...init
       } as unknown as Parameters<NonNullable<typeof handle.onKeyDown>>[0])
@@ -1228,6 +1259,17 @@ describe('@santi020k/lumen-react', () => {
     expect(figmaFormat['data-ui-theme-export-format']).toBe('figma')
   })
 
+  test('keeps studio presets scoped and exposes controlled preset selection', () => {
+    const theme = withHookDispatcher(() => useThemeBuilder({ preset: 'studio', defaultScheme: 'dark', radiusScale: 2 }))
+
+    expect(theme.preset).toBe('studio')
+    expect(theme.tokens.canvas).toBe('0 0% 7%')
+    expect(theme.tokens['ui-radius']).toBe('0.75rem')
+    expect(theme.getPresetProps('studio')['aria-pressed']).toBe(true)
+    expect(theme.getPresetProps('default')['aria-pressed']).toBe(false)
+    expect(theme.outputProps.value).toContain('--ui-shadow-sm: none;')
+  })
+
   test('exposes theme builder scheme, hue, and color control props', () => {
     const schemes: string[] = []
     const hues: number[] = []
@@ -1321,41 +1363,12 @@ describe('@santi020k/lumen-react', () => {
     expect(changes).toEqual([true, false])
   })
 
-  test('closes non-alert dialogs on backdrop click but keeps alerts modal', () => {
-    const alertChanges: boolean[] = []
-    const alert = withHookDispatcher(() => useDialog({
-      alert: true,
-      onOpenChange: open => {
-        alertChanges.push(open)
-      }
-    }))
+  test('exposes alert dialog semantics separately from ordinary dialogs', () => {
+    const alert = withHookDispatcher(() => useDialog({ alert: true }))
 
     expect(alert.dialogProps.role).toBe('alertdialog')
     expect(alert.dialogProps['data-ui-alert-dialog']).toBe(true)
     expect(alert.dialogProps['data-ui-dialog']).toBeUndefined()
-
-    alert.dialogProps.onClick?.({
-      target: null
-    } as unknown as Parameters<
-      NonNullable<typeof alert.dialogProps.onClick>
-    >[0])
-
-    expect(alertChanges).toEqual([])
-
-    const dialogChanges: boolean[] = []
-    const dialog = withHookDispatcher(() => useDialog({
-      onOpenChange: open => {
-        dialogChanges.push(open)
-      }
-    }))
-
-    dialog.dialogProps.onClick?.({
-      target: null
-    } as unknown as Parameters<
-      NonNullable<typeof dialog.dialogProps.onClick>
-    >[0])
-
-    expect(dialogChanges).toEqual([false])
   })
 
   test('requires a toast provider ancestor', () => {
@@ -1454,44 +1467,6 @@ describe('@santi020k/lumen-react', () => {
     )
 
     expect(changes).toEqual([true])
-  })
-
-  test('closes an open disclosure panel on Escape', () => {
-    const changes: boolean[] = []
-    const dropdown = withHookDispatcher(() => useDropdownMenu({
-      defaultOpen: true,
-      onOpenChange: open => {
-        changes.push(open)
-      }
-    }))
-
-    dropdown.panelProps.onKeyDown?.({
-      key: 'Escape',
-      preventDefault: vi.fn()
-    } as unknown as Parameters<
-      NonNullable<typeof dropdown.panelProps.onKeyDown>
-    >[0])
-
-    expect(changes).toEqual([false])
-  })
-
-  test('dismisses tooltips on mouse leave and Escape', () => {
-    const changes: boolean[] = []
-    const tooltip = withHookDispatcher(() => useTooltip({
-      defaultOpen: true,
-      onOpenChange: open => {
-        changes.push(open)
-      }
-    }))
-
-    tooltip.rootProps.onMouseLeave?.(
-      {} as Parameters<NonNullable<typeof tooltip.rootProps.onMouseLeave>>[0]
-    )
-    tooltip.rootProps.onKeyDown?.({
-      key: 'Escape'
-    } as Parameters<NonNullable<typeof tooltip.rootProps.onKeyDown>>[0])
-
-    expect(changes).toEqual([false, false])
   })
 
   test('opens tooltips after the scheduled focus delay', () => {

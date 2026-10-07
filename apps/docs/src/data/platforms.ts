@@ -1,4 +1,4 @@
-import { getNativeComponentsForPlatform } from './native-components'
+import { getNativeComponentsForPlatform } from './native-components.ts'
 
 export type DocsPlatformId = 'android' | 'apple' | 'foundations' | 'react-native' | 'web'
 
@@ -58,6 +58,7 @@ export interface PlatformGuide {
   playgroundCommands?: PlatformCodeExample[]
   playgroundLaunch?: PlatformPlaygroundLaunch
   playgroundNote?: string
+  playgroundSource?: string
   prerequisites?: string[]
   principles: PlatformPrinciple[]
   setupSteps?: PlatformSetupStep[]
@@ -71,8 +72,8 @@ export interface PlatformGuide {
   title: string
 }
 
-const lumenComposeCoordinate = 'com.santi020k:lumen-compose:3.0.0'
-const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:3.0.0'
+const lumenComposeCoordinate = 'com.santi020k:lumen-compose:4.0.0'
+const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:4.0.0'
 const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [
@@ -224,6 +225,7 @@ pnpm playground:react-native`,
     ],
     playgroundNote:
       'Use the browser preview for the quickest public tour. Clone the repository for Expo, simulators, emulators, or physical-device validation; the local path avoids advertising an Expo Go QR code that the current public client cannot open.',
+    playgroundSource: 'https://github.com/santi020k/lumen/tree/main/apps/playground-react-native',
     prerequisites: [
       'Node.js 22.12 or newer for consumer applications',
       'Node.js 22.19 or newer and pnpm for the Lumen repository playground',
@@ -327,7 +329,7 @@ return (
 https://github.com/santi020k/lumen
 
 # Dependency Rule
-Exact Version: 3.0.1
+Exact Version: 4.0.0
 
 # Add this product to your application target
 LumenUI`,
@@ -340,7 +342,7 @@ LumenUI`,
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "3.0.1"
+        exact: "4.0.0"
     )
 ],
 targets: [
@@ -382,7 +384,7 @@ struct ExampleApp: App {
     href: '/docs/apple',
     id: 'apple',
     installNote:
-      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 3.0.1 for reproducible builds, and attach the LumenUI product to your application target.',
+      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 4.0.0 for reproducible builds, and attach the LumenUI product to your application target.',
     label: 'Apple / SwiftUI',
     packageName: 'LumenUI',
     playgroundCommands: [
@@ -404,6 +406,7 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     ],
     playgroundNote:
       'The Apple gallery runs as an iOS app from Xcode and as a macOS Swift Package executable. Choose an iPhone simulator and press Run; signing is not required for the simulator.',
+    playgroundSource: 'https://github.com/santi020k/lumen/tree/main/apps/playground-apple',
     prerequisites: [
       'macOS with Xcode 16 or newer and the SDK for the Apple platform you target',
       'An existing SwiftUI application targeting a supported Apple platform',
@@ -438,7 +441,7 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     setupSteps: [
       {
         description:
-          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 3.0.1 for reproducible builds. Use a compatible-version rule only when the application accepts compatible updates.',
+          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 4.0.0 for reproducible builds. Use a compatible-version rule only when the application accepts compatible updates.',
         title: 'Add the Swift package'
       },
       {
@@ -578,6 +581,7 @@ pnpm playground:android:build`,
     ],
     playgroundNote:
       'Open the Android playground directory in Android Studio, let Gradle sync, select an emulator or connected device, and press Run. The command-line build writes a directly installable debug APK under the app build directory.',
+    playgroundSource: 'https://github.com/santi020k/lumen/tree/main/apps/playground-android',
     prerequisites: [
       'Android Studio with JDK 21 or newer',
       'Android SDK 37 and an emulator or USB-debuggable device',
@@ -759,7 +763,10 @@ const docsPlatformPrefixes: readonly (readonly [string, DocsPlatformId])[] = [
   ['/docs/forms', 'web'],
   ['/docs/icons', 'web'],
   ['/docs/brand-icons', 'web'],
-  ['/docs/theme-playground', 'web']
+  ['/docs/theme-playground', 'web'],
+  ['/docs/studio-media-workspaces', 'web'],
+  ['/docs/motion-playground', 'web'],
+  ['/docs/visual-playground', 'web']
 ]
 
 export const getDocsPlatform = (pathname: string): DocsPlatformId | undefined => docsPlatformPrefixes.find(

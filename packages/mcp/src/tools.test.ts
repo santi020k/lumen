@@ -72,6 +72,30 @@ describe('lumen-mcp data snapshot', () => {
     ).toBe(true)
   })
 
+  test('discovers attachment previews from their dedicated React module', () => {
+    const preview = resolveComponent('AttachmentPreview', loadLumenData())
+
+    expect(preview?.frameworkDetails.react.available).toBe(true)
+    expect(preview?.frameworkDetails.react.source).toContain('AttachmentPreviewProps')
+    expect(preview?.frameworkDetails.react.example).toContain('actions={<Button')
+    expect(preview?.frameworkDetails.react.example).not.toContain('slot=')
+    expect(preview?.frameworkDetails.react.props).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'onStateChange' }),
+      expect.objectContaining({ name: 'retryKey' })
+    ]))
+  })
+
+  test('discovers granular image comparison implementations and their public contracts', () => {
+    const comparison = resolveComponent('ImageComparison', loadLumenData())
+
+    expect(comparison?.frameworkDetails.react).toMatchObject({ available: true })
+    expect(comparison?.frameworkDetails.react.source).toContain('ImageComparisonProps')
+    expect(comparison?.frameworkDetails.react.props.some(prop => prop.name === 'onValueChange')).toBe(true)
+    expect(comparison?.frameworkDetails.elements).toMatchObject({ available: true, tagName: 'lumen-image-comparison' })
+    expect(comparison?.frameworkDetails.elements.attributes).toContain('before-label')
+    expect(comparison?.files).toContain('packages/astro/components/ImageComparison.astro')
+  })
+
   test('documents wrapped code and Astro motion runtime requirements', () => {
     const data = loadLumenData()
     const accordion = resolveComponent('Accordion', data)
@@ -382,6 +406,16 @@ describe('getComponent', () => {
 })
 
 describe('getRecipe', () => {
+  test.each(['astro', 'react', 'elements'] as const)('returns complete content-flow recipes for %s', framework => {
+    for (const name of ['header', 'settings', 'list', 'actions']) {
+      const result = getRecipe({ framework, name: `content-flow-${name}` })
+
+      expect(result.data.found).toBe(true)
+      expect(result.data.recipe?.examples[framework]).toContain(name === 'settings' ? 'group' : 'related')
+      expect(result.text).toContain('## Complete composition')
+      expect(result.text).toContain('Wire application actions')
+    }
+  })
   test('resolves and returns framework-specific recipe installation', () => {
     expect(resolveRecipe('advanced_fields')?.name).toBe('advanced-fields')
 
@@ -402,6 +436,23 @@ describe('getRecipe', () => {
 })
 
 describe('search', () => {
+  test('filters kinds before limiting and reports the filtered total', () => {
+    const complete = search({ query: 'button', limit: 100 })
+    const expected = complete.data.results.filter(result => result.kind === 'component')
+    const focused = search({ query: 'button', kind: 'component', framework: 'react', limit: 1 })
+    expect(focused.data.results).toHaveLength(1)
+    expect(focused.data.results[0]).toMatchObject({ kind: 'component', name: 'Button' })
+    expect(focused.data.total).toBeGreaterThan(1)
+    const all = search({ query: 'button', kind: 'component', limit: 100 })
+    expect(all.data.results).toEqual(expected)
+    expect(all.data.total).toBe(expected.length)
+  })
+
+  test.each(['native-component', 'recipe', 'rule', 'token'] as const)('keeps %s searches isolated', kind => {
+    const result = search({ query: 'theme', kind })
+    expect(result.data.results.every(match => match.kind === kind)).toBe(true)
+  })
+
   test('finds components by keyword', () => {
     const result = search({ query: 'button' })
 
@@ -487,8 +538,14 @@ describe('getTokens and getRules', () => {
 
     expect(result.text).toContain('Semantic token names')
     expect(result.data.tokens.semantic).toContain('brand')
+    expect(result.data.tokens.presets.names).toEqual(['default', 'studio', 'glass'])
+    expect(result.text).toContain('data-lumen-preset')
     expect(result.data.tokens.chart.series1).toBeDefined()
     expect(result.text).toContain('Data visualization tokens')
+    expect(result.data.tokens.spacing.md).toBe(12)
+    expect(result.data.tokens.spacingRoles).toEqual({ group: 'lg', inset: 'xl', related: 'sm', section: '2xl' })
+    expect(result.text).toContain('--ui-space-section')
+    expect(result.text).toContain('surfaces own padding')
   })
 
   test('returns rules', () => {

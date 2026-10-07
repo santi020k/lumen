@@ -1,4 +1,51 @@
-# @santi020k/lumen-mcp
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · MCP Server</h1>
+
+<p align="center">Structured catalog · Component discovery · AI tooling</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-mcp"><img src="https://img.shields.io/npm/v/@santi020k/lumen-mcp?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/mcp">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-mcp">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/mcp">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-mcp`
+
+**On this page:** [Install and connect](#install-and-connect) · [Resources](#resources) · [Further reading](#further-reading)
+
+<details>
+<summary>Browse all sections</summary>
+
+- [Install and connect](#install-and-connect)
+- [Tools](#tools)
+- [Resources](#resources)
+- [AI plugin package](#ai-plugin-package)
+- [Recommended agent workflow](#recommended-agent-workflow)
+- [Local repository usage](#local-repository-usage)
+- [Programmatic use](#programmatic-use)
+- [Snapshot generation](#snapshot-generation)
+- [License](#license)
+- [Spacing contracts](#spacing-contracts)
+- [Further reading](#further-reading)
+
+</details>
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server for the Lumen
 multi-framework primitive UI system. It gives AI agents structured access to
@@ -7,40 +54,6 @@ behavior, runtime events, native platform contracts, and Lumen's generation rule
 
 The published server ships a self-contained catalog snapshot, so consumers do
 not need a checkout of the Lumen repository.
-
-## Tools
-
-| Tool | Purpose |
-| --- | --- |
-| `lumen_list_components` | List components with descriptions, categories, framework availability, collections, and recipe membership. Filter by `framework`, `recipe`, or natural-language `query`. |
-| `lumen_get_component` | Get a component for `astro`, `react`, or `elements` at `summary`, `usage`, or `source` detail. Usage includes imports, styles, props or attributes, examples, accessibility, guidance, and events. |
-| `lumen_list_native_components` | List native components and filter them by `react-native`, `swiftui`, or `compose`. |
-| `lumen_get_native_component` | Get native installation, setup, import, API, example, accessibility guidance, and optional adapter source for one platform. |
-| `lumen_get_recipe` | Get a recipe or component set with its purpose, components, files, categories, and framework-specific install command. |
-| `lumen_search` | Rank natural-language matches across web and native contracts, recipes, tokens, and agent rules. Optionally filter by web framework or native platform. |
-| `lumen_get_meta` | Return deterministic snapshot provenance, package versions, schema version, component count, and catalog hash. |
-| `lumen_get_catalog_manifest` | Return stable web component, native component, and recipe fingerprints that clients can retain between upgrades. |
-| `lumen_diff_catalog` | Compare a retained manifest with the current snapshot and report added, changed, removed, and unchanged entries. |
-| `lumen_diagnose` | Verify snapshot integrity and report web framework plus native platform coverage when testing a connection. |
-| `lumen_get_tokens` | Return semantic token names, base colors, glass tokens, and the theme attribute. |
-| `lumen_get_rules` | Return the Lumen agent rules from `llms.txt`. |
-
-Every tool returns both readable text and validated `structuredContent`.
-
-## Resources
-
-| Resource | Contents |
-| --- | --- |
-| `lumen://meta` | Snapshot provenance, package versions, and deterministic catalog hash. |
-| `lumen://catalog-manifest` | Stable component and recipe fingerprints for change detection. |
-| `lumen://diagnostics` | Snapshot integrity results and framework coverage. |
-| `lumen://rules` | Agent rules as Markdown. |
-| `lumen://tokens` | Structured design tokens. |
-| `lumen://components` | Compact component catalog. |
-| `lumen://components/{name}` | Component metadata and default Astro usage. |
-| `lumen://native-components` | Compact native component catalog with platform availability. |
-| `lumen://native-components/{name}` | Native component metadata and usage for an available platform. |
-| `lumen://recipes/{name}` | Recipe metadata and install commands. |
 
 ## Install and connect
 
@@ -151,27 +164,65 @@ The process listens over HTTP. Public hosting must terminate TLS, configure the 
 and add authentication when the deployed data or operating model requires it. The public Lumen
 catalog does not require user authentication.
 
+## Tools
+
+| Tool | Purpose |
+| --- | --- |
+| `lumen_list_components` | List components with descriptions, categories, framework availability, collections, and recipe membership. Filter by `framework`, `recipe`, or natural-language `query`. |
+| `lumen_get_component` | Get a component for `astro`, `react`, or `elements` at `summary`, `usage`, or `source` detail. Usage includes imports, styles, props or attributes, examples, keyboard interactions, guidance, and events. |
+| `lumen_list_native_components` | List native components and filter them by `react-native`, `swiftui`, or `compose`. |
+| `lumen_get_native_component` | Get native installation, setup, import, API, example, accessibility guidance, and optional adapter source for one platform. |
+| `lumen_get_recipe` | Get a recipe or component set with its purpose, components, files, categories, and framework-specific install command. |
+| `lumen_search` | Rank natural-language matches across web contracts, recipes, tokens, and agent rules. Supply `platform` to search native contracts; optionally filter web results by `framework` and matches by `kind`. |
+| `lumen_get_meta` | Return deterministic snapshot provenance, package versions, schema version, component count, and catalog hash. |
+| `lumen_get_catalog_manifest` | Return stable web component, native component, and recipe fingerprints that clients can retain between upgrades. |
+| `lumen_diff_catalog` | Compare a retained manifest with the current snapshot and report added, changed, removed, and unchanged entries. |
+| `lumen_diagnose` | Verify snapshot integrity and report web framework plus native platform coverage when testing a connection. |
+| `lumen_get_tokens` | Return canonical spacing dimensions and role aliases, semantic colors, glass tokens, and the theme attribute. |
+| `lumen_check_compatibility` | Compare resolved installed Lumen versions with the catalog; report mismatches without upgrading. |
+| `lumen_get_migration` | Read the v4 migration contract and package-specific review guidance without changing files. |
+| `lumen_get_rules` | Return the Lumen agent rules from `llms.txt`. |
+
+Every tool returns both readable text and validated `structuredContent`.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| Resource | Contents |
+| --- | --- |
+| `lumen://meta` | Snapshot provenance, package versions, and deterministic catalog hash. |
+| `lumen://catalog-manifest` | Stable component and recipe fingerprints for change detection. |
+| `lumen://diagnostics` | Snapshot integrity results and framework coverage. |
+| `lumen://rules` | Agent rules as Markdown. |
+| `lumen://tokens` | Structured design tokens. |
+| `lumen://components` | Compact component catalog. |
+| `lumen://components/{name}` | Component metadata and default Astro usage. |
+| `lumen://native-components` | Compact native component catalog with platform availability. |
+| `lumen://native-components/{name}` | Native component metadata and usage for an available platform. |
+| `lumen://recipes/{name}` | Recipe metadata and install commands. |
+
 ## AI plugin package
 
 Install [Lumen UI from the Plugins Directory](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)
 in ChatGPT or Codex, then mention **@Lumen UI** in a request. The published plugin uses the hosted,
 read-only catalog and requires no separate Lumen account, API key, or local MCP configuration.
 
-The repository includes the plugin package in [`plugins/lumen-ui`](../../plugins/lumen-ui).
+The repository includes the plugin package in [`plugins/lumen-ui`](https://github.com/santi020k/lumen/tree/main/plugins/lumen-ui).
 It combines the portable `lumen-ui` skill with this MCP server for Codex, ChatGPT, and Claude Code.
 The public OpenAI Plugins Directory version uses a hosted Streamable HTTP endpoint; see the
-[publication record and checklist](../../docs/openai-plugin-submission.md) for deployment requirements, listing
+[publication record and checklist](https://github.com/santi020k/lumen/blob/main/docs/openai-plugin-submission.md) for deployment requirements, listing
 copy, annotation justifications, and reviewer test cases.
 
 Claude Code uses the package's stdio configuration and the repository marketplace in
-[`.claude-plugin/marketplace.json`](../../.claude-plugin/marketplace.json). See the
-[Claude Code plugin guide](../../docs/claude-code-plugin.md) for installation and validation.
+[`.claude-plugin/marketplace.json`](https://github.com/santi020k/lumen/blob/main/.claude-plugin/marketplace.json). See the
+[Claude Code plugin guide](https://github.com/santi020k/lumen/blob/main/docs/claude-code-plugin.md) for installation and validation.
 
 ## Recommended agent workflow
 
 1. Read `lumen://meta` and call `lumen_diagnose` to identify and verify the bundled snapshot.
-2. Read `lumen://rules`.
-3. Call `lumen_search` with the requested use case and target framework or platform.
+2. Call `lumen_check_compatibility` with exact installed versions (not manifest ranges). Use matching installed types and README when any version differs. Read `lumen://rules`.
+3. Call `lumen_search` with the requested use case, target framework or platform, `limit: 5`, and a focused `kind` when appropriate. Widen discovery only when needed.
 4. For web, call `lumen_get_component`; for native, call `lumen_get_native_component` with `detail: "usage"`.
 5. Follow the returned framework behavior section: mount Astro `UIPrimitives` once, use the named React hook/controller, or register custom elements once.
 6. Inspect a related recipe with `lumen_get_recipe` when the UI needs multiple primitives.
@@ -283,6 +334,17 @@ import { createLumenServer } from '@santi020k/lumen-mcp'
 const server = createLumenServer()
 ```
 
+Lumen 4 uses the stable MCP TypeScript SDK v2. The embedded server is an
+`McpServer` from `@modelcontextprotocol/server`; use v2 transports from that
+package (or `@modelcontextprotocol/server/stdio`) when connecting it. Rebuild
+programmatic integrations that previously imported SDK objects from
+`@modelcontextprotocol/sdk`, following the
+[official SDK migration guide](https://ts.sdk.modelcontextprotocol.io/v2/migration/upgrade-to-v2).
+Existing CLI commands, the stateless HTTP endpoint, argument schemas, and resource URIs remain
+available. Version checks and migration discovery are additive tools; component and recipe results
+now expose concrete nested output schemas. Existing MCP clients can keep using the
+`2025-11-25` protocol handshake.
+
 ## Snapshot generation
 
 `scripts/generate-data.mjs` builds `data/lumen-data.json` from:
@@ -303,12 +365,33 @@ alongside Lumen framework packages, and the package smoke test installs the
 packed artifact into a temporary consumer project before making a real stdio
 handshake.
 
-The evaluation gate also runs a curated natural-language search benchmark,
+The deterministic evaluation gate runs English and Spanish natural-language search benchmarks,
 calls every available component/framework contract through MCP, parses all
 Astro and custom-element examples, and type-checks every React example against
 the built React package. A generated example that is syntactically valid but
 uses an unsupported React prop therefore fails before release.
 
+Actual Codex and Claude fixture runs are an opt-in authenticated benchmark, separate from deterministic
+CI. See [v4 AI verification](https://github.com/santi020k/lumen/blob/main/docs/lumen-4-ai.md) for commands, evidence, and limitations.
+
 ## License
 
 MIT © Santiago Molina
+
+## Spacing contracts
+
+`lumen_get_tokens` returns `spacing` (canonical numeric pixel dimensions) and `spacingRoles`
+(aliases such as `related: "sm"`, `group: "lg"`, `section: "2xl"`, `inset: "xl"`). CSS uses rem.
+The readable result explains ownership and CSS variables; `lumen_search` also finds spacing roles.
+Snapshot schema 8 includes these fields and complete framework recipe examples. Read component contracts for supported gap and density
+props; the inset token is for padding and is not a Stack/Grid gap prop.
+
+## Further reading
+
+| [AI usage examples](https://github.com/santi020k/lumen/blob/main/docs/ai-usage.md) | Setup and composition contracts for coding agents. |
+| [Portable agent skill](https://github.com/santi020k/lumen/blob/main/skills/lumen-ui/SKILL.md) | Portable agent skill guidance and examples. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

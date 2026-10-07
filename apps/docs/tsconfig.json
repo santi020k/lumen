@@ -6,8 +6,19 @@
       {
         "name": "@astrojs/ts-plugin"
       }
+    ],
+    "types": [
+      "astro/client",
+      "node"
     ]
   },
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules"]
+  "include": [
+    ".astro/types.d.ts",
+    "**/*"
+  ],
+  "exclude": [
+    "cloudflare/dist",
+    "dist",
+    "node_modules"
+  ]
 }

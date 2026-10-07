@@ -6,16 +6,17 @@ import type { PlatformGuide } from '../data/platforms'
 
 interface Props {
   component?: NativeComponentDoc
+  embedded?: boolean
   guide: PlatformGuide & { id: NativePlatformId }
 }
 
-const { component, guide } = Astro.props
+const { component, embedded = true, guide } = Astro.props
 const reactNativeImplementation = component?.implementations['react-native']
 
 const canRender = guide.id === 'react-native' &&
   (component === undefined || reactNativeImplementation !== undefined)
 
-const search = new URLSearchParams({ embed: 'true', scheme: 'light', theme: 'lumen' })
+const search = new URLSearchParams({ embed: String(embedded), scheme: 'light', theme: 'lumen' })
 
 if (component) search.set('component', component.name)
 

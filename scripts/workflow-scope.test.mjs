@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { join, matchesGlob, resolve } from 'node:path'
 import test from 'node:test'
 
 // cspell:words predev vnext
@@ -17,6 +17,49 @@ const [ci, canary, release, docsManifestSource, versionPackages] = await Promise
   readRepositoryFile('apps/docs/package.json'),
   readRepositoryFile('scripts/version-packages.mjs')
 ])
+
+test('primitive motion has browser coverage for ordinary and release pull requests', () => {
+  const ciBrowser = ci.slice(ci.indexOf('\n  browser-contracts:\n'), ci.indexOf('\n  react-native-captures:\n'))
+  const releaseBrowser = canary.slice(canary.indexOf('\n  browser:\n'))
+  const trigger = canary.slice(canary.indexOf('  pull_request:'), canary.indexOf('  workflow_dispatch:'))
+
+  assert.match(ciBrowser, /run: pnpm run test:motion/u)
+
+  assert.match(ciBrowser, /browsers: chromium firefox webkit/u)
+
+  assert.match(releaseBrowser, /browsers: chromium webkit/u)
+
+  assert.match(releaseBrowser, /if: matrix\.shard == 1\n\s+run: pnpm run test:motion/u)
+
+  assert.match(trigger, /- "tests\/motion\/\*\*"/u)
+
+  assert.match(trigger, /- "playwright\.motion\.config\.ts"/u)
+})
+
+test('prepared package versions trigger publication without pending Changesets', async () => {
+  const pushConfiguration = release.slice(release.indexOf('  push:'), release.indexOf('  workflow_dispatch:'))
+
+  assert.match(pushConfiguration, /branches: \[main\]/u)
+
+  const patterns = pushConfiguration.split('\n').filter(line => line.trimStart().startsWith('- '))
+    .map(line => JSON.parse(line.trim().slice(2)))
+
+  const manifest = JSON.parse(await readRepositoryFile('registry/release-manifest.json'))
+  const packages = Object.keys(manifest.release.npm.packages)
+
+  for (const name of packages) {
+    const directory = name === '@santi020k/lumen' ? 'lumen' : name.replace('@santi020k/lumen-', '')
+    const path = `packages/${directory}/package.json`
+
+    assert.ok(patterns.some(pattern => matchesGlob(path, pattern)), `${path} must trigger publication`)
+  }
+
+  for (const path of ['.changeset/release-note.md', 'registry/release-manifest.json', '.github/workflows/release.yml']) {
+    assert.ok(patterns.some(pattern => matchesGlob(path, pattern)), `${path} must trigger publication`)
+  }
+
+  assert.ok(!patterns.some(pattern => matchesGlob('apps/docs/src/pages/index.astro', pattern)))
+})
 
 test('CI delegates path decisions and keeps package-family gates independent', () => {
   assert.match(ci, /node scripts\/classify-workflow-paths\.mjs ci/u)
@@ -140,6 +183,51 @@ test('release canaries keep manual full-matrix coverage and scope pull requests'
   assert.match(canary, /needs\.classify\.outputs\.native/u)
 })
 
+test('manual release canaries classify every surface without a pull request base', async () => {
+  const fetchStep = /- name: Fetch comparison base\n([\s\S]*?)\n\s+- name:/u.exec(canary)
+
+  assert.ok(fetchStep, 'The canary must define its comparison fetch')
+
+  assert.match(fetchStep[1], /if: github\.event_name == 'pull_request'/u)
+
+  const classifyStep = /- name: Classify changed paths[\s\S]*?\n\s+run: >-\n([\s\S]*?)\n\n/u.exec(canary)
+
+  assert.ok(classifyStep, 'The canary must define executable path classification')
+
+  const directory = await mkdtemp(join(tmpdir(), 'lumen-manual-canary-'))
+
+  try {
+    const outputPath = join(directory, 'outputs')
+    const script = classifyStep[1].trim().split('\n').map(line => line.trim()).join(' ')
+
+    const result = spawnSync('bash', ['-euo', 'pipefail', '-c', script], {
+      cwd: repositoryRoot,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        BASE_SHA: '',
+        GITHUB_EVENT_NAME: 'workflow_dispatch',
+        GITHUB_OUTPUT: outputPath,
+        HEAD_SHA: ''
+      }
+    })
+
+    assert.equal(result.status, 0, result.stderr)
+
+    const outputs = Object.fromEntries(
+      (await readFile(outputPath, 'utf8')).trim().split('\n').map(line => line.split('='))
+    )
+
+    for (const surface of ['browser', 'compose', 'consumer-packages', 'native', 'react-native', 'swift', 'web', 'web-contracts']) {
+      assert.equal(outputs[surface], 'true', `${surface} must run for a manual canary`)
+    }
+
+    assert.equal(JSON.parse(outputs['npm-packages']).length, 10)
+  } finally {
+    await rm(directory, { recursive: true })
+  }
+})
+
 test('npm release resolves and forwards the exact publication scope', () => {
   assert.match(
     release,
@@ -173,4 +261,161 @@ test('Turbo owns the docs dependency build without a duplicate prebuild invocati
   assert.equal(docsManifest.scripts.prebuild, 'pnpm run prepare:native-live-previews')
 
   assert.match(docsManifest.scripts.predev, /lumen-playground-react-native/u)
+})
+
+test('MCP deployment skips unpublished and stale-tag revisions before production approval', async () => {
+  const workflow = await readRepositoryFile('.github/workflows/deploy-mcp.yml')
+  const [publication, deployment] = workflow.split('  deploy:\n')
+
+  assert.ok(publication && deployment)
+
+  assert.doesNotMatch(publication, /environment: production/u)
+
+  assert.match(deployment, /needs: publication/u)
+
+  assert.match(deployment, /if: needs\.publication\.outputs\.published == 'true'/u)
+
+  assert.match(deployment, /environment: production/u)
+
+  const script = publication.split('        run: |\n')[1]?.trimEnd().split('\n')
+    .map(line => line.slice(10)).join('\n')
+
+  assert.ok(script)
+
+  for (const scenario of ['unpublished', 'published', 'stale']) {
+    const directory = await mkdtemp(join(tmpdir(), 'lumen-mcp-publication-'))
+
+    try {
+      const git = args => {
+        const result = spawnSync('git', ['-c', 'user.name=Release test', '-c', 'user.email=release@example.com', ...args], {
+          cwd: directory, encoding: 'utf8'
+        })
+
+        assert.equal(result.status, 0, result.stderr)
+      }
+
+      git(['init', '--initial-branch=main'])
+
+      await mkdir(join(directory, 'packages/lumen'), { recursive: true })
+
+      await writeFile(join(directory, 'packages/lumen/package.json'), '{"version":"4.0.0"}')
+
+      git(['add', '.'])
+
+      git(['commit', '-m', 'fixture'])
+
+      if (scenario !== 'unpublished') git(['tag', '-a', 'v4.0.0', '-m', 'fixture release'])
+
+      if (scenario === 'stale') git(['commit', '--allow-empty', '-m', 'next revision'])
+
+      const output = join(directory, 'outputs')
+
+      const result = spawnSync('bash', ['-euo', 'pipefail', '-c', script], {
+        cwd: directory, encoding: 'utf8', env: { ...process.env, GITHUB_OUTPUT: output }
+      })
+
+      assert.equal(result.status, 0, result.stderr)
+
+      assert.equal(await readFile(output, 'utf8'), `published=${scenario === 'published'}\n`)
+    } finally {
+      await rm(directory, { recursive: true, force: true })
+    }
+  }
+})
+
+
+test('early failures block every expensive CI and release canary lane', () => {
+  const expensiveJobs = {
+    ci: ['native-android', 'browser-contracts', 'react-native-captures', 'mcp-node-20'],
+    canary: ['web', 'compose', 'react-native-android', 'browser']
+  }
+
+  for (const [name, source] of [['ci', ci], ['canary', canary]]) {
+    for (const job of expensiveJobs[name]) {
+      const section = source.split(`  ${job}:\n`)[1]?.split(/\n {2}[a-z][a-z-]*:\n/u)[0]
+
+      assert.ok(section, `${name} must preserve ${job}`)
+
+      assert.match(section, /needs: \[classify, preflight\]/u)
+
+      assert.doesNotMatch(section, /^ {4}if:.*always\(\)/mu)
+    }
+  }
+
+  assert.match(ci, /quality\/\.github\/workflows\/reusable-pnpm-ci\.yml@[a-f0-9]{40}/u)
+
+  assert.match(canary, /Check repository and dependency security before builds/u)
+})
+
+test('release preflight fetches the history required by graduated release checks', () => {
+  const preflight = canary.split('  preflight:\n')[1]?.split('  web:\n')[0]
+
+  assert.ok(preflight)
+
+  assert.match(preflight, /actions\/checkout@[a-f0-9]{40}[^\n]*\n\s+with:\n\s+fetch-depth: 0/u)
+
+  assert.match(preflight, /pnpm run check:graduated-release-revision/u)
+})
+
+test('browser sharding covers the entire suite and native consumers run independently', () => {
+  const browser = canary.split('  browser:\n')[1]
+
+  assert.match(browser, /fail-fast: true/u)
+
+  assert.match(browser, /shard: \[1, 2\]/u)
+
+  assert.match(browser, /test:a11y --shard=\$\{\{ matrix\.shard \}\}\/2 --max-failures=1/u)
+
+  assert.match(browser, /if: matrix\.shard == 1/u)
+
+  assert.match(browser, /pnpm run test:framework-conformance/u)
+
+  const compose = canary.split('  compose:\n')[1].split('  react-native-android:\n')[0]
+
+  assert.match(compose, /gradlew test lint apiCheck verifyMavenPublication/u)
+
+  assert.doesNotMatch(compose, /check:react-native-native-package:android/u)
+
+  assert.match(canary.split('  react-native-android:\n')[1], /check:react-native-native-package:android/u)
+})
+
+test('browser cache hits retain operating-system prerequisites', async () => {
+  const action = await readRepositoryFile('.github/actions/setup-playwright/action.yml')
+
+  assert.match(action, /hashFiles\('pnpm-lock\.yaml'\)/u)
+
+  assert.match(action, /pnpm exec playwright install-deps "\$\{browsers\[@\]\}"/u)
+
+  assert.match(action, /pnpm exec playwright install --with-deps "\$\{browsers\[@\]\}"/u)
+
+  for (const source of [ci, canary]) {
+    assert.match(source, /task-cache-path: \.turbo\/cache/u)
+
+    assert.match(source, /cache: gradle/u)
+  }
+})
+
+
+test('the required build context fails instead of skipping after failed preflight', () => {
+  const build = ci.split('  build:\n')[1]
+
+  assert.match(build, /if: always\(\)/u)
+
+  const assertion = build.split('        run: |\n')[1]?.split('\n\n')[0]
+    .replace(/^ {10}/gmu, '')
+
+  assert.ok(assertion)
+
+  for (const classification of ['success', 'failure', 'cancelled', 'skipped']) {
+    for (const preflight of ['success', 'failure', 'cancelled', 'skipped']) {
+      const result = spawnSync('bash', ['-euo', 'pipefail', '-c', assertion], {
+        encoding: 'utf8',
+        env: { ...process.env, CLASSIFICATION_RESULT: classification, PREFLIGHT_RESULT: preflight }
+      })
+
+      assert.equal(result.status, classification === 'success' && preflight === 'success' ? 0 : 1)
+    }
+  }
+
+  assert.ok(build.indexOf('Require successful preflight') < build.indexOf('actions/checkout@'))
 })

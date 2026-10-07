@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-react-native",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -23,12 +23,25 @@
       "types": "./dist/tokens.generated.d.ts",
       "import": "./dist/tokens.generated.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./foundations": {
+      "types": "./dist/foundations.d.ts",
+      "import": "./dist/foundations.js"
+    },
+    "./graphics": {
+      "types": "./dist/graphics.d.ts",
+      "import": "./dist/graphics.js"
+    },
+    "./icons/*": {
+      "types": "./dist/static-icons/*.generated.d.ts",
+      "import": "./dist/static-icons/*.generated.js"
+    }
   },
   "files": [
     "dist",
     "README.md",
     "LICENSE",
+    "PHONE_FLAG_LICENSE.txt",
     "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
@@ -42,7 +55,8 @@
     "clean": "rm -rf dist coverage"
   },
   "dependencies": {
-    "@santi020k/lumen-core": "workspace:^"
+    "@santi020k/lumen-core": "workspace:^",
+    "uqr": "catalog:"
   },
   "devDependencies": {
     "@react-native-community/datetimepicker": "catalog:",

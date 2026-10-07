@@ -27,3 +27,24 @@ pnpm run measure:react-icons
 
 The browser suites remain the source of truth for computed Tailwind cascade, chart/table/form
 semantics, runtime interactions, and static rendering.
+
+## Consumer workflow fixtures
+
+`/docs/web/consumer-workflows` exercises synthetic financial-shaped forms, Spanish labels, exact
+amount drafts, server error retention, responsive records, manual sorting, expanded details,
+top-layer menus, menu-to-dialog focus and an activity feed. It uses the same installable React
+recipe sources that consumers receive. It contains no financial calculations or real records.
+
+Run `pnpm exec playwright test --config playwright.a11y.config.ts consumer-workflows.spec.ts` for
+desktop and narrow layouts, keyboard focus, native FormData, errors and empty states. Unit suites
+cover amount precision, locale parsing, controlled drafts, React Hook Form reset and scroll-anchor
+behavior. These fixtures supplement the existing reporting route's synthetic Observatory-shaped
+chart coverage. Native settings fixtures live beside the Swift adapter tests and are compilation
+evidence only; hardware, assistive-technology and store qualification remain separate.
+
+`operational-workflows.spec.ts` adds saved-view restoration, inclusive amount/date filters, selection
+that survives view changes, disabled-record explanations, whole-COP/date review, edit invalidation,
+confirmed failures, uncertain-result reconciliation, import findings and record history. It checks
+390px and 1440px layouts with keyboard focus, overflow and WCAG accessibility assertions, and writes
+temporary screenshots beside its test results. The fixtures stay entirely inside Lumen; they do not
+edit, connect to or certify a deployed Cartera application.

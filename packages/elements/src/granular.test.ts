@@ -111,7 +111,7 @@ describe('granular element entrypoints', () => {
     expect(badge.className).toBe('ui-badge ui-badge--default')
     expect(button.className).toBe('ui-button ui-button--default ui-button--default-size')
     expect(button.getAttribute('role')).toBe('button')
-    expect(card.className).toBe('ui-card')
+    expect(card.className).toBe('ui-card ui-card--comfortable')
 
     badge.setAttribute('variant', 'success')
     button.setAttribute('loading', '')
@@ -119,6 +119,40 @@ describe('granular element entrypoints', () => {
 
     expect(badge.className).toBe('ui-badge ui-badge--success')
     expect(button.className).toContain('ui-button--loading')
-    expect(card.className).toBe('ui-card ui-card--glass ui-glass-strong')
+    expect(card.className).toBe('ui-card ui-card--comfortable ui-card--glass ui-glass-strong')
   })
+})
+
+test('combobox binds late children, replaces controls and stops binding when disconnected', async () => {
+  const root = document.createElement('lumen-combobox')
+
+  document.body.append(root)
+  const markup = '<input role="combobox"><div role="listbox"><button type="button" role="option">Astro</button></div>'
+
+  root.innerHTML = markup
+  await Promise.resolve()
+  const input = root.querySelector('input')
+
+  if (!input) throw new Error('Expected input')
+
+  input.focus()
+  expect(input.getAttribute('aria-expanded')).toBe('true')
+  root.innerHTML = markup
+  await Promise.resolve()
+  const replacement = root.querySelector('input')
+
+  if (!replacement) throw new Error('Expected replacement input')
+
+  replacement.focus()
+  expect(replacement.getAttribute('aria-expanded')).toBe('true')
+  input.dispatchEvent(new Event('focus'))
+  expect(input.getAttribute('aria-expanded')).toBe('false')
+  root.remove()
+  root.innerHTML = markup
+  await Promise.resolve()
+  expect(root.querySelector('input')?.hasAttribute('aria-controls')).toBe(false)
+  document.body.append(root)
+  root.querySelector('input')?.focus()
+  expect(root.querySelector('input')?.getAttribute('aria-expanded')).toBe('true')
+  root.remove()
 })

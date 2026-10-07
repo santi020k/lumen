@@ -9,7 +9,7 @@ interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   direction?: 'horizontal' | 'vertical'
-  gap?: 'lg' | 'md' | 'none' | 'sm' | 'xl'
+  gap?: '2xl' | '3xl' | 'group' | 'lg' | 'md' | 'none' | 'related' | 'section' | 'sm' | 'xl' | 'xs'
   justify?: 'between' | 'center' | 'end' | 'start'
   wrap?: boolean
 }
@@ -20,7 +20,7 @@ const {
   class: classProp = '',
   className = '',
   direction = 'vertical',
-  gap = 'md',
+  gap = 'group',
   justify = 'start',
   wrap = false,
   ...rest

@@ -1,8 +1,33 @@
 'use client'
 
+export * from './ai-surfaces.js'
+export * from './amount-field.js'
+export * from './attachments.js'
+export * from './bullet-chart.js'
+export { ChangeSummary, type ChangeSummaryProps } from './change-summary.js'
+export { type ChartInteractionProps } from './chart-interaction.js'
+export { type ComparisonChartProps, DumbbellChart, LollipopChart } from './comparison-chart.js'
 export * from './components.js'
+export * from './dashboard.js'
+export * from './data-table.js'
+export * from './data-table-saved-views.js'
+export { parseDataTableViewState } from './data-table-state.js'
+export * from './data-table-view.js'
+export * from './date-range-calendar.js'
+export * from './date-range-input.js'
+export { DeviceFrame, type DeviceFrameProps } from './device-frame.js'
+export * from './expanded-charts.js'
+export * from './form-workflow.js'
 export * from './hooks.js'
+export * from './image-comparison.js'
+export * from './interval-charts.js'
+export * from './media-selection.js'
+export * from './media-viewport.js'
+export { ToastProvider } from './toast-provider.js'
+export * from './visual-interactions.js'
+export * from './world-map.js'
 export {
+  type LumenChartDatumActivationDetail,
   type LumenComponentName,
   lumenComponentNames,
   type LumenTabsChangeDetail,

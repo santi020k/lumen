@@ -1,0 +1,16 @@
+---
+import { WorldMap } from '@santi020k/lumen-astro'
+import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
+---
+
+<WorldMap
+  animated={false}
+  caption="Solid styling with Lumen accent colors and localized country labels."
+  countries={lumenWorldMapCountries}
+  highlightedCountries={['CO', 'JP', 'PT']}
+  label="Sample destinations with a solid map style"
+  labels={{ CO: 'Colombia', JP: '日本', PT: 'Portugal' }}
+  listLabel="Explore a country"
+  style="--ui-world-map-highlight: hsl(var(--accent));"
+  variant="solid"
+/>

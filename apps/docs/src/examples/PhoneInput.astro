@@ -1,43 +1,38 @@
 ---
-import { PhoneInput } from '@santi020k/lumen-astro'
+import { Label, PhoneInput, PhoneNumber } from '@santi020k/lumen-astro'
+import { getLumenPhoneCountry, resolveLumenPhoneNumber } from '@santi020k/lumen-core'
 
-const countries = [
-  { label: '🇺🇸 +1', value: '+1' },
-  { label: '🇬🇧 +44', value: '+44' },
-  { label: '🇪🇸 +34', value: '+34' },
-  { label: '🇨🇴 +57', value: '+57' },
-  { label: '🇯🇵 +81', value: '+81' }
-]
+const colombia = getLumenPhoneCountry('CO', { locale: 'en-US' })
+
+if (!colombia) throw new Error('Missing Colombia phone metadata')
+
+const contact = resolveLumenPhoneNumber(colombia, '+576015550123')
 ---
 
-<div style="display: grid; gap: 0.75rem; max-width: 22rem;">
-  <label for="ex-phone">Phone number</label>
-  <PhoneInput
-    countries={countries}
-    countryValue="+1"
-    id="ex-phone"
-    name="phone"
-    placeholder="(555) 000-0000"
-  />
-
-  <label for="ex-phone-sm">Small</label>
-  <PhoneInput
-    countries={countries}
-    countryValue="+44"
-    id="ex-phone-sm"
-    name="phone-sm"
-    placeholder="Mobile number"
-    size="sm"
-  />
-
-  <label for="ex-phone-lg">Large</label>
-  <PhoneInput
-    countries={countries}
-    countryValue="+34"
-    id="ex-phone-lg"
-    name="phone-lg"
-    placeholder="Work number"
-    size="lg"
-    value="612 345 678"
-  />
+<div style="display: grid; gap: 1rem; width: 100%; max-width: 24rem;">
+  <div>
+    <Label for="ex-phone">Phone number</Label>
+    <PhoneInput countryValue="CO" id="ex-phone" name="phone" placeholder="601 5550123" locale="en-US" required />
+  </div>
+  <div>
+    <Label for="ex-phone-sm">Small</Label>
+    <PhoneInput countryValue="GB" id="ex-phone-sm" name="phone-sm" placeholder="Mobile number" visualSize="sm" />
+  </div>
+  <div>
+    <Label for="ex-phone-lg">Large</Label>
+    <PhoneInput countryValue="ES" id="ex-phone-lg" name="phone-lg" placeholder="Work number" visualSize="lg" value="612345678" />
+  </div>
+  <div>
+    <Label for="ex-phone-disabled">Disabled</Label>
+    <PhoneInput countryValue="CO" disabled id="ex-phone-disabled" name="phone-disabled" value="6015550123" />
+  </div>
+  <div>
+    <Label for="ex-phone-readonly">Read only</Label>
+    <PhoneInput countryValue="CO" id="ex-phone-readonly" name="phone-readonly" readOnly value="6015550123" />
+  </div>
+  <div>
+    <Label for="ex-phone-error">Field error</Label>
+    <PhoneInput countryValue="CO" errorMessage="Check this contact number." id="ex-phone-error" name="phone-error" value="601" />
+  </div>
+  <PhoneNumber value={contact} link />
 </div>

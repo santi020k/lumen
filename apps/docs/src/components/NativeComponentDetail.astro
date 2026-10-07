@@ -6,11 +6,10 @@ import {
   CodeTabs,
   Icon,
   Link,
-  Pagination,
-  Table
+  Pagination
 } from '@santi020k/lumen-astro'
 
-import { findNativeComponentCapture } from '../data/native-component-captures'
+import { getNativeComponentCapture } from '../data/native-component-captures'
 import {
   getNativeComponentsForPlatform,
   type NativeComponentDoc,
@@ -19,6 +18,8 @@ import {
 import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
+import CommunityFeedback from './CommunityFeedback.astro'
+import DocsReferenceTable from './DocsReferenceTable.astro'
 import NativeLivePreview from './NativeLivePreview.astro'
 
 interface Props {
@@ -28,7 +29,11 @@ interface Props {
 
 const { component, guide } = Astro.props
 const implementation = component.implementations[guide.id]
-const capture = findNativeComponentCapture(guide.id, component.slug)
+const capture = getNativeComponentCapture(guide.id, component.slug)
+
+const captureClass = capture.width >= capture.height ?
+  'native-detail-capture native-detail-capture--compact' :
+  'native-detail-capture'
 
 if (!implementation) {
   throw new Error(`${component.name} is not available for ${guide.label}`)
@@ -151,10 +156,9 @@ const appleAvailability = implementation.appleAvailability
       {hasLivePreview && (
         <div class="native-detail-live-preview">
           <NativeLivePreview component={component} guide={guide} />
-          {capture && (
-            <details class="native-detail-capture-evidence">
-              <summary>View verified {guide.shortLabel} runtime capture</summary>
-              <figure class="native-detail-capture">
+          <details class="native-detail-capture-evidence">
+              <summary>View captured {guide.shortLabel} example</summary>
+              <figure class={captureClass}>
                 <div class="native-detail-capture__viewport">
                   <img
                     alt={capture.alt}
@@ -166,16 +170,15 @@ const appleAvailability = implementation.appleAvailability
                   />
                 </div>
                 <figcaption>
-                  <span><Icon decorative name="monitor" size="sm" /> Verified runtime capture</span>
+                  <span><Icon decorative name="monitor" size="sm" /> Captured example</span>
                   <small>{capture.device}</small>
                 </figcaption>
               </figure>
             </details>
-          )}
         </div>
       )}
-      {!hasLivePreview && capture && (
-        <figure class="native-detail-capture">
+      {!hasLivePreview && (
+        <figure class={captureClass}>
           <div class="native-detail-capture__viewport">
             <img
               alt={capture.alt}
@@ -187,22 +190,10 @@ const appleAvailability = implementation.appleAvailability
             />
           </div>
           <figcaption>
-            <span><Icon decorative name="monitor" size="sm" /> Verified runtime capture</span>
+            <span><Icon decorative name="monitor" size="sm" /> Captured example</span>
             <small>{capture.device}</small>
           </figcaption>
         </figure>
-      )}
-      {!hasLivePreview && !capture && (
-        <Card class="native-detail-capture-pending" variant="muted">
-          <Icon decorative name="monitor" size="sm" />
-          <div>
-            <strong>Focused package reference</strong>
-            <p>
-              This API ships in <code>{implementation.packageName}</code>. No application-playground
-              capture is published for this extension-only product yet.
-            </p>
-          </div>
-        </Card>
       )}
       <CodeTabs
         ariaLabel={`${component.name} ${guide.shortLabel} example`}
@@ -261,28 +252,11 @@ const appleAvailability = implementation.appleAvailability
       <h2 id="api-title">Public API</h2>
       <p>The primary shared and platform-specific options exposed by {implementation.exportName}.</p>
     </div>
-    <Table class="native-detail-table">
-      <table>
-        <thead>
-          <tr>
-            <th>API</th>
-            <th>Values or type</th>
-            <th>Default</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {implementation.api.map(row => (
-            <tr>
-              <th scope="row">{row.name}</th>
-              <td><code>{row.values}</code></td>
-              <td><code>{row.defaultValue}</code></td>
-              <td>{row.description}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Table>
+    <DocsReferenceTable
+      columns={['API', 'Values or type', 'Default', 'Description']}
+      labelledBy="api-title"
+      rows={implementation.api.map(row => [row.name, row.values, row.defaultValue, row.description])}
+    />
   </section>
 
   <section class="native-detail-section" aria-labelledby="behavior-title">
@@ -317,6 +291,11 @@ const appleAvailability = implementation.appleAvailability
       </div>
     </Card>
   )}
+
+  <CommunityFeedback
+    documentationPath={`${guide.href}/components/${component.slug}`}
+    subject={`${component.name} (${guide.label})`}
+  />
 
   <Pagination class="native-detail-pagination" aria-label="Native component pagination">
     {previous ?
@@ -492,27 +471,6 @@ const appleAvailability = implementation.appleAvailability
     background: hsl(var(--surface));
   }
 
-  :global(.native-detail-capture-pending) {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 1rem;
-    padding: 1.25rem;
-    color: hsl(var(--ink-soft));
-  }
-
-  .native-detail-capture-pending > :global(svg) {
-    color: hsl(var(--brand));
-  }
-
-  .native-detail-capture-pending strong {
-    color: hsl(var(--ink));
-  }
-
-  .native-detail-capture-pending p {
-    margin-top: 0.35rem;
-    line-height: 1.6;
-  }
-
   .native-detail-live-preview {
     min-width: 0;
   }
@@ -545,6 +503,14 @@ const appleAvailability = implementation.appleAvailability
     background:
       radial-gradient(circle at 50% 20%, hsl(var(--brand) / 0.12), transparent 48%),
       hsl(var(--surface-muted));
+  }
+
+  .native-detail-capture--compact .native-detail-capture__viewport {
+    min-height: 0;
+  }
+
+  .native-detail-capture--compact img {
+    width: 100%;
   }
 
   .native-detail-capture img {
@@ -592,41 +558,6 @@ const appleAvailability = implementation.appleAvailability
     border: 1px solid hsl(var(--line));
     border-radius: 1rem;
     background: hsl(var(--surface));
-  }
-
-  .native-detail-table table {
-    width: 100%;
-    min-width: 48rem;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 0.875rem;
-  }
-
-  .native-detail-table th,
-  .native-detail-table td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid hsl(var(--line));
-    color: hsl(var(--ink-soft));
-    vertical-align: top;
-  }
-
-  .native-detail-table thead th {
-    color: hsl(var(--ink-muted));
-    font-size: 0.7rem;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: hsl(var(--surface-muted));
-  }
-
-  .native-detail-table tbody th {
-    color: hsl(var(--ink));
-    font-family: ui-monospace, monospace;
-    font-size: 0.78rem;
-  }
-
-  .native-detail-table code {
-    font-size: 0.75rem;
   }
 
   .native-detail-notes {

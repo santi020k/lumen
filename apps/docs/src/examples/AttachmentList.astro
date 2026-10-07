@@ -1,0 +1,18 @@
+---
+import { Attachment, AttachmentList, Button, Link, Stack } from '@santi020k/lumen-astro'
+---
+
+<AttachmentList aria-label="Example files">
+  <li>
+    <Attachment>
+      <Stack gap="related">
+        <strong>example-report.pdf</strong>
+        <span>PDF · preview unavailable</span>
+        <Link href="/logo.svg" download>Download example asset</Link>
+      </Stack>
+      <Button type="button">Replace</Button>
+      <Button type="button" variant="destructive">Remove</Button>
+    </Attachment>
+  </li>
+  <li><Attachment><strong>example-logo.svg</strong><span>Image attachment</span></Attachment></li>
+</AttachmentList>

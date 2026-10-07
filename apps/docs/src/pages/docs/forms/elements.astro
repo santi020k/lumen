@@ -3,6 +3,7 @@ import { Breadcrumb, Card, Link, Table } from '@santi020k/lumen-astro'
 
 import CodeBlock from '../../../components/CodeBlock.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
+import FormStateExample from '../../../components/FormStateExample.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
 const formExample = `<script type="module">
@@ -82,6 +83,8 @@ const controls = [
       ]}
       title="Forms with Lumen Elements"
     />
+
+    <FormStateExample idPrefix="elements" />
 
     <section class="docs-section space-y-5" aria-labelledby="native-title">
       <div class="docs-section-heading">

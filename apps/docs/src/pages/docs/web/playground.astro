@@ -19,23 +19,28 @@ import {
   TabsTrigger
 } from '@santi020k/lumen-astro'
 
+import CommunityFeedback from '../../../components/CommunityFeedback.astro'
+import DocsPageHero from '../../../components/DocsPageHero.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
 const playgrounds = [
   {
-    description: 'Open live examples for every documented web primitive and inspect its API and accessibility contract.',
+    description: 'Find your next building block. Try real interactions, then take the example into your project.',
+    action: 'Explore components',
     href: '/docs/components',
     icon: 'box',
     label: 'Component examples'
   },
   {
-    description: 'Tune semantic colors, preview light and dark appearances, and export the resulting theme tokens.',
+    description: 'Make Lumen feel like your brand. Explore colors, compare appearances, and export your tokens.',
+    action: 'Explore themes',
     href: '/docs/theme-playground',
     icon: 'palette',
     label: 'Theme playground'
   },
   {
-    description: 'Explore complete application layouts built with the same public Astro, React, and Elements primitives.',
+    description: 'Start with the bigger picture. Explore complete layouts and see how the pieces work together.',
+    action: 'Explore templates',
     href: '/templates',
     icon: 'panels-top-left',
     label: 'Template previews'
@@ -51,138 +56,186 @@ const playgrounds = [
   description="Explore Lumen web components, themes, and complete templates in interactive examples."
   title="Web playground - Lumen UI"
 >
-  <section class="docs-hero docs-intro-hero" aria-labelledby="playground-title">
-    <div class="docs-hero__content">
-      <Badge variant="outline">Web playground</Badge>
-      <h1 class="docs-intro-title" id="playground-title">Explore Lumen in the browser</h1>
-      <p class="max-w-2xl text-lg/8 text-ink-soft">
-        Try individual primitives, shape a token-driven theme, or inspect complete product layouts before adding Lumen to an application.
-      </p>
-      <div class="flex flex-wrap gap-3">
-        <ButtonLink href="/docs/components" showArrow>Browse components</ButtonLink>
-        <ButtonLink href="/docs/theme-playground" variant="secondary">Create a theme</ButtonLink>
+  <DocsPageHero
+    compact
+    eyebrow="Web playground"
+    title="Less imagining. More trying."
+    description="Click it. Customize it. Make it yours. Explore real Lumen components in your browser, then bring what works into your next project."
+    stats={[
+      { label: 'Web frameworks', value: '3' },
+      { label: 'Real components', value: 'Live' },
+      { label: 'Your starting point', value: 'Open source' }
+    ]}
+  >
+    <Fragment slot="actions">
+      <ButtonLink href="#live-preview" showArrow>Try the live demo</ButtonLink>
+      <ButtonLink href="/docs/components" variant="secondary">Explore components</ButtonLink>
+    </Fragment>
+    <div class="playground-hero-visual" slot="visual" aria-hidden="true">
+      <div class="playground-hero-visual__label"><Icon decorative name="box" /> One design language. Your stack.</div>
+      <div class="playground-hero-visual__frameworks">
+        <Badge variant="secondary">Astro</Badge>
+        <Badge variant="secondary">React</Badge>
+        <Badge variant="secondary">Web Components</Badge>
       </div>
+      <div class="playground-hero-visual__swatches"><span></span><span></span><span></span><span></span><span></span></div>
     </div>
-  </section>
+  </DocsPageHero>
 
-  <section class="web-framework-playground" aria-labelledby="framework-playground-title">
+  <section class="web-framework-playground" id="live-preview" aria-labelledby="framework-playground-title">
     <div class="web-framework-playground__heading">
       <div>
-        <Badge class="web-framework-playground__badge" variant="secondary">Runtime comparison</Badge>
-        <h2 id="framework-playground-title">Switch the real framework, not only the snippet</h2>
+        <Badge class="web-framework-playground__badge" variant="secondary">Interactive demo</Badge>
+        <h2 id="framework-playground-title">One experience. Three ways to build it.</h2>
         <p>
-          The same product scenario is rendered by the public Astro, React, and Web Component
-          adapters. Switch runtimes, advance state, and test the tab keyboard contract in place.
+          Pick your framework and take the controls. Advance a release, explore the tabs,
+          and feel how the same Lumen components work in your stack.
         </p>
       </div>
-      <ButtonGroup aria-label="Preview framework" role="group">
-        <Button aria-pressed="true" data-framework-select="astro" size="sm">Astro</Button>
-        <Button aria-pressed="false" data-framework-select="react" size="sm" variant="ghost">React</Button>
-        <Button aria-pressed="false" data-framework-select="elements" size="sm" variant="ghost">Elements</Button>
-      </ButtonGroup>
     </div>
 
-    <p class="web-framework-playground__status" aria-live="polite" data-framework-status>
-      Rendering with Astro
-    </p>
+    <div class="web-framework-playground__workbench">
+      <div class="web-framework-playground__toolbar">
+        <ButtonGroup aria-label="Preview framework" role="group">
+          <Button aria-pressed="true" data-framework-select="astro" size="sm">Astro</Button>
+          <Button aria-pressed="false" data-framework-select="react" size="sm" variant="ghost">React</Button>
+          <Button aria-pressed="false" data-framework-select="elements" size="sm" variant="ghost">Elements</Button>
+        </ButtonGroup>
 
-    <div class="web-framework-playground__viewport">
-      <section data-framework-panel="astro">
-        <div class="web-framework-preview__surface" data-framework-runtime="astro">
-          <div class="web-framework-preview__heading">
-            <div>
-              <Badge variant="secondary">Astro server output</Badge>
-              <h2>Release control</h2>
-              <p>Semantic HTML is enhanced by selector-loaded Astro controllers.</p>
+      <p class="web-framework-playground__status" aria-live="polite" data-framework-status>
+        Rendering with Astro
+      </p>
+      </div>
+
+      <div class="web-framework-playground__viewport">
+        <section data-framework-panel="astro">
+          <div class="web-framework-preview__surface" data-framework-runtime="astro">
+            <div class="web-framework-preview__heading">
+              <div>
+                <Badge variant="secondary">Astro</Badge>
+                <h2>Launch workspace</h2>
+                <p>Your next release, coming together.</p>
+              </div>
+              <Button data-astro-advance>Advance</Button>
             </div>
-            <Button data-astro-advance>Advance</Button>
+            <Card>
+              <CardHeader>
+                <CardTitle>Release readiness</CardTitle>
+                <CardDescription>Move your release forward. Hit Advance to see progress and feedback update.</CardDescription>
+              </CardHeader>
+              <CardContent class="web-framework-preview__stack">
+                <Progress aria-label="Astro web readiness" data-astro-progress value={64} />
+                <Alert data-astro-alert><span data-astro-status>64% verified</span></Alert>
+              </CardContent>
+            </Card>
+            <Tabs initialValue="behavior">
+              <TabsList aria-label="Astro playground details">
+                <TabsTrigger aria-controls="astro-behavior" aria-selected="true" id="astro-behavior-tab" value="behavior">Behavior</TabsTrigger>
+                <TabsTrigger aria-controls="astro-delivery" aria-selected="false" id="astro-delivery-tab" value="delivery">Delivery</TabsTrigger>
+              </TabsList>
+              <TabsPanel aria-labelledby="astro-behavior-tab" id="astro-behavior" value="behavior">
+                Keyboard navigation and focus use progressively enhanced HTML.
+              </TabsPanel>
+              <TabsPanel aria-labelledby="astro-delivery-tab" hidden id="astro-delivery" value="delivery">
+                Optional controllers load only when their selectors are present.
+              </TabsPanel>
+            </Tabs>
           </div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Web readiness</CardTitle>
-              <CardDescription>Interactive primitives with shared Lumen tokens.</CardDescription>
-            </CardHeader>
-            <CardContent class="web-framework-preview__stack">
-              <Progress aria-label="Astro web readiness" data-astro-progress value={64} />
-              <Alert data-astro-alert><span data-astro-status>64% verified</span></Alert>
-            </CardContent>
-          </Card>
-          <Tabs initialValue="behavior">
-            <TabsList aria-label="Astro playground details">
-              <TabsTrigger aria-controls="astro-behavior" aria-selected="true" id="astro-behavior-tab" value="behavior">Behavior</TabsTrigger>
-              <TabsTrigger aria-controls="astro-delivery" aria-selected="false" id="astro-delivery-tab" value="delivery">Delivery</TabsTrigger>
-            </TabsList>
-            <TabsPanel aria-labelledby="astro-behavior-tab" id="astro-behavior" value="behavior">
-              Keyboard navigation and focus use progressively enhanced HTML.
-            </TabsPanel>
-            <TabsPanel aria-labelledby="astro-delivery-tab" hidden id="astro-delivery" value="delivery">
-              Optional controllers load only when their selectors are present.
-            </TabsPanel>
-          </Tabs>
-        </div>
-      </section>
+        </section>
 
-      <section data-framework-panel="react" hidden>
-        <div data-react-web-playground></div>
-      </section>
+        <section data-framework-panel="react" hidden>
+          <div data-react-web-playground></div>
+        </section>
 
-      <section data-framework-panel="elements" hidden>
-        <div class="web-framework-preview__surface" data-framework-runtime="elements">
-          <div class="web-framework-preview__heading">
-            <div>
-              <lumen-badge variant="secondary">Custom Elements</lumen-badge>
-              <h2>Release control</h2>
-              <p>Attributes and DOM events are owned by registered lumen-* elements.</p>
+        <section data-framework-panel="elements" hidden>
+          <div class="web-framework-preview__surface" data-framework-runtime="elements">
+            <div class="web-framework-preview__heading">
+              <div>
+                <lumen-badge variant="secondary">Custom Elements</lumen-badge>
+                <h2>Launch workspace</h2>
+                <p>Your next release, coming together.</p>
+              </div>
+              <lumen-button data-elements-advance>Advance</lumen-button>
             </div>
-            <lumen-button data-elements-advance>Advance</lumen-button>
+            <lumen-card>
+              <lumen-card-header>
+                <lumen-card-title>Release readiness</lumen-card-title>
+                <lumen-card-description>Move your release forward. Hit Advance to see progress and feedback update.</lumen-card-description>
+              </lumen-card-header>
+              <lumen-card-content class="web-framework-preview__stack">
+                <lumen-progress aria-label="Elements web readiness" max="100" value="72"></lumen-progress>
+                <lumen-alert><span data-elements-status>72% verified</span></lumen-alert>
+              </lumen-card-content>
+            </lumen-card>
+            <lumen-tabs>
+              <div aria-label="Elements playground details" role="tablist">
+                <button aria-controls="elements-behavior" aria-selected="true" id="elements-behavior-tab" role="tab" type="button">Behavior</button>
+                <button aria-controls="elements-delivery" aria-selected="false" id="elements-delivery-tab" role="tab" type="button">Delivery</button>
+              </div>
+              <section aria-labelledby="elements-behavior-tab" id="elements-behavior" role="tabpanel">
+                Keyboard navigation and focus run through the registered element controller.
+              </section>
+              <section aria-labelledby="elements-delivery-tab" hidden id="elements-delivery" role="tabpanel">
+                This preview registers only its ten tags; implementation-level entrypoints reduce
+                download size further when the required components expose them.
+              </section>
+            </lumen-tabs>
           </div>
-          <lumen-card>
-            <lumen-card-header>
-              <lumen-card-title>Web readiness</lumen-card-title>
-              <lumen-card-description>Interactive primitives with shared Lumen tokens.</lumen-card-description>
-            </lumen-card-header>
-            <lumen-card-content class="web-framework-preview__stack">
-              <lumen-progress aria-label="Elements web readiness" max="100" value="72"></lumen-progress>
-              <lumen-alert><span data-elements-status>72% verified</span></lumen-alert>
-            </lumen-card-content>
-          </lumen-card>
-          <lumen-tabs>
-            <div aria-label="Elements playground details" role="tablist">
-              <button aria-controls="elements-behavior" aria-selected="true" id="elements-behavior-tab" role="tab" type="button">Behavior</button>
-              <button aria-controls="elements-delivery" aria-selected="false" id="elements-delivery-tab" role="tab" type="button">Delivery</button>
-            </div>
-            <section aria-labelledby="elements-behavior-tab" id="elements-behavior" role="tabpanel">
-              Keyboard navigation and focus run through the registered element controller.
-            </section>
-            <section aria-labelledby="elements-delivery-tab" hidden id="elements-delivery" role="tabpanel">
-              This preview registers only its ten tags; implementation-level entrypoints reduce
-              download size further when the required components expose them.
-            </section>
-          </lumen-tabs>
-        </div>
-      </section>
+        </section>
+      </div>
+      <div class="web-framework-playground__hint"><Icon decorative name="arrow-right" size="sm" /> Try Advance, then use the arrow keys to explore the tabs.</div>
     </div>
   </section>
 
-  <div
-    aria-label="Web playgrounds"
-    class="
-      grid gap-4
-      lg:grid-cols-3
-    "
-    role="list"
-  >
-    {playgrounds.map(playground => (
-      <Link class="block rounded-2xl no-underline" href={playground.href} role="listitem">
-        <Card class="docs-example-card h-full" variant="muted">
-          <Icon decorative name={playground.icon} size="lg" />
-          <h2 class="text-xl font-bold text-ink">{playground.label}</h2>
-          <p class="text-sm/6 text-ink-soft">{playground.description}</p>
-          <span class="font-semibold text-brand">Open playground →</span>
-        </Card>
-      </Link>
-    ))}
-  </div>
+  <section class="playground-paths" aria-labelledby="playground-paths-title">
+    <div class="playground-paths__heading">
+      <Badge variant="outline">Keep exploring</Badge>
+      <h2 id="playground-paths-title">From a single component to your next app.</h2>
+      <p>Choose a starting point. Every example is built with the public Lumen library.</p>
+    </div>
+    <div
+      aria-label="Web playgrounds"
+      class="
+        grid gap-4
+        lg:grid-cols-3
+      "
+      role="list"
+    >
+      {playgrounds.map(playground => (
+        <div role="listitem">
+        <Link class="playground-path no-underline" href={playground.href}>
+          <Card class="playground-path__card h-full">
+            <div class="playground-path__visual" aria-hidden="true">
+              {playground.icon === 'box' && (
+                <div class="playground-path__specimen">
+                  <Badge variant="secondary">Your building blocks</Badge>
+                  <Progress value={72} />
+                  <div class="playground-path__pills">
+                    <Badge>Ready</Badge>
+                    <Badge variant="outline">In progress</Badge>
+                  </div>
+                </div>
+              )}
+              {playground.icon === 'palette' && (
+                <div class="playground-path__palette"><span></span><span></span><span></span><span></span><span></span></div>
+              )}
+              {playground.icon === 'panels-top-left' && (
+                <div class="playground-path__layout"><div></div><div><span></span><span></span><span></span></div></div>
+              )}
+            </div>
+            <div class="playground-path__copy">
+            <Icon decorative name={playground.icon} size="lg" />
+            <h2 class="text-xl font-bold text-ink">{playground.label}</h2>
+            <p class="text-sm/6 text-ink-soft">{playground.description}</p>
+            <span class="playground-path__action">{playground.action} <Icon decorative name="arrow-right" size="sm" /></span>
+            </div>
+          </Card>
+        </Link>
+        </div>
+      ))}
+    </div>
+  </section>
+  <CommunityFeedback documentationPath="/docs/web/playground" subject="Web playground" />
 </DocsLayout>
 
 <script>
@@ -348,13 +401,254 @@ const playgrounds = [
 </script>
 
 <style>
+  #live-preview {
+    scroll-margin-top: 9rem;
+  }
+
+  .playground-hero-visual {
+    display: grid;
+    gap: 1.2rem;
+    padding: 1.4rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1rem;
+    background: hsl(var(--canvas) / 0.75);
+  }
+
+  .playground-hero-visual__label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .playground-hero-visual__frameworks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .playground-hero-visual__swatches, .playground-path__palette {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .playground-hero-visual__swatches span, .playground-path__palette span {
+    flex: 1;
+    height: 2rem;
+    border-radius: 0.5rem;
+    background: hsl(var(--brand-solid));
+  }
+
+  .playground-hero-visual__swatches span:nth-child(2), .playground-path__palette span:nth-child(2) {
+    background: hsl(var(--accent));
+  }
+
+  .playground-hero-visual__swatches span:nth-child(3), .playground-path__palette span:nth-child(3) {
+    background: hsl(var(--success));
+  }
+
+  .playground-hero-visual__swatches span:nth-child(4), .playground-path__palette span:nth-child(4) {
+    background: hsl(var(--warning));
+  }
+
+  .playground-hero-visual__swatches span:nth-child(5), .playground-path__palette span:nth-child(5) {
+    background: hsl(var(--ink));
+  }
+
+  .web-framework-playground__workbench {
+    overflow: hidden;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.25rem;
+    background: hsl(var(--surface-muted));
+  }
+
+  .web-framework-playground__toolbar {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid hsl(var(--line));
+    background: hsl(var(--surface));
+  }
+
+  .web-framework-playground__viewport {
+    padding: clamp(1rem, 3vw, 2rem);
+    background: radial-gradient(ellipse at 50% 0, hsl(var(--brand) / 0.09), transparent 75%);
+  }
+
+  .web-framework-playground__hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0 1rem 1.25rem;
+    color: hsl(var(--ink-muted));
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  :global(.web-framework-preview__heading h2) {
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+
+  :global(.web-framework-preview__heading p) {
+    font-size: 0.9rem;
+  }
+
+  :global(.web-framework-preview__surface > .ui-card) {
+    background: linear-gradient(145deg, hsl(var(--surface)), hsl(var(--brand-soft) / 0.35));
+  }
+
+  .playground-paths {
+    margin-block: 3rem;
+  }
+
+  .playground-paths__heading {
+    display: grid;
+    justify-items: start;
+    gap: 0.7rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .playground-paths__heading h2 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.2;
+  }
+
+  .playground-paths__heading p {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    line-height: 1.65;
+  }
+
+  :global(.playground-path) {
+    display: block;
+    border-radius: 1rem;
+    color: inherit;
+  }
+
+  :global(.playground-path__card) {
+    padding: 0;
+    overflow: hidden;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  :global(.playground-path:hover .playground-path__card), :global(.playground-path:focus-visible .playground-path__card) {
+    border-color: hsl(var(--brand));
+    box-shadow: var(--ui-shadow-md);
+  }
+
+  .playground-path__visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 10rem;
+    padding: 1.25rem;
+    border-bottom: 1px solid hsl(var(--line));
+    background: radial-gradient(ellipse at top right, hsl(var(--brand) / 0.14), transparent 80%), hsl(var(--surface-muted));
+  }
+
+  .playground-path__copy {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.25rem;
+  }
+
+  .playground-path__copy h2, .playground-path__copy p {
+    margin: 0;
+  }
+
+  .playground-path__specimen {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.8rem;
+    background: hsl(var(--surface));
+    box-shadow: var(--ui-shadow-sm);
+  }
+
+  .playground-path__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .playground-path__palette {
+    width: 100%;
+    transform: rotate(-5deg);
+    padding: 0.6rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.8rem;
+    background: hsl(var(--surface));
+    box-shadow: var(--ui-shadow-sm);
+  }
+
+  .playground-path__palette span {
+    height: 5rem;
+  }
+
+  .playground-path__layout {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 0.6rem;
+    width: 100%;
+    height: 7rem;
+    padding: 0.7rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.8rem;
+    background: hsl(var(--surface));
+    box-shadow: var(--ui-shadow-sm);
+  }
+
+  .playground-path__layout > div:first-child {
+    border-radius: 0.35rem;
+    background: hsl(var(--brand-soft));
+  }
+
+  .playground-path__layout > div:last-child {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .playground-path__layout span {
+    border-radius: 0.35rem;
+    background: hsl(var(--surface-muted));
+    border: 1px solid hsl(var(--line));
+  }
+
+  .playground-path__layout span:first-child {
+    grid-column: 1 / -1;
+    background: hsl(var(--brand) / 0.12);
+  }
+
+  .playground-path__action {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: hsl(var(--brand));
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.playground-path__card) {
+      transition: none;
+    }
+  }
+
   .web-framework-playground {
     display: grid;
     gap: 1rem;
     margin-block: clamp(2rem, 5vw, 4rem);
   }
 
-  .web-framework-playground__heading,
+  .web-framework-playground__toolbar,
   :global(.web-framework-preview__heading) {
     display: flex;
     flex-wrap: wrap;
@@ -382,6 +676,8 @@ const playgrounds = [
 
   .web-framework-playground__heading h2 {
     font-size: clamp(1.65rem, 3vw, 2.35rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
     line-height: 1.1;
   }
 
@@ -408,13 +704,13 @@ const playgrounds = [
   :global(.web-framework-preview__surface) {
     display: grid;
     gap: 1rem;
-    max-width: 58rem;
+    max-width: 46rem;
     margin-inline: auto;
     border: 1px solid hsl(var(--line));
     border-radius: 1rem;
     background: hsl(var(--surface));
     box-shadow: var(--ui-shadow-md);
-    padding: clamp(1rem, 3vw, 1.5rem);
+    padding: clamp(1.25rem, 3vw, 2rem);
   }
 
   :global(.web-framework-preview__heading h2) {
@@ -435,11 +731,11 @@ const playgrounds = [
   }
 
   @media (max-width: 640px) {
-    .web-framework-playground__heading :global(.ui-button-group) {
+    .web-framework-playground__toolbar :global(.ui-button-group) {
       width: 100%;
     }
 
-    .web-framework-playground__heading :global(.ui-button-group .ui-button) {
+    .web-framework-playground__toolbar :global(.ui-button-group .ui-button) {
       flex: 1;
     }
   }

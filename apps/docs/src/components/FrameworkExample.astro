@@ -5,12 +5,14 @@ import {
   ButtonGroup,
   ButtonLink,
   CodeTabs,
+  Collapsible,
   Icon
 } from '@santi020k/lumen-astro'
 
 import type { FrameworkSnippet } from '../lib/snippets'
 
 interface Props {
+  codeCollapsed?: boolean
   componentName: string
   examplePath?: string
   groupId: string
@@ -19,6 +21,7 @@ interface Props {
 }
 
 const {
+  codeCollapsed = false,
   componentName,
   examplePath = `apps/docs/src/examples/${componentName}.astro`,
   groupId,
@@ -53,7 +56,7 @@ const codeTabItems = snippets.map(snippet => ({
         <Icon decorative name="blocks" size="sm" />
         <span data-framework-label>Astro</span>
       </Badge>
-      <span>Same visual contract, native framework API</span>
+      <span>Code target · live preview uses Astro</span>
     </div>
     <div class="framework-example__tools">
       <ButtonGroup aria-label="Preview width">
@@ -132,12 +135,14 @@ const codeTabItems = snippets.map(snippet => ({
     </div>
   </div>
 
-  <div class="framework-example__code">
+  <Collapsible class="framework-example__code" open={!codeCollapsed}>
+    <summary>View {componentName} code</summary>
     <div>
       <p>Framework usage</p>
       <span>
-        Switch targets to compare the adapter code. The preview stays visually stable because all
-        three packages share the same tokens and <code>ui-*</code> class contract.
+        Switch targets to compare the adapter code. This live preview runs the Astro example.
+        React and Elements use their own behavior APIs; complete the matching framework setup
+        before copying an example.
       </span>
     </div>
     <div class="framework-example__code-actions">
@@ -157,7 +162,7 @@ const codeTabItems = snippets.map(snippet => ({
         Edit {componentName} in browser
       </ButtonLink>
     </div>
-  </div>
+  </Collapsible>
 </div>
 
 <script>
@@ -266,7 +271,7 @@ const codeTabItems = snippets.map(snippet => ({
   .framework-example__target {
     flex-wrap: wrap;
     gap: 0.65rem;
-    color: hsl(var(--ink-muted));
+    color: hsl(var(--ink-soft));
     font-size: 0.75rem;
     font-weight: 700;
   }
@@ -284,6 +289,10 @@ const codeTabItems = snippets.map(snippet => ({
     border-radius: 999px;
     background: hsl(var(--surface) / 0.8);
     padding: 0.15rem;
+  }
+
+  .framework-example__tools :global(.ui-button-group > .ui-button) {
+    border-radius: inherit;
   }
 
   .framework-example__tools :global(.ui-button) {
@@ -354,6 +363,10 @@ const codeTabItems = snippets.map(snippet => ({
   }
 
   .framework-example__code {
+    border-inline: 0;
+    border-bottom: 0;
+    border-radius: 0;
+    box-shadow: none;
     display: grid;
     gap: 0.85rem;
     min-width: 0;
@@ -361,7 +374,7 @@ const codeTabItems = snippets.map(snippet => ({
     padding: 1rem;
   }
 
-  .framework-example__code > div:first-child {
+  .framework-example__code > div:first-of-type {
     display: grid;
     gap: 0.2rem;
   }
@@ -387,7 +400,7 @@ const codeTabItems = snippets.map(snippet => ({
     font-weight: 900;
   }
 
-  .framework-example__code > div:first-child > span {
+  .framework-example__code > div:first-of-type > span {
     max-width: 48rem;
     color: hsl(var(--ink-soft));
     font-size: 0.75rem;

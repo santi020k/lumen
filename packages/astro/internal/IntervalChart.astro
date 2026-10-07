@@ -1,0 +1,66 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import {
+  type createLumenHistogramGeometry,
+  type createLumenWaterfallGeometry,
+  formatLumenChartSummary,
+  getLumenChartToneClassName,
+  type LumenChartLabels,
+  resolveLumenChartLabels
+} from '@santi020k/lumen-core'
+
+import Chart from '../components/Chart.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  caption?: string | undefined
+  className?: string | undefined
+  description?: string | undefined
+  heading?: string | undefined
+  labels?: Partial<LumenChartLabels> | undefined
+  model: ReturnType<typeof createLumenWaterfallGeometry> | ReturnType<typeof createLumenHistogramGeometry>
+  formatValue: (value: number) => string
+  formatBoundary: (value: number) => string
+  presentation?: 'bare' | 'default' | undefined
+  showTable?: boolean | undefined
+  summary?: string | undefined
+  valueLabel: string
+}
+
+const { model, labels, formatValue, formatBoundary, showTable = true, summary, valueLabel, ...rest } = Astro.props
+const text = resolveLumenChartLabels(labels)
+const data = model.marks.map(mark => ({ x: mark.key, xLabel: mark.label, y: mark.value }))
+const factualSummary = formatLumenChartSummary([{ id: 'values', label: valueLabel, data }], formatValue, text)
+const hasData = model.marks.length > 0
+---
+
+<Chart {...rest} summary={summary ?? (model.valid ? factualSummary : text.invalidData)}>
+  {!hasData && <p class="ui-chart__empty" role="status">{model.valid ? text.empty : text.invalidData}</p>}
+  {hasData && (
+<>
+    <p class="ui-chart__axis-title">{valueLabel}</p>
+    <div class="ui-chart__plot" role="region" tabindex="0" aria-label={rest['aria-label'] ?? rest.heading ?? text.chartData}>
+      <svg aria-hidden="true" viewBox={`0 0 ${model.width} ${model.height}`}>
+        <g class="ui-chart__grid">{model.ticks.map(tick => <><line x1={model.left} x2={model.right} y1={model.y(tick)} y2={model.y(tick)} /><text x={model.left - 8} y={model.y(tick)}>{formatValue(tick)}</text></>)}</g>
+        <g class="ui-chart__axis-labels">{model.categoryTicks.map(tick => <text text-anchor={tick.textAnchor} x={tick.position} y={model.height - 16}>{tick.label}</text>)}</g>
+        {'connectors' in model && model.connectors.map(connector => (
+<line
+class="ui-waterfall-chart__connector"
+x1={connector.x1}
+x2={connector.x2}
+y1={connector.y}
+y2={connector.y}
+/>
+))}
+        <g class="ui-bar-chart__marks">{model.marks.map(mark => <rect class={getLumenChartToneClassName(mark.tone)} x={mark.x} y={mark.y} width={mark.width} height={mark.height}><title>{mark.label}: {formatValue(mark.value)}</title></rect>)}</g>
+      </svg>
+    </div>
+  </>
+)}
+  {showTable && hasData && (
+<details class="ui-chart__data"><summary>{text.viewData}</summary><div role="group" tabindex="0" aria-label={text.chartData}><table>
+    <thead><tr><th scope="col">{text.category}</th><th scope="col">{text.start}</th><th scope="col">{text.end}</th><th scope="col">{valueLabel}</th>{'bins' in model && model.frequency === 'density' && <th scope="col">{text.count}</th>}</tr></thead>
+    <tbody>{model.marks.map((mark, index) => <tr><th scope="row">{mark.label}</th><td>{formatBoundary(mark.start)}</td><td>{formatBoundary(mark.end)}</td><td>{formatValue(mark.value)}</td>{'bins' in model && model.frequency === 'density' && <td>{model.bins[index]?.count}</td>}</tr>)}</tbody>
+  </table></div></details>
+)}
+</Chart>

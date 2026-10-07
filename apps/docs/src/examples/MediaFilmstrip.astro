@@ -1,0 +1,9 @@
+---
+import { Image, MediaFilmstrip, MediaThumbnail } from '@santi020k/lumen-astro'
+---
+
+<MediaFilmstrip label="Illustrative photo collection" selectionLabel="1 photo selected">
+  <li><MediaThumbnail label="Lake landscape" mediaId="lake" selected order={1}><Image alt="" src="/comparison-after.svg" width={960} height={600} /></MediaThumbnail></li>
+  <li><MediaThumbnail label="Original landscape" mediaId="original" order={2}><Image alt="" src="/comparison-before.svg" width={960} height={600} /></MediaThumbnail></li>
+</MediaFilmstrip>
+<p>Selection and ordering belong to the application. Pair thumbnails with sibling move buttons for an accessible reorder workflow.</p>

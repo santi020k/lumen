@@ -20,6 +20,7 @@ import { defineSite } from '@santi020k/og/site'
 import ExposureMetrics from '../components/ExposureMetrics.astro'
 import SiteFooter from '../components/SiteFooter.astro'
 import SiteHeader from '../components/SiteHeader.astro'
+import { latinFontUrl } from '../data/web-font'
 import { getSocialImageUrl } from '../lib/social-image'
 
 interface Props {
@@ -67,9 +68,9 @@ const page = site.page({
   } :
 {}),
   description,
-  image: { alt: title, url: socialImageUrl },
+  image: { alt: `${title} social preview`, height: 630, type: 'image/webp', url: socialImageUrl, width: 1200 },
   pathname: Astro.url.pathname,
-  robots: { index: !noindex },
+  robots: { index: !noindex, maxImagePreview: 'large' },
   title,
   type: article ? 'article' : 'website'
 })
@@ -108,7 +109,7 @@ const software = defineSchema({
   '@type': 'SoftwareSourceCode',
   author: defineSchema({ '@id': creatorId, '@type': 'Person' }),
   codeRepository: 'https://github.com/santi020k/lumen',
-  description: 'An open-source UI system for accessible web and native product interfaces.',
+  description: 'An open-source UI library for AI-assisted development of accessible web and native interfaces.',
   isAccessibleForFree: true,
   license: 'https://opensource.org/license/mit',
   name: 'Lumen UI',
@@ -135,7 +136,11 @@ const pageStructuredData = article ?
     '@type': 'WebPage',
     description,
     isPartOf: defineSchema({ '@id': websiteId.href, '@type': 'WebSite' }),
+    inLanguage: 'en',
+    isAccessibleForFree: true,
+    primaryImageOfPage: defineSchema({ '@type': 'ImageObject', contentUrl: socialImageUrl, height: 630, width: 1200 }),
     name: title,
+    ...(Astro.url.pathname.startsWith('/docs') ? { about: defineSchema({ '@id': softwareId.href, '@type': 'SoftwareSourceCode' }) } : {}),
     url: canonicalUrl.href
   })
 
@@ -177,6 +182,7 @@ const structuredData = composeJsonLd(
     <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" href={latinFontUrl} as="font" type="font/woff2" crossorigin />
     <ClientRouter />
     <script is:inline>
       const themeStorageKey = 'lumen-theme'
@@ -244,6 +250,7 @@ const structuredData = composeJsonLd(
   type LegacyColorTheme = 'dark' | 'light'
 
   const themeStorageKey = 'lumen-theme'
+  let sessionTheme: ColorTheme | null = null
 
   const getLegacyTheme = (theme: LegacyColorTheme): ColorTheme => (
     theme === 'dark' ? 'lumen-dark' : 'lumen-light'
@@ -299,7 +306,9 @@ const structuredData = composeJsonLd(
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'lumen-dark' : 'lumen-light'
   )
 
-  const getPreferredTheme = (): ColorTheme => getStoredTheme() ?? getSystemTheme()
+  const getPreferredTheme = (): ColorTheme => (
+    sessionTheme ?? getStoredTheme() ?? normalizeTheme(document.documentElement.dataset.theme) ?? getSystemTheme()
+  )
 
   const getToggledTheme = (theme: ColorTheme): ColorTheme => {
     const nextMode = getThemeMode(theme) === 'dark' ? 'light' : 'dark'
@@ -331,6 +340,9 @@ const structuredData = composeJsonLd(
   const syncThemeSelects = (theme: ColorTheme, targetDocument = document) => {
     for (const select of targetDocument.querySelectorAll<HTMLSelectElement>('[data-theme-select]')) {
       select.value = getThemeFamily(theme)
+
+      // Notify the enhanced Select without re-entering the delegated theme handler.
+      select.dispatchEvent(new Event('change'))
     }
   }
 
@@ -371,7 +383,13 @@ const structuredData = composeJsonLd(
   let isThemeAnimating = false
 
   const commitTheme = (nextTheme: ColorTheme) => {
-    localStorage.setItem(themeStorageKey, nextTheme)
+    sessionTheme = nextTheme
+
+    try {
+      localStorage.setItem(themeStorageKey, nextTheme)
+    } catch {
+      // Theme controls still work for this document when storage is unavailable.
+    }
 
     applyTheme(nextTheme)
   }
@@ -470,13 +488,11 @@ const structuredData = composeJsonLd(
       return
     }
 
-    localStorage.setItem(themeStorageKey, nextTheme)
-
-    applyTheme(nextTheme)
+    commitTheme(nextTheme)
   })
 
   preferredColorScheme.addEventListener('change', () => {
-    if (getStoredTheme()) return
+    if (sessionTheme || getStoredTheme()) return
 
     applyTheme(getSystemTheme())
   })

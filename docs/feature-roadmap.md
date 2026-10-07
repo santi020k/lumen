@@ -82,11 +82,22 @@ See [consumer UI recipes](consumer-ui-recipes.md) for the static React icon entr
 responsive record tables across web adapters, and React Native sheet composition controls.
 Editor layouts, whole-unit amount fields, and asynchronous workflows remain consumer recipes.
 
-## Next
+## Lumen 4 release priorities
 
-- Execute the [Lumen 2 readiness plan](lumen-2-readiness.md): stabilize and graduate the native
-  adapters, prove their real-app and physical-device support, then approve only the breaking web and
-  umbrella changes that justify a version 2 release.
+- Complete the [v4 readiness plan](lumen-4-readiness.md), including automated checks, package-consumer
+  canaries, compatibility, security, provenance and exact-revision approval. The
+  [current release policy](native-release-runbook.md#current-release-policy) supersedes historical
+  native consumer/device and stability completion requirements.
+- Versioned migration previews cover v2, v3 and v4. V3 coordinates package updates without
+  inventing web source rewrites; v4 preserves explicit layout gaps and flags application-owned CSS,
+  chart, dialog and native contracts for review.
+- Inherited RTL keyboard navigation is verified across web adapters, including direction changes after
+  mounting. Native range inputs retain browser-owned keyboard behavior.
+- [VirtualList data mode](virtual-list-data.md) provides bounded rendering of large fixed-height
+  collections, with stable keys, total scroll extent and retained keyboard focus.
+
+## After Lumen 4
+
 - Continue moving independent Astro behaviors behind selector-gated controller chunks while
   preserving the single `UIPrimitives` mounting API.
 - Ratchet coverage thresholds upward as focused React hook and interaction tests land.

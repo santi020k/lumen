@@ -1,0 +1,18 @@
+---
+import { Badge, Link, Prose, Stack } from '@santi020k/lumen-astro'
+
+import { Content } from '../../../../../../docs/migrating-v1-to-v2.md'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+---
+
+<DocsLayout
+  breadcrumbs={[{ href: '/docs/migrations', label: 'Migration guides' }]}
+  description="Migrate Lumen 1 runtime imports, sizing, toast viewports, native dates, and Swift enums to Lumen 2."
+  title="Lumen 1 to Lumen 2 migration - Lumen UI"
+>
+  <Stack gap="group">
+    <Link href="/docs/migrations">All migration guides</Link>
+    <Badge class="w-fit" variant="outline">Version upgrade</Badge>
+    <Prose class="migration-guide"><Content /></Prose>
+  </Stack>
+</DocsLayout>

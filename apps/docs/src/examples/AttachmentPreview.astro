@@ -1,0 +1,12 @@
+---
+import { AttachmentPreview, Button, Link } from '@santi020k/lumen-astro'
+---
+
+<AttachmentPreview src="/logo.svg" contentType="image/svg+xml" alt="Lumen logo">
+  <span slot="caption">Example image attachment</span>
+  <Link slot="actions" href="/logo.svg" download>Download</Link>
+  <Button slot="actions" type="button">Replace</Button>
+</AttachmentPreview>
+<AttachmentPreview contentType="application/pdf" alt="Example report" labels={{ unavailable: 'Vista previa no disponible para este archivo.' }}>
+  <span slot="caption">Example PDF · unsupported preview</span>
+</AttachmentPreview>

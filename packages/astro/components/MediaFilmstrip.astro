@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends HTMLAttributes<'section'> {
+  className?: string
+  label: string
+  selectionLabel: string
+}
+
+const { class: classProp, className, label, selectionLabel, ...rest } = Astro.props
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-media-filmstrip'], classProp, className)
+---
+
+<section {...passthrough} class:list={classList} aria-label={label}>
+  <div class="ui-media-filmstrip__heading"><span>{label}</span><span role="status" data-ui-media-filmstrip-selection>{selectionLabel}</span></div>
+  <ol class="ui-media-filmstrip__items"><slot /></ol>
+</section>

@@ -16,15 +16,15 @@ const chartsOnly = process.argv.includes('--charts')
 const platformArgument = process.argv.find(argument => argument.startsWith('--platform='))
 const sourceArgument = process.argv.find(argument => argument.startsWith('--source='))
 const toleranceArgument = process.argv.find(argument => argument.startsWith('--tolerance='))
+const componentArgument = process.argv.find(argument => argument.startsWith('--components='))
+const selectedComponents = componentArgument ? new Set(componentArgument.slice('--components='.length).split(',').filter(Boolean)) : undefined
 const selectedPlatform = platformArgument?.slice('--platform='.length)
 const selectedSource = sourceArgument?.slice('--source='.length)
 const visualTolerance = toleranceArgument ? Number(toleranceArgument.slice('--tolerance='.length)) : undefined
 const knownPlatforms = ['react-native', 'apple', 'android']
 
 const getComponentsWithCapturesForPlatform = platform => (
-  getNativeComponentsForPlatform(platform).filter(component => (
-    component.implementations[platform]?.packageName !== 'LumenWidgetUI'
-  ))
+  getNativeComponentsForPlatform(platform)
 )
 
 const chartSlugs = new Set([
@@ -33,10 +33,32 @@ const chartSlugs = new Set([
   'bar-chart',
   'pie-chart',
   'scatter-chart',
+  'waterfall-chart',
+  'calendar-heatmap',
+  'funnel-chart',
+  'box-plot',
+  'bullet-chart',
+  'lollipop-chart',
+  'dumbbell-chart',
+  'histogram',
   'heatmap',
   'range-chart',
   'combo-chart'
 ])
+
+if (selectedComponents && (selectedComponents.size === 0 || chartsOnly || checkOnly)) {
+  throw new Error('--components requires non-empty slugs and cannot be combined with --charts or --check.')
+}
+
+if (selectedComponents) {
+  const available = new Set(knownPlatforms.flatMap(platform => (
+    getComponentsWithCapturesForPlatform(platform).map(component => component.slug)
+  )))
+
+  for (const slug of selectedComponents) {
+    if (!available.has(slug)) throw new Error(`Unknown native component slug: ${slug}`)
+  }
+}
 
 if (checkOnly && compareOnly) throw new Error('Choose either --check or --compare.')
 
@@ -56,7 +78,7 @@ if (visualTolerance !== undefined && (
   throw new Error('--tolerance must be a number from 0 through 1.')
 }
 
-if (!compareOnly && (selectedPlatform || selectedSource)) {
+if (!compareOnly && (selectedSource || (selectedPlatform && !selectedComponents))) {
   throw new Error('--platform and --source are available only with --compare.')
 }
 
@@ -83,6 +105,10 @@ const platformSources = {
     default: join(repositoryRoot, 'apps/playground-apple/Screenshots'),
     device: 'iPhone simulator',
     mappings: {
+      'widget-text': ['widgets', 'widget-text.png', 'macOS SwiftUI preview (WidgetKit primitives)'],
+      'widget-icon': ['widgets', 'widget-icon.png', 'macOS SwiftUI preview (WidgetKit primitives)'],
+      'widget-badge': ['widgets', 'widget-badge.png', 'macOS SwiftUI preview (WidgetKit primitives)'],
+      'widget-compact-stat': ['widgets', 'widget-compact-stat.png', 'macOS SwiftUI preview (WidgetKit primitives)'],
       'shortcut-recorder': ['macos', 'shortcut-recorder.png', 'macOS'],
       'symbol-picker': ['macos', 'symbol-picker.png', 'macOS'],
       'wearable-action': ['watchos', 'wearable-action.png', 'watchOS simulator'],
@@ -92,6 +118,7 @@ const platformSources = {
       'wearable-status': ['watchos', 'wearable-status.png', 'watchOS simulator']
     },
     variants: {
+      widgets: join(repositoryRoot, 'apps/playground-apple/Screenshots/widgets'),
       macos: join(repositoryRoot, 'apps/playground-apple/Screenshots/macOS'),
       watchos: join(repositoryRoot, 'apps/playground-apple/Screenshots/watchOS')
     }
@@ -251,11 +278,16 @@ if (checkOnly) {
   checkedCount = manifest.captures.length
 }
 
-const existingManifest = chartsOnly && !compareOnly ?
+const existingManifest = (chartsOnly || selectedComponents) && !compareOnly ?
   JSON.parse(await readFile(manifestPath, 'utf8')) :
   undefined
 
-const captureEntries = existingManifest?.captures.filter(capture => !chartSlugs.has(capture.slug)) ?? []
+const captureEntries = existingManifest?.captures.filter(capture => (
+  selectedComponents ?
+    !selectedComponents.has(capture.slug) || (selectedPlatform && capture.platform !== selectedPlatform) :
+    !chartSlugs.has(capture.slug)
+)) ?? []
+
 const missing = []
 const comparedManifest = compareOnly ? JSON.parse(await readFile(manifestPath, 'utf8')) : undefined
 
@@ -270,6 +302,8 @@ if (!checkOnly) for (const platform of knownPlatforms) {
 
   for (const component of getComponentsWithCapturesForPlatform(platform)) {
     if (chartsOnly && !chartSlugs.has(component.slug)) continue
+
+    if (selectedComponents && !selectedComponents.has(component.slug)) continue
 
     if (selectedSource === 'default' && !isDefaultSource(platform, component.slug)) continue
 

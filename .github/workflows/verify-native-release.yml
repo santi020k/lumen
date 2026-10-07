@@ -120,7 +120,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@eec1701b98bcc0b76d36af288ee78a0369cd84cc # v1
+        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
         with:
           node-version: 22.x
           install: false
@@ -145,6 +145,7 @@ jobs:
           --revision "$EXPECTED_REVISION"
 
   apple-cloud:
+    if: github.event.repository.private == true
     name: Launch published Apple consumers
     needs: metadata
     runs-on: ubuntu-latest
@@ -179,6 +180,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   monitor-apple-cloud:
+    if: github.event.repository.private == true
     name: Monitor published Apple consumers
     needs: apple-cloud
     runs-on: ubuntu-latest
@@ -239,3 +241,25 @@ jobs:
           clean lint assembleDebug
           :app:verifyLumenArtifactIsolation
           :wear:verifyLumenArtifactVersions
+
+  apple-public:
+    name: Published Apple consumers
+    if: github.event.repository.private == false
+    needs: metadata
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+      LUMEN_NATIVE_SETUP_READY: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        with:
+          node-version: 22.x
+      - run: apps/playground-apple/scripts/check-app-store-toolchain.sh
+      - name: Verify exact public Apple artifacts
+        env:
+          EXPECTED_REVISION: ${{ inputs.revision }}
+          REACT_NATIVE_VERSION: ${{ inputs.react-native-version }}
+          SWIFT_VERSION: ${{ inputs.swift-version }}
+        run: apps/playground-apple/ci_scripts/run-native-checks.sh published "$REACT_NATIVE_VERSION" "$SWIFT_VERSION" "$EXPECTED_REVISION"

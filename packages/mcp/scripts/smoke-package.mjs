@@ -5,9 +5,8 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { Client } from '@modelcontextprotocol/sdk/client/index.js'
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
+import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client'
+import { StdioClientTransport } from '@modelcontextprotocol/client/stdio'
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const temporaryRoot = await mkdtemp(join(tmpdir(), 'lumen-mcp-package-smoke-'))
@@ -84,7 +83,7 @@ try {
   try {
     await client.connect(transport)
 
-    const [tools, meta, search, dialog] = await Promise.all([
+    const [tools, meta, search, dialog, recipe] = await Promise.all([
       client.listTools(),
       client.callTool({ arguments: {}, name: 'lumen_get_meta' }),
       client.callTool({
@@ -94,6 +93,10 @@ try {
       client.callTool({
         arguments: { detail: 'usage', framework: 'react', name: 'Dialog' },
         name: 'lumen_get_component'
+      }),
+      client.callTool({
+        arguments: { framework: 'react', name: 'content-flow-settings' },
+        name: 'lumen_get_recipe'
       })
     ])
 
@@ -110,6 +113,10 @@ try {
     assert.match(String(dialog.content[0]?.text), /useDialog/)
 
     assert.match(String(dialog.content[0]?.text), /triggerProps/)
+
+    assert.match(String(recipe.structuredContent?.recipe?.examples?.react), /<CardHeader>/)
+
+    assert.match(String(recipe.content[0]?.text), /Complete composition \(react\)/)
   } finally {
     await client.close()
   }

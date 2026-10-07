@@ -3,11 +3,11 @@ import { santi020kShikiThemes } from '@santi020k/theme/shiki'
 const lumenLightTokenColors = [
   {
     scope: ['comment', 'punctuation.definition.comment'],
-    settings: { fontStyle: 'italic', foreground: '#64748b' }
+    settings: { fontStyle: 'italic', foreground: '#475569' }
   },
   {
     scope: ['constant', 'number', 'support.constant', 'variable.other.constant'],
-    settings: { foreground: '#0d9488' }
+    settings: { foreground: '#0f766e' }
   },
   {
     scope: ['entity.name.function', 'meta.function-call', 'support.function'],
@@ -23,7 +23,7 @@ const lumenLightTokenColors = [
   },
   {
     scope: ['string', 'string.quoted'],
-    settings: { foreground: '#15803d' }
+    settings: { foreground: '#166534' }
   },
   {
     scope: ['punctuation', 'meta.brace'],

@@ -67,8 +67,8 @@ describe('platform documentation', () => {
     const guide = getPlatformGuide('android')
     const examples = guide.codeExamples.map(example => example.code).join('\n')
 
-    expect(examples).toContain('com.santi020k:lumen-compose:3.0.0')
-    expect(examples).toContain('com.santi020k:lumen-compose-wear:3.0.0')
+    expect(examples).toContain('com.santi020k:lumen-compose:4.0.0')
+    expect(examples).toContain('com.santi020k:lumen-compose-wear:4.0.0')
     expect(guide.installNote).toContain('only to a Wear OS module')
     expect(guide.prerequisites).toContain('Android Studio with JDK 21 or newer')
   })
@@ -136,9 +136,9 @@ describe('platform documentation', () => {
       )
     }
 
-    expect(getPlatformGuide('react-native').components).toHaveLength(61)
-    expect(getPlatformGuide('android').components).toHaveLength(67)
-    expect(getPlatformGuide('apple').components).toHaveLength(72)
+    expect(getPlatformGuide('react-native').components).toHaveLength(103)
+    expect(getPlatformGuide('android').components).toHaveLength(113)
+    expect(getPlatformGuide('apple').components).toHaveLength(114)
   })
 
   test('documents accurate Apple ecosystem availability and Swift products', () => {
@@ -196,6 +196,7 @@ describe('platform documentation', () => {
 
   test('maps new and legacy web routes to the correct contextual navigation', () => {
     expect(getDocsPlatform('/docs/web')).toBe('web')
+    expect(getDocsPlatform('/docs/visual-playground')).toBe('web')
     expect(getDocsPlatform('/docs/components/button')).toBe('web')
     expect(getDocsPlatform('/docs/frameworks/react')).toBe('web')
     expect(getDocsPlatform('/docs/react-native')).toBe('react-native')

@@ -6,6 +6,7 @@ public enum LumenButtonGroupOrientation: Sendable {
 }
 
 public struct LumenButtonGroup<Content: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private let content: Content
     private let orientation: LumenButtonGroupOrientation
 
@@ -19,8 +20,12 @@ public struct LumenButtonGroup<Content: View>: View {
 
     public var body: some View {
         Group {
-            if orientation == .horizontal {
-                HStack(spacing: LumenSpacing.sm) { content }
+            if orientation == .horizontal && !dynamicTypeSize.isAccessibilitySize {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: LumenSpacing.sm) { content }
+                        .fixedSize(horizontal: true, vertical: false)
+                    VStack(alignment: .leading, spacing: LumenSpacing.sm) { content }
+                }
             } else {
                 VStack(alignment: .leading, spacing: LumenSpacing.sm) { content }
             }

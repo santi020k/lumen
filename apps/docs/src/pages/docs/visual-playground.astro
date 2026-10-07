@@ -1,0 +1,44 @@
+---
+import '../../styles/visual-guides.css'
+
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import VisualGuideDirectory from '../../components/VisualGuideDirectory.astro'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+---
+
+<DocsLayout title="Visual guides — Lumen UI" description="Choose a guide to motion, visual effects, chart animation, AI interfaces, or product recipes. Each guide includes a live preview and copyable code.">
+  <div data-visual-guide-overview>
+    <DocsPageHero
+      compact
+      eyebrow="Visual guides"
+      title="Bring your interface to life."
+      description="Choose what you want to build. Each guide pairs an interactive preview with framework examples and practical usage notes."
+      stats={[{ label: 'Focused guides', value: 5 }, { label: 'Web frameworks', value: 3 }, { label: 'Product recipes', value: 4 }]}
+    />
+    <VisualGuideDirectory />
+  </div>
+</DocsLayout>
+
+<script>
+  const legacyGuides = new Map([
+    ['motion-workbench', 'motion'],
+    ['effects-workbench', 'effects'],
+    ['chart-workbench', 'charts'],
+    ['ai-workbench', 'ai'],
+    ['product-blocks-workbench', 'recipes']
+  ])
+
+  const openLegacyGuide = () => {
+    if (!document.querySelector('[data-visual-guide-overview]')) return
+
+    const guide = legacyGuides.get(window.location.hash.slice(1))
+
+    if (guide) window.location.replace(`/docs/visual-playground/${guide}`)
+  }
+
+  openLegacyGuide()
+
+  document.addEventListener('astro:page-load', openLegacyGuide)
+
+  window.addEventListener('hashchange', openLegacyGuide)
+</script>

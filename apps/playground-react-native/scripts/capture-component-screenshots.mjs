@@ -13,8 +13,14 @@ const outputDirectory = resolve(
   process.argv[2] ?? join(repositoryRoot, 'test-results/react-native-components')
 )
 
+const focusedCaptureSlugs = ['time-field', 'autocomplete', 'number-field', 'password-field', 'input-otp', 'image-comparison', 'media-viewport', 'media-thumbnail', 'media-filmstrip']
 const baseURL = process.env.LUMEN_REACT_NATIVE_URL ?? 'http://127.0.0.1:8081/'
-const components = nativeComponentDocs.filter(component => component.implementations['react-native'])
+const requested = process.argv.find(argument => argument.startsWith('--components='))?.slice('--components='.length).split(',')
+const available = nativeComponentDocs.filter(component => component.implementations['react-native'])
+
+if (requested?.some(slug => !available.some(component => component.slug === slug))) throw new Error('Unknown component capture slug')
+
+const components = available.filter(component => !requested || requested.includes(component.slug))
 
 await mkdir(outputDirectory, { recursive: true })
 
@@ -41,8 +47,18 @@ try {
 
     const focusedExample = page.getByTestId(`component-${component.slug}`)
 
+    if (['bullet-chart', 'dumbbell-chart', 'lollipop-chart', ...focusedCaptureSlugs].includes(component.slug)) {
+      await focusedExample.waitFor({ state: 'visible' })
+    }
+
     if (await focusedExample.count() === 1) {
       await focusedExample.scrollIntoViewIfNeeded()
+
+      if (focusedCaptureSlugs.includes(component.slug)) {
+        await focusedExample.screenshot({ path: join(outputDirectory, `${component.slug}.png`) })
+
+        continue
+      }
     }
 
     await page.waitForTimeout(500)

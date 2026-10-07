@@ -1,6 +1,6 @@
 # Lumen UI plugin
 
-This directory packages the public `lumen-ui` skill and the published
+This directory packages the public build, review, and migration skills and the published
 `@santi020k/lumen-mcp` server for Codex, ChatGPT, and Claude Code.
 
 ## Install in ChatGPT or Codex
@@ -12,10 +12,12 @@ No separate Lumen account, API key, or local MCP configuration is required.
 
 ## Package contents
 
+- `plugin.json` and `mcp.json` are the canonical portable package manifests (plugin 1.1.0).
 - `.codex-plugin/plugin.json` contains install-surface metadata.
 - `.claude-plugin/plugin.json` contains Claude Code plugin metadata.
 - `.mcp.json` starts the published stdio MCP server for local installs.
-- `skills/lumen-ui` is a checked snapshot of the canonical `skills/lumen-ui` source.
+- `skills` contains generated snapshots of all three canonical root skills.
+- `agents/lumen-reviewer.md` is an optional Claude reviewer with read-only tools.
 - `assets` reuses Lumen's public brand artwork.
 
 The public Plugins Directory submission uses the production Streamable HTTP endpoint instead of
@@ -23,9 +25,19 @@ the bundled stdio command. Submission copy, test cases, and the release checklis
 [`docs/openai-plugin-submission.md`](../../docs/openai-plugin-submission.md).
 
 Claude Code users can add this repository as the `lumen` marketplace and install
-`lumen-ui@lumen`. The package intentionally resolves `@santi020k/lumen-mcp@latest` so its
-read-only public catalog stays current independently of the plugin instructions. See the
+`lumen-ui@lumen`. The package pins `@santi020k/lumen-mcp@4.0.0` so both clients receive the same catalog contract. Plugin 1.1.0 is a local candidate until Lumen 4 is published and the directory update is approved. See the
 [`Claude Code plugin guide`](../../docs/claude-code-plugin.md) for installation, validation, and
 community-marketplace submission steps.
 
-Run `pnpm run check:plugin-package` after changing the canonical skill or plugin metadata.
+Run `pnpm run generate:plugin-package`, then `pnpm run check:plugin-package` after changing canonical skills or portable manifests.
+
+## Distribution archives
+
+Run `pnpm run package:plugin` to create versioned archives under the ignored `dist/plugins/`
+directory. This requires the system `zip` executable. Use `--output /absolute/path` for another
+destination; existing archives are preserved and must be moved before generating again.
+
+The Codex archive uses the production HTTPS MCP endpoint and contains the portable manifest,
+three skills, and brand assets. The Claude archive retains both compatibility manifests, the
+exact npm catalog pin, and the optional read-only reviewer. Upload or install only after the
+matching v4 MCP package and hosted catalog have been released and verified.

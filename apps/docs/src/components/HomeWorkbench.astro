@@ -6,11 +6,15 @@ import {
   Button,
   Card,
   Checkbox,
+  Field,
   Icon,
   Input,
+  Label,
+  LineChart,
   Marker,
   Progress,
-  Segmented,
+  Sparkline,
+  Stack,
   Stat,
   Switch
 } from '@santi020k/lumen-astro'
@@ -18,6 +22,18 @@ import {
 import { documentedComponentCount } from '../data/site-metadata.ts'
 
 import LumenLogo from './LumenLogo.astro'
+
+const revenue = [
+  { x: 'Feb', y: 12000 },
+  { x: 'Mar', y: 24000 },
+  { x: 'Apr', y: 21000 },
+  { x: 'May', y: 36000 },
+  { x: 'Jun', y: 32000 },
+  { x: 'Jul', y: 48290 }
+]
+
+const revenueSeries = [{ data: revenue, id: 'revenue', label: 'Revenue' }]
+const formatRevenue = (value: number) => `$${(value / 1000).toLocaleString('en-US', { maximumFractionDigits: 2 })}k`
 
 const navigation = [
   { icon: 'layout-dashboard', label: 'Overview' },
@@ -33,7 +49,7 @@ const activity = [
 ] as const
 ---
 
-<Card class="home-workbench" glass="subtle">
+<Card class="home-workbench">
   <header class="home-workbench__bar">
     <div class="home-workbench__brand">
       <LumenLogo markClass="size-7" showText={false} />
@@ -56,11 +72,12 @@ const activity = [
       <nav>
         {navigation.map((item, index) => (
           <Button
+            aria-label={item.label}
             class="home-workbench__nav-item"
             variant={index === 0 ? 'secondary' : 'ghost'}
           >
             <Icon name={item.icon} size="sm" />
-            <span>{item.label}</span>
+            <span class="home-workbench__nav-label">{item.label}</span>
           </Button>
         ))}
       </nav>
@@ -74,7 +91,7 @@ const activity = [
     <section class="home-workbench__main" aria-labelledby="workbench-title">
       <div class="home-workbench__heading">
         <div>
-          <p>Example product workspace</p>
+          <p>Example workspace · Illustrative data</p>
           <h2 id="workbench-title">Welcome back, Santi.</h2>
         </div>
         <div class="home-workbench__heading-actions">
@@ -95,10 +112,14 @@ const activity = [
             <span>Monthly revenue</span>
             <Icon name="wallet-cards" size="sm" />
           </div>
-          <Stat label="+12.4% from last month" value="$48,290" />
-          <div class="home-workbench__spark" aria-hidden="true">
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-          </div>
+          <Stat value="$48,290" variant="bare">
+            <p class="home-workbench__stat-detail">+50.9% from last month</p>
+          </Stat>
+          <Sparkline
+            class="home-workbench__spark"
+            label="Illustrative revenue rose from $12,000 in February to $48,290 in July"
+            values={revenue.map(point => point.y)}
+          />
         </Card>
 
         <Card class="home-workbench__stat">
@@ -106,7 +127,9 @@ const activity = [
             <span>Active projects</span>
             <Icon name="folder-kanban" size="sm" />
           </div>
-          <Stat label="8 due this week" value="24" />
+          <Stat value="24" variant="bare">
+            <p class="home-workbench__stat-detail">8 due this week</p>
+          </Stat>
           <Progress aria-label="Project completion" value={72} />
         </Card>
 
@@ -115,7 +138,9 @@ const activity = [
             <span>Team health</span>
             <Marker variant="success">Excellent</Marker>
           </div>
-          <Stat label="Across 4 squads" value="94%" />
+          <Stat value="94%" variant="bare">
+            <p class="home-workbench__stat-detail">Across 4 squads</p>
+          </Stat>
           <div class="home-workbench__avatars" aria-label="Team members">
             <Avatar fallback="AK" />
             <Avatar fallback="JM" />
@@ -132,40 +157,17 @@ const activity = [
               <h3>Performance</h3>
               <p>Revenue across the last 6 months</p>
             </div>
-            <Segmented
-              aria-label="Chart period"
-              name="workbench-period"
-              options={['Week', 'Month', 'Year']}
-              size="sm"
-              value="Month"
-            />
+            <Badge variant="outline">Feb–Jul</Badge>
           </div>
-          <div class="home-workbench__chart-canvas" aria-label="Revenue trend chart">
-            <span>$50k</span>
-            <span>$25k</span>
-            <span>$0</span>
-            <svg viewBox="0 0 620 180" role="img" aria-label="An upward revenue trend">
-              <defs>
-                <linearGradient id="home-chart-fill" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stop-color="currentColor" stop-opacity=".24" />
-                  <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
-                </linearGradient>
-              </defs>
-              <path
-                class="home-workbench__chart-area"
-                d="M0 151 C60 145 67 117 118 121 S185 146 232 111 S291 61 348 79 S422 109 465 65 S543 46 620 17 L620 180 L0 180 Z"
-              />
-              <path
-                class="home-workbench__chart-line"
-                d="M0 151 C60 145 67 117 118 121 S185 146 232 111 S291 61 348 79 S422 109 465 65 S543 46 620 17"
-              />
-              <circle cx="465" cy="65" r="5" />
-            </svg>
-            <div class="home-workbench__chart-labels" aria-hidden="true">
-              <span>Feb</span><span>Mar</span><span>Apr</span>
-              <span>May</span><span>Jun</span><span>Jul</span>
-            </div>
-          </div>
+          <LineChart
+            aria-label="Illustrative monthly revenue"
+            area
+            formatValue={formatRevenue}
+            height={240}
+            presentation="bare"
+            series={revenueSeries}
+            width={480}
+          />
         </Card>
 
         <Card class="home-workbench__activity">
@@ -187,10 +189,10 @@ const activity = [
               </div>
             ))}
           </div>
-          <label class="home-workbench__notify">
+          <Label class="home-workbench__notify">
             <Checkbox checked />
             <span>Email me a daily summary</span>
-          </label>
+          </Label>
         </Card>
       </div>
     </section>
@@ -202,20 +204,24 @@ const activity = [
           <Icon name="x" size="sm" />
         </Button>
       </div>
-      <div class="home-workbench__rail-form">
-        <label for="home-demo-title">Task title</label>
-        <Input id="home-demo-title" placeholder="What needs doing?" />
-        <label for="home-demo-owner">Owner</label>
-        <Input id="home-demo-owner" value="Santi A." />
-        <label class="home-workbench__switch">
+      <Stack class="home-workbench__rail-form" gap="md">
+        <Field>
+          <Label for="home-demo-title">Task title</Label>
+          <Input id="home-demo-title" placeholder="What needs doing?" />
+        </Field>
+        <Field>
+          <Label for="home-demo-owner">Owner</Label>
+          <Input id="home-demo-owner" value="Santi A." />
+        </Field>
+        <Label class="home-workbench__switch">
           <span>High priority</span>
           <Switch name="home-demo-priority" />
-        </label>
+        </Label>
         <Button>
           <Icon name="plus" size="sm" />
           Add task
         </Button>
-      </div>
+      </Stack>
       <div class="home-workbench__rail-note">
         <Icon name="wand-sparkles" size="sm" />
         <p><strong>Built with Lumen.</strong> Every control in this canvas is a library primitive.</p>
@@ -228,11 +234,9 @@ const activity = [
   .home-workbench {
     overflow: hidden;
     border-color: hsl(var(--line) / .86);
-    border-radius: 1.5rem;
-    background: hsl(var(--surface) / .95);
-    box-shadow:
-      0 40px 100px -45px hsl(var(--ink) / .42),
-      0 1px 0 hsl(0 0% 100% / .1) inset;
+    border-radius: var(--ui-radius-lg);
+    background: hsl(var(--surface));
+    box-shadow: 0 24px 64px -40px hsl(var(--ink) / .3);
     padding: 0;
   }
 
@@ -266,20 +270,20 @@ const activity = [
 
   .home-workbench__brand > span {
     font-family: var(--app-font-display), sans-serif;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .home-workbench__bar-actions :global(.ui-avatar) {
     width: 2.2rem;
     height: 2.2rem;
     background: hsl(var(--brand-solid));
-    color: white;
+    color: hsl(var(--on-brand));
     font-size: .72rem;
   }
 
   .home-workbench__body {
     display: grid;
-    grid-template-columns: 11.5rem minmax(0, 1fr) 14rem;
+    grid-template-columns: 10rem minmax(0, 1fr) 13rem;
     min-height: 36rem;
   }
 
@@ -305,7 +309,7 @@ const activity = [
   .home-workbench__nav-item {
     width: 100%;
     justify-content: flex-start;
-    border-radius: .65rem;
+    border-radius: var(--ui-radius-sm);
   }
 
   .home-workbench__upgrade {
@@ -397,38 +401,18 @@ const activity = [
     color: hsl(var(--ink));
     font-family: var(--app-font-display), sans-serif;
     font-size: 1.55rem;
-    font-weight: 800;
+    font-weight: 700;
   }
 
-  .home-workbench__stat :global(.ui-stat-label) {
+  .home-workbench__stat-detail {
+    margin: 0;
     color: hsl(var(--ink-muted));
     font-size: .68rem;
   }
 
   .home-workbench__spark {
-    display: flex;
-    height: 1.7rem;
-    align-items: end;
-    gap: .2rem;
-  }
-
-  .home-workbench__spark i {
     width: 100%;
-    height: 35%;
-    border-radius: 999px;
-    background: hsl(var(--brand) / .28);
-  }
-
-  .home-workbench__spark i:nth-child(2),
-  .home-workbench__spark i:nth-child(7) { height: 55%; }
-  .home-workbench__spark i:nth-child(3) { height: 42%; }
-  .home-workbench__spark i:nth-child(4),
-  .home-workbench__spark i:nth-child(8) { height: 72%; }
-  .home-workbench__spark i:nth-child(5) { height: 58%; }
-  .home-workbench__spark i:nth-child(6) { height: 84%; }
-  .home-workbench__spark i:nth-child(9) {
-    height: 100%;
-    background: hsl(var(--brand));
+    height: 1.75rem;
   }
 
   .home-workbench__avatars {
@@ -462,60 +446,6 @@ const activity = [
   .home-workbench__chart {
     display: grid;
     gap: 1rem;
-  }
-
-  .home-workbench__chart-canvas {
-    position: relative;
-    display: grid;
-    grid-template-columns: 2rem 1fr;
-    gap: .4rem;
-    min-height: 13.5rem;
-    color: hsl(var(--brand));
-  }
-
-  .home-workbench__chart-canvas > span {
-    grid-column: 1;
-    color: hsl(var(--ink-muted));
-    font-size: .6rem;
-  }
-
-  .home-workbench__chart-canvas > span:nth-child(2) { align-self: center; }
-  .home-workbench__chart-canvas > span:nth-child(3) { align-self: end; }
-
-  .home-workbench__chart-canvas svg {
-    position: absolute;
-    inset: .25rem 0 1.25rem 2.4rem;
-    width: calc(100% - 2.4rem);
-    height: calc(100% - 1.5rem);
-    overflow: visible;
-  }
-
-  .home-workbench__chart-area {
-    fill: url("#home-chart-fill");
-  }
-
-  .home-workbench__chart-line {
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-width: 4;
-  }
-
-  .home-workbench__chart-canvas circle {
-    fill: hsl(var(--surface));
-    stroke: currentColor;
-    stroke-width: 4;
-  }
-
-  .home-workbench__chart-labels {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 2.4rem;
-    display: flex;
-    justify-content: space-between;
-    color: hsl(var(--ink-muted));
-    font-size: .6rem;
   }
 
   .home-workbench__activity {
@@ -567,17 +497,6 @@ const activity = [
 
   .home-workbench__rail-head {
     font-size: .78rem;
-    font-weight: 800;
-  }
-
-  .home-workbench__rail-form {
-    display: grid;
-    gap: .55rem;
-  }
-
-  .home-workbench__rail-form > label {
-    color: hsl(var(--ink-soft));
-    font-size: .68rem;
     font-weight: 700;
   }
 
@@ -597,7 +516,7 @@ const activity = [
     gap: .5rem;
     margin-top: auto;
     border: 1px solid hsl(var(--brand) / .18);
-    border-radius: .85rem;
+    border-radius: var(--ui-radius);
     background: hsl(var(--brand-soft) / .6);
     color: hsl(var(--ink-soft));
     padding: .8rem;
@@ -618,7 +537,7 @@ const activity = [
       justify-content: center;
     }
 
-    .home-workbench__nav-item span,
+    .home-workbench__nav-label,
     .home-workbench__upgrade,
     .home-workbench__rail {
       display: none;
@@ -627,7 +546,7 @@ const activity = [
 
   @media (max-width: 760px) {
     .home-workbench {
-      border-radius: 1rem;
+      border-radius: var(--ui-radius-lg);
     }
 
     .home-workbench__body {

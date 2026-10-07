@@ -1,0 +1,32 @@
+---
+import { Button, Card, Grid, Stack, Typography, VisualEffect } from '@santi020k/lumen-astro'
+---
+
+<section data-product-block="pricing" aria-label="Example pricing">
+  <Typography><h2>A plan for your next project</h2><p>Illustrative prices. Connect selections to your own checkout.</p></Typography>
+  <Stack direction="horizontal" gap="related" role="group" aria-label="Billing period"><Button data-billing="monthly" aria-pressed="true">Monthly</Button><Button data-billing="annual" aria-pressed="false">Annual</Button></Stack>
+  <Grid columns="auto"><Card><VisualEffect variant="border"><Typography><h3>Starter</h3><p data-monthly="10" data-annual="96">$10 / month</p></Typography><Button data-plan="starter">Choose starter</Button></VisualEffect></Card><Card><VisualEffect variant="mesh"><Typography><h3>Team</h3><p data-monthly="24" data-annual="240">$24 / month</p></Typography><Button data-plan="team">Choose team</Button></VisualEffect></Card></Grid>
+  <p role="status" data-block-status>Select a plan to compare billing.</p>
+</section>
+
+<script>
+  import { mountProductBlocks } from './product-blocks'
+
+  let cleanup: (() => void) | undefined
+
+  const mount = () => {
+ cleanup?.()
+
+ cleanup = mountProductBlocks(document)
+}
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+
+  document.addEventListener('astro:before-swap', () => {
+ cleanup?.()
+
+ cleanup = undefined
+})
+</script>

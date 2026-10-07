@@ -15,10 +15,7 @@ import {
   Svg
 } from 'react-native-svg'
 
-import type {
-  LumenIconGraphic,
-  LumenIconGraphicProps
-} from './primitives.js'
+import type { LumenIconGraphic, LumenIconGraphicProps } from './icon-primitives.js'
 
 const LumenAArrowDownIconGraphic = ({
   color = 'currentColor',
@@ -3004,6 +3001,27 @@ const LumenBandageIconGraphic = ({
       <Path d="M18 6v12" />
       <Path d="M6 6v12" />
       <Rect x="2" y="6" width="20" height="12" rx="2" />
+  </Svg>
+)
+
+const LumenBangladeshiTakaIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M6 5a2 2 0 0 1 4 0v12a4 4 0 0 0 8 0 2 2 0 0 0-4 0" />
+      <Path d="M6 9h12" />
   </Svg>
 )
 
@@ -33158,6 +33176,29 @@ const LumenLayoutGridIconGraphic = ({
   </Svg>
 )
 
+const LumenLayoutGridCirclesIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Circle cx="17.5" cy="17.5" r="3.5" />
+      <Circle cx="17.5" cy="6.5" r="3.5" />
+      <Circle cx="6.5" cy="17.5" r="3.5" />
+      <Circle cx="6.5" cy="6.5" r="3.5" />
+  </Svg>
+)
+
 const LumenLayoutListIconGraphic = ({
   color = 'currentColor',
   size = 24,
@@ -33351,6 +33392,29 @@ const LumenLensConvexIconGraphic = ({
     width={size}
   >
       <Path d="M13.433 2a1 1 0 0 1 .824.448 18 18 0 0 1 0 19.104 1 1 0 0 1-.824.448h-2.866a1 1 0 0 1-.824-.448 18 18 0 0 1 0-19.104A1 1 0 0 1 10.567 2z" />
+  </Svg>
+)
+
+const LumenLettersIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M15 8H9" />
+      <Path d="M21 15.354a4 4 0 100 5.292" />
+      <Path d="M3 18h4a2 2 0 010 4H3.5a.5.5 0 01-.5-.5v-7a.5.5 0 01.5-.5H6a2 2 0 010 4" />
+      <Path d="m8 10 3.453-7.648a.6.6 0 011.094 0L16 10" />
   </Svg>
 )
 
@@ -38339,9 +38403,9 @@ const LumenNutIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M12 4V2" />
-      <Path d="M5 10v4a7.004 7.004 0 0 0 5.277 6.787c.412.104.802.292 1.102.592L12 22l.621-.621c.3-.3.69-.488 1.102-.592A7.003 7.003 0 0 0 19 14v-4" />
-      <Path d="M12 4C8 4 4.5 6 4 8c-.243.97-.919 1.952-2 3 1.31-.082 1.972-.29 3-1 .54.92.982 1.356 2 2 1.452-.647 1.954-1.098 2.5-2 .595.995 1.151 1.427 2.5 2 1.31-.621 1.862-1.058 2.5-2 .629.977 1.162 1.423 2.5 2 1.209-.548 1.68-.967 2-2 1.032.916 1.683 1.157 3 1-1.297-1.036-1.758-2.03-2-3-.5-2-4-4-8-4Z" />
+      <Path d="M16.847 5.847 20 9a7.23 7.23 0 011.551 7.516C21.241 17.352 21 17.932 21 19v1a1 1 0 01-1 1h-1c-1.069 0-1.648.242-2.485.552A7.2 7.2 0 019.002 20l-3.155-3.153" />
+      <Path d="M18.21 5.43c-1.71.69-5.07 1.07-6.71 1.07.46 1.38.91 2.74.61 4.88a.88.88 0 01-.73.74c-1.78.28-3.54-.17-4.88-.62 0 1.64-.38 5-1.07 6.71-.21.52-.82.55-1.17.12A10 10 0 0118.33 4.26c.43.35.4.97-.12 1.17" />
+      <Path d="M4.93 4.93 3 3a.7.7 0 010-1" />
   </Svg>
 )
 
@@ -38361,11 +38425,11 @@ const LumenNutOffIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M12 4V2" />
-      <Path d="M5 10v4a7.004 7.004 0 0 0 5.277 6.787c.412.104.802.292 1.102.592L12 22l.621-.621c.3-.3.69-.488 1.102-.592a7.01 7.01 0 0 0 4.125-2.939" />
-      <Path d="M19 10v3.343" />
-      <Path d="M12 12c-1.349-.573-1.905-1.005-2.5-2-.546.902-1.048 1.353-2.5 2-1.018-.644-1.46-1.08-2-2-1.028.71-1.69.918-3 1 1.081-1.048 1.757-2.03 2-3 .194-.776.84-1.551 1.79-2.21m11.654 5.997c.887-.457 1.28-.891 1.556-1.787 1.032.916 1.683 1.157 3 1-1.297-1.036-1.758-2.03-2-3-.5-2-4-4-8-4-.74 0-1.461.068-2.15.192" />
-      <Line x1="2" x2="22" y1="2" y2="22" />
+      <Path d="M11.868 11.868a.88.88 0 01-.488.252c-1.78.28-3.54-.17-4.88-.62 0 1.272-.229 3.578-.653 5.347a10 10 0 01-.417 1.363c-.21.52-.82.55-1.17.12a10 10 0 01.677-13.393" />
+      <Path d="M12.14 6.485a27.4 27.4 0 004.707-.638L20 9a7.23 7.23 0 011.706 7.05" />
+      <Path d="m2 2 20 20" />
+      <Path d="M20.707 20.707A1 1 0 0120 21h-1c-1.069 0-1.648.242-2.485.552A7.2 7.2 0 019.002 20l-3.155-3.153" />
+      <Path d="M8.356 2.7a10 10 0 019.974 1.56c.43.35.4.97-.12 1.17a10 10 0 01-1.363.417" />
   </Svg>
 )
 
@@ -40935,6 +40999,32 @@ const LumenPrinterIconGraphic = ({
       <Path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
       <Path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6" />
       <Rect x="6" y="14" width="12" height="8" rx="1" />
+  </Svg>
+)
+
+const LumenPrinter3dIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M10 11v1" />
+      <Path d="M12 8h8" />
+      <Path d="M15 20v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3" />
+      <Path d="M4 20h16" />
+      <Path d="M4 22V4a2 2 0 012-2h12a2 2 0 012 2v18" />
+      <Path d="M4 8h4" />
+      <Path d="M8.635 10.093A2 2 0 018 8.631V7a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-.293.707l-1 1a1 1 0 01-1.414 0z" />
   </Svg>
 )
 
@@ -54587,6 +54677,7 @@ export const lumenIcons = {
   'ban': LumenBanIconGraphic,
   'banana': LumenBananaIconGraphic,
   'bandage': LumenBandageIconGraphic,
+  'bangladeshi-taka': LumenBangladeshiTakaIconGraphic,
   'banknote': LumenBanknoteIconGraphic,
   'banknote-arrow-down': LumenBanknoteArrowDownIconGraphic,
   'banknote-arrow-up': LumenBanknoteArrowUpIconGraphic,
@@ -55966,6 +56057,7 @@ export const lumenIcons = {
   'layout-dashboard': LumenLayoutDashboardIconGraphic,
   'layout-freeform': LumenLayoutFreeformIconGraphic,
   'layout-grid': LumenLayoutGridIconGraphic,
+  'layout-grid-circles': LumenLayoutGridCirclesIconGraphic,
   'layout-list': LumenLayoutListIconGraphic,
   'layout-panel-left': LumenLayoutPanelLeftIconGraphic,
   'layout-panel-top': LumenLayoutPanelTopIconGraphic,
@@ -55975,6 +56067,7 @@ export const lumenIcons = {
   'lectern': LumenLecternIconGraphic,
   'lens-concave': LumenLensConcaveIconGraphic,
   'lens-convex': LumenLensConvexIconGraphic,
+  'letters': LumenLettersIconGraphic,
   'library': LumenLibraryIconGraphic,
   'library-big': LumenLibraryBigIconGraphic,
   'life-buoy': LumenLifeBuoyIconGraphic,
@@ -56307,6 +56400,7 @@ export const lumenIcons = {
   'power-off': LumenPowerOffIconGraphic,
   'presentation': LumenPresentationIconGraphic,
   'printer': LumenPrinterIconGraphic,
+  'printer-3d': LumenPrinter3dIconGraphic,
   'printer-check': LumenPrinterCheckIconGraphic,
   'printer-x': LumenPrinterXIconGraphic,
   'projector': LumenProjectorIconGraphic,

@@ -1,5 +1,3 @@
-/* eslint-disable complexity -- Optional motion controllers keep their state and formatting behavior local to the matching primitives. */
-
 const initBackToTopButtons = (scope: ParentNode): void => {
   for (const button of scope.querySelectorAll<HTMLButtonElement>('[data-ui-back-to-top]')) {
     if (button.dataset.uiBound === 'true') continue
@@ -47,7 +45,7 @@ const initScrollReveals = (scope: ParentNode): void => {
     )
 
     const observer = new IntersectionObserver(entries => {
-      const entry = entries[0]
+      const entry = entries.at(-1)
 
       if (!entry) return
 
@@ -58,6 +56,19 @@ const initScrollReveals = (scope: ParentNode): void => {
 
     observer.observe(root)
   }
+}
+
+const createNumberFormatter = (root: HTMLElement): ((value: number) => string) => {
+  const decimals = Math.max(0, Math.min(20, Number(root.dataset.uiAnimatedNumberDecimals) || 0))
+  const prefix = root.dataset.uiAnimatedNumberPrefix ?? ''
+  const suffix = root.dataset.uiAnimatedNumberSuffix ?? ''
+
+  const formatter = new Intl.NumberFormat(root.dataset.uiAnimatedNumberLocale || undefined, {
+    maximumFractionDigits: decimals,
+    minimumFractionDigits: decimals
+  })
+
+  return (value: number): string => `${prefix}${formatter.format(value)}${suffix}`
 }
 
 const initAnimatedNumbers = (scope: ParentNode): void => {
@@ -72,19 +83,7 @@ const initAnimatedNumbers = (scope: ParentNode): void => {
 
     root.dataset.uiBound = 'true'
 
-    const decimals = Math.max(
-      0, Math.min(20, Number(root.dataset.uiAnimatedNumberDecimals) || 0)
-    )
-
-    const prefix = root.dataset.uiAnimatedNumberPrefix ?? ''
-    const suffix = root.dataset.uiAnimatedNumberSuffix ?? ''
-
-    const formatter = new Intl.NumberFormat(root.dataset.uiAnimatedNumberLocale || undefined, {
-      maximumFractionDigits: decimals,
-      minimumFractionDigits: decimals
-    })
-
-    const format = (current: number): string => `${prefix}${formatter.format(current)}${suffix}`
+    const format = createNumberFormatter(root)
 
     if (
       window.matchMedia('(prefers-reduced-motion: reduce)').matches ||

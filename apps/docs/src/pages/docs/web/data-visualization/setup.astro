@@ -1,0 +1,43 @@
+---
+import { Callout, CodeTabs, Link } from '@santi020k/lumen-astro'
+
+import ChartGuideLayout from '../../../../layouts/ChartGuideLayout.astro'
+
+const setup = [
+  { value: 'astro', label: 'Astro', language: 'astro', code: `---
+// pnpm add @santi020k/lumen-astro
+// In your root layout:
+import '@santi020k/lumen-astro/styles.css'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+
+<slot />
+<UIPrimitives />` },
+  { value: 'react', label: 'React', language: 'tsx', code: `// pnpm add @santi020k/lumen-react
+// In your application entry or root layout:
+import '@santi020k/lumen-react/styles.css'
+
+// Import chart components where you use them:
+import { LollipopChart, DumbbellChart, BulletChart } from '@santi020k/lumen-react'` },
+  { value: 'elements', label: 'Elements', language: 'ts', code: `// pnpm add @santi020k/lumen-elements
+// In your client entry, processed by your bundler:
+import '@santi020k/lumen-elements/styles.css'
+import { defineLumenElements } from '@santi020k/lumen-elements'
+
+defineLumenElements(['LollipopChart', 'DumbbellChart', 'BulletChart'])` }
+]
+---
+<ChartGuideLayout title="Set up Lumen charts" description="Install and configure accessible Lumen charts in Astro, React, or Web Components.">
+  <section id="chart-setup" aria-labelledby="chart-setup-title">
+    <header class="chart-guide-heading">
+      <span class="chart-guide-step">03 / Set up</span>
+      <h2 id="chart-setup-title">One import. Your framework.</h2>
+      <p>Charts ship with the existing Lumen packages. Install the adapter you use and load its complete stylesheet once. No additional chart package is needed.</p>
+    </header>
+    <CodeTabs ariaLabel="Chart setup framework" items={setup} />
+    <Callout>
+      <p><strong>When do I need a runtime?</strong> Astro comparison charts and their native data disclosures work without client JavaScript. Mount <code>UIPrimitives</code> once in your layout for interactive line charts and Lumen tabs. React manages its own interaction; Elements requires client registration.</p>
+    </Callout>
+    <p>Complete setup: <Link href="/docs/frameworks/astro">Astro</Link> · <Link href="/docs/frameworks/react">React</Link> · <Link href="/docs/frameworks/elements">Web Components</Link>. In a React Server Components app, keep formatter functions inside a client component; they cannot cross a server-to-client boundary.</p>
+  </section>
+</ChartGuideLayout>

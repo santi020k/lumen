@@ -1,16 +1,36 @@
+export * from './ai-surfaces.js'
+export { createLumenAmountFieldController, formatLumenAmountDraft, getLumenAmountValue, type LumenAmountChangeDetail, type LumenAmountFieldController, type LumenAmountOptions, parseLumenAmountDraft } from './amount-field.js'
+export {
+  createLumenAttachmentPreviewController,
+  type LumenAttachmentPreviewController,
+  type LumenAttachmentPreviewLabels,
+  lumenAttachmentPreviewLabels,
+  type LumenAttachmentPreviewState,
+  resolveLumenAttachmentPreviewState
+} from './attachments.js'
+export { createLumenBulletGeometry, type LumenBulletOptions, type LumenBulletRange } from './bullet-chart.js'
+export * from './chart-interaction.js'
+export * from './chart-models.js'
+export * from './chart-motion.js'
 export {
   alignLumenChartSeries,
   appendLumenChartDatum,
   createLumenBarGeometry,
+  createLumenChartActivationController,
+  createLumenChartDatumActivation,
+  createLumenHeatmapDatumActivation,
   createLumenHeatmapGeometry,
   createLumenLineGeometry,
   createLumenPieGeometry,
+  createLumenRangeDatumActivation,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
   downsampleLumenChartData,
   formatLumenChartSummary,
   getLumenChartAxisPadding,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartNumericX,
   getLumenChartTicks,
@@ -24,10 +44,14 @@ export {
   type LumenBarGeometryCategory,
   type LumenBarGeometryMark,
   type LumenBarGeometryOptions,
+  type LumenChartActivationController,
   type LumenChartAnnotation,
   type LumenChartAxis,
   type LumenChartAxisPosition,
+  type LumenChartCategoryTick,
+  type LumenChartCategoryTickOptions,
   type LumenChartDatum,
+  type LumenChartDatumActivationDetail,
   type LumenChartDomain,
   type LumenChartGeometryPoint,
   type LumenChartLabels,
@@ -58,12 +82,15 @@ export {
   type LumenScatterGeometry,
   type LumenScatterGeometryOptions,
   type LumenScatterGeometryPoint,
+  normalizeLumenHeatmapData,
+  parseLumenChartDatumActivation,
   resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue,
   summarizeLumenChart,
   validateLumenChartSeries
 } from './charts.js'
+export { createLumenScatterReferences, getLumenScatterXTicks,   type LumenScatterReference, type LumenScatterReferenceGeometry, type LumenScatterScaleType, scaleLumenScatterX } from './charts.js'
 export {
   type LumenCodeToken,
   lumenCodeTokenClassNames,
@@ -72,11 +99,14 @@ export {
   renderLumenCodeHtml,
   tokenizeLumenCode
 } from './code.js'
+export { createLumenComboboxController, type LumenComboboxController } from './combobox.js'
+export { createLumenComparisonGeometry, isLumenComparisonDatum, type LumenComparisonDatum, type LumenComparisonOptions } from './comparison-chart.js'
 export {
   type LumenComponentBehavior,
   lumenComponentBehavior,
   type LumenComponentName,
   lumenComponentNames,
+  type LumenControlVisualSize,
   type LumenGlobalBehavior,
   lumenGlobalBehaviors,
   lumenPackages,
@@ -84,6 +114,12 @@ export {
   type LumenStylingContract,
   lumenStylingContracts
 } from './components.js'
+export {
+  type LumenActiveFilter,
+  type LumenChangeSummaryItem,
+  readLumenActiveFilters,
+  readLumenChangeSummaryItems
+} from './dashboard.js'
 export {
   applyDataViewState,
   createDataViewRequestUrl,
@@ -110,6 +146,16 @@ export {
   toggleDataViewSelection,
   unpinDataViewColumn } from './data.js'
 export {
+  isLumenDateBoundsValid,
+  isLumenDateRangeValid,
+  type LumenDateLabels,
+  parseLumenDate,
+  resolveLumenDateLabels,
+  resolveLumenDateLocale
+} from './dates.js'
+export { type LumenDeviceFrameColor, type LumenDeviceFrameDevice, type LumenDeviceFrameOrientation, lumenDeviceFrameSizes, type LumenDeviceFrameTone, observeLumenDeviceFrame, resolveLumenDeviceFrame, resolveLumenDeviceFrameColor } from './device-frame.js'
+export { getLumenDirectionalKey } from './direction.js'
+export {
   type LumenErrorStateAnnouncement,
   lumenErrorStateAnnouncements,
   type LumenErrorStateContent,
@@ -118,6 +164,7 @@ export {
   type LumenErrorStateLayout,
   lumenErrorStateLayouts
 } from './error-state.js'
+export * from './extended-charts.js'
 export {
   createFigmaVariableName,
   exportThemeDesignTokens,
@@ -173,6 +220,15 @@ export {
   renderLumenIllustrationSvg
 } from './illustrations.generated.js'
 export {
+  formatLumenImageComparisonValue,
+  type LumenImageComparisonChangeDetail,
+  type LumenImageComparisonChangeEvent,
+  type LumenImageComparisonMode,
+  normalizeLumenImageComparisonMode,
+  normalizeLumenImageComparisonRatio,
+  normalizeLumenImageComparisonValue,
+  syncLumenImageComparisonMode } from './image-comparison.js'
+export {
   createLumenKanbanMoveDetail,
   getAdjacentKanbanColumn,
   type LumenKanbanMoveDetail,
@@ -186,10 +242,47 @@ export {
   normalizeLumenLocales
 } from './language.js'
 export {
+  bindLumenMediaViewport,
+  formatLumenMediaZoom,
+  isLumenMediaViewportAction,
+  lumenMediaViewportActions,
+  type LumenMediaViewportLabels,
+  lumenMediaViewportLabels,
+  syncLumenMediaViewport
+} from './media-viewport.js'
+export {
+  applyLumenMediaViewportAction,
+  type LumenMediaIdentity,
+  type LumenMediaViewportAction,
+  type LumenMediaViewportValue,
+  moveLumenMediaItem,
+  normalizeLumenMediaViewport,
+  panLumenMediaViewport,
+  resolveLumenMediaMaxZoom,
+  resolveLumenMediaSelection,
+  toggleLumenMediaSelection
+} from './media-workspace.js'
+export { createLumenMessageScrollerController, type LumenMessageScrollerController, type LumenMessageScrollerOptions, type LumenMessageScrollState } from './message-scroller.js'
+export { animateLumenPresence, type LumenMotionDuration, type LumenMotionPreset, type LumenMotionResult, type LumenPresenceOptions } from './motion.js'
+export * from './motion-workflows.js'
+export {
+  isLumenDecimalInBounds,
+  isLumenTimeInBounds,
+  isLumenTimeSelection,
+  type LumenDecimalDraft,
+  type LumenDecimalOptions,
+  type LumenTimeSelection,
+  normalizeLumenNumericOTP,
+  parseLumenDecimalDraft,
+  stepLumenDecimalDraft
+} from './native-input.js'
+export {
   createEmptyLumenPhoneNumber,
+  formatLumenPhoneNumber,
   getLumenPhoneCountries,
   getLumenPhoneCountry,
   getLumenPhoneFlag,
+  getLumenPhoneFlagSource,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber,
@@ -204,10 +297,13 @@ export {
   resolveLumenGlass
 } from './props.js'
 export {
+  executeLumenRichTextCommand,
   getLumenRichTextShortcut,
   isLumenRichTextToggleCommand,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
+  type LumenRichTextCommandRequest,
+  type LumenRichTextCommandRequestEvent,
   type LumenRichTextShortcutEvent,
   type LumenRichTextToggleCommand,
   lumenRichTextToggleCommands
@@ -235,6 +331,7 @@ export {
   saveScheduleEvents,
   scheduleEventsOverlap,
   serializeScheduleEvents } from './schedule.js'
+export * from './tab-indicator.js'
 export {
   type LumenTabsChangeDetail,
   type LumenTabsChangeEvent,
@@ -277,6 +374,9 @@ export {
   suggestReadableInk,
   tuneThemeContrast
 } from './theme.js'
+export { createThemePreset, type LumenSurfaceMaterial, type LumenThemePreset, lumenThemePresetDefinitions, type LumenThemePresetOptions } from './theme.js'
+export { auditLumenTheme, inspectLumenTheme, type LumenThemeAudit, type LumenThemeAuditFinding } from './theme-audit.js'
+export { coerceThemePreset } from './theme-builder.js'
 export {
   coerceThemeBuilderExportFormat,
   coerceThemeBuilderMode,
@@ -323,3 +423,24 @@ export {
   lumenSpacing,
   lumenThemeAttribute
 } from './tokens.js'
+export { createLumenVirtualCollectionController, type LumenVirtualCollectionController, type LumenVirtualCollectionOptions } from './virtual-collection.js'
+export { createLumenVirtualListController, type LumenVirtualListController } from './virtual-list.js'
+export { getLumenVirtualWindow, type LumenVirtualWindow, type LumenVirtualWindowOptions, observeLumenVirtualWindow } from './virtual-window.js'
+export * from './visual-effects.js'
+export {
+  createLumenWorldMapSelectDetail,
+  findLumenWorldMapCountry,
+  LUMEN_WORLD_MAP_LATITUDE_BOUNDS,
+  LUMEN_WORLD_MAP_VIEW_BOX,
+  type LumenWorldMapCountryGeometry,
+  type LumenWorldMapMarker,
+  type LumenWorldMapPoint,
+  type LumenWorldMapSelectDetail,
+  type LumenWorldMapVariant,
+  type LumenWorldMapViewBox,
+  normalizeLumenWorldMapCountries,
+  normalizeLumenWorldMapHighlightedCountries,
+  normalizeLumenWorldMapMarkers,
+  projectLumenWorldMapCoordinate,
+  resolveLumenWorldMapCountryLabel
+} from './world-map.js'

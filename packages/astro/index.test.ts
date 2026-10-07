@@ -145,7 +145,7 @@ describe('@santi020k/lumen-astro package surface', () => {
 
     expect(scatter).toContain('const hasData = geometry.points.length > 0')
     expect(scatter).toContain(
-      'formatLumenChartSummary(projectedSeries, formatValue, resolvedLabels)'
+      'formatLumenChartSummary(projectedSeries, formatY, resolvedLabels)'
     )
     expect(scatter).toContain('data: geometry.points.filter(point => point.seriesId === item.id)')
     expect(scatter).toContain('filter(item => item.data.length > 0)')
@@ -280,7 +280,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     ])
 
     for (const component of [input, nativeSelect]) {
-      expect(component).toContain('visualSize?: \'default\' | \'lg\' | \'sm\'')
+      expect(component).toContain('visualSize?: LumenControlVisualSize')
       expect(component).toContain('const resolvedVisualSize = visualSize ?? \'default\'')
       expect(component).toContain('size={size}')
       expect(component).not.toContain('legacyVisualSize')
@@ -328,7 +328,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(css).toContain('.ui-pill--brand')
     expect(css).toContain('.ui-pill--outline')
     expect(css).toMatch(/\.ui-pill__count\s*\{/)
-    expect(css).toContain('border-left: 1px solid hsl(var(--line))')
+    expect(css).toContain('border-left: var(--ui-border-width, 1px) solid hsl(var(--line))')
     expect(css).toContain('color: hsl(var(--ink-muted))')
   })
 
@@ -700,7 +700,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       'storedValue ?? control.dataset.uiLanguageInitialValue ?? documentValue'
     )
     expect(runtime).toContain(
-      'orientation === \'vertical\' ? [\'ArrowDown\'] : [\'ArrowRight\']'
+      'orientation === \'vertical\' ? [\'ArrowDown\'] : [getLumenDirectionalKey(tab, \'ArrowRight\')]'
     )
     expect(particles).toContain('<div')
     expect(particles).not.toContain('<lumen-particles')
@@ -843,7 +843,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain(
       `trigger.setAttribute('aria-${'described' + 'by'}'`
     )
-    expect(runtime).toContain('tip.id = `ui-tooltip-${crypto.randomUUID()}`')
+    expect(runtime).toContain('tip.id = nextRuntimeId(\'ui-tooltip\', tip.ownerDocument)')
     expect(runtime).toContain('item.getAttribute(\'aria-disabled\') !== \'true\'')
   })
 
@@ -1004,10 +1004,11 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships DataTable as a static table enhanced with sorting and selection', async () => {
-    const [component, runtime, styles] = await Promise.all([
+    const [component, runtime, styles, sorting] = await Promise.all([
       readFile(new URL('./components/DataTable.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
-      readFile(sharedStylesUrl, 'utf8')
+      readFile(sharedStylesUrl, 'utf8'),
+      readFile(new URL('./runtime/controllers/data-table.ts', packageRoot), 'utf8')
     ])
 
     expect(component).toContain('columns?: DataTableColumn[]')
@@ -1021,7 +1022,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain(
       'const initDataTables = (scope: ParentNode): void =>'
     )
-    expect(runtime).toContain('header.setAttribute(\'aria-sort\', \'none\')')
+    expect(sorting).toContain('header.setAttribute(\'aria-sort\', header.getAttribute(\'aria-sort\') ?? \'none\')')
     expect(runtime).toContain(
       'root.dispatchEvent(new CustomEvent(\'ui:data-table-selection-change\''
     )
@@ -1093,7 +1094,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain('document.addEventListener(\'ui:toast-update\'')
     expect(runtime).toContain('document.addEventListener(\'ui:toast-dismiss\'')
     expect(runtime).toContain('\'ui:toast-action\'')
-    expect(runtime).toContain('toast.addEventListener(\'mouseenter\', pause)')
+    expect(runtime).toContain('toast.addEventListener(\'mouseenter\', enter)')
     expect(runtime).toContain('event.key !== \'Escape\'')
     expect(styles).toContain('.ui-tvp[data-placement^="top"]')
     expect(styles).toContain('.ui-tvp[data-placement$="center"]')
@@ -1116,7 +1117,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(barChart).toContain('createLumenBarGeometry')
     expect(barChart).toContain('resolvedLabels.viewData')
     expect(barChart).toContain('layout = \'grouped\'')
-    expect(lineChart).toContain('createLumenLineGeometry')
+    expect(lineChart).toContain('createLumenLineChartModel')
     expect(lineChart).toContain('hasLumenChartData')
     expect(lineChart).toContain('referenceValue?: number')
     expect(lineChart).toContain('resolvedLabels.notAvailable')
@@ -1131,7 +1132,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-chart__legend')
     expect(styles).toContain('.ui-chart__data')
     expect(styles).toContain('.ui-chart__data summary::-webkit-details-marker')
-    expect(styles).toContain('.ui-chart__data[open] summary::before')
+    expect(styles).toContain('.ui-chart__data[open] summary::after')
     expect(styles).toContain('.ui-line-chart__line')
     expect(styles).toContain('.ui-bar-chart__marks')
     expect(styles).toContain('.ui-pie-chart__slices')

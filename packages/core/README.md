@@ -1,4 +1,66 @@
-# @santi020k/lumen-core
+<p align="center">
+  <a href="https://lumen.santi020k.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-dark.svg">
+      <img src="https://raw.githubusercontent.com/santi020k/lumen/main/docs/assets/readme/package-light.svg" alt="Lumen UI — Web. Native. Thoughtfully connected." width="1200" height="184">
+    </picture>
+  </a>
+</p>
+
+<h1 align="center">Lumen UI · Core</h1>
+
+<p align="center">Shared contracts · Metadata · Framework-neutral helpers</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-core"><img src="https://img.shields.io/npm/v/@santi020k/lumen-core?style=flat-square&color=0369a0" alt="npm version"></a>
+  <a href="https://github.com/santi020k/lumen/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-13967e?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://lumen.santi020k.com/docs/foundations">Documentation</a>
+  ·
+  <a href="https://www.npmjs.com/package/@santi020k/lumen-core">npm</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/tree/main/packages/core">Source</a>
+  ·
+  <a href="https://github.com/santi020k/lumen/issues">Issues</a>
+</p>
+
+**Package:** `@santi020k/lumen-core`
+
+**On this page:** [Install](#install) · [Quick start](#quick-start) · [Appearance presets](#appearance-presets) · [Resources](#resources)
+
+<details>
+<summary>Browse all sections</summary>
+
+- [Install](#install)
+- [Quick start](#quick-start)
+- [Data view state](#data-view-state)
+- [Schedule helpers](#schedule-helpers)
+- [Appearance presets](#appearance-presets)
+- [Language Helpers](#language-helpers)
+- [Date Helpers](#date-helpers)
+- [Chart Helpers](#chart-helpers)
+- [Phone Helpers](#phone-helpers)
+- [Icon Credits](#icon-credits)
+- [Theme Builder Helpers](#theme-builder-helpers)
+- [Figma and Design Tokens](#figma-and-design-tokens)
+- [Static interface icon data](#static-interface-icon-data)
+- [Consumer diagnostics and exact amounts](#consumer-diagnostics-and-exact-amounts)
+- [Combobox DOM controller](#combobox-dom-controller)
+- [Virtual collections and direction](#virtual-collections-and-direction)
+- [Exact localized input drafts](#exact-localized-input-drafts)
+- [Attachment preview state](#attachment-preview-state)
+- [Chart datum activation](#chart-datum-activation)
+- [Dashboard contracts](#dashboard-contracts)
+- [Extended chart models](#extended-chart-models)
+- [Optional visual integrations](#optional-visual-integrations)
+- [Presence motion](#presence-motion)
+- [World map](#world-map)
+- [Studio media workspace](#studio-media-workspace)
+- [Resources](#resources)
+
+</details>
 
 Shared metadata, token constants, and tiny utilities used by the Lumen package family.
 
@@ -15,6 +77,59 @@ Cross-platform foundations originate in `tokens/lumen.tokens.json` and are publi
 `@santi020k/lumen-tokens`. Core also exports generated hexadecimal light/dark palettes and native
 numeric spacing, radius, typography, duration, easing, and elevation values. The legacy
 `lumenColors` export retains CSS-ready HSL values.
+
+## Install
+
+Install core directly when building framework-neutral tooling or a custom adapter:
+
+```bash
+pnpm add @santi020k/lumen-core
+```
+
+Core provides data and helpers; it does not register elements, render components, or load CSS.
+Use documented subpath exports such as `/charts`, `/phone`, and `/icon-data` for focused imports.
+Image-comparison helpers use `/image-comparison`; DOM windowing uses
+`/virtual-list`, and data-renderer window calculations use `/virtual-window`.
+
+## Quick start
+
+Read semantic foundations through the focused token entry:
+
+```ts
+import { lumenColors } from '@santi020k/lumen-core/tokens'
+
+const brandChannels = lumenColors.brand
+```
+
+`lumenColors` contains CSS-ready HSL channels. For portable JSON and native generated palettes,
+use the [design tokens package](https://github.com/santi020k/lumen/blob/main/packages/tokens/README.md).
+
+## Data view state
+
+`serializeDataViewState` and `parseDataViewState` preserve named filters, including names that
+match built-in object properties, as ordinary own properties. Repeated filter parameters use
+the last value. `createDataViewRequestUrl` and `createDataViewServerRequest` append state to
+an endpoint's query before its fragment, preserving existing query parameters and fragment text.
+Import these helpers from the root or `@santi020k/lumen-core/data`.
+
+## Schedule helpers
+
+`canPlaceScheduleEvent` rejects malformed or reversed candidate intervals, including in an empty
+schedule. `scheduleEventsOverlap` conservatively treats an invalid interval as a conflict with
+a different event sharing its resource; distinct resources and identical event IDs retain their
+existing behavior. Adjacent valid intervals remain available.
+
+`resizeScheduleEvent` and `expandRecurringScheduleEvent` reject invalid date-times with `TypeError`.
+Recurrence advances UTC calendar days and preserves UTC time-of-day independently of the host time zone. Applications own civil-time recurrence policies and DST conversion.
+
+Invalid bounds, non-finite snapping/recurrence options, unsupported resulting date-times, and
+non-integer or negative recurrence counts produce `RangeError`. Applications own validation and
+recovery feedback. `parseScheduleEvents` preserves structurally valid records with malformed
+date-times so applications can repair the original data; these helpers do not rewrite storage.
+
+## Appearance presets
+
+Use `createThemePreset('studio', { scheme: 'dark', overrides: { 'ui-radius': '0.75rem' } })` for a named starting point. Default, Studio and Glass share the [appearance contract](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md).
 
 ## Language Helpers
 
@@ -45,12 +160,43 @@ const label = formatLumenLanguageLabel(
 )
 ```
 
+## Date Helpers
+
+Calendar adapters share `parseLumenDate`, `isLumenDateBoundsValid`, and
+`isLumenDateRangeValid` from the core root entry. They accept complete Gregorian
+`YYYY-MM-DD` dates in years 0001–9999, reject overflow dates, and require ordered,
+inclusive bounds. `resolveLumenDateLocale` normalizes an explicit locale or the
+browser locale, falling back to English for invalid locale tags.
+`resolveLumenDateLabels` supplies English and Spanish navigation, picker, and
+invalid-range defaults through the `LumenDateLabels` contract. Components allow
+label overrides for other languages; pass an explicit locale during SSR.
+
+`isLumenDateRangeValid` accepts unknown restored data and returns `false` for a missing record
+or non-string range fields instead of dereferencing malformed input.
+
 ## Chart Helpers
+
+The package root also exports `createLumenLineChartModel`, `createLumenWaterfallGeometry`,
+`createLumenHistogramGeometry`, and `createLumenHeatmapModel`. These pure models share web geometry,
+validation, ticks, and annotations. The optional `createLumenChartInteractionController` owns only
+DOM listeners and cursor/legend state; call `destroy()` when removing its surface.
+Line chart models ignore malformed annotation entries and containers before reading overlay fields.
+When annotation IDs repeat, the first valid entry wins so overlay identities stay unique.
+Destroying a chart controller restores series marks, inspection values, and legend pressed state
+so rebinding starts with all series visible.
+Waterfall and histogram geometry accept arrays of unknown decoded rows, validate their complete
+shape before accumulation or sorting, and return `valid: false` with empty marks when a row is
+malformed. Typed component props continue to use `LumenWaterfallDatum` and `LumenHistogramBin`.
+`normalizeLumenHeatmapData` validates decoded cell arrays before adapters read coordinates or
+format labels. It returns an empty array when any row has malformed coordinates, measurement
+types, labels, identity, or tone. Heatmap geometry and models use it internally. Explicit `null`
+and non-finite numeric measurements retain the existing missing-cell behavior; numeric coordinates
+must be finite.
 
 `@santi020k/lumen-core/charts` exports the shared `LumenChartSeries` contract plus deterministic
 domain, tick, scaling, line/area, grouped/stacked bar, and pie/donut geometry helpers. They render
 no DOM and perform no statistical analysis; framework packages use them to keep chart output
-aligned.
+aligned. Linear x coordinates ignore blank strings rather than treating them as zero.
 
 ```ts
 import {
@@ -89,6 +235,8 @@ as-you-type formatting, validation, pasted international-number detection, and E
 web and React Native adapters.
 
 ```ts
+import { getLumenPhoneCountry, resolveLumenPhoneNumber } from '@santi020k/lumen-core/phone'
+
 const colombia = getLumenPhoneCountry('CO', { locale: 'en-US' })
 if (!colombia) throw new Error('Missing Colombia metadata')
 
@@ -97,6 +245,8 @@ const phone = resolveLumenPhoneNumber(colombia, '6015550123')
 
 It also exports the Lucide-backed icon map (`lumenIcons`, `lumenIconNames`) and helpers such as
 `renderLumenIconSvg` so framework adapters can render icons by name.
+
+Icon resolution only accepts dictionary-owned names; inherited object properties are rejected.
 
 ## Icon Credits
 
@@ -162,4 +312,214 @@ React consumers can import both the renderer and definitions from
 `@santi020k/lumen-react/icons`. Existing `getLumenIcon`, runtime names, and registered icon packs
 remain supported through the original API. The interface selection in `icons/lumen.icons.json`
 controls the generated exports; run `pnpm run generate:platform-icons` after catalog changes.
-See [consumer UI recipes](../../docs/consumer-ui-recipes.md#static-react-icons).
+See [consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#static-react-icons).
+
+## Consumer diagnostics and exact amounts
+
+`auditLumenTheme` requires every semantic color mapping and checks normal-text contrast for
+resolved opaque HSL channels. `inspectLumenTheme(element)` reads computed mappings in each
+representative light, dark and nested scope. Unsupported color syntax produces a finding rather
+than an assumed pass; these checks supplement rendered accessibility verification.
+
+`formatLumenAmountDraft`, `parseLumenAmountDraft` and `getLumenAmountValue` preserve exact ASCII
+decimal strings across localized display and editing. Invalid locale tags fall back to `en-US`
+consistently in server rendering, parsing and browser controllers. Call the amount controller’s
+`refresh()` after moving it to a different document or shadow root; this rebinds native form resets
+without replacing its draft. The shared amount and message-scroller DOM controllers power the web
+adapters. Currency policy and message state remain consumer-owned.
+
+## Combobox DOM controller
+
+`createLumenComboboxController(root)` enhances a client-side root containing an
+`input[role="combobox"]` and a `[role="listbox"]` with `[role="option"]` children.
+It preserves editing focus, observes option changes and supports delegated selection. It returns
+`close()` and `destroy()`; call `destroy()` when the owner disconnects. Astro and Elements manage
+that lifecycle automatically. React uses its state-driven component with the same keyboard contract.
+An accepted native form reset closes options, clears the active descendant, and refilters against
+the restored input value without emitting change events. Canceled resets preserve editing state;
+`destroy()` cancels pending reset work. Pointer selection cancels native option-button submission.
+Filtering preserves application-hidden options; cleanup restores options hidden by the filter.
+The controller respects disabled fieldset ancestors and uses the input's current form association
+when handling resets.
+
+The mounted VirtualList controller supports roots and rows created in another document, including
+same-origin iframe documents.
+Data-mode collections preserve iframe keyboard focus across distant scrolling and keyed updates,
+and return focus to the list when the focused record is removed.
+
+## Virtual collections and direction
+
+`createLumenVirtualCollectionController(root, { items, getKey, renderItem, itemSize, overscan })`
+owns an empty data-mode VirtualList root. It mounts only visible rows and focused neighbors, retains
+stable keyed wrappers, and returns `update(items)` and `destroy()`. Declare data mode before the
+Astro or Elements runtime initializes. See [data rendering](https://github.com/santi020k/lumen/blob/main/docs/virtual-list-data.md) for
+setup, state ownership and lifecycle examples.
+
+`getLumenVirtualWindow` calculates a fixed-height window with optional disjoint focus retention.
+`observeLumenVirtualWindow` observes scroll, resize and focus; its handle provides `update()` and
+`destroy()`. Applications using these lower-level helpers own row rendering and cleanup.
+Data-mode controllers also preserve focus and reusable keyed content in same-origin iframe
+documents, including elements adopted from another document. Range events and resize observation
+use the root's document.
+
+`getLumenDirectionalKey(element, key)` resolves the element's current inherited CSS direction and
+swaps horizontal arrows in RTL. Other keys are unchanged. Web adapters use it for visual keyboard
+navigation; native range inputs retain browser-owned behavior.
+
+## Exact localized input drafts
+
+`parseLumenDecimalDraft(value, locale)` distinguishes empty, incomplete, invalid and valid decimal
+input. `isLumenDecimalInBounds(value, { locale, min, max, step })` validates complete values;
+`stepLumenDecimalDraft(value, direction, options)` performs exact steps and inclusive clamping without
+floating-point conversion. Bounds and steps use ASCII decimal strings; drafts use localized decimal
+separators, the locale's numbering-system digits, and Unicode decimal digits. This includes Chinese
+decimal numerals (`hanidec`), so formatted steps remain editable on subsequent steps.
+Grouping, exponents, whitespace and inputs exceeding 128
+characters are rejected. Empty drafts stay distinct from zero; unfinished drafts cannot step.
+Malformed locale tags safely use English decimal symbols.
+Applications own units, currency policy, required validation and submission serialization.
+
+`normalizeLumenNumericOTP(proposal, length)` normalizes Unicode decimal digits, whitespace and hyphens
+into ASCII, rejects unrelated text and excess digits, and bounds input to 128 characters. Length must
+be 1–12. `LumenTimeSelection`, `isLumenTimeSelection` and `isLumenTimeInBounds` describe wall-clock
+hours/minutes with inclusive same-day bounds, leaving dates and time zones to the application.
+## Attachment preview state
+
+`resolveLumenAttachmentPreviewState` resolves explicit fallback states, unsupported MIME types,
+and image failures. `createLumenAttachmentPreviewController` enhances the documented DOM child
+contract with safe state events and lifecycle cleanup. Use the framework components for product UI;
+see the [attachment recipe](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md#attachment-previews-and-file-lists).
+
+Non-string source or MIME metadata resolves to `unavailable`; explicit loading and error states
+still take precedence.
+
+## Chart datum activation
+
+`createLumenChartDatumActivation(seriesId, datum)`, `createLumenHeatmapDatumActivation(datum)`,
+and `createLumenRangeDatumActivation(datum)` return a validated `LumenChartDatumActivationDetail`
+or `null` for an unavailable observation. The discriminated payload preserves raw axes and optional
+datum IDs. `parseLumenChartDatumActivation(unknown)` validates event data and removes unrelated
+fields. These helpers are also available from `@santi020k/lumen-core/charts`.
+
+For custom browser charts, `createLumenChartActivationController(root)` delegates clicks from
+`[data-ui-chart-datum]` descendants owned by a `[data-ui-chart-activation]` root. Each target's
+attribute contains a JSON payload from the builders. Use native buttons with descriptive labels
+as keyboard equivalents for decorative SVG marks; the controller does not create that UI.
+It emits the bubbling, composed `ui:chart-datum-activate` event and returns `destroy()` for cleanup.
+Applications own navigation, filtering, detail views, and server authorization.
+
+## Dashboard contracts
+
+`LumenChangeSummaryItem` carries explicit display values and caller-owned changed state;
+`LumenActiveFilter` identifies an active criterion. `readLumenChangeSummaryItems` and
+`readLumenActiveFilters` validate unknown input, reject duplicate/empty IDs, and copy records.
+
+Scatter geometry supports positive logarithmic X coordinates, explicit domains, and shared
+reference projection. `createLumenScatterReferences`, `scaleLumenScatterX`, and
+`getLumenScatterXTicks` use the same coordinate contract as `createLumenScatterGeometry`.
+See [consumer UI recipes](https://github.com/santi020k/lumen/blob/main/docs/consumer-ui-recipes.md) for application ownership boundaries.
+
+## Extended chart models
+
+`createLumenCalendarHeatmapGeometry`, `createLumenFunnelGeometry`, and
+`createLumenBoxPlotGeometry` validate complete datasets and provide normalized geometry.
+Sparse datasets and sparse box-plot outlier arrays are invalid, including empty array slots.
+Comparison chart geometry follows the same rule. Use explicit `null` measurements for missing
+observations; invalid datasets return no plotted rows or cells.
+See [data visualization](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md) for date-only identities, ordered
+stages, precomputed quartiles, missing values, and domain rules.
+
+`isLumenTimeSelection` narrows unknown decoded values to valid same-day wall-clock selections.
+`isLumenTimeInBounds` returns false for malformed selections and preserves explicit bounds validation.
+
+## Optional visual integrations
+
+Coordinated DOM motion, chart continuity, safe citation URLs, and prompt/approval controllers are
+exported from the main package without an animation SDK. See [visual interactions](https://github.com/santi020k/lumen/blob/main/docs/visual-interactions.md).
+The optional `@santi020k/lumen-core/rive` entry requires the optional peer `@rive-app/canvas@^2.44.0`.
+It owns playback, data bindings, reduced motion, visibility, and cleanup for a consumer-owned asset.
+## Presence motion
+
+`animateLumenPresence(element, options)` animates a mounted DOM reference using the browser's Web
+Animations API. It is also exported from `@santi020k/lumen`. No animation dependency is required.
+
+```ts
+import { animateLumenPresence } from '@santi020k/lumen-core'
+
+const controller = new AbortController()
+await animateLumenPresence(element, {
+  duration: 'standard',
+  preset: 'slide-up',
+  signal: controller.signal
+})
+
+// Before exiting, move focus out of the item and prevent further interaction.
+element.inert = true
+const result = await animateLumenPresence(element, {
+  phase: 'exit',
+  preset: 'fade',
+  signal: controller.signal
+})
+if (result !== 'cancelled') element.remove()
+else element.inert = false
+```
+
+Presets are `fade`, `slide-up`, and `scale`. Durations are `fast`, `standard`, and `slow`; the helper
+reads the matching `--ui-duration-fast`, `--ui-duration`, or `--ui-duration-slow` and
+`--ui-ease-emphasized` CSS tokens, with shared-token fallbacks. Existing transforms and opacity are
+preserved. Use a wrapper when another animation already owns those properties.
+
+The promise resolves to `finished`, `cancelled`, or `skipped`. Reduced motion, zero duration,
+detached elements, and missing browser animation support skip the effect. Abort on unmount or when
+an operation becomes stale. A new presence request cancels the previous one on the same element.
+System reduced-motion changes cancel a running effect and resolve it as `skipped`. DOM removal,
+framework state, focus restoration, inertness, and announcements belong to the consumer; an exit
+animation does not hide or remove the element itself. Unexpected animation failures reject the
+promise and should use the application's error handling.
+
+Use `data-ui-motion="reduce"` on a container to skip new presence requests and, with the optional
+stylesheet, disable descendant CSS motion. Abort existing requests when changing this local preference. An application must never
+override the user's system reduced-motion preference to force animations.
+
+Import `@santi020k/lumen/styles/motion.css` alongside the base stylesheet to opt into native
+disclosure height transitions and the CSS reduction scope. This small optional stylesheet works
+with Astro, React, and Elements and keeps those effects out of the default stylesheet. The presence
+helper's system and local reduced-motion checks work without this CSS import.
+
+When using Tailwind, import Lumen's layer order before either stylesheet:
+
+```css
+@import "@santi020k/lumen/layers.css";
+@import "tailwindcss";
+@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen/styles/motion.css";
+```
+
+## World map
+
+WorldMap supports highlighted countries, location markers, dotted or solid styles, country selection,
+and theme customization. Use `initialView="highlighted"` (Elements: `initial-view`) to start with a
+regional view. Zoom toward the cursor with Ctrl/Cmd-scroll, or fit highlighted countries using the
+map controls. Import geography explicitly from
+`@santi020k/lumen-core/world-map-data`; it is excluded from root exports. See the
+[WorldMap usage guide](https://github.com/santi020k/lumen/blob/main/docs/world-map.md) for adapter examples, events, localization,
+accessibility, and customization.
+
+## Studio media workspace
+
+Compose MediaViewport, MediaThumbnail, MediaFilmstrip and ImageComparison modes with the
+[Studio media workspace recipes](https://github.com/santi020k/lumen/blob/main/docs/studio-media-workspaces.md). Applications retain
+media loading, selection, adjustment algorithms, processing, export and persistence.
+
+## Resources
+
+| Guide | What you will find |
+| --- | --- |
+| [Cross-platform architecture](https://github.com/santi020k/lumen/blob/main/docs/cross-platform.md) | Shared foundations, adapter boundaries, and support tiers. |
+| [Data visualization](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md) | Data visualization guidance and examples. |
+| [Figma token export](https://github.com/santi020k/lumen/blob/main/docs/figma.md) | Variables, token export, and Code Connect workflows. |
+| [Contributing](https://github.com/santi020k/lumen/blob/main/CONTRIBUTING.md) | Setup, checks, and contribution workflow. |
+| [Release history](https://github.com/santi020k/lumen/releases) | Published releases and version notes. |
+
+Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
+Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.

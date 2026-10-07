@@ -1,4 +1,4 @@
-import { Fragment, type ReactElement, type ReactNode } from 'react'
+import { Fragment, type ReactElement, type ReactNode, useId, useState } from 'react'
 import {
   Pressable,
   ScrollView,
@@ -6,41 +6,67 @@ import {
   View,
   type ViewProps
 } from 'react-native'
-import { Circle, Line, Path, Rect, Svg, Text as SvgText } from 'react-native-svg'
+import { Circle, Defs, G, Line, LinearGradient, Path, Rect, Stop, Svg, Text as SvgText } from 'react-native-svg'
 
 import {
   alignLumenChartSeries,
   createLumenBarGeometry,
-  createLumenHeatmapGeometry,
+  createLumenBoxPlotGeometry,
+  createLumenBulletGeometry,
+  createLumenCalendarHeatmapGeometry,
+  createLumenComparisonGeometry,
+  createLumenFunnelGeometry,
+  createLumenHeatmapModel,
+  createLumenHistogramGeometry,
   createLumenLineGeometry,
   createLumenPieGeometry,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
+  createLumenWaterfallGeometry,
   formatLumenChartSummary,
+  getLumenChartAxisPadding,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
   getLumenChartTicks,
+  getLumenHeatmapColorMix,
   hasLumenChartData,
   hasLumenPieData,
   type LumenBarChartLayout,
+  type LumenBoxPlotDatum,
+  type LumenBoxPlotOptions,
+  type LumenBoxPlotStatisticLabels,
+  type LumenBulletOptions,
+  type LumenCalendarHeatmapDatum,
+  type LumenCalendarHeatmapOptions,
   type LumenChartDatum,
   type LumenChartLabels,
   type LumenChartReference,
   type LumenChartSeries,
   type LumenChartTone,
   type LumenComboSeries,
-  type LumenHeatmapDatum,
+  type LumenComparisonDatum,
+  type LumenComparisonOptions,
+  type LumenFunnelDatum,
+  type LumenHeatmapOptions,
+  type LumenHistogramBin,
   type LumenPieChartVariant,
   type LumenRangeDatum,
+  type LumenWaterfallDatum,
+  normalizeLumenHeatmapData,
   resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
 
+import { useLumenChartLayout } from './chart-layout.js'
+import { LumenDisclosure } from './content-components.js'
 import { useLumenTheme } from './theme-context.js'
 import { lumenChartOpacities, lumenChartStrokeWidths } from './tokens.generated.js'
 
 export type {
+  LumenBulletRange,
   LumenChartDatum,
   LumenChartScaleType,
   LumenChartSelection,
@@ -48,8 +74,9 @@ export type {
   LumenChartTone,
   LumenComboSeries,
   LumenHeatmapDatum,
-  LumenRangeDatum
-} from '@santi020k/lumen-core'
+  LumenHistogramBin,
+  LumenRangeDatum,
+  LumenWaterfallDatum } from '@santi020k/lumen-core'
 
 interface LumenChartFrameProps extends Omit<ViewProps, 'children'> {
   children: ReactNode
@@ -101,127 +128,12 @@ const LumenChartFrame = ({
         null}
       {description ?
         (
-          <Text style={{ color: theme.colors.inkMuted, fontSize: theme.fontSizes.sm }}>
+          <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
             {description}
           </Text>
         ) :
         null}
       {children}
-    </View>
-  )
-}
-
-interface LumenChartDataListProps {
-  formatCategory: (value: number | string) => string
-  formatValue: (value: number) => string
-  includeSize?: boolean
-  labels: Readonly<LumenChartLabels>
-  onSelect?: (seriesId: string, x: number | string) => void
-  selectedSeriesId?: string
-  selectedX?: number | string
-  series: readonly LumenChartSeries[]
-}
-
-const formatChartSize = (
-  size: number | null | undefined,
-  formatValue: (value: number) => string,
-  labels: Readonly<LumenChartLabels>
-): string => (
-  size === null || size === undefined || !Number.isFinite(size) || size < 0 ? labels.notAvailable : formatValue(size)
-)
-
-const chartDatumLabel = (
-  item: LumenChartSeries,
-  datum: LumenChartSeries['data'][number],
-  formatCategory: (value: number | string) => string,
-  formatValue: (value: number) => string,
-  labels: Readonly<LumenChartLabels>,
-  includeSize = false
-): string => {
-  const category = datum.xLabel ?? formatCategory(datum.x)
-
-  const value = datum.label ?? (
-    datum.y === null || !Number.isFinite(datum.y) ? labels.notAvailable : formatValue(datum.y)
-  )
-
-  const size = formatChartSize(datum.size, formatValue, labels)
-
-  return `${category}, ${item.label}: ${value}${datum.toneLabel ? `, ${datum.toneLabel}` : ''}${includeSize ? `, ${labels.size}: ${size}` : ''}`
-}
-
-const LumenChartDataList = ({
-  formatCategory,
-  formatValue,
-  includeSize = false,
-  labels,
-  onSelect,
-  selectedSeriesId,
-  selectedX,
-  series
-}: LumenChartDataListProps): ReactElement => {
-  const theme = useLumenTheme()
-
-  return (
-    <View accessibilityRole="list" style={{ gap: theme.spacing.xs }}>
-      <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>{labels.chartData}</Text>
-      {series.flatMap(item => item.data.map((datum, datumIndex) => {
-        const label = chartDatumLabel(item, datum, formatCategory, formatValue, labels, includeSize)
-        const selected = selectedSeriesId === item.id && selectedX === datum.x
-        const key = `${item.id}:${datum.id ?? `${typeof datum.x}:${String(datum.x)}:${datumIndex}`}`
-
-        if (!onSelect || datum.y === null || !Number.isFinite(datum.y)) {
-          return (
-            <Text key={key} style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
-              {label}
-            </Text>
-          )
-        }
-
-        return (
-          <Pressable
-            accessibilityLabel={label}
-            accessibilityRole="button"
-            accessibilityState={{ selected }}
-            key={key}
-            onPress={() => {
-              onSelect(item.id, datum.x)
-            }}
-            style={{
-              backgroundColor: selected ? theme.colors.brandSoft : theme.colors.surfaceMuted,
-              borderRadius: theme.radii.sm,
-              minHeight: 44,
-              padding: theme.spacing.sm
-            }}
-          >
-            <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
-              {label}
-            </Text>
-          </Pressable>
-        )
-      }))}
-    </View>
-  )
-}
-
-interface LumenChartStructuredDataListProps {
-  labels: Readonly<LumenChartLabels>
-  rows: readonly { id: string, label: string }[]
-}
-
-const LumenChartStructuredDataList = ({
-  labels,
-  rows
-}: LumenChartStructuredDataListProps): ReactElement => {
-  const theme = useLumenTheme()
-
-  return (
-    <View accessibilityRole="list" style={{ gap: theme.spacing.xs }}>
-      <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>{labels.chartData}</Text>
-      {rows.map(row => (
-        <Text key={row.id} style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
-          {row.label}
-        </Text>
-      ))}
     </View>
   )
 }
@@ -256,6 +168,160 @@ const lumenChartToneColor = (
   const index = Number.parseInt(tone.slice('series-'.length), 10) - 1
 
   return seriesColors[index] ?? theme.chartColors.series1
+}
+
+const LumenChartDataDisclosure = ({ children, labels }: {
+  children: ReactNode
+  labels: Readonly<LumenChartLabels>
+}): ReactElement => {
+  const [expanded, setExpanded] = useState(false)
+  const theme = useLumenTheme()
+
+  return (
+    <LumenDisclosure expanded={expanded} onExpandedChange={setExpanded} title={labels.viewData}>
+      <ScrollView accessibilityLabel={labels.chartData} nestedScrollEnabled style={{ maxHeight: 280 }}>
+        <View accessibilityRole="list" style={{ gap: theme.spacing.sm }}>{children}</View>
+      </ScrollView>
+    </LumenDisclosure>
+  )
+}
+
+interface LumenChartDataListProps {
+  formatCategory: ((value: number | string) => string) | undefined
+  formatValue: (value: number) => string
+  includeSize?: boolean
+  labels: Readonly<LumenChartLabels>
+  onSelect?: (seriesId: string, x: number | string) => void
+  selectedSeriesId?: string
+  selectedX?: number | string
+  series: readonly LumenChartSeries[]
+  showMarkers?: boolean
+}
+
+const formatChartSize = (
+  size: number | null | undefined,
+  formatValue: (value: number) => string,
+  labels: Readonly<LumenChartLabels>
+): string => (
+  size === null || size === undefined || !Number.isFinite(size) || size < 0 ? labels.notAvailable : formatValue(size)
+)
+
+const chartDatumLabel = (
+  item: LumenChartSeries,
+  datum: LumenChartSeries['data'][number],
+  formatCategory: ((value: number | string) => string) | undefined,
+  formatValue: (value: number) => string,
+  labels: Readonly<LumenChartLabels>,
+  includeSize = false
+): string => {
+  const category = getLumenChartCategoryLabel([item], datum.x, formatCategory, 'detail')
+
+  const value = datum.label ?? (
+    datum.y === null || !Number.isFinite(datum.y) ? labels.notAvailable : formatValue(datum.y)
+  )
+
+  const size = formatChartSize(datum.size, formatValue, labels)
+
+  return `${category}, ${item.label}: ${value}${datum.toneLabel ? `, ${datum.toneLabel}` : ''}${includeSize ? `, ${labels.size}: ${size}` : ''}`
+}
+
+const LumenChartDataList = ({
+  formatCategory,
+  formatValue,
+  includeSize = false,
+  labels,
+  onSelect,
+  selectedSeriesId,
+  selectedX,
+  series,
+  showMarkers = false
+}: LumenChartDataListProps): ReactElement => {
+  const theme = useLumenTheme()
+
+  return (
+    <LumenChartDataDisclosure labels={labels}>
+      {series.flatMap(item => item.data.map((datum, datumIndex) => {
+        const label = chartDatumLabel(item, datum, formatCategory, formatValue, labels, includeSize)
+        const selected = selectedSeriesId === item.id && selectedX === datum.x
+        const key = `${item.id}:${datum.id ?? `${typeof datum.x}:${String(datum.x)}:${datumIndex}`}`
+
+        const content = (
+          <Fragment>
+            {showMarkers && (
+              <View
+                accessibilityElementsHidden
+                accessible={false}
+                importantForAccessibility="no-hide-descendants"
+                style={{
+                  backgroundColor: lumenChartToneColor(resolveLumenChartTone(datum.tone, datumIndex), theme),
+                  borderRadius: 3,
+                  flexShrink: 0,
+                  height: 10,
+                  width: 10
+                }}
+              />
+            )}
+            <Text style={{ color: theme.colors.inkSoft, flexShrink: 1, fontSize: theme.fontSizes.sm }}>
+              {label}
+            </Text>
+          </Fragment>
+        )
+
+        if (!onSelect || datum.y === null || !Number.isFinite(datum.y)) {
+          return (
+            <View key={key} style={{ alignItems: 'center', flexDirection: 'row', gap: theme.spacing.sm }}>
+              {content}
+            </View>
+          )
+        }
+
+        return (
+          <Pressable
+            accessibilityLabel={label}
+            accessibilityRole="button"
+            accessibilityState={{ selected }}
+            key={key}
+            onPress={() => {
+              onSelect(item.id, datum.x)
+            }}
+            style={{
+              alignItems: 'center',
+              backgroundColor: selected ? theme.colors.brandSoft : theme.colors.surfaceMuted,
+              borderRadius: theme.radii.sm,
+              flexDirection: 'row',
+              gap: theme.spacing.sm,
+              minHeight: 44,
+              padding: theme.spacing.sm
+            }}
+          >
+            {content}
+          </Pressable>
+        )
+      }))}
+    </LumenChartDataDisclosure>
+  )
+}
+
+interface LumenChartStructuredDataListProps {
+  labels: Readonly<LumenChartLabels>
+  rows: readonly { id: string, label: string }[]
+}
+
+const LumenChartStructuredDataList = ({
+  labels,
+  rows
+}: LumenChartStructuredDataListProps): ReactElement => {
+  const theme = useLumenTheme()
+
+  return (
+    <LumenChartDataDisclosure labels={labels}>
+      {rows.map(row => (
+        <Text key={row.id} style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
+          {row.label}
+        </Text>
+      ))}
+    </LumenChartDataDisclosure>
+  )
 }
 
 interface LumenDataChartProps extends Omit<ViewProps, 'children'> {
@@ -342,6 +408,7 @@ interface LumenChartReferenceRuleProps {
   domain: Readonly<{ max: number, min: number }>
   height: number
   padding: number
+  paddingLeft: number
   reference?: LumenChartReference
   width: number
 }
@@ -350,6 +417,7 @@ const LumenChartReferenceRule = ({
   domain,
   height,
   padding,
+  paddingLeft,
   reference,
   width
 }: LumenChartReferenceRuleProps): ReactElement | null => {
@@ -362,8 +430,8 @@ const LumenChartReferenceRule = ({
 
   return (
     <Fragment>
-      <Line stroke={color} strokeDasharray="6 4" strokeWidth={lumenChartStrokeWidths.reference} x1={padding} x2={width - padding} y1={y} y2={y} />
-      <SvgText fill={color} fontSize="12" transform={`translate(${padding + 4} ${Math.max(12, y - 5)})`}>{reference.label}</SvgText>
+      <Line stroke={color} strokeDasharray="6 4" strokeWidth={lumenChartStrokeWidths.reference} x1={paddingLeft} x2={width - padding} y1={y} y2={y} />
+      <SvgText fill={color} fontSize="12" transform={`translate(${paddingLeft + 4} ${Math.max(12, y - 5)})`}>{reference.label}</SvgText>
     </Fragment>
   )
 }
@@ -409,31 +477,37 @@ export const LumenLineChart = ({
   ...props
 }: LumenLineChartProps): ReactElement => {
   const theme = useLumenTheme()
-  const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
+  const chartLayout = useLumenChartLayout()
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const chartLabels = resolveLumenChartLabels(labels)
-  const width = 640
-  const height = 320
+  const { width, height } = chartLayout
   const padding = 44
   const categories = getLumenChartCategories(series)
   const aligned = series.map(item => alignLumenChartSeries(item, categories))
   const domain = getLumenLineChartDomain(aligned, reference)
   const ticks = getLumenChartTicks(domain)
+  const paddingLeft = getLumenChartAxisPadding(ticks.map(valueFormatter))
+
+  const categoryTicks = getLumenChartCategoryTicks(
+    categories.map(category => getLumenChartCategoryLabel(aligned, category, formatCategory)),
+    { end: width - padding, start: paddingLeft }
+  )
 
   const resolvedSummary = resolveLineChartSummary(
-    series, valueFormatter, chartLabels, reference, summary
+    aligned, valueFormatter, chartLabels, reference, summary
   )
 
   return (
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
       {hasLumenChartData(series) ?
         (
-          <ScrollView horizontal>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
             <Svg height={height} viewBox={`0 0 ${width} ${height}`} width={width}>
               <LumenChartReferenceRule
                 domain={domain}
                 height={height}
                 padding={padding}
+                paddingLeft={paddingLeft}
                 {...(reference ? { reference } : {})}
                 width={width}
               />
@@ -441,23 +515,46 @@ export const LumenLineChart = ({
                 const y = scaleLumenChartValue(tick, domain, height - padding, padding)
 
                 return (
-                  <Line
-                    key={tick}
-                    stroke={theme.chartColors.grid}
-                    strokeOpacity={lumenChartOpacities.grid}
-                    strokeWidth={lumenChartStrokeWidths.grid}
-                    x1={padding}
-                    x2={width - padding}
-                    y1={y}
-                    y2={y}
-                  />
+                  <Fragment key={tick}>
+                    <Line
+                      stroke={theme.chartColors.grid}
+                      strokeOpacity={lumenChartOpacities.grid}
+                      strokeWidth={lumenChartStrokeWidths.grid}
+                      x1={paddingLeft}
+                      x2={width - padding}
+                      y1={y}
+                      y2={y}
+                    />
+                    <SvgText
+                      fill={theme.colors.inkMuted}
+                      fontFamily={theme.fontFamilies.sans.join(', ')}
+                      fontSize={12}
+                      textAnchor="end"
+                      transform={`translate(${paddingLeft - 8} ${y + 4})`}
+                    >
+                      {valueFormatter(tick)}
+                    </SvgText>
+                  </Fragment>
                 )
               })}
+              {categoryTicks.map(tick => (
+                <SvgText
+                  fill={theme.colors.inkMuted}
+                  fontFamily={theme.fontFamilies.sans.join(', ')}
+                  fontSize={12}
+                  key={tick.index}
+                  textAnchor={tick.textAnchor}
+                  transform={`translate(${tick.position} ${height - 16})`}
+                >
+                  {tick.label}
+                </SvgText>
+              ))}
               {aligned.map((item, index) => {
                 const geometry = createLumenLineGeometry(item.data, {
                   domain,
                   height,
                   padding,
+                  paddingLeft,
                   width
                 })
 
@@ -494,16 +591,16 @@ export const LumenLineChart = ({
                 )
               })}
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
         (
           <LumenChartDataList
-            formatCategory={categoryFormatter}
+            formatCategory={formatCategory}
             formatValue={valueFormatter}
             labels={chartLabels}
-            series={series}
+            series={aligned}
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
             {...(selectedX === undefined ? {} : { selectedX })}
@@ -534,22 +631,80 @@ export const LumenBarChart = ({
   ...props
 }: LumenBarChartProps): ReactElement => {
   const theme = useLumenTheme()
-  const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
+  const chartLayout = useLumenChartLayout()
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const chartLabels = resolveLumenChartLabels(labels)
-  const geometry = createLumenBarGeometry(series, { layout })
-  const resolvedSummary = summary ?? formatLumenChartSummary(series, valueFormatter, chartLabels)
+  const categories = getLumenChartCategories(series)
+  const aligned = series.map(item => alignLumenChartSeries(item, categories))
+
+  const geometry = createLumenBarGeometry(aligned, {
+    ...(formatCategory === undefined ? {} : { formatCategory }),
+    formatValue: valueFormatter,
+    layout,
+    width: chartLayout.width,
+    height: chartLayout.height
+  })
+
+  const { domain, height, margin, width } = geometry
+  const ticks = getLumenChartTicks(domain)
+
+  const categoryTicks = getLumenChartCategoryTicks(geometry.categories.map(category => String(category.label)), {
+    end: width - margin.right,
+    minimumGap: 4,
+    positions: geometry.categories.map(category => category.x),
+    start: margin.left
+  })
+
+  const resolvedSummary = summary ?? formatLumenChartSummary(aligned, valueFormatter, chartLabels)
 
   return (
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
       {hasLumenChartData(series) ?
         (
-          <ScrollView horizontal>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
             <Svg
               height={geometry.height}
               viewBox={`0 0 ${geometry.width} ${geometry.height}`}
               width={geometry.width}
             >
+              {ticks.map(tick => {
+                const y = scaleLumenChartValue(tick, domain, height - margin.bottom, margin.top)
+
+                return (
+                  <Fragment key={tick}>
+                    <Line
+                      stroke={tick === 0 ? theme.colors.inkMuted : theme.chartColors.grid}
+                      strokeOpacity={tick === 0 ? 1 : lumenChartOpacities.grid}
+                      strokeWidth={lumenChartStrokeWidths.grid}
+                      x1={margin.left}
+                      x2={width - margin.right}
+                      y1={y}
+                      y2={y}
+                    />
+                    <SvgText
+                      fill={theme.colors.inkMuted}
+                      fontFamily={theme.fontFamilies.sans.join(', ')}
+                      fontSize={12}
+                      textAnchor="end"
+                      transform={`translate(${margin.left - 8} ${y + 4})`}
+                    >
+                      {valueFormatter(tick)}
+                    </SvgText>
+                  </Fragment>
+                )
+              })}
+              {categoryTicks.map(tick => (
+                <SvgText
+                  fill={theme.colors.inkMuted}
+                  fontFamily={theme.fontFamilies.sans.join(', ')}
+                  fontSize={12}
+                  key={tick.index}
+                  textAnchor={tick.textAnchor}
+                  transform={`translate(${tick.position} ${height - 20})`}
+                >
+                  {tick.label}
+                </SvgText>
+              ))}
               {geometry.marks.map(mark => (
                 <Rect
                   fill={lumenChartToneColor(mark.tone, theme)}
@@ -561,16 +716,16 @@ export const LumenBarChart = ({
                 />
               ))}
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
         (
           <LumenChartDataList
-            formatCategory={categoryFormatter}
+            formatCategory={formatCategory}
             formatValue={valueFormatter}
             labels={chartLabels}
-            series={series}
+            series={aligned}
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
             {...(selectedX === undefined ? {} : { selectedX })}
@@ -601,7 +756,6 @@ export const LumenPieChart = ({
   ...props
 }: LumenPieChartProps): ReactElement => {
   const theme = useLumenTheme()
-  const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const chartLabels = resolveLumenChartLabels(labels)
   const geometry = createLumenPieGeometry(series.data, { size: 320, variant })
@@ -634,10 +788,11 @@ export const LumenPieChart = ({
       {showData ?
         (
           <LumenChartDataList
-            formatCategory={categoryFormatter}
+            formatCategory={formatCategory}
             formatValue={valueFormatter}
             labels={chartLabels}
             series={[renderedSeries]}
+            showMarkers
             {...(onSelectionChange ? { onSelect: onSelectionChange } : {})}
             {...(selectedSeriesId === undefined ? {} : { selectedSeriesId })}
             {...(selectedX === undefined ? {} : { selectedX })}
@@ -666,10 +821,10 @@ export const LumenScatterChart = ({
   ...props
 }: LumenScatterChartProps): ReactElement => {
   const theme = useLumenTheme()
-  const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
+  const chartLayout = useLumenChartLayout()
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const chartLabels = resolveLumenChartLabels(labels)
-  const geometry = createLumenScatterGeometry(series)
+  const geometry = createLumenScatterGeometry(series, chartLayout)
 
   const renderedSeries = series.map(item => ({
     ...item,
@@ -688,7 +843,7 @@ export const LumenScatterChart = ({
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
       {hasData ?
         (
-          <ScrollView horizontal>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
             <Svg height={geometry.height} width={geometry.width}>
               {geometry.points.map((point, pointIndex) => (
                 <Circle
@@ -700,13 +855,13 @@ export const LumenScatterChart = ({
                 />
               ))}
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData && hasData ?
         (
           <LumenChartDataList
-            formatCategory={categoryFormatter}
+            formatCategory={formatCategory}
             formatValue={valueFormatter}
             includeSize
             labels={chartLabels}
@@ -721,72 +876,238 @@ export const LumenScatterChart = ({
   )
 }
 
-export interface LumenHeatmapProps extends Omit<ViewProps, 'children'> {
-  data: readonly LumenHeatmapDatum[]
+export interface LumenHeatmapProps extends Omit<ViewProps, 'children'>, LumenHeatmapOptions {
+  data: readonly unknown[]
+  description?: string
   formatCategory?: (value: number | string) => string
   formatValue?: (value: number) => string
+  heading?: string
   label: string
   labels?: Partial<LumenChartLabels>
   showData?: boolean
   summary?: string
 }
 
+type NativeHeatmapModel = ReturnType<typeof createLumenHeatmapModel>
+
+const nativeHeatmapColumns = (model: NativeHeatmapModel): { label: string, value: number | string }[] => {
+  const columns = new Map<number | string, string>()
+
+  for (const cell of model.cells) {
+    if (!columns.has(cell.x)) columns.set(cell.x, cell.xLabel ?? String(cell.x))
+  }
+
+  return [...columns].map(([value, label]) => ({ label, value }))
+}
+
+const LumenHeatmapLegend = ({ model, colorScale, width, labels, formatValue }: {
+  model: NativeHeatmapModel
+  colorScale: LumenHeatmapOptions['colorScale']
+  width: number
+  labels: LumenChartLabels
+  formatValue: (value: number) => string
+}): ReactElement => {
+  const theme = useLumenTheme()
+  const gradientId = `heatmap-${useId().replaceAll(':', '')}`
+  let midpointAnchor: 'start' | 'middle' | 'end' = 'middle'
+
+  if (model.midpointPercent < 15) midpointAnchor = 'start'
+
+  if (model.midpointPercent > 85) midpointAnchor = 'end'
+
+  const stops: { key: string, position: number, value: number, color: string, anchor: 'start' | 'middle' | 'end' }[] = [
+    { key: 'minimum',
+      position: 0,
+      value: model.domain.min,
+      anchor: 'start',
+      color: colorScale === 'diverging' ? theme.chartColors.divergingNegative : theme.chartColors.sequentialLow },
+    ...(colorScale === 'diverging' ?
+      [{ key: 'midpoint',
+        position: model.midpointPercent / 100,
+        value: model.midpoint,
+        color: theme.chartColors.divergingMid,
+        anchor: midpointAnchor }] :
+      []),
+    { key: 'maximum',
+      position: 1,
+      value: model.domain.max,
+      anchor: 'end',
+      color: colorScale === 'diverging' ? theme.chartColors.divergingPositive : theme.chartColors.sequentialHigh }
+  ]
+
+  return (
+    <View accessible accessibilityLabel={`${labels.chartLegend}: ${stops.map(stop => formatValue(stop.value)).join(', ')}`}>
+      <Svg aria-hidden accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" height={colorScale === 'diverging' ? 54 : 38} width={width}>
+        <Defs>
+          <LinearGradient id={gradientId} x1="0%" x2="100%" y1="0%" y2="0%">
+            {stops.map(stop => <Stop key={stop.key} offset={stop.position} stopColor={stop.color} />)}
+          </LinearGradient>
+        </Defs>
+        <Rect fill={`url(#${gradientId})`} height={8} rx={4} width={width} />
+        {stops.map(stop => (
+          <SvgText
+            key={stop.key}
+            fill={theme.colors.inkSoft}
+            fontSize={12}
+            fontFamily={theme.fontFamilies.sans.join(', ')}
+            transform={`translate(${stop.position * width} ${stop.key === 'midpoint' ? 48 : 28})`}
+            textAnchor={stop.anchor}
+          >
+            {formatValue(stop.value)}
+          </SvgText>
+        ))}
+      </Svg>
+    </View>
+  )
+}
+
+const LumenHeatmapPlot = ({ model, colorScale, labels, formatValue }: {
+  model: NativeHeatmapModel
+  colorScale: LumenHeatmapOptions['colorScale']
+  labels: LumenChartLabels
+  formatValue: (value: number) => string
+}): ReactElement => {
+  const theme = useLumenTheme()
+  const [width, setWidth] = useState(320)
+  const left = Math.min(width * 0.3, getLumenChartAxisPadding(model.yTicks.map(tick => tick.label)))
+  const plotWidth = width - left - 16
+  const x = (position: number) => left + (position - 120) * plotWidth / 496
+  const y = (position: number) => 8 + (position - 24) * 208 / 248
+  const columns = nativeHeatmapColumns(model)
+
+  const ticks = getLumenChartCategoryTicks(columns.map(column => column.label), {
+    start: left,
+    end: width - 16,
+    positions: columns.map((_, index) => left + (index + 0.5) * plotWidth / columns.length)
+  })
+
+  const hasMissing = model.cells.some(cell => cell.value === null || !Number.isFinite(cell.value))
+  const rowTicks = model.yTicks.filter((_, index) => index % Math.max(1, Math.ceil(model.yTicks.length / 12)) === 0)
+
+  return (
+    <View
+      style={{ gap: theme.spacing.sm }}
+      onLayout={event => {
+        const nextWidth = event.nativeEvent.layout.width
+
+        if (Number.isFinite(nextWidth) && nextWidth > 0) setWidth(Math.max(160, Math.floor(nextWidth)))
+      }}
+    >
+      <ScrollView horizontal>
+        <Svg aria-hidden accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" height={256} width={width}>
+          {model.cells.map(cell => {
+            const mix = getLumenHeatmapColorMix(cell.value, model.domain, colorScale, model.midpoint)
+            const cellWidth = Math.max(0, cell.width * plotWidth / 496 - 2)
+            const cellHeight = Math.max(0, cell.height * 208 / 248 - 2)
+            const missingMarkSize = Math.min(4, cellWidth / 2, cellHeight / 2)
+
+            return (
+              <G key={JSON.stringify([cell.x, cell.y])} transform={`translate(${x(cell.xCoordinate) + 1} ${y(cell.yCoordinate) + 1})`}>
+                <Rect
+                  fill={mix ? theme.chartColors[mix.base] : theme.colors.surfaceMuted}
+                  height={cellHeight}
+                  width={cellWidth}
+                  rx={2}
+                />
+                {mix ?
+                  (
+                    <Rect
+                      fill={theme.chartColors[mix.overlay]}
+                      fillOpacity={mix.ratio}
+                      height={cellHeight}
+                      width={cellWidth}
+                      rx={2}
+                    />
+                  ) :
+                  (
+                    <Path
+                      d={`M ${(cellWidth - missingMarkSize) / 2} ${(cellHeight - missingMarkSize) / 2} l ${missingMarkSize} ${missingMarkSize} m ${-missingMarkSize} 0 l ${missingMarkSize} ${-missingMarkSize}`}
+                      stroke={theme.colors.inkSoft}
+                      strokeWidth={1}
+                    />
+                  )}
+              </G>
+            )
+          })}
+          {ticks.map(tick => (
+            <SvgText
+              key={tick.index}
+              fill={theme.colors.inkSoft}
+              fontSize={12}
+              fontFamily={theme.fontFamilies.sans.join(', ')}
+              textAnchor={tick.textAnchor}
+              transform={`translate(${tick.position} 240)`}
+            >
+              {tick.label}
+            </SvgText>
+          ))}
+          {rowTicks.map(tick => (
+            <SvgText
+              key={JSON.stringify(tick.value)}
+              fill={theme.colors.inkSoft}
+              fontSize={12}
+              fontFamily={theme.fontFamilies.sans.join(', ')}
+              textAnchor="end"
+              transform={`translate(${left - 8} ${y(tick.position) + 4})`}
+            >
+              {getLumenChartCategoryTicks([tick.label], { start: 0, end: left - 12 })[0]?.label ?? ''}
+            </SvgText>
+          ))}
+        </Svg>
+      </ScrollView>
+      <LumenHeatmapLegend
+        model={model}
+        colorScale={colorScale}
+        width={width}
+        labels={labels}
+        formatValue={formatValue}
+      />
+      {hasMissing && <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>{`× ${labels.notAvailable}`}</Text>}
+    </View>
+  )
+}
+
 export const LumenHeatmap = ({
-  data,
-  formatCategory,
-  formatValue,
-  label,
-  labels,
-  showData = true,
-  style,
-  summary,
-  ...props
+  colorScale = 'sequential', data, description, domain, formatCategory, formatValue, heading,
+  label, labels, midpoint, showData = true, style, summary, ...props
 }: LumenHeatmapProps): ReactElement => {
   const theme = useLumenTheme()
-  const geometry = createLumenHeatmapGeometry(data)
-  const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
-  const hasData = availableCells.length > 0
+  const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
+
+  const model = createLumenHeatmapModel(normalizeLumenHeatmapData(data).map(datum => ({
+    ...datum, xLabel: datum.xLabel ?? categoryFormatter(datum.x), yLabel: datum.yLabel ?? categoryFormatter(datum.y)
+  })), { colorScale, ...(domain ? { domain } : {}), ...(midpoint === undefined ? {} : { midpoint }) })
+
+  const availableCells = model.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
   const chartLabels = resolveLumenChartLabels(labels)
   const resolvedSummary = summary ?? chartLabels.formatHeatmapSummary(availableCells.length)
-  const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
 
   return (
-    <LumenChartFrame label={label} style={style} summary={resolvedSummary} {...props}>
-      {hasData ?
-        (
-          <ScrollView horizontal>
-            <Svg height={geometry.height} width={geometry.width}>
-              {availableCells.map(cell => (
-                <Rect
-                  fill={theme.chartColors.sequentialHigh}
-                  fillOpacity={Math.max(0.12, cell.ratio)}
-                  height={Math.max(0, cell.height - 2)}
-                  key={cell.id ?? `${typeof cell.x}:${String(cell.x)}:${typeof cell.y}:${String(cell.y)}`}
-                  rx={3}
-                  transform={`translate(${cell.xCoordinate + 1} ${cell.yCoordinate + 1})`}
-                  width={Math.max(0, cell.width - 2)}
-                />
-              ))}
-            </Svg>
-          </ScrollView>
-        ) :
-        <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
-      {showData ?
-        (
-          <LumenChartStructuredDataList
-            labels={chartLabels}
-            rows={data.map(datum => ({
-              id: datum.id ?? `${typeof datum.x}:${String(datum.x)}:${typeof datum.y}:${String(datum.y)}`,
-              label: `${categoryFormatter(datum.x)}, ${categoryFormatter(datum.y)}: ${
-                datum.value === null || !Number.isFinite(datum.value) ?
-                  chartLabels.notAvailable :
-                  valueFormatter(datum.value)
-              }`
-            }))}
-          />
-        ) :
-        null}
+    <LumenChartFrame
+      label={label}
+      style={style}
+      summary={resolvedSummary}
+      {...props}
+      {...(heading === undefined ? {} : { heading })}
+      {...(description === undefined ? {} : { description })}
+    >
+      {availableCells.length > 0 ?
+        <LumenHeatmapPlot model={model} colorScale={colorScale} labels={chartLabels} formatValue={valueFormatter} /> :
+        <Text style={{ color: theme.colors.inkSoft }}>{chartLabels.empty}</Text>}
+      {showData && (
+        <LumenChartStructuredDataList
+          labels={chartLabels}
+          rows={model.cells.map(datum => ({
+            id: JSON.stringify([datum.x, datum.y]),
+            label: `${datum.xLabel ?? categoryFormatter(datum.x)}, ${datum.yLabel ?? categoryFormatter(datum.y)}: ${
+              datum.value === null || !Number.isFinite(datum.value) ?
+                chartLabels.notAvailable :
+                valueFormatter(datum.value)
+            }`
+          }))}
+        />
+      )}
     </LumenChartFrame>
   )
 }
@@ -815,7 +1136,8 @@ export const LumenRangeChart = ({
   ...props
 }: LumenRangeChartProps): ReactElement => {
   const theme = useLumenTheme()
-  const geometry = createLumenRangeGeometry(data)
+  const chartLayout = useLumenChartLayout()
+  const geometry = createLumenRangeGeometry(data, chartLayout)
   const hasData = geometry.points.length > 0
   const chartLabels = resolveLumenChartLabels(labels)
   const resolvedSummary = summary ?? chartLabels.formatRangeSummary(geometry.points.length)
@@ -827,8 +1149,8 @@ export const LumenRangeChart = ({
     <LumenChartFrame label={label} style={style} summary={resolvedSummary} {...props}>
       {hasData ?
         (
-          <ScrollView horizontal>
-            <Svg height={320} viewBox="0 0 640 320" width={640}>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
+            <Svg height={chartLayout.height} viewBox={`0 0 ${chartLayout.width} ${chartLayout.height}`} width={chartLayout.width}>
               <Path
                 d={geometry.areaPath}
                 fill={color}
@@ -837,7 +1159,7 @@ export const LumenRangeChart = ({
                 strokeWidth={lumenChartStrokeWidths.series}
               />
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
@@ -881,11 +1203,10 @@ export const LumenComboChart = ({
   ...props
 }: LumenComboChartProps): ReactElement => {
   const theme = useLumenTheme()
-  const categoryFormatter = resolveLumenChartCategoryFormatter(formatCategory)
+  const chartLayout = useLumenChartLayout()
   const valueFormatter = resolveLumenChartValueFormatter(formatValue)
   const chartLabels = resolveLumenChartLabels(labels)
-  const width = 640
-  const height = 320
+  const { width, height } = chartLayout
   const padding = 44
   const categories = getLumenChartCategories(series)
 
@@ -925,6 +1246,8 @@ export const LumenComboChart = ({
     ...(barSeries.length === 0 ?
       {} :
       {
+        paddingBottom: bars.margin.bottom,
+        paddingTop: bars.margin.top,
         xDomain: { max: 1, min: 0 },
         xScale: 'linear' as const
       })
@@ -936,7 +1259,7 @@ export const LumenComboChart = ({
     <LumenChartFrame label={label} summary={resolvedSummary} {...props}>
       {hasLumenChartData(series) ?
         (
-          <ScrollView horizontal>
+          <View accessibilityLabel={chartLabels.chartData} onLayout={chartLayout.onLayout} style={{ alignSelf: 'stretch' }}>
             <Svg height={height} viewBox={`0 0 ${width} ${height}`} width={width}>
               {bars.marks.map(mark => (
                 <Rect
@@ -980,13 +1303,13 @@ export const LumenComboChart = ({
                 )
               })}
             </Svg>
-          </ScrollView>
+          </View>
         ) :
         <Text style={{ color: theme.colors.inkMuted }}>{chartLabels.empty}</Text>}
       {showData ?
         (
           <LumenChartDataList
-            formatCategory={categoryFormatter}
+            formatCategory={formatCategory}
             formatValue={valueFormatter}
             labels={chartLabels}
             series={series}
@@ -996,6 +1319,653 @@ export const LumenComboChart = ({
           />
         ) :
         null}
+    </LumenChartFrame>
+  )
+}
+
+interface LumenIntervalChartProps extends Omit<ViewProps, 'children'> {
+  description?: string
+  formatValue?: (value: number) => string
+  heading?: string
+  label: string
+  labels?: Partial<LumenChartLabels>
+  showData?: boolean
+  summary?: string
+  valueLabel?: string
+}
+
+export interface LumenWaterfallChartProps extends LumenIntervalChartProps {
+  data: readonly LumenWaterfallDatum[]
+}
+
+export interface LumenHistogramProps extends LumenIntervalChartProps {
+  data: readonly LumenHistogramBin[]
+  formatBoundary?: (value: number) => string
+  frequency?: 'count' | 'density'
+  tone?: LumenChartTone
+}
+
+type LumenNativeIntervalModel =
+  ReturnType<typeof createLumenWaterfallGeometry> | ReturnType<typeof createLumenHistogramGeometry>
+
+const nativeIntervalValueLabel = (model: LumenNativeIntervalModel, text: Readonly<LumenChartLabels>): string => {
+  if (!('frequency' in model)) return text.value
+
+  return model.frequency === 'density' ? text.density : text.count
+}
+
+const nativeIntervalRows = (
+  model: LumenNativeIntervalModel, text: Readonly<LumenChartLabels>, title: string,
+  formatBoundary: (value: number) => string, formatValue: (value: number) => string
+): { id: string, label: string }[] => model.marks.map((mark, index) => {
+  const count = 'bins' in model && model.frequency === 'density' ?
+    `, ${text.count}: ${formatValue(model.bins[index]?.count ?? 0)}` :
+    ''
+
+  return {
+    id: mark.key,
+    label: `${mark.label}, ${text.start}: ${formatBoundary(mark.start)}, ${text.end}: ${formatBoundary(mark.end)}, ` +
+      `${title}: ${formatValue(mark.value)}${count}`
+  }
+})
+
+const LumenIntervalPlot = ({ model, label, formatValue }: {
+  model: LumenNativeIntervalModel
+  label: string
+  formatValue: (value: number) => string
+}): ReactElement => {
+  const theme = useLumenTheme()
+
+  return (
+    <ScrollView accessibilityLabel={label} horizontal>
+      <Svg accessible={false} height={model.height} width={model.width}>
+        {model.ticks.map(tick => (
+          <Fragment key={tick}>
+            <Line
+              stroke={theme.chartColors.grid}
+              strokeDasharray="3 5"
+              x1={model.left}
+              x2={model.right}
+              y1={model.y(tick)}
+              y2={model.y(tick)}
+            />
+            <SvgText
+              fill={theme.colors.inkSoft}
+              fontFamily={theme.fontFamilies.sans.join(', ')}
+              fontSize={12}
+              textAnchor="end"
+              transform={`translate(${model.left - 8} ${model.y(tick) + 4})`}
+            >
+              {formatValue(tick)}
+            </SvgText>
+          </Fragment>
+        ))}
+        {'connectors' in model && model.connectors.map(connector => (
+          <Line
+            key={`${connector.x1}:${connector.x2}`}
+            stroke={theme.colors.inkSoft}
+            strokeDasharray="4 4"
+            x1={connector.x1}
+            x2={connector.x2}
+            y1={connector.y}
+            y2={connector.y}
+          />
+        ))}
+        {model.marks.map(mark => (
+          <Rect
+            fill={lumenChartToneColor(mark.tone, theme)}
+            height={mark.height}
+            key={mark.key}
+            rx={2}
+            transform={`translate(${mark.x} ${mark.y})`}
+            width={mark.width}
+          />
+        ))}
+        {model.categoryTicks.map(tick => (
+          <SvgText
+            fill={theme.colors.inkSoft}
+            fontFamily={theme.fontFamilies.sans.join(', ')}
+            fontSize={12}
+            key={tick.index}
+            textAnchor={tick.textAnchor}
+            transform={`translate(${tick.position} ${model.height - 12})`}
+          >
+            {tick.label}
+          </SvgText>
+        ))}
+      </Svg>
+    </ScrollView>
+  )
+}
+
+const LumenIntervalChart = ({
+  formatBoundary,
+  formatValue = String,
+  labels,
+  createModel,
+  showData = true,
+  summary,
+  valueLabel,
+  ...props
+}: LumenIntervalChartProps & {
+  formatBoundary: (value: number) => string
+  createModel: (width: number) => LumenNativeIntervalModel
+}): ReactElement => {
+  const [width, setWidth] = useState(320)
+  const model = createModel(width)
+  const theme = useLumenTheme()
+  const text = resolveLumenChartLabels(labels)
+  const valueTitle = valueLabel ?? nativeIntervalValueLabel(model, text)
+  const series = [{ id: 'values', label: valueTitle, data: model.marks.map(mark => ({ x: mark.key, y: mark.value })) }]
+  const hasData = model.marks.length > 0
+  const factualSummary = model.valid ? formatLumenChartSummary(series, formatValue, text) : text.invalidData
+
+  return (
+    <LumenChartFrame {...props} summary={summary ?? factualSummary}>
+      {hasData ?
+        (
+          <>
+            <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>{valueTitle}</Text>
+            <View onLayout={event => {
+              const measured = event.nativeEvent.layout.width
+
+              if (Number.isFinite(measured) && measured > 0) setWidth(Math.max(240, Math.floor(measured)))
+            }}
+            >
+              <LumenIntervalPlot model={model} label={text.chartData} formatValue={formatValue} />
+            </View>
+          </>
+        ) :
+        (
+          <Text accessibilityRole="alert" style={{ color: theme.colors.inkSoft }}>
+            {model.valid ? text.empty : text.invalidData}
+          </Text>
+        )}
+      {showData && hasData && (
+        <LumenChartStructuredDataList
+          labels={text}
+          rows={nativeIntervalRows(model, text, valueTitle, formatBoundary, formatValue)}
+        />
+      )}
+    </LumenChartFrame>
+  )
+}
+
+export const LumenWaterfallChart = ({
+  data, formatValue = String, ...props
+}: LumenWaterfallChartProps): ReactElement => (
+  <LumenIntervalChart
+    {...props}
+    formatBoundary={formatValue}
+    formatValue={formatValue}
+    createModel={width => createLumenWaterfallGeometry(data, { axisFontSize: 12, formatValue, width, height: 260 })}
+  />
+)
+
+export const LumenHistogram = ({
+  data, formatBoundary = String, formatValue = String, frequency = 'count', tone = 'series-1', ...props
+}: LumenHistogramProps): ReactElement => (
+  <LumenIntervalChart
+    {...props}
+    formatBoundary={formatBoundary}
+    formatValue={formatValue}
+    createModel={width => createLumenHistogramGeometry(data, {
+      axisFontSize: 12, formatBoundary, formatValue, frequency, tone, width, height: 260
+    })}
+  />
+)
+
+export interface LumenBulletChartProps extends LumenIntervalChartProps, LumenBulletOptions {
+  target: number
+  targetLabel?: string
+  tone?: LumenChartTone
+  value: number | null
+}
+
+type ResolvedNativeBulletProps = LumenBulletChartProps & Required<Pick<LumenBulletChartProps,
+  'formatValue' | 'showData' | 'targetLabel' | 'tone'>>
+
+const resolveNativeBulletProps = (props: LumenBulletChartProps): ResolvedNativeBulletProps => ({
+  ...props,
+  formatValue: props.formatValue ?? String,
+  showData: props.showData ?? true,
+  targetLabel: props.targetLabel ?? 'Target',
+  tone: props.tone ?? 'series-1'
+})
+
+const bulletTickAlignment = (index: number): 'left' | 'right' | 'center' => {
+  if (index === 0) return 'left'
+
+  return index === 2 ? 'right' : 'center'
+}
+
+const nativeBulletRows = (
+  model: ReturnType<typeof createLumenBulletGeometry>, actual: string, title: string,
+  targetLabel: string, formatValue: (value: number) => string
+) => {
+  if (!model.valid) return []
+
+  return [
+    { id: 'actual', label: `${title}: ${actual}` },
+    { id: 'target', label: `${targetLabel}: ${formatValue(model.target)}` },
+    ...model.ranges.map(range => ({ id: `range:${range.end}`, label: `${range.label}: ${formatValue(range.start)}–${formatValue(range.end)}` }))
+  ]
+}
+
+const LumenBulletContent = ({
+  domain, formatValue, labels, ranges, showData, summary, target,
+  targetLabel, tone, value, valueLabel, ...props
+}: ResolvedNativeBulletProps): ReactElement => {
+  const theme = useLumenTheme()
+  const text = resolveLumenChartLabels(labels)
+  const model = createLumenBulletGeometry(value, target, { domain, ranges })
+  const title = valueLabel ?? text.value
+  const actual = model.valid && value !== null ? formatValue(value) : text.notAvailable
+  const factual = model.valid ? `${title}: ${actual}. ${targetLabel}: ${formatValue(target)}.` : text.invalidData
+  const rows = nativeBulletRows(model, actual, title, targetLabel, formatValue)
+
+  return (
+    <LumenChartFrame {...props} summary={summary ?? factual}>
+      {model.valid ?
+        (
+          <>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: theme.spacing.md }}>
+              <View style={{ gap: theme.spacing.xs }}>
+                <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>{title}</Text>
+                <Text style={{ color: theme.colors.ink, fontSize: 40, fontWeight: '700', fontVariant: ['tabular-nums'] }}>{actual}</Text>
+              </View>
+              <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm }}>
+                {targetLabel}
+                :
+                {' '}
+                <Text style={{ color: theme.colors.ink, fontWeight: '700' }}>{formatValue(target)}</Text>
+              </Text>
+            </View>
+            <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={{ paddingVertical: theme.spacing.sm, gap: theme.spacing.md }}>
+              <View style={{ height: 40, backgroundColor: theme.colors.surfaceMuted, borderRadius: theme.radii.sm }}>
+                {model.ranges.map((range, index) => (
+                  <View key={range.end} style={{ position: 'absolute', top: 0, bottom: 0, left: `${range.startRatio * 100}%`, width: `${(range.endRatio - range.startRatio) * 100}%`, backgroundColor: lumenChartToneColor(range.tone ?? 'neutral', theme), opacity: 0.08 + index / Math.max(1, model.ranges.length - 1) * 0.14, borderRightWidth: 1, borderColor: theme.colors.surface }} />
+                ))}
+                {value !== null && <View style={{ position: 'absolute', top: 12, height: 16, left: `${model.valueStartRatio * 100}%`, width: `${model.valueWidthRatio * 100}%`, borderRadius: 2, backgroundColor: lumenChartToneColor(tone, theme) }} />}
+                <View style={{ position: 'absolute', top: -6, bottom: -6, left: `${model.targetRatio * 100}%`, width: 5, marginLeft: -2.5, borderWidth: 1, borderColor: theme.colors.surface, backgroundColor: theme.colors.ink, borderRadius: 1 }}>
+                  <View style={{ position: 'absolute', top: 0, left: -3, width: 9, height: 3, backgroundColor: theme.colors.ink }} />
+                  <View style={{ position: 'absolute', bottom: 0, left: -3, width: 9, height: 3, backgroundColor: theme.colors.ink }} />
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: theme.spacing.sm }}>
+                {model.ticks.map((tick, index) => <Text key={tick.position} style={{ flex: 1, textAlign: bulletTickAlignment(index), color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs, fontVariant: ['tabular-nums'] }}>{formatValue(tick.value)}</Text>)}
+              </View>
+            </View>
+            {model.ranges.length > 0 && (
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.md }}>
+                {model.ranges.map(range => (
+                  <View key={range.end} style={{ gap: theme.spacing.xs }}>
+                    <Text style={{ color: theme.colors.ink, fontSize: theme.fontSizes.xs, fontWeight: '600' }}>{range.label}</Text>
+                    <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs }}>
+                      {formatValue(range.start)}
+                      –
+                      {formatValue(range.end)}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
+            {showData && <LumenChartStructuredDataList labels={text} rows={rows} />}
+          </>
+        ) :
+        <Text accessibilityRole="alert" style={{ color: theme.colors.inkSoft }}>{text.invalidData}</Text>}
+    </LumenChartFrame>
+  )
+}
+
+export const LumenBulletChart = (props: LumenBulletChartProps): ReactElement => (
+  <LumenBulletContent {...resolveNativeBulletProps(props)} />
+)
+
+export interface LumenComparisonChartProps extends LumenIntervalChartProps, Omit<LumenComparisonOptions, 'paired'> {
+  data: readonly LumenComparisonDatum[]
+  referenceLabel?: string
+}
+
+type ResolvedComparisonProps = LumenComparisonChartProps & Required<Pick<LumenComparisonChartProps, 'formatValue' | 'referenceLabel' | 'showData'>>
+
+const resolveComparisonProps = (props: LumenComparisonChartProps): ResolvedComparisonProps => ({
+  ...props, formatValue: props.formatValue ?? String, referenceLabel: props.referenceLabel ?? 'Before', showData: props.showData ?? true
+})
+
+const LumenComparisonChart = ({
+  data, domain, paired, formatValue, labels, referenceLabel, valueLabel, showData, summary, ...props
+}: ResolvedComparisonProps & { paired: boolean }): ReactElement => {
+  const theme = useLumenTheme()
+  const text = resolveLumenChartLabels(labels)
+  const title = valueLabel ?? text.value
+  const model = createLumenComparisonGeometry(data, { domain, paired })
+  const format = (value: number | null) => value === null ? text.notAvailable : formatValue(value)
+  const rows = model.rows.map(row => ({ id: row.id, label: `${row.label}. ${paired ? `${referenceLabel}: ${format(row.reference)}. ` : ''}${title}: ${format(row.value)}.` }))
+
+  return (
+    <LumenChartFrame {...props} summary={summary ?? (model.valid ? `${text.category}: ${rows.length}.` : text.invalidData)}>
+      {!model.valid || !rows.length ?
+        <Text style={{ color: theme.colors.inkSoft }}>{model.valid ? text.empty : text.invalidData}</Text> :
+        (
+          <>
+            <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.xs }}>{paired ? `${referenceLabel} → ${title}` : title}</Text>
+            {model.rows.map((row, index) => {
+              const color = lumenChartToneColor(resolveLumenChartTone(row.tone, index), theme)
+
+              return (
+                <View key={row.id} style={{ gap: theme.spacing.xs, paddingHorizontal: 8 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', gap: theme.spacing.sm }}>
+                    <Text style={{ color: theme.colors.ink, fontSize: theme.fontSizes.sm }}>{row.label}</Text>
+                    <Text style={{ color: theme.colors.inkSoft, fontSize: theme.fontSizes.sm, fontVariant: ['tabular-nums'] }}>
+                      {paired ? `${format(row.reference)} → ` : ''}
+                      <Text style={{ fontWeight: '700', color: theme.colors.ink }}>{format(row.value)}</Text>
+                    </Text>
+                  </View>
+                  <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={{ height: 24 }}>
+                    <View style={{ position: 'absolute', top: 11.5, height: 1, left: 0, right: 0, backgroundColor: theme.colors.line }} />
+                    {row.valuePosition !== null && row.referencePosition !== null && <View style={{ position: 'absolute', top: 10, height: 4, left: `${row.start * 100}%`, width: `${row.width * 100}%`, backgroundColor: color, opacity: 0.5 }} />}
+                    {paired && row.referencePosition !== null && <View style={{ position: 'absolute', top: 7, height: 10, width: 10, marginLeft: -5, left: `${row.referencePosition * 100}%`, borderRadius: 5, borderWidth: 2, borderColor: color, backgroundColor: theme.colors.surface }} />}
+                    {row.valuePosition !== null && <View style={{ position: 'absolute', top: 5, height: 14, width: 14, marginLeft: -7, left: `${row.valuePosition * 100}%`, borderRadius: 7, borderWidth: 2, borderColor: theme.colors.surface, backgroundColor: color }} />}
+                  </View>
+                </View>
+              )
+            })}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8 }}>
+              {model.ticks.map((tick, index) => (
+                <Text
+                  key={tick}
+                  style={{
+                    flex: 1,
+                    textAlign: bulletTickAlignment(index),
+                    color: theme.colors.inkSoft,
+                    fontSize: theme.fontSizes.xs
+                  }}
+                >
+                  {formatValue(tick)}
+                </Text>
+              ))}
+            </View>
+            {showData && <LumenChartStructuredDataList labels={text} rows={rows} />}
+          </>
+        )}
+    </LumenChartFrame>
+  )
+}
+
+export const LumenLollipopChart = (props: LumenComparisonChartProps): ReactElement => (
+  <LumenComparisonChart {...resolveComparisonProps(props)} paired={false} />
+)
+export const LumenDumbbellChart = (props: LumenComparisonChartProps): ReactElement => (
+  <LumenComparisonChart {...resolveComparisonProps(props)} paired />
+)
+
+export interface LumenCalendarHeatmapProps extends LumenIntervalChartProps, LumenCalendarHeatmapOptions {
+  data: readonly LumenCalendarHeatmapDatum[]
+  formatDate?: (date: string) => string
+  weekdayLabels?: readonly string[]
+}
+
+const formatNativeCalendarDate = (date: string): string => new Intl.DateTimeFormat(undefined, {
+  dateStyle: 'medium', timeZone: 'UTC'
+}).format(new Date(`${date}T00:00:00Z`))
+
+const nativeCalendarWeekdays = Array.from({ length: 7 }, (_, index) => new Intl.DateTimeFormat(undefined, {
+  weekday: 'short', timeZone: 'UTC'
+}).format(new Date(Date.UTC(2023, 0, index + 1))))
+
+const expandedChartSummary = (valid: boolean, count: number, text: LumenChartLabels): string => valid ? `${text.count}: ${count}.` : text.invalidData
+
+/** A UTC calendar with scrollable week columns and an exact date/value disclosure. */
+export const LumenCalendarHeatmap = ({
+  data, startDate, endDate, weekStartsOn, domain, formatDate = formatNativeCalendarDate,
+  formatValue = String, labels, showData = true, summary, weekdayLabels = nativeCalendarWeekdays, ...props
+}: LumenCalendarHeatmapProps): ReactElement => {
+  const theme = useLumenTheme()
+  const text = resolveLumenChartLabels(labels)
+  const model = createLumenCalendarHeatmapGeometry(data, { startDate, endDate, weekStartsOn, domain })
+  const available = model.cells.filter(cell => cell.value !== null).length
+  const rows = model.cells.map(cell => ({ id: cell.date, label: `${formatDate(cell.date)}: ${cell.value === null ? text.notAvailable : formatValue(cell.value)}.` }))
+
+  return (
+    <LumenChartFrame {...props} summary={summary ?? expandedChartSummary(model.valid, available, text)}>
+      {!model.valid ?
+        <Text accessibilityRole="alert" style={{ color: theme.colors.inkSoft }}>{text.invalidData}</Text> :
+        (
+          <>
+            {available === 0 && <Text style={{ color: theme.colors.inkSoft }}>{text.empty}</Text>}
+            <Text style={{ color: theme.colors.inkSoft }}>
+              {formatDate(startDate)}
+              {' '}
+              –
+              {' '}
+              {formatDate(endDate)}
+            </Text>
+            <ScrollView horizontal>
+              <View
+                accessible={!showData}
+                accessibilityLabel={rows.map(row => row.label).join(' ')}
+                accessibilityElementsHidden={showData}
+                importantForAccessibility={showData ? 'no-hide-descendants' : 'yes'}
+                aria-hidden={showData}
+              >
+                <Svg width={model.weekCount * 18 + 52} height={126}>
+                  {Array.from({ length: 7 }, (_, day) => ({
+                    day, label: weekdayLabels[(day + (weekStartsOn ?? 0)) % 7] ?? ''
+                  })).map(day => (
+                    <SvgText
+                      key={day.day}
+                      transform={`translate(0 ${day.day * 18 + 13})`}
+                      fill={theme.colors.inkSoft}
+                      fontSize={10}
+                    >
+                      {day.label}
+                    </SvgText>
+                  ))}
+                  {model.cells.map(cell => (
+                    <G key={cell.date} transform={`translate(${cell.week * 18 + 53} ${cell.day * 18 + 1})`}>
+                      <Rect
+                        width={15}
+                        height={15}
+                        rx={3}
+                        fill={cell.ratio === null ? theme.colors.surfaceMuted : theme.chartColors.sequentialHigh}
+                        opacity={cell.ratio === null ? 1 : 0.2 + cell.ratio * 0.8}
+                        stroke={theme.colors.line}
+                      />
+                      {cell.ratio === null && <Path d="M4,4l7,7m-7,0l7,-7" stroke={theme.colors.inkSoft} strokeWidth={1} />}
+                    </G>
+                  ))}
+                </Svg>
+              </View>
+            </ScrollView>
+            <Text style={{ color: theme.colors.inkSoft }}>
+              {formatValue(model.domain.min)}
+              {' '}
+              –
+              {' '}
+              {formatValue(model.domain.max)}
+              {' '}
+              · ×
+              {' '}
+              {text.notAvailable}
+            </Text>
+            {showData && <LumenChartStructuredDataList labels={text} rows={rows} />}
+          </>
+        )}
+    </LumenChartFrame>
+  )
+}
+
+export interface LumenFunnelChartProps extends LumenIntervalChartProps {
+  data: readonly LumenFunnelDatum[]
+}
+
+export const LumenFunnelChart = ({
+  data, labels, formatValue = String, showData = true, summary, ...props
+}: LumenFunnelChartProps): ReactElement => {
+  const theme = useLumenTheme()
+  const text = resolveLumenChartLabels(labels)
+  const model = createLumenFunnelGeometry(data)
+  const rows = model.rows.map(row => ({ id: row.id, label: `${row.label}: ${row.value === null ? text.notAvailable : formatValue(row.value)}.` }))
+
+  return (
+    <LumenChartFrame {...props} summary={summary ?? (model.valid ? `${text.count}: ${rows.length}.` : text.invalidData)}>
+      {!model.valid || !model.rows.length ?
+        <Text style={{ color: theme.colors.inkSoft }}>{model.valid ? text.empty : text.invalidData}</Text> :
+        (
+          <>
+            {model.rows.map((row, index) => (
+              <View key={row.id} style={{ gap: theme.spacing.xs }}>
+                <Text style={{ color: theme.colors.ink }}>
+                  {row.label}
+                  :
+                  {' '}
+                  {row.value === null ? text.notAvailable : formatValue(row.value)}
+                </Text>
+                <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden style={{ height: 28, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.colors.surfaceMuted, borderRadius: theme.radii.sm }}>
+                  {row.ratio === null ? <Text style={{ color: theme.colors.inkSoft }}>×</Text> : <View style={{ width: `${row.ratio * 100}%`, height: 28, backgroundColor: lumenChartToneColor(resolveLumenChartTone(row.tone, index), theme), borderRadius: theme.radii.sm }} />}
+                </View>
+              </View>
+            ))}
+            {showData && <LumenChartStructuredDataList labels={text} rows={rows} />}
+          </>
+        )}
+    </LumenChartFrame>
+  )
+}
+
+export interface LumenBoxPlotProps extends LumenIntervalChartProps, LumenBoxPlotOptions {
+  data: readonly LumenBoxPlotDatum[]
+  statisticLabels?: Partial<LumenBoxPlotStatisticLabels>
+}
+
+export const LumenBoxPlot = ({
+  data, domain, labels, statisticLabels, formatValue = String, showData = true, summary, ...props
+}: LumenBoxPlotProps): ReactElement => {
+  const theme = useLumenTheme()
+  const text = resolveLumenChartLabels(labels)
+
+  const names = {
+    min: 'Lower whisker',
+    q1: 'First quartile',
+    median: 'Median',
+    q3: 'Third quartile',
+    max: 'Upper whisker',
+    outliers: 'Outliers',
+    ...statisticLabels
+  }
+
+  const model = createLumenBoxPlotGeometry(data, { domain })
+  const layout = useLumenChartLayout()
+  const width = Math.max(1, layout.width - 16)
+  const format = (value: number | null) => value === null ? text.notAvailable : formatValue(value)
+
+  const rows = model.rows.map(row => ({ id: row.id,
+    label: [
+      row.label,
+      `${names.min}: ${format(row.min)}`,
+      `${names.q1}: ${format(row.q1)}`,
+      `${names.median}: ${format(row.median)}`,
+      `${names.q3}: ${format(row.q3)}`,
+      `${names.max}: ${format(row.max)}`,
+      `${names.outliers}: ${row.outliers?.map(formatValue).join(', ') || text.notAvailable}`
+    ].join('. ') + '.' }))
+
+  const x = (position: number) => 8 + position * width
+
+  return (
+    <LumenChartFrame {...props} summary={summary ?? (model.valid ? `${text.count}: ${rows.length}.` : text.invalidData)}>
+      {!model.valid || !rows.length ?
+        <Text style={{ color: theme.colors.inkSoft }}>{model.valid ? text.empty : text.invalidData}</Text> :
+        (
+          <>
+            {model.rows.map((row, index) => {
+              const color = lumenChartToneColor(resolveLumenChartTone(row.tone, index), theme)
+              const minimum = row.minPosition ?? 0
+              const q1 = row.q1Position ?? 0
+              const median = row.medianPosition ?? 0
+              const q3 = row.q3Position ?? 0
+              const maximum = row.maxPosition ?? 0
+              const available = row.minPosition !== null
+
+              return (
+                <View
+                  key={row.id}
+                  onLayout={layout.onLayout}
+                  style={{ gap: theme.spacing.xs }}
+                  accessible={!showData}
+                  accessibilityLabel={rows[index]?.label}
+                >
+                  <Text style={{ color: theme.colors.ink }}>
+                    {row.label}
+                    {' '}
+                    ·
+                    {' '}
+                    {names.median}
+                    :
+                    {' '}
+                    {format(row.median)}
+                  </Text>
+                  <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden>
+                    <Svg width={layout.width} height={44}>
+                      {available ?
+                        (
+                          <G>
+                            <Line x1={x(minimum)} x2={x(maximum)} y1={22} y2={22} stroke={color} strokeWidth={2} />
+                            <Rect
+                              transform={`translate(${x(q1)} 10)`}
+                              width={Math.max(1, (q3 - q1) * width)}
+                              height={24}
+                              fill={theme.colors.surface}
+                              stroke={color}
+                              strokeWidth={2}
+                            />
+                            {[{ id: 'min', position: minimum }, { id: 'max', position: maximum }].map(mark => (
+                              <Line
+                                key={mark.id}
+                                x1={x(mark.position)}
+                                x2={x(mark.position)}
+                                y1={15}
+                                y2={29}
+                                stroke={color}
+                                strokeWidth={2}
+                              />
+                            ))}
+                            <Line
+                              x1={x(median)}
+                              x2={x(median)}
+                              y1={10}
+                              y2={34}
+                              stroke={theme.colors.ink}
+                              strokeWidth={3}
+                            />
+                            {[...new Set(row.outlierPositions)].map(position => (
+                              <Circle
+                                key={position}
+                                cx={x(position)}
+                                cy={22}
+                                r={3}
+                                fill={theme.colors.surface}
+                                stroke={color}
+                                strokeWidth={1.5}
+                              />
+                            ))}
+                          </G>
+                        ) :
+                        <SvgText transform="translate(8 28)" fill={theme.colors.inkSoft}>×</SvgText>}
+                    </Svg>
+                  </View>
+                </View>
+              )
+            })}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap', gap: theme.spacing.sm }}>
+              {[model.domain.min, model.domain.max].map(tick => (
+                <Text key={tick} style={{ color: theme.colors.inkSoft }}>{formatValue(tick)}</Text>
+              ))}
+            </View>
+            {showData && <LumenChartStructuredDataList labels={text} rows={rows} />}
+          </>
+        )}
     </LumenChartFrame>
   )
 }

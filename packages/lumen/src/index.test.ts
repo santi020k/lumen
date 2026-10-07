@@ -87,6 +87,12 @@ describe('@santi020k/lumen umbrella package', () => {
 
   test('exports registry recipes and components for product surfaces', () => {
     expect(lumenRegistry.items.map(item => item.name)).toEqual([
+      'page-header',
+      'section-header',
+      'content-flow-header',
+      'content-flow-settings',
+      'content-flow-list',
+      'content-flow-actions',
       'all-components',
       'advanced-fields',
       'error-handling',
@@ -105,8 +111,17 @@ describe('@santi020k/lumen umbrella package', () => {
       'marketing-shell',
       'dashboard-shell',
       'validated-form',
+      'operational-records',
+      'review-workflow',
+      'import-review',
+      'record-workspace',
       'ai-docs',
-      'figma-design-to-code'
+      'figma-design-to-code',
+      'interactive-pricing',
+      'feature-preview',
+      'guided-onboarding',
+      'command-center',
+      'media-workspace'
     ])
 
     expect(getLumenRegistryItem('scheduler')).toMatchObject({
@@ -242,6 +257,56 @@ describe('@santi020k/lumen umbrella package', () => {
       expect(elementsSource).toContain('defineLumenElements()')
       expect(elementsSource).toContain('<lumen-theme-builder')
       expect(elementsSource).toContain('data-lumen-theme-builder-recipe')
+
+      for (const name of ['validated-form', 'operational-records', 'review-workflow', 'import-review', 'record-workspace']) {
+        const recipe = await addLumenRegistryItem(name, { cwd, target: 'react' })
+
+        expect(recipe.added).toEqual([`src/lumen/${name}.tsx`])
+        expect(await readFile(join(cwd, `src/lumen/${name}.tsx`), 'utf8')).toContain('export const')
+      }
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test('installs content-flow compositions for all web adapters', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-content-flow-'))
+
+    try {
+      for (const target of ['astro', 'react', 'elements'] as const) {
+        for (const name of ['header', 'settings', 'list', 'actions']) {
+          const recipe = `content-flow-${name}`
+          const result = await addLumenRegistryItem(recipe, { cwd: join(cwd, target), target })
+          const extension = { astro: 'astro', elements: 'html', react: 'tsx' }[target]
+          const path = `src/lumen/${recipe}.${extension}`
+          const source = await readFile(join(cwd, target, path), 'utf8')
+
+          expect(result.added).toEqual([path])
+          expect(source).toContain(`@santi020k/lumen-${target}`)
+          expect(source).toContain(name === 'settings' ? 'group' : 'related')
+        }
+      }
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test('installs complete page and section header recipes for all web adapters', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-dashboard-headers-'))
+    try {
+      for (const target of ['astro', 'react', 'elements'] as const) {
+        for (const name of ['page-header', 'section-header']) {
+          const result = await addLumenRegistryItem(name, { cwd: join(cwd, target), target })
+          const extension = { astro: 'astro', elements: 'html', react: 'tsx' }[target]
+          const path = `src/lumen/${name}.${extension}`
+          const source = await readFile(join(cwd, target, path), 'utf8')
+          expect(result.added).toEqual([path])
+          expect(source).toContain(`@santi020k/lumen-${target}`)
+          expect(source).toContain('aria-labelledby')
+          expect(source).toContain('wrap')
+          expect(source).toContain(name === 'page-header' ? 'Breadcrumb' : 'Badge')
+        }
+      }
     } finally {
       await rm(cwd, { force: true, recursive: true })
     }
@@ -286,6 +351,16 @@ describe('@santi020k/lumen umbrella package', () => {
             `src/lumen/${templateName}.${extension}`
           ].sort())
           expect(source).toContain(sourceMarkers[templateName])
+          const loginMarkers = templateName === 'auth-onboarding' ?
+            ['Welcome back',
+              'Check your inbox',
+              'Try another way',
+              'These visual examples do not send codes or sign you in.'] :
+            []
+          for (const marker of loginMarkers) {
+            expect(source).toContain(marker)
+          }
+          expect(stylesheet).toContain('.lumen-login-examples__grid')
           expect(stylesheet).toContain('.lumen-template__shell')
 
           const frameworkMarkers = {
@@ -299,6 +374,30 @@ describe('@santi020k/lumen umbrella package', () => {
           await rm(cwd, { force: true, recursive: true })
         }
       }
+    }
+  })
+
+  test('installs an auth-onboarding Elements stepper with complete light-DOM steps', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-auth-onboarding-stepper-'))
+
+    try {
+      await addLumenRegistryItem('auth-onboarding', { cwd, target: 'elements' })
+      const source = await readFile(join(cwd, 'src/lumen/auth-onboarding.html'), 'utf8')
+      const listItems = [...source.matchAll(/<div[^>]*role="listitem"[^>]*>/g)]
+
+      expect(listItems).toHaveLength(4)
+      for (const title of ['Account', 'Workspace', 'Preferences', 'Invite']) {
+        expect(source).toContain(title)
+      }
+
+      const ariaCurrentSteps = [...source.matchAll(/aria-current="step"/g)]
+      const currentStep = /<div[^>]*aria-current="step"[^>]*>([\s\S]*?)<\/div>/.exec(source)?.[1]
+
+      expect(ariaCurrentSteps).toHaveLength(1)
+      expect(currentStep).toContain('<span class="ui-stepper__marker">2</span>')
+      expect(currentStep).toContain('<span class="ui-stepper__title">Workspace</span>')
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
     }
   })
 
@@ -368,6 +467,49 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
+  test.each(['astro', 'react', 'elements'] as const)('rejects unsafe component names before any %s installation writes', async target => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-unsafe-component-'))
+    try {
+      for (const name of ['Unsafe`Name', 'Unsafe\'Name', 'Unsafe\nName', 'Card\n', 'Card\r', 'Card\u2028', 'Unsafe/Name', 'Unsafe.Name', '1Unsafe', 'class', 'await', 'eval', 'Card$Name']) {
+        const registry = {
+          components: [{ category: 'Layout', description: 'Untrusted wrapper', files: [], name, type: 'component' as const }],
+          description: 'Test registry',
+          items: [],
+          name: 'test',
+          packages: [],
+          version: 1
+        }
+        await expect(addLumenRegistryItem(name, { cwd, registry, target })).rejects.toThrow('safe identifiers')
+        expect(existsSync(join(cwd, 'src'))).toBe(false)
+        const registryPath = join(cwd, 'registry.json')
+        await writeFile(registryPath, JSON.stringify(registry), 'utf8')
+        await expect(loadLumenRegistry(registryPath)).rejects.toThrow()
+      }
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test.each(['Custom_Card', '_CustomCard', 'customCard'])('retains safe external component identifier %s', async name => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-safe-component-'))
+    try {
+      const result = await addLumenRegistryItem(name, {
+        cwd,
+        registry: {
+          components: [{ category: 'Layout', description: 'Safe wrapper', files: [], name, type: 'component' }],
+          description: 'Test registry',
+          items: [],
+          name: 'test',
+          packages: [],
+          version: 1
+        }
+      })
+      expect(result.added).toHaveLength(1)
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
   test('installs inline files from external registry manifests', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'lumen-external-'))
     const registryPath = join(cwd, 'registry.json')
@@ -393,6 +535,33 @@ describe('@santi020k/lumen umbrella package', () => {
 
       expect(result.added).toEqual(['src/lumen/custom.astro'])
       await expect(readFile(join(cwd, 'src/lumen/custom.astro'), 'utf8')).resolves.toContain('Custom recipe')
+    } finally {
+      await rm(cwd, { force: true, recursive: true })
+    }
+  })
+
+  test('rejects known multi-file conflicts before writing the first recipe file', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-external-conflict-'))
+
+    try {
+      await writeFile(join(cwd, 'existing.txt'), 'Keep this file')
+      await expect(addLumenRegistryItem('custom', {
+        conflict: 'error',
+        cwd,
+        registry: {
+          description: 'Test registry',
+          items: [{
+            files: [{ path: 'first.txt', source: 'First file' }, { path: 'existing.txt', source: 'Replacement' }],
+            name: 'custom',
+            type: 'recipe'
+          }],
+          name: 'test',
+          packages: ['@santi020k/lumen-astro'],
+          version: 1
+        }
+      })).rejects.toThrow('Refusing to overwrite existing file: existing.txt')
+      expect(existsSync(join(cwd, 'first.txt'))).toBe(false)
+      expect(await readFile(join(cwd, 'existing.txt'), 'utf8')).toBe('Keep this file')
     } finally {
       await rm(cwd, { force: true, recursive: true })
     }

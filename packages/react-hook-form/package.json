@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-react-hook-form",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -38,6 +38,7 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "jsdom": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
@@ -47,7 +48,7 @@
     "zod": "catalog:"
   },
   "peerDependencies": {
-    "@santi020k/lumen-react": "^3.0.0",
+    "@santi020k/lumen-react": "^4.0.0",
     "react": ">=19",
     "react-hook-form": ">=7.76.0 <8"
   },

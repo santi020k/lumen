@@ -1,8 +1,8 @@
 import type { Server as HttpServer } from 'node:http'
 
-import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js'
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'
+import { createMcpExpressApp } from '@modelcontextprotocol/express'
+import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/server'
+import { StdioServerTransport } from '@modelcontextprotocol/server/stdio'
 import type {
   NextFunction,
   Request as ExpressRequest,
@@ -12,8 +12,10 @@ import type {
 import { loadLumenData } from './data.js'
 import { createLumenServer } from './server.js'
 
+export { checkCompatibility, type LumenCompatibilityReport, type LumenVersionCheck } from './compatibility.js'
 export type { LumenData } from './data.js'
 export { loadLumenData } from './data.js'
+export { getMigration } from './migration.js'
 export { createLumenServer } from './server.js'
 export * from './tools.js'
 

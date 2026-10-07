@@ -2,20 +2,20 @@
 import {
   ContextNavigation,
   Label,
-  NativeSelect,
-  NavigationMenu
+  NavigationMenu,
+  Select
 } from '@santi020k/lumen-astro'
 ---
 
 <ContextNavigation>
   <div slot="context">
     <Label for="context-navigation-example">Documentation for</Label>
-    <NativeSelect id="context-navigation-example" visualSize="sm">
+    <Select id="context-navigation-example" visualSize="sm">
       <option>Web</option>
       <option>React Native</option>
       <option>Apple</option>
       <option>Android</option>
-    </NativeSelect>
+    </Select>
   </div>
   <NavigationMenu aria-label="Web documentation" variant="unstyled">
     <a href="/docs/web" aria-current="page">Overview</a>

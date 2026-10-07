@@ -1,5 +1,10 @@
 # Native playgrounds
 
+
+This branch prepares Lumen 4. Version 4 dependency pins below require the future published release;
+use the local workspace adapters for candidate evaluation. Existing store builds remain separate
+from this revision's validation.
+
 Lumen includes a native playground for each adapter. Use these apps to evaluate the real components,
 capture documentation screenshots, and prepare distributable marketing builds. The React Native,
 Apple, and Android playgrounds are organized as polished reference applications with the same Home,
@@ -24,6 +29,63 @@ The native Apple and Android galleries are also prepared as one public **Lumen P
 See [Publishing Lumen Playground](playground-publication.md) for listing copy, shared assets,
 privacy declarations, signed release candidates, staged testing, and production gates.
 
+## Appearance comparison
+
+In the Apple, Compose and React Native phone playgrounds, open **Settings → Appearance**
+and choose **Normal**, **Studio** or **Glass**. The existing **santi020k** brand theme remains
+available. The selection updates the whole gallery without resetting navigation or example inputs;
+light and dark appearance stay independent. Preferences remain local to the current app session.
+
+Studio uses PostLens-inspired neutral surfaces, monochrome actions and compact corners. Glass
+uses the shared rounded appearance. Apple Settings includes an explicit supporting material preview
+with Reduce Transparency and increased-contrast fallbacks; Compose and React Native use opaque
+material fallbacks. Dense content and status surfaces remain legible. See
+[appearance presets](appearance-presets.md) for the public theme APIs and customization options.
+
+The React Native web preview also accepts `?destination=settings&theme=studio` or `theme=glass`
+for reproducible appearance review. Existing `theme=lumen` and `theme=santi020k` links still work.
+With the React Native web preview running, verify keyboard selection, retained input and responsive
+layouts with `pnpm --filter @santi020k/lumen-playground-react-native test:appearance:web`.
+Set `LUMEN_REACT_NATIVE_URL` when the preview uses a different port.
+
+## Lumen 4 candidate
+
+The repository playground consumes the current local Lumen 4 adapter; it does not depend on
+a published v4 artifact. The Components header displays the adapter release version generated
+from the workspace manifest. Search accepts labels and component IDs (for example,
+`date-range-field` or `DateRangeField`), ignores surrounding whitespace, and supports
+case-insensitive partial matches. Reset filters returns to the complete catalog. Deterministic
+capture launches match a complete component name. Store and Expo updates require the separate
+publication workflow.
+
+## Try Lumen and use it as a reference
+
+Start at the [homepage playground section](https://lumen.santi020k.com/#playgrounds). Choose a
+browser preview for a quick evaluation or install a native gallery to explore device interactions.
+
+| Platform | Try it | Guide and implementation reference |
+| --- | --- | --- |
+| Astro, React, Web Components | [Web playground](https://lumen.santi020k.com/docs/web/playground) | [Component examples](https://lumen.santi020k.com/docs/components) and [example source](../apps/docs/src/examples) |
+| iPhone, iPad, Mac | [App Store](https://apps.apple.com/app/id6805250815) | [Apple guide](https://lumen.santi020k.com/docs/apple/playground#reference) and [SwiftUI app source](../apps/playground-apple) |
+| Android phones and tablets | [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose) | [Android guide](https://lumen.santi020k.com/docs/android/playground#reference) and [Compose app source](../apps/playground-android) |
+| React Native and Expo | [Browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview) | [Local Expo guide](https://lumen.santi020k.com/docs/react-native/playground#run) and [app source](../apps/playground-react-native) |
+
+The web playground opens with a live release workspace. Switch between Astro, React, and Web
+Components, advance the readiness state, and try keyboard navigation in the detail tabs. The
+illustrated cards below lead to component examples, theme customization, and complete templates.
+
+Use the playgrounds as a practical adoption path:
+
+1. Find a component and try its input, focus, loading, disabled, or error states where available.
+2. Compare themes and layout on the platform you intend to ship.
+3. Read the matching component API and app source, then adapt the example to your own application.
+
+The browser previews are available without a local setup. The Apple and Android store galleries
+work offline without an account. React Native native-device evaluation uses the local Expo workflow
+below; its Expo Go link is subject to SDK compatibility and is not a separate public store app.
+Store versions are released independently from this repository, so use the local workspace when
+evaluating candidate-only components or patterns.
+
 ## First-time repository setup
 
 Install the shared repository dependencies before running any playground:
@@ -35,7 +97,7 @@ corepack enable
 pnpm install
 ```
 
-Use Node.js 22.19 or newer. The Apple playground additionally needs macOS and Xcode. The Android
+Use Node.js 22.22.2+, 24.15.0+, or 26+, matching the private workspace tooling requirements. The Apple playground additionally needs macOS and Xcode. The Android
 playground needs Android Studio, Android SDK 37, and JDK 21. The packed React Native Android smoke
 test also supports Android Studio's newer bundled JDK by enabling the native access required by
 Expo's CMake configuration step.
@@ -119,8 +181,8 @@ CLI version without installing it into the Expo app. Authenticate and connect th
 
 ```bash
 cd apps/playground-react-native
-pnpm dlx eas-cli@22.4.0 login
-pnpm dlx eas-cli@22.4.0 init
+pnpm dlx eas-cli@24.8.0 login
+pnpm dlx eas-cli@24.8.0 init
 ```
 
 After `eas init`, keep the generated EAS project identifier in `app.json`. Build a directly
@@ -146,7 +208,7 @@ production build.
 
 1. In Xcode, choose File → Add Package Dependencies.
 2. Paste `https://github.com/santi020k/lumen` into the search field.
-3. Choose Exact Version and enter `3.0.1`. Use Up to Next Major Version from `3.0.1` only when the
+3. Choose Exact Version and enter `4.0.0`. Use Up to Next Major Version from `4.0.0` only when the
    application intentionally accepts compatible updates; reserve `main` for local evaluation.
 4. Select the `LumenUI` product and add it to your application target.
 5. Add `import LumenUI` to the SwiftUI view that uses Lumen components.
@@ -258,7 +320,7 @@ link the platform package differently:
 - React Native installs `@santi020k/lumen-react-native` from npm and mounts one `LumenProvider`.
 - Apple applications add `https://github.com/santi020k/lumen` through Swift Package Manager and
   select the `LumenUI` product.
-- Android applications install `com.santi020k:lumen-compose:3.0.0` from Maven Central. The repository
+- Android applications install `com.santi020k:lumen-compose:4.0.0` from Maven Central. The repository
   playground intentionally references the local module so it can exercise unreleased changes.
 
 See the corresponding React Native, Apple, or Android documentation page for complete application

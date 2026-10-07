@@ -41,6 +41,29 @@ export interface LumenScheduleKeyValueWriter {
 
 export interface LumenScheduleKeyValueStorage extends LumenScheduleKeyValueReader, LumenScheduleKeyValueWriter {}
 
+const getScheduleRange = (event: LumenScheduleEvent): { end: number, start: number } | undefined => {
+  const start = new Date(event.start).getTime()
+  const end = new Date(event.end).getTime()
+
+  return Number.isFinite(start) && Number.isFinite(end) && start <= end ? { end, start } : undefined
+}
+
+const requireScheduleTime = (value: string, field: string): number => {
+  const time = new Date(value).getTime()
+
+  if (!Number.isFinite(time)) throw new TypeError(`Schedule ${field} must be a valid date-time.`)
+
+  return time
+}
+
+const requireScheduleRange = (event: LumenScheduleEvent): { end: number, start: number } => {
+  const range = getScheduleRange(event)
+
+  if (!range) throw new TypeError('Schedule event must have valid date-times with start no later than end.')
+
+  return range
+}
+
 export const createScheduleSlots = (
   dates: readonly string[],
   events: readonly LumenScheduleEvent[],
@@ -75,29 +98,48 @@ export const expandRecurringScheduleEvent = (
   event: LumenScheduleEvent,
   count: number,
   intervalDays = 7
-): LumenScheduleEvent[] => Array.from({ length: count }, (_, index) => {
-  const start = new Date(event.start)
-  const end = new Date(event.end)
+): LumenScheduleEvent[] => {
+  if (!Number.isSafeInteger(count) || count < 0) throw new RangeError('Schedule recurrence count must be a non-negative safe integer.')
 
-  start.setDate(start.getDate() + index * intervalDays)
+  if (!Number.isFinite(intervalDays)) throw new RangeError('Schedule recurrence interval must be finite.')
 
-  end.setDate(end.getDate() + index * intervalDays)
+  if (count === 0) return []
 
-  return {
-    ...event,
-    end: end.toISOString(),
-    id: index === 0 ? event.id : `${event.id}-${index + 1}`,
-    start: start.toISOString()
-  }
-})
+  const range = requireScheduleRange(event)
+
+  return Array.from({ length: count }, (_, index) => {
+    const start = new Date(range.start)
+    const end = new Date(range.end)
+
+    start.setUTCDate(start.getUTCDate() + index * intervalDays)
+
+    end.setUTCDate(end.getUTCDate() + index * intervalDays)
+
+    if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime())) {
+      throw new RangeError('Schedule recurrence exceeds the supported date-time range.')
+    }
+
+    return {
+      ...event,
+      end: end.toISOString(),
+      id: index === 0 ? event.id : `${event.id}-${index + 1}`,
+      start: start.toISOString()
+    }
+  })
+}
 
 export const scheduleEventsOverlap = (
   a: LumenScheduleEvent,
   b: LumenScheduleEvent
-): boolean => a.id !== b.id &&
-  (!a.resourceId || !b.resourceId || a.resourceId === b.resourceId) &&
-  new Date(a.start).getTime() < new Date(b.end).getTime() &&
-    new Date(b.start).getTime() < new Date(a.end).getTime()
+): boolean => {
+  if (a.id === b.id || (a.resourceId && b.resourceId && a.resourceId !== b.resourceId)) return false
+
+  const first = getScheduleRange(a)
+  const second = getScheduleRange(b)
+
+  // An invalid interval cannot establish availability for a shared resource.
+  return !first || !second || (first.start < second.end && second.start < first.end)
+}
 
 export const getScheduleConflicts = (
   events: readonly LumenScheduleEvent[]
@@ -118,7 +160,7 @@ export const getScheduleConflicts = (
 export const canPlaceScheduleEvent = (
   events: readonly LumenScheduleEvent[],
   event: LumenScheduleEvent
-): boolean => !events.some(nextEvent => scheduleEventsOverlap(event, nextEvent))
+): boolean => Boolean(getScheduleRange(event)) && !events.some(nextEvent => scheduleEventsOverlap(event, nextEvent))
 
 const clampTime = (
   value: number,
@@ -130,9 +172,16 @@ const snapTime = (
   value: number,
   snapMinutes = 15
 ): number => {
-  const snapMs = Math.max(1, snapMinutes) * 60_000
+  if (!Number.isFinite(snapMinutes)) throw new RangeError('Schedule snap minutes must be finite.')
 
-  return Math.round(value / snapMs) * snapMs
+  const snapMs = Math.max(1, snapMinutes) * 60_000
+  const snapped = Math.round(value / snapMs) * snapMs
+
+  if (!Number.isFinite(snapped) || Math.abs(snapped) > 8.64e15) {
+    throw new RangeError('Schedule snapped time exceeds the supported date-time range.')
+  }
+
+  return snapped
 }
 
 const minScheduleEventDurationMs = 60_000
@@ -143,11 +192,13 @@ export const resizeScheduleEvent = (
   options: LumenScheduleResizeOptions = {}
 ): LumenScheduleEvent => {
   const edge = options.edge ?? 'end'
-  const start = new Date(event.start).getTime()
-  const end = new Date(event.end).getTime()
-  const minBound = options.min ? new Date(options.min).getTime() : -Infinity
-  const maxBound = options.max ? new Date(options.max).getTime() : Infinity
-  const snapped = snapTime(new Date(nextDateTime).getTime(), options.snapMinutes)
+  const { start, end } = requireScheduleRange(event)
+  const minBound = options.min !== undefined ? requireScheduleTime(options.min, 'minimum') : -Infinity
+  const maxBound = options.max !== undefined ? requireScheduleTime(options.max, 'maximum') : Infinity
+
+  if (minBound > maxBound) throw new RangeError('Schedule minimum cannot exceed maximum.')
+
+  const snapped = snapTime(requireScheduleTime(nextDateTime, 'resize target'), options.snapMinutes)
 
   // The explicit min/max bound is a hard caller contract (for example a visible
   // drag range) and must never be exceeded; the minimum duration is only a

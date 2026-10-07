@@ -1,0 +1,20 @@
+---
+import { Badge, Link, Prose, Stack } from '@santi020k/lumen-astro'
+
+import { Content } from '../../../../../../docs/migrating-v3-to-v4.md'
+import MigrationSpacingExample from '../../../components/MigrationSpacingExample.astro'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+---
+
+<DocsLayout
+  breadcrumbs={[{ href: '/docs/migrations', label: 'Migration guides' }]}
+  description="Evaluate the unpublished Lumen 4 candidate, migrate spacing and component behavior, and rebuild native consumers."
+  title="Lumen 3 to Lumen 4 migration - Lumen UI"
+>
+  <Stack gap="group">
+    <Link href="/docs/migrations">All migration guides</Link>
+    <Badge class="w-fit" variant="outline">Unpublished v4 candidate</Badge>
+    <MigrationSpacingExample />
+    <Prose class="migration-guide"><Content /></Prose>
+  </Stack>
+</DocsLayout>

@@ -26,7 +26,9 @@
         "button-group",
         "chip",
         "menu",
-        "share-button"
+        "share-button",
+        "tooltip",
+        "command"
       ]
     },
     {
@@ -48,7 +50,20 @@
         "segmented-control",
         "tabs",
         "picker",
-        "slider"
+        "slider",
+        "range-slider",
+        "time-field",
+        "autocomplete",
+        "number-field",
+        "password-field",
+        "input-otp",
+        "multi-select",
+        "rating",
+        "cascader",
+        "color-picker",
+        "tree-select",
+        "transfer",
+        "mentions"
       ]
     },
     {
@@ -65,7 +80,9 @@
         "skeleton",
         "empty-state",
         "error-state",
-        "banner"
+        "banner",
+        "stepper",
+        "timeline"
       ]
     },
     {
@@ -79,6 +96,8 @@
         "bar-chart",
         "pie-chart",
         "scatter-chart",
+        "waterfall-chart",
+        "histogram",
         "heatmap",
         "range-chart",
         "combo-chart",
@@ -88,7 +107,28 @@
         "stat",
         "section-header",
         "status-bar",
-        "gauge"
+        "gauge",
+        "image-comparison",
+        "media-viewport",
+        "media-thumbnail",
+        "media-filmstrip",
+        "bullet-chart",
+        "lollipop-chart",
+        "dumbbell-chart",
+        "calendar-heatmap",
+        "funnel-chart",
+        "box-plot",
+        "table",
+        "data-table",
+        "tree",
+        "qr-code",
+        "calendar",
+        "agenda",
+        "kanban-board",
+        "kanban-column",
+        "schedule",
+        "carousel",
+        "tree-grid"
       ]
     },
     {
@@ -98,7 +138,9 @@
       "componentIds": [
         "alert-dialog",
         "sheet",
-        "navigation-bar"
+        "navigation-bar",
+        "breadcrumb",
+        "tour"
       ]
     }
   ],
@@ -166,6 +208,26 @@
       {
         "id": "adaptive-navigation-scaffold",
         "label": "Adaptive navigation scaffold",
+        "category": "navigation"
+      },
+      {
+        "id": "pull-to-refresh",
+        "label": "Pull to refresh",
+        "category": "feedback"
+      },
+      {
+        "id": "top-app-bar",
+        "label": "Top app bar",
+        "category": "navigation"
+      },
+      {
+        "id": "swipe-actions",
+        "label": "Swipe actions",
+        "category": "actions"
+      },
+      {
+        "id": "adaptive-list-detail-scaffold",
+        "label": "Adaptive list detail scaffold",
         "category": "navigation"
       }
     ]

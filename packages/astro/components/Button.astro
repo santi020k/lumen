@@ -50,5 +50,5 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   {...passthrough}
 >
   {loading && <span aria-hidden="true" class="ui-spinner"></span>}
-  <slot />
+  <span class="ui-button__content"><slot /></span>
 </button>

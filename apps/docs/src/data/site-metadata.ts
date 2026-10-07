@@ -18,14 +18,14 @@ export const primaryPageMetadata = {
   },
   docs: {
     badge: 'Docs',
-    description: 'Choose the Lumen UI documentation for Web, React Native, Apple platforms, or Android, and explore their shared foundations.',
+    description: 'Build accessible web and native interfaces with Lumen components, AI agent skills, and framework-specific API guidance.',
     pathname: '/docs',
     title: 'Documentation - Lumen UI'
   },
   home: {
     badge: 'Home',
-    description: `Lumen is a crafted multi-framework UI system with ${documentedComponentCount} accessible primitives for Web, React Native, Apple platforms, and Android.`,
+    description: `Build with AI using ${documentedComponentCount} accessible primitives, agent skills, and focused MCP context. One UI library for web and native apps.`,
     pathname: '/',
-    title: 'Lumen UI — Crafted primitives for web and native platforms'
+    title: 'Lumen UI — Accessible Components for AI Coding Agents'
   }
 } as const satisfies Record<string, SitePageMetadata>

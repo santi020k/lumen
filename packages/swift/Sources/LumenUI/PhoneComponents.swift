@@ -373,6 +373,49 @@ func constrainLumenPhoneInputValue(
     )
 }
 
+/// Bundled flag artwork with an ISO-code fallback.
+public struct LumenCountryFlag: View {
+    private let regionCode: String
+    private let decorative: Bool
+
+    public init(regionCode: String, decorative: Bool = false) {
+        self.regionCode = regionCode.uppercased()
+        self.decorative = decorative
+    }
+
+    public var body: some View {
+        Group {
+            if lumenPhoneFlagRegions.contains(regionCode) {
+                Image("lumen-flag-\(regionCode.lowercased())", bundle: .module)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                Text(String(regionCode.prefix(2)))
+                    .font(.caption2)
+            }
+        }
+        .frame(width: 24, height: 18)
+        .clipShape(RoundedRectangle(cornerRadius: 2))
+        .accessibilityLabel(regionCode)
+        .accessibilityHidden(decorative)
+    }
+}
+
+public struct LumenPhoneNumberView: View {
+    private let value: LumenPhoneNumber
+
+    public init(value: LumenPhoneNumber) { self.value = value }
+
+    public var body: some View {
+        HStack(spacing: LumenSpacing.sm) {
+            LumenCountryFlag(regionCode: value.country.regionCode, decorative: true)
+            Text(value.isValid ? (value.e164 ?? value.nationalNumber) : value.nationalNumber)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(value.country.displayName), \(value.e164 ?? value.nationalNumber)")
+    }
+}
+
 /// A controlled international phone editor with searchable country metadata and E.164 output.
 public struct LumenPhoneInput: View {
     @Binding private var value: LumenPhoneNumber
@@ -380,6 +423,8 @@ public struct LumenPhoneInput: View {
     @Environment(\.lumenTheme) private var theme
     @State private var countryQuery = ""
     @State private var pickerPresented = false
+    @State private var countryHovered = false
+    @FocusState private var phoneFocused: Bool
 
     private let countries: [LumenPhoneCountry]
     private let countryPickerTitle: String
@@ -393,6 +438,7 @@ public struct LumenPhoneInput: View {
     private let locale: Locale
     private let numberLabel: String
     private let required: Bool
+    private let readOnly: Bool
     private let showValidationError: Bool
 
     public init(
@@ -409,7 +455,8 @@ public struct LumenPhoneInput: View {
         countryPickerTitle: String = "Select country",
         countrySearchLabel: String = "Search countries",
         required: Bool = false,
-        enabled: Bool = true
+        enabled: Bool = true,
+        readOnly: Bool = false
     ) {
         self.label = label
         _value = value
@@ -425,6 +472,7 @@ public struct LumenPhoneInput: View {
         self.countrySearchLabel = countrySearchLabel
         self.required = required
         self.enabled = enabled
+        self.readOnly = readOnly
     }
 
     public var body: some View {
@@ -442,10 +490,18 @@ public struct LumenPhoneInput: View {
             errorMessage: localizedError,
             required: required
         ) {
-            HStack(spacing: LumenSpacing.sm) {
+            HStack(spacing: 0) {
                 countryButton
+                Rectangle().fill(theme.colors.line).frame(width: 1)
                 phoneTextField
             }
+            .frame(minHeight: 44, maxHeight: 44)
+            .background(readOnly ? theme.colors.surfaceMuted : theme.colors.surface)
+            .overlay {
+                RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
+                    .stroke(borderColor, lineWidth: 1)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
         }
     }
 
@@ -453,19 +509,23 @@ public struct LumenPhoneInput: View {
         Button {
             pickerPresented = true
         } label: {
-            Text("\(displayValue.country.flag) \(displayValue.country.callingCode)")
-                .foregroundStyle(theme.colors.ink)
-                .frame(minHeight: 44)
-                .padding(.horizontal, LumenSpacing.md)
-                .background(theme.colors.surface)
-                .overlay {
-                    RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
-                        .stroke(borderColor, lineWidth: 1)
-                }
-                .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+            HStack(spacing: LumenSpacing.sm) {
+                LumenCountryFlag(regionCode: displayValue.country.regionCode, decorative: true)
+                Text(displayValue.country.callingCode)
+                    .fixedSize()
+                LumenIcon(name: .chevronDown)
+                    .frame(width: 12, height: 12)
+                    .accessibilityHidden(true)
+            }
+            .foregroundStyle(theme.colors.ink)
+            .frame(minHeight: 44)
+            .padding(.horizontal, LumenSpacing.md)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(!isEnabled || countries.isEmpty)
+        .background(countryHovered && isEnabled && !readOnly ? theme.colors.surfaceMuted : Color.clear)
+        .onHover { countryHovered = $0 }
+        .disabled(!isEnabled || readOnly || countries.isEmpty)
         .accessibilityLabel(countryButtonAccessibilityLabel)
     }
 
@@ -474,7 +534,8 @@ public struct LumenPhoneInput: View {
     }
 
     private var borderColor: Color {
-        effectiveError == nil ? theme.colors.line : theme.colors.danger
+        if effectiveError != nil { return theme.colors.danger }
+        return phoneFocused ? theme.colors.brand : theme.colors.line
     }
 
     private var effectiveError: String? {
@@ -521,6 +582,7 @@ public struct LumenPhoneInput: View {
         let field = TextField(numberLabel, text: Binding(
             get: { displayValue.nationalNumber },
             set: { input in
+                guard !readOnly else { return }
                 value = resolveLumenPhoneInputValue(
                     countries: countries,
                     country: displayValue.country,
@@ -530,15 +592,11 @@ public struct LumenPhoneInput: View {
             }
         ))
         .textFieldStyle(.plain)
+        .focused($phoneFocused)
+        .disabled(readOnly)
         .foregroundStyle(theme.colors.ink)
         .frame(minHeight: 44)
         .padding(.horizontal, LumenSpacing.md)
-        .background(theme.colors.surface)
-        .overlay {
-            RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
-                .stroke(borderColor, lineWidth: 1)
-        }
-        .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
         .lumenAccessibilityHint(localizedError ?? localizedDescription)
         .accessibilityLabel(numberLabel)
 
@@ -567,7 +625,8 @@ public struct LumenPhoneInput: View {
                         countryQuery = ""
                     } label: {
                         HStack {
-                            Text(country.pickerLabel)
+                            LumenCountryFlag(regionCode: country.regionCode, decorative: true)
+                            Text("\(country.displayName) (\(country.callingCode))")
                                 .foregroundStyle(theme.colors.ink)
                             Spacer()
                             if country.regionCode == displayValue.country.regionCode {

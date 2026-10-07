@@ -1,20 +1,16 @@
-# Native device validation
+# Native device evidence history
 
-Version 2 publication remains gated until native accessibility and interaction contracts have evidence from
-representative physical devices. Unit tests and simulator builds protect API and semantic regressions,
-but they do not prove screen-reader announcements, focus order, touch ergonomics, text scaling, or
-reduced-motion behavior on hardware.
+This historical record is retained for reference. Physical-device evidence checks and readiness
+commands have been removed from releases; these records do not define current launch requirements.
+See the [current release policy](native-release-runbook.md#current-release-policy).
 
-The machine-readable source of truth is `registry/native-device-evidence.json`. Every partial or
+The historical machine-readable source of truth is `registry/native-device-evidence.json`. Every partial or
 complete pass records the actual device model, exact OS version, date, tester, and revision. A
 complete pass additionally requires the exact lowercase 40-character revision, an immutable HTTPS
 URL for that revision in the Lumen repository, and a separate permanent workflow, pipeline, job,
 signed-build, artifact, or Lumen revision-pinned test record. Mutable branch and
 workflow-definition pages, query strings, fragments, unrelated repositories or revisions, and
-local notes cannot satisfy release readiness. Completed passes cannot be dated in the future. Run
-`pnpm run check:native-device-evidence` to validate its structure. Release readiness additionally
-requires `pnpm run check:native-device-readiness`, which fails until both minimum and current passes
-are complete for every adapter and platform. For the initial coordinated Lumen 2 launch, every
+local notes cannot satisfy complete device qualification. Completed passes cannot be dated in the future. Under the historical Lumen 2 qualification plan, every
 complete minimum and current pass must test the exact revision recorded in the contract's
 `approval.reviewedRevision`; changing the candidate requires a new approval and fresh device
 evidence for that revision.

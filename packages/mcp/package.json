@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-mcp",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -50,11 +50,14 @@
     "clean": "rm -rf dist coverage"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "catalog:",
+    "@modelcontextprotocol/express": "catalog:",
+    "@modelcontextprotocol/server": "catalog:",
+    "express": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@astrojs/compiler": "catalog:",
+    "@modelcontextprotocol/client": "catalog:",
     "@types/express": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",

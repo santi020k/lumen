@@ -6,6 +6,70 @@ import org.junit.Test
 
 class ChartComponentsTest {
     @Test
+    fun continuousLinesUseElapsedDistanceAndSortCoordinatesAcrossSeries() {
+        val times = listOf(60_000L, 0L, 6_000L).map(LumenChartX::Time)
+        val series = LumenChartSeries("time", "Time", times.mapIndexed { index, x ->
+            LumenChartDatum(index.toString(), x, index.toDouble())
+        })
+        val categories = lumenLineChartCategories(listOf(series))
+
+        assertEquals(listOf(times[1], times[2], times[0]), categories)
+        assertEquals(0f, lumenChartXPosition(0, categories))
+        assertEquals(0.1f, lumenChartXPosition(1, categories))
+        assertEquals(1f, lumenChartXPosition(2, categories))
+        assertEquals(0.5f, lumenChartXPosition(0, listOf(times[0])))
+        assertEquals(0.5f, lumenChartCategoryPosition(0, 1, false))
+    }
+
+    @Test
+    fun continuousNumbersPreserveGapsAndExcludeNonfiniteCoordinates() {
+        val series = LumenChartSeries("values", "Values", listOf(
+            LumenChartDatum("last", LumenChartX.Number(20.0), 2.0),
+            LumenChartDatum("first", LumenChartX.Number(0.0), 1.0),
+            LumenChartDatum("gap", LumenChartX.Number(2.0), null),
+            LumenChartDatum("invalid", LumenChartX.Number(Double.NaN), 3.0)
+        ))
+        val categories = lumenLineChartCategories(listOf(series))
+
+        assertEquals(3, categories.size)
+        assertEquals(0.1f, lumenChartXPosition(1, categories))
+        assertEquals(listOf(listOf(0), listOf(2)), lumenLineValueSegments(series, categories).map {
+            segment -> segment.map(LumenIndexedChartValue::categoryIndex)
+        })
+        assertEquals(0.5f, lumenChartXPosition(1, listOf(
+            LumenChartX.Number(-Double.MAX_VALUE), LumenChartX.Number(0.0),
+            LumenChartX.Number(Double.MAX_VALUE)
+        )))
+    }
+
+    @Test
+    fun mixedCoordinatesAndComboMarksRemainCategorical() {
+        val categories = listOf(LumenChartX.Category("Start"), LumenChartX.Number(2.0), LumenChartX.Time(20))
+        assertEquals(0.5f, lumenChartXPosition(1, categories))
+        assertEquals(1f / 6f, lumenChartXPosition(0, categories, true))
+        assertEquals(0.5f, lumenChartXPosition(1, listOf(
+            LumenChartX.Number(0.0), LumenChartX.Number(2.0), LumenChartX.Number(20.0)
+        ), true))
+    }
+
+    @Test
+    fun dataAlternativesUseApplicationFormattersAndPreserveMissingValues() {
+        val series = LumenChartSeries("temperature", "Temperature", emptyList())
+        val labels = LumenChartLabels(
+            notAvailable = "Missing",
+            formatX = { "10:30" },
+            formatValue = { value -> "${value.toInt()} degrees" }
+        )
+        assertEquals("10:30, Temperature: 24 degrees", lumenChartDataLabel(
+            series, LumenChartDatum("one", LumenChartX.Time(0), 24.0), labels
+        ))
+        assertEquals("10:30, Temperature: Missing", lumenChartDataLabel(
+            series, LumenChartDatum("one", LumenChartX.Time(0), null), labels
+        ))
+        assertTrue(LumenChartX.Time(0).label != LumenChartX.Time(60_000).label)
+    }
+
+    @Test
     fun chartFoundationsMatchSharedLightAndDarkTokens() {
         assertEquals(LumenChartColors.Light.series1, LumenThemeValues(LumenColors.Light, false).chartColors.series1)
         assertEquals(LumenChartColors.Dark.series1, LumenThemeValues(LumenColors.Dark, true).chartColors.series1)

@@ -1,7 +1,5 @@
 'use client'
 
-/* eslint-disable @eslint-react/no-children-only, @eslint-react/no-context-provider, @eslint-react/no-use-context */
-/* React 19 ref props and context providers stay explicit; polymorphic composition clones one child. */
 import type {
   ChangeEvent,
   ComponentPropsWithoutRef,
@@ -22,9 +20,11 @@ import {
   createElement,
   Fragment,
   isValidElement,
-  useContext,
+  use,
+  useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState
@@ -32,49 +32,67 @@ import {
 
 import {
   alignLumenChartSeries,
+  bindLumenTabIndicator,
   composeClassName,
   createLumenBarGeometry,
-  createLumenHeatmapGeometry,
+  createLumenChartDatumActivation,
+  createLumenHeatmapDatumActivation,
+  createLumenHeatmapModel,
+  createLumenLineChartModel,
   createLumenLineGeometry,
+  createLumenMessageScrollerController,
   createLumenPieGeometry,
+  createLumenRangeDatumActivation,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
+  createLumenScatterReferences,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
-  getLumenChartAxisPadding,
+  formatLumenPhoneNumber,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
+  getLumenChartMotionKey,
   getLumenChartTicks,
   getLumenChartToneClassName,
+  getLumenHeatmapColor,
   getLumenIcon,
   getLumenPhoneCountries,
+  getLumenPhoneFlagSource,
   getLumenPieChartVariantClassName,
   hasLumenChartData,
   hasLumenPieData,
   type LumenBarChartLayout,
   type LumenChartDatum,
+  type LumenChartDatumActivationDetail,
+  type LumenChartDomain,
   type LumenChartLabels,
   type LumenChartOrientation,
-  type LumenChartScaleType,
   type LumenChartSeries,
   type LumenChartTone,
   type LumenCodeToken,
   lumenCodeTokenClassNames,
   type LumenComboSeries,
+  type LumenControlVisualSize,
   type LumenErrorStateAnnouncement,
   type LumenErrorStateKind,
   type LumenErrorStateLayout,
   type LumenFormErrorInput,
   type LumenFormStatus,
   type LumenHeatmapDatum,
+  type LumenHeatmapOptions,
   type LumenIconName,
   type LumenIllustrationElement,
   lumenIllustrations,
+  type LumenLineChartOptions,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber,
   type LumenPieChartVariant,
   type LumenRangeDatum,
+  type LumenScatterReference,
+  type LumenScatterScaleType,
   type LumenTabsChangeDetail,
   normalizeLumenFormErrors,
   resolveLumenChartLabels,
@@ -83,9 +101,13 @@ import {
   scaleLumenChartValue,
   tokenizeLumenCode
 } from '@santi020k/lumen-core'
+import { parseLumenDate as parseCalendarDate, resolveLumenDateLabels as resolveDateControlLabels, resolveLumenDateLocale as getCalendarLocale } from '@santi020k/lumen-core'
 import { renderSVG } from 'uqr'
 
-import { formatReactChartTableValue } from './chart-recipes.js'
+import { ChartInspection } from './chart-inspection.js'
+import { ChartInteraction, type ChartInteractionProps } from './chart-interaction.js'
+import { getChartPlotLabel } from './chart-label.js'
+import { createReactChartDatumAction, formatReactChartTableValue, type ReactChartDatumAction, readReactChartDatumActivation } from './chart-recipes.js'
 import {
   type DialogOptions,
   type DropdownMenuController,
@@ -122,6 +144,7 @@ import {
   type InputProps,
   Label
 } from './server-components.js'
+import { useCopyFeedback } from './use-copy-feedback.js'
 
 export {
   Badge,
@@ -183,32 +206,6 @@ type IconSize = 'default' | 'lg' | 'sm' | 'xl'
 
 const getChartCategoryKey = (value: number | string): string => `${typeof value}:${String(value)}`
 
-export type DataTableCell =
-  | boolean |
-  null |
-  number |
-  string |
-  undefined |
-  {
-    label?: boolean | null | number | string
-    sortValue?: boolean | null | number | string
-    value?: boolean | null | number | string
-  }
-
-export interface DataTableColumn {
-  header?: string
-  key: string
-  label?: string
-  sort?: 'number' | 'string'
-  sortable?: boolean
-}
-
-export type DataTableRow = Record<string, DataTableCell> & {
-  id?: number | string
-  rowValue?: number | string
-  value?: number | string
-}
-
 type MessageFrom = 'assistant' | 'user'
 
 type MarkerVariant = 'danger' | 'default' | 'success' | 'warning'
@@ -247,9 +244,6 @@ export interface Option {
 type SelectOption = Option | string
 
 const emptyOptions: SelectOption[] = []
-const emptyStringOptions: string[] = []
-const emptyDataTableColumns: DataTableColumn[] = []
-const emptyDataTableRows: DataTableRow[] = []
 const emptyChartSeries: LumenChartSeries[] = []
 const emptyHeatmapData: LumenHeatmapDatum[] = []
 const emptyRangeData: LumenRangeDatum[] = []
@@ -291,54 +285,6 @@ const glassClass = (base: string, glass?: LumenGlassProp) => Boolean(glass) &&
   composeClassName(`${base}--glass`, glassIntensityClass(glass))
 
 const normalizeOption = (option: SelectOption): Option => typeof option === 'string' ? { label: option, value: option } : option
-
-const isDataTableCellObject = (
-  cell: DataTableCell
-): cell is Exclude<
-  DataTableCell,
-  boolean | null | number | string | undefined
-> => typeof cell === 'object' && cell !== null
-
-const formatDataTableCell = (cell: DataTableCell): string => {
-  const value = isDataTableCellObject(cell) ? (cell.label ?? cell.value) : cell
-
-  return value === undefined || value === null ? '' : String(value)
-}
-
-const getDataTableSortValue = (cell: DataTableCell): string | undefined => {
-  if (
-    !isDataTableCellObject(cell) ||
-    cell.sortValue === undefined ||
-    cell.sortValue === null
-  )
-    return undefined
-
-  return String(cell.sortValue)
-}
-
-const compareDataTableCells = (
-  left: DataTableCell,
-  right: DataTableCell,
-  sortType: DataTableColumn['sort']
-): number => {
-  const leftValue = getDataTableSortValue(left) ?? formatDataTableCell(left)
-  const rightValue = getDataTableSortValue(right) ?? formatDataTableCell(right)
-
-  if (sortType === 'number') {
-    return Number(leftValue.replaceAll(',', '')) -
-      Number(rightValue.replaceAll(',', ''))
-  }
-
-  return leftValue.localeCompare(rightValue, undefined, {
-    numeric: true,
-    sensitivity: 'base'
-  })
-}
-
-const getDataTableRowValue = (
-  row: DataTableRow,
-  index: number
-): string => String(row.rowValue ?? row.value ?? row.id ?? index)
 
 const toInputValue = (
   value: ComponentPropsWithoutRef<'input'>['value']
@@ -447,14 +393,18 @@ Omit<DialogOptions, 'id'>
 export const AlertDialog = ({
   className,
   defaultOpen,
+  dismissOnEscape,
+  dismissOnOutsidePress,
   glass = false,
+  onCancel,
   onClick,
   onClose,
   onOpenChange,
+  onPointerDown,
   open,
   ...props
 }: AlertDialogProps) => {
-  const dialog = useDialog({ alert: true, defaultOpen, onOpenChange, open })
+  const dialog = useDialog({ alert: true, defaultOpen, dismissOnEscape, dismissOnOutsidePress, onOpenChange, open })
 
   return (
     <dialog
@@ -464,6 +414,8 @@ export const AlertDialog = ({
         'ui-dialog ui-alert-dialog', glassSurfaceClass('ui-dialog', glass), className
       )}
       data-surface={resolveSurface(glass)}
+      onCancel={composeHandlers(onCancel, dialog.dialogProps.onCancel)}
+      onPointerDown={composeHandlers(onPointerDown, dialog.dialogProps.onPointerDown)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
     />
@@ -619,12 +571,14 @@ export const Button = ({
   variant = 'default',
   ...props
 }: ButtonProps) => {
+  const isDisabled = disabled === true || loading
+
   const buttonClassName = composeClassName(
-    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, disabled && 'ui-button--disabled', loading && 'ui-button--loading', className
+    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, isDisabled && 'ui-button--disabled', loading && 'ui-button--loading', className
   )
 
   if (asChild) {
-    const child = Children.only(children)
+    const child = children
 
     if (!isValidElement<ButtonChildProps>(child)) {
       throw new TypeError(
@@ -639,13 +593,30 @@ export const Button = ({
         {...child.props}
         {...props}
         aria-busy={loading ? true : undefined}
-        aria-disabled={disabled ? true : undefined}
+        aria-disabled={isDisabled ? true : undefined}
         className={composeClassName(buttonClassName, child.props.className)}
         data-slot="button"
+        onClickCapture={isDisabled ?
+          (event: ReactMouseEvent<HTMLElement>) => {
+            event.preventDefault()
+
+            event.stopPropagation()
+          } :
+          props.onClickCapture ?? child.props.onClickCapture}
+        onKeyDownCapture={isDisabled ?
+          (event: KeyboardEvent<HTMLElement>) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+
+              event.stopPropagation()
+            }
+          } :
+          props.onKeyDownCapture ?? child.props.onKeyDownCapture}
         ref={ref as Ref<HTMLElement>}
+        tabIndex={isDisabled ? -1 : props.tabIndex ?? child.props.tabIndex}
       >
         {loading && <span aria-hidden="true" className="ui-spinner" />}
-        {child.props.children}
+        <span className="ui-button__content">{child.props.children}</span>
       </ChildComponent>
     )
   }
@@ -655,13 +626,13 @@ export const Button = ({
       aria-busy={loading || undefined}
       className={buttonClassName}
       data-slot="button"
-      disabled={disabled}
+      disabled={isDisabled}
       ref={ref}
       type={type}
       {...props}
     >
       {loading && <span aria-hidden="true" className="ui-spinner" />}
-      {children}
+      <span className="ui-button__content">{children}</span>
     </button>
   )
 }
@@ -676,12 +647,14 @@ export interface CalendarProps extends ComponentPropsWithoutRef<'div'> {
   defaultValue?: string | undefined
   disabled?: boolean | undefined
   glass?: LumenGlassProp
+  labels?: { previousMonth?: string, nextMonth?: string } | undefined
   locale?: string | undefined
   max?: string | undefined
   min?: string | undefined
   month?: string | undefined
   name?: string | undefined
   onValueChange?: ((value: string) => void) | undefined
+  readOnly?: boolean | undefined
   value?: string | undefined
 }
 export const Calendar = ({
@@ -689,24 +662,28 @@ export const Calendar = ({
   defaultValue,
   disabled = false,
   glass = false,
+  labels,
   locale,
   max,
   min,
   month,
   name,
   onValueChange,
+  readOnly,
   value,
   ...props
 }: CalendarProps) => {
   const calendar = useCalendar({
     defaultValue,
     disabled,
+    labels,
     locale,
     max,
     min,
     month,
     name,
     onValueChange,
+    readOnly,
     value
   })
 
@@ -825,6 +802,47 @@ export const Chart = ({
   </figure>
 )
 
+interface DatumChartProps extends ChartProps {
+  onDatumActivate: ((detail: LumenChartDatumActivationDetail) => void) | undefined
+}
+
+const DatumChart = ({ onClick, onDatumActivate, ...props }: DatumChartProps) => (
+  <Chart
+    {...props}
+    data-ui-chart-activation={onDatumActivate ? true : undefined}
+    data-ui-chart-adapter={onDatumActivate ? 'react' : undefined}
+    onClick={event => {
+      onClick?.(event)
+
+      if (event.defaultPrevented || event.button !== 0 || !onDatumActivate) return
+
+      const detail = readReactChartDatumActivation(event.currentTarget, event.target)
+
+      if (detail) onDatumActivate(detail)
+    }}
+  />
+)
+
+const ChartDatumActions = ({ actions, label }: {
+  actions: readonly (ReactChartDatumAction | null)[]
+  label: string
+}) => {
+  const available = actions.filter(action => action !== null)
+
+  if (available.length === 0) return null
+
+  return (
+    <details className="ui-chart__actions" data-ui-chart-actions>
+      <summary>{label}</summary>
+      <ul>
+        {available.map(action => (
+          <li key={action.key}><Button variant="ghost" data-ui-chart-datum={action.serialized}>{action.label}</Button></li>
+        ))}
+      </ul>
+    </details>
+  )
+}
+
 interface ChartLegendProps {
   label?: string
   series: readonly LumenChartSeries[]
@@ -854,17 +872,18 @@ interface ChartDataTableProps {
 
 const ChartDataTable = ({
   categories,
-  formatCategory = String,
+  formatCategory,
   formatValue = String,
   labels,
   series
 }: ChartDataTableProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
+  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 
   return (
     <details className="ui-chart__data">
       <summary>{resolvedLabels.viewData}</summary>
-      <div>
+      <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
         <table>
           <thead>
             <tr>
@@ -880,12 +899,9 @@ const ChartDataTable = ({
             {categories.map(category => (
               <tr key={getChartCategoryKey(category)}>
                 <th scope="row">
-                  {series
-                    .flatMap(item => item.data)
-                    .find(datum => datum.x === category)?.xLabel ??
-                    formatCategory(category)}
+                  {getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')}
                 </th>
-                {series.map(item => {
+                {alignedSeries.map(item => {
                   const datum = item.data.find(
                     candidate => candidate.x === category
                   )
@@ -952,21 +968,21 @@ export const Sparkline = ({
             <path className="ui-sparkline__area" d={path} key={path} />
           ))}
         <path className="ui-sparkline__line" d={geometry.path} />
-        {showEndpoint && endpoint && (
-          <circle
-            className="ui-sparkline__endpoint"
-            cx={endpoint.xCoordinate}
-            cy={endpoint.yCoordinate}
-            r="2.5"
-          />
-        )}
       </svg>
+      {showEndpoint && endpoint && (
+        <span
+          aria-hidden="true"
+          className="ui-sparkline__endpoint"
+          style={{ left: `${endpoint.xCoordinate / 120 * 100}%`, top: `${endpoint.yCoordinate / 40 * 100}%` }}
+        />
+      )}
       <span className="ui-sr-only">{label}</span>
     </span>
   )
 }
 
 export interface BarChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   categoryWidth?: number
   emptyLabel?: ReactNode
   formatCategory?: (category: number | string) => string
@@ -983,8 +999,9 @@ export interface BarChartProps extends Omit<ChartProps, 'children'> {
 export const BarChart = ({
   categoryWidth,
   className,
+  onDatumActivate,
   emptyLabel,
-  formatCategory = String,
+  formatCategory,
   formatValue = String,
   layout = 'grouped',
   labels,
@@ -996,31 +1013,62 @@ export const BarChart = ({
   ...props
 }: BarChartProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
+  const categories = getLumenChartCategories(series)
+  const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 
-  const geometry = createLumenBarGeometry(series, {
-    ...(categoryWidth === undefined ? {} : { categoryWidth }),
+  const motionKeys = new Map(alignedSeries.flatMap(item => item.data.map(point => [
+    JSON.stringify([item.id, point.x]), getLumenChartMotionKey(item.id, point)
+  ] as const)))
+
+  const geometry = createLumenBarGeometry(alignedSeries, {
+    width: 480,
+    height: 240,
+    categoryWidth: categoryWidth ?? 160,
+    ...(formatCategory === undefined ? {} : { formatCategory }),
+    formatValue,
     layout,
     orientation
   })
 
-  const hasData = hasLumenChartData(series)
+  const hasData = hasLumenChartData(alignedSeries)
   const ticks = getLumenChartTicks(geometry.domain)
-  const categories = geometry.categories.map(category => category.category)
+  const margin = geometry.margin
 
-  const margin =
-    orientation === 'horizontal' ?
-      {
-        bottom: 24,
-        left: Math.max(64, Math.min(240, categoryWidth ?? 112)),
-        right: 20,
-        top: 16
-      } :
-      { bottom: 52, left: 52, right: 16, top: 16 }
+  const categoryTicks = getLumenChartCategoryTicks(geometry.categories.map(category => String(category.label)), {
+    end: geometry.width - margin.right,
+    positions: geometry.categories.map(category => category.x),
+    start: margin.left
+  })
+
+  const valueTicks = getLumenChartCategoryTicks(ticks.map(tick => formatValue(tick)), {
+    end: geometry.width - margin.right,
+    minimumGap: 48,
+    positions: ticks.map(tick => scaleLumenChartValue(
+      tick, geometry.domain, margin.left, geometry.width - margin.right
+    )),
+    start: margin.left
+  })
+
+  const datumActions = onDatumActivate ?
+    geometry.marks.map(mark => {
+      const item = alignedSeries.find(candidate => candidate.id === mark.seriesId)
+      const datum = item?.data.find(candidate => candidate.x === mark.category)
+
+      return item && datum ?
+        createReactChartDatumAction(
+          createLumenChartDatumActivation(item.id, datum),
+          `${getLumenChartCategoryLabel(alignedSeries, mark.category, formatCategory, 'detail')} · ${mark.seriesLabel}: ${formatValue(mark.value)}`,
+          resolvedLabels
+        ) :
+        null
+    }) :
+    []
 
   return (
-    <Chart
+    <DatumChart
+      onDatumActivate={onDatumActivate}
       className={composeClassName('ui-bar-chart', className)}
-      summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)}
+      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}
       {...props}
     >
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
@@ -1029,7 +1077,7 @@ export const BarChart = ({
           {emptyLabel ?? resolvedLabels.empty}
         </p>
       )}
-      <div className="ui-chart__plot" hidden={!hasData}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg
           aria-hidden="true"
           preserveAspectRatio="xMidYMid meet"
@@ -1057,35 +1105,47 @@ export const BarChart = ({
                   />
                 ) :
                 (
-                  <line
-                    key={tick}
-                    x1={margin.left}
-                    x2={geometry.width - margin.right}
-                    y1={coordinate}
-                    y2={coordinate}
-                  />
+                  <Fragment key={tick}>
+                    <line x1={margin.left} x2={geometry.width - margin.right} y1={coordinate} y2={coordinate} />
+                    <text x={margin.left - 8} y={coordinate}>{formatValue(tick)}</text>
+                  </Fragment>
                 )
             })}
           </g>
           <g className="ui-chart__axis-labels">
-            {geometry.categories.map(category => (
-              <text
-                dominantBaseline={
-                  orientation === 'horizontal' ? 'middle' : undefined
-                }
-                key={getChartCategoryKey(category.label)}
-                textAnchor={orientation === 'horizontal' ? 'end' : 'middle'}
-                x={category.x}
-                y={category.y}
-              >
-                {String(category.label)}
-              </text>
-            ))}
+            {orientation === 'horizontal' ?
+              geometry.categories.map(category => (
+                <text
+                  dominantBaseline="middle"
+                  key={getChartCategoryKey(category.category)}
+                  textAnchor="end"
+                  x={category.x}
+                  y={category.y}
+                >
+                  {getLumenChartCategoryTicks([String(category.label)], { end: margin.left - 16, start: 0 })[0]?.label}
+                </text>
+              )) :
+              categoryTicks.map(tick => (
+                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={geometry.height - 20}>
+                  {tick.label}
+                </text>
+              ))}
           </g>
+          {orientation === 'horizontal' && (
+            <g className="ui-chart__axis-labels">
+              {valueTicks.map(tick => (
+                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={geometry.height - 6}>
+                  {tick.label}
+                </text>
+              ))}
+            </g>
+          )}
           <g className="ui-bar-chart__marks">
-            {geometry.marks.map(mark => (
+            {geometry.marks.map((mark, index) => (
               <rect
                 className={getLumenChartToneClassName(mark.tone)}
+                data-ui-chart-motion-key={motionKeys.get(JSON.stringify([mark.seriesId, mark.category]))}
+                data-ui-chart-datum={datumActions[index]?.serialized}
                 height={mark.height}
                 key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}
                 rx="4"
@@ -1094,14 +1154,20 @@ export const BarChart = ({
                 y={mark.y}
               >
                 <title>
-                  {`${
-                    series
-                      .flatMap(item => item.data)
-                      .find(datum => datum.x === mark.category)?.xLabel ??
-                      formatCategory(mark.category)
-                  } · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
+                  {`${getLumenChartCategoryLabel(alignedSeries, mark.category, formatCategory, 'detail')} · ${mark.seriesLabel}: ${formatValue(mark.value)}`}
                 </title>
               </rect>
+            ))}
+            {onDatumActivate && geometry.marks.map((mark, index) => (
+              <rect
+                className="ui-chart__datum-hit"
+                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}
+                width={Math.max(12, mark.width)}
+                height={Math.max(12, mark.height)}
+                x={mark.x - Math.max(0, 12 - mark.width) / 2}
+                y={mark.y - Math.max(0, 12 - mark.height) / 2}
+                data-ui-chart-datum={datumActions[index]?.serialized}
+              />
             ))}
           </g>
         </svg>
@@ -1109,17 +1175,19 @@ export const BarChart = ({
       {showTable && hasData && (
         <ChartDataTable
           categories={categories}
-          formatCategory={formatCategory}
+          {...(formatCategory === undefined ? {} : { formatCategory })}
           formatValue={formatValue}
           labels={resolvedLabels}
           series={series}
         />
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
-export interface LineChartProps extends Omit<ChartProps, 'children'> {
+export interface LineChartProps extends Omit<ChartProps, 'children'>, LumenLineChartOptions, ChartInteractionProps {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   area?: boolean
   emptyLabel?: ReactNode
   formatCategory?: (category: number | string) => string
@@ -1147,9 +1215,20 @@ const getLineChartMarkerStep = (
 
 export const LineChart = ({
   area = false,
+  onDatumActivate,
+  annotations,
+  domain: requestedDomain,
+  height: requestedHeight,
+  width: requestedWidth,
+  xDomain,
+  xScale = 'categorical',
+  interactive = false,
+  syncGroup,
+  cursor,
+  onCursorChange,
   className,
   emptyLabel,
-  formatCategory = String,
+  formatCategory,
   formatValue = String,
   labels,
   markers = 'auto',
@@ -1161,38 +1240,41 @@ export const LineChart = ({
   ...props
 }: LineChartProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
-  const width = 640
-  const height = 320
-  const padding = 44
-  const categories = getLumenChartCategories(series)
-  const hasData = hasLumenChartData(series)
 
-  const alignedSeries = series.map(item => ({
-    ...item,
-    data: alignLumenChartSeries(item, categories).data
-  }))
+  const model = createLumenLineChartModel(series, {
+    xScale,
+    formatValue,
+    ...(annotations ? { annotations } : {}),
+    ...(requestedDomain ? { domain: requestedDomain } : {}),
+    ...(requestedHeight === undefined ? {} : { height: requestedHeight }),
+    ...(requestedWidth === undefined ? {} : { width: requestedWidth }),
+    ...(xDomain ? { xDomain } : {}),
+    ...(referenceValue === undefined ? {} : { referenceValue }),
+    ...(formatCategory ? { formatCategory } : {})
+  })
 
-  const domain = getLumenChartDomain(
-    [
-      ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
-      referenceValue ?? null
-    ], false
-  )
+  const {
+    width, height, padding, paddingLeft, categories, categoryTicks, domain, geometries, ticks, series: alignedSeries
+  } = model
 
-  const ticks = getLumenChartTicks(domain)
-  const paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))
-
-  const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
-    domain,
-    height,
-    includeZero: false,
-    padding,
-    paddingLeft,
-    width
-  }))
-
-  const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+  const hasData = hasLumenChartData(alignedSeries)
   const markerStep = getLineChartMarkerStep(markers, categories.length)
+
+  const pointActions = onDatumActivate ?
+    geometries.map((geometry, index) => {
+      const item = alignedSeries[index]
+
+      if (!item) return []
+
+      return geometry.points.map(point => createReactChartDatumAction(
+        createLumenChartDatumActivation(item.id, point),
+        `${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`,
+        resolvedLabels
+      ))
+    }) :
+    []
+
+  const datumActions = pointActions.flat()
 
   const referenceY =
     referenceValue === undefined ?
@@ -1200,125 +1282,204 @@ export const LineChart = ({
       scaleLumenChartValue(referenceValue, domain, height - padding, padding)
 
   return (
-    <Chart
+    <DatumChart
+      onDatumActivate={onDatumActivate}
       className={composeClassName('ui-line-chart', className)}
-      summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)}
+      summary={summary ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)}
       {...props}
     >
-      {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
-      {!hasData && (
-        <p className="ui-chart__empty" role="status">
-          {emptyLabel ?? resolvedLabels.empty}
-        </p>
-      )}
-      <div className="ui-chart__plot" hidden={!hasData}>
-        <svg
-          aria-hidden="true"
-          preserveAspectRatio="xMidYMid meet"
-          viewBox={`0 0 ${width} ${height}`}
+      <ChartInteraction
+        interactive={interactive}
+        model={model}
+        showLegend={showLegend}
+        {...(syncGroup ? { syncGroup } : {})}
+        {...(cursor === undefined ? {} : { cursor })}
+        {...(onCursorChange ? { onCursorChange } : {})}
+      >
+        {showLegend && hasData && (interactive ?
+          (
+            <ul
+              className="ui-chart__legend"
+              aria-label={resolvedLabels.chartLegend}
+            >
+              {series.map((item, index) => <li key={item.id} className={getLumenChartToneClassName(item.tone, index)}><Button aria-pressed="true" data-ui-chart-toggle={item.id} disabled size="sm" variant="ghost">{item.label}</Button></li>)}
+            </ul>
+          ) :
+          <ChartLegend label={resolvedLabels.chartLegend} series={series} />)}
+        {!hasData && (
+          <p className="ui-chart__empty" role="status">
+            {emptyLabel ?? resolvedLabels.empty}
+          </p>
+        )}
+        <div
+          aria-label={getChartPlotLabel(props['aria-label'], props.heading, resolvedLabels.chartData)}
+          className="ui-chart__plot"
+          data-ui-chart-interaction-plot={interactive || undefined}
+          role="region"
+          tabIndex={0}
+          hidden={!hasData}
         >
-          <g className="ui-chart__grid">
-            {ticks.map(tick => {
-              const y = scaleLumenChartValue(
-                tick, domain, height - padding, padding
-              )
+          <svg
+            aria-hidden="true"
+            preserveAspectRatio="xMidYMid meet"
+            viewBox={`0 0 ${width} ${height}`}
+          >
+            <g className="ui-chart__grid">
+              {ticks.map(tick => {
+                const y = scaleLumenChartValue(
+                  tick, domain, height - padding, padding
+                )
 
-              return (
-                <Fragment key={tick}>
-                  <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />
-                  <text x={paddingLeft - 8} y={y}>
-                    {formatValue(tick)}
-                  </text>
-                </Fragment>
-              )
-            })}
-          </g>
-          <g className="ui-chart__axis-labels">
-            {categories.map((category, index) => {
-              if (index % labelStep !== 0 && index !== categories.length - 1)
-                return null
-
-              const denominator = Math.max(1, categories.length - 1)
-              const x = paddingLeft + (index / denominator) * (width - paddingLeft - padding)
-
-              return (
-                <text
-                  key={getChartCategoryKey(category)}
-                  textAnchor="middle"
-                  x={x}
-                  y={height - 14}
-                >
-                  {series
-                    .flatMap(item => item.data)
-                    .find(datum => datum.x === category)?.xLabel ??
-                    formatCategory(category)}
+                return (
+                  <Fragment key={tick}>
+                    <line x1={paddingLeft} x2={width - padding} y1={y} y2={y} />
+                    <text x={paddingLeft - 8} y={y}>
+                      {formatValue(tick)}
+                    </text>
+                  </Fragment>
+                )
+              })}
+            </g>
+            <g className="ui-chart__axis-labels">
+              {categoryTicks.map(tick => (
+                <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y={height - 14}>
+                  {tick.label}
                 </text>
-              )
-            })}
-          </g>
-          {referenceY !== undefined && (
-            <line
-              className="ui-chart__reference"
-              x1={paddingLeft}
-              x2={width - padding}
-              y1={referenceY}
-              y2={referenceY}
-            />
-          )}
-          {geometries.map((geometry, index) => {
-            const item = series[index]
+              ))}
+            </g>
+            <svg
+              x={paddingLeft}
+              y={padding}
+              width={width - padding - paddingLeft}
+              height={height - 2 * padding}
+              viewBox={`${paddingLeft} ${padding} ${width - padding - paddingLeft} ${height - 2 * padding}`}
+              overflow="hidden"
+            >
+              {referenceY !== undefined && (
+                <line
+                  className="ui-chart__reference"
+                  x1={paddingLeft}
+                  x2={width - padding}
+                  y1={referenceY}
+                  y2={referenceY}
+                />
+              )}
+              {geometries.map((geometry, index) => {
+                const item = series[index]
 
-            if (!item) return null
+                if (!item) return null
 
-            const tone = resolveLumenChartTone(item.tone, index)
+                const tone = resolveLumenChartTone(item.tone, index)
 
-            return (
-              <g
-                className={composeClassName(
-                  'ui-line-chart__series', getLumenChartToneClassName(tone)
-                )}
-                key={item.id}
-              >
-                {area &&
-                  geometry.areaPaths.map(path => (
-                    <path className="ui-line-chart__area" d={path} key={path} />
-                  ))}
-                <path className="ui-line-chart__line" d={geometry.path} />
-                {Number.isFinite(markerStep) &&
-                  geometry.points.map(
-                    (point, pointIndex) => pointIndex % markerStep === 0 && (
+                return (
+                  <g
+                    className={composeClassName(
+                      'ui-line-chart__series', getLumenChartToneClassName(tone)
+                    )}
+                    key={item.id}
+                    data-ui-chart-series={item.id}
+                  >
+                    {area && geometry.areaPaths.length > 0 && (
+                      <path
+                        data-ui-chart-motion-key={JSON.stringify(['area', item.id])}
+                        className="ui-line-chart__area"
+                        d={geometry.areaPaths.join(' ')}
+                      />
+                    )}
+                    <path
+                      data-ui-chart-motion-key={JSON.stringify(['path', item.id])}
+                      className="ui-line-chart__line"
+                      d={geometry.path}
+                    />
+                    {Number.isFinite(markerStep) &&
+                      geometry.points.map(
+                        (point, pointIndex) => pointIndex % markerStep === 0 && (
+                          <circle
+                            data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                            data-ui-chart-motion-key={getLumenChartMotionKey(item.id, point)}
+                            className="ui-line-chart__point"
+                            cx={point.xCoordinate}
+                            cy={point.yCoordinate}
+                            key={point.id ?? getChartCategoryKey(point.x)}
+                            r="3"
+                          >
+                            <title>
+                              {`${getLumenChartCategoryLabel(alignedSeries, point.x, formatCategory, 'detail')} · ${item.label}: ${formatValue(point.y ?? 0)}`}
+                            </title>
+                          </circle>
+                        )
+                      )}
+                    {onDatumActivate && geometry.points.map((point, pointIndex) => (
                       <circle
-                        className="ui-line-chart__point"
+                        className="ui-chart__datum-hit"
+                        key={point.id ?? getChartCategoryKey(point.x)}
                         cx={point.xCoordinate}
                         cy={point.yCoordinate}
-                        key={getChartCategoryKey(point.x)}
-                        r="3"
-                      >
-                        <title>
-                          {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
-                        </title>
-                      </circle>
-                    )
+                        r="10"
+                        data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                      />
+                    ))}
+                  </g>
+                )
+              })}
+            </svg>
+            {model.annotationMarks.map(mark => (
+              <g key={mark.id} className={composeClassName('ui-chart__annotation', getLumenChartToneClassName(mark.tone))}>
+                {mark.axis === 'x' ?
+                  (
+                    <>
+                      <line x1={mark.coordinate} x2={mark.coordinate} y1={padding} y2={height - padding} />
+                      <text x={mark.coordinate + 4} y={padding - 8}>{mark.label}</text>
+                    </>
+                  ) :
+                  (
+                    <>
+                      <line x1={paddingLeft} x2={width - padding} y1={mark.coordinate} y2={mark.coordinate} />
+                      <text textAnchor="end" x={width - padding} y={mark.coordinate - 8}>{mark.label}</text>
+                    </>
                   )}
               </g>
-            )
-          })}
-        </svg>
-      </div>
+            ))}
+            {interactive && <line className="ui-chart__crosshair" data-ui-chart-crosshair style={{ display: 'none' }} y1={padding} y2={height - padding} />}
+          </svg>
+        </div>
+        {model.annotationMarks.length > 0 && (
+          <ul className="ui-sr-only">
+            {model.annotationMarks.map(mark => (
+              <li key={mark.id}>
+                {mark.label}
+                :
+                {' '}
+                {mark.axis === 'x' ? getLumenChartCategoryLabel(alignedSeries, mark.value, formatCategory, 'detail') : formatValue(Number(mark.value))}
+              </li>
+            ))}
+          </ul>
+        )}
+        {interactive && hasData && (
+          <ChartInspection
+            model={model}
+            {...(formatCategory ? { formatCategory } : {})}
+            formatValue={formatValue}
+            labels={resolvedLabels}
+          />
+        )}
+      </ChartInteraction>
       {showTable && hasData && (
         <ChartDataTable
           categories={categories}
-          formatCategory={formatCategory}
+          {...(formatCategory === undefined ? {} : { formatCategory })}
           formatValue={formatValue}
           labels={resolvedLabels}
           series={series}
         />
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
 export interface PieChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   centerLabel?: ReactNode
   centerValue?: ReactNode
   labels?: Partial<LumenChartLabels>
@@ -1333,6 +1494,7 @@ export const PieChart = ({
   centerLabel,
   centerValue,
   className,
+  onDatumActivate,
   labels,
   series = emptyPieSeries,
   showLegend = true,
@@ -1354,8 +1516,23 @@ export const PieChart = ({
   const hasCenterLabel = centerLabel !== null && centerLabel !== undefined
   const hasCenterValue = centerValue !== null && centerValue !== undefined
 
+  const datumActions = onDatumActivate ?
+    geometry.slices.map((slice, index) => {
+      const datum = renderedSeries.data[index]
+
+      return datum ?
+        createReactChartDatumAction(
+          createLumenChartDatumActivation(series.id, datum),
+          `${slice.label} · ${series.label}: ${valueFormatter(slice.value)}`,
+          resolvedLabels
+        ) :
+        null
+    }) :
+    []
+
   return (
-    <Chart
+    <DatumChart
+      onDatumActivate={onDatumActivate}
       className={composeClassName(
         'ui-pie-chart', getLumenPieChartVariantClassName(variant), className
       )}
@@ -1387,9 +1564,10 @@ export const PieChart = ({
           viewBox={`0 0 ${geometry.size} ${geometry.size}`}
         >
           <g className="ui-pie-chart__slices">
-            {geometry.slices.map(slice => (
+            {geometry.slices.map((slice, index) => (
               <path
                 className={getLumenChartToneClassName(slice.tone)}
+                data-ui-chart-datum={datumActions[index]?.serialized}
                 d={slice.path}
                 fillRule="evenodd"
                 key={`${typeof slice.x}:${String(slice.x)}`}
@@ -1418,7 +1596,7 @@ export const PieChart = ({
       {showTable && hasData && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
-          <div>
+          <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
             <table>
               <thead>
                 <tr>
@@ -1440,22 +1618,48 @@ export const PieChart = ({
           </div>
         </details>
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
+const emptyScatterReferences: readonly LumenScatterReference[] = []
+
 export interface ScatterChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   formatValue?: (value: number) => string
+  formatX?: (value: number | string) => string
+  formatY?: (value: number) => string
+  xDomain?: Partial<LumenChartDomain>
+  domain?: Partial<LumenChartDomain>
+  references?: readonly LumenScatterReference[]
   labels?: Partial<LumenChartLabels>
   series?: readonly LumenChartSeries[]
   showLegend?: boolean
   showTable?: boolean
-  xScale?: Exclude<LumenChartScaleType, 'categorical'>
+  xScale?: LumenScatterScaleType
+}
+
+const ScatterPlotClip = ({ children, width, height }: { children: ReactNode, width: number, height: number }) => {
+  const plotId = useId()
+
+  return (
+    <>
+      <defs><clipPath id={plotId}><rect x="44" y="44" width={width - 88} height={height - 88} /></clipPath></defs>
+      <g clipPath={`url(#${plotId})`}>{children}</g>
+    </>
+  )
 }
 
 export const ScatterChart = ({
   className,
+  onDatumActivate,
   formatValue = String,
+  formatX = String,
+  formatY = formatValue,
+  xDomain,
+  domain,
+  references = emptyScatterReferences,
   labels,
   series = emptyChartSeries,
   showLegend = series.length > 1,
@@ -1465,7 +1669,12 @@ export const ScatterChart = ({
   ...props
 }: ScatterChartProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
-  const geometry = createLumenScatterGeometry(series, { xScale })
+
+  const geometry = createLumenScatterGeometry(series, {
+    xScale, ...(xDomain ? { xDomain } : {}), ...(domain ? { domain } : {})
+  })
+
+  const referenceGeometry = createLumenScatterReferences(references, geometry, xScale)
 
   const renderedSeries = series.map(item => ({
     ...item,
@@ -1474,25 +1683,76 @@ export const ScatterChart = ({
 
   const hasData = geometry.points.length > 0
 
+  const datumActions = onDatumActivate ?
+    geometry.points.map(point => createReactChartDatumAction(
+      createLumenChartDatumActivation(point.seriesId, point),
+      `${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`,
+      resolvedLabels
+    )) :
+    []
+
   return (
-    <Chart className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatValue, resolvedLabels)} {...props}>
+    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-scatter-chart', className)} summary={summary ?? formatLumenChartSummary(renderedSeries, formatY, resolvedLabels)} {...props}>
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-      <div className="ui-chart__plot" hidden={!hasData}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
-          <g className="ui-scatter-chart__marks">
-            {geometry.points.map((point, pointIndex) => (
-              <circle className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>
-                <title>{`${point.xLabel ?? point.x} · ${point.seriesLabel}: ${point.label ?? formatValue(point.y ?? 0)}`}</title>
-              </circle>
-            ))}
-          </g>
+          <ScatterPlotClip width={geometry.width} height={geometry.height}>
+            <g className="ui-scatter-chart__references">
+              {referenceGeometry.map(reference => reference.region ?
+                (
+                  <rect
+                    key={reference.id}
+                    x={Math.min(reference.x1, reference.x2)}
+                    y={Math.min(reference.y1, reference.y2)}
+                    width={Math.abs(reference.x2 - reference.x1)}
+                    height={Math.abs(reference.y2 - reference.y1)}
+                  >
+                    <title>{reference.label}</title>
+                  </rect>
+                ) :
+                (
+                  <line key={reference.id} x1={reference.x1} x2={reference.x2} y1={reference.y1} y2={reference.y2}>
+                    <title>{reference.label}</title>
+                  </line>
+                ))}
+            </g>
+            <g className="ui-scatter-chart__marks">
+              {geometry.points.map((point, pointIndex) => (
+                <circle data-ui-chart-datum={datumActions[pointIndex]?.serialized} className={getLumenChartToneClassName(point.tone)} cx={point.xCoordinate} cy={point.yCoordinate} key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`} r={point.radius}>
+                  <title>{`${point.xLabel ?? formatX(point.x)} · ${point.seriesLabel}: ${point.label ?? formatY(point.y ?? 0)}`}</title>
+                </circle>
+              ))}
+            </g>
+          </ScatterPlotClip>
+          {onDatumActivate && geometry.points.map((point, index) => {
+            const visible = point.xCoordinate >= 44 && point.xCoordinate <= geometry.width - 44 &&
+              point.yCoordinate >= 44 && point.yCoordinate <= geometry.height - 44
+
+            return visible ?
+              (
+                <circle
+                  className="ui-chart__datum-hit"
+                  key={`${point.seriesId}:${point.id ?? getChartCategoryKey(point.x)}`}
+                  cx={point.xCoordinate}
+                  cy={point.yCoordinate}
+                  r={Math.max(10, point.radius)}
+                  data-ui-chart-datum={datumActions[index]?.serialized}
+                />
+              ) :
+              null
+          })}
         </svg>
       </div>
+      {referenceGeometry.length > 0 && (
+        <ul className="ui-scatter-chart__reference-labels">
+          {referenceGeometry.map(reference => <li key={reference.id}>{reference.label}</li>)}
+        </ul>
+      )}
       {showTable && hasData && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
-          <div>
+          <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
             <table>
               <thead>
                 <tr>
@@ -1505,9 +1765,9 @@ export const ScatterChart = ({
               <tbody>
                 {geometry.points.map((point, pointIndex) => (
                   <tr key={`${point.seriesId}:${point.id ?? `${getChartCategoryKey(point.x)}:${pointIndex}`}`}>
-                    <th scope="row">{point.xLabel ?? point.x}</th>
+                    <th scope="row">{point.xLabel ?? formatX(point.x)}</th>
                     <td>{point.seriesLabel}</td>
-                    <td>{point.label ?? formatValue(point.y ?? 0)}</td>
+                    <td>{point.label ?? formatY(point.y ?? 0)}</td>
                     <td>
                       {formatReactChartTableValue(point.size, formatValue, resolvedLabels.notAvailable)}
                     </td>
@@ -1518,11 +1778,14 @@ export const ScatterChart = ({
           </div>
         </details>
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
-export interface HeatmapProps extends Omit<ChartProps, 'children'> {
+export interface HeatmapProps extends Omit<ChartProps, 'children'>, LumenHeatmapOptions {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
+  showLegend?: boolean
   data?: readonly LumenHeatmapDatum[]
   formatValue?: (value: number) => string
   labels?: Partial<LumenChartLabels>
@@ -1530,6 +1793,11 @@ export interface HeatmapProps extends Omit<ChartProps, 'children'> {
 }
 
 export const Heatmap = ({
+  onDatumActivate,
+  colorScale = 'sequential',
+  midpoint = 0,
+  domain,
+  showLegend = true,
   className,
   data = emptyHeatmapData,
   formatValue = String,
@@ -1539,24 +1807,79 @@ export const Heatmap = ({
   ...props
 }: HeatmapProps) => {
   const resolvedLabels = resolveLumenChartLabels(labels)
-  const geometry = createLumenHeatmapGeometry(data)
+  const geometry = createLumenHeatmapModel(data, { colorScale, midpoint, ...(domain ? { domain } : {}) })
   const availableCells = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
   const hasData = availableCells.length > 0
 
+  const datumActions = onDatumActivate ?
+    availableCells.map(cell => createReactChartDatumAction(
+      createLumenHeatmapDatumActivation(cell),
+      `${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`,
+      resolvedLabels
+    )) :
+    []
+
+  const datumActionByCell = new Map(availableCells.map((cell, index) => [cell, datumActions[index]]))
+
   return (
-    <Chart className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>
+    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-heatmap', className)} summary={summary ?? resolvedLabels.formatHeatmapSummary(availableCells.length)} {...props}>
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-      <div className="ui-chart__plot" hidden={!hasData}>
+      <div
+        aria-label={getChartPlotLabel(props['aria-label'], props.heading, resolvedLabels.chartData)}
+        className="ui-chart__plot"
+        role="region"
+        tabIndex={0}
+        hidden={geometry.cells.length === 0}
+      >
         <svg aria-hidden="true" viewBox={`0 0 ${geometry.width} ${geometry.height}`}>
+          <g className="ui-chart__axis-labels">
+            {geometry.xTicks.map(tick => <text key={tick.index} textAnchor={tick.textAnchor} x={tick.position} y="298">{tick.label}</text>)}
+            {geometry.yTicks.map(tick => <text className="ui-heatmap__row-label" key={getChartCategoryKey(tick.value)} textAnchor="end" dominantBaseline="middle" x="108" y={tick.position}>{tick.label}</text>)}
+          </g>
           <g className="ui-heatmap__cells">
-            {availableCells.map(cell => <rect height={Math.max(0, cell.height - 2)} key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`} opacity={Math.max(0.12, cell.ratio)} width={Math.max(0, cell.width - 2)} x={cell.xCoordinate + 1} y={cell.yCoordinate + 1}><title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? formatValue(cell.value ?? 0)}`}</title></rect>)}
+            {geometry.cells.map(cell => {
+              const missing = cell.value === null || !Number.isFinite(cell.value)
+
+              return (
+                <g key={JSON.stringify([cell.x, cell.y])}>
+                  <rect
+                    data-ui-chart-datum={datumActionByCell.get(cell)?.serialized}
+                    height={Math.max(0, cell.height - 2)}
+                    width={Math.max(0, cell.width - 2)}
+                    x={cell.xCoordinate + 1}
+                    y={cell.yCoordinate + 1}
+                    style={{ fill: getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint) }}
+                  >
+
+                    <title>{`${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${missing ? resolvedLabels.notAvailable : cell.label ?? formatValue(cell.value ?? 0)}`}</title>
+                  </rect>
+                  {missing && <text className="ui-heatmap__missing" textAnchor="middle" dominantBaseline="middle" x={cell.xCoordinate + cell.width / 2} y={cell.yCoordinate + cell.height / 2}>×</text>}
+                </g>
+              )
+            })}
           </g>
         </svg>
       </div>
+      {showLegend && geometry.cells.length > 0 && (
+        <div className="ui-heatmap__legend" aria-label={resolvedLabels.chartLegend}>
+          <span>{formatValue(geometry.domain.min)}</span>
+          <span
+            style={{ background: geometry.legendBackground }}
+            className="ui-heatmap__scale"
+          >
+            {colorScale === 'diverging' && <span style={{ left: `${geometry.midpointPercent}%` }}>{formatValue(geometry.midpoint)}</span>}
+          </span>
+          <span>{formatValue(geometry.domain.max)}</span>
+          <span>
+            ×
+            {resolvedLabels.notAvailable}
+          </span>
+        </div>
+      )}
       {showTable && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
-          <div>
+          <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
             <table>
               <thead>
                 <tr>
@@ -1566,7 +1889,7 @@ export const Heatmap = ({
                 </tr>
               </thead>
               <tbody>
-                {data.map(cell => (
+                {geometry.cells.map(cell => (
                   <tr key={cell.id ?? `${getChartCategoryKey(cell.x)}:${getChartCategoryKey(cell.y)}`}>
                     <th scope="row">{cell.xLabel ?? cell.x}</th>
                     <td>{cell.yLabel ?? cell.y}</td>
@@ -1584,11 +1907,13 @@ export const Heatmap = ({
           </div>
         </details>
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
 export interface RangeChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   data?: readonly LumenRangeDatum[]
   formatValue?: (value: number) => string
   labels?: Partial<LumenChartLabels>
@@ -1598,6 +1923,7 @@ export interface RangeChartProps extends Omit<ChartProps, 'children'> {
 
 export const RangeChart = ({
   className,
+  onDatumActivate,
   data = emptyRangeData,
   formatValue = String,
   labels,
@@ -1612,14 +1938,44 @@ export const RangeChart = ({
   const padding = 44
   const geometry = createLumenRangeGeometry(data, { height, padding, width })
 
+  const categoryTicks = getLumenChartCategoryTicks(geometry.points.map(point => String(point.xLabel ?? point.x)), {
+    start: padding,
+    end: width - padding,
+    positions: geometry.points.map(point => point.xCoordinate)
+  })
+
+  const ticks = getLumenChartTicks(geometry.domain)
+
+  const datumActions = onDatumActivate ?
+    geometry.points.map(point => createReactChartDatumAction(
+      createLumenRangeDatumActivation(point),
+      `${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`,
+      resolvedLabels
+    )) :
+    []
+
   return (
-    <Chart className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? resolvedLabels.formatRangeSummary(geometry.points.length)} {...props}>
+    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-range-chart', getLumenChartToneClassName(tone), className)} summary={summary ?? resolvedLabels.formatRangeSummary(geometry.points.length)} {...props}>
       {geometry.points.length === 0 && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-      <div className="ui-chart__plot" hidden={geometry.points.length === 0}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={geometry.points.length === 0}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
+          <g className="ui-chart__grid">
+            {ticks.map(tick => {
+              const y = scaleLumenChartValue(tick, geometry.domain, height - padding, padding)
+
+              return (
+                <g key={tick}>
+                  <line x1={padding} x2={width - padding} y1={y} y2={y} />
+                  <text x={padding - 8} y={y}>{formatValue(tick)}</text>
+                </g>
+              )
+            })}
+          </g>
+          <g className="ui-chart__axis-labels">{categoryTicks.map(tick => <text key={tick.index} x={tick.position} y={height - 12} textAnchor={tick.textAnchor}>{tick.label}</text>)}</g>
           <path className="ui-range-chart__area" d={geometry.areaPath} />
-          {geometry.points.map(point => (
+          {geometry.points.map((point, index) => (
             <line
+              data-ui-chart-datum={datumActions[index]?.serialized}
               className="ui-range-chart__interval"
               key={point.id ?? getChartCategoryKey(point.x)}
               x1={point.xCoordinate}
@@ -1630,12 +1986,24 @@ export const RangeChart = ({
               <title>{`${point.xLabel ?? point.x}: ${point.label ?? `${formatValue(point.low ?? 0)}–${formatValue(point.high ?? 0)}`}`}</title>
             </line>
           ))}
+          {onDatumActivate && geometry.points.map((point, index) => (
+            <rect
+              className="ui-chart__datum-hit"
+              key={point.id ?? getChartCategoryKey(point.x)}
+              x={point.xCoordinate - 10}
+              y={Math.min(point.highCoordinate, point.lowCoordinate) -
+                Math.max(0, 20 - Math.abs(point.highCoordinate - point.lowCoordinate)) / 2}
+              width="20"
+              height={Math.max(20, Math.abs(point.highCoordinate - point.lowCoordinate))}
+              data-ui-chart-datum={datumActions[index]?.serialized}
+            />
+          ))}
         </svg>
       </div>
       {showTable && (
         <details className="ui-chart__data">
           <summary>{resolvedLabels.viewData}</summary>
-          <div>
+          <div aria-label={resolvedLabels.chartData} role="group" tabIndex={0}>
             <table>
               <thead>
                 <tr>
@@ -1665,11 +2033,13 @@ export const RangeChart = ({
           </div>
         </details>
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 
 export interface ComboChartProps extends Omit<ChartProps, 'children'> {
+  onDatumActivate?: (detail: LumenChartDatumActivationDetail) => void
   formatValue?: (value: number) => string
   labels?: Partial<LumenChartLabels>
   series?: readonly LumenComboSeries[]
@@ -1679,6 +2049,7 @@ export interface ComboChartProps extends Omit<ChartProps, 'children'> {
 
 export const ComboChart = ({
   className,
+  onDatumActivate,
   formatValue = String,
   labels,
   series = emptyComboSeries,
@@ -1726,6 +2097,8 @@ export const ComboChart = ({
     ...(barSeries.length === 0 ?
       {} :
       {
+        paddingBottom: bars.margin.bottom,
+        paddingTop: bars.margin.top,
         xDomain: { max: 1, min: 0 },
         xScale: 'linear' as const
       })
@@ -1738,13 +2111,87 @@ export const ComboChart = ({
 
   const hasData = hasLumenChartData(series)
 
+  const barActions = onDatumActivate ?
+    bars.marks.map(mark => {
+      const item = barSeries.find(candidate => candidate.id === mark.seriesId)
+      const datum = item?.data.find(candidate => candidate.x === mark.category)
+
+      return item && datum ?
+        createReactChartDatumAction(
+          createLumenChartDatumActivation(item.id, datum),
+          `${datum.xLabel ?? datum.x} · ${item.label}: ${datum.label ?? formatValue(mark.value)}`,
+          resolvedLabels
+        ) :
+        null
+    }) :
+    []
+
+  const pointActions = onDatumActivate ?
+    lines.map((geometry, index) => {
+      const item = lineSeries[index]
+
+      return geometry.points.map(point => {
+        const datum = item?.data.find(candidate => alignComboLineDatum(candidate).x === point.x)
+
+        return item && datum ?
+          createReactChartDatumAction(
+            createLumenChartDatumActivation(item.id, datum),
+            `${datum.xLabel ?? datum.x} · ${item.label}: ${datum.label ?? formatValue(point.y ?? 0)}`,
+            resolvedLabels
+          ) :
+          null
+      })
+    }) :
+    []
+
+  const plotTop = barSeries.length > 0 ? bars.margin.top : padding
+  const plotBottom = height - (barSeries.length > 0 ? bars.margin.bottom : padding)
+  const plotLeft = barSeries.length > 0 ? bars.margin.left : padding
+  const plotRight = width - (barSeries.length > 0 ? bars.margin.right : padding)
+  const ticks = getLumenChartTicks(domain)
+  const categoryLabels = categories.map(category => getLumenChartCategoryLabel(series, category))
+
+  const categoryTicks = getLumenChartCategoryTicks(categoryLabels, {
+    start: plotLeft,
+    end: plotRight,
+    ...(barSeries.length > 0 ? { positions: bars.categories.map(category => category.x) } : {})
+  })
+
+  const datumActions = [...barActions, ...pointActions.flat()]
+
   return (
-    <Chart className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)} {...props}>
+    <DatumChart onDatumActivate={onDatumActivate} className={composeClassName('ui-combo-chart', className)} summary={summary ?? formatLumenChartSummary(series, formatValue, resolvedLabels)} {...props}>
       {showLegend && hasData && <ChartLegend label={resolvedLabels.chartLegend} series={series} />}
       {!hasData && <p className="ui-chart__empty" role="status">{resolvedLabels.empty}</p>}
-      <div className="ui-chart__plot" hidden={!hasData}>
+      <div aria-label={resolvedLabels.chartData} className="ui-chart__plot" role="region" tabIndex={0} hidden={!hasData}>
         <svg aria-hidden="true" viewBox={`0 0 ${width} ${height}`}>
-          <g className="ui-bar-chart__marks">{bars.marks.map(mark => <rect className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}</g>
+          <g className="ui-chart__grid">
+            {ticks.map(tick => {
+              const y = scaleLumenChartValue(tick, domain, plotBottom, plotTop)
+
+              return (
+                <g key={tick}>
+                  <line x1={plotLeft} x2={plotRight} y1={y} y2={y} />
+                  <text x={plotLeft - 8} y={y}>{formatValue(tick)}</text>
+                </g>
+              )
+            })}
+          </g>
+          <g className="ui-chart__axis-labels">{categoryTicks.map(tick => <text key={tick.index} x={tick.position} y={height - 12} textAnchor={tick.textAnchor}>{tick.label}</text>)}</g>
+          <g className="ui-bar-chart__marks">
+            {bars.marks.map((mark, index) => <rect data-ui-chart-datum={barActions[index]?.serialized} className={getLumenChartToneClassName(mark.tone)} height={mark.height} key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`} rx="4" width={mark.width} x={mark.x} y={mark.y}><title>{`${mark.seriesLabel}: ${formatValue(mark.value)}`}</title></rect>)}
+            {onDatumActivate && bars.marks.map((mark, index) => (
+              <rect
+                className="ui-chart__datum-hit"
+                key={`${mark.seriesId}:${getChartCategoryKey(mark.category)}`}
+                width={Math.max(12, mark.width)}
+                height={Math.max(12, mark.height)}
+                x={mark.x - Math.max(0, 12 - mark.width) / 2}
+                y={mark.y - Math.max(0, 12 - mark.height) / 2}
+                data-ui-chart-datum={barActions[index]?.serialized}
+              />
+            ))}
+          </g>
           {lines.map((geometry, index) => {
             const item = lineSeries[index]
 
@@ -1765,6 +2212,25 @@ export const ComboChart = ({
                   className="ui-line-chart__line"
                   d={geometry.path}
                 />
+                {geometry.points.map(point => (
+                  <circle
+                    key={point.id ?? getChartCategoryKey(point.x)}
+                    className="ui-line-chart__point"
+                    cx={point.xCoordinate}
+                    cy={point.yCoordinate}
+                    r="3.5"
+                  />
+                ))}
+                {onDatumActivate && geometry.points.map((point, pointIndex) => (
+                  <circle
+                    className="ui-chart__datum-hit"
+                    key={point.id ?? getChartCategoryKey(point.x)}
+                    cx={point.xCoordinate}
+                    cy={point.yCoordinate}
+                    r="10"
+                    data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                  />
+                ))}
               </g>
             )
           })}
@@ -1778,7 +2244,8 @@ export const ComboChart = ({
           series={series}
         />
       )}
-    </Chart>
+      {onDatumActivate && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
+    </DatumChart>
   )
 }
 /* eslint-enable complexity */
@@ -1832,6 +2299,10 @@ export const Collapsible = ({ className, ...props }: CollapsibleProps) => (
 )
 
 export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
+  codeLabel?: string
+  copyLabel?: string
+  copiedLabel?: string
+  errorLabel?: string
   code?: string
   copy?: boolean
   highlighted?: boolean
@@ -1863,25 +2334,123 @@ const renderCodeChildren = (
   children :
   tokenizeLumenCode(code, language).map(renderCodeToken)
 
-const renderCodeCopyButton = () => (
-  <button
-    aria-label="Copy code to clipboard"
-    className="ui-code__copy"
-    data-ui-code-copy
-    type="button"
-  >
-    {renderLucideIcon('copy', 'ui-code__copy-icon')}
-    {renderLucideIcon('check', 'ui-code__check-icon')}
-  </button>
-)
+interface CodeCopyLabels {
+  code: string | undefined
+  copyLabel: string
+  copiedLabel: string
+  errorLabel: string
+}
 
-interface CodeHeaderOptions {
+const CodeCopyButton = ({ code, copyLabel, copiedLabel, errorLabel }: CodeCopyLabels) => {
+  const { accessibleLabel, handleClick, state } = useCopyFeedback({
+    copiedLabel,
+    errorLabel,
+    getValue: button => {
+      if (code !== undefined) return code
+
+      const content = button.closest('[data-ui-code]')?.querySelector<HTMLElement>('pre code, code')
+
+      return content?.innerText ?? content?.textContent ?? undefined
+    },
+    label: copyLabel
+  })
+
+  return (
+    <>
+      <button
+        aria-label={accessibleLabel}
+        className={composeClassName('ui-code__copy', state === 'copied' && 'ui-code__copy--copied')}
+        data-state={state}
+        data-ui-code-copy
+        onClick={handleClick}
+        title={accessibleLabel}
+        type="button"
+      >
+        {renderLucideIcon('copy', 'ui-code__copy-icon')}
+        {renderLucideIcon('check', 'ui-code__check-icon')}
+      </button>
+      <span aria-live="polite" className="ui-sr-only" role="status">
+        {state === 'idle' ? '' : accessibleLabel}
+      </span>
+    </>
+  )
+}
+
+const codeRegionProps = (wrap: boolean, codeLabel: string) => wrap ?
+  {} :
+  {
+    'aria-label': codeLabel,
+    role: 'region',
+    tabIndex: 0
+  }
+
+const decorateCodeRegion = (pre: HTMLPreElement, codeLabel: string): (() => void) => {
+  const generated = new Map<string, string>()
+  const attributes: Record<string, string> = { tabindex: '0', role: 'region' }
+
+  if (!pre.hasAttribute('aria-labelledby')) attributes['aria-label'] = codeLabel
+
+  for (const [name, value] of Object.entries(attributes)) {
+    if (pre.hasAttribute(name)) continue
+
+    pre.setAttribute(name, value)
+
+    generated.set(name, value)
+  }
+
+  const releaseOwnership = (records: readonly MutationRecord[]): void => {
+    for (const record of records) {
+      if (record.attributeName) generated.delete(record.attributeName)
+    }
+  }
+
+  const Observer = pre.ownerDocument.defaultView?.MutationObserver
+  const observer = Observer ? new Observer(releaseOwnership) : undefined
+
+  observer?.observe(pre, { attributes: true, attributeFilter: [...generated.keys()] })
+
+  return () => {
+    // Drain pending consumer writes before deciding which attributes are still ours.
+    releaseOwnership(observer?.takeRecords() ?? [])
+
+    observer?.disconnect()
+
+    for (const [name, value] of generated) {
+      if (pre.getAttribute(name) === value) pre.removeAttribute(name)
+    }
+  }
+}
+
+const HighlightedCode = ({ children, codeLabel, wrap }: { children: ReactNode, codeLabel: string, wrap: boolean }) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    if (wrap || !containerRef.current) return
+
+    const restore = [...containerRef.current.querySelectorAll('pre')].map(pre => decorateCodeRegion(pre, codeLabel))
+
+    return () => {
+      for (const cleanup of restore) cleanup()
+    }
+  }, [children, codeLabel, wrap])
+
+  return <div ref={containerRef}>{children}</div>
+}
+
+const resolveCodeLabels = ({ codeLabel, copyLabel, copiedLabel, errorLabel }: Record<'codeLabel' | 'copyLabel' | 'copiedLabel' | 'errorLabel', string | undefined>) => ({
+  codeLabel: codeLabel ?? 'Code example',
+  copyLabel: copyLabel ?? 'Copy code to clipboard',
+  copiedLabel: copiedLabel ?? 'Code copied to clipboard',
+  errorLabel: errorLabel ?? 'Could not copy code. Select and copy it manually.'
+})
+
+interface CodeHeaderOptions extends CodeCopyLabels {
   copy: boolean
   label: ReactNode
   language: string | undefined
 }
 
-const renderCodeHeader = ({ copy, label, language }: CodeHeaderOptions) => {
+const renderCodeHeader = ({ code, copy, copyLabel, copiedLabel, errorLabel, label, language }: CodeHeaderOptions) => {
   if (!copy && !label && !language) return null
 
   return (
@@ -1895,7 +2464,7 @@ const renderCodeHeader = ({ copy, label, language }: CodeHeaderOptions) => {
         {language && <span className="ui-code__language">{language}</span>}
         {label && <span className="ui-code__label">{label}</span>}
       </span>
-      {copy && renderCodeCopyButton()}
+      {copy && <CodeCopyButton code={code} copiedLabel={copiedLabel} copyLabel={copyLabel} errorLabel={errorLabel} />}
     </figcaption>
   )
 }
@@ -1905,6 +2474,10 @@ export const Code = ({
   className,
   code,
   copy = false,
+  codeLabel,
+  copyLabel,
+  copiedLabel,
+  errorLabel,
   highlighted = false,
   label,
   language,
@@ -1913,6 +2486,7 @@ export const Code = ({
   wrap = false,
   ...props
 }: CodeProps) => {
+  const labels = resolveCodeLabels({ codeLabel, copyLabel, copiedLabel, errorLabel })
   const codeChildren = renderCodeChildren(code, children, language)
 
   if (variant === 'block') {
@@ -1927,13 +2501,13 @@ export const Code = ({
         data-ui-code
         {...props}
       >
-        {renderCodeHeader({ copy, label, language })}
+        {renderCodeHeader({ code, copy, ...labels, label, language })}
         {highlighted ?
           (
-            children
+            <HighlightedCode codeLabel={labels.codeLabel} wrap={wrap}>{children}</HighlightedCode>
           ) :
           (
-            <pre>
+            <pre {...codeRegionProps(wrap, labels.codeLabel)}>
               <code>{codeChildren}</code>
             </pre>
           )}
@@ -1968,24 +2542,14 @@ export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {
   size?: 'default' | 'icon' | 'lg' | 'sm'
 }
 
-const dispatchCopyToast = (
-  enabled: boolean,
-  title: string,
-  variant: 'destructive' | 'success'
-): void => {
-  if (!enabled) return
-
-  document.dispatchEvent(new CustomEvent('ui:toast', {
-    detail: { title, variant }
-  }))
-}
-
-const resolveCopyText = (target: string | undefined, value: string | undefined): string | undefined => {
+const resolveCopyText = (
+  button: HTMLButtonElement, target: string | undefined, value: string | undefined
+): string | undefined => {
   if (value !== undefined) return value
 
   if (!target) return undefined
 
-  const targetElement = document.querySelector<HTMLElement>(target)
+  const targetElement = button.ownerDocument.querySelector<HTMLElement>(target)
 
   return targetElement?.innerText ?? targetElement?.textContent ?? undefined
 }
@@ -2011,57 +2575,15 @@ export const CopyButton = ({
   variant = 'outline',
   ...props
 }: CopyButtonProps) => {
-  const [state, setState] = useState<'copied' | 'error' | 'idle'>('idle')
-  const resetTimerRef = useRef<ReturnType<typeof globalThis.setTimeout>>(undefined)
-
-  useEffect(() => () => {
-    globalThis.clearTimeout(resetTimerRef.current)
-  }, [])
-
-  const handleClick = async (event: ReactMouseEvent<HTMLButtonElement>) => {
-    onClick?.(event)
-
-    if (event.defaultPrevented) return
-
-    const button = event.currentTarget
-    const text = resolveCopyText(target, value)
-
-    try {
-      if (text === undefined) throw new Error(errorLabel)
-
-      await navigator.clipboard.writeText(text)
-
-      setState('copied')
-
-      button.dispatchEvent(new CustomEvent('ui:copy-success', {
-        bubbles: true,
-        detail: { value: text }
-      }))
-
-      dispatchCopyToast(toast, copiedLabel, 'success')
-    } catch (error) {
-      setState('error')
-
-      button.dispatchEvent(new CustomEvent('ui:copy-error', {
-        bubbles: true,
-        detail: { error }
-      }))
-
-      dispatchCopyToast(toast, errorLabel, 'destructive')
-    }
-
-    globalThis.clearTimeout(resetTimerRef.current)
-
-    resetTimerRef.current = globalThis.setTimeout(() => {
-      setState('idle')
-    }, resetAfter)
-  }
-
-  const accessibleLabel = {
-    copied: copiedLabel,
-    error: errorLabel,
-    idle: label
-  }[state]
+  const { accessibleLabel, handleClick, state } = useCopyFeedback({
+    copiedLabel,
+    errorLabel,
+    getValue: button => resolveCopyText(button, target, value),
+    label,
+    onClick,
+    resetAfter,
+    toast
+  })
 
   return (
     <Button
@@ -2099,6 +2621,10 @@ export interface CodeTabsProps extends Omit<
 > {
   ariaLabel?: string
   copy?: boolean
+  codeLabel?: string
+  copyLabel?: string
+  copiedLabel?: string
+  errorLabel?: string
   initialValue?: string
   items?: readonly CodeTabItem[]
   storageKey?: string
@@ -2106,203 +2632,7 @@ export interface CodeTabsProps extends Omit<
   wrap?: boolean
 }
 
-export interface ComboboxProps extends ComponentPropsWithoutRef<'input'> {
-  label?: ReactNode
-  list: string
-  options?: string[]
-  wrapperClassName?: string
-}
-
-export const Combobox = ({
-  className,
-  defaultValue,
-  id,
-  label,
-  list,
-  onBlur,
-  onChange,
-  onFocus,
-  onKeyDown,
-  options = emptyStringOptions,
-  type = 'text',
-  value: valueProp,
-  wrapperClassName,
-  ...props
-}: ComboboxProps) => {
-  const inputId = id ?? `${list}-input`
-  const rootRef = useRef<HTMLDivElement>(null)
-  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(() => String(defaultValue ?? ''))
-  const renderedValue = valueProp ?? value
-  const query = String(renderedValue).trim().toLowerCase()
-
-  const visibleOptions = useMemo(
-    () => options.filter(
-      option => !query || option.toLowerCase().includes(query)
-    ), [options, query]
-  )
-
-  const selectOption = (option: string) => {
-    if (valueProp === undefined) {
-      setValue(option)
-    }
-
-    setOpen(false)
-  }
-
-  const getVisibleOptions = (): HTMLButtonElement[] => [
-    ...(rootRef.current?.querySelectorAll<HTMLButtonElement>(
-      '[data-ui-combobox-option]:not([hidden]):not([disabled])'
-    ) ?? [])
-  ]
-
-  const focusInputEdgeOption = (key: 'ArrowDown' | 'ArrowUp') => {
-    const options = getVisibleOptions()
-
-    options[key === 'ArrowUp' ? options.length - 1 : 0]?.focus()
-  }
-
-  const focusOption = (option: HTMLButtonElement, key: string) => {
-    const options = getVisibleOptions()
-
-    if (!options.length) return
-
-    const currentIndex = Math.max(0, options.indexOf(option))
-    let nextIndex = (currentIndex - 1 + options.length) % options.length
-
-    if (key === 'Home') nextIndex = 0
-    else if (key === 'End') nextIndex = options.length - 1
-    else if (key === 'ArrowDown') nextIndex = (currentIndex + 1) % options.length
-
-    options[nextIndex]?.focus()
-  }
-
-  return (
-    <div
-      className={composeClassName('ui-combobox', wrapperClassName)}
-      data-ui-combobox
-      onBlur={event => {
-        const nextTarget = event.relatedTarget
-
-        if (!nextTarget || !event.currentTarget.contains(nextTarget)) {
-          setOpen(false)
-        }
-      }}
-      ref={rootRef}
-    >
-      {label && (
-        <label className="ui-label" htmlFor={inputId}>
-          {label}
-        </label>
-      )}
-      <input
-        aria-autocomplete="list"
-        aria-controls={list}
-        aria-expanded={open}
-        className={composeClassName('ui-input', className)}
-        id={inputId}
-        role="combobox"
-        type={type}
-        value={renderedValue}
-        onBlur={onBlur}
-        onChange={event => {
-          if (valueProp === undefined) {
-            setValue(event.currentTarget.value)
-          }
-
-          setOpen(true)
-
-          onChange?.(event)
-        }}
-        onFocus={event => {
-          setOpen(true)
-
-          onFocus?.(event)
-        }}
-        onKeyDown={event => {
-          if (event.key === 'Escape') {
-            setOpen(false)
-          }
-
-          if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-            const key = event.key
-
-            event.preventDefault()
-
-            setOpen(true)
-
-            globalThis.queueMicrotask(() => {
-              focusInputEdgeOption(key)
-            })
-          }
-
-          if (event.key === 'Enter' && visibleOptions[0]) {
-            event.preventDefault()
-
-            selectOption(visibleOptions[0])
-          }
-
-          onKeyDown?.(event)
-        }}
-        {...props}
-      />
-      <div
-        className="ui-combobox__list"
-        hidden={!open}
-        id={list}
-        role="listbox"
-      >
-        {visibleOptions.map(option => (
-          <button
-            data-ui-combobox-option
-            data-value={option}
-            key={option}
-            role="option"
-            tabIndex={-1}
-            type="button"
-            onClick={() => {
-              selectOption(option)
-            }}
-            onKeyDown={event => {
-              if (event.key === 'Escape') {
-                setOpen(false)
-
-                rootRef.current?.querySelector<HTMLInputElement>(
-                  'input[role="combobox"]'
-                )?.focus()
-
-                return
-              }
-
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault()
-
-                rootRef.current?.querySelector<HTMLInputElement>(
-                  'input[role="combobox"]'
-                )?.focus()
-
-                selectOption(option)
-
-                return
-              }
-
-              if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
-
-              event.preventDefault()
-
-              focusOption(event.currentTarget, event.key)
-            }}
-            onMouseDown={event => {
-              event.preventDefault()
-            }}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
+export { Combobox, type ComboboxProps } from './combobox.js'
 
 export interface CommandProps extends ComponentPropsWithoutRef<'div'> {
   glass?: LumenGlassProp
@@ -2353,136 +2683,16 @@ export const ColorPicker = ({
   />
 )
 
-export interface DataTableProps extends ComponentPropsWithoutRef<'div'> {
-  columns?: DataTableColumn[]
-  glass?: LumenGlassProp
-  name?: string
-  rows?: DataTableRow[]
-  selectable?: boolean
-}
-export const DataTable = ({
-  children,
-  className,
-  columns = emptyDataTableColumns,
-  glass = false,
-  name,
-  rows = emptyDataTableRows,
-  selectable = false,
-  ...props
-}: DataTableProps) => {
-  const [sort, setSort] = useState<{
-    direction: 'ascending' | 'descending'
-    key: string
-  } | null>(null)
-
-  const sortedRows = useMemo(() => {
-    if (!sort) return rows
-
-    const column = columns.find(candidate => candidate.key === sort.key)
-
-    if (!column) return rows
-
-    const direction = sort.direction === 'ascending' ? 1 : -1
-
-    return [...rows].sort((left, right) => compareDataTableCells(
-      left[column.key], right[column.key], column.sort
-    ) * direction)
-  }, [columns, rows, sort])
-
-  const toggleSort = (column: DataTableColumn): void => {
-    setSort(current => ({
-      direction:
-        current?.key === column.key && current.direction === 'ascending' ?
-          'descending' :
-          'ascending',
-      key: column.key
-    }))
-  }
-
-  return (
-    <div
-      className={composeClassName(
-        'ui-data-table', glassClass('ui-data-table', glass), className
-      )}
-      data-ui-datatable
-      data-ui-datatable-name={name}
-      data-ui-datatable-selectable={selectable ? 'true' : undefined}
-      data-ui-glass-track={glass ? true : undefined}
-      {...props}
-    >
-      {columns.length > 0 ?
-        (
-          <table>
-            <thead>
-              <tr>
-                {columns.map(column => {
-                  const direction = sort?.key === column.key ?
-                    sort.direction :
-                    undefined
-
-                  const label = column.header ?? column.label ?? column.key
-
-                  return (
-                    <th
-                      aria-sort={direction ?? (column.sortable ? 'none' : undefined)}
-                      data-ui-datatable-sort-type={column.sort}
-                      data-ui-datatable-sortable={
-                        column.sortable ? 'true' : undefined
-                      }
-                      key={column.key}
-                      scope="col"
-                    >
-                      {column.sortable ?
-                        (
-                          <button
-                            className="ui-data-table__sort"
-                            data-ui-datatable-sort
-                            onClick={() => {
-                              toggleSort(column)
-                            }}
-                            type="button"
-                          >
-                            {label}
-                          </button>
-                        ) :
-                        label}
-                    </th>
-                  )
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {sortedRows.map((row, rowIndex) => (
-                <tr
-                  data-ui-datatable-row
-                  data-value={getDataTableRowValue(row, rowIndex)}
-                  key={getDataTableRowValue(row, rowIndex)}
-                >
-                  {columns.map(column => (
-                    <td
-                      data-sort-value={getDataTableSortValue(row[column.key])}
-                      key={column.key}
-                    >
-                      {formatDataTableCell(row[column.key])}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) :
-        children}
-    </div>
-  )
-}
-
 export type DatePickerProps = Omit<
   ComponentPropsWithoutRef<'input'>,
   'defaultValue' | 'type' | 'value'
 > &
 SurfaceProps & {
   defaultValue?: string
+  formatDate?: (value: string) => string
   inputRef?: Ref<HTMLInputElement>
+  labels?: { chooseDate?: string, previousMonth?: string, nextMonth?: string }
+  locale?: string
   onValueChange?: (value: string) => void
   placeholder?: string
   value?: string
@@ -2490,15 +2700,17 @@ SurfaceProps & {
 
 const formatDatePickerDisplayValue = (
   value: string | undefined,
-  placeholder: string
+  placeholder: string,
+  locale?: string,
+  formatDate?: (value: string) => string
 ): string => {
-  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return placeholder
+  const date = parseCalendarDate(value)
 
-  const date = new Date(`${value}T00:00:00.000Z`)
+  if (!date || !value) return placeholder
 
-  if (Number.isNaN(date.getTime())) return placeholder
+  if (formatDate) return formatDate(value)
 
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(getCalendarLocale(locale || 'en'), {
     day: 'numeric',
     month: 'short',
     timeZone: 'UTC',
@@ -2510,14 +2722,31 @@ const stringifyDatePickerConstraint = (
   value: number | string | undefined
 ): string | undefined => (value === undefined ? undefined : String(value))
 
+const useDatePickerDisclosure = (unavailable: boolean) => {
+  const [state, setState] = useState({ unavailable, open: false })
+
+  if (state.unavailable !== unavailable) {
+    setState({ unavailable, open: false })
+  }
+
+  const setOpen = useCallback((open: boolean) => {
+    setState({ unavailable, open: open && !unavailable })
+  }, [unavailable])
+
+  return { open: state.open && !unavailable, setOpen }
+}
+
 /* eslint-disable complexity -- DatePicker coordinates controlled input, disclosure, Calendar, and native form contracts. */
 export const DatePicker = ({
   className,
   defaultValue,
   disabled,
+  formatDate,
   glass = false,
   id,
   inputRef,
+  labels,
+  locale,
   max,
   min,
   name,
@@ -2525,63 +2754,90 @@ export const DatePicker = ({
   onInvalid,
   onValueChange,
   placeholder,
+  readOnly,
   required,
   value,
   ...props
 }: DatePickerProps) => {
   const generatedId = useId()
   const datePickerId = id ?? generatedId
-  const triggerId = `${datePickerId}-trigger`
+  const nativeInputId = `${datePickerId}-native`
   const popoverId = `${datePickerId}-popover`
   const rootRef = useRef<HTMLDivElement | null>(null)
   const nativeInputRef = useRef<HTMLInputElement | null>(null)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [internalValue, setInternalValue] = useState(defaultValue ?? '')
-  const [open, setOpen] = useState(false)
+  const { open: isOpen, setOpen } = useDatePickerDisclosure(disabled === true || readOnly === true)
   const selectedValue = value ?? internalValue
   const hasSelectedValue = selectedValue !== ''
-  const placeholderText = placeholder ?? 'Choose a date'
+  const dateLabels = { ...resolveDateControlLabels(locale || 'en'), ...labels }
+  const placeholderText = placeholder ?? dateLabels.chooseDate
   const maxStr = stringifyDatePickerConstraint(max)
   const minStr = stringifyDatePickerConstraint(min)
   const accessibleLabel = props['aria-label']
 
   useEffect(() => {
-    if (!open) return
+    const owner = nativeInputRef.current?.form
+    let active = true
+    let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
-    const handlePointerDown = (event: MouseEvent) => {
-      if (
-        event.target instanceof Node &&
-        !rootRef.current?.contains(event.target)
-      )
+    const reset = (event: Event) => {
+      globalThis.clearTimeout(resetTimer)
+
+      resetTimer = globalThis.setTimeout(() => {
+        if (!active || event.defaultPrevented || !nativeInputRef.current?.isConnected) return
+
+        if (value === undefined) setInternalValue(defaultValue ?? '')
+
         setOpen(false)
+      })
     }
 
-    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key !== 'Escape') return
-
-      setOpen(false)
-
-      triggerRef.current?.focus()
-    }
-
-    document.addEventListener('mousedown', handlePointerDown)
-
-    document.addEventListener('keydown', handleKeyDown)
+    owner?.addEventListener('reset', reset)
 
     return () => {
-      document.removeEventListener('mousedown', handlePointerDown)
+      active = false
 
-      document.removeEventListener('keydown', handleKeyDown)
+      globalThis.clearTimeout(resetTimer)
+
+      owner?.removeEventListener('reset', reset)
     }
-  }, [open])
+  }, [defaultValue, props.form, value, setOpen])
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const root = rootRef.current
+
+    if (!root) return
+
+    const owner = root.ownerDocument
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!event.composedPath().includes(root)) setOpen(false)
+    }
+
+    owner.addEventListener('mousedown', handlePointerDown)
+
+    rootRef.current?.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus({ preventScroll: true })
+
+    return () => {
+      owner.removeEventListener('mousedown', handlePointerDown)
+    }
+  }, [isOpen, setOpen])
 
   const selectDate = (nextValue: string) => {
+    if (disabled || readOnly) return
+
     if (value === undefined) setInternalValue(nextValue)
 
     onValueChange?.(nextValue)
 
     if (nativeInputRef.current) {
-      nativeInputRef.current.value = nextValue
+      // Use the native setter so React's change event observes the selected value.
+      const descriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')
+
+      descriptor?.set?.call(nativeInputRef.current, nextValue)
 
       nativeInputRef.current.dispatchEvent(
         new Event('input', { bubbles: true })
@@ -2606,6 +2862,17 @@ export const DatePicker = ({
       data-ui-date-picker
       data-ui-glass-track={glass ? true : undefined}
       ref={rootRef}
+      onKeyDown={event => {
+        if (!isOpen || event.key !== 'Escape') return
+
+        event.preventDefault()
+
+        event.stopPropagation()
+
+        setOpen(false)
+
+        triggerRef.current?.focus({ preventScroll: true })
+      }}
     >
       <input
         aria-hidden="true"
@@ -2613,7 +2880,7 @@ export const DatePicker = ({
         data-ui-date-picker-native
         data-ui-enhanced="true"
         disabled={disabled}
-        id={datePickerId}
+        id={nativeInputId}
         max={max}
         min={min}
         name={name}
@@ -2637,6 +2904,7 @@ export const DatePicker = ({
           setRefValue(inputRef, node)
         }}
         required={required}
+        readOnly={readOnly}
         tabIndex={-1}
         type="date"
         value={selectedValue}
@@ -2645,19 +2913,24 @@ export const DatePicker = ({
       <div className="ui-date-picker__control" data-ui-date-picker-control>
         <button
           aria-controls={popoverId}
-          aria-expanded={open}
+          aria-expanded={isOpen}
           aria-haspopup="dialog"
           aria-label={accessibleLabel}
+          aria-labelledby={props['aria-labelledby']}
+          aria-describedby={props['aria-describedby']}
+          aria-disabled={readOnly ? true : undefined}
           aria-required={required ?? undefined}
           className="ui-input ui-date-picker ui-date-picker__trigger"
           data-ui-date-picker-trigger
           disabled={disabled}
-          id={triggerId}
+          id={datePickerId}
           onClick={() => {
-            setOpen(current => !current)
+            if (disabled || readOnly) return
+
+            setOpen(!isOpen)
           }}
           onKeyDown={event => {
-            if (event.key !== 'ArrowDown') return
+            if (event.key !== 'ArrowDown' || disabled || readOnly) return
 
             event.preventDefault()
 
@@ -2667,7 +2940,7 @@ export const DatePicker = ({
           type="button"
         >
           <span data-ui-date-picker-value>
-            {formatDatePickerDisplayValue(selectedValue, placeholderText)}
+            {formatDatePickerDisplayValue(selectedValue, placeholderText, locale, formatDate)}
           </span>
           <svg
             aria-hidden="true"
@@ -2679,16 +2952,19 @@ export const DatePicker = ({
           </svg>
         </button>
         <div
-          aria-label="Choose date"
+          aria-label={dateLabels.chooseDate}
           className="ui-date-picker__popover"
-          data-state={open ? 'open' : 'closed'}
+          data-state={isOpen ? 'open' : 'closed'}
           data-ui-date-picker-popover
-          hidden={!open}
+          hidden={!isOpen}
           id={popoverId}
           role="dialog"
         >
           <Calendar
             disabled={disabled}
+            readOnly={readOnly}
+            labels={dateLabels}
+            locale={locale}
             max={maxStr}
             min={minStr}
             onValueChange={selectDate}
@@ -2788,18 +3064,66 @@ export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &
     layout?: 'centered' | 'fullscreen'
   }
 
+const DialogCloseContext = createContext<(() => void) | null>(null)
+
+export type DialogHeaderProps = ComponentPropsWithRef<'header'>
+export const DialogHeader = ({ className, ...props }: DialogHeaderProps) => (
+  <header {...props} className={composeClassName('ui-dialog-header', className)} data-slot="dialog-header" />
+)
+
+export type DialogTitleProps = ComponentPropsWithRef<'h2'> & { as?: 'h2' | 'h3' | 'h4' }
+export const DialogTitle = ({ as: Tag = 'h2', className, ...props }: DialogTitleProps) => (
+  <Tag {...props} className={composeClassName('ui-dialog-title', className)} data-slot="dialog-title" />
+)
+
+export type DialogBodyProps = ComponentPropsWithRef<'div'>
+export const DialogBody = ({ className, ...props }: DialogBodyProps) => (
+  <div {...props} className={composeClassName('ui-dialog-body', className)} data-slot="dialog-body" />
+)
+
+export type DialogFooterProps = ComponentPropsWithRef<'footer'>
+export const DialogFooter = ({ className, ...props }: DialogFooterProps) => (
+  <footer {...props} className={composeClassName('ui-dialog-footer', className)} data-slot="dialog-footer" />
+)
+
+export type DialogCloseProps = ButtonProps
+export const DialogClose = ({ className, onClick, ...props }: DialogCloseProps) => {
+  const close = use(DialogCloseContext)
+
+  return (
+    <Button
+      {...props}
+      className={composeClassName('ui-dialog-close', className)}
+      data-slot="dialog-close"
+      onClick={event => {
+        onClick?.(event)
+
+        if (event.defaultPrevented) return
+
+        if (close) close()
+        else event.currentTarget.closest('dialog')?.close()
+      }}
+    />
+  )
+}
+
 export const Dialog = ({
+  children,
   className,
   defaultOpen,
+  dismissOnEscape,
+  dismissOnOutsidePress,
   glass = false,
   layout = 'centered',
+  onCancel,
   onClick,
   onClose,
   onOpenChange,
+  onPointerDown,
   open,
   ...props
 }: DialogProps) => {
-  const dialog = useDialog({ defaultOpen, onOpenChange, open })
+  const dialog = useDialog({ defaultOpen, dismissOnEscape, dismissOnOutsidePress, onOpenChange, open })
 
   return (
     <dialog
@@ -2810,9 +3134,13 @@ export const Dialog = ({
       )}
       data-layout={layout}
       data-surface={resolveSurface(glass)}
+      onCancel={composeHandlers(onCancel, dialog.dialogProps.onCancel)}
+      onPointerDown={composeHandlers(onPointerDown, dialog.dialogProps.onPointerDown)}
       onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
       onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
-    />
+    >
+      <DialogCloseContext value={dialog.close}>{children}</DialogCloseContext>
+    </dialog>
   )
 }
 
@@ -2841,16 +3169,20 @@ export type DropdownMenuProps = ComponentPropsWithoutRef<'menu'> &
 export const DropdownMenu = ({
   children,
   className,
+  collisionPadding,
   defaultOpen,
   glass = false,
+  offset,
   onOpenChange,
   open,
+  placement,
+  positioning,
   ...props
 }: DropdownMenuProps) => {
-  const menu = useDropdownMenu({ defaultOpen, onOpenChange, open })
+  const menu = useDropdownMenu({ collisionPadding, defaultOpen, offset, onOpenChange, open, placement, positioning })
 
   return (
-    <DropdownMenuContext.Provider value={menu}>
+    <DropdownMenuContext value={menu}>
       <menu
         {...menu.rootProps}
         {...props}
@@ -2862,7 +3194,7 @@ export const DropdownMenu = ({
       >
         {children}
       </menu>
-    </DropdownMenuContext.Provider>
+    </DropdownMenuContext>
   )
 }
 
@@ -2873,7 +3205,7 @@ export const DropdownMenuTrigger = ({
   ...props
 }: DropdownMenuTriggerProps) => {
   const menu = requireContext(
-    useContext(DropdownMenuContext), 'DropdownMenuTrigger'
+    use(DropdownMenuContext), 'DropdownMenuTrigger'
   )
 
   return (
@@ -2894,7 +3226,7 @@ export const DropdownMenuContent = ({
   ...props
 }: DropdownMenuContentProps) => {
   const menu = requireContext(
-    useContext(DropdownMenuContext), 'DropdownMenuContent'
+    use(DropdownMenuContext), 'DropdownMenuContent'
   )
 
   return (
@@ -2921,7 +3253,7 @@ export const DropdownMenuItem = ({
   ...props
 }: DropdownMenuItemProps) => {
   const menu = requireContext(
-    useContext(DropdownMenuContext), 'DropdownMenuItem'
+    use(DropdownMenuContext), 'DropdownMenuItem'
   )
 
   return (
@@ -3770,24 +4102,43 @@ export const Message = ({
 
 export interface MessageScrollerProps extends ComponentPropsWithoutRef<'div'> {
   glass?: LumenGlassProp
+  autoScroll?: boolean
+  scrollThreshold?: number
 }
 export const MessageScroller = ({
   className,
   glass = false,
+  autoScroll = false,
+  scrollThreshold = 32,
   ...props
-}: MessageScrollerProps) => (
-  <div
-    className={composeClassName(
-      'ui-message-scroller', glassClass('ui-message-scroller', glass), className
-    )}
-    {...props}
-  />
-)
+}: MessageScrollerProps) => {
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const root = rootRef.current
+
+    if (!root || !autoScroll) return
+
+    const controller = createLumenMessageScrollerController(root, { threshold: scrollThreshold })
+
+    return controller.destroy
+  }, [autoScroll, scrollThreshold])
+
+  return (
+    <div
+      ref={rootRef}
+      className={composeClassName(
+        'ui-message-scroller', glassClass('ui-message-scroller', glass), className
+      )}
+      {...props}
+    />
+  )
+}
 
 export interface NativeSelectProps extends ComponentPropsWithRef<'select'> {
   options?: SelectOption[]
   placeholder?: string
-  visualSize?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
 }
 
 export const NativeSelect = ({
@@ -3841,6 +4192,12 @@ export interface PhoneInputProps extends Omit<
 > {
   countries?: SelectOption[]
   countryOptions?: readonly LumenPhoneCountry[]
+  disabled?: boolean
+  readOnly?: boolean
+  required?: boolean
+  errorMessage?: string
+  inputProps?: Omit<ComponentPropsWithoutRef<'input'>, 'value' | 'defaultValue' | 'onChange' | 'name' | 'type'>
+  inputRef?: Ref<HTMLInputElement>
   countryLabel?: string
   countryName?: string
   defaultCountryValue?: string
@@ -3851,16 +4208,18 @@ export interface PhoneInputProps extends Omit<
   onValueChange?: (value: LumenPhoneNumber) => void
   placeholder?: string
   showValidationError?: boolean
-  size?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
   value?: LumenPhoneNumber
 }
 
-const phoneInputSizeModifiers = (size: 'default' | 'lg' | 'sm') => {
-  if (size === 'sm') {
+const emptyPhoneInputProps: NonNullable<PhoneInputProps['inputProps']> = {}
+
+const phoneInputSizeModifiers = (visualSize: LumenControlVisualSize) => {
+  if (visualSize === 'sm') {
     return { inputClass: 'ui-input--sm', selectClass: 'ui-select--sm' }
   }
 
-  if (size === 'lg') {
+  if (visualSize === 'lg') {
     return { inputClass: 'ui-input--lg', selectClass: 'ui-select--lg' }
   }
 
@@ -3875,7 +4234,7 @@ interface ResolvedMetadataPhoneInputProps extends Omit<PhoneInputProps, 'countri
   name: string
   placeholder: string
   showValidationError: boolean
-  size: 'default' | 'lg' | 'sm'
+  visualSize: LumenControlVisualSize
 }
 
 const getPhoneInputOptions = (
@@ -3884,31 +4243,124 @@ const getPhoneInputOptions = (
 
 const getBooleanAttribute = (value: boolean): true | undefined => value ? true : undefined
 
-const getPhoneErrorId = (invalid: boolean, name: string): string | undefined => (
-  invalid ? `${name}-error` : undefined
+export interface CountryFlagProps extends ComponentPropsWithoutRef<'span'> {
+  regionCode: string
+  decorative?: boolean
+}
+
+export const CountryFlag = ({ regionCode, decorative = false, className, ...props }: CountryFlagProps) => {
+  const source = getLumenPhoneFlagSource(regionCode)
+
+  return (
+    <span {...props} aria-hidden={decorative || undefined} aria-label={decorative ? undefined : props['aria-label'] ?? regionCode.toUpperCase()} className={composeClassName('ui-country-flag', className)} data-slot="country-flag" role={decorative ? undefined : 'img'}>
+      {source ? <img alt="" height={18} src={source} width={24} /> : regionCode.toUpperCase().slice(0, 2)}
+    </span>
+  )
+}
+
+export interface PhoneNumberProps extends ComponentPropsWithoutRef<'span'> {
+  value: LumenPhoneNumber
+  link?: boolean
+}
+
+export const PhoneNumber = ({ value, link = false, className, ...props }: PhoneNumberProps) => {
+  const content = (
+    <>
+      <CountryFlag decorative regionCode={value.country.regionCode} />
+      <span>{formatLumenPhoneNumber(value) || '—'}</span>
+    </>
+  )
+
+  const classes = composeClassName('ui-phone-number', className)
+
+  return link && value.isValid && value.e164 ? <a {...props} className={classes} href={`tel:${value.e164}`} title={value.country.displayName}>{content}</a> : <span {...props} className={classes} title={value.country.displayName}>{content}</span>
+}
+
+const resolvePhoneError = (
+  errorMessage: string | undefined,
+  showValidationError: boolean,
+  value: LumenPhoneNumber,
+  invalidNumberMessage: string
+): string | undefined => {
+  if (errorMessage) return errorMessage
+
+  if (showValidationError && value.nationalNumber.length > 0 && !value.isValid) return invalidNumberMessage
+
+  return undefined
+}
+
+interface PhoneNumberInputProps {
+  controlId: string
+  errorId: string
+  hasExplicitId: boolean
+  inputClass: string | undefined
+  inputProps: NonNullable<PhoneInputProps['inputProps']>
+  inputRef: Ref<HTMLInputElement> | undefined
+  invalid: boolean
+  isDisabled: boolean
+  isReadOnly: boolean
+  name: string
+  numberRef: RefObject<HTMLInputElement | null>
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  phoneValue: LumenPhoneNumber
+  placeholder: string
+  required: boolean | undefined
+}
+
+const resolvePhoneAria = (inputProps: NonNullable<PhoneInputProps['inputProps']>, invalid: boolean, errorId: string) => ({
+  'aria-describedby': [inputProps['aria-describedby'], invalid ? errorId : undefined].filter(Boolean).join(' ') || undefined,
+  'aria-errormessage': invalid ? errorId : inputProps['aria-errormessage'],
+  'aria-invalid': invalid ? true : inputProps['aria-invalid']
+})
+
+const PhoneNumberInput = ({
+  controlId, errorId, hasExplicitId, inputClass, inputProps, inputRef, invalid,
+  isDisabled, isReadOnly, name, numberRef, onChange, phoneValue, placeholder, required
+}: PhoneNumberInputProps) => (
+  <input
+    {...inputProps}
+    {...resolvePhoneAria(inputProps, invalid, errorId)}
+    autoComplete={inputProps.autoComplete ?? 'tel-national'}
+    aria-label={inputProps['aria-label'] ?? (hasExplicitId ? undefined : placeholder)}
+    className={composeClassName('ui-input ui-phone-input__number', inputClass, inputProps.className)}
+    disabled={isDisabled}
+    id={controlId}
+    inputMode="tel"
+    name={name}
+    onChange={onChange}
+    placeholder={placeholder}
+    readOnly={isReadOnly}
+    ref={node => {
+      numberRef.current = node
+
+      setRefValue(inputRef, node)
+    }}
+    required={required ?? inputProps.required}
+    type="tel"
+    value={phoneValue.nationalNumber}
+  />
 )
 
-const PhoneInputError = ({
-  invalid,
-  message,
-  name
-}: {
-  invalid: boolean
-  message: string
+const PhoneCountryValue = ({ disabled, readOnly, form, name, value }: {
+  disabled: boolean
+  readOnly: boolean
+  form?: string | undefined
   name: string
-}) => invalid ?
-  (
-    <span className="ui-visually-hidden" id={`${name}-error`} role="alert">
-      {message}
-    </span>
-  ) :
-  null
+  value: string
+}) => readOnly && !disabled ? <input form={form} name={name} type="hidden" value={value} /> : null
 
 const MetadataPhoneInput = ({
   className,
   countryOptions,
   countryLabel,
   countryName,
+  disabled,
+  readOnly,
+  required,
+  errorMessage,
+  id,
+  inputProps = emptyPhoneInputProps,
+  inputRef,
   defaultCountryValue,
   defaultValue,
   invalidNumberMessage,
@@ -3917,11 +4369,18 @@ const MetadataPhoneInput = ({
   onValueChange,
   placeholder,
   showValidationError,
-  size,
+  visualSize,
   value,
   ...props
 }: ResolvedMetadataPhoneInputProps) => {
-  const { selectClass, inputClass } = phoneInputSizeModifiers(size)
+  const { selectClass, inputClass } = phoneInputSizeModifiers(visualSize)
+  const isDisabled = [disabled, inputProps.disabled].some(Boolean)
+  const isReadOnly = [readOnly, inputProps.readOnly].some(Boolean)
+  const generatedId = useId()
+  const controlId = id ?? inputProps.id ?? generatedId
+  const errorId = `${generatedId}-error`
+  const numberRef = useRef<HTMLInputElement>(null)
+  const selectRef = useRef<HTMLSelectElement>(null)
   const phoneOptions = useMemo(() => getPhoneInputOptions(locale), [locale])
 
   const metadataCountries = useMemo(
@@ -3956,7 +4415,7 @@ const MetadataPhoneInput = ({
 
   const resolvedOptions = metadataCountries.map(country => ({
     disabled: false,
-    label: country.pickerLabel,
+    label: `${country.displayName} (${country.callingCode})`,
     value: country.regionCode
   }))
 
@@ -3990,56 +4449,183 @@ const MetadataPhoneInput = ({
     ))
   }
 
-  const invalid = showValidationError && phoneValue.nationalNumber.length > 0 && !phoneValue.isValid
+  const effectiveError = resolvePhoneError(errorMessage, showValidationError, phoneValue, invalidNumberMessage)
+  const invalid = Boolean(effectiveError)
+
+  useEffect(() => {
+    numberRef.current?.setCustomValidity(effectiveError ?? '')
+  }, [effectiveError])
+
+  useEffect(() => {
+    const form = numberRef.current?.form
+    let active = true
+    let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+
+    const reset = (event: Event): void => {
+      globalThis.clearTimeout(resetTimer)
+
+      resetTimer = globalThis.setTimeout(() => {
+        const input = numberRef.current
+
+        if (!active || event.defaultPrevented || !input?.isConnected) return
+
+        if (value === undefined) {
+          const country = resolveReactPhoneInputCountry(metadataCountries, defaultCountryValue, locale, undefined)
+
+          setInternalValue(resolveReactPhoneInputValue(metadataCountries, country, defaultValue ?? '', phoneOptions))
+
+          return
+        }
+
+        // Keep the DOM controls aligned with the application-owned value after native reset.
+        const select = selectRef.current
+
+        if (select) select.value = phoneValue.country.regionCode
+
+        input.value = phoneValue.nationalNumber
+      })
+    }
+
+    form?.addEventListener('reset', reset)
+
+    return () => {
+      active = false
+
+      globalThis.clearTimeout(resetTimer)
+
+      form?.removeEventListener('reset', reset)
+    }
+  }, [defaultCountryValue, defaultValue, inputProps.form, locale, metadataCountries, phoneOptions, phoneValue, value])
 
   return (
-    <div
-      className={composeClassName('ui-phone-input ui-input-group', className)}
-      data-invalid={getBooleanAttribute(invalid)}
-      {...props}
-    >
-      <select
-        aria-label={countryLabel}
-        className={composeClassName(
-          'ui-select ui-phone-input__country', selectClass
-        )}
-        name={countryName}
-        onChange={handleCountryChange}
-        value={phoneValue.country.regionCode}
+    <>
+      <div
+        className={composeClassName('ui-phone-input ui-input-group', className)}
+        data-disabled={getBooleanAttribute(isDisabled)}
+        data-invalid={getBooleanAttribute(invalid)}
+        data-phone-enhanced="true"
+        data-readonly={getBooleanAttribute(isReadOnly)}
+        data-size={visualSize}
+        data-slot="phone-input"
+        {...props}
       >
-        {resolvedOptions.map(option => (
-          <option
-            disabled={option.disabled}
-            key={option.value}
-            value={option.value}
+        <span className="ui-phone-input__picker" data-slot="phone-country">
+          <span aria-hidden="true" className="ui-phone-input__selection">
+            <CountryFlag decorative regionCode={phoneValue.country.regionCode} />
+            <span>{phoneValue.country.callingCode}</span>
+            <span className="ui-phone-input__chevron" />
+          </span>
+          <select
+            aria-label={countryLabel}
+            className={composeClassName('ui-select ui-phone-input__country', selectClass)}
+            disabled={isDisabled || isReadOnly || metadataCountries.length === 0}
+            form={inputProps.form}
+            name={countryName}
+            onChange={handleCountryChange}
+            ref={selectRef}
+            value={phoneValue.country.regionCode}
           >
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <input
-        autoComplete="tel"
-        aria-errormessage={getPhoneErrorId(invalid, name)}
-        aria-invalid={getBooleanAttribute(invalid)}
-        className={composeClassName(
-          'ui-input ui-phone-input__number', inputClass
-        )}
-        inputMode="tel"
-        name={name}
-        onChange={handleNumberChange}
-        placeholder={placeholder}
-        type="tel"
-        value={phoneValue.nationalNumber}
-      />
-      <PhoneInputError invalid={invalid} message={invalidNumberMessage} name={name} />
-    </div>
+            {resolvedOptions.map(option => (
+              <option disabled={option.disabled} key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </span>
+        <PhoneNumberInput
+          controlId={controlId}
+          errorId={errorId}
+          hasExplicitId={[id, inputProps.id].some(Boolean)}
+          inputClass={inputClass}
+          inputProps={inputProps}
+          inputRef={inputRef}
+          invalid={invalid}
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+          name={name}
+          numberRef={numberRef}
+          onChange={handleNumberChange}
+          phoneValue={phoneValue}
+          placeholder={placeholder}
+          required={required}
+        />
+        <PhoneCountryValue
+          disabled={isDisabled}
+          form={inputProps.form}
+          name={countryName}
+          readOnly={isReadOnly}
+          value={phoneValue.country.regionCode}
+        />
+      </div>
+      {effectiveError && <span className="ui-phone-input__error" id={errorId} role="alert">{effectiveError}</span>}
+    </>
   )
+}
+
+const resolveLegacyPhoneAttributes = (
+  inputProps: NonNullable<PhoneInputProps['inputProps']>,
+  props: {
+    disabled: boolean | undefined
+    readOnly: boolean | undefined
+    required: boolean | undefined
+    id: string | undefined
+  }
+) => ({
+  autoComplete: inputProps.autoComplete ?? 'tel-national',
+  disabled: props.disabled ?? inputProps.disabled,
+  id: props.id ?? inputProps.id,
+  readOnly: props.readOnly ?? inputProps.readOnly,
+  required: props.required ?? inputProps.required
+})
+
+const resolveLegacyPhoneCountry = (
+  options: ReturnType<typeof normalizeOption>[], value: string | undefined
+): string => options.find(option => option.value === value)?.value ??
+  options.find(option => !option.disabled)?.value ?? ''
+
+const useLegacyPhoneCountry = (
+  countries: SelectOption[], defaultCountryValue: string | undefined, form: string | undefined
+) => {
+  const options = countries.map(normalizeOption)
+  const [countryValue, setCountryValue] = useState(() => resolveLegacyPhoneCountry(options, defaultCountryValue))
+  const submissionCountry = resolveLegacyPhoneCountry(options, countryValue)
+  const countryRef = useRef<HTMLSelectElement>(null)
+
+  useEffect(() => {
+    const form = countryRef.current?.form
+    let active = true
+
+    queueMicrotask(() => {
+      if (active) setCountryValue(countryRef.current?.value ?? '')
+    })
+
+    const reset = (event: Event): void => {
+      queueMicrotask(() => {
+        if (active && !event.defaultPrevented) setCountryValue(countryRef.current?.value ?? '')
+      })
+    }
+
+    form?.addEventListener('reset', reset)
+
+    return () => {
+      active = false
+
+      form?.removeEventListener('reset', reset)
+    }
+  }, [countries, defaultCountryValue, form])
+
+  return { countryRef, options, setCountryValue, submissionCountry }
 }
 
 const LegacyPhoneInput = ({
   className,
   countries,
   countryOptions: _countryOptions,
+  disabled,
+  readOnly,
+  required,
+  errorMessage: _errorMessage,
+  id,
+  inputProps = emptyPhoneInputProps,
+  inputRef,
   countryLabel = 'Country code',
   countryName = 'country',
   defaultCountryValue,
@@ -4050,37 +4636,63 @@ const LegacyPhoneInput = ({
   onValueChange: _onValueChange,
   placeholder = 'Phone number',
   showValidationError: _showValidationError,
-  size = 'default',
+  visualSize = 'default',
   value: _value,
   ...props
 }: PhoneInputProps & { countries: SelectOption[] }) => {
-  const { inputClass, selectClass } = phoneInputSizeModifiers(size)
+  const { inputClass, selectClass } = phoneInputSizeModifiers(visualSize)
+  const numberAttributes = resolveLegacyPhoneAttributes(inputProps, { disabled, readOnly, required, id })
+
+  const { countryRef, options, setCountryValue, submissionCountry } = useLegacyPhoneCountry(
+    countries, defaultCountryValue, inputProps.form
+  )
 
   return (
     <div
       className={composeClassName('ui-phone-input ui-input-group', className)}
       {...props}
+      data-disabled={getBooleanAttribute([disabled, inputProps.disabled].some(Boolean))}
+      data-readonly={getBooleanAttribute([readOnly, inputProps.readOnly].some(Boolean))}
+      data-size={visualSize}
+      data-slot="phone-input"
     >
-      <select
-        aria-label={countryLabel}
-        className={composeClassName('ui-select ui-phone-input__country', selectClass)}
-        defaultValue={defaultCountryValue}
-        name={countryName}
-      >
-        {countries.map(normalizeOption).map(option => (
-          <option disabled={option.disabled} key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <span className="ui-phone-input__picker">
+        <select
+          aria-label={countryLabel}
+          className={composeClassName('ui-select ui-phone-input__country', selectClass)}
+          defaultValue={defaultCountryValue}
+          disabled={[disabled, readOnly, inputProps.disabled, inputProps.readOnly].some(Boolean)}
+          form={inputProps.form}
+          name={countryName}
+          onChange={event => {
+            setCountryValue(event.currentTarget.value)
+          }}
+          ref={countryRef}
+        >
+          {options.map(option => (
+            <option disabled={option.disabled} key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </span>
       <input
-        autoComplete="tel"
+        {...inputProps}
+        {...numberAttributes}
+        ref={inputRef}
         className={composeClassName('ui-input ui-phone-input__number', inputClass)}
         defaultValue={defaultValue}
         inputMode="tel"
         name={name}
         placeholder={placeholder}
         type="tel"
+      />
+      <PhoneCountryValue
+        disabled={[disabled, inputProps.disabled].some(Boolean)}
+        form={inputProps.form}
+        name={countryName}
+        readOnly={[readOnly, inputProps.readOnly].some(Boolean)}
+        value={submissionCountry}
       />
     </div>
   )
@@ -4101,7 +4713,7 @@ export const PhoneInput = (props: PhoneInputProps) => {
       name={props.name ?? 'phone'}
       placeholder={props.placeholder ?? 'Phone number'}
       showValidationError={props.showValidationError ?? true}
-      size={props.size ?? 'default'}
+      visualSize={props.visualSize ?? 'default'}
     />
   )
 }
@@ -4184,16 +4796,20 @@ export type PopoverProps = ComponentPropsWithoutRef<'div'> &
 export const Popover = ({
   children,
   className,
+  collisionPadding,
   defaultOpen,
   glass = false,
+  offset,
   onOpenChange,
   open,
+  placement,
+  positioning,
   ...props
 }: PopoverProps) => {
-  const popover = usePopover({ defaultOpen, onOpenChange, open })
+  const popover = usePopover({ collisionPadding, defaultOpen, offset, onOpenChange, open, placement, positioning })
 
   return (
-    <PopoverContext.Provider value={popover}>
+    <PopoverContext value={popover}>
       <div
         {...popover.rootProps}
         {...props}
@@ -4205,20 +4821,20 @@ export const Popover = ({
       >
         {children}
       </div>
-    </PopoverContext.Provider>
+    </PopoverContext>
   )
 }
 
-export type PopoverTriggerProps = ComponentPropsWithoutRef<'button'>
+export type PopoverTriggerProps = ButtonProps
 export const PopoverTrigger = ({
   onClick,
   onKeyDown,
   ...props
 }: PopoverTriggerProps) => {
-  const popover = requireContext(useContext(PopoverContext), 'PopoverTrigger')
+  const popover = requireContext(use(PopoverContext), 'PopoverTrigger')
 
   return (
-    <button
+    <Button
       {...popover.triggerProps}
       {...props}
       onClick={composeHandlers(onClick, popover.triggerProps.onClick)}
@@ -4229,13 +4845,14 @@ export const PopoverTrigger = ({
 }
 
 export type PopoverPanelProps = ComponentPropsWithoutRef<'div'>
-export const PopoverPanel = ({ onKeyDown, ...props }: PopoverPanelProps) => {
-  const popover = requireContext(useContext(PopoverContext), 'PopoverPanel')
+export const PopoverPanel = ({ className, onKeyDown, ...props }: PopoverPanelProps) => {
+  const popover = requireContext(use(PopoverContext), 'PopoverPanel')
 
   return (
     <div
       {...popover.panelProps}
       {...props}
+      className={composeClassName('ui-popover__panel', className)}
       onKeyDown={composeHandlers(onKeyDown, popover.panelProps.onKeyDown)}
     />
   )
@@ -4250,7 +4867,7 @@ export const RadioGroup = ({ className, ...props }: RadioGroupProps) => (
   />
 )
 
-/* eslint-disable @stylistic/padding-line-between-statements, @eslint-react/no-array-index-key */
+/* eslint-disable @eslint-react/no-array-index-key */
 /* eslint-disable @eslint-react/no-children-to-array, @eslint-react/no-clone-element */
 /* Resizable preserves pane element tags while injecting pane sizing props and handles. */
 interface ResizablePaneProps {
@@ -4298,6 +4915,7 @@ export const Resizable = ({
   ...props
 }: ResizableProps) => {
   const panes = Children.toArray(children)
+
   const resizable = useResizable({
     defaultSizes,
     direction,
@@ -4324,7 +4942,7 @@ export const Resizable = ({
     </div>
   )
 }
-/* eslint-enable @stylistic/padding-line-between-statements, @eslint-react/no-array-index-key, @eslint-react/no-children-to-array, @eslint-react/no-clone-element */
+/* eslint-enable @eslint-react/no-array-index-key, @eslint-react/no-children-to-array, @eslint-react/no-clone-element */
 
 export interface RichTextEditorProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
@@ -4485,17 +5103,16 @@ export interface SelectProps
     'options' |
     'placeholder' |
     'required' |
-    'size' |
     'value'
   >,
   SelectOptions {
   glass?: LumenGlassProp
   inputRef?: Ref<HTMLSelectElement>
   onChange?: ComponentPropsWithoutRef<'select'>['onChange']
-  size?: 'default' | 'lg' | 'md' | 'sm'
+  visualSize?: LumenControlVisualSize
 }
 
-const getSelectSizeClass = (size: SelectProps['size']) => {
+const getSelectSizeClass = (size: SelectProps['visualSize']) => {
   if (size === 'sm') return 'ui-select--sm'
 
   if (size === 'lg') return 'ui-select--lg'
@@ -4517,7 +5134,7 @@ export const Select = ({
   options = emptyOptions,
   placeholder,
   required = false,
-  size = 'default',
+  visualSize = 'default',
   value,
   ...props
 }: SelectProps) => {
@@ -4533,7 +5150,7 @@ export const Select = ({
     value
   })
 
-  const sizeClass = getSelectSizeClass(size)
+  const sizeClass = getSelectSizeClass(visualSize)
 
   return (
     <div
@@ -4570,6 +5187,11 @@ export const Select = ({
       <div {...select.controlProps} className="ui-select__control">
         <button
           {...select.triggerProps}
+          aria-label={props['aria-label']}
+          aria-labelledby={props['aria-labelledby']}
+          aria-describedby={props['aria-describedby']}
+          aria-invalid={props['aria-invalid']}
+          aria-errormessage={props['aria-errormessage']}
           className={composeClassName(
             'ui-select ui-select__trigger', sizeClass
           )}
@@ -5164,6 +5786,7 @@ export interface TabsProps
   extends
   Omit<ComponentPropsWithoutRef<'div'>, 'defaultValue' | 'id' | 'onChange'>,
   Omit<TabsOptions, 'id'> {
+  indicator?: boolean
   glass?: LumenGlassProp
 }
 export const Tabs = ({
@@ -5171,16 +5794,23 @@ export const Tabs = ({
   className,
   defaultValue,
   glass = false,
+  indicator = false,
   onValueChange,
   orientation,
   value,
   ...props
 }: TabsProps) => {
   const tabs = useTabs({ defaultValue, onValueChange, orientation, value })
+  const indicatorRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (indicator && indicatorRef.current) return bindLumenTabIndicator(indicatorRef.current)
+  }, [indicator])
 
   return (
-    <TabsContext.Provider value={tabs}>
+    <TabsContext value={tabs}>
       <div
+        ref={indicatorRef}
         {...tabs.rootProps}
         {...props}
         className={composeClassName(
@@ -5189,13 +5819,13 @@ export const Tabs = ({
       >
         {children}
       </div>
-    </TabsContext.Provider>
+    </TabsContext>
   )
 }
 
 export type TabsListProps = ComponentPropsWithoutRef<'div'>
 export const TabsList = ({ ...props }: TabsListProps) => {
-  const tabs = requireContext(useContext(TabsContext), 'TabsList')
+  const tabs = requireContext(use(TabsContext), 'TabsList')
 
   return <div {...tabs.listProps} {...props} />
 }
@@ -5209,7 +5839,7 @@ export const TabsTrigger = ({
   value,
   ...props
 }: TabsTriggerProps) => {
-  const tabs = requireContext(useContext(TabsContext), 'TabsTrigger')
+  const tabs = requireContext(use(TabsContext), 'TabsTrigger')
 
   return (
     <button
@@ -5227,7 +5857,7 @@ export interface TabsPanelProps extends ComponentPropsWithoutRef<'div'> {
   value: string
 }
 export const TabsPanel = ({ value, ...props }: TabsPanelProps) => {
-  const tabs = requireContext(useContext(TabsContext), 'TabsPanel')
+  const tabs = requireContext(use(TabsContext), 'TabsPanel')
 
   return <div {...tabs.getPanelProps(value, props)} />
 }
@@ -5238,6 +5868,10 @@ export const CodeTabs = ({
   ariaLabel = 'Code examples',
   className,
   copy = true,
+  codeLabel,
+  copyLabel,
+  copiedLabel,
+  errorLabel,
   initialValue,
   items = emptyCodeTabItems,
   storageKey,
@@ -5245,6 +5879,7 @@ export const CodeTabs = ({
   wrap = true,
   ...props
 }: CodeTabsProps) => {
+  const labels = resolveCodeLabels({ codeLabel, copyLabel, copiedLabel, errorLabel })
   const selectedValue = initialValue ?? items[0]?.value
 
   const [value, setValue] = useState(() => {
@@ -5333,6 +5968,7 @@ export const CodeTabs = ({
           <Code
             code={item.code}
             copy={copy}
+            {...labels}
             {...(item.language === undefined ?
               {} :
               { language: item.language })}
@@ -5465,7 +6101,7 @@ export const Tooltip = ({
   const tooltip = useTooltip({ defaultOpen, delay, onOpenChange, open })
 
   return (
-    <TooltipContext.Provider value={tooltip}>
+    <TooltipContext value={tooltip}>
       <span
         {...tooltip.rootProps}
         {...props}
@@ -5480,13 +6116,13 @@ export const Tooltip = ({
       >
         {children}
       </span>
-    </TooltipContext.Provider>
+    </TooltipContext>
   )
 }
 
 export type TooltipContentProps = ComponentPropsWithoutRef<'span'>
 export const TooltipContent = ({ ...props }: TooltipContentProps) => {
-  const tooltip = requireContext(useContext(TooltipContext), 'TooltipContent')
+  const tooltip = requireContext(use(TooltipContext), 'TooltipContent')
 
   return <span {...tooltip.tooltipProps} {...props} />
 }
@@ -5527,28 +6163,7 @@ export const TreeGrid = ({
   />
 )
 
-export interface VirtualListProps extends ComponentPropsWithoutRef<'div'> {
-  glass?: LumenGlassProp
-  itemSize?: number | string
-  overscan?: number | string
-}
-export const VirtualList = ({
-  className,
-  glass = false,
-  itemSize,
-  overscan,
-  ...props
-}: VirtualListProps) => (
-  <div
-    className={composeClassName(
-      'ui-virtual-list', glassClass('ui-virtual-list', glass), className
-    )}
-    data-ui-item-size={itemSize}
-    data-ui-overscan={overscan}
-    data-ui-virtual-list
-    {...props}
-  />
-)
+export { VirtualList, type VirtualListDataProps, type VirtualListProps } from './virtual-list.js'
 
 export type BackToTopProps = ComponentPropsWithoutRef<'button'>
 export const BackToTop = ({
@@ -6486,7 +7101,7 @@ export const ButtonLink = ({
   )
 
   if (asChild) {
-    const child = Children.only(children)
+    const child = children
 
     if (!isValidElement<ButtonChildProps>(child)) {
       throw new Error(
@@ -6626,11 +7241,12 @@ export const Stepper = ({
 
 export interface FileUploadProps extends Omit<
   ComponentPropsWithRef<'input'>,
-  'type' | 'size'
+  'type' | 'size' | 'value' | 'defaultValue'
 > {
   hint?: ReactNode
   inputClassName?: string
   label?: ReactNode
+  selectedFilesLabel?: string
 }
 export const FileUpload = ({
   children,
@@ -6639,6 +7255,7 @@ export const FileUpload = ({
   id,
   inputClassName,
   label = 'Choose a file or drag it here',
+  selectedFilesLabel = '{count} files selected',
   onChange,
   ref,
   ...props
@@ -6646,10 +7263,32 @@ export const FileUpload = ({
   const generatedId = useId()
   const inputId = id ?? `ui-file-upload-${generatedId.replaceAll(':', '')}`
   const [selectedFiles, setSelectedFiles] = useState<string[]>([])
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
+  useEffect(() => {
+    const owner = inputRef.current?.ownerDocument
+    let active = true
+
+    const reset = (event: Event): void => {
+      if (event.target !== inputRef.current?.form) return
+
+      queueMicrotask(() => {
+        if (active && !event.defaultPrevented) setSelectedFiles([])
+      })
+    }
+
+    owner?.addEventListener('reset', reset)
+
+    return () => {
+      active = false
+
+      owner?.removeEventListener('reset', reset)
+    }
+  }, [props.form])
 
   const selectedFileText =
     selectedFiles.length > 1 ?
-      `${selectedFiles.length} files selected` :
+      selectedFilesLabel.replaceAll('{count}', String(selectedFiles.length)) :
       (selectedFiles[0] ?? '')
 
   return (
@@ -6670,9 +7309,17 @@ export const FileUpload = ({
 
           onChange?.(event)
         }}
-        ref={ref}
+        ref={element => {
+          inputRef.current = element
+
+          if (typeof ref === 'function') return ref(element)
+
+          if (ref) ref.current = element
+        }}
         type="file"
         {...props}
+        defaultValue={undefined}
+        value={undefined}
       />
       <svg
         aria-hidden="true"
@@ -6933,7 +7580,7 @@ export interface SegmentedProps extends Omit<
   name?: string
   onValueChange?: (value: string) => void
   options?: SelectOption[]
-  size?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
   value?: string
 }
 export const Segmented = ({
@@ -6943,13 +7590,13 @@ export const Segmented = ({
   name = 'segmented',
   onValueChange,
   options = emptyOptions,
-  size = 'default',
-  value = defaultValue,
+  visualSize = 'default',
+  value,
   ...props
 }: SegmentedProps) => (
   <div
     className={composeClassName(
-      'ui-segmented', size === 'sm' && 'ui-segmented--sm', size === 'lg' && 'ui-segmented--lg', className
+      'ui-segmented', visualSize === 'sm' && 'ui-segmented--sm', visualSize === 'lg' && 'ui-segmented--lg', className
     )}
     role="group"
     {...props}
@@ -6957,7 +7604,8 @@ export const Segmented = ({
     {options.map(normalizeOption).map(option => (
       <label className="ui-segmented__option" key={option.value}>
         <input
-          defaultChecked={value === option.value}
+          checked={value === undefined ? undefined : value === option.value}
+          defaultChecked={value === undefined ? defaultValue === option.value : undefined}
           className="ui-segmented__input"
           disabled={option.disabled}
           name={name}
@@ -7404,10 +8052,27 @@ export const Mentions = ({
 }: MentionsProps) => {
   const generatedId = useId()
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const pendingCaretRef = useRef<{ position: number, value: string } | null>(null)
   const [activeIndex, setActiveIndex] = useState(-1)
   const [internalValue, setInternalValue] = useState(defaultValue)
   const [query, setQuery] = useState<string | null>(null)
   const currentValue = value ?? internalValue
+
+  useLayoutEffect(() => {
+    const pending = pendingCaretRef.current
+    const input = inputRef.current
+
+    if (!pending) return
+
+    pendingCaretRef.current = null
+
+    if (!input || currentValue !== pending.value) return
+
+    input.focus()
+
+    input.setSelectionRange(pending.position, pending.position)
+  }, [currentValue])
+
   const listId = `ui-mentions-${generatedId}-list`
   const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const normalizedOptions = options.map(normalizeOption)
@@ -7445,15 +8110,11 @@ export const Mentions = ({
 
     const nextValue = before + currentValue.slice(caret)
 
+    pendingCaretRef.current = { position: before.length, value: nextValue }
+
     setNextValue(nextValue)
 
     closeList()
-
-    requestAnimationFrame(() => {
-      inputRef.current?.focus()
-
-      inputRef.current?.setSelectionRange(before.length, before.length)
-    })
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>): void => {
@@ -7507,8 +8168,14 @@ export const Mentions = ({
         className="ui-textarea ui-mentions__input"
         data-ui-mentions-input
         name={name}
-        onBlur={closeList}
+        onBlur={() => {
+          pendingCaretRef.current = null
+
+          closeList()
+        }}
         onChange={event => {
+          pendingCaretRef.current = null
+
           const nextValue = event.currentTarget.value
 
           const match = new RegExp(`${escapedTrigger}(\\w*)$`)
@@ -7551,6 +8218,7 @@ export const Mentions = ({
                 event.preventDefault()
               }}
               role="option"
+              tabIndex={-1}
               type="button"
             >
               {option.label}
@@ -7906,3 +8574,18 @@ export const SpeedDial = ({
     </div>
   )
 }
+
+export type DescriptionItemProps = ComponentPropsWithRef<'div'>
+export const DescriptionItem = ({ className, ...props }: DescriptionItemProps) => (
+  <div {...props} className={composeClassName('ui-description-item', 'ui-descriptions__item', className)} data-slot="description-item" />
+)
+
+export type DescriptionTermProps = ComponentPropsWithRef<'dt'>
+export const DescriptionTerm = ({ className, ...props }: DescriptionTermProps) => (
+  <dt {...props} className={composeClassName('ui-description-term', 'ui-descriptions__term', className)} data-slot="description-term" />
+)
+
+export type DescriptionDetailProps = ComponentPropsWithRef<'dd'>
+export const DescriptionDetail = ({ className, ...props }: DescriptionDetailProps) => (
+  <dd {...props} className={composeClassName('ui-description-detail', 'ui-descriptions__detail', className)} data-slot="description-detail" />
+)

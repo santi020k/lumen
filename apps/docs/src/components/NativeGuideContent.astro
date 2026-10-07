@@ -1,0 +1,169 @@
+---
+import { Badge, ButtonLink, Card, CodeTabs, Icon, Link } from '@santi020k/lumen-astro'
+
+import { nativeAiPrompts, type NativeGuideTopic } from '../data/native-guide-topics'
+import { getPlatformGuide } from '../data/platforms'
+import DocsLayout from '../layouts/DocsLayout.astro'
+
+import CodeBlock from './CodeBlock.astro'
+import NativeGuideNavigation from './NativeGuideNavigation.astro'
+
+interface Props { topic: NativeGuideTopic }
+
+const { topic } = Astro.props
+const guide = getPlatformGuide(topic.platform)
+const nativeAiPrompt = nativeAiPrompts[topic.platform]
+const topicLabels = { installation: 'Installation', theming: 'Theming', ai: 'Build with AI' }
+
+const sectionLabels = {
+  installation: [{ id: 'installation', label: 'Install and configure' }],
+  theming: [{ id: 'theme', label: 'Theme and appearance' }],
+  ai: [{ id: 'ai-usage', label: 'Agent workflow' }]
+}
+---
+
+<DocsLayout
+  breadcrumbs={[{ href: guide.href, label: guide.shortLabel }, { href: topic.href, label: topicLabels[topic.id] }]}
+  description={topic.description}
+  pageNavigation={sectionLabels[topic.id]}
+  title={`${topic.title} - Lumen UI`}
+>
+  <header class="native-guide-header">
+    <Badge class="native-guide-package" variant="outline">{guide.packageName}</Badge>
+    <h1>{topic.title}</h1>
+    <p>{topic.description}</p>
+  </header>
+  <NativeGuideNavigation platform={topic.platform} current={topic.id} />
+
+{topic.id === 'installation' && (
+  <section class="docs-section" id="installation" aria-labelledby="installation-title">
+    <div class="docs-section-heading">
+      <p>Get started</p>
+      <h2 id="installation-title">Install and configure</h2>
+      <p>{guide.installNote}</p>
+    </div>
+    {guide.prerequisites && (
+      <Card as="section" class="platform-prerequisites" variant="muted" aria-labelledby="prerequisites-title">
+        <div>
+          <Badge variant="outline">Before you begin</Badge>
+          <h3 id="prerequisites-title">What you need</h3>
+        </div>
+        <ul>
+          {guide.prerequisites.map(prerequisite => <li>{prerequisite}</li>)}
+        </ul>
+      </Card>
+    )}
+    {guide.setupSteps && (
+      <ol class="platform-setup-steps" aria-label={`${guide.label} installation steps`}>
+        {guide.setupSteps.map((step, index) => (
+          <li>
+            <Card as="article" class="platform-setup-step" variant="muted">
+              <span aria-hidden="true">{index + 1}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </div>
+            </Card>
+          </li>
+        ))}
+      </ol>
+    )}
+    <CodeTabs
+      ariaLabel={`${guide.label} setup examples`}
+      items={guide.codeExamples}
+      storageKey={`lumen-${guide.id}-setup`}
+    />
+  </section>
+
+)}
+
+{topic.id === 'theming' && guide.theme && (
+    <section class="docs-section" id="theme" aria-labelledby="theme-title">
+      <div class="docs-section-heading">
+        <p>Appearance</p>
+        <h2 id="theme-title">Choose and change the theme</h2>
+        <p>{guide.theme.description}</p>
+      </div>
+      <CodeTabs
+        ariaLabel={`${guide.label} theme examples`}
+        items={guide.theme.examples}
+        storageKey={`lumen-${guide.id}-theme`}
+      />
+      <div class="platform-theme-grid">
+        <Card as="section" class="platform-theme-note" variant="muted" aria-labelledby="theme-roles-title">
+          <Icon decorative name="palette" size="sm" />
+          <div><h3 id="theme-roles-title">Style with semantic roles</h3><p>{guide.theme.note}</p></div>
+        </Card>
+        <Card as="section" class="platform-theme-checklist" variant="muted" aria-labelledby="theme-checklist-title">
+          <div><Icon decorative name="list-checks" size="sm" /><h3 id="theme-checklist-title">Verify both appearances</h3></div>
+          <ul>{guide.theme.verification.map(item => <li>{item}</li>)}</ul>
+        </Card>
+      </div>
+    </section>
+)}
+
+{topic.id === 'ai' && (
+    <section class="docs-section" id="ai-usage" aria-labelledby="ai-usage-title">
+      <div class="docs-section-heading">
+        <p>Continue with AI</p>
+        <h2 id="ai-usage-title">Give your coding tool the Lumen workflow</h2>
+        <p>
+          Install the portable skill once, open your application in a compatible coding tool, and
+          name the target platform in the request. The skill reads the native package and
+          documentation before selecting components.
+        </p>
+      </div>
+      <div class="platform-ai-grid">
+        <Card as="article" class="platform-ai-card" variant="muted">
+          <Badge variant="outline">1 · Install the skill</Badge>
+          <CodeBlock code="npx skills add santi020k/lumen --skill lumen-ui" lang="bash" title="Terminal" />
+          <p>Follow the installer prompts and select the AI coding tools available on your machine.</p>
+        </Card>
+        <Card as="article" class="platform-ai-card" variant="muted">
+          <Badge variant="outline">2 · Ask for the native target</Badge>
+          <CodeBlock code={nativeAiPrompt} title="Prompt" />
+          <p>Review the generated package imports, component states, and platform accessibility behavior.</p>
+        </Card>
+      </div>
+      <Card as="section" class="platform-ai-note" variant="muted">
+        <Icon decorative name="info" size="sm" />
+        <p>
+          The Agent Skill and optional MCP server cover web and native adapters. MCP can list the
+          components available for this platform and return installation, setup, API examples,
+          accessibility guidance, and reference source for each documented native component.
+        </p>
+        <Link href="/docs/ai-skill">Open the complete AI setup guide</Link>
+      </Card>
+    </section>
+)}
+
+  <div class="native-guide-next">
+    <ButtonLink href={`${guide.href}/components`} showArrow>Explore components</ButtonLink>
+    <ButtonLink href={`${guide.href}/playground`} variant="secondary">Try the playground</ButtonLink>
+  </div>
+</DocsLayout>
+
+<style>
+
+  .native-guide-header { display: grid; gap: 1rem; padding-block: 1rem; }
+  .native-guide-header :global(.native-guide-package) { justify-self: start; max-width: 100%; overflow-wrap: anywhere; white-space: normal; }
+  .native-guide-header h1 { color: hsl(var(--ink)); font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.1; }
+  .native-guide-header > p { max-width: 48rem; color: hsl(var(--ink-soft)); line-height: 1.75; }
+  .native-guide-next { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+  .platform-setup-steps, .platform-theme-grid, .platform-ai-grid { display: grid; gap: 1rem; min-width: 0; }
+  .platform-setup-steps { list-style: none; margin-block: 1rem; padding: 0; }
+  :global(.platform-prerequisites), :global(.platform-setup-step), :global(.platform-theme-note), :global(.platform-theme-checklist), :global(.platform-ai-card), :global(.platform-ai-note) { display: grid; gap: 1rem; min-width: 0; padding: 1.25rem; }
+  :global(.platform-prerequisites), .platform-theme-grid, :global(.platform-ai-note) { margin-block: 1rem; }
+  .platform-prerequisites > div, .platform-theme-checklist > div { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+  :global(.platform-setup-step) { grid-template-columns: auto minmax(0, 1fr); height: 100%; }
+  .platform-setup-step > span { display: grid; place-items: center; align-self: start; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: hsl(var(--brand-soft)); color: hsl(var(--brand)); font-size: 0.75rem; font-weight: 800; }
+  h3 { color: hsl(var(--ink)); font-size: 1rem; font-weight: 800; }
+  .platform-prerequisites ul, .platform-theme-checklist ul { display: grid; gap: 0.5rem; margin: 0; padding-left: 1.25rem; }
+  .platform-prerequisites ul, .platform-theme-checklist ul, .platform-setup-step p, .platform-theme-note p, .platform-ai-card p, .platform-ai-note p { color: hsl(var(--ink-soft)); font-size: 0.875rem; line-height: 1.7; }
+  .platform-setup-step p { margin-top: 0.35rem; }
+  :global(.platform-ai-card) { align-content: start; }
+  :global(.platform-theme-note), :global(.platform-ai-note) { grid-template-columns: auto minmax(0, 1fr); }
+  .platform-ai-note :global(a) { grid-column: 2; }
+  @media (min-width: 64rem) { .platform-setup-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } .platform-theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+</style>

@@ -55,7 +55,7 @@ export const lumenTemplates = [
     slug: 'project-workspace'
   },
   {
-    description: 'A calm sign-in and guided setup flow with useful validation and progress states.',
+    description: 'Email-code login, passkey recovery, and guided setup with useful validation and progress states.',
     eyebrow: 'First-run experience',
     frameworks: templateFrameworks,
     icon: 'sparkles',

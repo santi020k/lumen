@@ -19,19 +19,32 @@ const [
   reactHooksSource,
   reactServerComponentsSource
 ] = await Promise.all([
-  readFile(new URL('../packages/elements/src/define.ts', import.meta.url), 'utf8'),
+  Promise.all(['define', 'consumer-behaviors'].map(name => readFile(new URL(`../packages/elements/src/${name}.ts`, import.meta.url), 'utf8'))).then(sources => sources.join('\n')),
   Promise.all([
+    'ai-surfaces',
     'badge',
     'button',
     'card',
     'combobox',
-    'foundations'
+    'foundations',
+    'dashboard',
+    'device-frame',
+    'image-comparison',
+    'media-viewport',
+    'media-selection',
+    'world-map',
+    'virtual-list',
+    'visual-interactions'
   ].map(name => readFile(
     new URL(`../packages/elements/src/components/${name}.ts`, import.meta.url),
     'utf8'
   ))).then(sources => sources.join('\n')),
-  readFile(new URL('../packages/react/src/components.tsx', import.meta.url), 'utf8'),
-  readFile(new URL('../packages/react/src/hooks.tsx', import.meta.url), 'utf8'),
+  Promise.all(['ai-surfaces', 'device-frame', 'amount-field', 'attachments', 'bullet-chart', 'comparison-chart', 'combobox', 'components', 'data-table', 'expanded-charts', 'dashboard', 'change-summary', 'image-comparison', 'media-viewport', 'media-selection', 'world-map', 'interval-charts', 'virtual-list', 'visual-interactions'].map(name => readFile(
+    new URL(`../packages/react/src/${name}.tsx`, import.meta.url), 'utf8'
+  ))).then(sources => sources.join('\n')),
+  Promise.all(['hooks', 'rich-text-editor'].map(name => readFile(
+    new URL(`../packages/react/src/${name}.tsx`, import.meta.url), 'utf8'
+  ))).then(sources => sources.join('\n')),
   readFile(new URL('../packages/react/src/server-components.tsx', import.meta.url), 'utf8')
 ])
 

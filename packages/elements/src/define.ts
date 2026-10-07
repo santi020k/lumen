@@ -1,60 +1,84 @@
-/* eslint-disable complexity, @typescript-eslint/no-non-null-assertion */
-
+/* eslint-disable complexity */
 import {
   alignLumenChartSeries,
+  bindLumenTabIndicator,
   coerceThemeBuilderExportFormat,
   coerceThemeBuilderMode,
   coerceThemeBuilderScheme,
+  coerceThemePreset,
+  createLumenAttachmentPreviewController,
   createLumenBarGeometry,
-  createLumenHeatmapGeometry,
+  createLumenChartDatumActivation,
+  createLumenChartInteractionController,
+  createLumenHeatmapDatumActivation,
+  createLumenHeatmapModel,
+  createLumenHistogramGeometry,
   createLumenKanbanMoveDetail,
+  createLumenLineChartModel,
   createLumenLineGeometry,
   createLumenPieGeometry,
+  createLumenRangeDatumActivation,
   createLumenRangeGeometry,
   createLumenScatterGeometry,
+  createLumenWaterfallGeometry,
   createThemeBuilderTokens,
+  executeLumenRichTextCommand,
   exportThemeBuilderValue,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
-  getLumenChartAxisPadding,
   getLumenChartCategories,
+  getLumenChartCategoryLabel,
+  getLumenChartCategoryTicks,
   getLumenChartDomain,
+  getLumenChartMotionKey,
   getLumenChartTicks,
+  getLumenDirectionalKey,
+  getLumenHeatmapColor,
   getLumenLocalePair,
   getLumenPhoneCountries,
   getLumenPhoneCountry,
+  getLumenPhoneFlagSource,
   getLumenRichTextShortcut,
-  getVirtualRange,
   hasLumenChartData,
   hasLumenPieData,
+  isLumenDateBoundsValid,
   isLumenRichTextToggleCommand,
+  type LumenAttachmentPreviewController,
+  type LumenBoxPlotDatum,
+  type LumenBoxPlotStatisticLabels,
+  type LumenBulletRange,
+  type LumenCalendarHeatmapDatum,
   type LumenChartLabels,
   type LumenChartSeries,
   type LumenChartTone,
   lumenChartTones,
   type LumenComboSeries,
+  type LumenComparisonDatum,
   type LumenComponentName,
   lumenComponentNames,
-  type LumenHeatmapDatum,
+  type LumenFunnelDatum,
+  type LumenHistogramBin,
   type LumenIllustrationName,
   type LumenKanbanMoveDetail,
   type LumenLocaleOption,
   type LumenPieGeometrySlice,
-  type LumenRangeDatum,
   type LumenRichTextChangeDetail,
   type LumenRichTextCommandDetail,
-  type LumenScatterGeometryPoint,
+  type LumenScatterReference,
   type LumenTabsChangeDetail,
   type LumenThemeBuilderExportFormat,
   type LumenThemeBuilderScheme,
   type LumenThemeTokens,
+  type LumenWaterfallDatum,
   normalizeLumenLocales,
   normalizeThemeBuilderHex,
+  parseLumenDate as parseCalendarDate,
   parseThemeCss,
   renderLumenIconSvg,
   renderLumenIllustrationSvg,
-  resolveLumenChartLabels,
   resolveLumenChartTone,
+  resolveLumenDateLabels,
+  resolveLumenDateLocale,
   resolveLumenPhoneNumber,
   scaleLumenChartValue,
   scoreThemeContrast,
@@ -62,6 +86,18 @@ import {
   tuneThemeContrast
 } from '@santi020k/lumen-core'
 
+import {
+  LumenApprovalCardElement as GranularLumenApprovalCardElement,
+  lumenApprovalCardElementConfig,
+  LumenPromptComposerElement as GranularLumenPromptComposerElement,
+  lumenPromptComposerElementConfig,
+  LumenSourceCitationElement as GranularLumenSourceCitationElement,
+  lumenSourceCitationElementConfig,
+  LumenStreamMessageElement as GranularLumenStreamMessageElement,
+  lumenStreamMessageElementConfig,
+  LumenToolActivityElement as GranularLumenToolActivityElement,
+  lumenToolActivityElementConfig
+} from './components/ai-surfaces.js'
 import {
   LumenBadgeElement as GranularLumenBadgeElement,
   lumenBadgeElementConfig
@@ -78,6 +114,13 @@ import {
   LumenComboboxElement as GranularLumenComboboxElement,
   lumenComboboxElementConfig
 } from './components/combobox.js'
+import {
+  LumenChangeSummaryElement as GranularLumenChangeSummaryElement,
+  lumenChangeSummaryElementConfig,
+  LumenFilterBarElement as GranularLumenFilterBarElement,
+  lumenFilterBarElementConfig
+} from './components/dashboard.js'
+import { LumenDeviceFrameElement as GranularLumenDeviceFrameElement, lumenDeviceFrameElementConfig } from './components/device-frame.js'
 import {
   LumenCardContentElement as GranularLumenCardContentElement,
   lumenCardContentElementConfig,
@@ -111,12 +154,41 @@ import {
   lumenVisuallyHiddenElementConfig
 } from './components/foundations.js'
 import {
+  LumenImageComparisonElement as GranularLumenImageComparisonElement,
+  lumenImageComparisonElementConfig
+} from './components/image-comparison.js'
+import { LumenMediaFilmstripElement as GranularLumenMediaFilmstripElement, lumenMediaFilmstripElementConfig, LumenMediaThumbnailElement as GranularLumenMediaThumbnailElement, lumenMediaThumbnailElementConfig } from './components/media-selection.js'
+import { LumenMediaViewportElement as GranularLumenMediaViewportElement, lumenMediaViewportElementConfig } from './components/media-viewport.js'
+import {
+  LumenVirtualListElement as GranularLumenVirtualListElement,
+  lumenVirtualListElementConfig
+} from './components/virtual-list.js'
+import {
+  LumenChartMotionElement as GranularLumenChartMotionElement,
+  lumenChartMotionElementConfig,
+  LumenMotionGroupElement as GranularLumenMotionGroupElement,
+  lumenMotionGroupElementConfig,
+  LumenVisualEffectElement as GranularLumenVisualEffectElement,
+  lumenVisualEffectElementConfig
+} from './components/visual-interactions.js'
+import {
+  LumenWorldMapElement as GranularLumenWorldMapElement,
+  lumenWorldMapElementConfig
+} from './components/world-map.js'
+import { bulletChartHtml, bulletNumberAttribute, parseBulletRanges } from './bullet-chart-html.js'
+import { LumenDatumChartElement } from './chart-activation.js'
+import { chartAnnotationHtml, chartAxesHtml, chartCaptionHtml, chartDataTableHtml, chartHeaderHtml, chartInspectionHtml, chartLabelsFor, chartLegendHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
+import { comparisonChartHtml, parseComparisonData } from './comparison-chart-html.js'
+import { LumenAmountFieldElement, MessageElement } from './consumer-behaviors.js'
+import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
   type LumenElementConfig,
   type LumenElementConstructor
 } from './element-base.js'
+import { boxPlotHtml, calendarHeatmapHtml, funnelChartHtml, parseBoxPlotData, parseCalendarHeatmapData, parseFunnelData } from './expanded-chart-html.js'
 
+export { LumenAmountFieldElement }
 export { LumenElement } from './element-base.js'
 
 type ToastPlacement =
@@ -220,13 +292,6 @@ const datePickerControlSelector = '[data-ui-date-picker-control]'
 const datePickerTriggerSelector = '[data-ui-date-picker-trigger]'
 const datePickerValueSelector = '[data-ui-date-picker-value]'
 const datePickerPopoverSelector = '[data-ui-date-picker-popover]'
-
-const formControlSelector = [
-  'input:not([type="hidden"])',
-  'select',
-  'textarea'
-].join(',')
-
 const selectOptionSelector = '[data-ui-select-option]'
 const defaultToastDuration = 5000
 const defaultToastMax = 5
@@ -264,6 +329,14 @@ const glassAttributeClasses = (className: string) => ({
 })
 
 const elementConfigs = {
+  ApprovalCard: lumenApprovalCardElementConfig,
+  PromptComposer: lumenPromptComposerElementConfig,
+  SourceCitation: lumenSourceCitationElementConfig,
+  StreamMessage: lumenStreamMessageElementConfig,
+  ToolActivity: lumenToolActivityElementConfig,
+  ChartMotion: lumenChartMotionElementConfig,
+  MotionGroup: lumenMotionGroupElementConfig,
+  VisualEffect: lumenVisualEffectElementConfig,
   Accordion: {
     attributeClasses: {
       variant: { flush: 'ui-accordion--flush' }
@@ -315,6 +388,17 @@ const elementConfigs = {
     baseClassName: 'ui-attachment',
     tagName: 'lumen-attachment'
   },
+  AttachmentList: {
+    baseClassName: 'ui-attachment-list',
+    defaults: { role: 'list', 'data-slot': 'attachment-list' },
+    tagName: 'lumen-attachment-list'
+  },
+  AttachmentPreview: {
+    baseClassName: 'ui-attachment-preview',
+    defaults: { role: 'figure', 'data-ui-attachment-preview': '' },
+    tagName: 'lumen-attachment-preview'
+  },
+  AmountField: LumenAmountFieldElement.config,
   Autocomplete: {
     baseClassName: 'ui-input ui-autocomplete',
     defaults: { role: 'combobox', type: 'search' },
@@ -512,6 +596,31 @@ const elementConfigs = {
     defaults: { 'data-ui-date-range-picker': '' },
     tagName: 'lumen-date-range-picker'
   },
+  DialogHeader: {
+    baseClassName: 'ui-dialog-header',
+    defaults: { 'data-slot': 'dialog-header' },
+    tagName: 'lumen-dialog-header'
+  },
+  DialogTitle: {
+    baseClassName: 'ui-dialog-title',
+    defaults: { 'data-slot': 'dialog-title' },
+    tagName: 'lumen-dialog-title'
+  },
+  DialogBody: {
+    baseClassName: 'ui-dialog-body',
+    defaults: { 'data-slot': 'dialog-body' },
+    tagName: 'lumen-dialog-body'
+  },
+  DialogFooter: {
+    baseClassName: 'ui-dialog-footer',
+    defaults: { 'data-slot': 'dialog-footer' },
+    tagName: 'lumen-dialog-footer'
+  },
+  DialogClose: {
+    baseClassName: 'ui-dialog-close',
+    defaults: { 'data-slot': 'dialog-close', 'data-ui-dialog-close': '' },
+    tagName: 'lumen-dialog-close'
+  },
   Dialog: {
     attributeClasses: {
       glass: {
@@ -622,6 +731,14 @@ const elementConfigs = {
     defaults: { 'data-ui-hover-card': '' },
     tagName: 'lumen-hover-card'
   },
+  LollipopChart: { baseClassName: 'ui-chart ui-comparison-chart ui-lollipop-chart', role: 'figure', tagName: 'lumen-lollipop-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  DumbbellChart: { baseClassName: 'ui-chart ui-comparison-chart ui-dumbbell-chart', role: 'figure', tagName: 'lumen-dumbbell-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  CalendarHeatmap: { baseClassName: 'ui-chart ui-calendar-heatmap', role: 'figure', tagName: 'lumen-calendar-heatmap', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  FunnelChart: { baseClassName: 'ui-chart ui-funnel-chart', role: 'figure', tagName: 'lumen-funnel-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  BoxPlot: { baseClassName: 'ui-chart ui-box-plot', role: 'figure', tagName: 'lumen-box-plot', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  BulletChart: { baseClassName: 'ui-chart ui-bullet-chart', role: 'figure', tagName: 'lumen-bullet-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  Histogram: { baseClassName: 'ui-chart ui-histogram', role: 'figure', tagName: 'lumen-histogram', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
+  WaterfallChart: { baseClassName: 'ui-chart ui-waterfall-chart', role: 'figure', tagName: 'lumen-waterfall-chart', attributeClasses: { presentation: { bare: 'ui-chart--bare' } } },
   Heatmap: {
     baseClassName: 'ui-chart ui-heatmap',
     role: 'figure',
@@ -639,6 +756,15 @@ const elementConfigs = {
     defaults: { size: 'default' },
     tagName: 'lumen-icon'
   },
+  DeviceFrame: lumenDeviceFrameElementConfig,
+
+  WorldMap: lumenWorldMapElementConfig,
+  ImageComparison: lumenImageComparisonElementConfig,
+  MediaViewport: lumenMediaViewportElementConfig,
+  MediaThumbnail: lumenMediaThumbnailElementConfig,
+  MediaFilmstrip: lumenMediaFilmstripElementConfig,
+  ChangeSummary: lumenChangeSummaryElementConfig,
+  FilterBar: lumenFilterBarElementConfig,
   Image: {
     attributeClasses: {
       fit: {
@@ -766,11 +892,7 @@ const elementConfigs = {
     defaults: { from: 'assistant' },
     tagName: 'lumen-message'
   },
-  MessageScroller: {
-    attributeClasses: glassAttributeClasses('ui-message-scroller--glass'),
-    baseClassName: 'ui-message-scroller',
-    tagName: 'lumen-message-scroller'
-  },
+  MessageScroller: MessageElement.config,
   NativeSelect: {
     attributeClasses: {
       'visual-size': { lg: 'ui-select--lg', sm: 'ui-select--sm' }
@@ -805,7 +927,7 @@ const elementConfigs = {
     tagName: 'lumen-password-field'
   },
   PhoneInput: {
-    baseClassName: 'ui-phone-input ui-input-group',
+    baseClassName: 'ui-phone-field',
     tagName: 'lumen-phone-input'
   },
   Pill: {
@@ -906,11 +1028,9 @@ const elementConfigs = {
     tagName: 'lumen-search-field'
   },
   Select: {
-    attributeClasses: {
-      ...glassAttributeClasses('ui-select-field--glass'),
-      size: { lg: 'ui-select--lg', sm: 'ui-select--sm' }
-    },
-    baseClassName: 'ui-select',
+    attributeClasses: glassAttributeClasses('ui-select-field--glass'),
+    observedAttributes: ['glass', 'size', 'visual-size'],
+    baseClassName: 'ui-select-field',
     tagName: 'lumen-select'
   },
   Separator: lumenSeparatorElementConfig,
@@ -966,6 +1086,7 @@ const elementConfigs = {
     attributeClasses: glassAttributeClasses('ui-tabs--glass'),
     baseClassName: 'ui-tabs',
     defaults: { 'data-ui-tabs': '' },
+    observedAttributes: ['glass', 'indicator'],
     tagName: 'lumen-tabs'
   },
   TagGroup: {
@@ -1044,12 +1165,7 @@ const elementConfigs = {
     tagName: 'lumen-tree-grid'
   },
   Typography: lumenTypographyElementConfig,
-  VirtualList: {
-    attributeClasses: glassAttributeClasses('ui-virtual-list--glass'),
-    baseClassName: 'ui-virtual-list',
-    defaults: { 'data-ui-virtual-list': '' },
-    tagName: 'lumen-virtual-list'
-  },
+  VirtualList: lumenVirtualListElementConfig,
   VisuallyHidden: lumenVisuallyHiddenElementConfig,
   LanguageToggle: {
     baseClassName: 'ui-language-toggle',
@@ -1302,7 +1418,7 @@ const elementConfigs = {
   },
   Segmented: {
     attributeClasses: {
-      size: { lg: 'ui-segmented--lg', sm: 'ui-segmented--sm' }
+      'visual-size': { lg: 'ui-segmented--lg', sm: 'ui-segmented--sm' }
     },
     baseClassName: 'ui-segmented',
     defaults: { role: 'group' },
@@ -1318,6 +1434,24 @@ const elementConfigs = {
       role: 'toolbar'
     },
     tagName: 'lumen-toolbar'
+  },
+  DescriptionItem: {
+    baseClassName: 'ui-description-item ui-descriptions__item',
+    defaults: { 'data-slot': 'description-item' },
+    role: 'group',
+    tagName: 'lumen-description-item'
+  },
+  DescriptionTerm: {
+    baseClassName: 'ui-description-term ui-descriptions__term',
+    defaults: { 'data-slot': 'description-term' },
+    role: 'term',
+    tagName: 'lumen-description-term'
+  },
+  DescriptionDetail: {
+    baseClassName: 'ui-description-detail ui-descriptions__detail',
+    defaults: { 'data-slot': 'description-detail' },
+    role: 'definition',
+    tagName: 'lumen-description-detail'
   },
   Descriptions: {
     baseClassName: 'ui-descriptions',
@@ -1379,12 +1513,31 @@ const elementConfigs = {
 >
 
 const observedAttributeNames = [
+  'start-date',
+  'end-date',
+  'week-starts-on',
+  'weekday-labels',
+  'min-label',
+  'q1-label',
+  'median-label',
+  'q3-label',
+  'max-label',
+  'outliers-label',
+  'reference-label',
+  'target',
+  'ranges',
+  'target-label',
   'activation-offset',
   'animation',
   'area',
   'autocomplete',
   'border-position',
   'caption',
+  'x-scale',
+  'x-min',
+  'x-max',
+  'domain-min',
+  'domain-max',
   'category-label',
   'center-label',
   'center-value',
@@ -1393,6 +1546,12 @@ const observedAttributeNames = [
   'columns',
   'country',
   'country-name',
+  'country-label',
+  'input-id',
+  'number-label',
+  'invalid-number-message',
+  'show-validation-error',
+  'error-message',
   'decimals',
   'data',
   'default-value',
@@ -1436,12 +1595,32 @@ const observedAttributeNames = [
   'prefix',
   'pressed',
   'reference-value',
+  'x-scale',
+  'domain-min',
+  'domain-max',
+  'x-min',
+  'x-max',
+  'interactive',
+  'sync-group',
+  'annotations',
+  'bins',
+  'frequency',
+  'color-scale',
+  'midpoint',
+  'count-label',
+  'density-label',
+  'start-label',
+  'end-label',
+  'invalid-data-label',
   'series',
   'series-label',
   'shape',
   'show-endpoint',
   'show-legend',
   'show-table',
+  'drilldown',
+  'explore-data-label',
+  'datum-action-prefix',
   'size',
   'size-label',
   'surface',
@@ -1485,8 +1664,12 @@ const createId = (prefix: string): string => {
 
 const isElementVisible = (element: HTMLElement): boolean => {
   if (typeof element.checkVisibility === 'function') {
-    return element.checkVisibility()
+    return element.checkVisibility({ visibilityProperty: true })
   }
+
+  const visibility = getComputedStyle(element).visibility
+
+  if (visibility === 'hidden' || visibility === 'collapse') return false
 
   return element.offsetParent !== null || element.getClientRects().length > 0
 }
@@ -1495,7 +1678,7 @@ const getFocusable = (root: ParentNode | null): HTMLElement[] => {
   if (!root) return []
 
   return [...root.querySelectorAll<HTMLElement>(focusableSelector)].filter(
-    element => !element.hasAttribute('hidden') && isElementVisible(element)
+    element => !element.matches(':disabled') && !element.closest('[hidden], [inert]') && isElementVisible(element)
   )
 }
 
@@ -1617,8 +1800,9 @@ const validateControl = (
 }
 
 const getFormControls = (form: HTMLFormElement): NativeFormControl[] => [
-  ...form.querySelectorAll<NativeFormControl>(formControlSelector)
-].filter(control => control.form === form && !control.disabled)
+  ...form.elements
+].filter(isNativeFormControl).filter(control => !control.disabled &&
+  !(control instanceof HTMLInputElement && control.type === 'hidden'))
 
 const validateForm = (form: HTMLFormElement): NativeFormControl[] => (
   getFormControls(form).filter(control => !validateControl(control, form))
@@ -1687,7 +1871,11 @@ const initLumenForms = (scope: ParentNode): void => {
       const controlId = link?.hash.slice(1)
       const control = controlId ? document.getElementById(controlId) : null
 
-      if (!link || !(control instanceof HTMLElement) || !form.contains(control))
+      const belongsToForm = isNativeFormControl(control) ?
+        control.form === form :
+        control instanceof HTMLElement && form.contains(control)
+
+      if (!link || !(control instanceof HTMLElement) || !belongsToForm)
         return
 
       event.preventDefault()
@@ -2279,18 +2467,16 @@ const getRichTextCommandValue = (control: HTMLElement): string | undefined => {
   if (control.dataset.uiEditorValue !== undefined)
     return control.dataset.uiEditorValue
 
-  if (
-    control instanceof HTMLInputElement ||
-    control instanceof HTMLSelectElement ||
-    control instanceof HTMLTextAreaElement
-  )
+  if (isNativeFormControl(control))
     return control.value
 
   return undefined
 }
 
 const syncRichTextCommandStates = (root: HTMLElement): void => {
-  const commandDocument = document as unknown as RichTextCommandDocument
+  if (root.dataset.uiEditorNativeState === 'false') return
+
+  const commandDocument: RichTextCommandDocument = document
 
   for (const control of root.querySelectorAll<HTMLElement>(
     richTextEditorCommandSelector
@@ -2343,15 +2529,15 @@ const executeRichTextCommand = (
 ): boolean => {
   if (!command) return false
 
-  const commandDocument = document as unknown as RichTextCommandDocument
-  let executed = false
+  const commandDocument: RichTextCommandDocument = document
 
-  if (typeof commandDocument.execCommand === 'function') {
-    executed =
-      value === undefined ?
-        commandDocument.execCommand(command) :
-        commandDocument.execCommand(command, false, value)
-  }
+  const executed = executeLumenRichTextCommand(root, { command, ...(value === undefined ? {} : { value }) }, () => {
+    if (typeof commandDocument.execCommand !== 'function') return false
+
+    return value === undefined ?
+      commandDocument.execCommand(command) :
+      commandDocument.execCommand(command, false, value)
+  })
 
   const detail: LumenRichTextCommandDetail = {
     command,
@@ -2478,6 +2664,7 @@ const installRichTextEditorController = (): void => {
 }
 
 const getScheduleTransferValue = (event: HTMLElement): string => event.id || event.textContent.trim()
+const activeScheduleEvents = new WeakMap<HTMLElement, HTMLElement>()
 
 const initSchedules = (scope: ParentNode): void => {
   const closestRoot = getClosestScopedElement(scope, scheduleSelector)
@@ -2505,10 +2692,14 @@ const initSchedules = (scope: ParentNode): void => {
           'text/plain', getScheduleTransferValue(scheduleEvent)
         )
 
+        activeScheduleEvents.set(root, scheduleEvent)
+
         root.dataset.uiDragging = 'true'
       })
 
       scheduleEvent.addEventListener('dragend', () => {
+        activeScheduleEvents.delete(root)
+
         delete root.dataset.uiDragging
       })
     }
@@ -2536,11 +2727,12 @@ const initSchedules = (scope: ParentNode): void => {
         delete slot.dataset.state
 
         const draggedId = event.dataTransfer?.getData('text/plain')
-        const dragged = draggedId ? document.getElementById(draggedId) : null
+        const dragged = activeScheduleEvents.get(root)
 
-        if (dragged instanceof HTMLElement) {
-          slot.append(dragged)
-        }
+        if (!(dragged instanceof HTMLElement) ||
+          dragged.closest('lumen-schedule, [data-ui-schedule]') !== root) return
+
+        slot.append(dragged)
 
         root.dispatchEvent(
           new CustomEvent('ui:schedule-change', {
@@ -2592,7 +2784,7 @@ const installScheduleController = (): void => {
 }
 
 /* cspell:ignore valuenow */
-/* eslint-disable @stylistic/padding-line-between-statements -- Resizable mirrors Astro's compact pane sizing runtime. */
+
 const parseResizableNumberList = (
   value: string | undefined,
   count: number,
@@ -2610,11 +2802,13 @@ const parseResizableNumberList = (
 
 const normalizeResizableSizes = (sizes: number[], count: number): number[] => {
   const fallbackSize = 100 / Math.max(1, count)
+
   const usableSizes = Array.from({ length: count }, (_, index) => {
     const size = sizes[index] ?? fallbackSize
 
     return Number.isFinite(size) && size > 0 ? size : fallbackSize
   })
+
   const total = usableSizes.reduce((sum, size) => sum + size, 0)
 
   if (total <= 0) return Array.from({ length: count }, () => fallbackSize)
@@ -2638,6 +2832,7 @@ const applyResizableSizes = (
 ): void => {
   for (const [index, pane] of panes.entries()) {
     pane.dataset.uiResizablePanel = ''
+
     pane.style.setProperty('--ui-resizable-size', `${sizes[index] ?? 0}%`)
   }
 
@@ -2647,9 +2842,11 @@ const applyResizableSizes = (
     handle.setAttribute(
       'aria-valuemin', String(Math.round(minSizes[index] ?? 0))
     )
+
     handle.setAttribute(
       'aria-valuemax', String(Math.round(maxSizes[index] ?? 100))
     )
+
     handle.setAttribute('aria-valuenow', String(Math.round(sizes[index] ?? 0)))
   }
 }
@@ -2663,15 +2860,19 @@ const resizeResizablePair = (
 ): void => {
   const nextIndex = index + 1
   const total = (sizes[index] ?? 0) + (sizes[nextIndex] ?? 0)
+
   const min = Math.max(
     minSizes[index] ?? 0, total - (maxSizes[nextIndex] ?? 100)
   )
+
   const max = Math.min(
     maxSizes[index] ?? 100, total - (minSizes[nextIndex] ?? 0)
   )
+
   const paneSize = Math.min(max, Math.max(min, nextSize))
 
   sizes[index] = paneSize
+
   sizes[nextIndex] = total - paneSize
 }
 
@@ -2683,21 +2884,30 @@ const createResizableHandle = (
   const template = root.querySelector<HTMLTemplateElement>(
     `:scope > ${resizableHandleTemplateSelector}`
   )
+
   const handleFromTemplate = template?.content
     .querySelector<HTMLButtonElement>(resizableHandleSelector)
     ?.cloneNode(true)
+
   const handle =
     handleFromTemplate instanceof HTMLButtonElement ?
       handleFromTemplate :
       document.createElement('button')
 
   handle.type = 'button'
+
   handle.className = 'ui-resizable__handle'
+
   handle.dataset.uiResizableHandle = ''
+
   handle.dataset.index = String(index)
+
   handle.tabIndex = 0
+
   handle.setAttribute('aria-label', `Resize panel ${index + 1}`)
+
   handle.setAttribute('role', 'separator')
+
   handle.setAttribute('aria-orientation', separatorOrientation)
 
   return handle
@@ -2723,28 +2933,36 @@ const initResizableGroups = (scope: ParentNode): void => {
     if (panes.length < 2) continue
 
     root.dataset.uiBound = 'true'
+
     root.dataset.uiResizableEnhanced = 'true'
+
     root.classList.toggle(
       'ui-resizable--vertical', root.dataset.orientation === 'vertical'
     )
 
     const direction =
       root.dataset.orientation === 'vertical' ? 'vertical' : 'horizontal'
+
     const separatorOrientation =
       direction === 'horizontal' ? 'vertical' : 'horizontal'
+
     const axis = direction === 'horizontal' ? 'clientX' : 'clientY'
     const sizeProperty = direction === 'horizontal' ? 'width' : 'height'
+
     const minSizes = parseResizableNumberList(
       root.dataset.uiResizableMinSize, panes.length, 12
     )
+
     const maxSizes = parseResizableNumberList(
       root.dataset.uiResizableMaxSize, panes.length, 88
     )
+
     const initialSizes = normalizeResizableSizes(
       parseResizableNumberList(
         root.dataset.uiResizableDefaultSizes, panes.length, 100 / panes.length
       ), panes.length
     )
+
     let sizes = [...initialSizes]
     const handles: HTMLElement[] = []
 
@@ -2758,6 +2976,7 @@ const initResizableGroups = (scope: ParentNode): void => {
         pane.nextElementSibling.matches(resizableHandleSelector) ?
           (pane.nextElementSibling as HTMLButtonElement) :
           null
+
       const handle =
         existingHandle ??
         createResizableHandle(root, index, separatorOrientation)
@@ -2778,6 +2997,7 @@ const initResizableGroups = (scope: ParentNode): void => {
 
       const resizePair = (nextSize: number): void => {
         resizeResizablePair(sizes, minSizes, maxSizes, index, nextSize)
+
         applySizes()
       }
 
@@ -2787,10 +3007,15 @@ const initResizableGroups = (scope: ParentNode): void => {
         event.preventDefault()
 
         startPosition = event[axis]
+
         startSize = sizes[index] ?? 0
+
         containerSize = Math.max(1, root.getBoundingClientRect()[sizeProperty])
+
         root.dataset.resizing = 'true'
+
         handle.dataset.active = 'true'
+
         handle.setPointerCapture(event.pointerId)
       })
 
@@ -2798,27 +3023,38 @@ const initResizableGroups = (scope: ParentNode): void => {
         if (handle.dataset.active !== 'true') return
 
         const delta = ((event[axis] - startPosition) / containerSize) * 100
+        const multiplier = direction === 'horizontal' && getLumenDirectionalKey(handle, 'ArrowRight') === 'ArrowLeft' ? -1 : 1
 
-        resizePair(startSize + delta)
+        resizePair(startSize + delta * multiplier)
       })
 
-      handle.addEventListener('pointerup', event => {
+      const finishResize = (event: PointerEvent): void => {
         if (handle.dataset.active !== 'true') return
 
         delete handle.dataset.active
+
         delete root.dataset.resizing
-        handle.releasePointerCapture(event.pointerId)
-      })
+
+        if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId)
+      }
+
+      handle.addEventListener('pointerup', finishResize)
+
+      handle.addEventListener('pointercancel', finishResize)
+
+      handle.addEventListener('lostpointercapture', finishResize)
 
       handle.addEventListener('dblclick', () => {
         if (root.dataset.uiResizableReset !== 'true') return
 
         sizes = [...initialSizes]
+
         applySizes()
       })
 
       handle.addEventListener('keydown', event => {
         const step = event.shiftKey ? 10 : 2
+
         const keyDeltas: Record<string, number> =
           direction === 'horizontal' ?
             { ArrowLeft: -step, ArrowRight: step } :
@@ -2840,7 +3076,7 @@ const initResizableGroups = (scope: ParentNode): void => {
           return
         }
 
-        const delta = keyDeltas[event.key]
+        const delta = keyDeltas[getLumenDirectionalKey(handle, event.key)]
 
         if (delta === undefined) return
 
@@ -2886,7 +3122,6 @@ const installResizableController = (): void => {
     subtree: true
   })
 }
-/* eslint-enable @stylistic/padding-line-between-statements */
 
 const getLoopedIndex = (
   key: string,
@@ -2975,105 +3210,6 @@ const initDateRangePickers = (scope: ParentNode): void => {
   }
 }
 
-const initDatePickers = (scope: ParentNode): void => {
-  const closestRoot = getClosestScopedElement(scope, datePickerSelector)
-  const roots = getScopedElements<HTMLElement>(scope, datePickerSelector)
-
-  if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) {
-    roots.unshift(closestRoot)
-  }
-
-  for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
-
-    const native = root.querySelector<HTMLInputElement>(
-      datePickerNativeSelector
-    )
-
-    const control = root.querySelector<HTMLElement>(datePickerControlSelector)
-    const trigger = root.querySelector<HTMLElement>(datePickerTriggerSelector)
-    const valueEl = root.querySelector<HTMLElement>(datePickerValueSelector)
-    const popover = root.querySelector<HTMLElement>(datePickerPopoverSelector)
-    const calendar = root.querySelector<HTMLElement>(calendarSelector)
-
-    if (!native || !control || !trigger || !popover) continue
-
-    root.dataset.uiBound = 'true'
-
-    native.dataset.uiEnhanced = 'true'
-
-    control.hidden = false
-
-    const closePopover = (): void => {
-      popover.hidden = true
-
-      popover.dataset.state = 'closed'
-
-      trigger.setAttribute('aria-expanded', 'false')
-
-      // eslint-disable-next-line no-use-before-define -- the paired callbacks reference each other.
-      document.removeEventListener('click', handleOutsideClick)
-    }
-
-    const handleOutsideClick = (event: MouseEvent): void => {
-      if (!(event.target instanceof Node)) return
-
-      if (!popover.contains(event.target) && !trigger.contains(event.target)) {
-        closePopover()
-      }
-    }
-
-    const openPopover = (): void => {
-      if (calendar) {
-        if (native.min) calendar.dataset.uiCalendarMin = native.min
-        else delete calendar.dataset.uiCalendarMin
-
-        if (native.max) calendar.dataset.uiCalendarMax = native.max
-        else delete calendar.dataset.uiCalendarMax
-      }
-
-      popover.hidden = false
-
-      popover.dataset.state = 'open'
-
-      trigger.setAttribute('aria-expanded', 'true')
-
-      globalThis.setTimeout(() => {
-        document.addEventListener('click', handleOutsideClick)
-      })
-    }
-
-    trigger.addEventListener('click', () => {
-      if (popover.hidden) {
-        openPopover()
-      } else {
-        closePopover()
-      }
-    })
-
-    popover.addEventListener('change', event => {
-      const target = event.target
-
-      if (
-        target instanceof HTMLInputElement &&
-        target.hasAttribute('data-ui-calendar-input')
-      ) {
-        const newDate = target.value
-
-        native.value = newDate
-
-        if (valueEl) valueEl.textContent = newDate || 'mm/dd/yyyy'
-
-        native.dispatchEvent(
-          new Event('change', { bubbles: true, cancelable: true })
-        )
-
-        closePopover()
-      }
-    })
-  }
-}
-
 export const enhanceLumenDateRangePickers = (
   scope: ParentNode = document
 ): void => {
@@ -3109,43 +3245,8 @@ const installDateRangePickerController = (): void => {
   })
 }
 
-export const enhanceLumenDatePickers = (scope: ParentNode = document): void => {
-  initDatePickers(scope)
-}
-
-const installDatePickerController = (): void => {
-  if (
-    !hasDocument() ||
-    document.documentElement.dataset.uiElementsDatePickersBound === 'true'
-  )
-    return
-
-  document.documentElement.dataset.uiElementsDatePickersBound = 'true'
-
-  enhanceLumenDatePickers(document)
-
-  if (typeof MutationObserver === 'undefined') return
-
-  const observer = new MutationObserver(mutations => {
-    for (const mutation of mutations) {
-      for (const node of mutation.addedNodes) {
-        if (node instanceof Element || node instanceof DocumentFragment) {
-          enhanceLumenDatePickers(node)
-        }
-      }
-    }
-  })
-
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true
-  })
-}
-
-/* eslint-disable @stylistic/padding-line-between-statements -- InputOTP mirrors Astro's compact DOM synchronization runtime. */
 const defaultInputOtpLength = 6
 const defaultInputOtpPattern = '[0-9]*'
-
 const normalizeInputOtpLength = (value: string | null | undefined): number => Math.max(1, Number.parseInt(value ?? '', 10) || defaultInputOtpLength)
 
 const getInputOtpLength = (root: HTMLElement): number => normalizeInputOtpLength(
@@ -3162,6 +3263,7 @@ const sanitizeInputOtpValue = (
   const numericOnly =
     input.inputMode === 'numeric' ||
     input.getAttribute('pattern') === defaultInputOtpPattern
+
   const normalized = numericOnly ?
     value.replaceAll(/\D/g, '') :
     value.replaceAll(/\s/g, '')
@@ -3174,13 +3276,19 @@ const createInputOtpSegment = (index: number): HTMLButtonElement => {
   const char = document.createElement('span')
 
   segment.ariaHidden = 'true'
+
   segment.className = 'ui-input-otp__segment'
+
   segment.dataset.index = String(index)
+
   segment.dataset.uiInputOtpSegment = ''
+
   segment.tabIndex = -1
+
   segment.type = 'button'
 
   char.dataset.uiInputOtpChar = ''
+
   char.textContent = '\u00a0'
 
   segment.append(char)
@@ -3212,6 +3320,7 @@ const ensureInputOtpNativeInput = (
   }
 
   input.classList.add('ui-input-otp', 'ui-input-otp__native')
+
   input.dataset.uiInputOtpNative = ''
 
   if (!input.hasAttribute('autocomplete')) {
@@ -3254,6 +3363,7 @@ const ensureInputOtpNativeInput = (
   }
 
   input.disabled = root.hasAttribute('disabled') || input.disabled
+
   input.required = root.hasAttribute('required') || input.required
 
   if (
@@ -3282,6 +3392,7 @@ const ensureInputOtpSegmentsRoot = (root: HTMLElement): HTMLElement => {
   }
 
   segmentsRoot.classList.add('ui-input-otp__segments')
+
   segmentsRoot.dataset.uiInputOtpSegments = ''
 
   return segmentsRoot
@@ -3311,10 +3422,15 @@ const ensureInputOtpSegments = (
 
   for (const [index, segment] of segments.entries()) {
     segment.classList.add('ui-input-otp__segment')
+
     segment.dataset.index = String(index)
+
     segment.dataset.uiInputOtpSegment = ''
+
     segment.setAttribute('aria-hidden', 'true')
+
     segment.tabIndex = -1
+
     segment.type = 'button'
 
     if (!segment.querySelector('[data-ui-input-otp-char]')) {
@@ -3346,6 +3462,7 @@ const syncInputOtpSegments = (
   )
 
   root.dataset.disabled = input.disabled ? 'true' : 'false'
+
   root.dataset.invalid =
     input.getAttribute('aria-invalid') === 'true' ? 'true' : 'false'
 
@@ -3353,6 +3470,7 @@ const syncInputOtpSegments = (
     const char = segment.querySelector<HTMLElement>('[data-ui-input-otp-char]')
 
     segment.disabled = input.disabled
+
     segment.dataset.active = String(
       document.activeElement === input && index === activeIndex
     )
@@ -3380,8 +3498,11 @@ const initInputOtpFields = (scope: ParentNode): void => {
     const segments = ensureInputOtpSegments(segmentsRoot, length)
 
     root.dataset.uiBound = 'true'
+
     root.dataset.uiInputOtpLength = String(length)
+
     input.dataset.uiEnhanced = 'true'
+
     segmentsRoot.hidden = false
 
     const syncSegments = (): void => {
@@ -3404,6 +3525,7 @@ const initInputOtpFields = (scope: ParentNode): void => {
       input.setSelectionRange(input.value.length, input.value.length)
 
       input.dispatchEvent(new Event('input', { bubbles: true }))
+
       input.dispatchEvent(new Event('change', { bubbles: true }))
 
       syncSegments()
@@ -3412,11 +3534,17 @@ const initInputOtpFields = (scope: ParentNode): void => {
     syncSegments()
 
     input.addEventListener('input', syncSegments)
+
     input.addEventListener('change', syncSegments)
+
     input.addEventListener('focus', syncSegments)
+
     input.addEventListener('blur', syncSegments)
+
     input.addEventListener('click', syncSegments)
+
     input.addEventListener('keyup', syncSegments)
+
     input.addEventListener('keydown', event => {
       if (event.key === 'ArrowLeft') {
         event.preventDefault()
@@ -3448,6 +3576,7 @@ const initInputOtpFields = (scope: ParentNode): void => {
         setSelection(input.value.length)
       }
     })
+
     input.addEventListener('paste', event => {
       const pasted = event.clipboardData?.getData('text') ?? ''
 
@@ -3457,6 +3586,7 @@ const initInputOtpFields = (scope: ParentNode): void => {
 
       setValue(pasted)
     })
+
     input.form?.addEventListener('reset', () => {
       globalThis.setTimeout(syncSegments)
     })
@@ -3501,78 +3631,61 @@ const installInputOtpController = (): void => {
     subtree: true
   })
 }
-/* eslint-enable @stylistic/padding-line-between-statements */
 
 /* cspell:ignore lsaquo rsaquo */
-/* eslint-disable @stylistic/padding-line-between-statements -- Calendar mirrors Astro's UTC date grid runtime. */
-const calendarDatePattern = /^\d{4}-\d{2}-\d{2}$/
-const calendarMonthPattern = /^\d{4}-\d{2}$/
 
-const parseCalendarDate = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarDatePattern.test(value)) return null
+const createCalendarDate = (year: number, month: number, day: number): Date => {
+  const date = new Date(0)
 
-  const [year = Number.NaN, month = Number.NaN, day = Number.NaN] = value
-    .split('-')
-    .map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
+  date.setUTCFullYear(year, month, day)
 
-  return date.getUTCFullYear() === year &&
-    date.getUTCMonth() === month - 1 &&
-    date.getUTCDate() === day ?
-    date :
-    null
+  return date
 }
 
-const parseCalendarMonth = (value: string | null | undefined): Date | null => {
-  if (!value || !calendarMonthPattern.test(value)) return null
+const parseCalendarMonth = (value: string | null | undefined): Date | null => value ? parseCalendarDate(`${value}-01`) : null
+const formatCalendarDate = (date: Date): string => date.toISOString().split('T')[0] ?? ''
+const formatCalendarMonth = (date: Date): string => formatCalendarDate(date).slice(0, -3)
 
-  const [year = Number.NaN, month = Number.NaN] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, 1))
-
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 ?
-    date :
-    null
-}
-
-const formatCalendarDate = (date: Date): string => date.toISOString().slice(0, 10)
-const formatCalendarMonth = (date: Date): string => date.toISOString().slice(0, 7)
-const addCalendarDays = (date: Date, days: number): Date => new Date(
-  Date.UTC(
-    date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
-  )
+const addCalendarDays = (date: Date, days: number): Date => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + days
 )
-const getCalendarDaysInMonth = (date: Date): number => new Date(
-  Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)
+
+const getCalendarDaysInMonth = (date: Date): number => createCalendarDate(
+  date.getUTCFullYear(), date.getUTCMonth() + 1, 0
 ).getUTCDate()
-const addCalendarMonths = (date: Date, months: number): Date => {
-  const targetMonth = new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1)
-  )
-  const day = Math.min(date.getUTCDate(), getCalendarDaysInMonth(targetMonth))
 
-  return new Date(
-    Date.UTC(targetMonth.getUTCFullYear(), targetMonth.getUTCMonth(), day)
+const addCalendarMonths = (date: Date, months: number): Date => {
+  const target = createCalendarDate(date.getUTCFullYear(), date.getUTCMonth() + months, 1)
+
+  return createCalendarDate(
+    target.getUTCFullYear(), target.getUTCMonth(), Math.min(date.getUTCDate(), getCalendarDaysInMonth(target))
   )
 }
+
 const compareCalendarDates = (date: Date, other: Date | null): number => (
-  other ? formatCalendarDate(date).localeCompare(formatCalendarDate(other)) : 0
+  other ? Math.sign(date.getTime() - other.getTime()) : 0
 )
+
+const getCalendarLocale = (root: HTMLElement): string => resolveLumenDateLocale(root.getAttribute('locale') || root.dataset.locale || root.closest('[lang]')?.getAttribute('lang') || undefined)
+const getCalendarMin = (root: HTMLElement): Date | null => parseCalendarDate(root.getAttribute('min') ?? root.dataset.uiCalendarMin ?? '0001-01-01')
+const getCalendarMax = (root: HTMLElement): Date | null => parseCalendarDate(root.getAttribute('max') ?? root.dataset.uiCalendarMax ?? '9999-12-31')
+const isCalendarDisabled = (root: HTMLElement): boolean => root.hasAttribute('disabled') || root.dataset.disabled === 'true' || !isLumenDateBoundsValid(root.getAttribute('min') ?? root.dataset.uiCalendarMin, root.getAttribute('max') ?? root.dataset.uiCalendarMax)
+const isCalendarReadOnly = (root: HTMLElement): boolean => root.hasAttribute('readonly') || root.dataset.readonly === 'true'
+
 const getCalendarToday = (): Date => {
   const today = new Date()
 
-  return new Date(
-    Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
-  )
+  return createCalendarDate(today.getFullYear(), today.getMonth(), today.getDate())
 }
+
 const getCalendarGridStart = (month: Date): Date => addCalendarDays(month, -((month.getUTCDay() + 6) % 7))
-const getCalendarLocale = (): string => document.documentElement.lang || navigator.language || 'en'
 
 const isCalendarDateDisabled = (
   root: HTMLElement,
   date: Date,
   min: Date | null,
   max: Date | null
-): boolean => root.dataset.disabled === 'true' ||
+): boolean => isCalendarDisabled(root) ||
   compareCalendarDates(date, min) < 0 ||
   compareCalendarDates(date, max) > 0
 
@@ -3582,6 +3695,7 @@ const clampCalendarDate = (
   max: Date | null
 ): Date => {
   if (min && compareCalendarDates(date, min) < 0) return min
+
   if (max && compareCalendarDates(date, max) > 0) return max
 
   return date
@@ -3621,51 +3735,47 @@ const ensureCalendarStructure = (root: HTMLElement): void => {
   root.id ||= createId('ui-calendar')
 
   const labelId = `${root.id}-label`
+
   const selectedDate = parseCalendarDate(
     root.getAttribute('value') ?? root.dataset.uiCalendarValue
   )
-  const minDate = parseCalendarDate(
-    root.getAttribute('min') ?? root.dataset.uiCalendarMin
-  )
-  const maxDate = parseCalendarDate(
-    root.getAttribute('max') ?? root.dataset.uiCalendarMax
-  )
+
   const monthDate =
     parseCalendarMonth(
       root.getAttribute('month') ?? root.dataset.uiCalendarMonth
     ) ??
     (selectedDate ?
-      new Date(
-        Date.UTC(
-          selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1
-        )
+      createCalendarDate(
+        selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1
       ) :
       null) ??
-      new Date(
-        Date.UTC(
-          getCalendarToday().getUTCFullYear(), getCalendarToday().getUTCMonth(), 1
-        )
+      createCalendarDate(
+        getCalendarToday().getUTCFullYear(), getCalendarToday().getUTCMonth(), 1
       )
+
   let input = root.querySelector<HTMLInputElement>(calendarInputSelector)
 
   root.dataset.uiCalendarInitialMonth ??= formatCalendarMonth(monthDate)
+
   root.dataset.uiCalendarMonth ||= formatCalendarMonth(monthDate)
 
-  if (minDate) root.dataset.uiCalendarMin = formatCalendarDate(minDate)
-  if (maxDate) root.dataset.uiCalendarMax = formatCalendarDate(maxDate)
-  if (selectedDate)
-    root.dataset.uiCalendarValue = formatCalendarDate(selectedDate)
-  if (root.hasAttribute('disabled')) root.dataset.disabled = 'true'
+  root.dataset.uiCalendarValue = selectedDate ? formatCalendarDate(selectedDate) : ''
 
   if (!input) {
     input = document.createElement('input')
+
     input.type = 'hidden'
+
     input.dataset.uiCalendarInput = ''
+
     root.prepend(input)
   }
 
-  input.disabled = root.dataset.disabled === 'true'
-  input.value = root.dataset.uiCalendarValue ?? ''
+  input.disabled = isCalendarDisabled(root)
+
+  input.value = root.dataset.uiCalendarValue
+
+  input.defaultValue = input.value
 
   if (root.hasAttribute('name') && !input.name) {
     input.name = root.getAttribute('name') ?? ''
@@ -3678,20 +3788,35 @@ const ensureCalendarStructure = (root: HTMLElement): void => {
     const next = document.createElement('button')
 
     header.className = 'ui-calendar__header'
+
     previous.type = 'button'
+
     previous.className = 'ui-calendar__nav'
+
     previous.dataset.uiCalendarPrev = ''
+
     previous.setAttribute('aria-label', 'Previous month')
+
     previous.innerHTML = '<span aria-hidden="true">&lsaquo;</span>'
+
     label.className = 'ui-calendar__label'
+
     label.dataset.uiCalendarLabel = ''
+
     label.id = labelId
+
     next.type = 'button'
+
     next.className = 'ui-calendar__nav'
+
     next.dataset.uiCalendarNext = ''
+
     next.setAttribute('aria-label', 'Next month')
+
     next.innerHTML = '<span aria-hidden="true">&rsaquo;</span>'
+
     header.append(previous, label, next)
+
     input.after(header)
   }
 
@@ -3705,9 +3830,13 @@ const ensureCalendarStructure = (root: HTMLElement): void => {
     const table = document.createElement('table')
 
     table.className = 'ui-calendar__grid'
+
     table.dataset.uiCalendarGrid = ''
+
     table.role = 'grid'
+
     table.setAttribute('aria-labelledby', label?.id ?? labelId)
+
     root.append(table)
   }
 }
@@ -3721,14 +3850,16 @@ const syncCalendarNavigation = (
   const previous = root.querySelector<HTMLButtonElement>(
     '[data-ui-calendar-prev]'
   )
+
   const next = root.querySelector<HTMLButtonElement>('[data-ui-calendar-next]')
-  const disabled = root.dataset.disabled === 'true'
+  const disabled = isCalendarDisabled(root)
   const previousMonthLastDay = addCalendarDays(month, -1)
   const nextMonthFirstDay = addCalendarMonths(month, 1)
 
   if (previous)
     previous.disabled =
       disabled || compareCalendarDates(previousMonthLastDay, min) < 0
+
   if (next)
     next.disabled =
       disabled || compareCalendarDates(nextMonthFirstDay, max) > 0
@@ -3744,34 +3875,49 @@ const renderCalendar = (
 
   if (!label || !grid) return
 
-  const locale = getCalendarLocale()
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
+  const locale = getCalendarLocale(root)
+  const labels = resolveLumenDateLabels(locale)
+  const input = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
+
+  if (input) input.disabled = isCalendarDisabled(root)
+
+  root.setAttribute('aria-disabled', String(isCalendarDisabled(root)))
+
+  grid.setAttribute('aria-readonly', String(isCalendarReadOnly(root)))
+
+  root.querySelector('[data-ui-calendar-prev]')?.setAttribute('aria-label', root.dataset.previousMonthLabel || labels.previousMonth)
+
+  root.querySelector('[data-ui-calendar-next]')?.setAttribute('aria-label', root.dataset.nextMonthLabel || labels.nextMonth)
+
+  const min = getCalendarMin(root)
+  const max = getCalendarMax(root)
   const selectedDate = parseCalendarDate(root.dataset.uiCalendarValue)
   const todayIso = formatCalendarDate(getCalendarToday())
+
   const month =
     parseCalendarMonth(root.dataset.uiCalendarMonth) ??
     (selectedDate ?
-      new Date(
-        Date.UTC(
-          selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1
-        )
+      createCalendarDate(
+        selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), 1
       ) :
       null) ??
       getCalendarToday()
-  const visibleMonth = new Date(
-    Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), 1)
-  )
+
+  const visibleMonth = createCalendarDate(month.getUTCFullYear(), month.getUTCMonth(), 1)
+
   const focusDate = getCalendarFocusDate(
     root, visibleMonth, min, max, requestedFocusDate
   )
+
   const focusIso = formatCalendarDate(focusDate)
   const selectedIso = selectedDate ? formatCalendarDate(selectedDate) : ''
+
   const monthLabel = new Intl.DateTimeFormat(locale, {
     month: 'long',
     timeZone: 'UTC',
     year: 'numeric'
   }).format(visibleMonth)
+
   const dayLabel = new Intl.DateTimeFormat(locale, {
     day: 'numeric',
     month: 'long',
@@ -3779,28 +3925,36 @@ const renderCalendar = (
     weekday: 'long',
     year: 'numeric'
   })
+
   const weekdayLabel = new Intl.DateTimeFormat(locale, {
     timeZone: 'UTC',
     weekday: 'short'
   })
+
   const header = document.createElement('thead')
   const headerRow = document.createElement('tr')
   const body = document.createElement('tbody')
   const firstCell = getCalendarGridStart(visibleMonth)
 
   root.dataset.uiCalendarMonth = formatCalendarMonth(visibleMonth)
+
   label.textContent = monthLabel
+
   syncCalendarNavigation(root, visibleMonth, min, max)
+
   headerRow.role = 'row'
 
   for (let index = 0; index < 7; index += 1) {
     const cell = document.createElement('th')
 
     cell.scope = 'col'
+
     cell.role = 'columnheader'
+
     cell.textContent = weekdayLabel.format(
-      new Date(Date.UTC(2026, 0, 5 + index))
+      createCalendarDate(2026, 0, 5 + index)
     )
+
     headerRow.append(cell)
   }
 
@@ -3818,17 +3972,26 @@ const renderCalendar = (
       const unavailable = isCalendarDateDisabled(root, date, min, max)
 
       cell.role = 'gridcell'
+
       cell.tabIndex = !unavailable && dateIso === focusIso ? 0 : -1
+
       cell.textContent = String(date.getUTCDate())
+
       cell.dataset.date = dateIso
+
       cell.dataset.uiCalendarDay = ''
+
       cell.setAttribute('aria-label', dayLabel.format(date))
+
       cell.setAttribute('aria-selected', String(selectedIso === dateIso))
 
       if (unavailable) cell.setAttribute('aria-disabled', 'true')
+
       if (formatCalendarMonth(date) !== formatCalendarMonth(visibleMonth))
         cell.dataset.outside = 'true'
+
       if (dateIso === todayIso) cell.dataset.today = 'true'
+
       if (selectedIso === dateIso) cell.dataset.selected = 'true'
 
       row.append(cell)
@@ -3839,7 +4002,7 @@ const renderCalendar = (
 
   grid.replaceChildren(header, body)
 
-  if (shouldFocus) {
+  if (shouldFocus && !isCalendarDisabled(root)) {
     root
       .querySelector<HTMLElement>(
         `${calendarDaySelector}[data-date="${focusIso}"]`
@@ -3851,28 +4014,34 @@ const renderCalendar = (
 const selectCalendarDate = (root: HTMLElement, date: Date): void => {
   const input = root.querySelector<HTMLInputElement>(calendarInputSelector)
 
-  if (!input || root.dataset.disabled === 'true') return
+  if (!input || isCalendarDisabled(root) || isCalendarReadOnly(root)) return
 
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
-  const nextDate = clampCalendarDate(date, min, max)
+  const min = getCalendarMin(root)
+  const max = getCalendarMax(root)
+  const nextDate = date
 
   if (isCalendarDateDisabled(root, nextDate, min, max)) return
 
   input.value = formatCalendarDate(nextDate)
+
   root.dataset.uiCalendarValue = input.value
+
   root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
-  input.dispatchEvent(new Event('input', { bubbles: true }))
-  input.dispatchEvent(new Event('change', { bubbles: true }))
+
   renderCalendar(root, nextDate, true)
+
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+
+  input.dispatchEvent(new Event('change', { bubbles: true }))
 }
 
 const focusCalendarDate = (root: HTMLElement, date: Date): void => {
-  const min = parseCalendarDate(root.dataset.uiCalendarMin)
-  const max = parseCalendarDate(root.dataset.uiCalendarMax)
+  const min = getCalendarMin(root)
+  const max = getCalendarMax(root)
   const nextDate = clampCalendarDate(date, min, max)
 
   root.dataset.uiCalendarMonth = formatCalendarMonth(nextDate)
+
   renderCalendar(root, nextDate, true)
 }
 
@@ -3882,6 +4051,7 @@ const moveCalendarFocus = (
   key: string
 ): void => {
   const column = (currentDate.getUTCDay() + 6) % 7
+
   const keyOffsets: Record<string, number> = {
     ArrowDown: 7,
     ArrowLeft: -1,
@@ -3899,7 +4069,7 @@ const moveCalendarFocus = (
     return
   }
 
-  const offset = keyOffsets[key]
+  const offset = keyOffsets[getLumenDirectionalKey(root, key)]
 
   if (offset !== undefined) {
     focusCalendarDate(root, addCalendarDays(currentDate, offset))
@@ -3923,32 +4093,44 @@ const initCalendars = (scope: ParentNode): void => {
 
     if (!input) continue
 
+    let resetValue = input.value
+
     root.dataset.uiBound = 'true'
+
     renderCalendar(root)
+
     root
       .querySelector<HTMLButtonElement>('[data-ui-calendar-prev]')
       ?.addEventListener('click', () => {
         const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
 
-        if (!month) return
+        if (!month || isCalendarDisabled(root)) return
 
         const nextMonth = addCalendarMonths(month, -1)
 
+        if (compareCalendarDates(addCalendarDays(month, -1), getCalendarMin(root)) < 0) return
+
         root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
+
         renderCalendar(root, nextMonth, true)
       })
+
     root
       .querySelector<HTMLButtonElement>('[data-ui-calendar-next]')
       ?.addEventListener('click', () => {
         const month = parseCalendarMonth(root.dataset.uiCalendarMonth)
 
-        if (!month) return
+        if (!month || isCalendarDisabled(root)) return
 
         const nextMonth = addCalendarMonths(month, 1)
 
+        if (compareCalendarDates(nextMonth, getCalendarMax(root)) > 0) return
+
         root.dataset.uiCalendarMonth = formatCalendarMonth(nextMonth)
+
         renderCalendar(root, nextMonth, true)
       })
+
     root.addEventListener('click', event => {
       const target = event.target
 
@@ -3967,6 +4149,7 @@ const initCalendars = (scope: ParentNode): void => {
 
       if (date) selectCalendarDate(root, date)
     })
+
     root.addEventListener('keydown', event => {
       const target = event.target
 
@@ -3978,10 +4161,11 @@ const initCalendars = (scope: ParentNode): void => {
 
       const date = parseCalendarDate(target.dataset.date)
 
-      if (!date) return
+      if (!date || isCalendarDisabled(root)) return
 
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault()
+
         selectCalendarDate(root, date)
 
         return
@@ -4001,13 +4185,49 @@ const initCalendars = (scope: ParentNode): void => {
       }
 
       event.preventDefault()
+
       moveCalendarFocus(root, date, event.key)
     })
-    input.form?.addEventListener('reset', () => {
+
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.attributeName === 'value') {
+          root.dataset.uiCalendarValue = parseCalendarDate(root.getAttribute('value')) ? root.getAttribute('value') ?? '' : ''
+
+          input.value = root.dataset.uiCalendarValue
+
+          input.defaultValue = input.value
+
+          resetValue = input.value
+        }
+
+        if (mutation.attributeName === 'month') {
+          root.dataset.uiCalendarMonth = root.getAttribute('month') ?? root.dataset.uiCalendarInitialMonth ?? ''
+        }
+      }
+
+      const activeElement = root.ownerDocument.activeElement
+
+      const focusedDay = activeElement && root.contains(activeElement) ?
+        parseCalendarDate(activeElement.getAttribute('data-date')) :
+        null
+
+      renderCalendar(root, focusedDay, focusedDay !== null)
+    })
+
+    observer.observe(root, { attributes: true, attributeFilter: ['disabled', 'readonly', 'min', 'max', 'value', 'month', 'locale', 'lang', 'data-disabled', 'data-readonly', 'data-locale', 'data-ui-calendar-min', 'data-ui-calendar-max', 'data-previous-month-label', 'data-next-month-label'] })
+
+    input.form?.addEventListener('reset', event => {
       globalThis.setTimeout(() => {
-        root.dataset.uiCalendarValue = input.value
+        if (event.defaultPrevented || !root.isConnected) return
+
+        root.dataset.uiCalendarValue = resetValue
+
+        input.value = resetValue
+
         root.dataset.uiCalendarMonth =
           root.dataset.uiCalendarInitialMonth ?? root.dataset.uiCalendarMonth
+
         renderCalendar(root)
       })
     })
@@ -4026,6 +4246,7 @@ const installCalendarController = (): void => {
     return
 
   document.documentElement.dataset.uiElementsCalendarsBound = 'true'
+
   enhanceLumenCalendars(document)
 
   if (typeof MutationObserver === 'undefined') return
@@ -4045,7 +4266,263 @@ const installCalendarController = (): void => {
     subtree: true
   })
 }
-/* eslint-enable @stylistic/padding-line-between-statements */
+
+const initDatePickers = (scope: ParentNode): void => {
+  const closestRoot = getClosestScopedElement(scope, datePickerSelector)
+  const roots = getScopedElements<HTMLElement>(scope, datePickerSelector)
+
+  if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) roots.unshift(closestRoot)
+
+  for (const root of roots) {
+    if (root.dataset.uiBound === 'true') continue
+
+    const native = root.querySelector<HTMLInputElement>(datePickerNativeSelector)
+    const control = root.querySelector<HTMLElement>(datePickerControlSelector)
+    const trigger = root.querySelector<HTMLButtonElement>(datePickerTriggerSelector)
+    const valueEl = root.querySelector<HTMLElement>(datePickerValueSelector)
+    const popover = root.querySelector<HTMLElement>(datePickerPopoverSelector)
+    const calendar = root.querySelector<HTMLElement>(calendarSelector)
+
+    if (!native || !control || !trigger || !popover) continue
+
+    root.dataset.uiBound = 'true'
+
+    native.dataset.uiEnhanced = 'true'
+
+    native.setAttribute('aria-hidden', 'true')
+
+    native.tabIndex = -1
+
+    control.hidden = false
+
+    trigger.type = 'button'
+
+    trigger.setAttribute('aria-haspopup', 'dialog')
+
+    popover.id ||= createId('ui-date-picker-popover')
+
+    popover.role = 'dialog'
+
+    trigger.setAttribute('aria-controls', popover.id)
+
+    if (root.hasAttribute('disabled')) native.disabled = true
+
+    if (root.hasAttribute('readonly')) native.readOnly = true
+
+    if (native.id) {
+      const controlId = native.id
+
+      native.id = `${controlId}-native`
+
+      trigger.id = controlId
+    }
+
+    for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby']) {
+      const value = native.getAttribute(attribute)
+
+      if (value) trigger.setAttribute(attribute, value)
+    }
+
+    const isUnavailable = (): boolean => native.disabled || native.readOnly ||
+      root.hasAttribute('disabled') || root.hasAttribute('readonly')
+
+    let outsideController: AbortController | undefined
+
+    const closePopover = (restoreFocus = false): void => {
+      outsideController?.abort()
+
+      popover.hidden = true
+
+      popover.dataset.state = 'closed'
+
+      trigger.setAttribute('aria-expanded', 'false')
+
+      if (restoreFocus && !native.disabled) trigger.focus({ preventScroll: true })
+    }
+
+    const syncState = (): void => {
+      const locale = getCalendarLocale(root)
+      const labels = resolveLumenDateLabels(locale)
+      const selected = parseCalendarDate(native.value)
+
+      if (valueEl) valueEl.textContent = selected ? new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(selected) : native.placeholder || labels.chooseDate
+
+      root.dataset.placeholder = String(!selected)
+
+      trigger.disabled = native.disabled
+
+      trigger.setAttribute('aria-disabled', String(native.disabled || native.readOnly))
+
+      trigger.setAttribute('aria-required', String(native.required))
+
+      popover.setAttribute('aria-label', root.dataset.chooseDateLabel || labels.chooseDate)
+
+      if (native.validity.valid) trigger.removeAttribute('aria-invalid')
+    }
+
+    const openPopover = (): void => {
+      if (isUnavailable() ||
+        !isLumenDateBoundsValid(native.min || undefined, native.max || undefined)) return
+
+      if (calendar) {
+        initCalendars(root)
+
+        calendar.dataset.locale = getCalendarLocale(root)
+
+        calendar.dataset.uiCalendarValue = native.value
+
+        if (native.value) calendar.dataset.uiCalendarMonth = native.value.slice(0, 7)
+
+        if (native.min) calendar.dataset.uiCalendarMin = native.min
+        else delete calendar.dataset.uiCalendarMin
+
+        if (native.max) calendar.dataset.uiCalendarMax = native.max
+        else delete calendar.dataset.uiCalendarMax
+
+        renderCalendar(calendar)
+      }
+
+      popover.hidden = false
+
+      popover.dataset.state = 'open'
+
+      trigger.setAttribute('aria-expanded', 'true')
+
+      outsideController = new AbortController()
+
+      document.addEventListener('click', event => {
+        if (event.target instanceof Node && !root.contains(event.target)) closePopover()
+      }, { signal: outsideController.signal })
+
+      const focusTarget = calendar?.querySelector<HTMLElement>('[data-ui-calendar-day][tabindex="0"]') ??
+        calendar?.querySelector<HTMLButtonElement>('button:not(:disabled)')
+
+      focusTarget?.focus({ preventScroll: true })
+    }
+
+    closePopover()
+
+    syncState()
+
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.target === root && mutation.attributeName === 'disabled') native.disabled = root.hasAttribute('disabled')
+
+        if (mutation.target === root && mutation.attributeName === 'readonly') native.readOnly = root.hasAttribute('readonly')
+      }
+
+      closePopover()
+
+      syncState()
+    })
+
+    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder'] })
+
+    observer.observe(root, { attributes: true, attributeFilter: ['disabled', 'readonly', 'locale', 'lang', 'data-locale', 'data-choose-date-label'] })
+
+    trigger.addEventListener('click', () => {
+      if (popover.hidden) openPopover()
+      else closePopover()
+    })
+
+    trigger.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowDown') return
+
+      event.preventDefault()
+
+      openPopover()
+    })
+
+    root.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
+      if (event.key !== 'Escape' || popover.hidden) return
+
+      event.preventDefault()
+
+      event.stopPropagation()
+
+      closePopover(true)
+    })
+
+    popover.addEventListener('change', event => {
+      const target = event.target
+
+      if (!(target instanceof HTMLInputElement) || !target.hasAttribute('data-ui-calendar-input') || isUnavailable()) return
+
+      if (!parseCalendarDate(target.value) ||
+        !isLumenDateBoundsValid(native.min || undefined, native.max || undefined) ||
+        (native.min && target.value < native.min) || (native.max && target.value > native.max)) return
+
+      native.value = target.value
+
+      syncState()
+
+      native.dispatchEvent(new Event('input', { bubbles: true }))
+
+      native.dispatchEvent(new Event('change', { bubbles: true }))
+
+      closePopover(true)
+    })
+
+    native.addEventListener('change', () => {
+      closePopover()
+
+      syncState()
+    })
+
+    native.addEventListener('invalid', event => {
+      event.preventDefault()
+
+      trigger.setAttribute('aria-invalid', 'true')
+
+      trigger.focus()
+    })
+
+    native.form?.addEventListener('reset', event => {
+      globalThis.setTimeout(() => {
+        if (event.defaultPrevented || !root.isConnected) return
+
+        syncState()
+
+        closePopover()
+      })
+    })
+  }
+}
+
+export const enhanceLumenDatePickers = (scope: ParentNode = document): void => {
+  initDatePickers(scope)
+}
+
+const installDatePickerController = (): void => {
+  if (
+    !hasDocument() ||
+    document.documentElement.dataset.uiElementsDatePickersBound === 'true'
+  )
+    return
+
+  document.documentElement.dataset.uiElementsDatePickersBound = 'true'
+
+  enhanceLumenDatePickers(document)
+
+  if (typeof MutationObserver === 'undefined') return
+
+  const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node instanceof Element || node instanceof DocumentFragment) {
+          enhanceLumenDatePickers(node)
+        }
+      }
+    }
+  })
+
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  })
+}
 
 const closeContextMenu = (menu: HTMLElement): void => {
   if (menu.dataset.state !== 'open') return
@@ -4133,6 +4610,8 @@ const initContextMenus = (scope: ParentNode): void => {
     menu.dataset.uiContextMenuMenuBound = 'true'
 
     menu.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -4151,11 +4630,13 @@ const initContextMenus = (scope: ParentNode): void => {
 
       event.preventDefault()
 
-      const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+      const currentIndex = items.findIndex(item => item === menu.ownerDocument.activeElement)
 
-      items[
+      const nextIndex = currentIndex < 0 && event.key === 'ArrowUp' ?
+        items.length - 1 :
         getLoopedIndex(event.key, currentIndex, items.length, ['ArrowDown'])
-      ]?.focus()
+
+      items[nextIndex]?.focus()
     })
 
     menu.addEventListener('click', event => {
@@ -4201,8 +4682,17 @@ const installContextMenuController = (): void => {
   })
 
   document.addEventListener('keydown', event => {
+    if (event.defaultPrevented || event.isComposing) return
+
     if (event.key === 'Escape') {
-      closeOpenContextMenus()
+      const target = getOwnedTarget(event)
+      const menu = target instanceof Element ? target.closest<HTMLElement>(`${contextMenuSelector}[data-state="open"]`) : null
+
+      if (!menu) return
+
+      event.preventDefault()
+
+      closeContextMenu(menu)
     }
   })
 
@@ -4268,16 +4758,13 @@ const getDataTableRowValue = (
 ): string => row.dataset.value || row.id || String(index)
 
 const getNextDataTableSortDirection = (
-  currentColumn: string | undefined,
-  columnIndex: number,
   currentDirection: string | null
 ): DataTableSortDirection => {
-  if (currentColumn !== String(columnIndex) || currentDirection === 'none')
-    return 'ascending'
-
   if (currentDirection === 'ascending') return 'descending'
 
-  return 'none'
+  if (currentDirection === 'descending') return 'none'
+
+  return 'ascending'
 }
 
 const getControlledPanel = (trigger: HTMLElement): HTMLElement | null => {
@@ -4447,7 +4934,12 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
     timer: undefined as ReturnType<typeof globalThis.setTimeout> | undefined
   }
 
+  let hovered = false
+  let paused = false
+
   const start = (): void => {
+    paused = false
+
     timerState.startedAt = Date.now()
 
     timerState.timer = globalThis.setTimeout(() => {
@@ -4456,6 +4948,10 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
   }
 
   const pause = (): void => {
+    if (paused) return
+
+    paused = true
+
     if (timerState.timer) {
       globalThis.clearTimeout(timerState.timer)
     }
@@ -4466,26 +4962,46 @@ const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
   }
 
   const resume = (): void => {
-    if (timerState.remaining > 0) start()
+    if (!paused || hovered || toast.contains(document.activeElement)) return
+
+    start()
+  }
+
+  const enter = (): void => {
+    hovered = true
+
+    pause()
+  }
+
+  const leave = (): void => {
+    hovered = false
+
+    resume()
+  }
+
+  const blur = (event: FocusEvent): void => {
+    if (event.relatedTarget instanceof Node && toast.contains(event.relatedTarget)) return
+
+    resume()
   }
 
   timerState.cleanup = () => {
-    toast.removeEventListener('mouseenter', pause)
+    toast.removeEventListener('mouseenter', enter)
 
-    toast.removeEventListener('mouseleave', resume)
+    toast.removeEventListener('mouseleave', leave)
 
     toast.removeEventListener('focusin', pause)
 
-    toast.removeEventListener('focusout', resume)
+    toast.removeEventListener('focusout', blur)
   }
 
-  toast.addEventListener('mouseenter', pause)
+  toast.addEventListener('mouseenter', enter)
 
-  toast.addEventListener('mouseleave', resume)
+  toast.addEventListener('mouseleave', leave)
 
   toast.addEventListener('focusin', pause)
 
-  toast.addEventListener('focusout', resume)
+  toast.addEventListener('focusout', blur)
 
   toastTimers.set(toast, timerState)
 
@@ -4621,6 +5137,8 @@ export const LumenToast: ToastApi = {
     toast.dataset.state = 'open'
 
     toast.addEventListener('keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key !== 'Escape') return
 
       event.preventDefault()
@@ -4761,6 +5279,7 @@ class LumenScalarFormControlElement extends LumenElement {
   private defaultValueState = ''
   private eventController: AbortController | undefined
   private internals: ElementInternals | undefined
+  private formDisabledState = false
 
   constructor() {
     super()
@@ -4785,7 +5304,9 @@ class LumenScalarFormControlElement extends LumenElement {
     if (this.control instanceof HTMLInputElement) {
       this.control.checked = checked
 
-      this.syncFormState()
+      this.#syncFormState()
+
+      return
     }
 
     this.toggleAttribute('checked', checked)
@@ -4842,6 +5363,12 @@ class LumenScalarFormControlElement extends LumenElement {
     return 'textarea'
   }
 
+  set type(type: string) {
+    const Constructor = this.constructor as typeof LumenScalarFormControlElement
+
+    if (Constructor.nativeTagName === 'input') this.setAttribute('type', type)
+  }
+
   get validationMessage(): string {
     return (
       this.internals?.validationMessage ?? this.control?.validationMessage ?? ''
@@ -4852,7 +5379,7 @@ class LumenScalarFormControlElement extends LumenElement {
     return (
       this.internals?.validity ??
       this.control?.validity ??
-      ({} as ValidityState)
+      this.ownerDocument.createElement('input').validity
     )
   }
 
@@ -4864,7 +5391,7 @@ class LumenScalarFormControlElement extends LumenElement {
     if (this.control) {
       this.control.value = value
 
-      this.syncFormState()
+      this.#syncFormState()
 
       return
     }
@@ -4884,19 +5411,23 @@ class LumenScalarFormControlElement extends LumenElement {
     const Constructor = this
       .constructor as typeof LumenScalarFormControlElement
 
-    this.defaultValueState = this.getAttribute('value') ??
-      (Constructor.nativeTagName === 'textarea' ? this.textContent : '')
+    if (!this.control) {
+      this.defaultValueState = this.getAttribute('value') ??
+        (Constructor.nativeTagName === 'textarea' ? this.textContent : '')
 
-    this.defaultCheckedState = this.hasAttribute('checked')
+      this.defaultCheckedState = this.hasAttribute('checked')
+    }
 
-    this.ensureControl()
+    this.#ensureControl()
 
     if (this.control instanceof HTMLSelectElement &&
       !this.hasAttribute('value')) this.defaultValueState = this.control.value
 
-    this.syncControlAttributes()
+    this.#syncControlAttributes()
 
-    this.syncFormState()
+    this.#bindControlEvents()
+
+    this.#syncFormState()
   }
 
   override disconnectedCallback() {
@@ -4914,7 +5445,7 @@ class LumenScalarFormControlElement extends LumenElement {
 
     if (previousValue === value || !this.control) return
 
-    this.syncControlAttributes()
+    this.#syncControlAttributes()
 
     if (name === 'value') {
       this.defaultValueState = value ?? ''
@@ -4925,16 +5456,16 @@ class LumenScalarFormControlElement extends LumenElement {
     if (name === 'checked' && this.control instanceof HTMLInputElement) {
       this.defaultCheckedState = value !== null
 
-      this.control.checked = this.defaultCheckedState
+      this.control.defaultChecked = this.defaultCheckedState
     }
 
-    this.syncFormState()
+    this.#syncFormState()
   }
 
   checkValidity(): boolean {
     const valid = this.control?.checkValidity() ?? true
 
-    this.syncFormState()
+    this.#syncFormState()
 
     return valid
   }
@@ -4944,29 +5475,44 @@ class LumenScalarFormControlElement extends LumenElement {
   }
 
   formDisabledCallback(disabled: boolean): void {
+    this.formDisabledState = disabled
+
     if (this.control) this.control.disabled = disabled || this.disabled
+
+    this.#syncFormState()
   }
 
   formResetCallback(): void {
     if (!this.control) return
 
-    this.control.value = this.defaultValueState
+    if (this.control instanceof HTMLSelectElement && !this.hasAttribute('value')) {
+      for (const option of this.control.options) option.selected = option.defaultSelected
+
+      if (!this.control.multiple && this.control.selectedIndex < 0) this.control.selectedIndex = 0
+    } else this.control.value = this.defaultValueState
 
     if (this.control instanceof HTMLInputElement) {
       this.control.checked = this.defaultCheckedState
     }
 
-    this.syncFormState()
+    this.#syncFormState()
   }
 
   formStateRestoreCallback(state: File | FormData | string | null): void {
     if (typeof state === 'string') this.value = state
+    else if (state instanceof FormData && this.control instanceof HTMLSelectElement) {
+      const values = new Set(state.getAll(this.name))
+
+      for (const option of this.control.options) option.selected = values.has(option.value)
+
+      this.#syncFormState()
+    }
   }
 
   reportValidity(): boolean {
     const valid = this.control?.reportValidity() ?? true
 
-    this.syncFormState()
+    this.#syncFormState()
 
     return valid
   }
@@ -4974,10 +5520,10 @@ class LumenScalarFormControlElement extends LumenElement {
   setCustomValidity(message: string): void {
     this.control?.setCustomValidity(message)
 
-    this.syncFormState()
+    this.#syncFormState()
   }
 
-  private ensureControl(): void {
+  #ensureControl(): void {
     const existingControl = this.querySelector<LumenScalarNativeControl>(
       '[data-ui-element-control]'
     )
@@ -5003,6 +5549,8 @@ class LumenScalarFormControlElement extends LumenElement {
     }
 
     if (control instanceof HTMLSelectElement) {
+      control.multiple = this.hasAttribute('multiple')
+
       control.append(...[...this.children].filter(child => child instanceof HTMLOptionElement ||
         child instanceof HTMLOptGroupElement))
     }
@@ -5020,6 +5568,12 @@ class LumenScalarFormControlElement extends LumenElement {
     this.replaceChildren(control)
 
     this.control = control
+  }
+
+  #bindControlEvents(): void {
+    const control = this.control
+
+    if (!control) return
 
     this.eventController?.abort()
 
@@ -5030,7 +5584,7 @@ class LumenScalarFormControlElement extends LumenElement {
         eventName, event => {
           event.stopPropagation()
 
-          this.syncFormState()
+          this.#syncFormState()
 
           this.dispatchEvent(
             new Event(eventName, { bubbles: true, composed: true })
@@ -5040,7 +5594,7 @@ class LumenScalarFormControlElement extends LumenElement {
     }
   }
 
-  private syncControlAttributes(): void {
+  #syncControlAttributes(): void {
     const control = this.control
 
     if (!control) return
@@ -5062,6 +5616,8 @@ class LumenScalarFormControlElement extends LumenElement {
         this.getAttribute('type') ?? this.config.defaults?.type ?? 'text'
     }
 
+    control.disabled = this.disabled || this.formDisabledState
+
     if (this.id) control.id = `${this.id}-control`
 
     if (this.internals) {
@@ -5073,20 +5629,17 @@ class LumenScalarFormControlElement extends LumenElement {
     }
   }
 
-  private syncFormState(): void {
+  #syncFormState(): void {
     const control = this.control
 
     if (!control) return
 
-    const checkedControl =
-      control instanceof HTMLInputElement &&
-      ['checkbox', 'radio'].includes(control.type)
-
-    const submittedValue =
-      checkedControl && !control.checked ? null : control.value
+    const submittedValue = this.#submittedValue(control)
 
     if (this.internals) {
-      this.internals.setFormValue(submittedValue, control.value)
+      const state = control instanceof HTMLSelectElement && control.multiple ? submittedValue : control.value
+
+      this.internals.setFormValue(submittedValue, state)
 
       if (control.validity.valid) {
         this.internals.setValidity({})
@@ -5102,6 +5655,30 @@ class LumenScalarFormControlElement extends LumenElement {
     } else {
       this.setAttribute('aria-invalid', 'true')
     }
+  }
+
+  #submittedValue(
+    control: LumenScalarNativeControl
+  ): FormData | string | null {
+    if (control.disabled || (control instanceof HTMLInputElement && ['checkbox', 'radio'].includes(control.type) && !control.checked)) return null
+
+    if (control instanceof HTMLSelectElement && control.multiple) {
+      if (!this.name) return null
+
+      const values = new FormData()
+
+      for (const option of control.selectedOptions) {
+        const disabledGroup = option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled
+
+        if (!option.disabled && !disabledGroup) {
+          values.append(this.name, option.value)
+        }
+      }
+
+      return values
+    }
+
+    return control.value
   }
 }
 
@@ -5127,23 +5704,6 @@ class LumenListBoxBehaviorElement extends LumenElement {
 
     if (hasDocument()) enhanceLumenListBoxes(this)
   }
-}
-
-const escapeChartHtml = (value: number | string): string => String(value)
-  .replaceAll('&', '&amp;')
-  .replaceAll('<', '&lt;')
-  .replaceAll('>', '&gt;')
-  .replaceAll('"', '&quot;')
-  .replaceAll('\'', '&#39;')
-
-const chartBooleanAttribute = (
-  element: HTMLElement,
-  name: string,
-  defaultValue: boolean
-): boolean => {
-  if (!element.hasAttribute(name)) return defaultValue
-
-  return element.getAttribute(name) !== 'false'
 }
 
 const parseChartSeriesCandidate = (
@@ -5253,246 +5813,32 @@ const parseComboChartSeries = (value: string | null): LumenComboSeries[] => {
   }
 }
 
-const parseHeatmapData = (value: string | null): LumenHeatmapDatum[] => {
-  if (!value) return []
-
-  try {
-    const parsed: unknown = JSON.parse(value)
-
-    if (!Array.isArray(parsed)) return []
-
-    return parsed.flatMap(candidate => {
-      if (typeof candidate !== 'object' || candidate === null) return []
-
-      const record = candidate as Record<string, unknown>
-
-      if (
-        (typeof record.x !== 'string' && typeof record.x !== 'number') ||
-        (typeof record.y !== 'string' && typeof record.y !== 'number') ||
-        (record.value !== null &&
-          (typeof record.value !== 'number' || !Number.isFinite(record.value)))
-      ) return []
-
-      return [{
-        ...(typeof record.id === 'string' ? { id: record.id } : {}),
-        ...(typeof record.label === 'string' ? { label: record.label } : {}),
-        value: record.value,
-        x: record.x,
-        ...(typeof record.xLabel === 'string' ? { xLabel: record.xLabel } : {}),
-        y: record.y,
-        ...(typeof record.yLabel === 'string' ? { yLabel: record.yLabel } : {})
-      }]
-    })
-  } catch {
-    return []
-  }
-}
-
-const parseRangeData = (value: string | null): LumenRangeDatum[] => {
-  if (!value) return []
-
-  try {
-    const parsed: unknown = JSON.parse(value)
-
-    if (!Array.isArray(parsed)) return []
-
-    return parsed.flatMap(candidate => {
-      if (typeof candidate !== 'object' || candidate === null) return []
-
-      const record = candidate as Record<string, unknown>
-      const validBound = (bound: unknown): bound is number | null => bound === null || (typeof bound === 'number' && Number.isFinite(bound))
-
-      if (
-        (typeof record.x !== 'string' && typeof record.x !== 'number') ||
-        !validBound(record.low) ||
-        !validBound(record.high)
-      ) return []
-
-      return [{
-        high: record.high,
-        ...(typeof record.id === 'string' ? { id: record.id } : {}),
-        ...(typeof record.label === 'string' ? { label: record.label } : {}),
-        low: record.low,
-        x: record.x,
-        ...(typeof record.xLabel === 'string' ? { xLabel: record.xLabel } : {})
-      }]
-    })
-  } catch {
-    return []
-  }
-}
-
-const chartHeaderHtml = (element: HTMLElement): string => {
-  const heading = element.getAttribute('heading')
-  const description = element.getAttribute('description')
-  const value = element.getAttribute('value')
-
-  if (!heading && !description && !value) return ''
-
-  return `<header><div class="ui-chart__heading">${heading ? `<h3>${escapeChartHtml(heading)}</h3>` : ''}${description ? `<p>${escapeChartHtml(description)}</p>` : ''}</div>${value ? `<strong data-ui-chart-value>${escapeChartHtml(value)}</strong>` : ''}</header>`
-}
-
-const chartCaptionHtml = (element: HTMLElement): string => {
-  const caption = element.getAttribute('caption')
-
-  return caption ? `<figcaption>${escapeChartHtml(caption)}</figcaption>` : ''
-}
-
-const chartLabelsFor = (element: HTMLElement): Readonly<LumenChartLabels> => {
-  const defaults = resolveLumenChartLabels(undefined)
-
-  return {
-    ...defaults,
-    category: element.getAttribute('category-label') ?? defaults.category,
-    chartLegend: element.getAttribute('legend-label') ?? defaults.chartLegend,
-    column: element.getAttribute('column-label') ?? defaults.column,
-    empty: element.getAttribute('empty-label') ?? defaults.empty,
-    high: element.getAttribute('high-label') ?? defaults.high,
-    low: element.getAttribute('low-label') ?? defaults.low,
-    notAvailable: element.getAttribute('not-available-label') ?? defaults.notAvailable,
-    row: element.getAttribute('row-label') ?? defaults.row,
-    series: element.getAttribute('series-label') ?? defaults.series,
-    size: element.getAttribute('size-label') ?? defaults.size,
-    value: element.getAttribute('value-label') ?? defaults.value,
-    viewData: element.getAttribute('view-data-label') ?? defaults.viewData,
-    x: element.getAttribute('x-label') ?? defaults.x
-  }
-}
-
-const chartSummaryHtml = (
+const chartBooleanAttribute = (
   element: HTMLElement,
-  series: readonly LumenChartSeries[]
-): string => {
-  const summary = element.getAttribute('summary') ?? formatLumenChartSummary(
-    series, String, chartLabelsFor(element)
-  )
+  name: string,
+  defaultValue: boolean
+): boolean => {
+  if (!element.hasAttribute(name)) return defaultValue
 
-  return `<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>`
-}
-
-const chartLegendHtml = (
-  series: readonly LumenChartSeries[],
-  labels: Readonly<LumenChartLabels>
-): string => `<ul class="ui-chart__legend" aria-label="${escapeChartHtml(labels.chartLegend)}">${series.map((item, index) => `<li class="ui-chart-tone--${resolveLumenChartTone(item.tone, index)}"><span aria-hidden="true"></span>${escapeChartHtml(item.label)}</li>`).join('')}</ul>`
-
-const chartDataTableHtml = (
-  categories: readonly (number | string)[],
-  series: readonly LumenChartSeries[],
-  formatCategory: (category: number | string) => string = String,
-  formatValue: (value: number) => string = String,
-  labels: Readonly<LumenChartLabels>
-): string => {
-  const headers = series
-    .map(item => `<th scope="col">${escapeChartHtml(item.label)}</th>`)
-    .join('')
-
-  const rows = categories
-    .map(category => {
-      const cells = series
-        .map(item => {
-          const datum = item.data.find(candidate => candidate.x === category)
-
-          const value =
-            datum?.label ??
-            (datum?.y === undefined || datum.y === null || !Number.isFinite(datum.y) ?
-              labels.notAvailable :
-              formatValue(datum.y))
-
-          return `<td>${escapeChartHtml(value)}</td>`
-        })
-        .join('')
-
-      const label =
-        series
-          .flatMap(item => item.data)
-          .find(datum => datum.x === category)?.xLabel ??
-          formatCategory(category)
-
-      return `<tr><th scope="row">${escapeChartHtml(label)}</th>${cells}</tr>`
-    })
-    .join('')
-
-  return [
-    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
-    `${headers}</tr></thead><tbody>${rows}</tbody></table></div></details>`
-  ].join('')
-}
-
-const scatterDataTableHtml = (
-  points: readonly LumenScatterGeometryPoint[],
-  formatCategory: (category: number | string) => string = String,
-  formatValue: (value: number) => string = String,
-  labels: Readonly<LumenChartLabels>
-): string => {
-  const rows = points
-    .map(point => [
-      `<tr><th scope="row">${escapeChartHtml(point.xLabel ?? formatCategory(point.x))}</th>`,
-      `<td>${escapeChartHtml(point.seriesLabel)}</td>`,
-      `<td>${escapeChartHtml(point.label ?? formatValue(point.y ?? 0))}</td>`,
-      `<td>${escapeChartHtml(point.size === undefined || point.size === null || !Number.isFinite(point.size) ? labels.notAvailable : formatValue(point.size))}</td></tr>`
-    ].join(''))
-    .join('')
-
-  return [
-    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.x)}</th>`,
-    `<th scope="col">${escapeChartHtml(labels.series)}</th><th scope="col">${escapeChartHtml(labels.value)}</th>`,
-    `<th scope="col">${escapeChartHtml(labels.size)}</th></tr></thead>`,
-    `<tbody>${rows}</tbody></table></div></details>`
-  ].join('')
-}
-
-const heatmapDataTableHtml = (
-  data: readonly LumenHeatmapDatum[], labels: Readonly<LumenChartLabels>
-): string => {
-  const rows = data
-    .map(cell => {
-      const value =
-        cell.label ??
-        (cell.value === null || !Number.isFinite(cell.value) ?
-          labels.notAvailable :
-          String(cell.value))
-
-      return [
-        `<tr><th scope="row">${escapeChartHtml(cell.xLabel ?? cell.x)}</th>`,
-        `<td>${escapeChartHtml(cell.yLabel ?? cell.y)}</td>`,
-        `<td>${escapeChartHtml(value)}</td></tr>`
-      ].join('')
-    })
-    .join('')
-
-  return [
-    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.column)}</th>`,
-    `<th scope="col">${escapeChartHtml(labels.row)}</th><th scope="col">${escapeChartHtml(labels.value)}</th></tr></thead>`,
-    `<tbody>${rows}</tbody></table></div></details>`
-  ].join('')
-}
-
-const rangeDataTableHtml = (
-  data: readonly LumenRangeDatum[], labels: Readonly<LumenChartLabels>
-): string => {
-  const rows = data
-    .map(item => [
-      `<tr><th scope="row">${escapeChartHtml(item.xLabel ?? item.x)}</th>`,
-      `<td>${escapeChartHtml(item.low ?? labels.notAvailable)}</td>`,
-      `<td>${escapeChartHtml(item.high ?? labels.notAvailable)}</td></tr>`
-    ].join(''))
-    .join('')
-
-  return [
-    `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-    `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
-    `<th scope="col">${escapeChartHtml(labels.low)}</th><th scope="col">${escapeChartHtml(labels.high)}</th></tr></thead>`,
-    `<tbody>${rows}</tbody></table></div></details>`
-  ].join('')
+  return element.getAttribute(name) !== 'false'
 }
 
 const chartPercentage = (percentage: number): string => new Intl.NumberFormat(undefined, {
   maximumFractionDigits: percentage < 0.01 ? 1 : 0,
   style: 'percent'
 }).format(percentage)
+
+const chartSummaryHtml = (
+  element: HTMLElement,
+  series: readonly LumenChartSeries[],
+  labels: Readonly<LumenChartLabels>
+): string => {
+  const summary = element.getAttribute('summary') ?? formatLumenChartSummary(
+    series, String, labels
+  )
+
+  return `<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>`
+}
 
 const chartEmptyStateHtml = (
   element: HTMLElement,
@@ -5504,7 +5850,14 @@ const chartEmptyStateHtml = (
   chartCaptionHtml(element)
 ].join('')
 
-abstract class LumenDataChartBehaviorElement extends LumenElement {
+const chartDomainAttributes = (element: HTMLElement, minName = 'domain-min', maxName = 'domain-max') => {
+  const min = chartNumberAttribute(element, minName)
+  const max = chartNumberAttribute(element, maxName)
+
+  return { ...(min === undefined ? {} : { min }), ...(max === undefined ? {} : { max }) }
+}
+
+abstract class LumenDataChartBehaviorElement extends LumenDatumChartElement {
   #categoryFormatter: ((category: number | string) => string) | undefined
   #series: readonly LumenChartSeries[] | undefined
   #valueFormatter: ((value: number) => string) | undefined
@@ -5517,6 +5870,10 @@ abstract class LumenDataChartBehaviorElement extends LumenElement {
     this.#categoryFormatter = value
 
     this.renderChart()
+  }
+
+  protected get detailCategoryFormatter(): ((category: number | string) => string) | undefined {
+    return this.#categoryFormatter
   }
 
   get series(): readonly LumenChartSeries[] {
@@ -5555,7 +5912,7 @@ abstract class LumenDataChartBehaviorElement extends LumenElement {
     return parseChartSeries(value)
   }
 
-  protected abstract renderChart(): void
+  protected abstract override renderChart(): void
 }
 
 class LumenSparklineBehaviorElement extends LumenElement {
@@ -5574,7 +5931,7 @@ class LumenSparklineBehaviorElement extends LumenElement {
 
       if (Array.isArray(parsed))
         return parsed.filter(
-          (value): value is number => typeof value === 'number' && Number.isFinite(value)
+          (value): value is number => Number.isFinite(value)
         )
     } catch {
       return source
@@ -5589,22 +5946,22 @@ class LumenSparklineBehaviorElement extends LumenElement {
   set values(value: readonly number[]) {
     this.#values = value
 
-    this.renderSparkline()
+    this.#renderSparkline()
   }
 
   override connectedCallback() {
     super.connectedCallback()
 
-    this.renderSparkline()
+    this.#renderSparkline()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    if (this.isConnected) this.renderSparkline()
+    if (this.isConnected) this.#renderSparkline()
   }
 
-  private renderSparkline() {
+  #renderSparkline() {
     const values = this.values
 
     if (values.length === 0) {
@@ -5646,20 +6003,21 @@ class LumenSparklineBehaviorElement extends LumenElement {
 
     this.setAttribute('role', 'img')
 
-    this.innerHTML = `<svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">${area ? geometry.areaPaths.map(path => `<path class="ui-sparkline__area" d="${path}"></path>`).join('') : ''}<path class="ui-sparkline__line" d="${geometry.path}"></path>${showEndpoint && endpoint ? `<circle class="ui-sparkline__endpoint" cx="${endpoint.xCoordinate}" cy="${endpoint.yCoordinate}" r="2.5"></circle>` : ''}</svg><span class="ui-sr-only">${escapeChartHtml(label)}</span>`
+    this.innerHTML = `<svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 120 40">${area ? geometry.areaPaths.map(path => `<path class="ui-sparkline__area" d="${path}"></path>`).join('') : ''}<path class="ui-sparkline__line" d="${geometry.path}"></path></svg>${showEndpoint && endpoint ? `<span aria-hidden="true" class="ui-sparkline__endpoint" style="left:${endpoint.xCoordinate / 120 * 100}%;top:${endpoint.yCoordinate / 40 * 100}%"></span>` : ''}<span class="ui-sr-only">${escapeChartHtml(label)}</span>`
   }
 }
 
 class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
   protected renderChart() {
-    const series = this.series
+    const categories = getLumenChartCategories(this.series)
+    const series = this.series.map(item => alignLumenChartSeries(item, categories))
     const chartLabels = chartLabelsFor(this)
 
     if (!hasLumenChartData(series)) {
       const emptyLabel =
         this.getAttribute('empty-label') ?? chartLabels.empty
 
-      this.innerHTML = chartEmptyStateHtml(this, emptyLabel)
+      this.renderChartContent(chartEmptyStateHtml(this, emptyLabel))
 
       return
     }
@@ -5680,72 +6038,74 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
         undefined
 
     const geometry = createLumenBarGeometry(series, {
-      ...(categoryWidth === undefined ? {} : { categoryWidth }),
+      width: 480,
+      height: 240,
+      categoryWidth: categoryWidth ?? 160,
+      formatCategory: this.categoryFormatter,
+      formatValue: this.valueFormatter,
       layout,
       orientation
     })
 
     const ticks = getLumenChartTicks(geometry.domain)
+    const margin = geometry.margin
 
-    const margin =
-      orientation === 'horizontal' ?
-        {
-          bottom: 24,
-          left: Math.max(64, Math.min(240, categoryWidth ?? 112)),
-          right: 20,
-          top: 16
-        } :
-        { bottom: 52, left: 52, right: 16, top: 16 }
+    const categoryTicks = getLumenChartCategoryTicks(geometry.categories.map(category => String(category.label)), {
+      end: geometry.width - margin.right,
+      positions: geometry.categories.map(category => category.x),
+      start: margin.left
+    })
 
-    const grid = ticks
-      .map(tick => {
-        const coordinate =
-          orientation === 'horizontal' ?
-            scaleLumenChartValue(
-              tick, geometry.domain, margin.left, geometry.width - margin.right
-            ) :
-            scaleLumenChartValue(
-              tick, geometry.domain, geometry.height - margin.bottom, margin.top
-            )
+    const valueTicks = getLumenChartCategoryTicks(ticks.map(tick => this.valueFormatter(tick)), {
+      end: geometry.width - margin.right,
+      minimumGap: 48,
+      positions: ticks.map(tick => scaleLumenChartValue(
+        tick, geometry.domain, margin.left, geometry.width - margin.right
+      )),
+      start: margin.left
+    })
 
-        return orientation === 'horizontal' ?
-          [
-            `<line x1="${coordinate}" x2="${coordinate}" y1="${margin.top}"`,
-            ` y2="${geometry.height - margin.bottom}"></line>`
-          ].join('') :
-          [
-            `<line x1="${margin.left}" x2="${geometry.width - margin.right}"`,
-            ` y1="${coordinate}" y2="${coordinate}"></line>`
-          ].join('')
-      })
-      .join('')
+    const grid = ticks.map(tick => {
+      const x = scaleLumenChartValue(tick, geometry.domain, margin.left, geometry.width - margin.right)
 
-    const labels = geometry.categories
-      .map(category => {
-        const baseline = orientation === 'horizontal' ? 'middle' : 'auto'
-        const anchor = orientation === 'horizontal' ? 'end' : 'middle'
+      return `<line x1="${x}" x2="${x}" y1="${margin.top}" y2="${geometry.height - margin.bottom}"></line>`
+    }).join('')
 
-        return [
-          `<text dominant-baseline="${baseline}" text-anchor="${anchor}"`,
-          ` x="${category.x}" y="${category.y}">`,
-          `${escapeChartHtml(category.label)}</text>`
-        ].join('')
-      })
-      .join('')
+    const categoryLabels = geometry.categories.map(category => {
+      const label = getLumenChartCategoryTicks([String(category.label)], { end: margin.left - 16, start: 0 })[0]?.label ?? ''
+
+      return `<text dominant-baseline="middle" text-anchor="end" x="${category.x}" y="${category.y}">${escapeChartHtml(label)}</text>`
+    }).join('')
+
+    const valueLabels = valueTicks.map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="${geometry.height - 6}">${escapeChartHtml(tick.label)}</text>`).join('')
+
+    const axes = orientation === 'horizontal' ?
+      `<g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${categoryLabels}${valueLabels}</g>` :
+      chartAxesHtml({
+        categoryTicks,
+        height: geometry.height,
+        left: margin.left,
+        right: geometry.width - margin.right,
+        ticks,
+        y: tick => scaleLumenChartValue(tick, geometry.domain, geometry.height - margin.bottom, margin.top)
+      }, this.valueFormatter, 20)
 
     const marks = geometry.marks
       .map(mark => {
-        const datum = series
-          .flatMap(item => item.data)
-          .find(item => item.x === mark.category)
-
-        const label = datum?.xLabel ?? this.categoryFormatter(mark.category)
+        const label = getLumenChartCategoryLabel(series, mark.category, this.detailCategoryFormatter, 'detail')
         const title = `${label} · ${mark.seriesLabel}: ${this.valueFormatter(mark.value)}`
+        const datum = series.find(item => item.id === mark.seriesId)?.data.find(item => item.x === mark.category)
+
+        const attributes = this.datumAttributes(
+          datum ? createLumenChartDatumActivation(mark.seriesId, datum) : null, title
+        )
+
+        const hit = attributes ? `<rect class="ui-chart__datum-hit"${attributes} x="${mark.x}" y="${mark.y - (orientation === 'vertical' && mark.height === 0 ? 6 : 0)}" width="${Math.max(12, mark.width)}" height="${Math.max(12, mark.height)}"></rect>` : ''
 
         return [
-          `<rect class="ui-chart-tone--${mark.tone}" height="${mark.height}"`,
+          `<rect data-ui-chart-motion-key="${escapeChartHtml(getLumenChartMotionKey(mark.seriesId, datum ?? { x: mark.category }))}" class="ui-chart-tone--${mark.tone}"${attributes} height="${mark.height}"`,
           ` rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}">`,
-          `<title>${escapeChartHtml(title)}</title></rect>`
+          `<title>${escapeChartHtml(title)}</title></rect>${hit}`
         ].join('')
       })
       .join('')
@@ -5755,94 +6115,64 @@ class LumenBarChartBehaviorElement extends LumenDataChartBehaviorElement {
     )
 
     const showTable = chartBooleanAttribute(this, 'show-table', true)
-    const categories = geometry.categories.map(category => category.category)
 
-    this.innerHTML = `${chartHeaderHtml(this)}${chartSummaryHtml(this, series)}${showLegend ? chartLegendHtml(series, chartLabels) : ''}<div class="ui-chart__plot"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-chart__grid">${grid}</g><g class="ui-chart__axis-labels">${labels}</g><g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) : ''}${chartCaptionHtml(this)}`
+    this.renderChartContent(`${chartHeaderHtml(this)}${chartSummaryHtml(this, series, chartLabels)}${showLegend ? chartLegendHtml(series, chartLabels) : ''}<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${geometry.width} ${geometry.height}">${axes}<g class="ui-bar-chart__marks">${marks}</g></svg></div>${showTable ? chartDataTableHtml(categories, series, this.detailCategoryFormatter, this.valueFormatter, chartLabels) : ''}${chartCaptionHtml(this)}`)
   }
 }
 
 class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
+  #interaction: ReturnType<typeof createLumenChartInteractionController> | undefined
+
+  override disconnectedCallback() {
+    this.#interaction?.destroy()
+
+    this.#interaction = undefined
+
+    super.disconnectedCallback()
+  }
+
   protected renderChart() {
-    const series = this.series
+    this.#interaction?.destroy()
+
+    this.#interaction = undefined
+
     const chartLabels = chartLabelsFor(this)
+    const xScaleAttribute = this.getAttribute('x-scale')
+    const xScale = xScaleAttribute === 'linear' || xScaleAttribute === 'time' ? xScaleAttribute : 'categorical'
+    const referenceValue = chartNumberAttribute(this, 'reference-value')
+
+    const model = createLumenLineChartModel(this.series, {
+      annotations: parseChartAnnotations(this.getAttribute('annotations')),
+      xScale,
+      domain: chartDomainAttributes(this),
+      xDomain: chartDomainAttributes(this, 'x-min', 'x-max'),
+      ...(referenceValue === undefined ? {} : { referenceValue }),
+      ...(this.detailCategoryFormatter ? { formatCategory: this.detailCategoryFormatter } : {}),
+      formatValue: this.valueFormatter
+    })
+
+    const { categories, series, width, height, padding, paddingLeft, domain, ticks, geometries, categoryTicks } = model
+    const interactive = chartBooleanAttribute(this, 'interactive', false)
+
+    this.dataset.uiChartSync = this.getAttribute('sync-group') ?? ''
 
     if (!hasLumenChartData(series)) {
       const emptyLabel =
         this.getAttribute('empty-label') ?? chartLabels.empty
 
-      this.innerHTML = chartEmptyStateHtml(this, emptyLabel)
+      this.renderChartContent(chartEmptyStateHtml(this, emptyLabel))
 
       return
     }
 
-    const width = 640
-    const height = 320
-    const padding = 44
-    const categories = getLumenChartCategories(series)
-    const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
-    const referenceAttribute = this.getAttribute('reference-value')
-
-    const parsedReference =
-      referenceAttribute === null ? undefined : Number(referenceAttribute)
-
-    const referenceValue =
-      parsedReference !== undefined && Number.isFinite(parsedReference) ?
-        parsedReference :
-        undefined
-
-    const domain = getLumenChartDomain(
-      [
-        ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
-        referenceValue ?? null
-      ], false
-    )
-
-    const ticks = getLumenChartTicks(domain)
-
-    const paddingLeft = getLumenChartAxisPadding(
-      ticks.map(tick => this.valueFormatter(tick))
-    )
-
-    const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
-      domain,
+    const axes = chartAxesHtml({
+      categoryTicks,
       height,
-      includeZero: false,
-      padding,
-      paddingLeft,
-      width
-    }))
-
-    const labelStep = Math.max(1, Math.ceil(categories.length / 8))
-
-    const grid = ticks
-      .map(tick => {
-        const y = scaleLumenChartValue(tick, domain, height - padding, padding)
-
-        return [
-          `<line x1="${paddingLeft}" x2="${width - padding}" y1="${y}" y2="${y}"></line>`,
-          `<text x="${paddingLeft - 8}" y="${y}">`,
-          `${escapeChartHtml(this.valueFormatter(tick))}</text>`
-        ].join('')
-      })
-      .join('')
-
-    const labels = categories
-      .map((category, index) => {
-        if (index % labelStep !== 0 && index !== categories.length - 1)
-          return ''
-
-        const denominator = Math.max(1, categories.length - 1)
-        const x = paddingLeft + (index / denominator) * (width - paddingLeft - padding)
-
-        const label =
-          series
-            .flatMap(item => item.data)
-            .find(datum => datum.x === category)?.xLabel ??
-            this.categoryFormatter(category)
-
-        return `<text text-anchor="middle" x="${x}" y="${height - 14}">${escapeChartHtml(label)}</text>`
-      })
-      .join('')
+      left: paddingLeft,
+      right: width - padding,
+      ticks,
+      y: tick => scaleLumenChartValue(tick, domain, height - padding, padding)
+    }, this.valueFormatter, 14)
 
     const area = chartBooleanAttribute(this, 'area', false)
     const markersAttribute = this.getAttribute('markers') ?? 'auto'
@@ -5865,12 +6195,8 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
 
         const tone = resolveLumenChartTone(item.tone, index)
 
-        const areaPaths = area ?
-          geometry.areaPaths
-            .map(
-              path => `<path class="ui-line-chart__area" d="${path}"></path>`
-            )
-            .join('') :
+        const areaPaths = area && geometry.areaPaths.length > 0 ?
+          `<path data-ui-chart-motion-key="${escapeChartHtml(JSON.stringify(['area', item.id]))}" class="ui-line-chart__area" d="${geometry.areaPaths.join(' ')}"></path>` :
           ''
 
         const points = Number.isFinite(markerStep) ?
@@ -5878,11 +6204,11 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
             .map((point, pointIndex) => {
               if (pointIndex % markerStep !== 0) return ''
 
-              const label = point.xLabel ?? this.categoryFormatter(point.x)
+              const label = getLumenChartCategoryLabel(series, point.x, this.detailCategoryFormatter, 'detail')
               const title = `${label} · ${item.label}: ${this.valueFormatter(point.y ?? 0)}`
 
               return [
-                `<circle class="ui-line-chart__point" cx="${point.xCoordinate}"`,
+                `<circle data-ui-chart-motion-key="${escapeChartHtml(getLumenChartMotionKey(item.id, point))}" class="ui-line-chart__point" cx="${point.xCoordinate}"`,
                 ` cy="${point.yCoordinate}" r="3">`,
                 `<title>${escapeChartHtml(title)}</title></circle>`
               ].join('')
@@ -5890,10 +6216,17 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
             .join('') :
           ''
 
+        const hits = geometry.points.map(point => {
+          const context = `${getLumenChartCategoryLabel(series, point.x, this.detailCategoryFormatter, 'detail')} · ${item.label}: ${this.valueFormatter(point.y ?? 0)}`
+          const attributes = this.datumAttributes(createLumenChartDatumActivation(item.id, point), context)
+
+          return attributes ? `<circle class="ui-chart__datum-hit"${attributes} cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="10"></circle>` : ''
+        }).join('')
+
         return [
-          `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areaPaths}`,
-          `<path class="ui-line-chart__line" d="${geometry.path}"></path>`,
-          `${points}</g>`
+          `<g data-ui-chart-series="${escapeChartHtml(item.id)}" class="ui-line-chart__series ui-chart-tone--${tone}">${areaPaths}`,
+          `<path data-ui-chart-motion-key="${escapeChartHtml(JSON.stringify(['path', item.id]))}" class="ui-line-chart__line" d="${geometry.path}"></path>`,
+          `${points}${hits}</g>`
         ].join('')
       })
       .join('')
@@ -5915,20 +6248,23 @@ class LumenLineChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     const showTable = chartBooleanAttribute(this, 'show-table', true)
 
-    this.innerHTML = [
+    this.renderChartContent([
       chartHeaderHtml(this),
-      chartSummaryHtml(this, series),
-      showLegend ? chartLegendHtml(series, chartLabels) : '',
-      '<div class="ui-chart__plot"><svg aria-hidden="true"',
+      chartSummaryHtml(this, series, chartLabels),
+      showLegend ? chartLegendHtml(series, chartLabels, interactive) : '',
+      `<div ${interactive ? 'data-ui-chart-interaction-plot' : ''} class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true"`,
       ` preserveAspectRatio="xMidYMid meet" viewBox="0 0 ${width} ${height}">`,
-      `<g class="ui-chart__grid">${grid}</g>`,
-      `<g class="ui-chart__axis-labels">${labels}</g>`,
-      `${reference}${paths}</svg></div>`,
+      axes,
+      `<svg x="${paddingLeft}" y="${padding}" width="${width - padding - paddingLeft}" height="${height - 2 * padding}" viewBox="${paddingLeft} ${padding} ${width - padding - paddingLeft} ${height - 2 * padding}" overflow="hidden">${reference}${paths}</svg>${chartAnnotationHtml(model)}${interactive ? `<line class="ui-chart__crosshair" data-ui-chart-crosshair style="display:none" y1="${padding}" y2="${height - padding}"></line>` : ''}</svg></div>`,
+      `<ul class="ui-sr-only">${model.annotationMarks.map(mark => `<li>${escapeChartHtml(mark.label)}: ${escapeChartHtml(mark.axis === 'x' ? this.categoryFormatter(mark.value) : this.valueFormatter(Number(mark.value)))}</li>`).join('')}</ul>`,
+      interactive ? chartInspectionHtml(model, chartLabels, this.valueFormatter, this.detailCategoryFormatter) : '',
       showTable ?
-        chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) :
+        chartDataTableHtml(categories, series, this.detailCategoryFormatter, this.valueFormatter, chartLabels) :
         '',
       chartCaptionHtml(this)
-    ].join('')
+    ].join(''))
+
+    if (interactive) this.#interaction = createLumenChartInteractionController(this)
   }
 }
 
@@ -5938,7 +6274,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
     const chartLabels = chartLabelsFor(this)
 
     if (!series || !hasLumenPieData(series.data)) {
-      this.innerHTML = chartEmptyStateHtml(this, chartLabels.empty)
+      this.renderChartContent(chartEmptyStateHtml(this, chartLabels.empty))
 
       return
     }
@@ -5970,8 +6306,11 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
           `(${chartPercentage(slice.percentage)})`
         ].join(' ')
 
+        const datum = renderedSeries.data.find(item => item.x === slice.x)
+        const attributes = this.datumAttributes(datum ? createLumenChartDatumActivation(series.id, datum) : null, title)
+
         return [
-          `<path class="ui-chart-tone--${slice.tone}" d="${slice.path}"`,
+          `<path class="ui-chart-tone--${slice.tone}"${attributes} d="${slice.path}"`,
           ` fill-rule="evenodd"><title>${escapeChartHtml(title)}</title></path>`
         ].join('')
       })
@@ -5985,11 +6324,11 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
         `<div class="ui-pie-chart__center" aria-hidden="true">${centerValue ? `<strong>${escapeChartHtml(centerValue)}</strong>` : ''}${centerLabel ? `<span>${escapeChartHtml(centerLabel)}</span>` : ''}</div>` :
         ''
 
-    const table = showTable ? this.pieDataTable(geometry.slices, chartLabels) : ''
+    const table = showTable ? this.#pieDataTable(geometry.slices, chartLabels) : ''
 
-    this.innerHTML = [
+    this.renderChartContent([
       chartHeaderHtml(this),
-      chartSummaryHtml(this, [renderedSeries]),
+      chartSummaryHtml(this, [renderedSeries], chartLabels),
       legend,
       '<div class="ui-chart__plot ui-pie-chart__plot">',
       '<svg aria-hidden="true" preserveAspectRatio="xMidYMid meet"',
@@ -5997,10 +6336,10 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
       `<g class="ui-pie-chart__slices">${slices}</g></svg>${center}</div>`,
       table,
       chartCaptionHtml(this)
-    ].join('')
+    ].join(''))
   }
 
-  private pieDataTable(
+  #pieDataTable(
     slices: readonly LumenPieGeometrySlice[], labels: Readonly<LumenChartLabels>
   ): string {
     const rows = slices
@@ -6013,7 +6352,7 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 
     return [
       `<details class="ui-chart__data"><summary>${escapeChartHtml(labels.viewData)}</summary>`,
-      `<div><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
+      `<div role="group" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><table><thead><tr><th scope="col">${escapeChartHtml(labels.category)}</th>`,
       `<th scope="col">${escapeChartHtml(labels.value)}</th><th scope="col">Share</th></tr></thead>`,
       `<tbody>${rows}</tbody></table></div></details>`
     ].join('')
@@ -6021,10 +6360,30 @@ class LumenPieChartBehaviorElement extends LumenDataChartBehaviorElement {
 }
 
 class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
+  private referenceItems: readonly LumenScatterReference[] = []
+
+  get references(): readonly LumenScatterReference[] {
+    return this.referenceItems.map(item => ({ ...item }))
+  }
+
+  set references(value: readonly LumenScatterReference[]) {
+    this.referenceItems = value.map(item => ({ ...item }))
+
+    if (this.isConnected) this.renderChart()
+  }
+
   protected renderChart() {
+    const plotId = createId('scatter-plot')
     const series = this.series
     const chartLabels = chartLabelsFor(this)
-    const geometry = createLumenScatterGeometry(series)
+    const requestedScale = this.getAttribute('x-scale')
+    const xScale = requestedScale === 'log' || requestedScale === 'time' ? requestedScale : 'linear'
+
+    const geometry = createLumenScatterGeometry(series, {
+      xScale,
+      xDomain: chartDomainAttributes(this, 'x-min', 'x-max'),
+      domain: chartDomainAttributes(this)
+    })
 
     const renderedSeries = series.map(item => ({
       ...item,
@@ -6032,32 +6391,39 @@ class LumenScatterChartBehaviorElement extends LumenDataChartBehaviorElement {
     })).filter(item => item.data.length > 0)
 
     if (geometry.points.length === 0) {
-      this.innerHTML = chartEmptyStateHtml(this, chartLabels.empty)
+      this.renderChartContent(chartEmptyStateHtml(this, chartLabels.empty))
 
       return
     }
 
-    const marks = geometry.points.map(point => [
-      `<circle class="ui-chart-tone--${point.tone}" cx="${point.xCoordinate}"`,
-      ` cy="${point.yCoordinate}" r="${point.radius}"><title>`,
-      `${escapeChartHtml(point.xLabel ?? point.x)} · ${escapeChartHtml(point.seriesLabel)}: `,
-      `${escapeChartHtml(point.label ?? this.valueFormatter(point.y ?? 0))}</title></circle>`
-    ].join('')).join('')
+    const marks = geometry.points.map(point => {
+      const context = `${point.xLabel ?? this.categoryFormatter(point.x)} · ${point.seriesLabel}: ${point.label ?? this.valueFormatter(point.y ?? 0)}`
+      const attributes = this.datumAttributes(createLumenChartDatumActivation(point.seriesId, point), context)
 
-    this.innerHTML = [
+      if (point.xCoordinate < 44 || point.xCoordinate > geometry.width - 44 || point.yCoordinate < 44 || point.yCoordinate > geometry.height - 44) return ''
+
+      return attributes ? `<circle class="ui-chart__datum-hit"${attributes} cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="${Math.max(10, point.radius)}"></circle>` : ''
+    }).join('')
+
+    this.renderChartContent([
       chartHeaderHtml(this),
-      chartSummaryHtml(this, renderedSeries),
+      chartSummaryHtml(this, renderedSeries, chartLabels),
       chartBooleanAttribute(this, 'show-legend', series.length > 1) ? chartLegendHtml(series, chartLabels) : '',
-      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}">`,
-      `<g class="ui-scatter-chart__marks">${marks}</g></svg></div>`,
+      scatterPlotHtml(
+        geometry, this.referenceItems, xScale, plotId, this.categoryFormatter, this.valueFormatter, chartLabels, marks
+      ),
       chartBooleanAttribute(this, 'show-table', true) ?
         scatterDataTableHtml(
           geometry.points, this.categoryFormatter, this.valueFormatter, chartLabels
         ) :
         '',
       chartCaptionHtml(this)
-    ].join('')
+    ].join(''))
   }
+}
+
+class LumenScatterChartRegisteredElement extends LumenScatterChartBehaviorElement {
+  static override config = { ...elementConfigs.ScatterChart, observedAttributes: observedAttributeNames }
 }
 
 class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
@@ -6075,7 +6441,7 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
     })
 
     if (!hasLumenChartData(series)) {
-      this.innerHTML = chartEmptyStateHtml(this, chartLabels.empty)
+      this.renderChartContent(chartEmptyStateHtml(this, chartLabels.empty))
 
       return
     }
@@ -6126,17 +6492,50 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
       ...(bars.length === 0 ?
         {} :
         {
+          paddingBottom: barGeometry.margin.bottom,
+          paddingTop: barGeometry.margin.top,
           xDomain: { max: 1, min: 0 },
           xScale: 'linear' as const
         })
     }
 
-    const barMarks = barGeometry.marks.map(mark => [
-      `<rect class="ui-chart-tone--${mark.tone}" height="${mark.height}"`,
-      ` rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}">`,
-      `<title>${escapeChartHtml(mark.seriesLabel)}: `,
-      `${escapeChartHtml(this.valueFormatter(mark.value))}</title></rect>`
-    ].join('')).join('')
+    const margin = bars.length > 0 ?
+      barGeometry.margin :
+      { top: padding, bottom: padding, left: padding, right: padding }
+
+    const formatCategory = this.categoryFormatter
+
+    const axes = chartAxesHtml({
+      categoryTicks: getLumenChartCategoryTicks(
+        categories.map(category => getLumenChartCategoryLabel(series, category, formatCategory)), {
+          start: margin.left,
+          end: width - margin.right,
+          ...(bars.length > 0 ? { positions: barGeometry.categories.map(category => category.x) } : {})
+        }
+      ),
+      height,
+      left: margin.left,
+      right: width - margin.right,
+      ticks: getLumenChartTicks(domain),
+      y: tick => scaleLumenChartValue(tick, domain, height - margin.bottom, margin.top)
+    }, this.valueFormatter, 12)
+
+    const barMarks = barGeometry.marks.map(mark => {
+      const datum = aligned.find(item => item.id === mark.seriesId)?.data.find(item => item.x === mark.category)
+      const context = `${getLumenChartCategoryLabel(series, mark.category, this.detailCategoryFormatter, 'detail')} · ${mark.seriesLabel}: ${this.valueFormatter(mark.value)}`
+
+      const attributes = this.datumAttributes(
+        datum ? createLumenChartDatumActivation(mark.seriesId, datum) : null, context
+      )
+
+      return [
+        attributes ? `<rect class="ui-chart__datum-hit"${attributes} x="${mark.x}" y="${mark.y - (mark.height === 0 ? 6 : 0)}" width="${Math.max(12, mark.width)}" height="${Math.max(12, mark.height)}"></rect>` : '',
+        `<rect class="ui-chart-tone--${mark.tone}"${attributes} height="${mark.height}"`,
+        ` rx="4" width="${mark.width}" x="${mark.x}" y="${mark.y}">`,
+        `<title>${escapeChartHtml(mark.seriesLabel)}: `,
+        `${escapeChartHtml(this.valueFormatter(mark.value))}</title></rect>`
+      ].join('')
+    }).join('')
 
     const lineMarks = lines.map((item, index) => {
       const geometry = createLumenLineGeometry(
@@ -6151,20 +6550,29 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
         ).join('') :
         ''
 
-      return `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areas}<path class="ui-line-chart__line" d="${geometry.path}"></path></g>`
+      const points = geometry.points.map(point => {
+        const datum = item.data.find(candidate => alignComboLineDatum(candidate).x === point.x)
+        const context = `${datum ? getLumenChartCategoryLabel(series, datum.x, this.detailCategoryFormatter, 'detail') : point.x} · ${item.label}: ${this.valueFormatter(point.y ?? 0)}`
+        const attributes = this.datumAttributes(datum ? createLumenChartDatumActivation(item.id, datum) : null, context)
+        const hit = attributes ? `<circle class="ui-chart__datum-hit"${attributes} cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="10"></circle>` : ''
+
+        return `<circle class="ui-line-chart__point" cx="${point.xCoordinate}" cy="${point.yCoordinate}" r="3.5"></circle>${hit}`
+      }).join('')
+
+      return `<g class="ui-line-chart__series ui-chart-tone--${tone}">${areas}<path class="ui-line-chart__line" d="${geometry.path}"></path>${points}</g>`
     }).join('')
 
-    this.innerHTML = [
+    this.renderChartContent([
       chartHeaderHtml(this),
-      chartSummaryHtml(this, series),
+      chartSummaryHtml(this, series, chartLabels),
       chartBooleanAttribute(this, 'show-legend', true) ? chartLegendHtml(series, chartLabels) : '',
-      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${width} ${height}">`,
-      `<g class="ui-bar-chart__marks">${barMarks}</g>${lineMarks}</svg></div>`,
+      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 ${width} ${height}">`,
+      `${axes}<g class="ui-bar-chart__marks">${barMarks}</g>${lineMarks}</svg></div>`,
       chartBooleanAttribute(this, 'show-table', true) ?
         chartDataTableHtml(categories, series, this.categoryFormatter, this.valueFormatter, chartLabels) :
         '',
       chartCaptionHtml(this)
-    ].join('')
+    ].join(''))
   }
 
   protected override parseSeriesAttribute(value: string | null): readonly LumenComboSeries[] {
@@ -6172,7 +6580,19 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
   }
 }
 
-abstract class LumenStructuredChartBehaviorElement extends LumenElement {
+abstract class LumenStructuredChartBehaviorElement extends LumenDatumChartElement {
+  #valueFormatter: (value: number) => string = String
+
+  get valueFormatter(): (value: number) => string {
+    return this.#valueFormatter
+  }
+
+  set valueFormatter(value: (value: number) => string) {
+    this.#valueFormatter = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
   override connectedCallback() {
     super.connectedCallback()
 
@@ -6185,40 +6605,305 @@ abstract class LumenStructuredChartBehaviorElement extends LumenElement {
     if (this.isConnected) this.renderChart()
   }
 
-  protected abstract renderChart(): void
+  protected abstract override renderChart(): void
 }
 
 class LumenHeatmapBehaviorElement extends LumenStructuredChartBehaviorElement {
   protected renderChart() {
-    const chartLabels = chartLabelsFor(this)
-    const data = parseHeatmapData(this.getAttribute('data'))
-    const geometry = createLumenHeatmapGeometry(data)
+    const labels = chartLabelsFor(this)
+    const colorScale = this.getAttribute('color-scale') === 'diverging' ? 'diverging' : 'sequential'
+    const midpoint = Number(this.getAttribute('midpoint') ?? 0)
+    const geometry = createLumenHeatmapModel(parseHeatmapData(this.getAttribute('data')), { colorScale, midpoint, domain: chartDomainAttributes(this) })
+    const available = geometry.cells.filter(cell => cell.value !== null && Number.isFinite(cell.value))
 
-    const availableCells = geometry.cells.filter(
-      cell => cell.value !== null && Number.isFinite(cell.value)
-    )
+    const axis = geometry.xTicks.map(tick => `<text text-anchor="${tick.textAnchor}" x="${tick.position}" y="298">${escapeChartHtml(tick.label)}</text>`).join('') +
+      geometry.yTicks.map(tick => `<text class="ui-heatmap__row-label" text-anchor="end" dominant-baseline="middle" x="108" y="${tick.position}">${escapeChartHtml(tick.label)}</text>`).join('')
 
-    const cells = availableCells.map(cell => [
-      `<rect height="${Math.max(0, cell.height - 2)}" opacity="${Math.max(0.12, cell.ratio)}"`,
-      ` width="${Math.max(0, cell.width - 2)}" x="${cell.xCoordinate + 1}"`,
-      ` y="${cell.yCoordinate + 1}"><title>${escapeChartHtml(cell.xLabel ?? cell.x)} · `,
-      `${escapeChartHtml(cell.yLabel ?? cell.y)}: `,
-      `${escapeChartHtml(cell.label ?? cell.value ?? chartLabels.notAvailable)}</title></rect>`
-    ].join('')).join('')
+    const cells = geometry.cells.map(cell => {
+      const missing = cell.value === null || !Number.isFinite(cell.value)
+      const color = getLumenHeatmapColor(cell.value, geometry.domain, colorScale, geometry.midpoint)
+      const context = `${cell.xLabel ?? cell.x} · ${cell.yLabel ?? cell.y}: ${cell.label ?? (missing ? labels.notAvailable : this.valueFormatter(cell.value ?? 0))}`
+      const attributes = this.datumAttributes(createLumenHeatmapDatumActivation(cell), context)
 
-    const summary =
-      this.getAttribute('summary') ??
-      chartLabels.formatHeatmapSummary(availableCells.length)
+      return `<g><rect${attributes} height="${Math.max(0, cell.height - 2)}" width="${Math.max(0, cell.width - 2)}" x="${cell.xCoordinate + 1}" y="${cell.yCoordinate + 1}" style="fill:${color}"><title>${escapeChartHtml(cell.xLabel ?? cell.x)} · ${escapeChartHtml(cell.yLabel ?? cell.y)}: ${escapeChartHtml(missing ? labels.notAvailable : cell.label ?? this.valueFormatter(cell.value ?? 0))}</title></rect>${missing ? `<text class="ui-heatmap__missing" text-anchor="middle" dominant-baseline="middle" x="${cell.xCoordinate + cell.width / 2}" y="${cell.yCoordinate + cell.height / 2}">×</text>` : ''}</g>`
+    }).join('')
 
-    const plot = availableCells.length === 0 ?
-      `<p class="ui-chart__empty" role="status">${escapeChartHtml(chartLabels.empty)}</p>` :
-      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 ${geometry.width} ${geometry.height}"><g class="ui-heatmap__cells">${cells}</g></svg></div>`
+    const summary = this.getAttribute('summary') ?? labels.formatHeatmapSummary(available.length)
+    const empty = available.length === 0 ? `<p class="ui-chart__empty" role="status">${escapeChartHtml(labels.empty)}</p>` : ''
+    const plot = geometry.cells.length === 0 ? '' : `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(labels.chartData)}"><svg aria-hidden="true" viewBox="0 0 640 320"><g class="ui-chart__axis-labels">${axis}</g><g class="ui-heatmap__cells">${cells}</g></svg></div>`
+    const legend = geometry.cells.length > 0 && chartBooleanAttribute(this, 'show-legend', true) ? `<div class="ui-heatmap__legend" aria-label="${escapeChartHtml(labels.chartLegend)}"><span>${escapeChartHtml(this.valueFormatter(geometry.domain.min))}</span><span style="background:${geometry.legendBackground}" class="ui-heatmap__scale">${colorScale === 'diverging' ? `<span style="left:${geometry.midpointPercent}%">${escapeChartHtml(this.valueFormatter(geometry.midpoint))}</span>` : ''}</span><span>${escapeChartHtml(this.valueFormatter(geometry.domain.max))}</span><span>× ${escapeChartHtml(labels.notAvailable)}</span></div>` : ''
+    const table = chartBooleanAttribute(this, 'show-table', true) ? heatmapDataTableHtml(geometry.cells, labels, this.valueFormatter) : ''
 
-    const table = chartBooleanAttribute(this, 'show-table', true) ?
-      heatmapDataTableHtml(data, chartLabels) :
-      ''
+    this.renderChartContent(`${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${empty}${plot}${legend}${table}${chartCaptionHtml(this)}`)
+  }
+}
 
-    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`
+class LumenWaterfallChartBehaviorElement extends LumenStructuredChartBehaviorElement {
+  #data: readonly LumenWaterfallDatum[] | undefined
+  get data(): readonly LumenWaterfallDatum[] {
+    return this.#data ?? parseWaterfallData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenWaterfallDatum[]) {
+    this.#data = value
+
+    this.renderChart()
+  }
+
+  protected renderChart() {
+    const labels = chartLabelsFor(this)
+    const model = createLumenWaterfallGeometry(this.data, { formatValue: this.valueFormatter })
+
+    this.innerHTML = chartHeaderHtml(this) + intervalChartHtml(model, labels, this.valueFormatter, this.valueFormatter, this.getAttribute('value-label') ?? labels.value, chartBooleanAttribute(this, 'show-table', true), this.getAttribute('summary')) + chartCaptionHtml(this)
+  }
+}
+
+abstract class LumenExpandedChartElement extends LumenStructuredChartBehaviorElement {
+  #labels: Partial<LumenChartLabels> = {}
+  get labels(): Partial<LumenChartLabels> {
+    return this.#labels
+  }
+
+  set labels(value: Partial<LumenChartLabels>) {
+    this.#labels = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected get chartLabels(): Readonly<LumenChartLabels> {
+    return { ...chartLabelsFor(this), ...this.#labels }
+  }
+}
+
+export class LumenCalendarHeatmapElement extends LumenExpandedChartElement {
+  static override config = { ...elementConfigs.CalendarHeatmap, observedAttributes: observedAttributeNames }
+  #data: readonly LumenCalendarHeatmapDatum[] | undefined
+  #dateFormatter: (date: string) => string = String
+  #weekdayLabels: readonly string[] | undefined
+  get data(): readonly LumenCalendarHeatmapDatum[] {
+    return this.#data ?? parseCalendarHeatmapData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenCalendarHeatmapDatum[]) {
+    this.#data = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get dateFormatter(): (date: string) => string {
+    return this.#dateFormatter
+  }
+
+  set dateFormatter(value: (date: string) => string) {
+    this.#dateFormatter = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get weekdayLabels(): readonly string[] {
+    if (this.#weekdayLabels) return this.#weekdayLabels
+
+    try {
+      const parsed: unknown = JSON.parse(this.getAttribute('weekday-labels') ?? 'null')
+
+      if (Array.isArray(parsed) && parsed.length === 7 && parsed.every((label: unknown) => typeof label === 'string')) return parsed
+    } catch { /* Fall back to readable weekday labels. */ }
+
+    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  }
+
+  set weekdayLabels(value: readonly string[]) {
+    this.#weekdayLabels = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get startDate(): string {
+    return this.getAttribute('start-date') ?? ''
+  }
+
+  set startDate(value: string) {
+    this.setAttribute('start-date', value)
+  }
+
+  get endDate(): string {
+    return this.getAttribute('end-date') ?? ''
+  }
+
+  set endDate(value: string) {
+    this.setAttribute('end-date', value)
+  }
+
+  get weekStartsOn(): 0 | 1 {
+    return this.getAttribute('week-starts-on') === '1' ? 1 : 0
+  }
+
+  set weekStartsOn(value: 0 | 1) {
+    this.setAttribute('week-starts-on', String(value))
+  }
+
+  protected renderChart() {
+    this.innerHTML = chartHeaderHtml(this) +
+      calendarHeatmapHtml(
+        this, this.data, this.chartLabels, this.valueFormatter, this.dateFormatter, this.weekdayLabels
+      ) + chartCaptionHtml(this)
+  }
+}
+export class LumenFunnelChartElement extends LumenExpandedChartElement {
+  static override config = { ...elementConfigs.FunnelChart, observedAttributes: observedAttributeNames }
+  #data: readonly LumenFunnelDatum[] | undefined
+  get data(): readonly LumenFunnelDatum[] {
+    return this.#data ?? parseFunnelData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenFunnelDatum[]) {
+    this.#data = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected renderChart() {
+    this.innerHTML = chartHeaderHtml(this) +
+      funnelChartHtml(this, this.data, this.chartLabels, this.valueFormatter) + chartCaptionHtml(this)
+  }
+}
+export class LumenBoxPlotElement extends LumenExpandedChartElement {
+  static override config = { ...elementConfigs.BoxPlot, observedAttributes: observedAttributeNames }
+  #data: readonly LumenBoxPlotDatum[] | undefined
+  #statisticLabels: Partial<LumenBoxPlotStatisticLabels> = {}
+  get data(): readonly LumenBoxPlotDatum[] {
+    return this.#data ?? parseBoxPlotData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenBoxPlotDatum[]) {
+    this.#data = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get statisticLabels(): Partial<LumenBoxPlotStatisticLabels> {
+    return this.#statisticLabels
+  }
+
+  set statisticLabels(value: Partial<LumenBoxPlotStatisticLabels>) {
+    this.#statisticLabels = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected renderChart() {
+    const attributeLabels: Partial<LumenBoxPlotStatisticLabels> = {}
+
+    for (const key of ['min', 'q1', 'median', 'q3', 'max', 'outliers'] as const) {
+      const label = this.getAttribute(`${key}-label`)
+
+      if (label !== null) attributeLabels[key] = label
+    }
+
+    this.innerHTML = chartHeaderHtml(this) +
+      boxPlotHtml(this, this.data, this.chartLabels, this.valueFormatter, {
+        ...attributeLabels, ...this.#statisticLabels
+      }) + chartCaptionHtml(this)
+  }
+}
+
+abstract class LumenComparisonChartElement extends LumenStructuredChartBehaviorElement {
+  #comparisonData: readonly LumenComparisonDatum[] | undefined
+  get data(): readonly LumenComparisonDatum[] {
+    return this.#comparisonData ?? parseComparisonData(this.getAttribute('data'))
+  }
+
+  set data(value: readonly LumenComparisonDatum[]) {
+    this.#comparisonData = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  protected renderChart() {
+    this.innerHTML = chartHeaderHtml(this) + comparisonChartHtml(this, this.data, this.localName === 'lumen-dumbbell-chart', chartLabelsFor(this), this.valueFormatter) + chartCaptionHtml(this)
+  }
+}
+
+export class LumenLollipopChartElement extends LumenComparisonChartElement {
+  static override config = { ...elementConfigs.LollipopChart, observedAttributes: observedAttributeNames }
+}
+export class LumenDumbbellChartElement extends LumenComparisonChartElement {
+  static override config = { ...elementConfigs.DumbbellChart, observedAttributes: observedAttributeNames }
+}
+
+export class LumenBulletChartElement extends LumenStructuredChartBehaviorElement {
+  static override config = { ...elementConfigs.BulletChart, observedAttributes: observedAttributeNames }
+
+  #ranges: readonly LumenBulletRange[] | undefined
+
+  get ranges(): readonly LumenBulletRange[] {
+    return this.#ranges ?? parseBulletRanges(this.getAttribute('ranges'))
+  }
+
+  set ranges(value: readonly LumenBulletRange[]) {
+    this.#ranges = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  get value(): number | null {
+    return this.hasAttribute('value') ? bulletNumberAttribute(this, 'value') : null
+  }
+
+  set value(value: number | null) {
+    if (value === null) this.removeAttribute('value')
+    else this.setAttribute('value', String(value))
+  }
+
+  get target(): number {
+    return bulletNumberAttribute(this, 'target')
+  }
+
+  set target(value: number) {
+    this.setAttribute('target', String(value))
+  }
+
+  protected renderChart() {
+    this.innerHTML = chartHeaderHtml(this, false) +
+      bulletChartHtml(this, this.ranges, chartLabelsFor(this), this.valueFormatter) + chartCaptionHtml(this)
+  }
+}
+
+class LumenHistogramBehaviorElement extends LumenStructuredChartBehaviorElement {
+  #boundaryFormatter: (value: number) => string = String
+  get boundaryFormatter(): (value: number) => string {
+    return this.#boundaryFormatter
+  }
+
+  set boundaryFormatter(value: (value: number) => string) {
+    this.#boundaryFormatter = value
+
+    if (this.isConnected) this.renderChart()
+  }
+
+  #bins: readonly LumenHistogramBin[] | undefined
+  get bins(): readonly LumenHistogramBin[] {
+    return this.#bins ?? parseHistogramBins(this.getAttribute('bins'))
+  }
+
+  set bins(value: readonly LumenHistogramBin[]) {
+    this.#bins = value
+
+    this.renderChart()
+  }
+
+  protected renderChart() {
+    const labels = chartLabelsFor(this)
+    const frequency = this.getAttribute('frequency') === 'density' ? 'density' : 'count'
+
+    const model = createLumenHistogramGeometry(this.bins, {
+      frequency,
+      formatValue: this.valueFormatter,
+      formatBoundary: this.boundaryFormatter,
+      tone: lumenChartTones.find(tone => tone === this.getAttribute('tone')) ?? 'series-1'
+    })
+
+    this.innerHTML = chartHeaderHtml(this) + intervalChartHtml(model, labels, this.valueFormatter, this.boundaryFormatter, this.getAttribute('value-label') ?? (frequency === 'density' ? labels.density : labels.count), chartBooleanAttribute(this, 'show-table', true), this.getAttribute('summary')) + chartCaptionHtml(this)
   }
 }
 
@@ -6228,24 +6913,45 @@ class LumenRangeChartBehaviorElement extends LumenStructuredChartBehaviorElement
     const data = parseRangeData(this.getAttribute('data'))
     const geometry = createLumenRangeGeometry(data)
 
-    const intervals = geometry.points.map(point => [
-      `<line class="ui-range-chart__interval" x1="${point.xCoordinate}"`,
-      ` x2="${point.xCoordinate}" y1="${point.highCoordinate}" y2="${point.lowCoordinate}">`,
-      `<title>${escapeChartHtml(point.xLabel ?? point.x)}: `,
-      `${escapeChartHtml(point.label ?? `${point.low ?? 0}–${point.high ?? 0}`)}</title></line>`
-    ].join('')).join('')
+    const categoryTicks = getLumenChartCategoryTicks(geometry.points.map(point => String(point.xLabel ?? point.x)), {
+      start: 44,
+      end: 596,
+      positions: geometry.points.map(point => point.xCoordinate)
+    })
+
+    const axes = chartAxesHtml({
+      categoryTicks,
+      height: 320,
+      left: 44,
+      right: 596,
+      ticks: getLumenChartTicks(geometry.domain),
+      y: tick => scaleLumenChartValue(tick, geometry.domain, 276, 44)
+    }, this.valueFormatter, 12)
+
+    const intervals = geometry.points.map(point => {
+      const context = `${point.xLabel ?? point.x}: ${point.label ?? `${point.low ?? 0}–${point.high ?? 0}`}`
+      const attributes = this.datumAttributes(createLumenRangeDatumActivation(point), context)
+
+      return [
+        attributes ? `<rect class="ui-chart__datum-hit"${attributes} x="${point.xCoordinate - 10}" y="${point.highCoordinate - (point.highCoordinate === point.lowCoordinate ? 10 : 0)}" width="20" height="${Math.max(20, point.lowCoordinate - point.highCoordinate)}"></rect>` : '',
+        `<line class="ui-range-chart__interval"${attributes} x1="${point.xCoordinate}"`,
+        ` x2="${point.xCoordinate}" y1="${point.highCoordinate}" y2="${point.lowCoordinate}">`,
+        `<title>${escapeChartHtml(point.xLabel ?? point.x)}: `,
+        `${escapeChartHtml(point.label ?? `${point.low ?? 0}–${point.high ?? 0}`)}</title></line>`
+      ].join('')
+    }).join('')
 
     const summary = this.getAttribute('summary') ?? chartLabels.formatRangeSummary(geometry.points.length)
 
     const plot = geometry.points.length === 0 ?
       `<p class="ui-chart__empty" role="status">${escapeChartHtml(chartLabels.empty)}</p>` :
-      `<div class="ui-chart__plot"><svg aria-hidden="true" viewBox="0 0 640 320"><path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>`
+      `<div class="ui-chart__plot" role="region" tabindex="0" aria-label="${escapeChartHtml(chartLabels.chartData)}"><svg aria-hidden="true" viewBox="0 0 640 320">${axes}<path class="ui-range-chart__area" d="${geometry.areaPath}"></path>${intervals}</svg></div>`
 
     const table = chartBooleanAttribute(this, 'show-table', true) ?
       rangeDataTableHtml(data, chartLabels) :
       ''
 
-    this.innerHTML = `${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`
+    this.renderChartContent(`${chartHeaderHtml(this)}<p class="ui-sr-only" data-ui-chart-summary>${escapeChartHtml(summary)}</p>${plot}${table}${chartCaptionHtml(this)}`)
   }
 }
 
@@ -6253,16 +6959,16 @@ class LumenIconBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.renderIcon()
+    this.#renderIcon()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    this.renderIcon()
+    this.#renderIcon()
   }
 
-  private renderIcon() {
+  #renderIcon() {
     const name = this.getAttribute('name')
     const label = this.getAttribute('label') ?? this.getAttribute('aria-label')
     const isDecorative = this.hasAttribute('decorative') || !label
@@ -6295,16 +7001,16 @@ class LumenGraphicBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.syncAccessibility()
+    this.#syncAccessibility()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    this.syncAccessibility()
+    this.#syncAccessibility()
   }
 
-  private syncAccessibility() {
+  #syncAccessibility() {
     const label = this.getAttribute('label')
 
     if (label) {
@@ -6327,16 +7033,16 @@ class LumenIllustrationBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.renderIllustration()
+    this.#renderIllustration()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    this.renderIllustration()
+    this.#renderIllustration()
   }
 
-  private renderIllustration() {
+  #renderIllustration() {
     const label = this.getAttribute('label')
     const variant = this.getAttribute('variant')
 
@@ -6376,7 +7082,7 @@ class LumenDialogBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupDialog(this.abortController.signal)
+    this.#setupDialog(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -6386,57 +7092,57 @@ class LumenDialogBehaviorElement extends LumenElement {
   }
 
   show(trigger?: HTMLElement): void {
-    this.openDialog(trigger)
+    this.#openDialog(trigger)
   }
 
   close(): void {
-    this.closeDialog()
+    this.#closeDialog()
   }
 
-  private get isAlertDialog(): boolean {
+  get #isAlertDialog(): boolean {
     return (
       this.hasAttribute('data-ui-alert-dialog') ||
       this.tagName.toLowerCase() === 'lumen-alert-dialog'
     )
   }
 
-  private get nativeDialog(): HTMLDialogElement | null {
+  get #nativeDialog(): HTMLDialogElement | null {
     const dialog = this.querySelector('dialog')
 
     return dialog instanceof HTMLDialogElement ? dialog : null
   }
 
-  private get dialogRoot(): HTMLElement {
-    return this.nativeDialog ?? this
+  get #dialogRoot(): HTMLElement {
+    return this.#nativeDialog ?? this
   }
 
-  private setupDialog(signal: AbortSignal): void {
-    const dialog = this.dialogRoot
+  #setupDialog(signal: AbortSignal): void {
+    const dialog = this.#dialogRoot
 
     const initiallyOpen =
-      this.hasAttribute('open') || this.nativeDialog?.open === true
+      this.hasAttribute('open') || this.#nativeDialog?.open === true
 
     dialog.setAttribute('aria-modal', 'true')
 
-    dialog.setAttribute('role', this.isAlertDialog ? 'alertdialog' : 'dialog')
+    dialog.setAttribute('role', this.#isAlertDialog ? 'alertdialog' : 'dialog')
 
-    if (!this.nativeDialog) {
+    if (!this.#nativeDialog) {
       this.hidden = !initiallyOpen
 
       this.dataset.state = initiallyOpen ? 'open' : 'closed'
     }
 
-    this.nativeDialog?.addEventListener(
+    this.#nativeDialog?.addEventListener(
       'click', event => {
-        if (event.target === this.nativeDialog && !this.isAlertDialog) {
-          this.closeDialog()
+        if (event.target === this.#nativeDialog && !this.#isAlertDialog) {
+          this.#closeDialog()
         }
       }, { signal }
     )
 
-    this.nativeDialog?.addEventListener(
+    this.#nativeDialog?.addEventListener(
       'close', () => {
-        this.returnFocus()
+        this.#returnFocus()
       }, { signal }
     )
 
@@ -6451,25 +7157,31 @@ class LumenDialogBehaviorElement extends LumenElement {
             ) :
             null
 
-        if (closeButton) {
-          this.closeDialog()
+        const nativeButton = target instanceof Element ? target.closest('button') : null
+        const owner = closeButton?.closest('lumen-dialog, lumen-alert-dialog, lumen-drawer, lumen-sheet')
+
+        if (closeButton && owner === this && !event.defaultPrevented &&
+          !nativeButton?.disabled && closeButton.getAttribute('aria-disabled') !== 'true') {
+          this.#closeDialog()
         }
       }, { signal }
     )
 
     this.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key === 'Escape') {
           event.preventDefault()
 
-          this.closeDialog()
+          this.#closeDialog()
 
           return
         }
 
         if (event.key !== 'Tab') return
 
-        this.trapFocus(event)
+        this.#trapFocus(event)
       }, { signal }
     )
 
@@ -6490,32 +7202,32 @@ class LumenDialogBehaviorElement extends LumenElement {
 
         if (!trigger || targetId !== this.id) return
 
-        this.openDialog(trigger)
+        this.#openDialog(trigger)
       }, { signal }
     )
 
     document.addEventListener(
       'pointerdown', event => {
-        if (!this.isOpen() || this.isAlertDialog) return
+        if (!this.#isOpen() || this.#isAlertDialog) return
 
         const target = getOwnedTarget(event)
 
         if (!target || this.contains(target)) return
 
-        this.closeDialog()
+        this.#closeDialog()
       }, { signal }
     )
   }
 
-  private isOpen(): boolean {
+  #isOpen(): boolean {
     return (
-      this.nativeDialog?.open === true ||
+      this.#nativeDialog?.open === true ||
       this.hasAttribute('open') ||
       this.dataset.state === 'open'
     )
   }
 
-  private openDialog(trigger?: HTMLElement): void {
+  #openDialog(trigger?: HTMLElement): void {
     if (trigger) {
       if (!trigger.id) {
         trigger.id = createId('ui-trigger')
@@ -6524,7 +7236,7 @@ class LumenDialogBehaviorElement extends LumenElement {
       this.lastTrigger = trigger
     }
 
-    const dialog = this.nativeDialog
+    const dialog = this.#nativeDialog
 
     if (dialog) {
       if (typeof dialog.showModal === 'function' && !dialog.open) {
@@ -6540,11 +7252,11 @@ class LumenDialogBehaviorElement extends LumenElement {
       this.dataset.state = 'open'
     }
 
-    getFocusable(this.dialogRoot)[0]?.focus({ preventScroll: true })
+    getFocusable(this.#dialogRoot)[0]?.focus({ preventScroll: true })
   }
 
-  private closeDialog(): void {
-    const dialog = this.nativeDialog
+  #closeDialog(): void {
+    const dialog = this.#nativeDialog
 
     if (dialog?.open) {
       dialog.close()
@@ -6559,16 +7271,16 @@ class LumenDialogBehaviorElement extends LumenElement {
 
       this.dataset.state = 'closed'
 
-      this.returnFocus()
+      this.#returnFocus()
     }
   }
 
-  private returnFocus(): void {
+  #returnFocus(): void {
     this.lastTrigger?.focus({ preventScroll: true })
   }
 
-  private trapFocus(event: KeyboardEvent): void {
-    const focusable = getFocusable(this.dialogRoot)
+  #trapFocus(event: KeyboardEvent): void {
+    const focusable = getFocusable(this.#dialogRoot)
 
     if (!focusable.length) return
 
@@ -6605,7 +7317,7 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupDisclosure(this.abortController.signal)
+    this.#setupDisclosure(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -6614,7 +7326,7 @@ class LumenDisclosureBehaviorElement extends LumenElement {
     this.abortController = undefined
   }
 
-  private setupDisclosure(signal: AbortSignal): void {
+  #setupDisclosure(signal: AbortSignal): void {
     const trigger = this.querySelector<HTMLElement>('[data-ui-trigger]')
 
     if (!trigger) return
@@ -6649,6 +7361,16 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
     trigger.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
+        if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+          event.preventDefault()
+
+          close()
+
+          return
+        }
+
         if (
           event.key !== 'ArrowDown' &&
           event.key !== 'Enter' &&
@@ -6666,6 +7388,8 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
     panel.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key === 'Escape') {
           event.preventDefault()
 
@@ -6675,6 +7399,8 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 
           return
         }
+
+        if (event.target instanceof Element && event.target.matches('input, textarea, [contenteditable="true"]')) return
 
         const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
 
@@ -6716,6 +7442,7 @@ class LumenDisclosureBehaviorElement extends LumenElement {
 }
 
 class LumenTabsBehaviorElement extends LumenElement {
+  private indicatorCleanup: (() => void) | undefined
   private abortController: AbortController | undefined
 
   override connectedCallback() {
@@ -6727,18 +7454,44 @@ class LumenTabsBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupTabs(this.abortController.signal)
+    this.#setupTabs(this.abortController.signal)
+
+    this.updateIndicator()
   }
 
   override disconnectedCallback() {
     this.abortController?.abort()
 
     this.abortController = undefined
+
+    this.indicatorCleanup?.()
+
+    this.indicatorCleanup = undefined
   }
 
-  private setupTabs(signal: AbortSignal): void {
+  override attributeChangedCallback(): void {
+    super.attributeChangedCallback()
+
+    if (this.isConnected) this.updateIndicator()
+  }
+
+  private updateIndicator(): void {
+    this.indicatorCleanup?.()
+
+    this.indicatorCleanup = undefined
+
+    if (this.hasAttribute('indicator') && this.getAttribute('indicator') !== 'false') {
+      this.indicatorCleanup = bindLumenTabIndicator(this)
+    }
+  }
+
+  #setupTabs(signal: AbortSignal): void {
     const tabs = [...this.querySelectorAll<HTMLElement>('[role="tab"]')]
+      .filter(tab => tab.closest('lumen-tabs, lumen-code-tabs, [data-ui-tabs]') === this)
+
     const panels = [...this.querySelectorAll<HTMLElement>('[role="tabpanel"]')]
+      .filter(panel => panel.closest('lumen-tabs, lumen-code-tabs, [data-ui-tabs]') === this)
+
     const tabList = tabs[0]?.closest<HTMLElement>('[role="tablist"]')
 
     const orientation = tabList?.getAttribute('aria-orientation') === 'vertical' ?
@@ -6780,11 +7533,9 @@ class LumenTabsBehaviorElement extends LumenElement {
       }))
     }
 
-    activate(
-      tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ??
-      tabs[0]!,
-      false
-    )
+    const initialTab = tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ?? tabs[0]
+
+    if (initialTab) activate(initialTab, false)
 
     for (const tab of tabs) {
       tab.addEventListener(
@@ -6803,15 +7554,16 @@ class LumenTabsBehaviorElement extends LumenElement {
 
           event.preventDefault()
 
-          const currentIndex = tabs.indexOf(tab)
+          const enabledTabs = tabs.filter(candidate => !candidate.matches(':disabled, [aria-disabled="true"]'))
+          const currentIndex = enabledTabs.indexOf(tab)
 
           const nextTab =
-            tabs[
+            enabledTabs[
               getLoopedIndex(
                 event.key,
                 Math.max(0, currentIndex),
-                tabs.length,
-                orientation === 'vertical' ? ['ArrowDown'] : ['ArrowRight']
+                enabledTabs.length,
+                orientation === 'vertical' ? ['ArrowDown'] : [getLumenDirectionalKey(tab, 'ArrowRight')]
               )
             ]
 
@@ -6842,7 +7594,7 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupSelect(this.abortController.signal)
+    this.#setupSelect(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -6857,9 +7609,36 @@ class LumenSelectBehaviorElement extends LumenElement {
     }
   }
 
-  private setupSelect(signal: AbortSignal): void {
-    const select = this.ensureNativeSelect()
-    const control = this.ensureControl(select)
+  override attributeChangedCallback(name: string, previous: string | null, value: string | null): void {
+    super.attributeChangedCallback(name, previous, value)
+
+    if (previous === value) return
+
+    if (name === 'size' && value === null) this.querySelector('select')?.removeAttribute('size')
+
+    if (name === 'visual-size' || name === 'size') this.#syncVisualSize()
+  }
+
+  #syncVisualSize(): void {
+    const visualSize = this.getAttribute('visual-size')
+    const select = this.querySelector<HTMLSelectElement>('[data-ui-select-native]')
+
+    for (const control of this.querySelectorAll('[data-ui-select-native], [data-ui-select-trigger]')) {
+      control.classList.toggle('ui-select--sm', visualSize === 'sm')
+
+      control.classList.toggle('ui-select--lg', visualSize === 'lg')
+    }
+
+    if (select) {
+      const size = this.getAttribute('size')
+
+      if (size !== null) select.setAttribute('size', size)
+    }
+  }
+
+  #setupSelect(signal: AbortSignal): void {
+    const select = this.#ensureNativeSelect()
+    const control = this.#ensureControl(select)
 
     const trigger = control.querySelector<HTMLButtonElement>(
       '[data-ui-select-trigger]'
@@ -6869,7 +7648,9 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     if (!trigger || !listbox) return
 
-    this.renderOptions(select, listbox)
+    this.#renderOptions(select, listbox)
+
+    this.#syncVisualSize()
 
     control.hidden = false
 
@@ -6925,26 +7706,30 @@ class LumenSelectBehaviorElement extends LumenElement {
       )
     }
 
-    this.syncValue(select, trigger)
+    this.#syncValue(select, trigger)
 
-    this.closeSelect(trigger, listbox)
+    this.#closeSelect(trigger, listbox)
 
     trigger.addEventListener(
       'click', () => {
         if (trigger.getAttribute('aria-expanded') === 'true') {
-          this.closeSelect(trigger, listbox)
+          this.#closeSelect(trigger, listbox)
         } else {
-          this.openSelect(trigger, listbox)
+          this.#openSelect(trigger, listbox)
         }
       }, { signal }
     )
 
     trigger.addEventListener(
       'keydown', event => {
-        if (this.handleTypeahead(event)) return
+        if (event.defaultPrevented || event.isComposing) return
 
-        if (event.key === 'Escape') {
-          this.closeSelect(trigger, listbox)
+        if (this.#handleTypeahead(event)) return
+
+        if (event.key === 'Escape' && !listbox.hidden) {
+          event.preventDefault()
+
+          this.#closeSelect(trigger, listbox)
 
           return
         }
@@ -6955,47 +7740,51 @@ class LumenSelectBehaviorElement extends LumenElement {
 
         event.preventDefault()
 
-        this.openSelect(trigger, listbox)
+        this.#openSelect(trigger, listbox)
 
         if (event.key === 'Enter' || event.key === ' ') {
-          (this.getSelectedItem() ?? this.getEnabledItems()[0])?.focus()
+          (this.#getSelectedItem() ?? this.#getEnabledItems()[0])?.focus()
 
           return
         }
 
-        this.focusOption(event.key)
+        this.#focusOption(event.key)
       }, { signal }
     )
 
     select.addEventListener(
       'change', () => {
-        this.syncValue(select, trigger)
+        this.#syncValue(select, trigger)
       }, { signal }
     )
 
     select.form?.addEventListener(
       'reset', () => {
         globalThis.setTimeout(() => {
-          this.syncValue(select, trigger)
+          this.#syncValue(select, trigger)
         })
       }, { signal }
     )
 
-    for (const item of this.getItems()) {
+    for (const item of this.#getItems()) {
       item.tabIndex = -1
 
       item.addEventListener(
         'click', () => {
-          this.selectOption(select, trigger, listbox, item)
+          this.#selectOption(select, trigger, listbox, item)
         }, { signal }
       )
 
       item.addEventListener(
         'keydown', event => {
-          if (this.handleTypeahead(event, item)) return
+          if (event.defaultPrevented || event.isComposing) return
 
-          if (event.key === 'Escape') {
-            this.closeSelect(trigger, listbox)
+          if (this.#handleTypeahead(event, item)) return
+
+          if (event.key === 'Escape' && !listbox.hidden) {
+            event.preventDefault()
+
+            this.#closeSelect(trigger, listbox)
 
             trigger.focus({ preventScroll: true })
 
@@ -7005,7 +7794,7 @@ class LumenSelectBehaviorElement extends LumenElement {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault()
 
-            this.selectOption(select, trigger, listbox, item)
+            this.#selectOption(select, trigger, listbox, item)
 
             return
           }
@@ -7016,7 +7805,7 @@ class LumenSelectBehaviorElement extends LumenElement {
 
           event.preventDefault()
 
-          this.focusOption(event.key, item)
+          this.#focusOption(event.key, item)
         }, { signal }
       )
     }
@@ -7029,17 +7818,23 @@ class LumenSelectBehaviorElement extends LumenElement {
 
         if (!target || this.contains(target)) return
 
-        this.closeSelect(trigger, listbox)
+        this.#closeSelect(trigger, listbox)
       }, { signal }
     )
   }
 
-  private ensureNativeSelect(): HTMLSelectElement {
+  #ensureNativeSelect(): HTMLSelectElement {
     const existing = this.querySelector<HTMLSelectElement>(
       '[data-ui-select-native], select'
     )
 
-    if (existing) return existing
+    if (existing) {
+      existing.classList.add('ui-select', 'ui-select__native')
+
+      existing.dataset.uiSelectNative = ''
+
+      return existing
+    }
 
     const select = document.createElement('select')
 
@@ -7068,7 +7863,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     return select
   }
 
-  private ensureControl(select: HTMLSelectElement): HTMLElement {
+  #ensureControl(select: HTMLSelectElement): HTMLElement {
     const existing = this.querySelector<HTMLElement>(
       '[data-ui-select-control]'
     )
@@ -7126,7 +7921,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     return control
   }
 
-  private renderOptions(select: HTMLSelectElement, listbox: HTMLElement): void {
+  #renderOptions(select: HTMLSelectElement, listbox: HTMLElement): void {
     const items = [...select.options]
       .filter(option => !option.hasAttribute('data-ui-select-placeholder'))
       .map(option => {
@@ -7154,7 +7949,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     listbox.replaceChildren(...items)
   }
 
-  private syncValue(select: HTMLSelectElement, trigger: HTMLElement): void {
+  #syncValue(select: HTMLSelectElement, trigger: HTMLElement): void {
     const value = this.querySelector<HTMLElement>('[data-ui-select-value]')
 
     if (!value) return
@@ -7183,14 +7978,14 @@ class LumenSelectBehaviorElement extends LumenElement {
       'aria-expanded', trigger.getAttribute('aria-expanded') ?? 'false'
     )
 
-    for (const item of this.getItems()) {
+    for (const item of this.#getItems()) {
       item.setAttribute(
         'aria-selected', String(hasSelection && item.dataset.value === select.value)
       )
     }
   }
 
-  private openSelect(trigger: HTMLElement, listbox: HTMLElement): void {
+  #openSelect(trigger: HTMLElement, listbox: HTMLElement): void {
     trigger.setAttribute('aria-expanded', 'true')
 
     listbox.hidden = false
@@ -7198,7 +7993,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     listbox.dataset.state = 'open'
   }
 
-  private closeSelect(trigger: HTMLElement, listbox: HTMLElement): void {
+  #closeSelect(trigger: HTMLElement, listbox: HTMLElement): void {
     trigger.setAttribute('aria-expanded', 'false')
 
     listbox.hidden = true
@@ -7206,24 +8001,24 @@ class LumenSelectBehaviorElement extends LumenElement {
     listbox.dataset.state = 'closed'
   }
 
-  private getItems(): HTMLElement[] {
+  #getItems(): HTMLElement[] {
     return [...this.querySelectorAll<HTMLElement>(selectOptionSelector)]
   }
 
-  private getEnabledItems(): HTMLElement[] {
-    return this.getItems().filter(
+  #getEnabledItems(): HTMLElement[] {
+    return this.#getItems().filter(
       item => !item.hasAttribute('disabled') &&
         item.getAttribute('aria-disabled') !== 'true'
     )
   }
 
-  private getSelectedItem(): HTMLElement | undefined {
-    return this.getEnabledItems().find(
+  #getSelectedItem(): HTMLElement | undefined {
+    return this.#getEnabledItems().find(
       item => item.getAttribute('aria-selected') === 'true'
     )
   }
 
-  private selectOption(
+  #selectOption(
     select: HTMLSelectElement,
     trigger: HTMLElement,
     listbox: HTMLElement,
@@ -7241,19 +8036,19 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     select.dispatchEvent(new Event('change', { bubbles: true }))
 
-    this.syncValue(select, trigger)
+    this.#syncValue(select, trigger)
 
-    this.closeSelect(trigger, listbox)
+    this.#closeSelect(trigger, listbox)
 
     trigger.focus({ preventScroll: true })
   }
 
-  private focusOption(key: string, currentItem?: HTMLElement): void {
-    const items = this.getEnabledItems()
+  #focusOption(key: string, currentItem?: HTMLElement): void {
+    const items = this.#getEnabledItems()
 
     if (!items.length) return
 
-    const current = currentItem ?? this.getSelectedItem() ?? items[0]
+    const current = currentItem ?? this.#getSelectedItem() ?? items[0]
 
     if (!current) return
 
@@ -7269,7 +8064,7 @@ class LumenSelectBehaviorElement extends LumenElement {
     nextItem?.focus()
   }
 
-  private handleTypeahead(
+  #handleTypeahead(
     event: KeyboardEvent,
     currentItem?: HTMLElement
   ): boolean {
@@ -7291,20 +8086,20 @@ class LumenSelectBehaviorElement extends LumenElement {
     const listbox = this.querySelector<HTMLElement>('[data-ui-select-list]')
 
     if (trigger && listbox) {
-      this.openSelect(trigger, listbox)
+      this.#openSelect(trigger, listbox)
     }
 
-    this.focusTypeaheadOption(currentItem)
+    this.#focusTypeaheadOption(currentItem)
 
     return true
   }
 
-  private focusTypeaheadOption(currentItem?: HTMLElement): void {
-    const items = this.getEnabledItems()
+  #focusTypeaheadOption(currentItem?: HTMLElement): void {
+    const items = this.#getEnabledItems()
 
     if (!items.length || !this.typeahead) return
 
-    const current = currentItem ?? this.getSelectedItem() ?? items[0]
+    const current = currentItem ?? this.#getSelectedItem() ?? items[0]
 
     if (!current) return
 
@@ -7345,7 +8140,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupDataTable(this.abortController.signal)
+    this.#setupDataTable(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -7354,17 +8149,17 @@ class LumenDataTableBehaviorElement extends LumenElement {
     this.abortController = undefined
   }
 
-  private setupDataTable(signal: AbortSignal): void {
+  #setupDataTable(signal: AbortSignal): void {
     const table = this.querySelector<HTMLTableElement>('table')
 
     if (!table) return
 
-    this.setupSelection(table, signal)
+    this.#setupSelection(table, signal)
 
-    this.setupSorting(table, signal)
+    this.#setupSorting(table, signal)
   }
 
-  private setupSorting(table: HTMLTableElement, signal: AbortSignal): void {
+  #setupSorting(table: HTMLTableElement, signal: AbortSignal): void {
     const body = table.tBodies[0]
 
     if (!body) return
@@ -7394,23 +8189,32 @@ class LumenDataTableBehaviorElement extends LumenElement {
         'aria-sort', header.getAttribute('aria-sort') ?? 'none'
       )
 
-      const button = this.ensureSortButton(header)
+      const button = this.#ensureSortButton(header)
 
       button.addEventListener(
         'click', () => {
           const nextDirection = getNextDataTableSortDirection(
-            this.dataset.uiDatatableSortColumn, columnIndex, header.getAttribute('aria-sort')
+            header.getAttribute('aria-sort')
           )
 
-          this.updateSort(table, header, nextDirection)
+          this.#updateSort(table, header, nextDirection)
 
-          this.sortRows(table, header, columnIndex, nextDirection)
+          if (this.getAttribute('sort-mode') !== 'manual' && this.dataset.uiDatatableSortMode !== 'manual') {
+            this.#sortRows(table, header, columnIndex, nextDirection)
+          }
+
+          this.dispatchEvent(new CustomEvent('ui:data-table-sort-change', {
+            bubbles: true,
+            detail: {
+              key: header.dataset.uiDatatableSortKey ?? String(columnIndex), columnIndex, direction: nextDirection
+            }
+          }))
         }, { signal }
       )
     }
   }
 
-  private ensureSortButton(header: HTMLTableCellElement): HTMLButtonElement {
+  #ensureSortButton(header: HTMLTableCellElement): HTMLButtonElement {
     const existing = header.querySelector<HTMLButtonElement>(
       '[data-ui-datatable-sort]'
     )
@@ -7434,7 +8238,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     return button
   }
 
-  private updateSort(
+  #updateSort(
     table: HTMLTableElement,
     header: HTMLTableCellElement,
     direction: DataTableSortDirection
@@ -7457,7 +8261,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     }
   }
 
-  private sortRows(
+  #sortRows(
     table: HTMLTableElement,
     header: HTMLTableCellElement,
     columnIndex: number,
@@ -7494,7 +8298,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     }
   }
 
-  private setupSelection(table: HTMLTableElement, signal: AbortSignal): void {
+  #setupSelection(table: HTMLTableElement, signal: AbortSignal): void {
     const selectable =
       this.dataset.uiDatatableSelectable === 'true' ||
       this.hasAttribute('selectable')
@@ -7506,14 +8310,14 @@ class LumenDataTableBehaviorElement extends LumenElement {
 
     if (!headRow || !body) return
 
-    const selectAll = this.ensureSelectAll(headRow)
+    const selectAll = this.#ensureSelectAll(headRow)
 
     for (const [index, row] of getDataTableRows(table).entries()) {
-      const checkbox = this.ensureRowSelect(row, index)
+      const checkbox = this.#ensureRowSelect(row, index)
 
       checkbox.addEventListener(
         'change', () => {
-          this.syncSelection(table, selectAll, true)
+          this.#syncSelection(table, selectAll, true)
         }, { signal }
       )
     }
@@ -7526,22 +8330,22 @@ class LumenDataTableBehaviorElement extends LumenElement {
           checkbox.checked = selectAll.checked
         }
 
-        this.syncSelection(table, selectAll, true)
+        this.#syncSelection(table, selectAll, true)
       }, { signal }
     )
 
     this.closest('form')?.addEventListener(
       'reset', () => {
         globalThis.setTimeout(() => {
-          this.syncSelection(table, selectAll, true)
+          this.#syncSelection(table, selectAll, true)
         })
       }, { signal }
     )
 
-    this.syncSelection(table, selectAll)
+    this.#syncSelection(table, selectAll)
   }
 
-  private ensureSelectAll(headRow: HTMLTableRowElement): HTMLInputElement {
+  #ensureSelectAll(headRow: HTMLTableRowElement): HTMLInputElement {
     const existing = headRow.querySelector<HTMLInputElement>(
       '[data-ui-datatable-select-all]'
     )
@@ -7570,7 +8374,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     return selectAll
   }
 
-  private ensureRowSelect(
+  #ensureRowSelect(
     row: HTMLTableRowElement,
     index: number
   ): HTMLInputElement {
@@ -7612,7 +8416,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     return checkbox
   }
 
-  private syncSelection(
+  #syncSelection(
     table: HTMLTableElement,
     selectAll: HTMLInputElement,
     dispatch = false
@@ -7644,7 +8448,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     selectAll.indeterminate =
       selectedValues.length > 0 && selectedValues.length < rows.length
 
-    this.syncSelectionInputs(selectedValues)
+    this.#syncSelectionInputs(selectedValues)
 
     if (dispatch) {
       const detail = { values: selectedValues }
@@ -7658,7 +8462,7 @@ class LumenDataTableBehaviorElement extends LumenElement {
     }
   }
 
-  private syncSelectionInputs(selectedValues: string[]): void {
+  #syncSelectionInputs(selectedValues: string[]): void {
     const name = this.dataset.uiDatatableName
     let inputs = this.querySelector<HTMLElement>('[data-ui-datatable-inputs]')
 
@@ -7692,80 +8496,6 @@ class LumenDataTableBehaviorElement extends LumenElement {
   }
 }
 
-class LumenVirtualListBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-
-  override connectedCallback() {
-    super.connectedCallback()
-
-    if (!hasDocument()) return
-
-    this.abortController?.abort()
-
-    this.abortController = new AbortController()
-
-    this.setupVirtualList(this.abortController.signal)
-  }
-
-  override disconnectedCallback() {
-    this.abortController?.abort()
-
-    this.abortController = undefined
-  }
-
-  private setupVirtualList(signal: AbortSignal): void {
-    const items = [...this.children].filter(
-      (child): child is HTMLElement => child instanceof HTMLElement
-    )
-
-    if (!items.length) return
-
-    const update = (): void => {
-      const overscan = this.getNumberAttribute(
-        'data-ui-overscan', 'overscan', 4, 0
-      )
-
-      const itemSize = this.getNumberAttribute(
-        'data-ui-item-size', 'item-size', 44
-      )
-
-      const range = getVirtualRange(
-        this.scrollTop, this.clientHeight, itemSize, items.length, overscan
-      )
-
-      for (const [index, item] of items.entries()) {
-        item.hidden = index < range.startIndex || index > range.endIndex
-      }
-
-      this.dispatchEvent(
-        new CustomEvent('ui:virtual-list-range', {
-          bubbles: true,
-          detail: range
-        })
-      )
-    }
-
-    this.addEventListener('scroll', update, { passive: true, signal })
-
-    update()
-  }
-
-  private getNumberAttribute(
-    dataAttribute: string,
-    attribute: string,
-    fallback: number,
-    minimum = 1
-  ): number {
-    const value = Number(
-      this.getAttribute(dataAttribute) ??
-      this.getAttribute(attribute) ??
-      fallback
-    )
-
-    return Number.isFinite(value) && value >= minimum ? value : fallback
-  }
-}
-
 class LumenThemeBuilderBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private currentExportFormat: LumenThemeBuilderExportFormat = 'css'
@@ -7782,7 +8512,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupThemeBuilder(this.abortController.signal)
+    this.#setupThemeBuilder(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -7791,7 +8521,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     this.abortController = undefined
   }
 
-  private setupThemeBuilder(signal: AbortSignal): void {
+  #setupThemeBuilder(signal: AbortSignal): void {
     const brandHue = this.querySelector<HTMLInputElement>(
       '[data-ui-theme-brand-hue], [data-ui-theme-hue]'
     )
@@ -7846,6 +8576,16 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       ...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-scheme]')
     ]
 
+    const presetButtons = [...this.querySelectorAll<HTMLButtonElement>('[data-ui-theme-preset]')]
+    const initialPreset = this.getAttribute('data-ui-theme-preset')
+    let currentPreset = initialPreset === 'custom' ? null : initialPreset
+
+    for (const button of presetButtons) {
+      button.setAttribute('aria-pressed', String(button.getAttribute('data-ui-theme-preset') === (currentPreset ?? 'custom')))
+    }
+
+    this.#setPressedState(presetButtons, 'data-ui-theme-preset', currentPreset ?? 'custom')
+
     const importButton = this.querySelector<HTMLButtonElement>(
       '[data-ui-theme-import]'
     )
@@ -7863,14 +8603,14 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     )
 
     this.currentExportFormat = coerceThemeBuilderExportFormat(
-      this.getButtonValue(
+      this.#getButtonValue(
         exportFormatButtons, 'data-ui-theme-export-format', 'css'
       )
     )
 
     this.currentScheme = coerceThemeBuilderScheme(
-      this.getButtonValue(
-        schemeButtons, 'data-ui-theme-scheme', this.getDefaultScheme()
+      this.#getButtonValue(
+        schemeButtons, 'data-ui-theme-scheme', this.#getDefaultScheme()
       )
     )
 
@@ -7892,6 +8632,10 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
     const update = (dispatch = true): void => {
       const result = createThemeBuilderTokens({
+        preset: currentPreset,
+        radiusScale: this.querySelector<HTMLInputElement>('[data-ui-theme-radius-scale]')?.value ?? null,
+        spacingScale: this.querySelector<HTMLInputElement>('[data-ui-theme-spacing-scale]')?.value ?? null,
+        borderWidth: this.querySelector<HTMLInputElement>('[data-ui-theme-border-width]')?.value ?? null,
         accentHue:
           accentHue?.value ??
           accentHueNumber?.value ??
@@ -7903,7 +8647,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
           this.getAttribute('data-ui-theme-brand-hue') ??
           this.getAttribute('data-ui-theme-hue') ??
           null,
-        mode: this.getButtonValue(
+        mode: this.#getButtonValue(
           modeButtons, 'data-ui-theme-mode', 'generated'
         ),
         primaryColor: primaryHex?.value ?? primaryColor?.value ?? null,
@@ -7915,13 +8659,13 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
       this.currentTokens = result.tokens
 
-      const target = this.getTarget()
+      const target = this.#getTarget()
 
       if (target) {
-        this.applyTokens(target, result.tokens, result.scheme)
+        this.#applyTokens(target, result.tokens, result.scheme)
       }
 
-      this.writeExport(output)
+      this.#writeExport(output)
 
       updateContrastUi(result.tokens)
 
@@ -7935,13 +8679,19 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       }
     }
 
-    this.bindHueInputs(brandHue, brandHueNumber, update, signal)
+    for (const input of this.querySelectorAll<HTMLInputElement>('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width]')) {
+      input.addEventListener('input', () => {
+        update()
+      }, { signal })
+    }
 
-    this.bindHueInputs(accentHue, accentHueNumber, update, signal)
+    this.#bindHueInputs(brandHue, brandHueNumber, update, signal)
 
-    this.bindHexInputs(primaryColor, primaryHex, update, signal)
+    this.#bindHueInputs(accentHue, accentHueNumber, update, signal)
 
-    this.bindHexInputs(secondaryColor, secondaryHex, update, signal)
+    this.#bindHexInputs(primaryColor, primaryHex, update, signal)
+
+    this.#bindHexInputs(secondaryColor, secondaryHex, update, signal)
 
     for (const button of exportFormatButtons) {
       button.addEventListener(
@@ -7950,11 +8700,11 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
             button.getAttribute('data-ui-theme-export-format')
           )
 
-          this.setPressedState(
+          this.#setPressedState(
             exportFormatButtons, 'data-ui-theme-export-format', this.currentExportFormat
           )
 
-          this.writeExport(output)
+          this.#writeExport(output)
         }, { signal }
       )
     }
@@ -7962,13 +8712,23 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     for (const button of modeButtons) {
       button.addEventListener(
         'click', () => {
-          this.setPressedState(
+          this.#setPressedState(
             modeButtons, 'data-ui-theme-mode', coerceThemeBuilderMode(button.getAttribute('data-ui-theme-mode'))
           )
 
           update()
         }, { signal }
       )
+    }
+
+    for (const button of presetButtons) {
+      button.addEventListener('click', () => {
+        currentPreset = button.getAttribute('data-ui-theme-preset') === 'custom' ? null : coerceThemePreset(button.getAttribute('data-ui-theme-preset'))
+
+        this.#setPressedState(presetButtons, 'data-ui-theme-preset', currentPreset ?? 'custom')
+
+        update()
+      }, { signal })
     }
 
     for (const button of schemeButtons) {
@@ -7978,7 +8738,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
             button.getAttribute('data-ui-theme-scheme')
           )
 
-          this.setPressedState(
+          this.#setPressedState(
             schemeButtons, 'data-ui-theme-scheme', this.currentScheme
           )
 
@@ -7990,7 +8750,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     exportButton?.addEventListener(
       'click', () => {
         if (this.currentTokens) {
-          this.writeExport(output)
+          this.#writeExport(output)
         } else {
           update(false)
         }
@@ -8025,13 +8785,13 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
         this.currentTokens = parsed
 
-        const target = this.getTarget()
+        const target = this.#getTarget()
 
         if (target) {
-          this.applyTokens(target, this.currentTokens, this.currentScheme)
+          this.#applyTokens(target, this.currentTokens, this.currentScheme)
         }
 
-        this.writeExport(output)
+        this.#writeExport(output)
 
         updateContrastUi(this.currentTokens)
 
@@ -8058,13 +8818,13 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
           this.currentTokens, 'ink', 'canvas'
         )
 
-        const target = this.getTarget()
+        const target = this.#getTarget()
 
         if (target) {
-          this.applyTokens(target, this.currentTokens, this.currentScheme)
+          this.#applyTokens(target, this.currentTokens, this.currentScheme)
         }
 
-        this.writeExport(output)
+        this.#writeExport(output)
 
         updateContrastUi(this.currentTokens)
 
@@ -8086,13 +8846,13 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     update(false)
   }
 
-  private getDefaultScheme(): LumenThemeBuilderScheme {
+  #getDefaultScheme(): LumenThemeBuilderScheme {
     return document.documentElement.dataset.theme?.includes('dark') ?
       'dark' :
       'light'
   }
 
-  private getTarget(): HTMLElement | null {
+  #getTarget(): HTMLElement | null {
     const selector = this.dataset.uiThemeTarget
 
     if (!selector) return document.documentElement
@@ -8104,7 +8864,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     }
   }
 
-  private getButtonValue(
+  #getButtonValue(
     buttons: HTMLButtonElement[],
     attribute: string,
     fallback: string
@@ -8121,7 +8881,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     )
   }
 
-  private setPressedState(
+  #setPressedState(
     buttons: HTMLButtonElement[],
     attribute: string,
     value: string
@@ -8139,7 +8899,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     }
   }
 
-  private bindHueInputs(
+  #bindHueInputs(
     range: HTMLInputElement | null,
     number: HTMLInputElement | null,
     onChange: () => void,
@@ -8169,7 +8929,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     )
   }
 
-  private bindHexInputs(
+  #bindHexInputs(
     color: HTMLInputElement | null,
     text: HTMLInputElement | null,
     onChange: () => void,
@@ -8204,7 +8964,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     )
   }
 
-  private applyTokens(
+  #applyTokens(
     target: HTMLElement,
     tokens: LumenThemeTokens,
     scheme: LumenThemeBuilderScheme
@@ -8216,7 +8976,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     }
   }
 
-  private writeExport(
+  #writeExport(
     output: HTMLTextAreaElement | HTMLOutputElement | null
   ): void {
     if (!this.currentTokens) return
@@ -8244,7 +9004,7 @@ class LumenTooltipBehaviorElement extends LumenElement {
 
     this.abortController = new AbortController()
 
-    this.setupTooltip(this.abortController.signal)
+    this.#setupTooltip(this.abortController.signal)
   }
 
   override disconnectedCallback() {
@@ -8252,10 +9012,10 @@ class LumenTooltipBehaviorElement extends LumenElement {
 
     this.abortController = undefined
 
-    this.clearTimer()
+    this.#clearTimer()
   }
 
-  private setupTooltip(signal: AbortSignal): void {
+  #setupTooltip(signal: AbortSignal): void {
     const tip = this.querySelector<HTMLElement>('[role="tooltip"]')
 
     const trigger = this.querySelector<HTMLElement>(
@@ -8281,7 +9041,7 @@ class LumenTooltipBehaviorElement extends LumenElement {
     }
 
     const show = (delay: number): void => {
-      this.clearTimer()
+      this.#clearTimer()
 
       this.showTimer = globalThis.setTimeout(() => {
         tip.style.removeProperty('visibility')
@@ -8289,7 +9049,7 @@ class LumenTooltipBehaviorElement extends LumenElement {
     }
 
     const hide = (): void => {
-      this.clearTimer()
+      this.#clearTimer()
 
       tip.style.visibility = 'hidden'
     }
@@ -8312,14 +9072,18 @@ class LumenTooltipBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'keydown', event => {
-        if (event.key === 'Escape') {
+        if (event.defaultPrevented || event.isComposing) return
+
+        if (event.key === 'Escape' && getComputedStyle(tip).visibility !== 'hidden') {
+          event.preventDefault()
+
           hide()
         }
       }, { signal }
     )
   }
 
-  private clearTimer(): void {
+  #clearTimer(): void {
     if (!this.showTimer) return
 
     globalThis.clearTimeout(this.showTimer)
@@ -8364,6 +9128,8 @@ class LumenToastBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'keydown', event => {
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key !== 'Escape') return
 
         event.preventDefault()
@@ -8390,42 +9156,41 @@ class LumenFileUploadBehaviorElement extends LumenElement {
 
     this.abortController?.abort()
 
-    this.abortController = new AbortController()
-
     const input = this.querySelector<HTMLInputElement>(
       '[data-ui-file-upload-input]'
     )
 
     if (!input) return
 
-    const files = this.querySelector<HTMLElement>(
-      '[data-ui-file-upload-files]'
-    )
+    this.abortController = new AbortController()
+
+    const files = this.querySelector<HTMLElement>('[data-ui-file-upload-files]')
 
     const renderFiles = (): void => {
-      const selectedFiles = input.files ? [...input.files] : []
+      const count = input.files?.length ?? 0
 
-      this.dataset.state = selectedFiles.length > 0 ? 'selected' : 'idle'
+      this.dataset.state = count ? 'selected' : 'idle'
 
       if (!files) return
 
-      if (selectedFiles.length === 1) {
-        files.textContent = selectedFiles[0]?.name ?? ''
-      } else {
-        files.textContent =
-          selectedFiles.length > 1 ?
-            `${selectedFiles.length} files selected` :
-            ''
-      }
+      files.textContent = count > 1 ?
+        this.getAttribute('selected-files-label')?.replaceAll('{count}', String(count)) ?? `${count} files selected` :
+        input.files?.[0]?.name ?? ''
     }
 
     input.addEventListener('change', renderFiles, {
       signal: this.abortController.signal
     })
 
+    this.getRootNode().addEventListener('reset', event => {
+      setTimeout(() => {
+        if (this.isConnected && event.target === input.form && !event.defaultPrevented) renderFiles()
+      }, 0)
+    }, { capture: true, signal: this.abortController.signal })
+
     this.addEventListener(
       'dragover', event => {
-        if (input.disabled) return
+        if (input.matches(':disabled')) return
 
         event.preventDefault()
 
@@ -8447,7 +9212,7 @@ class LumenFileUploadBehaviorElement extends LumenElement {
 
     this.addEventListener(
       'drop', event => {
-        if (input.disabled) return
+        if (input.matches(':disabled')) return
 
         event.preventDefault()
 
@@ -8473,16 +9238,16 @@ class LumenProgressBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.update()
+    this.#update()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    if (this.isConnected) this.update()
+    if (this.isConnected) this.#update()
   }
 
-  private update() {
+  #update() {
     const parsedMax = Number(this.getAttribute('max'))
     const max = Number.isFinite(parsedMax) && parsedMax > 0 ? parsedMax : 100
     const parsedValue = Number(this.getAttribute('value'))
@@ -8513,6 +9278,245 @@ class LumenProgressBehaviorElement extends LumenElement {
   }
 }
 
+class LumenCodeBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+  private observer: MutationObserver | undefined
+  private resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+  private operation = 0
+  private generatedCopyButton: HTMLButtonElement | undefined
+  private generatedCopyStatus: HTMLElement | undefined
+  private readonly generatedFocusAttributes = new Map<HTMLElement, Map<string, string>>()
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
+    this.observer?.disconnect()
+
+    this.observer = new MutationObserver(() => {
+      this.#updateCode()
+    })
+
+    this.observer.observe(this, {
+      attributeFilter: ['code-label', 'copy', 'copy-label', 'copied-label', 'error-label', 'wrap', 'variant'],
+      attributes: true,
+      childList: true,
+      subtree: true
+    })
+
+    this.addEventListener('click', event => {
+      const button = event.target instanceof Element ? event.target.closest<HTMLButtonElement>('[data-ui-code-copy]') : null
+
+      if (button?.closest('lumen-code') === this) void this.#copy(button)
+    }, { signal: this.abortController.signal })
+
+    this.#updateCode()
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.observer?.disconnect()
+
+    this.operation += 1
+
+    globalThis.clearTimeout(this.resetTimer)
+  }
+
+  #label(name: string, fallback: string) {
+    return this.getAttribute(name) ?? this.closest('lumen-code-tabs')?.getAttribute(name) ?? fallback
+  }
+
+  #copyEnabled() {
+    return this.getAttribute('variant') === 'block' && this.hasAttribute('copy') && this.getAttribute('copy') !== 'false'
+  }
+
+  #removeGeneratedCopyUI() {
+    this.operation += 1
+
+    globalThis.clearTimeout(this.resetTimer)
+
+    this.generatedCopyButton?.remove()
+
+    this.generatedCopyStatus?.remove()
+
+    this.generatedCopyButton = undefined
+
+    this.generatedCopyStatus = undefined
+  }
+
+  #updateFocusAttributes(pre: HTMLElement | null, scrollable: boolean) {
+    if (!scrollable || !pre) {
+      for (const [element, attributes] of this.generatedFocusAttributes) {
+        for (const [name, value] of attributes) {
+          if (element.getAttribute(name) === value) element.removeAttribute(name)
+        }
+      }
+
+      this.generatedFocusAttributes.clear()
+
+      return
+    }
+
+    const attributes = this.generatedFocusAttributes.get(pre) ?? new Map<string, string>()
+    const defaults = new Map([['tabindex', '0'], ['role', 'region']])
+
+    if (!pre.hasAttribute('aria-labelledby')) defaults.set('aria-label', this.#label('code-label', 'Code example'))
+
+    for (const [name, value] of defaults) {
+      const currentValue = pre.getAttribute(name)
+      const generatedValue = attributes.get(name)
+      const ownsCurrentValue = generatedValue !== undefined && currentValue === generatedValue
+
+      if (currentValue === null || ownsCurrentValue) {
+        pre.setAttribute(name, value)
+
+        attributes.set(name, value)
+      }
+    }
+
+    this.generatedFocusAttributes.set(pre, attributes)
+  }
+
+  #updateCode() {
+    const pre = this.querySelector('pre')
+
+    this.#updateFocusAttributes(pre, this.getAttribute('variant') === 'block' && this.getAttribute('wrap') !== 'true')
+
+    if (!pre || !this.#copyEnabled()) {
+      this.#removeGeneratedCopyUI()
+
+      return
+    }
+
+    let button = this.querySelector<HTMLButtonElement>('[data-ui-code-copy]')
+
+    if (!button) {
+      let header = this.querySelector<HTMLElement>('.ui-code__header')
+
+      if (!header) {
+        header = document.createElement('div')
+
+        header.className = 'ui-code__header'
+
+        const decoration = document.createElement('span')
+
+        decoration.className = 'ui-code__dots'
+
+        decoration.setAttribute('aria-hidden', 'true')
+
+        const meta = document.createElement('span')
+
+        meta.className = 'ui-code__meta'
+
+        meta.textContent = this.getAttribute('label') ?? ''
+
+        header.append(decoration, meta)
+
+        this.prepend(header)
+      }
+
+      button = document.createElement('button')
+
+      button.type = 'button'
+
+      button.className = 'ui-code__copy'
+
+      button.dataset.uiCodeCopy = ''
+
+      button.dataset.state = 'idle'
+
+      button.innerHTML = renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' }) + renderLumenIconSvg('check', { className: 'ui-code__check-icon' })
+
+      header.append(button)
+
+      this.generatedCopyButton = button
+
+      const status = document.createElement('span')
+
+      status.className = 'ui-sr-only'
+
+      status.dataset.uiCodeStatus = ''
+
+      status.setAttribute('role', 'status')
+
+      status.setAttribute('aria-live', 'polite')
+
+      this.append(status)
+
+      this.generatedCopyStatus = status
+    }
+
+    if (button.dataset.state === 'idle') {
+      const label = this.#label('copy-label', 'Copy code to clipboard')
+
+      button.setAttribute('aria-label', label)
+
+      button.title = label
+    }
+  }
+
+  async #copy(button: HTMLButtonElement) {
+    if (!this.#copyEnabled()) return
+
+    const operation = ++this.operation
+
+    globalThis.clearTimeout(this.resetTimer)
+
+    const label = this.#label('copy-label', 'Copy code to clipboard')
+    let feedback = this.#label('copied-label', 'Code copied to clipboard')
+    let state: 'copied' | 'error' = 'copied'
+
+    try {
+      const code = this.querySelector<HTMLElement>('pre code')
+      const value = code?.innerText ?? code?.textContent
+
+      if (value === undefined) throw new Error('Clipboard is unavailable')
+
+      await navigator.clipboard.writeText(value)
+
+      if (operation !== this.operation) return
+
+      button.dispatchEvent(new CustomEvent('ui:copy-success', { bubbles: true, detail: { value } }))
+    } catch (error) {
+      if (operation !== this.operation) return
+
+      state = 'error'
+
+      feedback = this.#label('error-label', 'Could not copy code. Select and copy it manually.')
+
+      button.dispatchEvent(new CustomEvent('ui:copy-error', { bubbles: true, detail: { error } }))
+    }
+
+    button.dataset.state = state
+
+    button.classList.toggle('ui-code__copy--copied', state === 'copied')
+
+    button.setAttribute('aria-label', feedback)
+
+    button.title = feedback
+
+    const status = this.querySelector<HTMLElement>('[data-ui-code-status]')
+
+    if (status) status.textContent = feedback
+
+    this.resetTimer = globalThis.setTimeout(() => {
+      button.dataset.state = 'idle'
+
+      button.classList.remove('ui-code__copy--copied')
+
+      button.setAttribute('aria-label', label)
+
+      button.title = label
+
+      if (status) status.textContent = ''
+    }, 2000)
+  }
+}
+
 class LumenCopyButtonBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
@@ -8520,9 +9524,9 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.ensureStateContent()
+    this.#ensureStateContent()
 
-    this.updateStateContent('idle')
+    this.#updateStateContent('idle')
 
     this.abortController?.abort()
 
@@ -8551,7 +9555,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     globalThis.clearTimeout(this.resetTimer)
   }
 
-  private ensureStateContent() {
+  #ensureStateContent() {
     let idleContent = this.querySelector<HTMLElement>('[data-slot="copy-idle"]')
 
     if (!idleContent) {
@@ -8588,7 +9592,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     }
   }
 
-  private updateStateContent(state: 'copied' | 'error' | 'idle') {
+  #updateStateContent(state: 'copied' | 'error' | 'idle') {
     const slots = {
       copied: 'copy-copied',
       error: 'copy-error',
@@ -8629,7 +9633,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
 
       this.dataset.state = 'copied'
 
-      this.updateStateContent('copied')
+      this.#updateStateContent('copied')
 
       this.setAttribute('aria-label', copiedLabel)
 
@@ -8646,7 +9650,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     } catch (error) {
       this.dataset.state = 'error'
 
-      this.updateStateContent('error')
+      this.#updateStateContent('error')
 
       this.setAttribute('aria-label', errorLabel)
 
@@ -8673,7 +9677,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     this.resetTimer = globalThis.setTimeout(() => {
       this.dataset.state = 'idle'
 
-      this.updateStateContent('idle')
+      this.#updateStateContent('idle')
 
       this.setAttribute('aria-label', label)
     }, resetAfter)
@@ -9100,6 +10104,8 @@ class LumenMentionsBehaviorElement extends LumenElement {
       option.id ||= `${list.id}-option-${index}`
 
       option.setAttribute('aria-selected', 'false')
+
+      option.tabIndex = -1
     }
 
     const setActive = (index: number): void => {
@@ -9186,6 +10192,8 @@ class LumenMentionsBehaviorElement extends LumenElement {
       'keydown', event => {
         const visibleOptions = options.filter(option => !option.hidden)
 
+        if (event.defaultPrevented || event.isComposing) return
+
         if (event.key === 'Escape' && !list.hidden) {
           event.preventDefault()
 
@@ -9268,6 +10276,16 @@ const setupSelectionDisclosure = (
 
   trigger.addEventListener(
     'keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
+      if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+        event.preventDefault()
+
+        close()
+
+        return
+      }
+
       if (!['ArrowDown', 'Enter', ' '].includes(event.key)) return
 
       event.preventDefault()
@@ -9280,6 +10298,8 @@ const setupSelectionDisclosure = (
 
   panel.addEventListener(
     'keydown', event => {
+      if (event.defaultPrevented || event.isComposing) return
+
       if (event.key === 'Escape') {
         event.preventDefault()
 
@@ -9569,54 +10589,54 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     const { signal } = this.abortController
 
-    this.initializeHandles()
+    this.#initializeHandles()
 
     this.mutationObserver?.disconnect()
 
     this.mutationObserver = new MutationObserver(() => {
-      this.initializeHandles()
+      this.#initializeHandles()
     })
 
     this.mutationObserver.observe(this, { childList: true, subtree: true })
 
     this.addEventListener('dragstart', event => {
-      this.onDragStart(event)
+      this.#onDragStart(event)
     }, { signal })
 
     this.addEventListener('dragend', () => {
-      this.clearDragState()
+      this.#clearDragState()
     }, { signal })
 
     this.addEventListener('dragover', event => {
-      this.onDragOver(event)
+      this.#onDragOver(event)
     }, { signal })
 
     this.addEventListener('dragleave', event => {
-      this.onDragLeave(event)
+      this.#onDragLeave(event)
     }, { signal })
 
     this.addEventListener('drop', event => {
-      this.onDrop(event)
+      this.#onDrop(event)
     }, { signal })
 
     this.addEventListener('keydown', event => {
-      this.onKeyDown(event)
+      this.#onKeyDown(event)
     }, { signal })
 
     this.addEventListener('pointerdown', event => {
-      this.onPointerDown(event)
+      this.#onPointerDown(event)
     }, { signal })
 
     this.addEventListener('pointermove', event => {
-      this.onPointerMove(event)
+      this.#onPointerMove(event)
     }, { signal })
 
     this.addEventListener('pointerup', event => {
-      this.onPointerUp(event)
+      this.#onPointerUp(event)
     }, { signal })
 
     this.addEventListener('pointercancel', () => {
-      this.clearDragState()
+      this.#clearDragState()
     }, { signal })
   }
 
@@ -9629,15 +10649,15 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     this.mutationObserver = undefined
 
-    this.clearDragState()
+    this.#clearDragState()
   }
 
-  private initializeHandles(): void {
+  #initializeHandles(): void {
     for (const handle of this.querySelectorAll<HTMLElement>('[data-ui-kanban-handle]'))
       handle.draggable = true
   }
 
-  private getItem(target: EventTarget | null): HTMLElement | null {
+  #getItem(target: EventTarget | null): HTMLElement | null {
     const item = target instanceof Element ?
       target.closest<HTMLElement>('[data-ui-kanban-item]') :
       null
@@ -9647,7 +10667,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
       null
   }
 
-  private getColumn(target: EventTarget | null): HTMLElement | null {
+  #getColumn(target: EventTarget | null): HTMLElement | null {
     const column = target instanceof Element ?
       target.closest<HTMLElement>(kanbanColumnSelector) :
       null
@@ -9657,7 +10677,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
       null
   }
 
-  private requestMove(
+  #requestMove(
     item: HTMLElement,
     targetColumn: HTMLElement,
     input: LumenKanbanMoveDetail['input']
@@ -9679,16 +10699,16 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
       detail
     }))
 
-    if (accepted) this.announce(`Move requested to ${this.columnLabel(targetColumn)}.`)
+    if (accepted) this.#announce(`Move requested to ${this.#columnLabel(targetColumn)}.`)
   }
 
-  private columnLabel(column: HTMLElement): string {
+  #columnLabel(column: HTMLElement): string {
     return column.getAttribute('aria-label') ||
       column.querySelector('h2, h3, [data-ui-kanban-column-label]')?.textContent.trim() ||
       getKanbanColumnValue(column)
   }
 
-  private announce(message: string): void {
+  #announce(message: string): void {
     let live = this.querySelector<HTMLElement>('[data-ui-kanban-live]')
 
     if (!live) {
@@ -9708,12 +10728,12 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     live.textContent = message
   }
 
-  private onDragStart(event: DragEvent): void {
+  #onDragStart(event: DragEvent): void {
     const handle = event.target instanceof Element ?
       event.target.closest<HTMLElement>('[data-ui-kanban-handle]') :
       null
 
-    const item = this.getItem(handle)
+    const item = this.#getItem(handle)
 
     if (!handle || !item || item.getAttribute('aria-busy') === 'true') {
       event.preventDefault()
@@ -9728,8 +10748,8 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     item.dataset.state = 'dragging'
   }
 
-  private onDragOver(event: DragEvent): void {
-    const column = this.getColumn(event.target)
+  #onDragOver(event: DragEvent): void {
+    const column = this.#getColumn(event.target)
 
     if (!column) return
 
@@ -9740,8 +10760,8 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     if (event.dataTransfer) event.dataTransfer.dropEffect = 'move'
   }
 
-  private onDragLeave(event: DragEvent): void {
-    const column = this.getColumn(event.target)
+  #onDragLeave(event: DragEvent): void {
+    const column = this.#getColumn(event.target)
 
     if (
       !column ||
@@ -9751,8 +10771,8 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     delete column.dataset.state
   }
 
-  private onDrop(event: DragEvent): void {
-    const column = this.getColumn(event.target)
+  #onDrop(event: DragEvent): void {
+    const column = this.#getColumn(event.target)
     const itemId = event.dataTransfer?.getData('text/plain') ?? ''
 
     const item = [...this.querySelectorAll<HTMLElement>('[data-ui-kanban-item]')]
@@ -9762,20 +10782,20 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     event.preventDefault()
 
-    this.requestMove(item, column, 'pointer')
+    this.#requestMove(item, column, 'pointer')
 
-    this.clearDragState()
+    this.#clearDragState()
   }
 
-  private onKeyDown(event: KeyboardEvent): void {
+  #onKeyDown(event: KeyboardEvent): void {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
 
     const handle = event.target instanceof Element ?
       event.target.closest<HTMLElement>('[data-ui-kanban-handle]') :
       null
 
-    const item = this.getItem(handle)
-    const currentColumn = this.getColumn(item)
+    const item = this.#getItem(handle)
+    const currentColumn = this.#getColumn(item)
 
     if (!handle || !item || !currentColumn || item.getAttribute('aria-busy') === 'true') return
 
@@ -9789,17 +10809,17 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     event.preventDefault()
 
-    this.requestMove(item, target, 'keyboard')
+    this.#requestMove(item, target, 'keyboard')
   }
 
-  private onPointerDown(event: PointerEvent): void {
+  #onPointerDown(event: PointerEvent): void {
     if (event.pointerType === 'mouse') return
 
     const handle = event.target instanceof Element ?
       event.target.closest<HTMLElement>('[data-ui-kanban-handle]') :
       null
 
-    const item = this.getItem(handle)
+    const item = this.#getItem(handle)
 
     if (!handle || !item || item.getAttribute('aria-busy') === 'true') return
 
@@ -9813,7 +10833,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     }
   }
 
-  private onPointerMove(event: PointerEvent): void {
+  #onPointerMove(event: PointerEvent): void {
     if (this.pointer?.pointerId !== event.pointerId) return
 
     if (!this.pointer.active && Math.hypot(
@@ -9827,7 +10847,7 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 
     this.pointer.item.dataset.state = 'dragging'
 
-    const target = this.getColumn(document.elementFromPoint(event.clientX, event.clientY))
+    const target = this.#getColumn(document.elementFromPoint(event.clientX, event.clientY))
 
     for (const column of this.querySelectorAll<HTMLElement>(kanbanColumnSelector)) {
       if (column === target) column.dataset.state = 'drop-target'
@@ -9835,19 +10855,19 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
     }
   }
 
-  private onPointerUp(event: PointerEvent): void {
+  #onPointerUp(event: PointerEvent): void {
     const pointer = this.pointer
 
     if (pointer?.pointerId !== event.pointerId) return
 
-    const target = this.getColumn(document.elementFromPoint(event.clientX, event.clientY))
+    const target = this.#getColumn(document.elementFromPoint(event.clientX, event.clientY))
 
-    if (pointer.active && target) this.requestMove(pointer.item, target, 'pointer')
+    if (pointer.active && target) this.#requestMove(pointer.item, target, 'pointer')
 
-    this.clearDragState()
+    this.#clearDragState()
   }
 
-  private clearDragState(): void {
+  #clearDragState(): void {
     this.pointer = undefined
 
     for (const item of this.querySelectorAll<HTMLElement>('[data-ui-kanban-item]'))
@@ -9904,7 +10924,7 @@ class LumenLanguageToggleBehaviorElement extends LumenElement {
     if (!this.hasAttribute('value')) {
       document.documentElement.lang = next.value
 
-      this.sync(next.value)
+      this.#sync(next.value)
 
       const storageKey = this.getAttribute('storage-key')
 
@@ -9927,7 +10947,7 @@ class LumenLanguageToggleBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.initialize(true)
+    this.#initialize(true)
 
     this.addEventListener('click', this.handleClick)
   }
@@ -9947,10 +10967,10 @@ class LumenLanguageToggleBehaviorElement extends LumenElement {
       this.isConnected &&
       name &&
       ['default-value', 'label-template', 'locales', 'value'].includes(name)
-    ) this.initialize(false)
+    ) this.#initialize(false)
   }
 
-  private initialize(readStorage: boolean): void {
+  #initialize(readStorage: boolean): void {
     this.locales = parseLanguageLocales(this.getAttribute('locales'))
 
     const controlled = this.hasAttribute('value')
@@ -9976,12 +10996,12 @@ class LumenLanguageToggleBehaviorElement extends LumenElement {
 
     const { current } = getLumenLocalePair(this.locales, requestedValue)
 
-    this.sync(current.value)
+    this.#sync(current.value)
 
     if (!controlled) document.documentElement.lang = current.value
   }
 
-  private sync(value: string): void {
+  #sync(value: string): void {
     const { current, next } = getLumenLocalePair(this.locales, value)
 
     const template = this.getAttribute('label-template') ??
@@ -10178,13 +11198,13 @@ class LumenAnimatedNumberBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
-    this.animateValue()
+    this.#animateValue()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    if (this.isConnected) this.animateValue()
+    if (this.isConnected) this.#animateValue()
   }
 
   override disconnectedCallback() {
@@ -10194,7 +11214,7 @@ class LumenAnimatedNumberBehaviorElement extends LumenElement {
       cancelAnimationFrame(this.animationFrame)
   }
 
-  private animateValue() {
+  #animateValue() {
     if (!hasDocument()) return
 
     this.observer?.disconnect()
@@ -10392,6 +11412,105 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
   }
 }
 
+export class LumenCountryFlagElement extends LumenElement {
+  static override config = { baseClassName: 'ui-country-flag', tagName: 'lumen-country-flag', observedAttributes: ['country', 'decorative', 'label'] }
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.#renderFlag()
+  }
+
+  override attributeChangedCallback(name: string, previous: string | null, value: string | null) {
+    super.attributeChangedCallback(name, previous, value)
+
+    if (previous !== value && this.isConnected) this.#renderFlag()
+  }
+
+  #renderFlag() {
+    const country = this.getAttribute('country') ?? ''
+    const source = getLumenPhoneFlagSource(country)
+    const decorative = this.hasAttribute('decorative')
+
+    this.setAttribute('aria-hidden', String(decorative))
+
+    this.setAttribute('role', 'img')
+
+    this.setAttribute('aria-label', this.getAttribute('label') ?? country.toUpperCase())
+
+    this.dataset.slot = 'country-flag'
+
+    if (!source) {
+      this.textContent = country.toUpperCase().slice(0, 2)
+
+      return
+    }
+
+    const image = document.createElement('img')
+
+    image.alt = ''
+
+    image.src = source
+
+    image.width = 24
+
+    image.height = 18
+
+    this.replaceChildren(image)
+  }
+}
+
+export class LumenPhoneNumberElement extends LumenElement {
+  static override config = { baseClassName: 'ui-phone-number', tagName: 'lumen-phone-number', observedAttributes: ['country', 'value', 'link', 'locale'] }
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.#renderNumber()
+  }
+
+  override attributeChangedCallback(name: string, previous: string | null, value: string | null) {
+    super.attributeChangedCallback(name, previous, value)
+
+    if (previous !== value && this.isConnected) this.#renderNumber()
+  }
+
+  #renderNumber() {
+    const country = getLumenPhoneCountry(this.getAttribute('country') ?? 'US', { locale: this.getAttribute('locale') ?? 'en' })
+
+    if (!country) {
+      this.textContent = '—'
+
+      return
+    }
+
+    const number = resolveLumenPhoneNumber(country, this.getAttribute('value') ?? '')
+    const flag = document.createElement('lumen-country-flag')
+
+    flag.setAttribute('country', number.country.regionCode)
+
+    flag.setAttribute('decorative', '')
+
+    const text = document.createElement('span')
+
+    text.textContent = number.e164 ?? (number.nationalNumber || '—')
+
+    if (this.hasAttribute('link') && number.e164) {
+      const link = document.createElement('a')
+
+      link.href = `tel:${number.e164}`
+
+      link.className = 'ui-phone-number'
+
+      link.append(flag, text)
+
+      this.replaceChildren(link)
+    } else {
+      this.replaceChildren(flag, text)
+    }
+  }
+}
+
 class LumenPhoneInputBehaviorElement extends LumenElement {
   private countrySelect: HTMLSelectElement | undefined
   private eventController: AbortController | undefined
@@ -10422,10 +11541,16 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     if (previousValue === value || !this.numberInput || !this.countrySelect) return
 
+    this.#syncInputAttributes()
+
+    this.#syncCountrySubmission()
+
+    if (['disabled', 'readonly', 'required', 'error-message', 'show-validation-error', 'invalid-number-message'].includes(name)) this.#commit()
+
     if (name === 'value') {
       this.numberInput.value = value ?? ''
 
-      this.commit()
+      this.#commit()
     }
 
     if (name === 'country' && value) {
@@ -10436,7 +11561,7 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
       if (countryOption) {
         this.countrySelect.value = countryOption.value
 
-        this.commit()
+        this.#commit()
       }
     }
   }
@@ -10446,11 +11571,15 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     if (!hasDocument()) return
 
-    this.ensureControls()
+    this.#ensureControls()
 
-    this.bindControls()
+    this.#bindControls()
 
-    if (this.numberInput?.value) this.commit()
+    const controls = this.querySelector<HTMLElement>('.ui-phone-input')
+
+    if (controls) controls.dataset.phoneEnhanced = 'true'
+
+    this.#commit()
   }
 
   override disconnectedCallback() {
@@ -10459,7 +11588,7 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     this.eventController = undefined
   }
 
-  private bindControls() {
+  #bindControls() {
     if (!this.countrySelect || !this.numberInput) return
 
     this.eventController?.abort()
@@ -10469,24 +11598,32 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     const options = { signal: this.eventController.signal }
 
     this.countrySelect.addEventListener('change', () => {
-      this.commit()
+      this.#commit()
     }, options)
 
     this.numberInput.addEventListener('input', () => {
-      this.commit()
+      this.#commit()
+    }, options)
+
+    this.numberInput.form?.addEventListener('reset', () => {
+      queueMicrotask(() => {
+        this.#commit()
+      })
     }, options)
   }
 
-  private commit() {
+  #commit() {
     if (!this.countrySelect || !this.numberInput) return
 
     const selectedOption = this.countrySelect.selectedOptions[0]
     const regionCode = selectedOption?.dataset.region ?? this.countrySelect.value
-    const country = getLumenPhoneCountry(regionCode, this.phoneOptions)
+    const country = getLumenPhoneCountry(regionCode, this.#phoneOptions)
 
     if (!country) return
 
-    const phoneNumber = resolveLumenPhoneNumber(country, this.numberInput.value, this.phoneOptions)
+    const detected = resolveLumenPhoneNumber(country, this.numberInput.value, this.#phoneOptions)
+    const allowed = [...this.countrySelect.options].some(option => option.value === detected.country.regionCode)
+    const phoneNumber = allowed ? detected : resolveLumenPhoneNumber(country, detected.nationalNumber.startsWith('+') ? detected.nationalNumber.slice(1) : detected.nationalNumber, this.#phoneOptions)
     const hasInput = phoneNumber.nationalNumber.length > 0
 
     const invalidMessage = this.getAttribute('invalid-number-message') ??
@@ -10496,9 +11633,45 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     this.countrySelect.value = phoneNumber.country.regionCode
 
-    this.numberInput.setCustomValidity(hasInput && !phoneNumber.isValid ? invalidMessage : '')
+    const errorMessage = this.getAttribute('error-message') || (this.getAttribute('show-validation-error') !== 'false' && hasInput && !phoneNumber.isValid ? invalidMessage : '')
 
-    this.numberInput.setAttribute('aria-invalid', String(hasInput && !phoneNumber.isValid))
+    this.numberInput.setCustomValidity(errorMessage)
+
+    this.numberInput.setAttribute('aria-invalid', String(Boolean(errorMessage)))
+
+    this.dataset.invalid = String(Boolean(errorMessage))
+
+    const controls = this.querySelector<HTMLElement>('.ui-phone-input')
+
+    if (controls) controls.dataset.invalid = String(Boolean(errorMessage))
+
+    const error = this.querySelector<HTMLElement>('.ui-phone-input__error')
+
+    if (error) {
+      error.textContent = errorMessage
+
+      error.hidden = !errorMessage
+
+      if (errorMessage) this.numberInput.setAttribute('aria-errormessage', error.id)
+      else this.numberInput.removeAttribute('aria-errormessage')
+
+      const descriptions = (this.getAttribute('aria-describedby') ?? '').split(' ').filter(Boolean)
+      const describedBy = [...descriptions, ...(errorMessage ? [error.id] : [])].join(' ')
+
+      if (describedBy) this.numberInput.setAttribute('aria-describedby', describedBy)
+      else this.numberInput.removeAttribute('aria-describedby')
+    }
+
+    const flag = this.querySelector<HTMLImageElement>('[data-slot="country-flag"] img')
+    const source = getLumenPhoneFlagSource(phoneNumber.country.regionCode)
+
+    if (flag && source) flag.src = source
+
+    const code = this.querySelector('[data-ui-phone-code]')
+
+    if (code) code.textContent = phoneNumber.country.callingCode
+
+    this.#syncCountrySubmission()
 
     this.dataset.e164 = phoneNumber.e164 ?? ''
 
@@ -10510,7 +11683,31 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     }))
   }
 
-  private ensureControls() {
+  #syncCountrySubmission() {
+    if (!this.numberInput || !this.countrySelect) return
+
+    const existing = this.querySelector<HTMLInputElement>('[data-ui-phone-country-value]')
+
+    if (!this.numberInput.readOnly || this.numberInput.disabled) {
+      existing?.remove()
+
+      return
+    }
+
+    const hidden = existing ?? document.createElement('input')
+
+    hidden.type = 'hidden'
+
+    hidden.dataset.uiPhoneCountryValue = ''
+
+    hidden.name = this.countrySelect.name
+
+    hidden.value = this.countrySelect.value
+
+    if (!existing) this.append(hidden)
+  }
+
+  #ensureControls() {
     this.countrySelect = this.querySelector<HTMLSelectElement>('.ui-phone-input__country') ?? undefined
 
     this.numberInput = this.querySelector<HTMLInputElement>('.ui-phone-input__number') ?? undefined
@@ -10531,13 +11728,87 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
       this.append(this.numberInput)
     }
 
-    this.populateCountries()
+    if (!this.querySelector('.ui-phone-input')) {
+      const controls = document.createElement('div')
+
+      controls.className = 'ui-phone-input ui-input-group'
+
+      controls.dataset.slot = 'phone-input'
+
+      this.prepend(controls)
+
+      controls.append(this.countrySelect, this.numberInput)
+    }
+
+    if (!this.countrySelect.parentElement?.classList.contains('ui-phone-input__picker')) {
+      const picker = document.createElement('span')
+
+      picker.className = 'ui-phone-input__picker'
+
+      picker.dataset.slot = 'phone-country'
+
+      this.countrySelect.before(picker)
+
+      picker.append(this.countrySelect)
+
+      const selection = document.createElement('span')
+
+      selection.className = 'ui-phone-input__selection'
+
+      selection.setAttribute('aria-hidden', 'true')
+
+      const flag = document.createElement('span')
+
+      flag.className = 'ui-country-flag'
+
+      flag.dataset.slot = 'country-flag'
+
+      const image = document.createElement('img')
+
+      image.alt = ''
+
+      image.width = 24
+
+      image.height = 18
+
+      flag.append(image)
+
+      const code = document.createElement('span')
+
+      code.dataset.uiPhoneCode = ''
+
+      const chevron = document.createElement('span')
+
+      chevron.className = 'ui-phone-input__chevron'
+
+      selection.append(flag, code, chevron)
+
+      picker.prepend(selection)
+    }
+
+    if (!this.querySelector('.ui-phone-input__error')) {
+      const error = document.createElement('span')
+
+      error.className = 'ui-phone-input__error'
+
+      error.id = createId('phone-error')
+
+      error.setAttribute('role', 'alert')
+
+      error.hidden = true
+
+      this.append(error)
+    }
+
+    this.#syncInputAttributes()
+
+    this.#populateCountries()
 
     this.countrySelect.setAttribute('aria-label', this.getAttribute('country-label') ?? 'Country code')
 
     this.countrySelect.name = this.getAttribute('country-name') ?? 'country'
 
-    this.numberInput.autocomplete = 'tel'
+    this.numberInput.setAttribute('autocomplete', this.getAttribute('autocomplete') ?? 'tel-national')
 
     this.numberInput.inputMode = 'tel'
 
@@ -10550,16 +11821,70 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
     this.numberInput.value = this.getAttribute('value') ?? this.numberInput.value
   }
 
-  private get phoneOptions() {
+  #syncInputAttributes() {
+    if (!this.numberInput || !this.countrySelect) return
+
+    this.numberInput.disabled = this.hasAttribute('disabled')
+
+    this.numberInput.readOnly = this.hasAttribute('readonly')
+
+    this.numberInput.required = this.hasAttribute('required')
+
+    this.countrySelect.disabled = this.numberInput.disabled || this.numberInput.readOnly
+
+    this.toggleAttribute('data-disabled', this.numberInput.disabled)
+
+    this.toggleAttribute('data-readonly', this.numberInput.readOnly)
+
+    const controls = this.querySelector<HTMLElement>('.ui-phone-input')
+
+    controls?.toggleAttribute('data-disabled', this.numberInput.disabled)
+
+    controls?.toggleAttribute('data-readonly', this.numberInput.readOnly)
+
+    if (controls) controls.dataset.size = this.getAttribute('visual-size') ?? 'default'
+
+    const visualSize = this.getAttribute('visual-size')
+
+    this.numberInput.classList.toggle('ui-input--sm', visualSize === 'sm')
+
+    this.numberInput.classList.toggle('ui-input--lg', visualSize === 'lg')
+
+    this.countrySelect.classList.toggle('ui-select--sm', visualSize === 'sm')
+
+    this.countrySelect.classList.toggle('ui-select--lg', visualSize === 'lg')
+
+    this.numberInput.id = this.getAttribute('input-id') ?? (this.numberInput.id || createId('phone-number'))
+
+    this.numberInput.setAttribute('aria-label', this.getAttribute('number-label') ?? 'Phone number')
+
+    this.countrySelect.setAttribute('aria-label', this.getAttribute('country-label') ?? 'Country code')
+
+    this.countrySelect.name = this.getAttribute('country-name') ?? 'country'
+
+    this.numberInput.name = this.getAttribute('name') ?? 'phone'
+
+    this.numberInput.placeholder = this.getAttribute('placeholder') ?? 'Phone number'
+
+    for (const attribute of ['minlength', 'maxlength', 'pattern', 'autocomplete']) {
+      const value = this.getAttribute(attribute)
+
+      if (value === null && attribute === 'autocomplete') this.numberInput.setAttribute(attribute, 'tel-national')
+      else if (value === null) this.numberInput.removeAttribute(attribute)
+      else this.numberInput.setAttribute(attribute, value)
+    }
+  }
+
+  get #phoneOptions() {
     const locale = (this.getAttribute('locale') ?? this.lang) || document.documentElement.lang
 
     return locale ? { locale } : {}
   }
 
-  private populateCountries() {
+  #populateCountries() {
     if (!this.countrySelect || this.countrySelect.options.length > 0) return
 
-    const countries = getLumenPhoneCountries(this.phoneOptions)
+    const countries = getLumenPhoneCountries(this.#phoneOptions)
     const requestedCountry = this.getAttribute('country') ?? 'US'
 
     for (const country of countries) {
@@ -10567,15 +11892,35 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
       option.dataset.region = country.regionCode
 
-      option.textContent = country.pickerLabel
+      option.textContent = `${country.displayName} (${country.callingCode})`
 
       option.value = country.regionCode
 
-      option.selected = country.regionCode === requestedCountry ||
+      option.defaultSelected = country.regionCode === requestedCountry ||
         country.callingCode === requestedCountry
+
+      option.selected = option.defaultSelected
 
       this.countrySelect.append(option)
     }
+  }
+}
+
+class LumenAttachmentPreviewBehaviorElement extends LumenElement {
+  private previewController: LumenAttachmentPreviewController | undefined
+
+  override connectedCallback() {
+    super.connectedCallback()
+
+    this.previewController?.destroy()
+
+    this.previewController = createLumenAttachmentPreviewController(this)
+  }
+
+  override disconnectedCallback() {
+    this.previewController?.destroy()
+
+    this.previewController = undefined
   }
 }
 
@@ -10600,12 +11945,14 @@ const behaviorElementClasses: Partial<
   Record<LumenComponentName, typeof LumenElement>
 > = {
   AlertDialog: LumenDialogBehaviorElement,
+  AttachmentPreview: LumenAttachmentPreviewBehaviorElement,
   Anchor: LumenAnchorBehaviorElement,
   AnimatedNumber: LumenAnimatedNumberBehaviorElement,
   BackToTop: LumenBackToTopBehaviorElement,
   BarChart: LumenBarChartBehaviorElement,
   Cascader: LumenCascaderBehaviorElement,
   Checkbox: LumenScalarFormControlElement,
+  Code: LumenCodeBehaviorElement,
   CodeTabs: LumenTabsBehaviorElement,
   ColorPicker: LumenScalarFormControlElement,
   ComboChart: LumenComboChartBehaviorElement,
@@ -10615,7 +11962,12 @@ const behaviorElementClasses: Partial<
   DropdownMenu: LumenDisclosureBehaviorElement,
   FileUpload: LumenFileUploadBehaviorElement,
   Graphic: LumenGraphicBehaviorElement,
+  CalendarHeatmap: LumenCalendarHeatmapElement,
+  FunnelChart: LumenFunnelChartElement,
+  BoxPlot: LumenBoxPlotElement,
   Heatmap: LumenHeatmapBehaviorElement,
+  Histogram: LumenHistogramBehaviorElement,
+  WaterfallChart: LumenWaterfallChartBehaviorElement,
   Illustration: LumenIllustrationBehaviorElement,
   Icon: LumenIconBehaviorElement,
   Input: LumenScalarFormControlElement,
@@ -10624,6 +11976,7 @@ const behaviorElementClasses: Partial<
   LineChart: LumenLineChartBehaviorElement,
   ListBox: LumenListBoxBehaviorElement,
   Mentions: LumenMentionsBehaviorElement,
+  MessageScroller: MessageElement,
   NativeSelect: LumenNativeSelectFormControlElement,
   NumberField: LumenScalarFormControlElement,
   Particles: LumenParticlesBehaviorElement,
@@ -10653,14 +12006,26 @@ const behaviorElementClasses: Partial<
   Tour: LumenTourBehaviorElement,
   Transfer: LumenTransferBehaviorElement,
   TreeSelect: LumenTreeSelectBehaviorElement,
-  Tooltip: LumenTooltipBehaviorElement,
-  VirtualList: LumenVirtualListBehaviorElement
+  Tooltip: LumenTooltipBehaviorElement
+}
+
+export class LumenDialogElement extends LumenDialogBehaviorElement {
+  static override config = withObservedAttributes(elementConfigs.Dialog)
 }
 
 const granularElementClasses: Partial<
   Record<LumenComponentName, LumenElementConstructor>
 > = {
+  AmountField: LumenAmountFieldElement,
+  ChangeSummary: GranularLumenChangeSummaryElement,
+  FilterBar: GranularLumenFilterBarElement,
   Badge: GranularLumenBadgeElement,
+  CalendarHeatmap: LumenCalendarHeatmapElement,
+  FunnelChart: LumenFunnelChartElement,
+  BoxPlot: LumenBoxPlotElement,
+  BulletChart: LumenBulletChartElement,
+  LollipopChart: LumenLollipopChartElement,
+  DumbbellChart: LumenDumbbellChartElement,
   Button: GranularLumenButtonElement,
   Card: GranularLumenCardElement,
   CardContent: GranularLumenCardContentElement,
@@ -10669,16 +12034,34 @@ const granularElementClasses: Partial<
   CardHeader: GranularLumenCardHeaderElement,
   CardTitle: GranularLumenCardTitleElement,
   Combobox: GranularLumenComboboxElement,
+  Dialog: LumenDialogElement,
   Container: GranularLumenContainerElement,
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,
+  ScatterChart: LumenScatterChartRegisteredElement,
+  DeviceFrame: GranularLumenDeviceFrameElement,
+
+  WorldMap: GranularLumenWorldMapElement,
+  ImageComparison: GranularLumenImageComparisonElement,
+  MediaViewport: GranularLumenMediaViewportElement,
+  MediaThumbnail: GranularLumenMediaThumbnailElement,
+  MediaFilmstrip: GranularLumenMediaFilmstripElement,
   Label: GranularLumenLabelElement,
   Separator: GranularLumenSeparatorElement,
   Skeleton: GranularLumenSkeletonElement,
   Spinner: GranularLumenSpinnerElement,
   Stack: GranularLumenStackElement,
   Typography: GranularLumenTypographyElement,
-  VisuallyHidden: GranularLumenVisuallyHiddenElement
+  VisuallyHidden: GranularLumenVisuallyHiddenElement,
+  VirtualList: GranularLumenVirtualListElement,
+  ChartMotion: GranularLumenChartMotionElement,
+  MotionGroup: GranularLumenMotionGroupElement,
+  VisualEffect: GranularLumenVisualEffectElement,
+  ApprovalCard: GranularLumenApprovalCardElement,
+  PromptComposer: GranularLumenPromptComposerElement,
+  SourceCitation: GranularLumenSourceCitationElement,
+  StreamMessage: GranularLumenStreamMessageElement,
+  ToolActivity: GranularLumenToolActivityElement
 }
 
 const elementClasses = Object.fromEntries(
@@ -10776,6 +12159,14 @@ export const defineLumenElements = (
     }
   }
 
+  if (componentNames.includes('PhoneInput')) {
+    for (const presentation of [LumenCountryFlagElement, LumenPhoneNumberElement]) {
+      if (!customElementsRegistry.get(presentation.config.tagName)) {
+        customElementsRegistry.define(presentation.config.tagName, presentation)
+      }
+    }
+  }
+
   installToastController()
 
   installFormController()
@@ -10843,7 +12234,11 @@ export const LumenContextMenuElement = elementClasses.ContextMenu
 export const LumenDataTableElement = elementClasses.DataTable
 export const LumenDatePickerElement = elementClasses.DatePicker
 export const LumenDateRangePickerElement = elementClasses.DateRangePicker
-export const LumenDialogElement = elementClasses.Dialog
+export const LumenDialogHeaderElement = elementClasses.DialogHeader
+export const LumenDialogTitleElement = elementClasses.DialogTitle
+export const LumenDialogBodyElement = elementClasses.DialogBody
+export const LumenDialogFooterElement = elementClasses.DialogFooter
+export const LumenDialogCloseElement = elementClasses.DialogClose
 export const LumenDirectionElement = elementClasses.Direction
 export const LumenDrawerElement = elementClasses.Drawer
 export const LumenDropdownMenuElement = elementClasses.DropdownMenu
@@ -10853,6 +12248,8 @@ export const LumenFieldElement = elementClasses.Field
 export const LumenHoverCardElement = elementClasses.HoverCard
 export const LumenIconElement = elementClasses.Icon
 export const LumenHeatmapElement = elementClasses.Heatmap
+export const LumenHistogramElement = elementClasses.Histogram
+export const LumenWaterfallChartElement = elementClasses.WaterfallChart
 export const LumenInputElement = elementClasses.Input
 export const LumenInputGroupElement = elementClasses.InputGroup
 export const LumenInputOTPElement = elementClasses.InputOTP
@@ -10880,7 +12277,7 @@ export const LumenResizableElement = elementClasses.Resizable
 export const LumenRichTextEditorElement = elementClasses.RichTextEditor
 export const LumenScrollAreaElement = elementClasses.ScrollArea
 export const LumenScrollProgressElement = elementClasses.ScrollProgress
-export const LumenScatterChartElement = elementClasses.ScatterChart
+export const LumenScatterChartElement = LumenScatterChartRegisteredElement
 export const LumenScheduleElement = elementClasses.Schedule
 export const LumenSearchFieldElement = elementClasses.SearchField
 export const LumenSelectElement = elementClasses.Select
@@ -10947,6 +12344,7 @@ export const LumenEyebrowElement = elementClasses.Eyebrow
 export const LumenFloatingBadgeElement = elementClasses.FloatingBadge
 export const LumenFormattedDateElement = elementClasses.FormattedDate
 export const LumenImageElement = elementClasses.Image
+export const LumenImageComparisonElement = elementClasses.ImageComparison
 export const LumenLinkElement = elementClasses.Link
 export const LumenPillElement = elementClasses.Pill
 export const LumenProseElement = elementClasses.Prose
@@ -10968,3 +12366,29 @@ export const LumenQRCodeElement = elementClasses.QRCode
 export const LumenWatermarkElement = elementClasses.Watermark
 export const LumenAffixElement = elementClasses.Affix
 export const LumenSpeedDialElement = elementClasses.SpeedDial
+export const LumenDescriptionItemElement = elementClasses.DescriptionItem
+export const LumenDescriptionTermElement = elementClasses.DescriptionTerm
+export const LumenDescriptionDetailElement = elementClasses.DescriptionDetail
+
+export const LumenAttachmentListElement = elementClasses.AttachmentList
+export const LumenAttachmentPreviewElement = elementClasses.AttachmentPreview
+export const LumenChangeSummaryElement = GranularLumenChangeSummaryElement
+export const LumenFilterBarElement = GranularLumenFilterBarElement
+
+export const LumenDeviceFrameElement = elementClasses.DeviceFrame
+export const LumenMotionGroupElement = GranularLumenMotionGroupElement
+export const LumenVisualEffectElement = GranularLumenVisualEffectElement
+export const LumenApprovalCardElement = GranularLumenApprovalCardElement
+export const LumenPromptComposerElement = GranularLumenPromptComposerElement
+export const LumenSourceCitationElement = GranularLumenSourceCitationElement
+export const LumenStreamMessageElement = GranularLumenStreamMessageElement
+export const LumenToolActivityElement = GranularLumenToolActivityElement
+
+export const LumenChartMotionElement = GranularLumenChartMotionElement
+
+export const LumenWorldMapElement = elementClasses.WorldMap
+
+export const LumenMediaViewportElement = elementClasses.MediaViewport
+
+export const LumenMediaThumbnailElement = elementClasses.MediaThumbnail
+export const LumenMediaFilmstripElement = elementClasses.MediaFilmstrip

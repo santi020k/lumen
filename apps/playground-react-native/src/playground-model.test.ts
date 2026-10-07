@@ -26,8 +26,13 @@ describe('React Native playground model', () => {
       'Bar chart',
       'Pie chart',
       'Scatter chart',
+      'Waterfall chart',
       'Range chart',
-      'Combo chart'
+      'Combo chart',
+      'Bullet chart',
+      'Lollipop chart',
+      'Dumbbell chart',
+      'Funnel chart'
     ])
 
     expect(getVisibleComponentNames('', 'actions', false)).toEqual([
@@ -35,8 +40,13 @@ describe('React Native playground model', () => {
       'Button group',
       'Chip',
       'Menu',
-      'Share button'
+      'Share button',
+      'Tooltip',
+      'Command'
     ])
+
+    expect(getVisibleComponentNames('command', 'actions', false)).toEqual(['Command'])
+    expect(getVisibleComponentNames('tooltip', 'actions', false)).toEqual(['Tooltip'])
   })
 
   test('keeps deterministic embeds exact while ordinary search stays flexible', () => {
@@ -48,6 +58,18 @@ describe('React Native playground model', () => {
       'Button group',
       'Share button'
     ])
+  })
+
+  test('accepts component IDs, padded text, and collapsed labels', () => {
+    expect(getVisibleComponentNames('  DATE-range_field  ', 'forms', false)).toEqual(['Date range field'])
+    expect(getVisibleComponentNames('IconButton', 'all', false)).toEqual(['Icon button'])
+    expect(getVisibleComponentNames('lollipop-chart', 'data', true)).toEqual(['Lollipop chart'])
+    expect(getVisibleComponentNames('dumbbell-chart', 'data', true)).toEqual(['Dumbbell chart'])
+    expect(getVisibleComponentNames('funnel-chart', 'data', true)).toEqual(['Funnel chart'])
+    expect(getVisibleComponentNames('  \t ', 'actions', false)).toEqual(getVisibleComponentNames('', 'actions', false))
+    expect(getVisibleComponentNames('button', 'forms', false)).toEqual([])
+    expect(getVisibleComponentNames('does-not-exist', 'all', false)).toEqual([])
+    expect(getVisibleComponentNames('button', 'all', true)).toEqual(['Button'])
   })
 
   test('recognizes only supported destinations and categories', () => {

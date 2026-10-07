@@ -1,0 +1,341 @@
+// @vitest-environment jsdom
+import { act, createElement, isValidElement, useState } from 'react'
+import { createRoot, type Root } from 'react-dom/client'
+
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
+
+import { Badge, DataTable, type DataTableProps, type DataTableSort, DataTableSortControls } from './index.js'
+
+let container: HTMLDivElement
+let root: Root
+const columns = [
+  { key: 'name', header: 'Client', sortable: true, wide: true },
+  { key: 'count',
+    header: 'Amount',
+    sortable: true,
+    sort: 'number' as const,
+    render: (cell: unknown) => createElement(Badge, {}, typeof cell === 'number' ? `COP ${cell}` : 'Unavailable') }
+]
+const rows = [{ id: 'beta', name: 'Beta', count: 2 }, { id: 'alpha', name: 'Alpha', count: 10 }]
+const run = async (action: () => void) => act(async () => {
+  await Promise.resolve()
+  action()
+})
+const render = (props: DataTableProps = {}) => run(() => {
+  root.render(createElement(DataTable, { columns, rows, layout: 'records', renderDetails: row => `Notes for ${typeof row.name === 'string' ? row.name : ''}`, ...props }))
+})
+const element = (selector: string): HTMLElement => {
+  const value = container.querySelector(selector)
+
+  if (!(value instanceof HTMLElement)) throw new Error(`Missing ${selector}`)
+
+  return value
+}
+const click = (selector: string) => run(() => {
+  element(selector).click()
+})
+
+beforeEach(() => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
+  container = document.createElement('div')
+  document.body.append(container)
+  root = createRoot(container)
+})
+afterEach(async () => {
+  await run(() => {
+    root.unmount()
+  })
+  container.remove()
+  vi.unstubAllGlobals()
+})
+
+test('rich cells retain numeric sorting and mobile labels while details follow their record', async () => {
+  await render()
+  expect(element('[data-value="beta"] .ui-badge').textContent).toBe('COP 2')
+  expect(element('[data-value="beta"] .ui-table__label').textContent).toBe('Client')
+  expect(element('[data-value="beta"] .ui-table__label').getAttribute('aria-hidden')).toBe('true')
+  await click('[data-value="beta"] button')
+  const button = element('[data-value="beta"] button')
+
+  expect(button.getAttribute('aria-expanded')).toBe('true')
+  expect(element('[data-ui-datatable-detail] section').id).toBe(button.getAttribute('aria-controls'))
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Beta')
+  await click('thead th:nth-child(2) button')
+  await click('thead th:nth-child(2) button')
+  expect([...container.querySelectorAll('tbody tr')].map(row => row.getAttribute('data-value'))).toEqual(['alpha', 'beta', null])
+  expect(rows.map(row => row.id)).toEqual(['beta', 'alpha'])
+  await click('[data-value="beta"] button')
+  expect(container.querySelector('[data-ui-datatable-detail]')).toBeNull()
+})
+
+test('controlled expansion waits for the application and survives page refreshes', async () => {
+  const onExpandedRowIdsChange = vi.fn()
+
+  await render({ expandedRowIds: [], onExpandedRowIdsChange })
+  await click('[data-value="beta"] button')
+  expect(onExpandedRowIdsChange).toHaveBeenCalledExactlyOnceWith(['beta'])
+  expect(container.querySelector('[data-ui-datatable-detail]')).toBeNull()
+  await render({ expandedRowIds: ['beta'], onExpandedRowIdsChange })
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Beta')
+  await render({ expandedRowIds: ['beta'], rows: [rows[1]].filter(row => row !== undefined), onExpandedRowIdsChange })
+  expect(container.querySelector('[data-ui-datatable-detail]')).toBeNull()
+  expect(onExpandedRowIdsChange).toHaveBeenCalledTimes(1)
+})
+
+test('index-backed details and edits follow their original record through client sorting', async () => {
+  const anonymousRows = [{ name: 'Beta', count: 2 }, { name: 'Alpha', count: 10 }]
+
+  await render({
+    rows: anonymousRows,
+    renderDetails: row => {
+      const name = typeof row.name === 'string' ? row.name : ''
+
+      return createElement('label', {}, `Notes for ${name}`, createElement('input', { defaultValue: name }))
+    }
+  })
+  await click('[data-value="0"] button')
+  const disclosure = element('[data-value="0"] button')
+  const input = container.querySelector('input')
+
+  if (!input) throw new Error('Missing details editor')
+
+  input.value = 'Edited Beta'
+  await click('thead th:first-child button')
+  expect(element('tbody tr:first-child').textContent).toContain('Alpha')
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Beta')
+  expect(container.querySelector('input')).toBe(input)
+  expect(input.value).toBe('Edited Beta')
+  expect(element('[data-value="0"] button')).toBe(disclosure)
+  expect(element('[data-ui-datatable-detail] section').id).toBe(disclosure.getAttribute('aria-controls'))
+  await click('thead th:first-child button')
+  expect(element('tbody tr:first-child').textContent).toContain('Beta')
+  expect(container.querySelector('input')).toBe(input)
+  expect(anonymousRows.map(row => row.name)).toEqual(['Beta', 'Alpha'])
+  await click('[data-value="0"] button')
+  expect(container.querySelector('[data-ui-datatable-detail]')).toBeNull()
+})
+
+test('toolbar sort requests the same server ordering without reordering a supplied page', async () => {
+  const requests = vi.fn()
+  const Example = () => {
+    const [sort, setSort] = useState<DataTableSort | null>(null)
+    const onSortChange = (next: DataTableSort | null) => {
+      requests(next)
+      setSort(next)
+    }
+
+    return createElement('div', {}, createElement(DataTableSortControls, { columns, sort, onSortChange }), createElement(DataTable, { columns, rows, sort, sortMode: 'manual' }))
+  }
+
+  await run(() => {
+    root.render(createElement(Example))
+  })
+  await run(() => {
+    const select = container.querySelector('select')
+
+    if (!(select instanceof HTMLSelectElement)) throw new Error('Missing sort select')
+
+    select.value = 'count'
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  expect(requests).toHaveBeenLastCalledWith({ key: 'count', direction: 'ascending' })
+  await click('.ui-data-table__sort-controls button')
+  expect(requests).toHaveBeenLastCalledWith({ key: 'count', direction: 'descending' })
+  expect(element('thead th:nth-child(2)').getAttribute('aria-sort')).toBe('descending')
+  await run(() => {
+    const select = container.querySelector('select')
+
+    if (!(select instanceof HTMLSelectElement)) throw new Error('Missing sort select')
+
+    select.value = ''
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })
+  expect(requests).toHaveBeenLastCalledWith(null)
+  expect(element('thead th:nth-child(2)').getAttribute('aria-sort')).toBe('none')
+  expect([...container.querySelectorAll('tbody tr')].map(row => row.getAttribute('data-value'))).toEqual(['beta', 'alpha'])
+})
+
+test('expands records by explicit IDs even when ordinary value cells repeat', async () => {
+  const records = [{ id: 'first', name: 'First', value: 100 }, { id: 'second', name: 'Second', value: 100 }]
+  await render({ rows: records, expandedRowIds: ['first'] })
+  expect(element('[data-value="first"] button').getAttribute('aria-expanded')).toBe('true')
+  expect(element('[data-value="second"] button').getAttribute('aria-expanded')).toBe('false')
+  expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(1)
+  await render({ rows: records })
+  await click('[data-value="second"] button')
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Second')
+  expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(1)
+  await render({ rows: [{ ...records[0], rowValue: 'override' }], expandedRowIds: ['override'] })
+  expect(element('[data-value="override"] button').getAttribute('aria-expanded')).toBe('true')
+})
+
+test.each([null, 1, 'row', [], { name: { label: [] } }, { id: {} }, { value: false }])(
+  'fails closed before sorting or rendering malformed decoded table rows: %j', async malformed => {
+    for (const layout of ['records', undefined] as const) {
+      await run(() => {
+        const view: unknown = Reflect.apply(createElement, undefined, [DataTable, {
+          columns,
+          rows: [rows[0], malformed],
+          layout,
+          defaultSort: { direction: 'ascending', key: 'name' },
+          renderDetails: () => 'Details'
+        }])
+        if (!isValidElement(view)) throw new Error('Expected table element')
+        root.render(view)
+      })
+      expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
+      expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(0)
+    }
+  }
+)
+
+test.each([null, 1, 'rows', {}])('fails closed on a malformed decoded table collection: %j', rows => run(() => {
+  const view: unknown = Reflect.apply(createElement, undefined, [DataTable, { columns, rows }])
+  if (!isValidElement(view)) throw new Error('Expected table element')
+  root.render(view)
+  expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
+}))
+
+test('fails closed before client sorting a sparse row collection', async () => {
+  const sparseRows: unknown[] = [rows[0]]
+  sparseRows.length = 2
+  await run(() => {
+    const view: unknown = Reflect.apply(createElement, undefined, [DataTable, {
+      columns,
+      rows: sparseRows,
+      defaultSort: { direction: 'ascending', key: 'name' }
+    }])
+    if (!isValidElement(view)) throw new Error('Expected table element')
+    root.render(view)
+  })
+  expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
+})
+
+test.each([
+  [{ id: 'same', name: 'One' }, { id: 'same', name: 'Two' }],
+  [{ rowValue: 'same', id: 'one' }, { rowValue: 'same', id: 'two' }],
+  [{ value: 1 }, { value: '1' }],
+  [{ id: '' }],
+  [{ id: '1' }, { name: 'Index collision' }]
+].map(records => ({ records })))('rejects empty or duplicate resolved record identities: %j', async ({ records }) => {
+  await render({ rows: records, expandedRowIds: ['same'], defaultSort: { key: 'name', direction: 'ascending' } })
+  expect(container.querySelectorAll('tbody tr')).toHaveLength(0)
+  expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(0)
+})
+
+test('ignores default and controlled sorting on a non-sortable column', async () => {
+  const sort = { key: 'name', direction: 'ascending' } as const
+  const fixedColumns = [{ key: 'name', sortable: false }]
+
+  for (const configuration of [{ defaultSort: sort }, { sort }]) {
+    await render({ columns: fixedColumns, ...configuration })
+    expect([...container.querySelectorAll('[data-ui-datatable-row]')].map(row => row.getAttribute('data-value'))).toEqual(['beta', 'alpha'])
+    expect(container.querySelector('thead button')).toBeNull()
+  }
+})
+
+test('preserves index fallback identities when client sorting mixes explicit IDs', async () => {
+  await render({ rows: [{ name: 'Z' }, { id: '1', name: 'A' }], defaultSort: { key: 'name', direction: 'ascending' }, expandedRowIds: ['0'] })
+  expect([...container.querySelectorAll('[data-ui-datatable-row]')].map(row => row.getAttribute('data-value'))).toEqual(['1', '0'])
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Z')
+})
+
+test('keeps expanded implicit records attached to their original rows across sorting', async () => {
+  await render({ rows: [{ name: 'Z' }, { name: 'A' }] })
+  await click('[data-value="0"] button')
+  await click('thead th:first-child button')
+  expect([...container.querySelectorAll('[data-ui-datatable-row]')].map(row => row.getAttribute('data-value'))).toEqual(['1', '0'])
+  expect(element('[data-ui-datatable-detail]').textContent).toBe('Notes for Z')
+  expect(element('[data-value="0"] button').getAttribute('aria-expanded')).toBe('true')
+  expect(element('[data-value="1"] button').getAttribute('aria-expanded')).toBe('false')
+})
+
+test.each([null, 1, 'columns', {}, [null], [{ key: 1 }], [{ key: '' }], [{ key: 'name', label: {} }], [{ key: 'name', sortable: 'yes' }], [{ key: 'name', render: 'html' }], [{ key: 'name', sort: 'other' }], [{ key: 'name' }, { key: 'name' }], new Array(2)])(
+  'fails closed before rendering decoded table columns and sort controls: %j', async columns => {
+    for (const component of [DataTable, DataTableSortControls]) {
+      await run(() => {
+        const view: unknown = Reflect.apply(createElement, undefined, [component, { columns, rows, sort: { key: 'name', direction: 'ascending' }, onSortChange: vi.fn() }])
+
+        if (!isValidElement(view)) throw new Error('Expected table control')
+
+        root.render(view)
+      })
+      expect(container.querySelectorAll('th')).toHaveLength(0)
+      expect(container.querySelectorAll('option[value="name"]')).toHaveLength(0)
+    }
+  }
+)
+
+test.each([{}, 'beta', 3, null, ['beta', 3], new Array<string>(1)])('malformed expansion state is safely collapsed: %j', async state => {
+  for (const prop of ['expandedRowIds', 'defaultExpandedRowIds']) {
+    await run(() => {
+      const view: unknown = Reflect.apply(createElement, undefined, [DataTable, {
+        key: prop, columns, rows, layout: 'records', renderDetails: () => 'Details', [prop]: state
+      }])
+
+      if (!isValidElement(view)) throw new Error('Expected table element')
+
+      root.render(view)
+    })
+
+    expect(container.querySelector('[data-ui-datatable-detail]')).toBeNull()
+
+    expect(element('[data-value="beta"] button').getAttribute('aria-expanded')).toBe('false')
+
+    await click('[data-value="beta"] button')
+
+    expect(Boolean(container.querySelector('[data-ui-datatable-detail]'))).toBe(prop === 'defaultExpandedRowIds')
+  }
+})
+
+test.each([{}, 'sort', 3, { key: 'count', direction: 'sideways' }, { key: 3, direction: 'ascending' }])(
+  'malformed sort state preserves order and aria: %j', async state => {
+    for (const prop of ['sort', 'defaultSort']) {
+      await run(() => {
+        const view: unknown = Reflect.apply(createElement, undefined, [DataTable, {
+          key: prop, columns, rows, [prop]: state
+        }])
+
+        if (!isValidElement(view)) throw new Error('Expected table element')
+
+        root.render(view)
+      })
+
+      expect([...container.querySelectorAll('tbody tr')].map(row => row.getAttribute('data-value'))).toEqual(['beta', 'alpha'])
+
+      expect(element('th:nth-child(2)').getAttribute('aria-sort')).toBe('none')
+    }
+  }
+)
+
+test('record and detail keys remain distinct through expansion and sorting', async () => {
+  const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+  try {
+    await render({ rows: [{ id: 'a', name: 'Alpha' }, { id: 'a-details', name: 'Beta' }], defaultExpandedRowIds: ['a'] })
+
+    await click('thead th:first-child button')
+
+    expect(container.querySelectorAll('[data-ui-datatable-row]')).toHaveLength(2)
+
+    expect(container.querySelectorAll('[data-ui-datatable-detail]')).toHaveLength(1)
+
+    expect(errors).not.toHaveBeenCalled()
+  } finally {
+    errors.mockRestore()
+  }
+})
+
+test('detail identifiers safely encode lone Unicode surrogates without collisions', async () => {
+  await render({ rows: [{ id: '\ud800', name: 'Surrogate' }, { id: 'd800', name: 'Hex' }], defaultExpandedRowIds: ['\ud800', 'd800'] })
+
+  const ids = [...container.querySelectorAll('[data-ui-datatable-detail] section')].map(section => section.id)
+
+  expect(ids).toHaveLength(2)
+
+  expect(new Set(ids).size).toBe(2)
+
+  for (const button of container.querySelectorAll('[aria-expanded="true"]')) {
+    expect(ids).toContain(button.getAttribute('aria-controls'))
+  }
+})

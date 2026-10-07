@@ -52,3 +52,16 @@ Card additionally exposes `card-header`, `card-title`, `card-description`, `card
 
 Host overrides should live after Lumen styles or in Tailwind utilities. When Tailwind is present,
 import Lumen's layer prelude first, Tailwind second, and Lumen styles third.
+
+### Phone fields
+
+`PhoneInput` owns one continuous frame with `data-slot="phone-input"`, the compact selector at
+`data-slot="phone-country"`, and `data-slot="country-flag"` artwork. Use `--ui-phone-height`,
+`--ui-phone-padding`, and `--ui-phone-country-gap` to tune sizing without hiding or replacing native
+controls. Default sizes are 40, 44, and 48 pixels; the number text stays at 16 pixels on web to avoid
+mobile focus zoom. Disabled and read-only states lock the country selector; error borders, messages,
+and focus indicators remain synchronized. `CountryFlag` and `PhoneNumber` share the same artwork.
+
+Astro and React `id` targets the number input; Elements use `input-id`. Pass native attributes through
+Astro/React `inputProps`, and use React `inputRef` for form integration. Remove application flag
+overlays and DOM patches when adopting v4. Country menus retain native platform selection behavior.

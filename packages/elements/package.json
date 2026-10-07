@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-elements",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -40,6 +40,10 @@
       "types": "./dist/components/combobox.d.ts",
       "import": "./dist/components/combobox.js"
     },
+    "./components/image-comparison": {
+      "types": "./dist/components/image-comparison.d.ts",
+      "import": "./dist/components/image-comparison.js"
+    },
     "./components/foundations": {
       "types": "./dist/components/foundations.d.ts",
       "import": "./dist/components/foundations.js"
@@ -47,7 +51,31 @@
     "./styles.css": "./styles.css",
     "./styles/critical.css": "./styles/critical.css",
     "./layers.css": "./layers.css",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./components/dashboard": {
+      "types": "./dist/components/dashboard.d.ts",
+      "import": "./dist/components/dashboard.js"
+    },
+    "./components/virtual-list": {
+      "types": "./dist/components/virtual-list.d.ts",
+      "import": "./dist/components/virtual-list.js"
+    },
+    "./components/device-frame": {
+      "types": "./dist/components/device-frame.d.ts",
+      "import": "./dist/components/device-frame.js"
+    },
+    "./components/world-map": {
+      "types": "./dist/components/world-map.d.ts",
+      "import": "./dist/components/world-map.js"
+    },
+    "./components/media-viewport": {
+      "types": "./dist/components/media-viewport.d.ts",
+      "import": "./dist/components/media-viewport.js"
+    },
+    "./components/media-selection": {
+      "types": "./dist/components/media-selection.d.ts",
+      "import": "./dist/components/media-selection.js"
+    }
   },
   "files": [
     "bin",

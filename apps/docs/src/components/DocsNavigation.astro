@@ -1,14 +1,17 @@
 ---
 import { Badge, Icon, Link } from '@santi020k/lumen-astro'
 
+import { chartTopics } from '../data/chart-topics'
 import { componentCategories, componentDocs } from '../data/docs'
 import { sharedDocumentationLinks } from '../data/docs-context-navigation'
+import { mcpGuideTopics } from '../data/mcp-guides'
 import {
   getNativeComponentsForPlatform,
   nativeComponentCategories
 } from '../data/native-components'
 import type { DocsPlatformId } from '../data/platforms'
 import { getPlatformGuide, productPlatformGuides } from '../data/platforms'
+import { visualGuideHref, visualGuides } from '../data/visual-guides'
 import { toSlug } from '../lib/routes'
 
 interface Props {
@@ -18,19 +21,15 @@ interface Props {
 
 const { currentPath, platform } = Astro.props
 const platformLinks = productPlatformGuides.map(guide => [guide.label, guide.href] as const)
-
-const sharedLinks = sharedDocumentationLinks.filter((_, index) => {
-  if (!platform) return true
-
-  if (platform === 'foundations') return index === 0
-
-  return index < 2
-})
+const sharedLinks = sharedDocumentationLinks
 
 const frameworkLinks = [
   ['Web overview', '/docs/web'],
+  ['Date ranges and reporting', '/docs/web/reporting'],
+  ['WorldMap guides', '/docs/web/world-map'],
   ['Astro', '/docs/frameworks/astro'],
   ['React', '/docs/frameworks/react'],
+  ['React hooks', '/docs/frameworks/react/hooks'],
   ['Elements', '/docs/frameworks/elements']
 ] as const
 
@@ -44,7 +43,10 @@ const formLinks = [
 const webFoundationLinks = [
   ['Icons', '/docs/icons'],
   ['Brand icons', '/docs/brand-icons'],
-  ['Theme playground', '/docs/theme-playground']
+  ['Theme playground', '/docs/theme-playground'],
+  ['Visual guides', '/docs/visual-playground'],
+  ...visualGuides.map(guide => [guide.label, visualGuideHref(guide.id)] as const),
+  ['Motion playground', '/docs/motion-playground']
 ] as const
 
 const activeGuide = platform && platform !== 'web' ? getPlatformGuide(platform) : undefined
@@ -58,11 +60,12 @@ const nativeComponents = nativePlatform ? getNativeComponentsForPlatform(nativeP
 const platformSectionLinks = activeGuide ?
   [
     [`${activeGuide.shortLabel} guide`, activeGuide.href],
-    ['Install and configure', `${activeGuide.href}#installation`],
-    ...(nativePlatform ? [['Theme and appearance', `${activeGuide.href}#theme`] as const] : []),
+    ['Install and configure', nativePlatform ? `${activeGuide.href}/installation` : `${activeGuide.href}#installation`],
+    ...(nativePlatform ? [['Theme and appearance', `${activeGuide.href}/theming`] as const] : []),
     ...(nativePlatform ? [['Run the playground', `${activeGuide.href}/playground`] as const] : []),
-    ...(nativePlatform ? [['Use with AI', `${activeGuide.href}#ai-usage`] as const] : []),
+    ...(nativePlatform ? [['Use with AI', `${activeGuide.href}/ai`] as const] : []),
     ['Components', nativePlatform ? `${activeGuide.href}/components` : `${activeGuide.href}#components`],
+    ...(nativePlatform === 'react-native' ? [['Hooks', `${activeGuide.href}/hooks`] as const] : []),
     ['Platform contract', `${activeGuide.href}#principles`]
   ] as const :
   []
@@ -133,6 +136,17 @@ const isWebCategoryCurrent = (category: string) => componentDocs.some(component 
           class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }}
           href={href}
         >
+          <span>{label}</span>
+          {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
+        </Link>
+      ))}
+    </div>
+  )}
+  {(platform === 'web' || currentPath.startsWith('/docs/mcp')) && (
+    <div class="docs-sidebar__group">
+      <p>{platform === 'web' ? 'Data visualization' : 'MCP guides'}</p>
+      {(platform === 'web' ? chartTopics : mcpGuideTopics).map(({ label, href }) => (
+        <Link aria-current={isCurrent(href) ? 'page' : undefined} class:list={{ 'docs-sidebar__link': true, 'is-current': isCurrent(href) }} href={href}>
           <span>{label}</span>
           {isCurrent(href) && <Icon decorative name="arrow-right" size="sm" />}
         </Link>

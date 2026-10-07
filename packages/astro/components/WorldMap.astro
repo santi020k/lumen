@@ -1,0 +1,213 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import {
+  findLumenWorldMapCountry,
+  LUMEN_WORLD_MAP_VIEW_BOX,
+  type LumenWorldMapCountryGeometry,
+  type LumenWorldMapMarker,
+  type LumenWorldMapVariant,
+  normalizeLumenWorldMapCountries,
+  normalizeLumenWorldMapHighlightedCountries,
+  normalizeLumenWorldMapMarkers,
+  projectLumenWorldMapCoordinate,
+  resolveLumenAstroProps,
+  resolveLumenWorldMapCountryLabel
+} from '@santi020k/lumen-core'
+import { type LumenWorldMapZoomLabels, lumenWorldMapZoomLabels } from '@santi020k/lumen-core/world-map-zoom'
+
+import Button from './Button.astro'
+
+interface Props extends HTMLAttributes<'figure'> {
+  initialView?: 'world' | 'highlighted'
+  zoomable?: boolean
+  zoomLabels?: Partial<LumenWorldMapZoomLabels>
+  animated?: boolean
+  caption?: string
+  class?: string | null
+  className?: string
+  countries: readonly LumenWorldMapCountryGeometry[]
+  description?: string
+  heading?: string
+  highlightedCountries?: readonly string[]
+  interactive?: boolean
+  label: string
+  labels?: Readonly<Record<string, string>>
+  listLabel?: string
+  markers?: readonly LumenWorldMapMarker[]
+  selectedCountry?: string
+  variant?: LumenWorldMapVariant
+}
+
+const {
+  animated = true,
+  caption,
+  class: classProp = '',
+  className = '',
+  countries: inputCountries,
+  description,
+  heading,
+  highlightedCountries,
+  interactive = true,
+  label,
+  labels,
+  listLabel = 'Choose a country',
+  markers,
+  selectedCountry,
+  variant = 'dotted',
+  initialView = 'world',
+  zoomable = true,
+  zoomLabels,
+  ...rest
+} = Astro.props
+
+const countries = normalizeLumenWorldMapCountries(inputCountries)
+const highlightedIds = normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries)
+const highlightedSet = new Set(highlightedIds)
+const normalizedMarkers = normalizeLumenWorldMapMarkers(markers)
+const selected = findLumenWorldMapCountry(countries, selectedCountry)
+const zoomText = { ...lumenWorldMapZoomLabels, ...zoomLabels }
+const instanceId = `ui-world-map-${crypto.randomUUID()}`
+const neutralPatternId = `${instanceId}-dot-neutral`
+const highlightPatternId = `${instanceId}-dot-highlight`
+const { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX
+const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map'], classProp, className)
+---
+
+<figure
+  class:list={classList}
+  data-animated={String(animated)}
+  data-interactive={String(interactive)}
+  data-ui-world-map
+  data-initial-view={initialView}
+  data-variant={variant}
+  id={instanceId}
+  {...passthrough}
+>
+  {
+    (heading || description) && (
+      <header class="ui-world-map__heading">
+        {heading && <h3>{heading}</h3>}
+        {description && <p>{description}</p>}
+      </header>
+    )
+  }
+  {zoomable && (
+    <div class="ui-world-map__zoom-controls">
+      <Button aria-label={zoomText.zoomOut} data-ui-world-map-zoom="out" disabled size="icon" variant="outline">−</Button>
+      <output aria-label={zoomText.level} aria-live="polite" data-ui-world-map-zoom-status>100%</output>
+      <Button aria-label={zoomText.zoomIn} data-ui-world-map-zoom="in" disabled size="icon" variant="outline">+</Button>
+      <Button data-ui-world-map-zoom="fit" disabled size="sm" variant="outline">{zoomText.fit}</Button>
+      <Button data-ui-world-map-zoom="reset" disabled size="sm" variant="outline">{zoomText.reset}</Button>
+    </div>
+  )}
+  <div class="ui-world-map__frame">
+    <div
+      aria-label={`${zoomText.viewport}: ${label}`}
+      class="ui-world-map__viewport"
+      data-ui-world-map-viewport
+      role="region"
+      tabindex={zoomable ? 0 : undefined}
+    >
+      <svg
+        aria-label={label}
+        class="ui-world-map__plot"
+        role="img"
+        viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {
+          variant === 'dotted' && (
+            <defs>
+              <pattern height="4" id={neutralPatternId} patternUnits="userSpaceOnUse" width="4">
+                <circle class="ui-world-map__dot ui-world-map__dot--neutral" cx="2" cy="2" r="1.1" />
+              </pattern>
+              <pattern height="4" id={highlightPatternId} patternUnits="userSpaceOnUse" width="4">
+                <circle class="ui-world-map__dot ui-world-map__dot--highlight" cx="2" cy="2" r="1.1" />
+              </pattern>
+            </defs>
+          )
+        }
+        <g aria-hidden="true" class="ui-world-map__countries">
+          {countries.map(country => {
+            const isHighlighted = highlightedSet.has(country.id)
+            const isSelected = selected?.id === country.id
+            const countryLabel = resolveLumenWorldMapCountryLabel(country, labels)
+
+            return (
+              <path
+                class:list={[
+                  'ui-world-map__country',
+                  isHighlighted && 'ui-world-map__country--highlighted',
+                  isSelected && 'ui-world-map__country--selected'
+                ]}
+                d={country.path}
+                data-label={countryLabel}
+                data-label-x={country.labelX}
+                data-label-y={country.labelY}
+                data-ui-world-map-country={country.id}
+                fill={
+                  variant === 'dotted' ?
+                    `url(#${isHighlighted ? highlightPatternId : neutralPatternId})` :
+                    undefined
+                }
+                fill-rule="evenodd"
+              >
+                <title>{countryLabel}</title>
+              </path>
+            )
+          })}
+        </g>
+        {
+          normalizedMarkers.length > 0 && (
+            <g aria-hidden="true" class="ui-world-map__markers">
+              {normalizedMarkers.map(marker => {
+                const { x, y } = projectLumenWorldMapCoordinate(marker.longitude, marker.latitude)
+
+                return (
+                  <circle class="ui-world-map__marker" cx={x} cy={y} r="4">
+                    <title>{marker.label}</title>
+                  </circle>
+                )
+              })}
+            </g>
+          )
+        }
+        <path aria-hidden="true" class="ui-world-map__selection" d={selected?.path ?? ''} />
+      </svg>
+    </div>
+    <span class="ui-world-map__inspection" data-ui-world-map-inspection hidden />
+  </div>
+  {
+    interactive && (
+      <label class="ui-world-map__select-label">
+        <span>{listLabel}</span>
+        <select class="ui-select ui-world-map__select" data-ui-world-map-select disabled>
+          <option value="">{listLabel}</option>
+          {countries.map(country => (
+            <option selected={selected?.id === country.id} value={country.id}>
+              {resolveLumenWorldMapCountryLabel(country, labels)}
+            </option>
+          ))}
+        </select>
+      </label>
+    )
+  }
+  {
+    highlightedIds.length > 0 && (
+      <ul aria-label="Highlighted countries" class="ui-world-map__highlights" data-ui-world-map-highlights>
+        {highlightedIds.map(id => {
+          const country = findLumenWorldMapCountry(countries, id)
+
+          return country && <li>{resolveLumenWorldMapCountryLabel(country, labels)}</li>
+        })}
+      </ul>
+    )
+  }
+  {normalizedMarkers.length > 0 && (
+    <ul aria-label="Map markers" class="ui-sr-only">
+      {normalizedMarkers.map(marker => <li>{marker.label}</li>)}
+    </ul>
+  )}
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

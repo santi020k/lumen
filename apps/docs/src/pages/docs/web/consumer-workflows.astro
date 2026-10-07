@@ -1,0 +1,61 @@
+---
+import { Badge, Code, Link } from '@santi020k/lumen-astro'
+
+import recordsSource from '../../../../../../packages/lumen/templates/react/operational-records/src/lumen/operational-records.tsx?raw'
+import formSource from '../../../../../../packages/lumen/templates/react/validated-form/src/lumen/validated-form.tsx?raw'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+---
+
+<DocsLayout title="Consumer workflows — Lumen UI" description="Compose editable forms, exact amount inputs, responsive record actions and activity feeds using public Lumen components." breadcrumbs={[{ href: '/docs/web', label: 'Web' }, { href: '/docs/web/consumer-workflows', label: 'Consumer workflows' }]}>
+  <section class="docs-hero">
+    <Badge variant="outline">Synthetic consumer fixtures</Badge>
+    <h1>Forms, records and reviewed changes</h1>
+    <p>These compositions use fictional data shaped like real consumer workflows. Product validation, requests and financial rules stay in application callbacks.</p>
+  </section>
+  <div data-consumer-workflows-demo><p>Loading the interactive recipes…</p></div>
+  <h2>Install the React recipes</h2>
+  <Code code="lumen add validated-form --target react\nlumen add operational-records --target react\nlumen add review-workflow --target react\nlumen add import-review --target react\nlumen add record-workspace --target react" language="bash" variant="block" copy />
+  <h2>Validation, submission and reset</h2>
+  <p>Native validity and product errors share a summary with links to controls. Failed submissions retain input. The request guard blocks duplicate submit events; server idempotency remains application-owned. Return errors with controlId values matching the visible controls, including AmountField.</p>
+  <Code code={formSource} language="tsx" variant="block" copy />
+  <p>For Astro Actions, use the <Link href="/docs/forms/astro-actions">server error normalization recipe</Link>. For managed React fields, use <Link href="/docs/forms/react-hook-form">React Hook Form</Link> and the optional LumenAmountFieldController. Do not register the amount's formatted visible value as the submitted decimal string.</p>
+  <h2>Responsive records and focus</h2>
+  <p>Stable IDs preserve row expansion. Manual sorting delegates row order to the server. Row menus use Lumen's anchored top layer; opening a dialog must preserve its focus and closing must return to the action trigger.</p>
+  <Code code={recordsSource} language="tsx" variant="block" copy />
+  <h2>Exact amount drafts</h2>
+  <p>AmountField accepts ASCII decimal strings, formats the requested locale, retains trailing decimal points during editing, and submits only complete values. Unsupported paste and excess precision are rejected without rounding. Required and incomplete drafts participate in native validity. A host validator still enforces monetary units, limits, authorization and API validation.</p>
+  <h2>Saved views and reviewed operations</h2>
+  <p>DataTableSavedViews requests named preference changes through host callbacks. DataTableView supplies inclusive amount/date ranges and explicit selection of eligible records on the current page. Selected IDs stay separate from saved preferences. With server pagination, resolve and authorize every selected ID before a batch action.</p>
+  <p>The review-workflow recipe submits only a reviewed proposal for the current revision. Edits require another review, confirmed failures preserve input, and unknown outcomes require checking the original command. The import-review recipe exposes source findings and before/after values; record-workspace composes facts with an auditable event timeline. Parsing, matching, financial rules and persistence stay application-owned.</p>
+  <h2>Reader-owned scrolling</h2>
+  <p>MessageScroller is passive by default. Enable autoScroll to follow updates while at the end. Give stable message nodes data-ui-message-item so prepended history preserves the visible anchor. A public Button with data-ui-message-jump jumps to the latest event. The component never announces every streaming token; the application owns concise screen-reader status announcements.</p>
+</DocsLayout>
+
+<script>
+  import { createElement } from 'react'
+  import { createRoot } from 'react-dom/client'
+
+  import { ConsumerWorkflowsDemo } from '../../../lib/consumer-workflows-demo'
+
+  const mount = () => {
+    const container = document.querySelector<HTMLElement>('[data-consumer-workflows-demo]')
+
+    if (!container || container.dataset.mounted) return
+
+    container.dataset.mounted = 'true'
+
+    createRoot(container).render(createElement(ConsumerWorkflowsDemo))
+  }
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+</script>
+
+<style is:global>
+  .consumer-workflows { margin-block: 2rem; }
+  .consumer-workflows form { display: grid; gap: 1rem; }
+  .consumer-workflows output { display: block; margin-block-start: 1rem; overflow-wrap: anywhere; }
+  .consumer-workflows [data-ui-amount-field] { width: 100%; }
+  .consumer-workflows .ui-dialog { padding: 1.5rem; }
+</style>

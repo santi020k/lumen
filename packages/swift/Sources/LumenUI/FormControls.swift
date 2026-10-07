@@ -152,13 +152,14 @@ public struct LumenPicker<SelectionValue: Hashable, Content: View>: View {
 
     @ViewBuilder
     private var picker: some View {
-        if #available(iOS 18, macOS 15, tvOS 18, watchOS 11, visionOS 2, *) {
+        if #available(iOS 18, macOS 15, tvOS 18, watchOS 11, visionOS 2, *),
+           let currentValueLabel {
             let picker = Picker(selection: $selection) {
                 content
             } label: {
                 if let richLabel { richLabel } else { Text(title) }
             } currentValueLabel: {
-                if let currentValueLabel { currentValueLabel }
+                currentValueLabel
             }
 
             if showsLabel { picker } else { picker.labelsHidden() }
@@ -201,13 +202,15 @@ public struct LumenSlider: View {
     private let label: LocalizedStringKey
     private let onEditingChanged: (Bool) -> Void
     private let valueLabel: String?
+    private let showsLabel: Bool
 
     public init(
         _ label: LocalizedStringKey,
         value: Binding<Double>,
         in bounds: ClosedRange<Double>,
         step: Double? = nil,
-        valueLabel: String? = nil
+        valueLabel: String? = nil,
+        showsLabel: Bool = true
     ) {
         self.init(
             label,
@@ -215,6 +218,7 @@ public struct LumenSlider: View {
             in: bounds,
             step: step,
             valueLabel: valueLabel,
+            showsLabel: showsLabel,
             onEditingChanged: { _ in }
         )
     }
@@ -225,33 +229,47 @@ public struct LumenSlider: View {
         in bounds: ClosedRange<Double>,
         step: Double? = nil,
         valueLabel: String? = nil,
+        showsLabel: Bool = true,
         onEditingChanged: @escaping (Bool) -> Void = { _ in }
     ) {
         self.label = label
         _value = value
         configuration = LumenSliderConfiguration.resolve(bounds: bounds, step: step)
         self.valueLabel = valueLabel
+        self.showsLabel = showsLabel
         self.onEditingChanged = onEditingChanged
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: LumenSpacing.sm) {
-            HStack(alignment: .firstTextBaseline, spacing: LumenSpacing.md) {
-                Text(label)
-                    .font(.callout.weight(.semibold))
-                    .foregroundStyle(theme.colors.ink)
+            if showsLabel {
+                HStack(alignment: .firstTextBaseline, spacing: LumenSpacing.md) {
+                    Text(label)
+                        .font(.callout.weight(.semibold))
+                        .foregroundStyle(theme.colors.ink)
 
-                Spacer(minLength: LumenSpacing.md)
+                    Spacer(minLength: LumenSpacing.md)
 
-                if let valueLabel {
-                    Text(valueLabel)
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(theme.colors.inkMuted)
+                    if let valueLabel {
+                        Text(valueLabel)
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(theme.colors.inkMuted)
+                    }
                 }
             }
 
-            slider
+            accessibleSlider
+                .labelsHidden()
                 .tint(theme.colors.brandSolid)
+        }
+    }
+
+    @ViewBuilder
+    private var accessibleSlider: some View {
+        if let valueLabel {
+            slider.accessibilityValue(Text(verbatim: valueLabel))
+        } else {
+            slider
         }
     }
 
@@ -283,9 +301,15 @@ public struct LumenSearchField: View {
     @Environment(\.lumenTheme) private var theme
 
     private let prompt: String
+    private let clearLabel: String
 
     public init(_ prompt: String = "Search", text: Binding<String>) {
+        self.init(prompt, text: text, clearLabel: "Clear search")
+    }
+
+    public init(_ prompt: String = "Search", text: Binding<String>, clearLabel: String) {
         self.prompt = prompt
+        self.clearLabel = clearLabel
         _text = text
     }
 
@@ -300,7 +324,7 @@ public struct LumenSearchField: View {
             if !text.isEmpty {
                 LumenIconButton(
                     systemName: "xmark.circle.fill",
-                    label: "Clear search",
+                    label: LocalizedStringKey(clearLabel),
                     size: .sm
                 ) {
                     text = ""

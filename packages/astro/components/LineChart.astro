@@ -2,30 +2,37 @@
 import type { HTMLAttributes } from 'astro/types'
 
 import {
-  alignLumenChartSeries,
-  createLumenLineGeometry,
+  createLumenChartDatumActivation,
+  createLumenLineChartModel,
   formatLumenChartSummary,
-  getLumenChartAxisPadding,
-  getLumenChartCategories,
-  getLumenChartDomain,
-  getLumenChartTicks,
+  getLumenChartCategoryLabel,
+  getLumenChartMotionKey,
   getLumenChartToneClassName,
   hasLumenChartData,
   type LumenChartLabels,
   type LumenChartSeries,
+  type LumenLineChartOptions,
   resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue
 } from '@santi020k/lumen-core'
 
-import Chart from './Chart.astro'
+import ChartInspection from '../internal/ChartInspection.astro'
+import { createChartDatumAction } from '../runtime/chart-actions'
 
-interface Props extends HTMLAttributes<'figure'> {
+import Button from './Button.astro'
+import Chart from './Chart.astro'
+import ChartDatumActions from './ChartDatumActions.astro'
+
+interface Props extends HTMLAttributes<'figure'>, LumenLineChartOptions {
+  interactive?: boolean
+  syncGroup?: string
   area?: boolean
   caption?: string
   class?: string | null
   className?: string
   description?: string
+  drilldown?: boolean
   emptyLabel?: string
   formatCategory?: (category: number | string) => string
   formatValue?: (value: number) => string
@@ -43,12 +50,21 @@ interface Props extends HTMLAttributes<'figure'> {
 
 const {
   area = false,
+  annotations = [],
+  domain: requestedDomain,
+  height: requestedHeight,
+  width: requestedWidth,
+  xDomain,
+  xScale = 'categorical',
+  interactive = false,
+  syncGroup,
   caption,
   class: classProp = '',
   className = '',
   description,
+  drilldown = false,
   emptyLabel,
-  formatCategory = String,
+  formatCategory,
   formatValue = String,
   glass = false,
   heading,
@@ -63,32 +79,22 @@ const {
 } = Astro.props
 
 const resolvedLabels = resolveLumenChartLabels(labels)
-const summary = summaryProp ?? formatLumenChartSummary(series, formatValue, resolvedLabels)
-const width = 640
-const height = 320
-const padding = 44
-const categories = getLumenChartCategories(series)
-const hasData = hasLumenChartData(series)
-const alignedSeries = series.map(item => alignLumenChartSeries(item, categories))
 
-const domain = getLumenChartDomain([
-  ...alignedSeries.flatMap(item => item.data.map(datum => datum.y)),
-  referenceValue ?? null
-], false)
+const model = createLumenLineChartModel(series, {
+  annotations,
+xScale,
+  ...(requestedDomain ? { domain: requestedDomain } : {}),
+  ...(requestedHeight === undefined ? {} : { height: requestedHeight }),
+  ...(requestedWidth === undefined ? {} : { width: requestedWidth }),
+  ...(xDomain ? { xDomain } : {}),
+  ...(referenceValue === undefined ? {} : { referenceValue }),
+  ...(formatCategory ? { formatCategory } : {}),
+  formatValue
+})
 
-const ticks = getLumenChartTicks(domain)
-const paddingLeft = getLumenChartAxisPadding(ticks.map(tick => formatValue(tick)))
-
-const geometries = alignedSeries.map(item => createLumenLineGeometry(item.data, {
-  domain,
-  height,
-  includeZero: false,
-  padding,
-  paddingLeft,
-  width
-}))
-
-const labelStep = Math.max(1, Math.ceil(categories.length / 8))
+const { width, height, padding, paddingLeft, categories, categoryTicks, domain, geometries, ticks, series: alignedSeries } = model
+const hasData = hasLumenChartData(alignedSeries)
+const summary = summaryProp ?? formatLumenChartSummary(alignedSeries, formatValue, resolvedLabels)
 let markerStep = 1
 
 if (markers === false || markers === 'none') markerStep = Number.POSITIVE_INFINITY
@@ -96,14 +102,29 @@ else if (typeof markers === 'number') markerStep = Math.max(1, Math.round(marker
 else if (markers === 'auto') markerStep = Math.max(1, Math.ceil(categories.length / 24))
 
 const valueFor = (item: LumenChartSeries, category: number | string) => item.data.find(datum => datum.x === category)
-
-const categoryLabelFor = (category: number | string) => series.flatMap(item => item.data)
-  .find(datum => datum.x === category)?.xLabel ?? formatCategory(category)
+const categoryLabelFor = (category: number | string) => getLumenChartCategoryLabel(alignedSeries, category, formatCategory, 'detail')
 
 const referenceY =
   referenceValue === undefined ?
     undefined :
     scaleLumenChartValue(referenceValue, domain, height - padding, padding)
+
+const pointActions = drilldown ?
+geometries.map((geometry, index) => {
+  const item = alignedSeries[index]
+
+  return geometry.points.map(point => item ?
+createChartDatumAction(
+    createLumenChartDatumActivation(item.id, point),
+    `${categoryLabelFor(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`,
+    resolvedLabels
+  ) :
+null)
+}) :
+[]
+
+const datumActions = pointActions.flat()
+
 ---
 
 <Chart
@@ -113,22 +134,31 @@ const referenceY =
   {glass}
   {heading}
   {summary}
+  data-ui-chart-interactive={interactive || undefined}
+  data-ui-chart-sync={syncGroup}
   {...rest}
+  data-ui-chart-activation={drilldown || undefined}
 >
   {
     showLegend && hasData && (
       <ul class="ui-chart__legend" aria-label={resolvedLabels.chartLegend}>
         {series.map((item, index) => (
           <li class={getLumenChartToneClassName(item.tone, index)}>
-            <span aria-hidden="true" />
-            {item.label}
+            {interactive ? <Button aria-pressed="true" data-ui-chart-toggle={item.id} disabled size="sm" variant="ghost">{item.label}</Button> : <><span aria-hidden="true" />{item.label}</>}
           </li>
         ))}
       </ul>
     )
   }
   {!hasData && <p class="ui-chart__empty" role="status">{emptyLabel ?? resolvedLabels.empty}</p>}
-  <div class="ui-chart__plot" hidden={!hasData}>
+  <div
+aria-label={rest['aria-label'] ?? heading ?? resolvedLabels.chartData}
+class="ui-chart__plot"
+data-ui-chart-interaction-plot={interactive || undefined}
+role="region"
+tabindex="0"
+hidden={!hasData}
+  >
     <svg
       aria-hidden="true"
       preserveAspectRatio="xMidYMid meet"
@@ -154,26 +184,21 @@ const referenceY =
       </g>
       <g class="ui-chart__axis-labels">
         {
-          categories.map((category, index) => {
-            if (
-              index % labelStep !== 0 &&
-              index !== categories.length - 1
-            )
-              return null
-
-            const denominator = Math.max(1, categories.length - 1)
-
-            const x =
-              paddingLeft + (index / denominator) * (width - paddingLeft - padding)
-
-            return (
-              <text text-anchor="middle" x={x} y={height - 14}>
-                {categoryLabelFor(category)}
-              </text>
-            )
-          })
+          categoryTicks.map(tick => (
+            <text text-anchor={tick.textAnchor} x={tick.position} y={height - 14}>
+              {tick.label}
+            </text>
+          ))
         }
       </g>
+      <svg
+x={paddingLeft}
+y={padding}
+width={width - padding - paddingLeft}
+height={height - 2 * padding}
+        viewBox={`${paddingLeft} ${padding} ${width - padding - paddingLeft} ${height - 2 * padding}`}
+        overflow="hidden"
+      >
       {
         referenceY !== undefined && (
           <line
@@ -187,43 +212,73 @@ const referenceY =
       }
       {
         geometries.map((geometry, index) => {
-          const item = series[index]
+          const item = alignedSeries[index]
 
           if (!item) return null
 
           const tone = resolveLumenChartTone(item.tone, index)
 
           return (
-            <g class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}>
-              {area &&
-                geometry.areaPaths.map(path => (
-                  <path class="ui-line-chart__area" d={path} />
-                ))}
-              <path class="ui-line-chart__line" d={geometry.path} />
+            <g
+data-ui-chart-series={item.id}
+class:list={['ui-line-chart__series', getLumenChartToneClassName(tone)]}
+            >
+              {area && geometry.areaPaths.length > 0 && (
+                <path
+                  data-ui-chart-motion-key={JSON.stringify(['area', item.id])}
+                  class="ui-line-chart__area"
+                  d={geometry.areaPaths.join(' ')}
+                />
+              )}
+              <path
+data-ui-chart-motion-key={JSON.stringify(['path', item.id])}
+class="ui-line-chart__line"
+d={geometry.path}
+              />
               {Number.isFinite(markerStep) &&
                 geometry.points.map((point, pointIndex) => pointIndex % markerStep === 0 && (
                   <circle
+                    data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                    data-ui-chart-motion-key={getLumenChartMotionKey(item.id, point)}
                     class="ui-line-chart__point"
                     cx={point.xCoordinate}
                     cy={point.yCoordinate}
                     r="3"
                   >
                     <title>
-                      {`${point.xLabel ?? formatCategory(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
+                      {`${categoryLabelFor(point.x)} · ${item.label}: ${formatValue(point.y ?? 0)}`}
                     </title>
                   </circle>
                 ))}
+              {drilldown && geometry.points.map((point, pointIndex) => (
+                <circle
+class="ui-chart__datum-hit"
+cx={point.xCoordinate}
+cy={point.yCoordinate}
+r="10"
+                  data-ui-chart-datum={pointActions[index]?.[pointIndex]?.serialized}
+                />
+              ))}
             </g>
           )
         })
       }
+      </svg>
+      {model.annotationMarks.map(mark => (
+<g class:list={['ui-chart__annotation', getLumenChartToneClassName(mark.tone)]}>
+        {mark.axis === 'x' ? <><line x1={mark.coordinate} x2={mark.coordinate} y1={padding} y2={height - padding} /><text x={mark.coordinate + 4} y={padding - 8}>{mark.label}</text></> : <><line x1={paddingLeft} x2={width - padding} y1={mark.coordinate} y2={mark.coordinate} /><text text-anchor="end" x={width - padding} y={mark.coordinate - 8}>{mark.label}</text></>}
+      </g>
+))}
+      {interactive && <line class="ui-chart__crosshair" data-ui-chart-crosshair style="display: none" y1={padding} y2={height - padding} />}
     </svg>
   </div>
+  {model.annotationMarks.length > 0 && <ul class="ui-sr-only">{model.annotationMarks.map(mark => <li>{mark.label}: {mark.axis === 'x' ? categoryLabelFor(mark.value) : formatValue(Number(mark.value))}</li>)}</ul>}
+  {interactive && hasData && <ChartInspection {model} {formatCategory} {formatValue} labels={resolvedLabels} />}
   {
     showTable && hasData && (
       <details class="ui-chart__data">
         <summary>{resolvedLabels.viewData}</summary>
-        <div>
+        <div role="group" tabindex="0" aria-label={resolvedLabels.chartData}>
           <table>
             <thead>
               <tr>
@@ -235,7 +290,7 @@ const referenceY =
               {categories.map(category => (
                 <tr>
                   <th scope="row">{categoryLabelFor(category)}</th>
-                  {series.map(item => {
+                  {alignedSeries.map(item => {
                     const datum = valueFor(item, category)
 
                     return (
@@ -255,4 +310,5 @@ const referenceY =
       </details>
     )
   }
+  {drilldown && <ChartDatumActions actions={datumActions} label={resolvedLabels.exploreData} />}
 </Chart>

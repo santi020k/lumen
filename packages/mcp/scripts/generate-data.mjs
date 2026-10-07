@@ -4,13 +4,16 @@
 // component files, design tokens, registry manifest, and llms.txt agent rules)
 // and writes a single self-contained JSON payload the published server reads at
 // runtime. This keeps @santi020k/lumen-mcp installable without the whole repo.
-
 import { createHash, randomUUID } from 'node:crypto'
 import { access, mkdir, readdir, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import ts from 'typescript'
+
+import { parseSpacingTokens } from '../../../scripts/lib/spacing-tokens.mjs'
+
+import { createCatalogHash } from './catalog-hash.mjs'
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 
@@ -328,8 +331,20 @@ const parseReactComponents = (source, componentNames) => {
       const componentDeclaration = componentDeclarations.get(name)
       const propsDeclaration = propDeclarations.get(name)
       const props = parseTypeScriptProps(propsDeclaration, sourceFile)
+      const dataPropsDeclaration = name === 'VirtualList' ? propDeclarations.get('VirtualListData') : undefined
 
-      const snippets = [propsDeclaration, componentDeclaration]
+      if (dataPropsDeclaration) {
+        const dataProps = parseTypeScriptProps(dataPropsDeclaration, sourceFile)
+        const combined = new Map(props.props.map(prop => [prop.name, prop]))
+
+        for (const prop of dataProps.props) {
+          if (prop.name !== 'children') combined.set(prop.name, { ...prop, optional: true })
+        }
+
+        props.props = [...combined.values()]
+      }
+
+      const snippets = [propsDeclaration, dataPropsDeclaration, componentDeclaration]
         .filter(Boolean)
         .map(declaration => declaration.getText(sourceFile))
 
@@ -376,6 +391,10 @@ const processElementConfig = (name, config, sourceNode, sourceFile) => {
       `lumen-${toKebab(name)}`
 
   const attributes = config.properties.flatMap(entry => {
+    if (ts.isPropertyAssignment(entry) && propertyName(entry, sourceFile) === 'observedAttributes' && ts.isArrayLiteralExpression(entry.initializer)) {
+      return entry.initializer.elements.filter(ts.isStringLiteral).map(attribute => attribute.text)
+    }
+
     if (
       !ts.isPropertyAssignment(entry) ||
       !ts.isObjectLiteralExpression(entry.initializer) ||
@@ -543,6 +562,8 @@ const toReactExample = example => example
   .replaceAll(/style="([^"]*)"/g, (_, value) => reactStyleValue(value))
 
 const reactExampleOverrides = {
+  AmountField: '<AmountField name="amount" locale="es-CO" defaultValue="1234.50" aria-label="Amount COP" />',
+  AttachmentPreview: '<AttachmentPreview src="/logo.svg" contentType="image/svg+xml" alt="Lumen logo" caption="Logo attachment" actions={<Button type="button">Replace</Button>} />',
   AnimatedPortrait:
     '<AnimatedPortrait><img src="/portrait.jpg" alt="Portrait of Ana" /></AnimatedPortrait>',
   ButtonLink:
@@ -554,6 +575,8 @@ const reactExampleOverrides = {
   ErrorState:
     '<ErrorState actions={<><Button size="sm">Try again</Button><ButtonLink href="/docs" variant="secondary">Open help</ButtonLink></>} description="Check your connection and try again." id="projects-error" reference="REQ-4F82" title="Could not load projects" />',
   Image: '<Image alt="Lumen UI logo" invertOnDark src="/logo.svg" />',
+  WorldMap: '<WorldMap countries={lumenWorldMapCountries} label="Sample destinations" highlightedCountries={["CO", "JP"]} />',
+  ImageComparison: '<ImageComparison label="Compare the landscape treatment" beforeLabel="Original" afterLabel="Color adjusted" ratio={1.6} defaultValue={50} before={<Image alt="Original landscape illustration" src="/comparison-before.svg" />} after={<Image alt="Color-adjusted landscape illustration" src="/comparison-after.svg" />} />',
   PhoneInput:
     '<PhoneInput name="phone" defaultCountryValue="+1" countries={[{ label: "+1", value: "+1" }, { label: "+44", value: "+44" }]} placeholder="(555) 000-0000" />',
   Tabs: `import { Tabs, TabsList, TabsPanel, TabsTrigger } from '@santi020k/lumen-react'
@@ -601,6 +624,32 @@ const reactHookByComponent = {
 }
 
 const elementsExampleOverrides = {
+  AmountField: '<lumen-amount-field name="amount" locale="es-CO" default-value="1234.50" aria-label="Amount COP"></lumen-amount-field>',
+  ChangeSummary: `<lumen-change-summary id="review" label="Review changes"></lumen-change-summary>
+<script>
+  import { defineLumenChangeSummary, LumenChangeSummaryElement } from '@santi020k/lumen-elements/components/dashboard'
+  defineLumenChangeSummary()
+  const review = document.getElementById('review')
+  if (review instanceof LumenChangeSummaryElement) {
+    review.items = [
+      { id: 'owner', label: 'Owner', before: 'Alice', after: 'Bob', changed: true }
+    ]
+  }
+</script>`,
+  FilterBar: `<lumen-filter-bar aria-label="Filters">
+  <details open><summary>Filters</summary>
+    <div class="ui-filter-bar__controls"><lumen-search-field aria-label="Search records"></lumen-search-field></div>
+  </details>
+  <div class="ui-filter-bar__active"><lumen-button aria-label="Remove status: Active">Status: Active ×</lumen-button></div>
+  <p role="status" aria-live="polite" aria-atomic="true">12 matching records</p>
+</lumen-filter-bar>`,
+  DeviceFrame: '<lumen-device-frame device="iphone"><iframe src="/demo" title="Mobile application demo" loading="lazy"></iframe></lumen-device-frame>',
+
+  WorldMap: '<lumen-world-map label="Sample destinations" highlighted-countries=\'["CO", "JP"]\'></lumen-world-map>',
+  ImageComparison: `<lumen-image-comparison label="Compare the landscape treatment" before-label="Original" after-label="Color adjusted" ratio="1.6" value="50">
+  <img slot="before" alt="Original landscape illustration" src="/comparison-before.svg" width="960" height="600" />
+  <img slot="after" alt="Color-adjusted landscape illustration" src="/comparison-after.svg" width="960" height="600" />
+</lumen-image-comparison>`,
   ErrorState: `<lumen-error-state id="projects-error" aria-labelledby="projects-error-title">
   <lumen-illustration aria-hidden="true" data-slot="error-state-graphic" variant="error"></lumen-illustration>
   <div data-slot="error-state-content">
@@ -726,6 +775,10 @@ const getReactBehavior = (hook, reactSource, runtimeRequired) => {
   }
 }
 
+const worldMapImport = name => name === 'WorldMap' ?
+  '\nimport { lumenWorldMapCountries } from \'@santi020k/lumen-core/world-map-data\'' :
+  ''
+
 const frameworkBehavior = ({ framework, hook, reactSource, runtimeBypass, runtimeRequired }) => {
   if (framework === 'astro') return getAstroBehavior(runtimeRequired, runtimeBypass)
 
@@ -776,6 +829,7 @@ const buildFrameworkDetails = ({
   const astroImports = withFallback(astroExampleNames, name)
   const reactExampleNames = componentNamesFromExample(reactExample)
   const reactImportsList = withFallback(reactExampleNames, name)
+  const geometryImport = worldMapImport(name)
 
   const reactImports = hook ?
     (reactExample.match(/^import .+$/gm)?.join('\n') ??
@@ -791,7 +845,7 @@ const buildFrameworkDetails = ({
         runtimeRequired
       }),
       example: doc.example,
-      importStatement: `import { ${astroImports.join(', ')} } from '@santi020k/lumen-astro'`,
+      importStatement: `import { ${astroImports.join(', ')} } from '@santi020k/lumen-astro'${geometryImport}`,
       language: 'astro',
       packageName: '@santi020k/lumen-astro',
       props: parsedAstro.props,
@@ -825,7 +879,7 @@ const buildFrameworkDetails = ({
         runtimeRequired
       }),
       example: reactExample,
-      importStatement: reactImports,
+      importStatement: reactImports + geometryImport,
       language: 'tsx',
       packageName: '@santi020k/lumen-react',
       props: react.props.props,
@@ -859,15 +913,45 @@ const loadWorkspaceFiles = async p => ({
   nativeDocsSource: await readIfExists(p('apps/docs/src/data/native-components.ts')),
   elementsSource: [
     await readIfExists(p('packages/elements/src/define.ts')),
+    await readIfExists(p('packages/elements/src/consumer-behaviors.ts')),
     await readIfExists(p('packages/elements/src/components/foundations.ts')),
     await readIfExists(p('packages/elements/src/components/badge.ts')),
     await readIfExists(p('packages/elements/src/components/button.ts')),
     await readIfExists(p('packages/elements/src/components/card.ts')),
-    await readIfExists(p('packages/elements/src/components/combobox.ts'))
+    await readIfExists(p('packages/elements/src/components/combobox.ts')),
+    await readIfExists(p('packages/elements/src/components/device-frame.ts')),
+    await readIfExists(p('packages/elements/src/components/image-comparison.ts')),
+    await readIfExists(p('packages/elements/src/components/media-viewport.ts')),
+    await readIfExists(p('packages/elements/src/components/media-selection.ts')),
+    await readIfExists(p('packages/elements/src/components/world-map.ts')),
+    await readIfExists(p('packages/elements/src/components/virtual-list.ts')),
+    await readIfExists(p('packages/elements/src/components/dashboard.ts')),
+    await readIfExists(p('packages/elements/src/components/ai-surfaces.ts')),
+    await readIfExists(p('packages/elements/src/components/visual-interactions.ts'))
   ].join('\n'),
   reactSource: [
+    await readIfExists(p('packages/react/src/ai-surfaces.tsx')),
+    await readIfExists(p('packages/react/src/visual-interactions.tsx')),
+    await readIfExists(p('packages/react/src/attachments.tsx')),
+    await readIfExists(p('packages/react/src/amount-field.tsx')),
     await readIfExists(p('packages/react/src/components.tsx')),
-    await readIfExists(p('packages/react/src/server-components.tsx'))
+    await readIfExists(p('packages/react/src/interval-charts.tsx')),
+    await readIfExists(p('packages/react/src/bullet-chart.tsx')),
+    await readIfExists(p('packages/react/src/comparison-chart.tsx')),
+    await readIfExists(p('packages/react/src/expanded-charts.tsx')),
+    await readIfExists(p('packages/react/src/chart-interaction.tsx')),
+    await readIfExists(p('packages/react/src/data-table.tsx')),
+    await readIfExists(p('packages/react/src/server-components.tsx')),
+    await readIfExists(p('packages/react/src/device-frame.tsx')),
+    await readIfExists(p('packages/react/src/image-comparison.tsx')),
+    await readIfExists(p('packages/react/src/media-viewport.tsx')),
+    await readIfExists(p('packages/react/src/media-selection.tsx')),
+    await readIfExists(p('packages/react/src/world-map.tsx')),
+    await readIfExists(p('packages/react/src/virtual-list.tsx')),
+    await readIfExists(p('packages/react/src/virtual-list-data.tsx')),
+    await readIfExists(p('packages/react/src/combobox.tsx')),
+    await readIfExists(p('packages/react/src/change-summary.tsx')),
+    await readIfExists(p('packages/react/src/dashboard.tsx'))
   ].join('\n'),
   readme: await readIfExists(p('README.md')),
   rules: await readIfExists(p('llms.txt')),
@@ -1150,6 +1234,7 @@ const main = async () => {
   const chart = parseVisualizationColors(platformTokensSource)
   const colors = parsePlatformColors(platformTokensSource)
   const glass = parseTokenBlock(tokensSource, 'lumenGlass')
+  const { spacing, spacingRoles } = parseSpacingTokens(platformTokensSource)
 
   const semanticTokens = [
     'canvas',
@@ -1269,9 +1354,9 @@ const main = async () => {
 
   const componentMap = new Map(components.map(component => [component.name, component]))
 
-  const recipes = (registry.items ?? [])
+  const recipes = await Promise.all((registry.items ?? [])
     .filter(item => item.type === 'recipe' || item.type === 'component-set')
-    .map(item => {
+    .map(async item => {
       const recipeComponents = (item.components ?? [])
         .map(name => componentMap.get(name))
         .filter(Boolean)
@@ -1281,6 +1366,12 @@ const main = async () => {
       return {
         ...item,
         categories,
+        examples: Object.fromEntries((await Promise.all(['astro', 'react', 'elements'].map(async framework => {
+          const extension = { astro: 'astro', elements: 'html', react: 'tsx' }[framework]
+          const example = await readIfExists(join(repoRoot, 'packages/lumen/templates', framework, item.name, 'src/lumen', `${item.name}.${extension}`))
+
+          return [framework, example]
+        }))).filter(([, source]) => source)),
         description:
           item.type === 'component-set' ?
             'The complete Lumen component catalog and shared runtime foundation.' :
@@ -1291,15 +1382,24 @@ const main = async () => {
           react: `lumen add ${item.name} --target react`
         }
       }
-    })
+    }))
 
+  const migration = JSON.parse(await readFile(join(repoRoot, 'registry/lumen-4-contract.json'), 'utf8'))
   const docs = { aiUsage, readme }
 
   const tokens = {
+    presets: {
+      attribute: 'data-lumen-preset',
+      names: ['default', 'studio', 'glass'],
+      schemeAttribute: 'data-lumen-scheme',
+      materialPolicy: 'explicit-surfaces'
+    },
     chart,
     colors,
     glass,
     semantic: semanticTokens,
+    spacing,
+    spacingRoles,
     themeAttribute: 'data-theme'
   }
 
@@ -1321,26 +1421,23 @@ const main = async () => {
     Reflect.set(packageVersions, packageName, manifest.version)
   }
 
-  packageVersions.LumenUI = 'workspace'
+  packageVersions.LumenUI = releaseManifest.release.version
 
-  packageVersions['com.santi020k:lumen-compose'] = 'workspace'
+  packageVersions['com.santi020k:lumen-compose'] = releaseManifest.release.compose.version
 
-  packageVersions['com.santi020k:lumen-compose-wear'] = 'workspace'
+  packageVersions['com.santi020k:lumen-compose-wear'] = releaseManifest.release.compose.version
 
-  const catalogHash = createHash('sha256')
-    .update(
-      JSON.stringify({
-        components,
-        docs,
-        nativeComponents,
-        nativeSources,
-        recipes,
-        releaseManifest,
-        rules,
-        tokens
-      })
-    )
-    .digest('hex')
+  const catalogHash = createCatalogHash({
+    components,
+    docs,
+    migration,
+    nativeComponents,
+    nativeSources,
+    recipes,
+    releaseManifest,
+    rules,
+    tokens
+  })
 
   const catalogManifest = {
     components: Object.fromEntries(
@@ -1397,9 +1494,10 @@ const main = async () => {
       packageVersions,
       registryName: registry.name ?? 'lumen',
       registryVersion: registry.version ?? 1,
-      schemaVersion: 5,
+      schemaVersion: 8,
       serverVersion: packageJson.version
     },
+    migration,
     nativeComponents,
     nativeSources,
     recipes,

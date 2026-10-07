@@ -8,6 +8,7 @@ import {
   type LumenRegistryEntry,
   type LumenRegistryFile
 } from './registry.js'
+import { isSafeRegistryComponentName } from './registry-component-name.js'
 import { assertSafeRegistryFilePath } from './registry-path.js'
 
 interface LumenRecipeFile {
@@ -43,6 +44,7 @@ export interface LumenAddResult {
 }
 
 const templatesRoot = fileURLToPath(new URL('../templates/', import.meta.url))
+const visualProductBlocks = new Set(['interactive-pricing', 'feature-preview', 'guided-onboarding', 'command-center'])
 
 const productTemplateRecipes = new Set([
   'analytics-dashboard',
@@ -81,6 +83,7 @@ const loadRecipeTemplateFiles = async (
 ): Promise<LumenRecipeFile[] | undefined> => {
   const templateDirectories = [
     ...(productTemplateRecipes.has(itemName) ? [join(templatesRoot, 'shared', 'common')] : []),
+    ...(target !== 'react' && visualProductBlocks.has(itemName) ? [join(templatesRoot, 'shared', 'visual-blocks')] : []),
     join(templatesRoot, 'shared', itemName),
     join(templatesRoot, target, itemName)
   ]
@@ -156,6 +159,10 @@ declare global {
 }
 
 const createComponentFile = (name: string, target: LumenAddTarget): LumenRecipeFile => {
+  if (!isSafeRegistryComponentName(name)) {
+    throw new Error('Registry component names must be safe identifiers without reserved keywords.')
+  }
+
   if (target === 'react') return createReactComponentFile(name)
 
   if (target === 'elements') return createElementsComponentFile(name)
@@ -270,6 +277,20 @@ const validateInstallFiles = async (
   }
 }
 
+const validateInstallConflicts = async (
+  files: readonly LumenRecipeFile[],
+  cwd: string,
+  conflict: NonNullable<LumenAddOptions['conflict']>
+): Promise<void> => {
+  if (conflict !== 'error') return
+
+  for (const file of files) {
+    if (await fileExists(join(cwd, file.path))) {
+      throw new Error(`Refusing to overwrite existing file: ${file.path}`)
+    }
+  }
+}
+
 type InstallFileOutcome = 'added' | 'merged' | 'skipped'
 
 const installRegistryFile = async (
@@ -312,6 +333,9 @@ export const addLumenRegistryItem = async (name: string, options: LumenAddOption
 
   const added: string[] = []
   const conflict = getConflictMode(options)
+
+  await validateInstallConflicts(files, cwd, conflict)
+
   const merged: string[] = []
   const skipped: string[] = []
 

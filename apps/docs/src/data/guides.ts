@@ -12,6 +12,24 @@ export interface GuideMetadata {
 export const publishedGuides = [
   {
     author: 'Santiago Molina',
+    description: 'Build and verify an accessible notification panel in Astro or React with AI coding agents, Lumen components, and focused MCP context.',
+    href: '/guides/build-ui-with-ai',
+    icon: 'bot',
+    publishedAt: '2026-10-04',
+    readingTime: '15 minute build',
+    title: 'Build accessible UI with AI in Astro and React'
+  },
+  {
+    author: 'Santiago Molina',
+    description: 'Measure AI token usage, tool context, retries, and accessible UI quality when comparing a component library with building from scratch.',
+    href: '/guides/measure-ai-ui-token-usage',
+    icon: 'chart-no-axes-combined',
+    publishedAt: '2026-10-04',
+    readingTime: 'Benchmark method',
+    title: 'Measure AI token usage when building UI'
+  },
+  {
+    author: 'Santiago Molina',
     description: 'Evaluate Lumen with a production-shaped account surface that includes forms, states, theming, and accessibility checks.',
     href: '/guides/ship-a-settings-screen',
     icon: 'settings-2',
@@ -23,6 +41,15 @@ export const publishedGuides = [
 
 export const guideDestinations = [
   ...publishedGuides,
+  {
+    author: 'Lumen UI',
+    description: 'Compose a responsive media editor with selection, inspection, adjustments and host-owned processing states.',
+    href: '/docs/studio-media-workspaces',
+    icon: 'image',
+    publishedAt: '2026-10-06',
+    readingTime: 'Interactive recipe',
+    title: 'Build a Studio media workspace'
+  },
   {
     author: 'Lumen UI',
     description: 'Choose the right form integration for Astro Actions, React Hook Form, or standards-based custom elements.',

@@ -7,6 +7,25 @@ import Testing
     #expect(LumenTheme.dark.scheme == .dark)
 }
 
+@MainActor @Test func studioPresetsPreserveStatusRolesAndUseSharedAppearance() {
+    for scheme in [LumenColorScheme.light, .dark] {
+        let theme = LumenTheme(preset: .studio, scheme: scheme)
+        let defaults = scheme == .dark ? LumenColors.dark : LumenColors.light
+        #expect(theme.colors.brandSolid == theme.colors.ink)
+        #expect(theme.colors.danger == defaults.danger)
+        #expect(theme.appearance.radiusScale == 0.6)
+        #expect(theme.appearance.elevationScale == 0)
+        #expect(theme.scheme == scheme)
+    }
+    let custom = LumenTheme(preset: .studio, scheme: .light,
+                            appearance: LumenAppearance(radiusScale: 2, borderWidth: 0))
+    #expect(custom.appearance.radiusScale == 2)
+    #expect(custom.appearance.borderWidth == 0)
+    #expect(LumenTheme(preset: .glass, scheme: .light).appearance.material == .glass)
+    _ = LumenSurface(material: .glass) { LumenText("Preview") }
+    _ = LumenCard(material: .glass) { LumenText("Controls") }
+}
+
 @Test func productPalettesAndAppearanceOwnershipRemainApplicationControlled() {
     let defaults = LumenColors.light
     let productPalette = defaults.overriding(
@@ -266,7 +285,11 @@ import Testing
 @Test func sharedIconCatalogHasStableUniqueNames() {
     let icons = LumenIconName.allCases
 
-    #expect(icons.count == 2_433)
+    #expect(icons.count == 2_437)
+    #expect(icons.contains(.bangladeshiTaka))
+    #expect(icons.contains(.layoutGridCircles))
+    #expect(icons.contains(.letters))
+    #expect(icons.contains(.printer3d))
     #expect(icons.contains(.album))
     #expect(icons.contains(.trash2))
     #expect(Set(icons.map(\.rawValue)).count == icons.count)

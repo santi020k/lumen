@@ -4,12 +4,15 @@ import type { HTMLAttributes } from 'astro/types'
 import {
   getLumenPhoneCountries,
   getLumenPhoneCountry,
+  type LumenControlVisualSize,
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber,
   resolveLumenAstroProps,
   resolveLumenPhoneNumber
 } from '@santi020k/lumen-core'
+
+import CountryFlag from './CountryFlag.astro'
 
 interface CountryOption {
   disabled?: boolean
@@ -23,7 +26,7 @@ interface NormalizedCountryOption extends CountryOption {
   regionCode?: string
 }
 
-interface Props extends Omit<HTMLAttributes<'div'>, 'size'> {
+interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   countries?: Country[]
@@ -31,17 +34,30 @@ interface Props extends Omit<HTMLAttributes<'div'>, 'size'> {
   countryLabel?: string
   countryName?: string
   countryValue?: string
+  disabled?: boolean
+  readOnly?: boolean
+  required?: boolean
+  errorMessage?: string
+  showValidationError?: boolean
+  inputProps?: Omit<HTMLAttributes<'input'>, 'value' | 'name' | 'type'>
   invalidNumberMessage?: string
   locale?: LumenPhoneCountryOptions['locale']
   name?: string
   placeholder?: string
-  size?: 'default' | 'lg' | 'sm'
+  visualSize?: LumenControlVisualSize
   value?: string
 }
 
 const {
   class: classProp = '',
   className = '',
+  id,
+  disabled = false,
+  readOnly = false,
+  required = false,
+  errorMessage,
+  showValidationError = true,
+  inputProps = {},
   countries = [],
   countryOptions,
   countryLabel = 'Country code',
@@ -51,18 +67,20 @@ const {
   locale,
   name = 'phone',
   placeholder = 'Phone number',
-  size = 'default',
+  visualSize = 'default',
   value,
   ...rest
 } = Astro.props
 
+const isDisabled = disabled || Boolean(inputProps.disabled)
+const isReadOnly = readOnly || Boolean(inputProps.readonly)
 const phoneOptions = locale === undefined ? {} : { locale }
 const metadataCountries = countryOptions ?? getLumenPhoneCountries(phoneOptions)
 const usesMetadata = countries.length === 0
 
 const normalizedCountries: NormalizedCountryOption[] = usesMetadata ?
   metadataCountries.map(country => ({
-  label: country.pickerLabel,
+  label: `${country.displayName} (${country.callingCode})`,
   regionCode: country.regionCode,
   value: country.regionCode
   })) :
@@ -95,6 +113,9 @@ const normalizePhoneValue = (detectedValue: LumenPhoneNumber | null): LumenPhone
 const phoneValue = normalizePhoneValue(detectedPhoneValue)
 const selectedCountryValue = usesMetadata ? phoneValue?.country.regionCode ?? selectedCountry?.regionCode : countryValue
 const renderedValue = usesMetadata ? phoneValue?.nationalNumber ?? value : value
+const inputId = id ?? inputProps.id ?? `phone-${crypto.randomUUID()}`
+const errorId = `phone-error-${crypto.randomUUID()}`
+const effectiveError = errorMessage || (showValidationError && phoneValue && phoneValue.nationalNumber.length > 0 && !phoneValue.isValid ? invalidNumberMessage : '')
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-phone-input',
@@ -104,21 +125,39 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 
 <div
   class:list={classList}
+  data-disabled={isDisabled || undefined}
+  data-readonly={isReadOnly || undefined}
+  data-size={visualSize}
+  data-slot="phone-input"
+  data-error-message={errorMessage}
+  data-error-id={errorId}
+  data-show-validation-error={String(showValidationError)}
+  data-invalid={effectiveError ? 'true' : undefined}
   data-e164={phoneValue?.e164}
   data-invalid-number-message={invalidNumberMessage}
   data-ui-phone-input={usesMetadata ? '' : undefined}
   data-valid={phoneValue ? String(phoneValue.isValid) : undefined}
   {...passthrough}
 >
+  <span class="ui-phone-input__picker" data-slot="phone-country">
+    {usesMetadata && (
+<span aria-hidden="true" class="ui-phone-input__selection">
+      <CountryFlag decorative regionCode={phoneValue?.country.regionCode ?? selectedCountry?.regionCode ?? countryValue} />
+      <span data-ui-phone-code>{phoneValue?.country.callingCode ?? selectedCountry?.callingCode}</span>
+      <span class="ui-phone-input__chevron" />
+    </span>
+)}
   <select
     aria-label={countryLabel}
     class:list={[
       'ui-select',
       'ui-phone-input__country',
-      size === 'sm' && 'ui-select--sm',
-      size === 'lg' && 'ui-select--lg'
+      visualSize === 'sm' && 'ui-select--sm',
+      visualSize === 'lg' && 'ui-select--lg'
     ]}
+    disabled={isDisabled || isReadOnly || normalizedCountries.length === 0}
     name={countryName}
+    form={inputProps.form}
   >
     {normalizedCountries.map(country => (
       <option
@@ -130,13 +169,22 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
       </option>
     ))}
   </select>
+  </span>
   <input
-    autocomplete="tel"
+    {...inputProps}
+    id={inputId}
+    autocomplete={inputProps.autocomplete ?? 'tel-national'}
+    disabled={disabled || inputProps.disabled}
+    readonly={readOnly || inputProps.readonly}
+    required={required || inputProps.required}
+    aria-invalid={effectiveError ? 'true' : inputProps['aria-invalid']}
+    aria-errormessage={effectiveError ? errorId : inputProps['aria-errormessage']}
+    aria-describedby={[inputProps['aria-describedby'], effectiveError ? errorId : undefined].filter(Boolean).join(' ') || undefined}
     class:list={[
       'ui-input',
       'ui-phone-input__number',
-      size === 'sm' && 'ui-input--sm',
-      size === 'lg' && 'ui-input--lg'
+      visualSize === 'sm' && 'ui-input--sm',
+      visualSize === 'lg' && 'ui-input--lg'
     ]}
     inputmode="tel"
     name={name}
@@ -144,4 +192,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     type="tel"
     value={renderedValue}
   />
+  {isReadOnly && !isDisabled && <input name={countryName} form={inputProps.form} type="hidden" value={selectedCountryValue} />}
 </div>
+
+<span class="ui-phone-input__error" id={errorId} role="alert" hidden={!effectiveError}>{effectiveError}</span>

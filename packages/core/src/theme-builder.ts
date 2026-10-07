@@ -1,10 +1,10 @@
-/* eslint-disable complexity */
 import { exportThemeDesignTokens, exportThemeFigmaVariables } from './figma.js'
 import {
   createThemeFromHue,
+  createThemePreset,
   exportThemeCss,
-  type LumenThemeTokens
-} from './theme.js'
+  type LumenThemePreset,
+  type LumenThemeTokens } from './theme.js'
 
 export type LumenThemeBuilderExportFormat = 'css' | 'figma' | 'tokens'
 
@@ -13,6 +13,10 @@ export type LumenThemeBuilderMode = 'generated' | 'manual'
 export type LumenThemeBuilderScheme = 'dark' | 'light'
 
 export interface LumenThemeBuilderOptions {
+  radiusScale?: number | string | null
+  spacingScale?: number | string | null
+  borderWidth?: number | string | null
+  preset?: string | null
   accentHue?: number | string | null
   hue?: number | string | null
   mode?: string | null
@@ -21,13 +25,44 @@ export interface LumenThemeBuilderOptions {
   secondaryColor?: string | null
 }
 
+const appearanceNumber = (value: number | string | null | undefined, fallback: number): number => {
+  if (value === undefined || value === null || value === '') return fallback
+
+  const number = Number(value)
+
+  return Number.isFinite(number) && number >= 0 ? number : fallback
+}
+
+const scaleAppearanceDimensions = (
+  tokens: LumenThemeTokens, names: readonly string[], requested: number | string | null | undefined
+): void => {
+  const scale = appearanceNumber(requested, 1)
+  const dimensions = names.map(name => ({ name, value: Number.parseFloat(tokens[name] ?? '0') }))
+  const safeScale = dimensions.every(({ value }) => Number.isFinite(value * scale)) ? scale : 1
+
+  for (const { name, value } of dimensions) {
+    tokens[name] = `${value * safeScale}rem`
+  }
+}
+
+const customizeAppearance = (tokens: LumenThemeTokens, options: LumenThemeBuilderOptions): void => {
+  scaleAppearanceDimensions(tokens, ['ui-radius-sm', 'ui-radius', 'ui-radius-lg'], options.radiusScale)
+
+  scaleAppearanceDimensions(tokens, ['zero', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].map(name => `ui-space-${name}`), options.spacingScale)
+
+  tokens['ui-border-width'] = `${appearanceNumber(options.borderWidth, 1)}px`
+}
+
 export interface LumenThemeBuilderResult {
+  preset?: LumenThemePreset
   accentHue: number
   hue: number
   mode: LumenThemeBuilderMode
   scheme: LumenThemeBuilderScheme
   tokens: LumenThemeTokens
 }
+
+export const coerceThemePreset = (value?: string | null): LumenThemePreset => value === 'studio' || value === 'glass' ? value : 'default'
 
 export const coerceThemeBuilderExportFormat = (
   value?: string | null
@@ -109,6 +144,24 @@ export const themeBuilderHexToHsl = (
   }
 }
 
+const getManualColors = (options: LumenThemeBuilderOptions) => ({
+  primary: options.primaryColor ? themeBuilderHexToHsl(options.primaryColor) : null,
+  secondary: options.secondaryColor ? themeBuilderHexToHsl(options.secondaryColor) : null
+})
+
+const applyManualColors = (
+  tokens: LumenThemeTokens,
+  { primary, secondary }: ReturnType<typeof getManualColors>
+): void => {
+  if (primary) {
+    tokens.brand = primary.value
+
+    tokens['brand-solid'] = primary.value
+  }
+
+  if (secondary) tokens.accent = secondary.value
+}
+
 export const createThemeBuilderTokens = (
   options: LumenThemeBuilderOptions = {}
 ): LumenThemeBuilderResult => {
@@ -120,38 +173,23 @@ export const createThemeBuilderTokens = (
 
   const mode = coerceThemeBuilderMode(options.mode)
   const scheme = coerceThemeBuilderScheme(options.scheme)
+  const colors = getManualColors(mode === 'manual' ? options : {})
+  const baseHue = colors.primary?.hue ?? hue
+  const baseAccentHue = colors.secondary?.hue ?? accentHue
 
-  const primary = options.primaryColor ?
-    themeBuilderHexToHsl(options.primaryColor) :
-    null
+  const tokens = options.preset ?
+    createThemePreset(coerceThemePreset(options.preset), { scheme }) :
+    createThemeFromHue(baseHue, {
+      accentHue: baseAccentHue,
+      scheme
+    })
 
-  const secondary = options.secondaryColor ?
-    themeBuilderHexToHsl(options.secondaryColor) :
-    null
+  applyManualColors(tokens, colors)
 
-  const baseHue = mode === 'manual' ? (primary?.hue ?? hue) : hue
-
-  const baseAccentHue =
-    mode === 'manual' ? (secondary?.hue ?? accentHue) : accentHue
-
-  const tokens = createThemeFromHue(baseHue, {
-    accentHue: baseAccentHue,
-    scheme
-  })
-
-  if (mode === 'manual') {
-    if (primary) {
-      tokens.brand = primary.value
-
-      tokens['brand-solid'] = primary.value
-    }
-
-    if (secondary) {
-      tokens.accent = secondary.value
-    }
-  }
+  customizeAppearance(tokens, options)
 
   return {
+    ...(options.preset ? { preset: coerceThemePreset(options.preset) } : {}),
     accentHue: baseAccentHue,
     hue: baseHue,
     mode,
