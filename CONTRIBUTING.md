@@ -254,6 +254,14 @@ Changesets reach `main`. Integrate that generated preparation into the selected 
 its automatic branch does not replace the reviewed release pull request. Never publish a subsequent
 release directly from a developer machine.
 
+Initial coordinated npm releases at 2.0.0, 3.0.0, and 4.0.0 verify the complete release-manifest
+family from the registry before creating the repository release. Every publication attempt includes
+this audit, including recovery after partial publication and retries with no newly published packages.
+The audit installs every expected version and verifies its signed provenance against the merged
+commit, or the immutable existing version tag during recovery. Missing packages, mismatched versions,
+and incorrect source provenance stop release creation. Version-preparation pull requests are not
+publication attempts; ordinary releases continue auditing their newly published packages.
+
 Feature pull requests run affected package checks plus the platform and integration gates selected
 from their changed paths. The automated release pull request resolves the exact Changesets package
 set and runs only its builds and publish dry-runs because its generated changes are limited to

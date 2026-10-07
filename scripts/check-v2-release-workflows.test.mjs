@@ -536,10 +536,36 @@ test("initial npm publication verifies the complete family before tagging", () =
     'cd "$release_audit_directory"',
     "npm init --yes",
     "npm install \\",
+    '--lockfile "$release_audit_directory/package-lock.json"',
     "pnpm run check:npm-release-provenance",
-    '--revision "$GITHUB_SHA"',
+    '--revision "$audit_revision"',
     "name: Create repository version tag and GitHub Release",
   ]);
+
+  const auditStep = npmWorkflow.slice(
+    npmWorkflow.indexOf("      - name: Verify published npm package family"),
+    npmWorkflow.indexOf("      - name: Create repository version tag and GitHub Release"),
+  );
+
+  assert.ok(!auditStep.includes("if: steps.changesets.outputs.published"),
+    "coordinated registry audits must run even when Changesets publishes no new packages");
+
+  assert.ok(auditStep.includes("--audit-packages"));
+
+  assert.ok(auditStep.includes("if: steps.changesets.outputs['has-changesets'] == 'false'"),
+    "version-PR preparation must not be treated as a publication attempt");
+
+  assertOrderedCommands(auditStep, "immutable publication source", [
+    'audit_revision="$GITHUB_SHA"',
+    'git ls-remote --exit-code --tags origin "refs/tags/v${audit_version}"',
+    'git fetch origin "refs/tags/v${audit_version}:refs/tags/v${audit_version}"',
+    'audit_revision="$(git rev-list -n 1 "v${audit_version}")"',
+    'pnpm run check:npm-release-provenance',
+    '--revision "$audit_revision"',
+  ]);
+
+  assert.equal(auditStep.includes('<<<"$PUBLISHED_PACKAGES"'), false,
+    "recovery must audit cumulative registry packages rather than this attempt's output");
 
   assertOrderedCommands(npmWorkflow, "existing repository release", [
     'git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_TAG}"',

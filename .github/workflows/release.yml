@@ -112,17 +112,29 @@ jobs:
           NPM_CONFIG_PROVENANCE: "true"
 
       - name: Verify published npm package family
-        if: steps.changesets.outputs.published == 'true'
+        if: steps.changesets.outputs['has-changesets'] == 'false'
         env:
           PUBLISHED_PACKAGES: ${{ steps.changesets.outputs['published-packages'] }}
         run: |
-          node scripts/check-published-package-family.mjs
+          # Initial coordinated releases audit the full registry family on every
+          # attempt, including partial-publication recovery and no-op retries.
+          audit_packages="$(node scripts/check-published-package-family.mjs --audit-packages)"
+          if [[ "$audit_packages" == "[]" ]]; then
+            exit 0
+          fi
+
+          audit_revision="$GITHUB_SHA"
+          audit_version="$(node -p "require('./packages/lumen/package.json').version")"
+          if git ls-remote --exit-code --tags origin "refs/tags/v${audit_version}" >/dev/null 2>&1; then
+            git fetch origin "refs/tags/v${audit_version}:refs/tags/v${audit_version}"
+            audit_revision="$(git rev-list -n 1 "v${audit_version}")"
+          fi
 
           release_audit_directory="$(mktemp -d)"
           trap 'rm -rf "$release_audit_directory"' EXIT
 
           mapfile -t published_package_specs < <(
-            jq -r '.[] | "\(.name)@\(.version)"' <<<"$PUBLISHED_PACKAGES"
+            jq -r '.[] | "\(.name)@\(.version)"' <<<"$audit_packages"
           )
 
           (
@@ -136,16 +148,19 @@ jobs:
               -- "${published_package_specs[@]}"
           )
 
-          jq -r '.[] | [.name, .version] | @tsv' <<<"$PUBLISHED_PACKAGES" |
+          node scripts/check-published-package-family.mjs \
+            --lockfile "$release_audit_directory/package-lock.json"
+
+          jq -r '.[] | [.name, .version] | @tsv' <<<"$audit_packages" |
             while IFS=$'\t' read -r package_name package_version; do
               pnpm run check:npm-release-provenance -- \
                 --package "$package_name" \
                 --version "$package_version" \
-                --revision "$GITHUB_SHA" \
+                --revision "$audit_revision" \
                 --lockfile "$release_audit_directory/package-lock.json"
             done
 
-          jq -r '.[] | [.name, .version] | @tsv' <<<"$PUBLISHED_PACKAGES" |
+          jq -r '.[] | [.name, .version] | @tsv' <<<"$audit_packages" |
             while IFS=$'\t' read -r package_name package_version; do
               registry_version="$(npm view "$package_name@$package_version" version)"
               if [[ "$registry_version" != "$package_version" ]]; then
