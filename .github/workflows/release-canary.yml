@@ -285,6 +285,8 @@ jobs:
           "$android_sdk_root/cmdline-tools/latest/bin/sdkmanager" \
             "platforms;android-37.0" \
             "build-tools;36.0.0"
+      - name: Install the locked React Native NDK with bounded download retries
+        run: bash .github/scripts/install-react-native-ndk.sh
       - name: Build a native Android consumer from the packed React Native package
         run: pnpm run check:react-native-native-package:android
 

@@ -119,7 +119,7 @@ dependencies {
     implementation("androidx.compose.material3.adaptive:adaptive-layout:1.3.0")
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.compose.ui:ui")
-    implementation("com.googlecode.libphonenumber:libphonenumber:9.0.40")
+    implementation("com.googlecode.libphonenumber:libphonenumber:9.0.41")
     implementation("com.google.zxing:core:3.5.4")
     androidTestImplementation(composeBom)
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")

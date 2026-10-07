@@ -198,3 +198,12 @@ Final integrated verification and release blockers are recorded in [the v4 readi
 - https://dl.google.com/dl/android/maven2/ and https://repo.maven.apache.org/maven2/ — native artifact metadata.
 - https://services.gradle.org/versions/current — current Gradle verification.
 - https://github.com/advisories/GHSA-q2hr-2g5m-vwhr and https://github.com/advisories/GHSA-px8p-9vwx-vf98 — available development patches.
+
+## Post-publication delivery recovery
+
+On October 7, libphonenumber 9.0.41 was published while Apple delivery recovery was being
+qualified. Compose source now uses this compatible metadata patch so zero-warning Android lint
+continues to pass. Its upstream notes update numbering metadata for CN, IR, NG and US; there
+are no Java API changes. Published Compose 4.0.0 artifacts retain their original 9.0.40 dependency
+and source revision. This source dependency update is pending the next Compose patch publication;
+it does not replace the existing Maven artifact or the Android build already under store review.
