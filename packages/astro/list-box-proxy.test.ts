@@ -238,3 +238,61 @@ test('a changed Astro select id follows the labels that target the new id', asyn
   await settle()
   expect(list.hasAttribute('aria-labelledby')).toBe(false)
 })
+
+test('list box resets only with its current form after reassignment', async () => {
+  const { root, select, list, resync } = fixture()
+  const former = select.form
+  const current = document.createElement('form')
+
+  if (!former) throw new Error('Missing original form')
+
+  current.id = 'next-form'
+  document.body.append(current)
+  select.setAttribute('form', current.id)
+  select.selectedIndex = -1
+  await new Promise(resolve => setTimeout(resolve, 0))
+  select.reportValidity()
+  expect(list.getAttribute('aria-invalid')).toBe('true')
+  former.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.getAttribute('aria-invalid')).toBe('true')
+  current.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+
+  select.removeAttribute('form')
+  current.append(root)
+  await new Promise(resolve => setTimeout(resolve, 0))
+  select.selectedIndex = -1
+  select.reportValidity()
+  current.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+  resync()
+})
+
+test('list box follows a late external form and its replacement', async () => {
+  const { select, list } = fixture()
+  select.setAttribute('form', 'late-form')
+  await new Promise(resolve => setTimeout(resolve, 0))
+  const form = document.createElement('form')
+
+  form.id = 'late-form'
+  document.body.append(form)
+  await new Promise(resolve => setTimeout(resolve, 0))
+  select.selectedIndex = -1
+  select.reportValidity()
+  form.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+  const replacement = document.createElement('form')
+
+  replacement.id = form.id
+  form.replaceWith(replacement)
+  await new Promise(resolve => setTimeout(resolve, 0))
+  select.selectedIndex = -1
+  select.reportValidity()
+  replacement.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+})

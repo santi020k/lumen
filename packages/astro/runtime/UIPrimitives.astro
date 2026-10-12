@@ -797,8 +797,6 @@ const initListBoxes = (scope: ParentNode): void => {
 
     list.hidden = false
 
-    listBoxResyncs.set(root, bindListBoxProxy(root, select, list, () => nextRuntimeId('ui-list-box-label', root.ownerDocument)))
-
     const optionIdPrefix = select.id || nextRuntimeId('ui-list-box', root.ownerDocument)
 
     let activeIndex = Math.max(
@@ -941,19 +939,17 @@ const initListBoxes = (scope: ParentNode): void => {
       })
     })
 
+    listBoxResyncs.set(root, bindListBoxProxy(root, select, list, () => nextRuntimeId('ui-list-box-label', root.ownerDocument), () => {
+      if (!options.length) return
+
+      syncSelected()
+
+      activeIndex = Math.max(0, options.findIndex(option => option.getAttribute('aria-selected') === 'true'))
+
+      syncActive()
+    }))
+
     select.addEventListener('change', syncSelected)
-
-    select.form?.addEventListener('reset', () => {
-      window.setTimeout(() => {
-        syncSelected()
-
-        activeIndex = Math.max(
-          0, options.findIndex(option => option.getAttribute('aria-selected') === 'true')
-        )
-
-        syncActive()
-      })
-    })
 
     syncSelected()
 

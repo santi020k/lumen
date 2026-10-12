@@ -157,3 +157,95 @@ test('Elements generated invalid state clears when required is removed or the se
   await settle()
   expect(list.hasAttribute('aria-invalid')).toBe(false)
 })
+
+test('list box resets only with its current form after reassignment', async () => {
+  document.body.innerHTML = enhancedMarkup()
+  enhanceLumenListBoxes(document)
+  const root = element('[data-ui-list-box]', HTMLElement)
+  const select = element('select', HTMLSelectElement)
+  const list = element('[data-ui-list-box-list]', HTMLElement)
+  const resync = () => {
+    enhanceLumenListBoxes(document)
+  }
+  const former = select.form
+  const current = document.createElement('form')
+
+  if (!former) throw new Error('Missing original form')
+
+  current.id = 'next-form'
+  document.body.append(current)
+  select.setAttribute('form', current.id)
+  select.selectedIndex = -1
+  await new Promise(resolve => setTimeout(resolve, 0))
+  select.reportValidity()
+  expect(list.getAttribute('aria-invalid')).toBe('true')
+  former.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.getAttribute('aria-invalid')).toBe('true')
+  current.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+
+  select.removeAttribute('form')
+  current.append(root)
+  await new Promise(resolve => setTimeout(resolve, 0))
+  select.selectedIndex = -1
+  select.reportValidity()
+  current.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+  resync()
+})
+
+test('Elements labels follow insertion, replacement, for/id changes and select id changes', async () => {
+  document.body.innerHTML = enhancedMarkup()
+  enhanceLumenListBoxes(document)
+  const select = element('select', HTMLSelectElement)
+  const list = element('[data-ui-list-box-list]', HTMLElement)
+  const label = element('label', HTMLLabelElement)
+
+  label.remove()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-labelledby')).toBe(false)
+  document.body.append(label)
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.getAttribute('aria-labelledby')).toBe(label.id)
+  label.id = 'replacement-label'
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.getAttribute('aria-labelledby')).toBe('replacement-label')
+  select.id = 'changed-select'
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-labelledby')).toBe(false)
+  label.htmlFor = select.id
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.getAttribute('aria-labelledby')).toBe('replacement-label')
+})
+
+test('list box follows a late external form and its replacement', async () => {
+  document.body.innerHTML = enhancedMarkup()
+  enhanceLumenListBoxes(document)
+  const select = element('select', HTMLSelectElement)
+  const list = element('[data-ui-list-box-list]', HTMLElement)
+  select.setAttribute('form', 'late-form')
+  await new Promise(resolve => setTimeout(resolve, 0))
+  const form = document.createElement('form')
+
+  form.id = 'late-form'
+  document.body.append(form)
+  await new Promise(resolve => setTimeout(resolve, 0))
+  select.selectedIndex = -1
+  select.reportValidity()
+  form.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+  const replacement = document.createElement('form')
+
+  replacement.id = form.id
+  form.replaceWith(replacement)
+  await new Promise(resolve => setTimeout(resolve, 0))
+  select.selectedIndex = -1
+  select.reportValidity()
+  replacement.reset()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+})

@@ -1,6 +1,6 @@
 const forwardedAttributes = ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage'] as const
 // A new select id changes which labels name it.
-const observedAttributes = [...forwardedAttributes, 'aria-invalid', 'disabled', 'id', 'required']
+const observedAttributes = [...forwardedAttributes, 'aria-invalid', 'disabled', 'form', 'id', 'required']
 
 // The first invalid control owns focus so several invalid fields do not race for it.
 const isFirstInvalidControl = (select: HTMLSelectElement): boolean => {
@@ -44,20 +44,23 @@ const syncListBoxName = (
   if (labelIds.length) list.setAttribute('aria-labelledby', labelIds.join(' '))
 }
 
-const mayHoldListBoxLabel = (node: Node, root: HTMLElement, ElementType: typeof Element): boolean => (
-  node instanceof ElementType &&
-  (node.nodeName === 'LABEL' || node.contains(root) || node.querySelector('label') !== null)
-)
+const mayHoldListBoxLabel = (node: Node, root: HTMLElement): boolean => {
+  // Adoption preserves a node's original realm, so instanceof the destination Element is insufficient.
+  if (node.nodeType !== 1) return false
+
+  const element = node as Element
+
+  return ['LABEL', 'FORM'].includes(element.nodeName) || element.contains(root) || element.querySelector('label, form') !== null
+}
 
 // Only label insertions, removals, `for` or `id` changes, or moving the list itself can change its labels.
 const affectsListBoxLabels = (
   records: readonly MutationRecord[],
-  root: HTMLElement,
-  ElementType: typeof Element
+  root: HTMLElement
 ): boolean => (
   records.some(record => record.type === 'attributes' ?
-    record.target.nodeName === 'LABEL' :
-    [...record.addedNodes, ...record.removedNodes].some(node => mayHoldListBoxLabel(node, root, ElementType)))
+    ['LABEL', 'FORM', 'SELECT'].includes(record.target.nodeName) :
+    [...record.addedNodes, ...record.removedNodes].some(node => mayHoldListBoxLabel(node, root)))
 )
 
 /**
@@ -72,13 +75,15 @@ export const bindListBoxProxy = (
   root: HTMLElement,
   select: HTMLSelectElement,
   list: HTMLElement,
-  createLabelId: () => string
+  createLabelId: () => string,
+  onResetAccepted?: () => void
 ): (() => void) => {
   // Attributes authored on the list itself stay under the author's control.
   const listOwned = new Set<string>(forwardedAttributes.filter(name => list.hasAttribute(name)))
   let generatedInvalid = false
+  let resetForm: HTMLFormElement | null = null
 
-  const sync = (): void => {
+  const syncState = (): void => {
     select.tabIndex = -1
 
     select.setAttribute('aria-hidden', 'true')
@@ -97,26 +102,73 @@ export const bindListBoxProxy = (
     setOptionalAttribute(list, 'aria-disabled', select.disabled ? 'true' : null)
   }
 
+  const onReset = (event: Event): void => {
+    const form = event.currentTarget
+
+    globalThis.setTimeout(() => {
+      if (event.defaultPrevented || select.form !== form) return
+
+      generatedInvalid = false
+
+      syncState()
+
+      onResetAccepted?.()
+    })
+  }
+
+  const followForm = (): void => {
+    const next = root.isConnected ? select.form : null
+
+    if (next === resetForm) return
+
+    resetForm?.removeEventListener('reset', onReset)
+
+    resetForm = next
+
+    resetForm?.addEventListener('reset', onReset)
+  }
+
+  const sync = (): void => {
+    followForm()
+
+    syncState()
+  }
+
   let labelObserver: MutationObserver | undefined
+  let observedDocument: Document | undefined
 
   // The document observer stops once the root leaves, so a removed list box is not kept alive by it.
   const followLabels = (): void => {
+    if (observedDocument !== root.ownerDocument) {
+      labelObserver?.disconnect()
+
+      labelObserver = undefined
+    }
+
     const view = root.ownerDocument.defaultView
 
     if (labelObserver || !view || !root.isConnected) return
 
+    observedDocument = root.ownerDocument
+
     labelObserver = new view.MutationObserver(records => {
-      if (!root.isConnected) {
+      if (observedDocument !== root.ownerDocument) {
+        followLabels()
+
+        sync()
+      } else if (!root.isConnected) {
+        followForm()
+
         labelObserver?.disconnect()
 
         labelObserver = undefined
-      } else if (affectsListBoxLabels(records, root, view.Element)) {
+      } else if (affectsListBoxLabels(records, root)) {
         sync()
       }
     })
 
     labelObserver.observe(root.ownerDocument, {
-      attributeFilter: ['for', 'id'], attributes: true, childList: true, subtree: true
+      attributeFilter: ['for', 'form', 'id'], attributes: true, childList: true, subtree: true
     })
   }
 
@@ -147,17 +199,6 @@ export const bindListBoxProxy = (
     generatedInvalid = false
 
     sync()
-  })
-
-  select.form?.addEventListener('reset', event => {
-    // Reset listeners may cancel the reset; only an accepted reset clears generated invalid state.
-    globalThis.setTimeout(() => {
-      if (event.defaultPrevented) return
-
-      generatedInvalid = false
-
-      sync()
-    })
   })
 
   return () => {

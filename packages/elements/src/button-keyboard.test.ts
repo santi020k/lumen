@@ -154,3 +154,52 @@ test('loading reflects aria-busy like the Astro and React buttons and restores a
   button.removeAttribute('loading')
   expect(button.getAttribute('aria-busy')).toBe('false')
 })
+
+for (const method of ['clone', 'HTML'] as const) {
+  test(`loading button ${method} copies release generated busy and disabled state`, () => {
+    const { button } = fixture()
+
+    button.setAttribute('loading', '')
+    const host = document.createElement('div')
+
+    if (method === 'clone') host.append(button.cloneNode(true))
+    else host.innerHTML = button.outerHTML
+
+    document.body.append(host)
+    const copied = host.firstElementChild
+
+    if (!(copied instanceof HTMLElement)) throw new Error('Missing copy')
+
+    expect(copied.getAttribute('aria-busy')).toBe('true')
+    copied.removeAttribute('loading')
+    expect(copied.hasAttribute('aria-busy')).toBe(false)
+    expect(copied.hasAttribute('aria-disabled')).toBe(false)
+    const click = vi.fn()
+
+    copied.addEventListener('click', click)
+    copied.click()
+    expect(click).toHaveBeenCalledOnce()
+  })
+}
+
+test.each(['true', 'false', ''])('loading button copies restore consumer busy value %s', original => {
+  const { button } = fixture()
+  button.setAttribute('aria-busy', original)
+  button.setAttribute('loading', '')
+  const copied = button.cloneNode(true)
+  if (!(copied instanceof HTMLElement)) throw new Error('Missing copy')
+  document.body.append(copied)
+  copied.removeAttribute('loading')
+  expect(copied.getAttribute('aria-busy')).toBe(original)
+})
+
+test('detached loading button copies preserve new consumer busy overrides', () => {
+  const { button } = fixture()
+  button.setAttribute('loading', '')
+  const copied = button.cloneNode(true)
+  if (!(copied instanceof HTMLElement)) throw new Error('Missing copy')
+  copied.setAttribute('aria-busy', 'false')
+  copied.removeAttribute('loading')
+  document.body.append(copied)
+  expect(copied.getAttribute('aria-busy')).toBe('false')
+})

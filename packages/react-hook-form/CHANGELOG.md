@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Managed controls detach retained focus and validity proxies when a controller unmounts or changes its field name.
+
 - [#103](https://github.com/santi020k/lumen/pull/103) [`4140c1b`](https://github.com/santi020k/lumen/commit/4140c1b16cb581af41cd19cbab862f1d624c27da) Thanks [@santi020k](https://github.com/santi020k)! - React `ListBox` lists are now named by labels that target or wrap the hidden select, after an explicit
   `aria-labelledby`, `aria-label`, or `label`. Astro and Elements list boxes clear Lumen-generated invalid state
   when the select is valid again, disabled, or no longer required, while consumer `aria-invalid` stays. Leaving a

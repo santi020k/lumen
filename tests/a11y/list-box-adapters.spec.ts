@@ -167,3 +167,56 @@ test('a reinserted bound Astro ListBox resynchronizes external labels after Lume
   await group.getByText('First unnamed list', { exact: true }).click()
   await expect(list).toBeFocused()
 })
+
+for (const adapter of ['Astro', 'Elements']) {
+  test(`${adapter} ListBox follows external labels after synchronous document adoption`, async ({ page }) => {
+    await page.goto('/internal/list-box-adapters')
+    await expect(page.locator(`#${adapter.toLowerCase()}-list-form [data-ui-list-box-list]`)).toBeVisible()
+    await page.evaluate(adapter => {
+      const root = document.querySelector<HTMLElement>(adapter === 'Astro' ? '#unnamed-lists [data-ui-list-box]' : 'lumen-list-box')
+      const select = root?.querySelector('select')
+      if (!root || !select) throw new Error('Missing enhanced list')
+      const iframe = document.createElement('iframe')
+      iframe.id = 'adopted-list'
+      document.body.append(iframe)
+      const destination = iframe.contentDocument
+      if (!destination) throw new Error('Missing destination document')
+      destination.body.append(destination.adoptNode(root))
+      const label = destination.createElement('label')
+      label.id = 'adopted-label'
+      label.htmlFor = select.id
+      label.textContent = 'Adopted reviewers'
+      destination.body.append(label)
+    }, adapter)
+    const frame = page.frameLocator('#adopted-list')
+    const list = frame.locator('[data-ui-list-box-list]')
+    await expect(list).toHaveAttribute('aria-labelledby', /(^| )adopted-label( |$)/)
+    await frame.locator('#adopted-label').evaluate(label => { label.id = 'renamed-label' })
+    await expect(list).toHaveAttribute('aria-labelledby', /(^| )renamed-label( |$)/)
+    await frame.locator('#renamed-label').evaluate(label => { label.remove() })
+    await expect(list).not.toHaveAttribute('aria-labelledby', /renamed-label/)
+  })
+}
+
+
+for (const adapter of ['Astro', 'Elements']) {
+  test(`${adapter} ListBox selection resets with a late external form`, async ({ page }) => {
+    await page.goto('/internal/list-box-adapters')
+    const list = page.locator(`#${adapter.toLowerCase()}-list-form [data-ui-list-box-list]`)
+    const native = page.locator(`#${adapter.toLowerCase()}-list-form select`)
+    await expect(list).toBeVisible()
+    await native.evaluate(select => { select.setAttribute('form', 'late-reset-form') })
+    await page.evaluate(() => {
+      const form = document.createElement('form')
+      form.id = 'late-reset-form'
+      document.body.append(form)
+    })
+    await list.getByRole('option', { name: 'Amina' }).click()
+    await expect(list.getByRole('option', { name: 'Amina' })).toHaveAttribute('aria-selected', 'true')
+    await page.locator('#late-reset-form').evaluate(form => {
+      if (!(form instanceof HTMLFormElement)) throw new Error('Missing form')
+      form.reset()
+    })
+    await expect(list.getByRole('option', { name: 'Amina' })).toHaveAttribute('aria-selected', 'false')
+  })
+}

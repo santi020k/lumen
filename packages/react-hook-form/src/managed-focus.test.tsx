@@ -174,3 +174,37 @@ test('the managed DatePicker still submits its native value and survives a RHF r
   expect(native.value).toBe('')
   expect(element('[data-touched-date]', HTMLOutputElement).textContent).toBe('false')
 })
+
+test('renaming a retained controller detaches the former focus and validity proxy', async () => {
+  const Renamed = ({ name }: { name: 'role' | 'member' }) => {
+    const methods = useForm<Values>({ defaultValues: { date: '', role: '', member: '' } })
+
+    useEffect(() => {
+      form = methods
+    }, [methods])
+
+    return <LumenSelectController aria-label="Renamed" control={methods.control} name={name} options={[{ label: 'Designer', value: 'designer' }]} />
+  }
+
+  await run(() => {
+    root.render(<Renamed name="role" />)
+  })
+  await run(() => {
+    methods().setFocus('role')
+  })
+  const trigger = element('[data-ui-select-trigger]', HTMLButtonElement)
+
+  expect(document.activeElement).toBe(trigger)
+  await run(() => {
+    root.render(<Renamed name="member" />)
+  })
+  trigger.blur()
+  await run(() => {
+    methods().setFocus('role')
+  })
+  expect(document.activeElement).not.toBe(trigger)
+  await run(() => {
+    methods().setFocus('member')
+  })
+  expect(document.activeElement).toBe(trigger)
+})

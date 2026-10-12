@@ -1686,11 +1686,12 @@ const getFocusable = (root: ParentNode | null): HTMLElement[] => {
 const getOwnedTarget = (event: Event): Node | null => event.target instanceof Node ? event.target : null
 // Markup whose behavior another adapter owns, such as a React island, is never enhanced here.
 const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
-const listBoxForwardedAttributes = ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage'] as const
-const listBoxObservedAttributes = [...listBoxForwardedAttributes, 'aria-invalid', 'disabled', 'required']
+const forwardedAttributes = ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage'] as const
+// A new select id changes which labels name it.
+const observedAttributes = [...forwardedAttributes, 'aria-invalid', 'disabled', 'form', 'id', 'required']
 
 // The first invalid control owns focus so several invalid fields do not race for it.
-const isFirstInvalidListBox = (select: HTMLSelectElement): boolean => {
+const isFirstInvalidControl = (select: HTMLSelectElement): boolean => {
   const form = select.form
 
   if (!form) return true
@@ -1702,7 +1703,7 @@ const isFirstInvalidListBox = (select: HTMLSelectElement): boolean => {
   return true
 }
 
-const setOptionalListBoxAttribute = (element: HTMLElement, name: string, value: string | null): void => {
+const setOptionalAttribute = (element: HTMLElement, name: string, value: string | null): void => {
   if (value === null) element.removeAttribute(name)
   else element.setAttribute(name, value)
 }
@@ -1714,10 +1715,10 @@ const syncListBoxName = (
   listOwned: ReadonlySet<string>,
   createLabelId: () => string
 ): void => {
-  for (const name of listBoxForwardedAttributes) {
+  for (const name of forwardedAttributes) {
     if (listOwned.has(name)) continue
 
-    setOptionalListBoxAttribute(list, name, select.getAttribute(name) ?? (name === 'aria-label' ? root.getAttribute('aria-label') : null))
+    setOptionalAttribute(list, name, select.getAttribute(name) ?? (name === 'aria-label' ? root.getAttribute('aria-label') : null))
   }
 
   if (listOwned.has('aria-labelledby') || list.hasAttribute('aria-label') || list.hasAttribute('aria-labelledby')) return
@@ -1731,45 +1732,139 @@ const syncListBoxName = (
   if (labelIds.length) list.setAttribute('aria-labelledby', labelIds.join(' '))
 }
 
+const mayHoldListBoxLabel = (node: Node, root: HTMLElement): boolean => {
+  // Adoption preserves a node's original realm, so instanceof the destination Element is insufficient.
+  if (node.nodeType !== 1) return false
+
+  const element = node as Element
+
+  return ['LABEL', 'FORM'].includes(element.nodeName) || element.contains(root) || element.querySelector('label, form') !== null
+}
+
+// Only label insertions, removals, `for` or `id` changes, or moving the list itself can change its labels.
+const affectsListBoxLabels = (
+  records: readonly MutationRecord[],
+  root: HTMLElement
+): boolean => (
+  records.some(record => record.type === 'attributes' ?
+    ['LABEL', 'FORM', 'SELECT'].includes(record.target.nodeName) :
+    [...record.addedNodes, ...record.removedNodes].some(node => mayHoldListBoxLabel(node, root)))
+)
+
 /**
  * Once a list box is enhanced the visible list is its only focus stop and accessible control, while the
  * native select keeps form submission, validation, and reset. Naming, description, error, required, and
  * disabled semantics follow the select as they change, focus that reaches the select moves to the list,
  * and native invalid events mark the list invalid until a valid change or an accepted reset. Consumer
- * `aria-invalid` on the select always wins over generated state.
+ * `aria-invalid` on the select always wins over generated state. External labels are followed while the root
+ * is connected; the returned function resynchronizes a root that was removed and inserted again.
  */
 const bindListBoxProxy = (
   root: HTMLElement,
   select: HTMLSelectElement,
   list: HTMLElement,
-  createLabelId: () => string
-): void => {
+  createLabelId: () => string,
+  onResetAccepted?: () => void
+): (() => void) => {
   // Attributes authored on the list itself stay under the author's control.
-  const listOwned = new Set<string>(listBoxForwardedAttributes.filter(name => list.hasAttribute(name)))
+  const listOwned = new Set<string>(forwardedAttributes.filter(name => list.hasAttribute(name)))
   let generatedInvalid = false
+  let resetForm: HTMLFormElement | null = null
 
-  const sync = (): void => {
+  const syncState = (): void => {
     select.tabIndex = -1
 
     select.setAttribute('aria-hidden', 'true')
 
     syncListBoxName(root, select, list, listOwned, createLabelId)
 
-    setOptionalListBoxAttribute(list, 'aria-required', select.required ? 'true' : null)
+    setOptionalAttribute(list, 'aria-required', select.required ? 'true' : null)
 
     // A select that is valid again or barred from validation, such as disabled or no longer required, is not invalid.
     if (!select.willValidate || select.validity.valid) generatedInvalid = false
 
-    setOptionalListBoxAttribute(list, 'aria-invalid', select.getAttribute('aria-invalid') ?? (generatedInvalid ? 'true' : null))
+    setOptionalAttribute(list, 'aria-invalid', select.getAttribute('aria-invalid') ?? (generatedInvalid ? 'true' : null))
 
     list.tabIndex = select.disabled ? -1 : 0
 
-    setOptionalListBoxAttribute(list, 'aria-disabled', select.disabled ? 'true' : null)
+    setOptionalAttribute(list, 'aria-disabled', select.disabled ? 'true' : null)
+  }
+
+  const onReset = (event: Event): void => {
+    const form = event.currentTarget
+
+    globalThis.setTimeout(() => {
+      if (event.defaultPrevented || select.form !== form) return
+
+      generatedInvalid = false
+
+      syncState()
+
+      onResetAccepted?.()
+    })
+  }
+
+  const followForm = (): void => {
+    const next = root.isConnected ? select.form : null
+
+    if (next === resetForm) return
+
+    resetForm?.removeEventListener('reset', onReset)
+
+    resetForm = next
+
+    resetForm?.addEventListener('reset', onReset)
+  }
+
+  const sync = (): void => {
+    followForm()
+
+    syncState()
+  }
+
+  let labelObserver: MutationObserver | undefined
+  let observedDocument: Document | undefined
+
+  // The document observer stops once the root leaves, so a removed list box is not kept alive by it.
+  const followLabels = (): void => {
+    if (observedDocument !== root.ownerDocument) {
+      labelObserver?.disconnect()
+
+      labelObserver = undefined
+    }
+
+    const view = root.ownerDocument.defaultView
+
+    if (labelObserver || !view || !root.isConnected) return
+
+    observedDocument = root.ownerDocument
+
+    labelObserver = new view.MutationObserver(records => {
+      if (observedDocument !== root.ownerDocument) {
+        followLabels()
+
+        sync()
+      } else if (!root.isConnected) {
+        followForm()
+
+        labelObserver?.disconnect()
+
+        labelObserver = undefined
+      } else if (affectsListBoxLabels(records, root)) {
+        sync()
+      }
+    })
+
+    labelObserver.observe(root.ownerDocument, {
+      attributeFilter: ['for', 'form', 'id'], attributes: true, childList: true, subtree: true
+    })
   }
 
   sync()
 
-  new MutationObserver(sync).observe(select, { attributeFilter: listBoxObservedAttributes, attributes: true })
+  followLabels()
+
+  new MutationObserver(sync).observe(select, { attributeFilter: observedAttributes, attributes: true })
 
   select.addEventListener('focus', () => {
     // Only real select focus, such as a label click, moves to the list; focus moved elsewhere stays put.
@@ -1783,7 +1878,7 @@ const bindListBoxProxy = (
 
     sync()
 
-    if (isFirstInvalidListBox(select) && !select.disabled) list.focus()
+    if (isFirstInvalidControl(select) && !select.disabled) list.focus()
   })
 
   select.addEventListener('change', () => {
@@ -1794,16 +1889,11 @@ const bindListBoxProxy = (
     sync()
   })
 
-  select.form?.addEventListener('reset', event => {
-    // Reset listeners may cancel the reset; only an accepted reset clears generated invalid state.
-    globalThis.setTimeout(() => {
-      if (event.defaultPrevented) return
+  return () => {
+    followLabels()
 
-      generatedInvalid = false
-
-      sync()
-    })
-  })
+    sync()
+  }
 }
 
 const getScopedElements = <ScopedElement extends Element>(
@@ -2233,10 +2323,14 @@ const getListBoxGroup = (
   return group
 }
 
+const listBoxResyncs = new WeakMap<HTMLElement, () => void>()
+
 export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
   for (const root of getScopedElements<HTMLElement>(
     scope, 'lumen-list-box, [data-ui-list-box]'
   )) {
+    if (root.dataset.uiListBoxBound === 'true') listBoxResyncs.get(root)?.()
+
     if (root.dataset.uiListBoxBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     let select = root.querySelector<HTMLSelectElement>(
@@ -2335,12 +2429,12 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
     if (loading) list.setAttribute('aria-busy', 'true')
     else list.removeAttribute('aria-busy')
 
-    bindListBoxProxy(root, select, list, () => createId('ui-list-box-label'))
-
     // Unnamed lists share no id, so each list gets its own option id prefix.
     const optionIdPrefix = select.id || createId('ui-list-box')
 
     if (!options.length) {
+      listBoxResyncs.set(root, bindListBoxProxy(root, select, list, () => createId('ui-list-box-label')))
+
       const message = document.createElement('div')
 
       message.className = loading ?
@@ -2534,21 +2628,17 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
       })
     })
 
+    listBoxResyncs.set(root, bindListBoxProxy(root, select, list, () => createId('ui-list-box-label'), () => {
+      if (!options.length) return
+
+      syncSelected()
+
+      activeIndex = Math.max(0, options.findIndex(option => option.getAttribute('aria-selected') === 'true'))
+
+      syncActive()
+    }))
+
     select.addEventListener('change', syncSelected)
-
-    select.form?.addEventListener('reset', () => {
-      globalThis.setTimeout(() => {
-        syncSelected()
-
-        activeIndex = Math.max(
-          0, options.findIndex(
-            option => option.getAttribute('aria-selected') === 'true'
-          )
-        )
-
-        syncActive()
-      })
-    })
 
     syncSelected()
 

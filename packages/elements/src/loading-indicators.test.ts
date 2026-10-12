@@ -253,3 +253,30 @@ test('lumen-skeleton preserves a consumer style that replaces an applied dimensi
   document.body.append(skeleton)
   expect(skeleton.style.getPropertyValue('--ui-skeleton-height')).toBe('2px')
 })
+
+for (const [method, copy] of [['clone', copyByClone], ['HTML', copyByHtml]] as const) {
+  test(`Skeleton ${method} copies update and release generated dimensions`, () => {
+    const original = create('lumen-skeleton', { height: '24px', width: '100px' })
+    const copied = copy(original)
+
+    copied.setAttribute('width', '200px')
+    expect(copied.style.getPropertyValue('--ui-skeleton-width')).toBe('200px')
+    copied.removeAttribute('height')
+    expect(copied.style.getPropertyValue('--ui-skeleton-height')).toBe('')
+    copied.style.setProperty('--ui-skeleton-width', '50%')
+    copied.setAttribute('width', '300px')
+    expect(copied.style.getPropertyValue('--ui-skeleton-width')).toBe('50%')
+  })
+}
+
+test('detached Skeleton copies preserve consumer sizes and apply changed attributes', () => {
+  const original = create('lumen-skeleton', { height: '24px', width: '100px' })
+  const copied = original.cloneNode(true)
+  if (!(copied instanceof HTMLElement)) throw new Error('Expected Skeleton copy')
+  copied.style.setProperty('--ui-skeleton-width', '50%')
+  copied.setAttribute('width', '300px')
+  copied.setAttribute('height', '48px')
+  document.body.append(copied)
+  expect(copied.style.getPropertyValue('--ui-skeleton-width')).toBe('50%')
+  expect(copied.style.getPropertyValue('--ui-skeleton-height')).toBe('48px')
+})

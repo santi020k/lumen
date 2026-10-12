@@ -142,11 +142,19 @@ class LumenSkeletonBehaviorElement extends LumenLoadingIndicatorElement {
     for (const [attribute, property] of Object.entries(skeletonSizeProperties)) {
       const size = resolveLumenSkeletonSize(this.getAttribute(attribute))
       const current = this.style.getPropertyValue(property)
+      const ownership = `data-ui-skeleton-${attribute}`
+
+      if (!this.#appliedSizes.has(property) && current && current === this.getAttribute(ownership)) {
+        this.#appliedSizes.set(property, current)
+      }
+
       const applied = this.#appliedSizes.get(property)
 
       // Inline consumer styles take precedence, including changes made after connection.
       if (current && current !== applied) {
         this.#appliedSizes.delete(property)
+
+        this.removeAttribute(ownership)
 
         continue
       }
@@ -155,8 +163,12 @@ class LumenSkeletonBehaviorElement extends LumenLoadingIndicatorElement {
         this.style.setProperty(property, size)
 
         this.#appliedSizes.set(property, size)
+
+        this.setAttribute(ownership, size)
       } else if (this.#appliedSizes.delete(property)) {
         this.style.removeProperty(property)
+
+        this.removeAttribute(ownership)
       }
     }
   }

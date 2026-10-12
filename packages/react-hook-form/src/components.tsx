@@ -69,26 +69,42 @@ const useManagedNativeControl = (
 ): ((node: ManagedNativeControl | null) => void) => {
   const [root, setRoot] = useState<HTMLElement | null>(null)
   const nativeNodeRef = useRef<ManagedNativeControl | null>(null)
+  const detachRef = useRef<(() => void) | null>(null)
   const { root: rootSelector, trigger: triggerSelector } = parts
 
   const nativeRef = useCallback((node: ManagedNativeControl | null) => {
+    detachRef.current?.()
+
+    detachRef.current = null
+
     const owner = node?.closest<HTMLElement>(rootSelector) ?? null
 
     nativeNodeRef.current = node
 
     setRoot(owner)
 
-    if (!node) return
+    if (!node) {
+      fieldRef(null)
+
+      return
+    }
+
+    let attached = true
+    const isCurrent = () => attached && nativeNodeRef.current === node && node.isConnected
 
     fieldRef({
       focus: () => {
-        (owner?.querySelector<HTMLElement>(triggerSelector) ?? node).focus()
+        if (isCurrent()) (owner?.querySelector<HTMLElement>(triggerSelector) ?? node).focus()
       },
-      reportValidity: () => node.reportValidity(),
+      reportValidity: () => !isCurrent() || node.reportValidity(),
       setCustomValidity: (message: string) => {
-        node.setCustomValidity(message)
+        if (isCurrent()) node.setCustomValidity(message)
       }
     })
+
+    detachRef.current = () => {
+      attached = false
+    }
   }, [fieldRef, rootSelector, triggerSelector])
 
   useEffect(() => {
