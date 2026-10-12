@@ -100,6 +100,9 @@ export const resolveLumenSkeletonSize = (value: unknown): string | undefined => 
   return pixels === undefined ? size : toPixelSize(pixels)
 }
 
+// Names come from untyped markup and props at runtime, so only non-blank strings count.
+const hasAccessibleNameText = (value: unknown): boolean => typeof value === 'string' && value.trim() !== ''
+
 /**
  * Loading indicators are decorative unless named. A named indicator becomes a status region, and
  * explicit `aria-hidden` or `role` values always win.
@@ -110,7 +113,7 @@ export const resolveLumenLoadingSemantics = ({
   ariaLabelledby,
   role
 }: LumenLoadingSemanticsInput): LumenLoadingSemantics => {
-  const isNamed = Boolean(ariaLabel?.trim() || ariaLabelledby?.trim())
+  const isNamed = hasAccessibleNameText(ariaLabel) || hasAccessibleNameText(ariaLabelledby)
   const hasExplicitHidden = ariaHidden !== undefined && ariaHidden !== null
   const hasExplicitRole = role !== undefined && role !== null
 

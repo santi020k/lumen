@@ -100,4 +100,14 @@ describe('resolveLumenLoadingSemantics', () => {
     expect(resolveLumenLoadingSemantics({ ariaHidden: 'true', ariaLabel: 'Loading' })).toEqual({ ariaHidden: undefined, role: 'status' })
     expect(resolveLumenLoadingSemantics({ ariaLabel: 'Loading', role: 'img' })).toEqual({ ariaHidden: undefined, role: undefined })
   })
+
+  test('treats non-string runtime names as unnamed instead of throwing', () => {
+    const resolve = (input: unknown): unknown => Reflect.apply(resolveLumenLoadingSemantics, undefined, [input])
+    const unnamed = { ariaHidden: 'true', role: undefined }
+
+    expect(resolve({ ariaLabel: 123 })).toEqual(unnamed)
+    expect(resolve({ ariaLabel: { trim: 'Loading' } })).toEqual(unnamed)
+    expect(resolve({ ariaLabelledby: ['title'] })).toEqual(unnamed)
+    expect(resolve({ ariaLabel: 123, ariaLabelledby: 'title' })).toEqual({ ariaHidden: undefined, role: 'status' })
+  })
 })

@@ -5,7 +5,7 @@ export interface LumenFloatingPanelOptions {
   placement?: LumenFloatingPanelPlacement | undefined
   offset?: number | undefined
   collisionPadding?: number | undefined
-  /** Focus the first matching element inside the panel after it opens. */
+  /** Focus the first matching element inside the panel after it opens. A malformed selector skips focus. */
   initialFocus?: string | undefined
   /**
    * Called when the panel should close: focus moves outside, its containing dialog closes, or the trigger
@@ -203,6 +203,19 @@ const restoreAttribute = (panel: HTMLElement, name: string, value: string | null
   else panel.setAttribute(name, value)
 }
 
+// A malformed selector must not abort after the panel is shown, so it is resolved first and only skips focus.
+const findInitialFocus = (panel: HTMLElement, view: FloatingView, selector: string | undefined): HTMLElement | null => {
+  if (!selector) return null
+
+  try {
+    return panel.querySelector<HTMLElement>(selector)
+  } catch (error) {
+    if (error instanceof view.DOMException && error.name === 'SyntaxError') return null
+
+    throw error
+  }
+}
+
 /**
  * Shows `panel` anchored to `trigger`: in the top layer when the Popover API exists, otherwise fixed. The
  * panel follows scroll, resize, visual viewport, and enclosing animation changes, flips to stay visible,
@@ -229,6 +242,7 @@ export const connectLumenFloatingPanel = (
     padding: finiteDistance(collisionPadding, 8)
   }
 
+  const focusTarget = findInitialFocus(panel, view, initialFocus)
   const previousPopover = panel.getAttribute('popover')
   const previousPlacement = panel.getAttribute('data-placement')
 
@@ -248,7 +262,7 @@ export const connectLumenFloatingPanel = (
 
   positionPanel(context)
 
-  if (initialFocus) panel.querySelector<HTMLElement>(initialFocus)?.focus({ preventScroll: true })
+  focusTarget?.focus({ preventScroll: true })
 
   let connected = true
 

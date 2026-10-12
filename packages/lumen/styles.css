@@ -2194,6 +2194,13 @@ lumen-progress.ui-progress {
   animation: none;
 }
 
+/* Critical CSS omits the universal reduction below, so Skeleton stops its own loop. */
+@media (prefers-reduced-motion: reduce) {
+  .ui-skeleton {
+    animation: none;
+  }
+}
+
 .ui-icon {
   --ui-icon-size: 1em;
   display: inline-flex;

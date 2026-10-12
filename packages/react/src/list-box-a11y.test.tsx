@@ -349,3 +349,95 @@ test('a wrapping label names the visible list', async () => {
   expect(label?.id).not.toBe('')
   expect(lists()[0]?.getAttribute('aria-labelledby')).toBe(label?.id)
 })
+
+const createExternalLabel = (target: string, text: string): HTMLLabelElement => {
+  const label = document.createElement('label')
+
+  label.htmlFor = target
+  label.textContent = text
+
+  return label
+}
+
+test('external labels that mount, change, or leave after first layout keep the list name current', async () => {
+  await run(() => {
+    root.render(<ListBox id="late" options={options} />)
+  })
+
+  const [list] = lists()
+  const first = createExternalLabel('late', 'Late')
+  const second = createExternalLabel('late', 'Replacement')
+
+  expect(list?.hasAttribute('aria-labelledby')).toBe(false)
+  await run(() => {
+    document.body.append(first)
+  })
+  expect(first.id).not.toBe('')
+  expect(list?.getAttribute('aria-labelledby')).toBe(first.id)
+  await run(() => {
+    first.id = 'renamed-label'
+  })
+  expect(list?.getAttribute('aria-labelledby')).toBe('renamed-label')
+  await run(() => {
+    first.htmlFor = 'elsewhere'
+    document.body.append(second)
+  })
+  expect(list?.getAttribute('aria-labelledby')).toBe(second.id)
+  expect(first.id).toBe('renamed-label')
+  await run(() => {
+    second.remove()
+  })
+  expect(list?.hasAttribute('aria-labelledby')).toBe(false)
+  // A generated id leaves with the association so a later label cannot duplicate it.
+  expect(second.hasAttribute('id')).toBe(false)
+  first.remove()
+})
+
+test('a later external label never overrides an explicit name', async () => {
+  await run(() => {
+    root.render(<ListBox aria-label="Explicit" id="explicit-late" options={options} />)
+  })
+
+  const label = createExternalLabel('explicit-late', 'Outside')
+
+  await run(() => {
+    document.body.append(label)
+  })
+
+  const [list] = lists()
+
+  expect(list?.getAttribute('aria-label')).toBe('Explicit')
+  expect(list?.hasAttribute('aria-labelledby')).toBe(false)
+  label.remove()
+})
+
+test('unrelated document mutations do not reread labels, and unmounting releases generated ids', async () => {
+  const label = createExternalLabel('quiet', 'Quiet')
+
+  document.body.append(label)
+  await run(() => {
+    root.render(<ListBox id="quiet" options={options} />)
+  })
+
+  const labels = vi.spyOn(HTMLSelectElement.prototype, 'labels', 'get')
+  const generatedId = label.id
+
+  expect(lists()[0]?.getAttribute('aria-labelledby')).toBe(generatedId)
+  const unrelated = document.createElement('section')
+
+  await run(() => {
+    document.body.append(unrelated)
+
+    for (let index = 0; index < 50; index += 1) unrelated.append(document.createElement('div'))
+
+    unrelated.dataset.state = 'changed'
+  })
+  expect(labels).not.toHaveBeenCalled()
+  await run(() => {
+    root.unmount()
+  })
+  expect(label.hasAttribute('id')).toBe(false)
+  root = createRoot(container)
+  label.remove()
+  unrelated.remove()
+})

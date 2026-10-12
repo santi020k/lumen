@@ -5478,20 +5478,83 @@ interface ListBoxListState {
   required: boolean
 }
 
-// Labels outside the component that target the hidden select; each gets an id so the list can reference it.
-const readExternalListBoxLabelIds = (root: HTMLElement, controlId: string): string | undefined => {
-  const ids: string[] = []
+// Labels outside the component that target the hidden select name the visible list.
+const readExternalListBoxLabels = (root: HTMLElement): HTMLLabelElement[] => {
   const select = root.querySelector<HTMLSelectElement>('[data-ui-list-box-native]')
 
-  for (const [index, external] of [...select?.labels ?? []].entries()) {
-    if (root.contains(external)) continue
+  return [...select?.labels ?? []].filter(label => !root.contains(label))
+}
 
-    external.id ||= `${controlId}-external-label-${index}`
+type ElementConstructor = NonNullable<Document['defaultView']>['Element']
 
-    ids.push(external.id)
+const mayHoldListBoxLabel = (node: Node, root: HTMLElement, ElementType: ElementConstructor): boolean => (
+  node instanceof ElementType &&
+  (node.nodeName === 'LABEL' || node.contains(root) || node.querySelector('label') !== null)
+)
+
+// Only label insertions, removals, `for` or `id` changes, or moving the list itself can change its labels.
+const affectsListBoxLabels = (
+  records: readonly MutationRecord[],
+  root: HTMLElement,
+  ElementType: ElementConstructor
+): boolean => records.some(record => (
+  record.type === 'attributes' ?
+    record.target.nodeName === 'LABEL' :
+    [...record.addedNodes, ...record.removedNodes].some(node => mayHoldListBoxLabel(node, root, ElementType))
+))
+
+// Keeps external label ids current, generating ids only for unnamed labels and releasing them afterwards.
+const observeExternalListBoxLabels = (
+  root: HTMLElement,
+  controlId: string,
+  onChange: (ids: string | undefined) => void
+): (() => void) => {
+  const generated = new Map<HTMLLabelElement, string>()
+  let nextIndex = 0
+
+  const release = (label: HTMLLabelElement) => {
+    if (label.id === generated.get(label)) label.removeAttribute('id')
+
+    generated.delete(label)
   }
 
-  return ids.length ? ids.join(' ') : undefined
+  const sync = () => {
+    const labels = readExternalListBoxLabels(root)
+
+    for (const label of generated.keys()) {
+      if (!labels.includes(label)) release(label)
+    }
+
+    for (const label of labels) {
+      if (label.id) continue
+
+      label.id = `${controlId}-external-label-${nextIndex}`
+
+      nextIndex += 1
+
+      generated.set(label, label.id)
+    }
+
+    onChange(labels.length ? labels.map(label => label.id).join(' ') : undefined)
+  }
+
+  const view = root.ownerDocument.defaultView
+
+  const observer = view ?
+    new view.MutationObserver(records => {
+      if (affectsListBoxLabels(records, root, view.Element)) sync()
+    }) :
+    undefined
+
+  sync()
+
+  observer?.observe(root.ownerDocument, { attributeFilter: ['for', 'id'], childList: true, subtree: true })
+
+  return () => {
+    observer?.disconnect()
+
+    for (const label of generated.keys()) release(label)
+  }
 }
 
 // Explicit aria-labelledby wins, then aria-label, then the label prop, then labels pointing at the select.
@@ -5624,10 +5687,8 @@ export const ListBox = (inputProps: ListBoxProps) => {
 
     if (!root) return
 
-    const ids = readExternalListBoxLabelIds(root, controlId)
-
-    if (ids !== externalLabelledBy) setExternalLabelledBy(ids)
-  }, [controlId, externalLabelledBy])
+    return observeExternalListBoxLabels(root, controlId, setExternalLabelledBy)
+  }, [controlId])
 
   // Consumer focus callbacks describe the whole control, once per entry and exit.
   const focusWithinRef = useRef(false)

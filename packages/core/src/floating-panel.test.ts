@@ -154,3 +154,32 @@ test('dismisses when its owner is adopted into another document while still conn
   expect(onDismiss).toHaveBeenCalledTimes(1)
   disconnect()
 })
+
+test('opens without initial focus and still returns cleanup when the initial focus selector is malformed', () => {
+  const action = document.createElement('button')
+
+  panel.append(action)
+  trigger.focus()
+
+  const disconnect = connectLumenFloatingPanel(panel, trigger, { initialFocus: '[', onDismiss: () => undefined })
+
+  expect(panel.dataset.nativeOpen).toBe('true')
+  expect(document.activeElement).toBe(trigger)
+  disconnect()
+  expect(panel.hasAttribute('popover')).toBe(false)
+  expect(panel.dataset.nativeOpen).toBeUndefined()
+  expect(panel.style.position).toBe('')
+  expect(panel.style.left).toBe('4px')
+})
+
+test('focuses the first match of a valid initial focus selector', () => {
+  const action = document.createElement('button')
+
+  panel.append(action)
+
+  const disconnect = connectLumenFloatingPanel(panel, trigger, { initialFocus: 'button', onDismiss: () => undefined })
+
+  expect(document.activeElement).toBe(action)
+  disconnect()
+  expect(document.activeElement).toBe(trigger)
+})

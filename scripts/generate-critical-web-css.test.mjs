@@ -56,3 +56,11 @@ test('critical Skeleton styles retain the keyframes used by every animation vari
     assert.match(styles, /@keyframes ui-shimmer\s*\{/u)
   }
 })
+
+test('critical Skeleton styles stop looping under reduced motion without the full sheet override', async () => {
+  for (const output of outputs) {
+    const styles = await readFile(path.join(root, output), 'utf8')
+
+    assert.match(styles, /@media \(prefers-reduced-motion: reduce\) \{\s*\.ui-skeleton \{\s*animation: none;/u)
+  }
+})
