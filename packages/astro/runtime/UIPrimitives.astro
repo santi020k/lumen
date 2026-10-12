@@ -2983,6 +2983,24 @@ const closeDatePicker = (root: HTMLElement, restoreFocus = false): void => {
   if (restoreFocus) trigger.focus()
 }
 
+const invalidDatePickerInputs = new WeakSet<HTMLInputElement>()
+
+const syncDatePickerValidity = (native: HTMLInputElement, trigger: HTMLElement): void => {
+  if (native.validity.valid) invalidDatePickerInputs.delete(native)
+
+  const invalid = native.getAttribute('aria-invalid') ?? (invalidDatePickerInputs.has(native) ? 'true' : null)
+
+  if (invalid === null) trigger.removeAttribute('aria-invalid')
+  else trigger.setAttribute('aria-invalid', invalid)
+
+  for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage']) {
+    const value = native.getAttribute(attribute)
+
+    if (value === null) trigger.removeAttribute(attribute)
+    else trigger.setAttribute(attribute, value)
+  }
+}
+
 const syncDatePickerValue = (root: HTMLElement): void => {
   const native = root.querySelector<HTMLInputElement>('[data-ui-date-picker-native]')
   const value = root.querySelector<HTMLElement>('[data-ui-date-picker-value]')
@@ -3000,9 +3018,9 @@ const syncDatePickerValue = (root: HTMLElement): void => {
     root.dataset.placeholder = 'true'
   }
 
-  if (native.validity.valid) {
-    root.querySelector<HTMLElement>('[data-ui-date-picker-trigger]')?.removeAttribute('aria-invalid')
-  }
+  const trigger = root.querySelector<HTMLElement>('[data-ui-date-picker-trigger]')
+
+  if (trigger) syncDatePickerValidity(native, trigger)
 }
 
 const openDatePicker = (root: HTMLElement): void => {
@@ -3110,7 +3128,7 @@ const initDatePickers = (scope: ParentNode): void => {
       syncState()
     })
 
-    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder'] })
+    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder', 'aria-invalid', 'aria-errormessage', 'aria-describedby', 'aria-label', 'aria-labelledby'] })
 
     observer.observe(root, { attributes: true, attributeFilter: ['locale', 'lang', 'data-locale', 'data-choose-date-label'] })
 
@@ -3164,7 +3182,9 @@ const initDatePickers = (scope: ParentNode): void => {
     native.addEventListener('invalid', event => {
       event.preventDefault()
 
-      trigger.setAttribute('aria-invalid', 'true')
+      invalidDatePickerInputs.add(native)
+
+      syncDatePickerValidity(native, trigger)
 
       trigger.focus()
     })
@@ -3172,6 +3192,8 @@ const initDatePickers = (scope: ParentNode): void => {
     native.form?.addEventListener('reset', event => {
       globalThis.setTimeout(() => {
         if (event.defaultPrevented || !root.isConnected) return
+
+        invalidDatePickerInputs.delete(native)
 
         syncDatePickerValue(root)
 

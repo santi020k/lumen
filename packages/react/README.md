@@ -402,6 +402,11 @@ implementations and remains the full client catalog. Import interactive primitiv
 stateless primitives that receive event handlers from the root entrypoint inside a Client
 Component.
 
+`DatePicker` reopens its calendar on the current selected month, including controlled values loaded
+while it was closed. The visible trigger receives `aria-invalid`, `aria-describedby`, and
+`aria-errormessage`. Native validation feedback clears after a valid update or an uncanceled reset;
+explicit application validation attributes remain authoritative.
+
 ## Compatibility wrappers
 
 The common wrapper primitives preserve their underlying DOM handles with React 19's ref-as-prop

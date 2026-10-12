@@ -336,6 +336,11 @@ import { Anchor, CopyButton, ScrollProgress } from '@santi020k/lumen-astro'
 ]} />
 ```
 
+Enhanced `DatePicker` controls mirror native input `aria-invalid`, `aria-describedby`, and
+`aria-errormessage` attributes onto the visible trigger, including later attribute changes.
+Valid updates and uncanceled resets clear generated validation feedback while preserving explicit
+application errors.
+
 `Skeleton` accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
 (`shimmer`, `pulse`, `none`). Numeric sizes are pixels; CSS lengths, percentages, and math or
 custom-property expressions also work. Explicit styles take precedence. Empty placeholders default

@@ -383,6 +383,10 @@ Disclosure keyboard navigation skips hidden or inert regions, invisible controls
 disabled controls, including a disabled fieldset. Available controls in a fieldset's first legend
 retain their native keyboard behavior; removing `inert` makes a region available again.
 
+Enhanced DatePicker controls mirror native input `aria-invalid`, `aria-describedby`, and
+`aria-errormessage` onto the visible trigger, including dynamic changes. Valid updates and
+uncanceled form resets clear generated errors while preserving explicit application errors.
+
 `lumen-skeleton` and `lumen-spinner` are decorative (`aria-hidden="true"`) until they have an
 `aria-label` or `aria-labelledby`, then they become `role="status"`; explicit `aria-hidden` and
 `role` values are kept. `lumen-skeleton` and `lumen-progress` render as blocks. Skeleton

@@ -241,3 +241,45 @@ test('ImageComparison follows reassigned and adopted form resets without canceli
     return form.querySelector<HTMLElement>('.ui-image-comparison__frame')?.style.getPropertyValue('--ui-image-comparison-position')
   })).toBe('25%')
 })
+
+for (const adapter of ['astro', 'elements']) {
+  test(`${adapter} DatePicker mirrors dynamic application errors and clears only generated validation`, async ({ page }) => {
+    await page.goto('/internal/date-controls')
+    const native = page.locator(`#${adapter}-form [data-ui-date-picker-native]`)
+    const trigger = page.locator(`#${adapter}-form [data-ui-date-picker-trigger]`)
+
+    await expect(trigger).toBeVisible()
+    await native.evaluate(input => {
+      input.setAttribute('aria-invalid', 'grammar')
+      input.setAttribute('aria-errormessage', 'application-date-error')
+      input.setAttribute('aria-describedby', 'application-date-help')
+    })
+    await expect(trigger).toHaveAttribute('aria-invalid', 'grammar')
+    await expect(trigger).toHaveAttribute('aria-errormessage', 'application-date-error')
+    await expect(trigger).toHaveAttribute('aria-describedby', 'application-date-help')
+    await native.evaluate(input => {
+      if (!(input instanceof HTMLInputElement)) throw new Error('Expected date input')
+      input.form?.reset()
+    })
+    await expect(trigger).toHaveAttribute('aria-invalid', 'grammar')
+    await native.evaluate(input => {
+      input.removeAttribute('aria-invalid')
+      input.removeAttribute('aria-errormessage')
+    })
+    await expect(trigger).not.toHaveAttribute('aria-invalid')
+    await expect(trigger).not.toHaveAttribute('aria-errormessage')
+    await native.evaluate(input => {
+      if (!(input instanceof HTMLInputElement)) throw new Error('Expected date input')
+      input.required = true
+      input.value = ''
+      input.checkValidity()
+    })
+    await expect(trigger).toHaveAttribute('aria-invalid', 'true')
+    await native.evaluate(input => {
+      if (!(input instanceof HTMLInputElement)) throw new Error('Expected date input')
+      input.value = '2026-07-24'
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    await expect(trigger).not.toHaveAttribute('aria-invalid')
+  })
+}

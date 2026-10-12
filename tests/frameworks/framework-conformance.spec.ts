@@ -1,8 +1,9 @@
 // cspell:words teléfono
+import './consumer-date-regressions.js';
+
 import { expect, test } from "@playwright/test";
 
 import { verifyFocusNavigation } from '../a11y/focus-navigation.js';
-
 
 test('React disclosure navigation skips unavailable controls and restores newly available actions', async ({ page }) => {
   await page.goto('/dashboard-recipes');

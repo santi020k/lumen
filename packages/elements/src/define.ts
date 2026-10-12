@@ -4327,6 +4327,7 @@ const initDatePickers = (scope: ParentNode): void => {
       root.hasAttribute('disabled') || root.hasAttribute('readonly')
 
     let outsideController: AbortController | undefined
+    let invalidAttempted = false
 
     const closePopover = (restoreFocus = false): void => {
       outsideController?.abort()
@@ -4357,7 +4358,19 @@ const initDatePickers = (scope: ParentNode): void => {
 
       popover.setAttribute('aria-label', root.dataset.chooseDateLabel || labels.chooseDate)
 
-      if (native.validity.valid) trigger.removeAttribute('aria-invalid')
+      if (native.validity.valid) invalidAttempted = false
+
+      const invalid = native.getAttribute('aria-invalid') ?? (invalidAttempted ? 'true' : null)
+
+      if (invalid === null) trigger.removeAttribute('aria-invalid')
+      else trigger.setAttribute('aria-invalid', invalid)
+
+      for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage']) {
+        const value = native.getAttribute(attribute)
+
+        if (value === null) trigger.removeAttribute(attribute)
+        else trigger.setAttribute(attribute, value)
+      }
     }
 
     const openPopover = (): void => {
@@ -4416,7 +4429,7 @@ const initDatePickers = (scope: ParentNode): void => {
       syncState()
     })
 
-    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder'] })
+    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder', 'aria-invalid', 'aria-errormessage', 'aria-describedby', 'aria-label', 'aria-labelledby'] })
 
     observer.observe(root, { attributes: true, attributeFilter: ['disabled', 'readonly', 'locale', 'lang', 'data-locale', 'data-choose-date-label'] })
 
@@ -4474,7 +4487,9 @@ const initDatePickers = (scope: ParentNode): void => {
     native.addEventListener('invalid', event => {
       event.preventDefault()
 
-      trigger.setAttribute('aria-invalid', 'true')
+      invalidAttempted = true
+
+      syncState()
 
       trigger.focus()
     })
@@ -4482,6 +4497,8 @@ const initDatePickers = (scope: ParentNode): void => {
     native.form?.addEventListener('reset', event => {
       globalThis.setTimeout(() => {
         if (event.defaultPrevented || !root.isConnected) return
+
+        invalidAttempted = false
 
         syncState()
 

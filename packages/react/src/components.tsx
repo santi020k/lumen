@@ -2775,6 +2775,24 @@ export const DatePicker = ({
   const maxStr = stringifyDatePickerConstraint(max)
   const minStr = stringifyDatePickerConstraint(min)
   const accessibleLabel = props['aria-label']
+  const consumerInvalid = props['aria-invalid']
+  const invalidAttemptedRef = useRef(false)
+
+  const syncValidity = useCallback(() => {
+    const native = nativeInputRef.current
+    const trigger = triggerRef.current
+
+    if (!native || !trigger) return
+
+    if (native.validity.valid) invalidAttemptedRef.current = false
+
+    const invalid = consumerInvalid ?? (invalidAttemptedRef.current ? true : undefined)
+
+    if (invalid === undefined) trigger.removeAttribute('aria-invalid')
+    else trigger.setAttribute('aria-invalid', String(invalid))
+  }, [consumerInvalid])
+
+  useLayoutEffect(syncValidity, [disabled, max, min, readOnly, required, selectedValue, syncValidity])
 
   useEffect(() => {
     const owner = nativeInputRef.current?.form
@@ -2786,6 +2804,10 @@ export const DatePicker = ({
 
       resetTimer = globalThis.setTimeout(() => {
         if (!active || event.defaultPrevented || !nativeInputRef.current?.isConnected) return
+
+        invalidAttemptedRef.current = false
+
+        syncValidity()
 
         if (value === undefined) setInternalValue(defaultValue ?? '')
 
@@ -2802,7 +2824,7 @@ export const DatePicker = ({
 
       owner?.removeEventListener('reset', reset)
     }
-  }, [defaultValue, props.form, value, setOpen])
+  }, [defaultValue, props.form, value, setOpen, syncValidity])
 
   useEffect(() => {
     if (!isOpen) return
@@ -2817,12 +2839,26 @@ export const DatePicker = ({
       if (!event.composedPath().includes(root)) setOpen(false)
     }
 
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key !== 'Escape' || event.defaultPrevented || event.isComposing) return
+
+      event.preventDefault()
+
+      setOpen(false)
+
+      triggerRef.current?.focus({ preventScroll: true })
+    }
+
+    owner.addEventListener('keydown', handleKeyDown)
+
     owner.addEventListener('mousedown', handlePointerDown)
 
     rootRef.current?.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]')?.focus({ preventScroll: true })
 
     return () => {
       owner.removeEventListener('mousedown', handlePointerDown)
+
+      owner.removeEventListener('keydown', handleKeyDown)
     }
   }, [isOpen, setOpen])
 
@@ -2863,7 +2899,7 @@ export const DatePicker = ({
       data-ui-glass-track={glass ? true : undefined}
       ref={rootRef}
       onKeyDown={event => {
-        if (!isOpen || event.key !== 'Escape') return
+        if (!isOpen || event.key !== 'Escape' || event.defaultPrevented || event.nativeEvent.isComposing) return
 
         event.preventDefault()
 
@@ -2887,12 +2923,16 @@ export const DatePicker = ({
         onChange={event => {
           if (value === undefined) setInternalValue(event.currentTarget.value)
 
+          syncValidity()
+
           onChange?.(event)
         }}
         onInvalid={event => {
           event.preventDefault()
 
-          triggerRef.current?.setAttribute('aria-invalid', 'true')
+          invalidAttemptedRef.current = true
+
+          syncValidity()
 
           triggerRef.current?.focus()
 
@@ -2918,6 +2958,8 @@ export const DatePicker = ({
           aria-label={accessibleLabel}
           aria-labelledby={props['aria-labelledby']}
           aria-describedby={props['aria-describedby']}
+          aria-errormessage={props['aria-errormessage']}
+          aria-invalid={consumerInvalid}
           aria-disabled={readOnly ? true : undefined}
           aria-required={required ?? undefined}
           className="ui-input ui-date-picker ui-date-picker__trigger"
@@ -2961,6 +3003,7 @@ export const DatePicker = ({
           role="dialog"
         >
           <Calendar
+            key={isOpen ? 'open' : 'closed'}
             disabled={disabled}
             readOnly={readOnly}
             labels={dateLabels}
