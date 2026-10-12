@@ -1663,13 +1663,24 @@
   background-image:
     linear-gradient(45deg, transparent 50%, hsl(var(--ink-muted)) 50%),
     linear-gradient(135deg, hsl(var(--ink-muted)) 50%, transparent 50%);
-  background-position:
-    calc(100% - 1rem) 50%,
-    calc(100% - 0.72rem) 50%;
+  background-position: var(--_ui-select-chevron, calc(100% - 1rem) 50%, calc(100% - 0.72rem) 50%);
   background-size:
     0.32rem 0.32rem,
     0.32rem 0.32rem;
   background-repeat: no-repeat;
+}
+
+/*
+ * Keep the chevron inside the inline-end padding. The private property inherits from the nearest
+ * explicit `dir` attribute, so nested LTR regions inside RTL work and consumer CSS pipelines that
+ * rewrite `:dir()` into language selectors cannot misplace it.
+ */
+[dir="rtl"] {
+  --_ui-select-chevron: 0.72rem 50%, 1rem 50%;
+}
+
+[dir="ltr"] {
+  --_ui-select-chevron: calc(100% - 1rem) 50%, calc(100% - 0.72rem) 50%;
 }
 
 .ui-label {

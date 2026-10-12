@@ -581,6 +581,93 @@ test('Elements native multiple select submits and resets every selected option',
   expect(await values()).toEqual(['editor', 'reviewer']);
 });
 
+for (const framework of ['React', 'Elements']) {
+  test(`${framework} Select supports Space selection and dismisses when focus leaves`, async ({ page }) => {
+    await page.goto('/visual/control-sizes');
+    const trigger = page.locator('[data-ui-select-trigger]').and(page.getByRole('combobox', { name: `${framework} estado sm`, exact: true }));
+    for (const [key, expected] of [['Enter', 'Activo'], ['ArrowDown', 'Pendiente'], ['ArrowUp', 'Pendiente'], ['Home', 'Activo'], ['End', 'Pendiente'], ['p', 'Pendiente']] as const) {
+      await trigger.focus();
+      await page.keyboard.press(key);
+      await expect(page.locator('[data-ui-select-option]').filter({ hasText: expected, visible: true })).toBeFocused();
+      await page.keyboard.press('Escape');
+      await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+      await expect(trigger).toBeFocused();
+    }
+    await trigger.focus();
+    await page.keyboard.press('Space');
+    const active = page.locator('[data-ui-select-option]').filter({ hasText: 'Activo', visible: true });
+    await expect(active).toBeFocused();
+    await page.keyboard.press('End');
+    const pending = page.locator('[data-ui-select-option]').filter({ hasText: 'Pendiente', visible: true });
+    await expect(pending).toBeFocused();
+    await page.keyboard.press('Space');
+    await expect(trigger).toContainText('Pendiente');
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect(trigger).toBeFocused();
+    await trigger.click();
+    const listbox = page.getByRole('listbox', { name: `${framework} estado sm`, exact: true });
+    await expect(listbox).toBeVisible();
+    await trigger.press('Tab');
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect(listbox).toBeHidden();
+  });
+}
+
+test('Elements Select preserves live option updates and disabled transitions', async ({ page }) => {
+  await page.goto('/visual/control-sizes');
+  const select = page.locator('lumen-select[data-sized-select="sm"]');
+  const trigger = select.locator('[data-ui-select-trigger]');
+  await trigger.click();
+  await select.getByRole('option', { name: 'Activo', exact: true }).focus();
+  await select.locator('select').evaluate(element => {
+    if (!(element instanceof HTMLSelectElement)) throw new Error('Expected native select');
+    element.append(new Option('Archived', 'archived'));
+    const active = element.querySelector('option[value="active"]');
+    if (!(active instanceof HTMLOptionElement)) throw new Error('Expected active option');
+    active.label = 'Active revised';
+  });
+  await expect(select.getByRole('option', { name: 'Active revised', exact: true })).toBeFocused();
+  await expect(trigger).toContainText('Active revised');
+  await select.getByRole('option', { name: 'Archived', exact: true }).click();
+  await expect(select.locator('select')).toHaveValue('archived');
+  await trigger.click();
+  await select.locator('select').evaluate(element => {
+    if (!(element instanceof HTMLSelectElement)) throw new Error('Expected native select');
+    element.disabled = true;
+  });
+  await expect(trigger).toBeDisabled();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await select.locator('select').evaluate(element => {
+    if (!(element instanceof HTMLSelectElement)) throw new Error('Expected native select');
+    element.disabled = false;
+  });
+  await expect(trigger).toBeEnabled();
+});
+
+test('Select chevrons follow the inline end in RTL layouts', async ({ page }, testInfo) => {
+  await page.goto('/visual/control-sizes');
+  await page.locator('main').evaluate(element => { element.setAttribute('dir', 'rtl'); });
+  const group = page.locator('[data-visual-size="sm"]');
+  const elements = group.locator('lumen-select [data-ui-select-trigger]');
+  await expect(elements).toBeVisible();
+  await group.screenshot({ path: testInfo.outputPath('select-rtl.png') });
+  const controls = [group.locator('#react-native-sm'), group.getByRole('combobox', { name: 'React estado sm', exact: true }), elements];
+  for (const control of controls) {
+    await expect(control).toHaveCSS('direction', 'rtl');
+    const positions = await control.evaluate(element => getComputedStyle(element).backgroundPosition.split(',').map(value => Number.parseFloat(value)));
+    expect(positions).toHaveLength(2);
+    for (const position of positions) {
+      expect(position).toBeGreaterThan(0);
+      expect(position).toBeLessThan(24);
+    }
+  }
+  await group.evaluate(element => { element.setAttribute('dir', 'ltr'); });
+  for (const control of controls) {
+    await expect(control).toHaveCSS('direction', 'ltr');
+    await expect(control).toHaveCSS('background-position', /100%/);
+  }
+});
+
 test('visualSize renders equivalent form densities and preserves keyboard selection', async ({ page }, testInfo) => {
   await page.goto('/visual/control-sizes');
   await expect(page.getByRole('heading', { name: 'Visual form sizes' })).toBeVisible();

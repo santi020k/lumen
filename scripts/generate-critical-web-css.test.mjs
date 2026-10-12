@@ -31,3 +31,15 @@ test('critical CSS outputs stay identical, focused, and materially smaller', asy
 
   assert.ok(Buffer.byteLength(canonical) < Buffer.byteLength(full) * 0.7)
 })
+
+test('critical Select styles retain the inherited direction definitions they consume', async () => {
+  for (const output of outputs) {
+    const styles = await readFile(path.join(root, output), 'utf8')
+
+    assert.match(styles, /background-position: var\(--_ui-select-chevron,/u)
+
+    assert.match(styles, /\[dir="rtl"\]\s*\{\s*--_ui-select-chevron:/u)
+
+    assert.match(styles, /\[dir="ltr"\]\s*\{\s*--_ui-select-chevron:/u)
+  }
+})

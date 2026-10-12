@@ -7580,6 +7580,7 @@ class LumenTabsBehaviorElement extends LumenElement {
 
 class LumenSelectBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
+  private renderingOptions = false
   private typeahead = ''
   private typeaheadTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
@@ -7602,11 +7603,7 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     this.abortController = undefined
 
-    if (this.typeaheadTimer) {
-      globalThis.clearTimeout(this.typeaheadTimer)
-
-      this.typeaheadTimer = undefined
-    }
+    this.#resetTypeahead()
   }
 
   override attributeChangedCallback(name: string, previous: string | null, value: string | null): void {
@@ -7706,12 +7703,33 @@ class LumenSelectBehaviorElement extends LumenElement {
       )
     }
 
+    for (const attribute of ['aria-label', 'aria-labelledby']) {
+      const value = trigger.getAttribute(attribute)
+
+      if (value) listbox.setAttribute(attribute, value)
+    }
+
     this.#syncValue(select, trigger)
 
     this.#closeSelect(trigger, listbox)
 
+    this.addEventListener(
+      'focusout', event => {
+        // Replacing a focused option makes Chromium blur it; that internal rerender restores focus itself.
+        if (this.renderingOptions) return
+
+        if (event.relatedTarget instanceof Node && this.contains(event.relatedTarget)) return
+
+        this.#resetTypeahead()
+
+        this.#closeSelect(trigger, listbox)
+      }, { signal }
+    )
+
     trigger.addEventListener(
       'click', () => {
+        this.#resetTypeahead()
+
         if (trigger.getAttribute('aria-expanded') === 'true') {
           this.#closeSelect(trigger, listbox)
         } else {
@@ -7740,6 +7758,8 @@ class LumenSelectBehaviorElement extends LumenElement {
 
         event.preventDefault()
 
+        this.#resetTypeahead()
+
         this.#openSelect(trigger, listbox)
 
         if (event.key === 'Enter' || event.key === ' ') {
@@ -7766,49 +7786,52 @@ class LumenSelectBehaviorElement extends LumenElement {
       }, { signal }
     )
 
-    for (const item of this.#getItems()) {
-      item.tabIndex = -1
+    // Options are delegated so native option changes can re-render without rebinding handlers.
+    listbox.addEventListener(
+      'click', event => {
+        const item = this.#getEventItem(event)
 
-      item.addEventListener(
-        'click', () => {
-          this.#selectOption(select, trigger, listbox, item)
-        }, { signal }
-      )
+        if (item) this.#selectOption(select, trigger, listbox, item)
+      }, { signal }
+    )
 
-      item.addEventListener(
-        'keydown', event => {
-          if (event.defaultPrevented || event.isComposing) return
+    listbox.addEventListener(
+      'keydown', event => {
+        const item = this.#getEventItem(event)
 
-          if (this.#handleTypeahead(event, item)) return
+        if (!item || event.defaultPrevented || event.isComposing) return
 
-          if (event.key === 'Escape' && !listbox.hidden) {
-            event.preventDefault()
+        if (this.#handleTypeahead(event, item)) return
 
-            this.#closeSelect(trigger, listbox)
-
-            trigger.focus({ preventScroll: true })
-
-            return
-          }
-
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault()
-
-            this.#selectOption(select, trigger, listbox, item)
-
-            return
-          }
-
-          const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
-
-          if (!keys.includes(event.key)) return
-
+        if (event.key === 'Escape' && !listbox.hidden) {
           event.preventDefault()
 
-          this.#focusOption(event.key, item)
-        }, { signal }
-      )
-    }
+          this.#closeSelect(trigger, listbox)
+
+          trigger.focus({ preventScroll: true })
+
+          return
+        }
+
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+
+          this.#selectOption(select, trigger, listbox, item)
+
+          return
+        }
+
+        const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
+
+        if (!keys.includes(event.key)) return
+
+        event.preventDefault()
+
+        this.#resetTypeahead()
+
+        this.#focusOption(event.key, item)
+      }, { signal }
+    )
 
     document.addEventListener(
       'pointerdown', event => {
@@ -7821,6 +7844,74 @@ class LumenSelectBehaviorElement extends LumenElement {
         this.#closeSelect(trigger, listbox)
       }, { signal }
     )
+
+    this.#observeNativeSelect(select, trigger, listbox, signal)
+  }
+
+  #observeNativeSelect(
+    select: HTMLSelectElement,
+    trigger: HTMLButtonElement,
+    listbox: HTMLElement,
+    signal: AbortSignal
+  ): void {
+    if (typeof MutationObserver === 'undefined') return
+
+    const observer = new MutationObserver(() => {
+      const focusedValue = this.#getItems().find(item => item === this.ownerDocument.activeElement)?.dataset.value
+
+      this.renderingOptions = true
+
+      try {
+        this.#renderOptions(select, listbox)
+      } finally {
+        this.renderingOptions = false
+      }
+
+      this.#syncValue(select, trigger)
+
+      trigger.disabled = select.disabled
+
+      if (select.disabled) {
+        this.#closeSelect(trigger, listbox)
+
+        return
+      }
+
+      if (focusedValue === undefined) return
+
+      const nextItem = this.#getEnabledItems().find(item => item.dataset.value === focusedValue)
+
+      if (nextItem) nextItem.focus()
+      else trigger.focus({ preventScroll: true })
+    })
+
+    observer.observe(select, {
+      attributeFilter: ['disabled', 'label', 'value'],
+      attributes: true,
+      characterData: true,
+      childList: true,
+      subtree: true
+    })
+
+    signal.addEventListener('abort', () => {
+      observer.disconnect()
+    }, { once: true })
+  }
+
+  #getEventItem(event: Event): HTMLElement | undefined {
+    const target = event.target instanceof Element ? event.target.closest<HTMLElement>(selectOptionSelector) : null
+
+    return target && this.contains(target) ? target : undefined
+  }
+
+  #resetTypeahead(): void {
+    this.typeahead = ''
+
+    if (this.typeaheadTimer) {
+      globalThis.clearTimeout(this.typeaheadTimer)
+
+      this.typeaheadTimer = undefined
+    }
   }
 
   #ensureNativeSelect(): HTMLSelectElement {
@@ -7934,6 +8025,8 @@ class LumenSelectBehaviorElement extends LumenElement {
         item.dataset.uiSelectOption = ''
 
         item.dataset.value = option.value
+
+        item.tabIndex = -1
 
         item.textContent = option.label
 
@@ -8068,7 +8161,13 @@ class LumenSelectBehaviorElement extends LumenElement {
     event: KeyboardEvent,
     currentItem?: HTMLElement
   ): boolean {
-    if (!isPrintableKey(event)) return false
+    const trigger = this.querySelector<HTMLElement>('[data-ui-select-trigger]')
+    const listbox = this.querySelector<HTMLElement>('[data-ui-select-list]')
+
+    // Space only extends an active query; otherwise it opens or selects like Enter.
+    if (!isPrintableKey(event) || (
+      event.key === ' ' && (!this.typeahead || trigger?.getAttribute('aria-expanded') !== 'true')
+    )) return false
 
     event.preventDefault()
 
@@ -8081,9 +8180,6 @@ class LumenSelectBehaviorElement extends LumenElement {
     this.typeaheadTimer = globalThis.setTimeout(() => {
       this.typeahead = ''
     }, 700)
-
-    const trigger = this.querySelector<HTMLElement>('[data-ui-select-trigger]')
-    const listbox = this.querySelector<HTMLElement>('[data-ui-select-list]')
 
     if (trigger && listbox) {
       this.#openSelect(trigger, listbox)

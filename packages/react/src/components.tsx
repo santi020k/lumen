@@ -5200,7 +5200,12 @@ export const Select = ({
           <span data-ui-select-value>{select.triggerText}</span>
         </button>
 
-        <div {...select.listProps} className="ui-select__list">
+        <div
+          {...select.listProps}
+          aria-label={props['aria-label']}
+          aria-labelledby={props['aria-labelledby']}
+          className="ui-select__list"
+        >
           {select.options.map(option => {
             const optionProps = select.getOptionProps(option)
 

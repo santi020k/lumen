@@ -15,6 +15,9 @@ const outputPaths = [
 ]
 
 const criticalSelectors = [
+  // Select chevron variables inherit from these direction scopes.
+  '[dir="ltr"]',
+  '[dir="rtl"]',
   '.ui-alert',
   '.ui-badge',
   '.ui-button',

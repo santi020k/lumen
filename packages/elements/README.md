@@ -386,6 +386,12 @@ retain their native keyboard behavior; removing `inert` makes a region available
 Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
 buttons are excluded from the Tab sequence while Enter and pointer selection still insert a mention.
 
+Select follows the Astro keyboard contract: Space opens the listbox or selects the focused option
+unless it continues an active typeahead query, and moving focus outside the field closes the
+listbox. The listbox shares the trigger's accessible name. Adding, removing, relabeling, or
+disabling native options re-renders the listbox while preserving focus on an available option.
+Toggling the native select's `disabled` state updates the trigger.
+
 Registering the elements wires behavior-heavy primitives without a framework runtime. DataTable,
 Dialog, Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder, Toast, Tooltip, forms,
 Calendar, InputOTP, DateRangePicker, RichTextEditor, Schedule, Resizable, and VirtualList track the

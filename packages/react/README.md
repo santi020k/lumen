@@ -178,6 +178,11 @@ retain their native keyboard behavior; removing `inert` makes a region available
 Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
 buttons are excluded from the Tab sequence while Enter and pointer selection still insert a mention.
 
+Select and `useSelect` treat Space like Enter on the trigger and options unless it continues an
+active typeahead query, focus the target option after the opened listbox renders, and close the
+listbox when focus leaves the field. Select passes its
+`aria-label` or `aria-labelledby` to the listbox as well as the trigger.
+
 ```tsx
 import {
   DropdownMenu,
