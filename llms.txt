@@ -54,6 +54,7 @@ Rules for agents:
 - Do not require Tailwind configuration for Lumen components.
 - Give each outer edge one border and radius owner. Flush images inside rounded frames use Image radius="none"; Image defaults to radius="lg". Use one divider at shared edges, account for padding on inset curves, and check phone/desktop corners and keyboard focus in both themes. Keep artwork clipping scoped so it does not cut off focus rings or overlays. See docs/ai-usage.md for styling rules.
 - Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, on-brand, accent, success, warning, danger, on-danger.
+- Default to `Select` for web product option lists and `Combobox` for searchable choices. Use `NativeSelect` only for an explicit browser or platform picker requirement. Keep native fallbacks and verify the enhanced list with the matching framework behavior enabled.
 - Mount `UIPrimitives` once for interactive Astro primitives.
 - Use `glass` for glass surfaces. The obsolete overlay `surface="glass"` alias is removed.
 - Treat schedule, data collection, rich text, theme builder, and advanced fields as supported surfaces with progressively enhanced behavior.

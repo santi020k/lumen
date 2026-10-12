@@ -86,6 +86,9 @@ before release-oriented work or broad cross-package changes.
 - Keep native HTML only when it is required by a Lumen compound component's documented child
   contract or no Lumen equivalent exists. Add reusable missing UI to Lumen first, then consume the
   public component.
+- Default to `Select` for web product option lists and `Combobox` for searchable choices. Keep
+  `NativeSelect` supported for an explicit native picker requirement and preserve native fallbacks.
+  Consumer guidance lives in [docs/ai-usage.md](docs/ai-usage.md).
 - Use accessible names, keyboard paths, focus states, and semantic markup for every primitive.
 - Tests live beside package code as `*.test.ts`. Add or update tests when behavior, exported
   metadata, or component contracts change.

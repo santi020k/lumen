@@ -42,6 +42,25 @@ The skill and MCP server complement each other: the skill explains how to work, 
 `@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,
 source, tokens, resources, and rules.
 
+## Web selection controls
+
+Use `Select` as the default for web product option lists, and `Combobox` when the user needs to
+search the choices. `NativeSelect` remains supported for a product requirement that explicitly
+calls for the browser or platform picker. Do not remove native fallbacks from custom controls.
+
+Mount the matching framework behavior before verifying the result: Astro uses `UIPrimitives`,
+React uses the public Select behavior hook, and Elements uses registered custom elements. Check
+that opening the control shows the enhanced list, that keyboard selection and Escape work, and
+that dependent choices, forms, mobile layouts, and both appearances remain correct.
+
+For personal projects that require custom lists, enforce the choice in ESLint as well as agent
+guidance. The prepared `lumenCustomSelects()` helper in `@santi020k/eslint-config-libraries` rejects
+`NativeSelect` imports (including aliases), namespace JSX usage, raw JSX selects, and JSX native
+select custom elements without replacing the project's existing syntax restrictions. Enable it
+only after that package version is available. Keep intentional native-control exceptions scoped
+to specific files with a documented product reason. Library source and fallback implementations
+should not opt into a consumer-only policy.
+
 ## Pick the Right Package
 
 Use the framework requested by the user. Every adapter shares the same Lumen foundation.
