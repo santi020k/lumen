@@ -122,3 +122,48 @@ for (const adapter of ['Astro', 'Elements']) {
     await expect(list).toHaveAttribute('aria-required', 'true')
   })
 }
+
+test('a reinserted bound Astro ListBox resynchronizes external labels after LumenInitUiPrimitives', async ({ page }) => {
+  await page.goto('/internal/list-box-adapters')
+  const group = page.locator('#unnamed-lists')
+  const selectId = await group.locator('[data-ui-list-box] select').first().getAttribute('id')
+  if (!selectId) throw new Error('Expected a native select ID')
+  // Anchored to its select so the locator keeps naming this root after it leaves and returns.
+  const root = page.locator('[data-ui-list-box]').filter({ has: page.locator(`select[id="${selectId}"]`) })
+  const list = root.locator('[data-ui-list-box-list]')
+  const addLabel = (id: string, text: string) => page.evaluate(({ id, selectId, text }) => {
+    const label = document.createElement('label')
+    label.id = id
+    label.htmlFor = selectId
+    label.textContent = text
+    document.body.append(label)
+  }, { id, selectId, text })
+  await expect(root).toHaveAttribute('data-ui-list-box-bound', 'true')
+  await addLabel('external-reviewers-label', 'External reviewers')
+  await expect(list).toHaveAttribute('aria-labelledby', /(^| )external-reviewers-label( |$)/)
+  await expect(group.getByRole('listbox', { name: 'First unnamed list External reviewers', exact: true })).toBeVisible()
+  await page.locator('#external-reviewers-label').evaluate(element => { element.remove() })
+  await expect(list).not.toHaveAttribute('aria-labelledby', /external-reviewers-label/)
+  await expect(group.getByRole('listbox', { name: 'First unnamed list', exact: true })).toBeVisible()
+  // The same bound root leaves, misses a label change while detached, then returns through the runtime entry point.
+  const rootHandle = await root.elementHandle()
+  await rootHandle.evaluate(element => { element.remove() })
+  await expect(root).toHaveCount(0)
+  await addLabel('detached-reviewers-label', 'Detached reviewers')
+  await rootHandle.evaluate(element => { document.querySelector('#unnamed-lists')?.prepend(element) })
+  await expect(list).not.toHaveAttribute('aria-labelledby', /detached-reviewers-label/)
+  await page.evaluate(() => {
+    const init: unknown = Reflect.get(window, 'LumenInitUiPrimitives')
+    if (typeof init !== 'function') throw new Error('Expected the Lumen runtime entry point')
+    Reflect.apply(init, window, [document.querySelector('#unnamed-lists')])
+  })
+  await expect(root).toHaveAttribute('data-ui-list-box-bound', 'true')
+  await expect(list).toHaveAttribute('aria-labelledby', /(^| )detached-reviewers-label( |$)/)
+  await addLabel('returned-reviewers-label', 'Returned reviewers')
+  await expect(list).toHaveAttribute('aria-labelledby', /(^| )returned-reviewers-label( |$)/)
+  await expect(group.getByRole('listbox', {
+    name: 'First unnamed list Detached reviewers Returned reviewers', exact: true
+  })).toBeVisible()
+  await group.getByText('First unnamed list', { exact: true }).click()
+  await expect(list).toBeFocused()
+})

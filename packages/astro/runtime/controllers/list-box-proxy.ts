@@ -1,5 +1,6 @@
 const forwardedAttributes = ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage'] as const
-const observedAttributes = [...forwardedAttributes, 'aria-invalid', 'disabled', 'required']
+// A new select id changes which labels name it.
+const observedAttributes = [...forwardedAttributes, 'aria-invalid', 'disabled', 'id', 'required']
 
 // The first invalid control owns focus so several invalid fields do not race for it.
 const isFirstInvalidControl = (select: HTMLSelectElement): boolean => {
@@ -43,19 +44,36 @@ const syncListBoxName = (
   if (labelIds.length) list.setAttribute('aria-labelledby', labelIds.join(' '))
 }
 
+const mayHoldListBoxLabel = (node: Node, root: HTMLElement, ElementType: typeof Element): boolean => (
+  node instanceof ElementType &&
+  (node.nodeName === 'LABEL' || node.contains(root) || node.querySelector('label') !== null)
+)
+
+// Only label insertions, removals, `for` or `id` changes, or moving the list itself can change its labels.
+const affectsListBoxLabels = (
+  records: readonly MutationRecord[],
+  root: HTMLElement,
+  ElementType: typeof Element
+): boolean => (
+  records.some(record => record.type === 'attributes' ?
+    record.target.nodeName === 'LABEL' :
+    [...record.addedNodes, ...record.removedNodes].some(node => mayHoldListBoxLabel(node, root, ElementType)))
+)
+
 /**
  * Once a list box is enhanced the visible list is its only focus stop and accessible control, while the
  * native select keeps form submission, validation, and reset. Naming, description, error, required, and
  * disabled semantics follow the select as they change, focus that reaches the select moves to the list,
  * and native invalid events mark the list invalid until a valid change or an accepted reset. Consumer
- * `aria-invalid` on the select always wins over generated state.
+ * `aria-invalid` on the select always wins over generated state. External labels are followed while the root
+ * is connected; the returned function resynchronizes a root that was removed and inserted again.
  */
 export const bindListBoxProxy = (
   root: HTMLElement,
   select: HTMLSelectElement,
   list: HTMLElement,
   createLabelId: () => string
-): void => {
+): (() => void) => {
   // Attributes authored on the list itself stay under the author's control.
   const listOwned = new Set<string>(forwardedAttributes.filter(name => list.hasAttribute(name)))
   let generatedInvalid = false
@@ -79,7 +97,32 @@ export const bindListBoxProxy = (
     setOptionalAttribute(list, 'aria-disabled', select.disabled ? 'true' : null)
   }
 
+  let labelObserver: MutationObserver | undefined
+
+  // The document observer stops once the root leaves, so a removed list box is not kept alive by it.
+  const followLabels = (): void => {
+    const view = root.ownerDocument.defaultView
+
+    if (labelObserver || !view || !root.isConnected) return
+
+    labelObserver = new view.MutationObserver(records => {
+      if (!root.isConnected) {
+        labelObserver?.disconnect()
+
+        labelObserver = undefined
+      } else if (affectsListBoxLabels(records, root, view.Element)) {
+        sync()
+      }
+    })
+
+    labelObserver.observe(root.ownerDocument, {
+      attributeFilter: ['for', 'id'], attributes: true, childList: true, subtree: true
+    })
+  }
+
   sync()
+
+  followLabels()
 
   new MutationObserver(sync).observe(select, { attributeFilter: observedAttributes, attributes: true })
 
@@ -116,4 +159,10 @@ export const bindListBoxProxy = (
       sync()
     })
   })
+
+  return () => {
+    followLabels()
+
+    sync()
+  }
 }

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, expect, test } from 'vitest'
+import { afterEach, expect, test, vi } from 'vitest'
 
 import { bindListBoxProxy } from './runtime/controllers/list-box-proxy.js'
 
@@ -24,9 +24,19 @@ const fixture = (selectAttributes = '') => {
   if (!root || !select || !list) throw new Error('Expected list box fixture')
 
   select.selectedIndex = -1
-  bindListBoxProxy(root, select, list, () => `generated-label-${++labelCount}`)
 
-  return { list, select }
+  const resync = bindListBoxProxy(root, select, list, () => `generated-label-${++labelCount}`)
+
+  return { list, resync, root, select }
+}
+
+const externalLabel = (target: string, text: string): HTMLLabelElement => {
+  const label = document.createElement('label')
+
+  label.htmlFor = target
+  label.textContent = text
+
+  return label
 }
 
 afterEach(() => {
@@ -151,4 +161,80 @@ test('generated invalid state clears when the list stops validating after an inv
   select.required = false
   await settle()
   expect(list.getAttribute('aria-invalid')).toBe('true')
+})
+
+test('Astro list boxes follow external labels that mount, change, or leave after enhancement', async () => {
+  const { list } = fixture()
+  const initial = document.querySelector('label')
+  const late = externalLabel('reviewer', 'Late reviewer')
+  const owned = externalLabel('reviewer', 'Owned reviewer')
+
+  owned.id = 'consumer-reviewer-label'
+  initial?.remove()
+  await settle()
+  expect(list.hasAttribute('aria-labelledby')).toBe(false)
+  document.body.append(late, owned)
+  await settle()
+  expect(late.id).not.toBe('')
+  expect(list.getAttribute('aria-labelledby')).toBe(`${late.id} consumer-reviewer-label`)
+  owned.id = 'renamed-reviewer-label'
+  late.htmlFor = 'elsewhere'
+  await settle()
+  expect(list.getAttribute('aria-labelledby')).toBe('renamed-reviewer-label')
+})
+
+test('a later external label keeps an explicit Astro list box name', async () => {
+  const { list } = fixture('aria-label="Primary reviewer"')
+
+  document.body.append(externalLabel('reviewer', 'Outside'))
+  await settle()
+  expect(list.getAttribute('aria-label')).toBe('Primary reviewer')
+  expect(list.hasAttribute('aria-labelledby')).toBe(false)
+})
+
+test('a removed Astro list box stops following labels until it is reinserted and resynchronized', async () => {
+  const { list, resync, root } = fixture()
+  const labels = vi.spyOn(HTMLSelectElement.prototype, 'labels', 'get')
+  const form = root.closest('form')
+
+  if (!form) throw new Error('Expected form')
+
+  form.remove()
+  await settle()
+  labels.mockClear()
+  document.body.append(externalLabel('reviewer', 'While removed'))
+  await settle()
+  expect(labels).not.toHaveBeenCalled()
+
+  document.body.append(form)
+  resync()
+
+  const late = externalLabel('reviewer', 'After return')
+
+  document.body.append(late)
+  await settle()
+  expect(list.getAttribute('aria-labelledby')?.split(' ')).toContain(late.id)
+  // Generated ids settle after one extra pass instead of looping.
+  labels.mockClear()
+  document.body.append(document.createElement('section'))
+  await settle()
+  expect(labels).not.toHaveBeenCalled()
+  labels.mockRestore()
+})
+
+test('a changed Astro select id follows the labels that target the new id', async () => {
+  const { list, select } = fixture()
+  const initial = document.querySelector('label')
+  const next = externalLabel('next-reviewer', 'Next reviewer')
+
+  document.body.append(next)
+  await settle()
+  expect(list.getAttribute('aria-labelledby')).toBe(initial?.id)
+  select.id = 'next-reviewer'
+  await settle()
+  expect(next.id).not.toBe('')
+  expect(list.getAttribute('aria-labelledby')).toBe(next.id)
+  select.id = 'unlabelled-reviewer'
+  await settle()
+  expect(list.hasAttribute('aria-labelledby')).toBe(false)
 })

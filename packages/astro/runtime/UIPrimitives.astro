@@ -776,9 +776,13 @@ const getListBoxSelectedValues = (select: HTMLSelectElement): string[] => [
 ].map(option => option.value)
 
 const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
+// A bound root that was removed and inserted again follows its external labels once reinitialized.
+const listBoxResyncs = new WeakMap<HTMLElement, () => void>()
 
 const initListBoxes = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-list-box]')) {
+    if (root.dataset.uiListBoxBound === 'true') listBoxResyncs.get(root)?.()
+
     if (root.dataset.uiListBoxBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const select = root.querySelector<HTMLSelectElement>('[data-ui-list-box-native]')
@@ -793,7 +797,7 @@ const initListBoxes = (scope: ParentNode): void => {
 
     list.hidden = false
 
-    bindListBoxProxy(root, select, list, () => nextRuntimeId('ui-list-box-label', root.ownerDocument))
+    listBoxResyncs.set(root, bindListBoxProxy(root, select, list, () => nextRuntimeId('ui-list-box-label', root.ownerDocument)))
 
     const optionIdPrefix = select.id || nextRuntimeId('ui-list-box', root.ownerDocument)
 

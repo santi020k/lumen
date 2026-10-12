@@ -17,6 +17,10 @@ const createFoundation = (
 type ManagedLoadingAttribute = 'aria-hidden' | 'role'
 
 const loadingSemanticAttributes = ['aria-hidden', 'aria-label', 'aria-labelledby', 'role'] as const
+// Internal ownership record that survives cloning and HTML serialization, unlike private fields.
+const loadingOwnershipAttribute = 'data-ui-loading-managed'
+const generatedLoadingValues: Readonly<Record<ManagedLoadingAttribute, string>> = { 'aria-hidden': 'true', role: 'status' }
+const isManagedLoadingAttribute = (value: string): value is ManagedLoadingAttribute => value === 'aria-hidden' || value === 'role'
 const skeletonSizeProperties = { height: '--ui-skeleton-height', width: '--ui-skeleton-width' } as const
 
 /**
@@ -31,6 +35,8 @@ class LumenLoadingIndicatorElement extends LumenElement {
   override connectedCallback(): void {
     super.connectedCallback()
 
+    this.#restoreOwnership()
+
     this.syncLoadingState()
   }
 
@@ -39,9 +45,52 @@ class LumenLoadingIndicatorElement extends LumenElement {
 
     if (this.#applying) return
 
-    if (name === 'aria-hidden' || name === 'role') this.#applied.delete(name)
+    if (name === 'aria-hidden' || name === 'role') {
+      this.#applied.delete(name)
+
+      // Copies replay attributes as additions; replacing or removing a value, attached or not, is the consumer's.
+      if (previousValue !== null && previousValue !== undefined) this.#forgetOwnership(name)
+    }
 
     if (this.isConnected) this.syncLoadingState()
+  }
+
+  // A cloned or parsed copy owns only the generated values it still carries; consumer values stay explicit.
+  #restoreOwnership(): void {
+    const recorded = this.getAttribute(loadingOwnershipAttribute)?.split(' ') ?? []
+
+    for (const name of recorded) {
+      if (isManagedLoadingAttribute(name) && this.getAttribute(name) === generatedLoadingValues[name]) {
+        this.#applied.add(name)
+      }
+    }
+  }
+
+  #recordOwnership(): void {
+    this.#writeOwnership([...this.#applied])
+  }
+
+  // A copy may not have restored ownership yet, so other recorded tokens are kept.
+  #forgetOwnership(name: ManagedLoadingAttribute): void {
+    const recorded = this.getAttribute(loadingOwnershipAttribute)?.split(' ') ?? []
+    const owned = [...recorded.filter(isManagedLoadingAttribute), ...this.#applied]
+
+    this.#writeOwnership(owned.filter(token => token !== name))
+  }
+
+  #writeOwnership(tokens: readonly ManagedLoadingAttribute[]): void {
+    const owned = [...new Set(tokens)].sort().join(' ')
+
+    if ((this.getAttribute(loadingOwnershipAttribute) ?? '') === owned) return
+
+    this.#applying = true
+
+    try {
+      if (owned) this.setAttribute(loadingOwnershipAttribute, owned)
+      else this.removeAttribute(loadingOwnershipAttribute)
+    } finally {
+      this.#applying = false
+    }
   }
 
   protected syncLoadingState(): void {
@@ -79,6 +128,8 @@ class LumenLoadingIndicatorElement extends LumenElement {
     } finally {
       this.#applying = false
     }
+
+    this.#recordOwnership()
   }
 }
 

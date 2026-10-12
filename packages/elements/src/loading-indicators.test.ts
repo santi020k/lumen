@@ -26,6 +26,29 @@ const semantics = (element: HTMLElement) => ({
   role: element.getAttribute('role')
 })
 
+const copyByClone = (element: HTMLElement): HTMLElement => {
+  const copy = element.cloneNode(true)
+
+  if (!(copy instanceof HTMLElement)) throw new Error('Expected an element copy.')
+
+  document.body.append(copy)
+
+  return copy
+}
+
+const copyByHtml = (element: HTMLElement): HTMLElement => {
+  const host = document.createElement('div')
+
+  host.innerHTML = element.outerHTML
+  document.body.append(host)
+
+  const copy = host.firstElementChild
+
+  if (!(copy instanceof HTMLElement)) throw new Error('Expected a parsed copy.')
+
+  return copy
+}
+
 beforeAll(() => {
   defineLumenFoundations()
 })
@@ -83,6 +106,90 @@ for (const tagName of ['lumen-skeleton', 'lumen-spinner'] as const) {
     document.body.append(element)
 
     expect(semantics(element)).toEqual({ hidden: 'true', role: null })
+  })
+
+  test(`${tagName} copies keep generated semantics generated after cloning or parsing their HTML`, () => {
+    const decorative = create(tagName)
+    const named = create(tagName, { 'aria-label': 'Loading' })
+    const clonedDecorative = copyByClone(decorative)
+    const clonedNamed = copyByClone(named)
+    const parsedCopy = copyByHtml(decorative)
+
+    clonedDecorative.setAttribute('aria-label', 'Loading orders')
+    expect(semantics(clonedDecorative)).toEqual({ hidden: null, role: 'status' })
+    clonedNamed.removeAttribute('aria-label')
+    expect(semantics(clonedNamed)).toEqual({ hidden: 'true', role: null })
+    parsedCopy.setAttribute('aria-labelledby', 'loading-title')
+    expect(semantics(parsedCopy)).toEqual({ hidden: null, role: 'status' })
+    parsedCopy.removeAttribute('aria-labelledby')
+    expect(semantics(parsedCopy)).toEqual({ hidden: 'true', role: null })
+  })
+
+  test(`${tagName} copies keep consumer ARIA overrides explicit`, () => {
+    const visible = create(tagName, { 'aria-hidden': 'false' })
+    const image = create(tagName, { 'aria-label': 'Saving', role: 'img' })
+    const takenOver = create(tagName)
+
+    // Rewriting the generated value while connected makes it the consumer's.
+    takenOver.setAttribute('aria-hidden', 'true')
+
+    const copies = [copyByClone(visible), copyByHtml(image), copyByClone(takenOver)]
+
+    for (const copy of copies) copy.setAttribute('aria-label', 'Loading')
+
+    expect(copies.map(semantics)).toEqual([
+      { hidden: 'false', role: 'status' },
+      { hidden: null, role: 'img' },
+      { hidden: 'true', role: 'status' }
+    ])
+    copies[1]?.removeAttribute('aria-label')
+    expect(copies[1] && semantics(copies[1])).toEqual({ hidden: 'true', role: 'img' })
+  })
+
+  test(`${tagName} keeps overrides written while detached or on a clone before its first attachment`, () => {
+    const decorative = create(tagName)
+    const named = create(tagName, { 'aria-label': 'Loading' })
+
+    decorative.remove()
+    decorative.setAttribute('aria-hidden', 'true')
+    document.body.append(decorative)
+    decorative.setAttribute('aria-label', 'Loading orders')
+    expect(semantics(decorative)).toEqual({ hidden: 'true', role: 'status' })
+
+    named.remove()
+    named.setAttribute('role', 'status')
+    named.removeAttribute('aria-label')
+    document.body.append(named)
+    expect(semantics(named)).toEqual({ hidden: 'true', role: 'status' })
+
+    const clone = create(tagName).cloneNode(true)
+
+    if (!(clone instanceof HTMLElement)) throw new Error('Expected an element copy.')
+
+    clone.setAttribute('aria-hidden', 'true')
+    document.body.append(clone)
+    clone.setAttribute('aria-label', 'Loading invoices')
+    expect(semantics(clone)).toEqual({ hidden: 'true', role: 'status' })
+    // Only values Lumen generated after the override stay recorded; the overridden attributes never return.
+    expect([decorative, named, clone].map(element => element.getAttribute('data-ui-loading-managed'))).toEqual([
+      'role', 'aria-hidden', 'role'
+    ])
+  })
+
+  test(`${tagName} ignores ownership records that do not match the generated values`, () => {
+    const host = document.createElement('div')
+
+    host.innerHTML = `<${tagName} aria-hidden="false" role="img" data-ui-loading-managed="aria-hidden role class bogus"></${tagName}>`
+    document.body.append(host)
+
+    const forged = host.firstElementChild
+
+    if (!(forged instanceof HTMLElement)) throw new Error('Expected a loading indicator.')
+
+    forged.setAttribute('aria-label', 'Loading')
+    expect(semantics(forged)).toEqual({ hidden: 'false', role: 'img' })
+    forged.removeAttribute('aria-label')
+    expect(semantics(forged)).toEqual({ hidden: 'false', role: 'img' })
   })
 }
 
