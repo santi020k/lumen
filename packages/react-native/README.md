@@ -250,6 +250,10 @@ the application supplies the active panel, so routing and data ownership stay ou
 </LumenTabs>
 ```
 
+`LumenPicker` inside a `LumenFieldGroup` inherits its validation hint and invalid state. The trigger
+announces the error before the description and uses the danger border while invalid; standalone
+pickers keep their existing behavior.
+
 Picker, Slider, and Gauge complete the shared phone control contract without adding another native
 dependency. Picker values remain controlled, Slider supports touch/drag plus screen-reader
 increment and decrement actions through one accessible adjustable track. Slider touch values follow the native right-to-left direction;

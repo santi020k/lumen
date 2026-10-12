@@ -44,7 +44,9 @@ Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
 test.each([
   { labelledBy: 'consumer-label' },
-  { labelledBy: ['consumer-label', 'consumer-context'] }
+  { labelledBy: ['consumer-label', 'consumer-context'] },
+  { labelledBy: '' },
+  { labelledBy: [] }
 ])('grouped text fields retain explicit native labelled-by ownership: $labelledBy', async ({ labelledBy }) => {
   const root = await renderNative(
     <LumenFieldGroup label="Inherited label">
@@ -834,6 +836,30 @@ describe('Lumen React Native component behavior', () => {
 
     expect(readProp(dateRange, 'aria-invalid')).toBe(true)
     expect(readProp(dateRange, 'accessibilityHint')).toBe('Choose a valid schedule')
+  })
+
+  test('pickers inside field groups announce the group error and description', async () => {
+    const root = await renderNative(
+      <>
+        <LumenFieldGroup description="Used for billing" errorMessage="Choose a plan" label="Plan" required>
+          <LumenPicker label="Plan" onValueChange={() => {}} options={[{ label: 'Free', value: 'free' }]} value="free" />
+        </LumenFieldGroup>
+        <LumenFieldGroup description="Shown on invoices" label="Currency">
+          <LumenPicker label="Currency" onValueChange={() => {}} options={[{ label: 'USD', value: 'usd' }]} value="usd" />
+        </LumenFieldGroup>
+        <LumenPicker label="Region" onValueChange={() => {}} options={[{ label: 'EU', value: 'eu' }]} value="eu" />
+      </>
+    )
+    const [invalidPicker, describedPicker, standalonePicker] = root.container.queryAll(
+      instance => readProp(instance, 'accessibilityRole') === 'combobox'
+    )
+
+    expect(invalidPicker && readProp(invalidPicker, 'accessibilityHint')).toBe('Choose a plan')
+    expect(invalidPicker && readProp(invalidPicker, 'aria-invalid')).toBe(true)
+    expect(describedPicker && readProp(describedPicker, 'accessibilityHint')).toBe('Shown on invoices')
+    expect(describedPicker && readProp(describedPicker, 'aria-invalid')).toBeUndefined()
+    expect(standalonePicker && readProp(standalonePicker, 'accessibilityHint')).toBeUndefined()
+    expect(standalonePicker && readProp(standalonePicker, 'aria-invalid')).toBeUndefined()
   })
 
   test('localizes required-field descriptions without exposing them on optional fields', async () => {

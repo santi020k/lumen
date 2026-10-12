@@ -15,7 +15,7 @@ import {
   type ViewProps } from 'react-native'
 
 import { useLumenAccessibilityAnnouncement } from './accessibility-announcement.js'
-import { LumenFieldContext } from './field-context.js'
+import { LumenFieldContext, type LumenFieldContextValue } from './field-context.js'
 import type { LumenTextInputRef, LumenViewRef } from './native-ref-types.js'
 import {
   resolveLumenAriaInvalid,
@@ -331,6 +331,25 @@ export interface LumenFieldGroupProps extends ViewProps {
   requiredLabel?: string
 }
 
+interface LumenFieldContextSource {
+  description: string | undefined
+  errorMessage: string | undefined
+  fieldId: string
+  label: string
+  required: boolean
+}
+
+const createLumenFieldContextValue = ({
+  description, errorMessage, fieldId, label, required
+}: LumenFieldContextSource): LumenFieldContextValue => ({
+  ...(description ? { description, descriptionId: `${fieldId}-description` } : {}),
+  error: Boolean(errorMessage),
+  ...(errorMessage ? { errorId: `${fieldId}-error`, errorMessage } : {}),
+  label,
+  labelId: `${fieldId}-label`,
+  required
+})
+
 const requiredFieldLabel = (label: string, required: boolean, requiredLabel: string): string | undefined => required ? `${label}, ${requiredLabel}` : undefined
 
 export const LumenFieldGroup = ({
@@ -351,15 +370,7 @@ export const LumenFieldGroup = ({
   const errorId = errorMessage ? `${fieldId}-error` : undefined
 
   return (
-    <LumenFieldContext value={{
-      ...(descriptionId ? { descriptionId } : {}),
-      error: Boolean(errorMessage),
-      ...(errorId ? { errorId } : {}),
-      label,
-      labelId,
-      required
-    }}
-    >
+    <LumenFieldContext value={createLumenFieldContextValue({ description, errorMessage, fieldId, label, required })}>
       <View ref={ref} {...props} style={[{ gap: theme.spacing.sm }, style]}>
         <Text
           accessibilityLabel={requiredFieldLabel(label, required, requiredLabel)}
