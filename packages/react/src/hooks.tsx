@@ -2568,9 +2568,19 @@ export const useInputOTP = ({
     }, [controlledValue, inputMode, length, onValueChange, pattern]
   )
 
+  const committedInputEventRef = useRef<Event | null>(null)
+
+  // React runs onInput and onChange for the same native input event; notify once per event.
   const commitInputValue = useCallback(
-    (input: HTMLInputElement): void => {
-      onValueChange?.(syncValue(input))
+    (input: HTMLInputElement, nativeEvent: Event): void => {
+      if (committedInputEventRef.current === nativeEvent) return
+
+      committedInputEventRef.current = nativeEvent
+
+      // Sync even without a callback so uncontrolled state follows the native value.
+      const nextValue = syncValue(input)
+
+      onValueChange?.(nextValue)
     }, [onValueChange, syncValue]
   )
 
@@ -2616,7 +2626,7 @@ export const useInputOTP = ({
         syncValue(event.currentTarget)
       }),
       onChange: composeHandlers(props.onChange, event => {
-        commitInputValue(event.currentTarget)
+        commitInputValue(event.currentTarget, event.nativeEvent)
       }),
       onClick: composeHandlers(props.onClick, event => {
         syncValue(event.currentTarget)
@@ -2627,7 +2637,7 @@ export const useInputOTP = ({
         syncValue(event.currentTarget)
       }),
       onInput: composeHandlers(props.onInput, event => {
-        commitInputValue(event.currentTarget)
+        commitInputValue(event.currentTarget, event.nativeEvent)
       }),
       onKeyDown: composeHandlers(props.onKeyDown, event => {
         if (event.key === 'ArrowLeft') {
@@ -2676,7 +2686,16 @@ export const useInputOTP = ({
 
         event.preventDefault()
 
-        setValue(pasted)
+        const input = event.currentTarget
+        const sanitizedValue = sanitizeInputOtpValue(pasted, length, inputMode, pattern)
+
+        // The native setter keeps React's value tracker honest, so the dispatched input event reaches
+        // consumer onChange handlers and onValueChange exactly like typed input.
+        Reflect.set(HTMLInputElement.prototype, 'value', sanitizedValue, input)
+
+        input.setSelectionRange(sanitizedValue.length, sanitizedValue.length)
+
+        input.dispatchEvent(new Event('input', { bubbles: true }))
       }),
       pattern: props.pattern ?? pattern,
       ref: node => {
@@ -2695,7 +2714,6 @@ export const useInputOTP = ({
       length,
       pattern,
       setSelection,
-      setValue,
       syncValue,
       value
     ]
