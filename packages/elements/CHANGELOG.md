@@ -27,6 +27,12 @@
   and label association, Calendar selections reach React state, and InputOTP segments stay rendered by
   React. Standards-based `data-ui-*` markup and `lumen-*` elements are enhanced as before.
 
+- Astro `ListBox` names its visible list from external labels that mount, change, or leave after enhancement, stops
+  following labels when its root leaves the document, and resynchronizes when the same root is reinserted and
+  `LumenInitUiPrimitives` runs again. Elements `lumen-skeleton` and `lumen-spinner` copies made by cloning or
+  parsing their HTML again keep Lumen-generated `aria-hidden` and `role` values generated, so naming a copy announces it,
+  while consumer overrides stay explicit.
+
 - [#103](https://github.com/santi020k/lumen/pull/103) [`936a640`](https://github.com/santi020k/lumen/commit/936a640b6ec1f9d635f9bb9bee878471996dcab1) Thanks [@santi020k](https://github.com/santi020k)! - Fix DatePicker state when applications load values and provide validation feedback.
   
   - React reopens the calendar on the current selected month without preventing month navigation.
