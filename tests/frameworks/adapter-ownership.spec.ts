@@ -5,9 +5,28 @@ const openPage = async (page: Page) => {
   await expect(page.locator('main')).toHaveAttribute('data-elements-registered', 'true');
   await page.getByRole('button', { name: 'Mount late islands' }).click();
   await expect(page.locator('[data-ownership-island="late"]')).toBeVisible();
+  await page.getByRole('button', { name: 'Enhance controls' }).click();
+  await expect(page.locator('main')).toHaveAttribute('data-elements-enhanced', 'true');
 };
 
 for (const prefix of ['early', 'late'] as const) {
+  test(`${prefix} React ListBox selection changes once with Elements registered`, async ({ page }) => {
+    await openPage(page);
+    const island = page.locator(`[data-ownership-island="${prefix}"]`);
+    const list = island.getByRole('listbox', { name: `${prefix} reviewers`, exact: true });
+    await list.getByRole('option', { name: 'Bruno' }).click();
+    await expect(island.locator('[data-ownership-reviewers]')).toHaveText('Bruno');
+    await expect(island.locator('[data-ownership-reviewer-changes]')).toHaveText('1');
+    await expect(island.locator('[data-ownership-reviewer-inputs]')).toHaveText('1');
+    await expect(list.getByRole('option', { name: 'Bruno' })).toHaveAttribute('aria-selected', 'true');
+    await list.focus();
+    await page.keyboard.press('Home');
+    await page.keyboard.press('Space');
+    await expect(island.locator('[data-ownership-reviewers]')).toHaveText('Bruno,Amina');
+    await expect(island.locator('[data-ownership-reviewer-changes]')).toHaveText('2');
+    await expect(island.locator('[data-ownership-reviewer-inputs]')).toHaveText('2');
+  });
+
   test(`${prefix} React islands keep React ownership after Elements registration`, async ({ page }) => {
     await openPage(page);
     const island = page.locator(`[data-ownership-island="${prefix}"]`);

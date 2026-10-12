@@ -1,0 +1,65 @@
+---
+import '@santi020k/lumen/styles.css'
+
+import { Button, Form, Label, ListBox, Stack, Typography } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+
+const reviewers = [
+  { label: 'Amina', value: 'amina' },
+  { label: 'Bruno', value: 'bruno' },
+  { label: 'Chen', value: 'chen' }
+]
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>ListBox adapter regression fixture</title>
+  </head>
+  <body>
+    <main>
+      <Stack gap="lg">
+        <Typography><h1>ListBox adapter regression fixture</h1></Typography>
+        <Typography id="list-help">Choose reviewers for this item.</Typography>
+        <Typography id="list-error">Choose at least one reviewer.</Typography>
+        <Form enhance={false} id="astro-list-form">
+          <Button type="button" tabindex="0">Before Astro</Button>
+          <ListBox label="Astro reviewers" name="reviewers" multiple required options={reviewers} />
+          <Button type="submit" tabindex="0">Submit Astro</Button>
+          <Button type="reset">Reset Astro</Button>
+        </Form>
+        <Stack id="unnamed-lists">
+          <ListBox label="First unnamed list" options={reviewers} />
+          <ListBox label="Second unnamed list" options={reviewers} />
+        </Stack>
+        <Form enhance={false} id="elements-list-form">
+          <Button type="button" tabindex="0">Before Elements</Button>
+          <Label for="elements-reviewers">Elements reviewers</Label>
+          <!-- Native select and option children are the Elements ListBox enhancement contract. -->
+          <lumen-list-box>
+            <select id="elements-reviewers" name="reviewers" multiple required>
+              {reviewers.map(reviewer => <option value={reviewer.value}>{reviewer.label}</option>)}
+            </select>
+          </lumen-list-box>
+          <Button type="submit" tabindex="0">Submit Elements</Button>
+          <Button type="reset">Reset Elements</Button>
+        </Form>
+      </Stack>
+    </main>
+    <UIPrimitives />
+    <script>
+      import { enhanceLumenListBoxes } from '@santi020k/lumen-elements'
+
+      for (const root of document.querySelectorAll('lumen-list-box')) enhanceLumenListBoxes(root)
+
+      for (const form of document.querySelectorAll('form')) {
+        form.addEventListener('submit', event => {
+ event.preventDefault()
+})
+      }
+</script>
+  </body>
+</html>

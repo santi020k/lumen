@@ -1807,6 +1807,7 @@
 
 .ui-date-picker__popover {
   width: min(21rem, calc(100vw - 2rem));
+  color: inherit;
   max-height: none;
   overflow: visible;
   border-radius: var(--ui-radius-lg);

@@ -63,7 +63,8 @@ if (Array.isArray(value)) initialValues = value
 else if (value !== undefined) initialValues = [value]
 
 const selectedValues = new Set(initialValues)
-const controlId = id ?? `ui-list-box-${name ?? 'field'}`
+// Named lists keep their stable id; unnamed lists need a unique one so labels and options never collide.
+const controlId = id ?? (name ? `ui-list-box-${name}` : `ui-list-box-${Math.random().toString(36).slice(2)}`)
 const listId = `${controlId}-list`
 const { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-list-box'], classProp, className)
 ---

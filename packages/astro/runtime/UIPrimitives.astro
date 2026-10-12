@@ -9,7 +9,7 @@
 ---
 
 <script>
-import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
+import { connectLumenFloatingPanel, isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
   coerceThemePreset,
   createLumenKanbanMoveDetail,
@@ -36,6 +36,7 @@ import {
 import { initAmountFields } from './controllers/amount-field'
 import { clearComboboxes, closeCombobox, initComboboxes } from './controllers/combobox'
 import { initDataTableSorting } from './controllers/data-table'
+import { bindListBoxProxy } from './controllers/list-box-proxy'
 import { initMessageFeeds } from './controllers/message-scroller'
 import { initOptionalMediaControllers } from './controllers/optional-media'
 import { initProgress } from './controllers/progress'
@@ -774,9 +775,11 @@ const getListBoxSelectedValues = (select: HTMLSelectElement): string[] => [
   ...select.selectedOptions
 ].map(option => option.value)
 
+const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
+
 const initListBoxes = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-list-box]')) {
-    if (root.dataset.uiListBoxBound === 'true') continue
+    if (root.dataset.uiListBoxBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const select = root.querySelector<HTMLSelectElement>('[data-ui-list-box-native]')
     const list = root.querySelector<HTMLElement>('[data-ui-list-box-list]')
@@ -790,6 +793,10 @@ const initListBoxes = (scope: ParentNode): void => {
 
     list.hidden = false
 
+    bindListBoxProxy(root, select, list, () => nextRuntimeId('ui-list-box-label', root.ownerDocument))
+
+    const optionIdPrefix = select.id || nextRuntimeId('ui-list-box', root.ownerDocument)
+
     let activeIndex = Math.max(
       0, options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
     )
@@ -799,7 +806,7 @@ const initListBoxes = (scope: ParentNode): void => {
 
     const syncActive = (): void => {
       options.forEach((option, index) => {
-        option.id ||= `${select.id || 'ui-list-box'}-option-${index}`
+        option.id ||= `${optionIdPrefix}-option-${index}`
 
         option.dataset.active = index === activeIndex ? 'true' : 'false'
       })
@@ -2206,8 +2213,6 @@ const sanitizeOtpValue = (input: HTMLInputElement, value: string, length: number
 }
 
 // Markup whose behavior another adapter owns, such as a React island, is never enhanced here.
-const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
-
 const initInputOtpFields = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-input-otp]')) {
     if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
@@ -2971,6 +2976,9 @@ const formatDatePickerValue = (value: string, placeholder: string, locale: strin
   }).format(date)
 }
 
+// Each open picker's shared floating-panel connection; closing disconnects it.
+const datePickerPanels = new WeakMap<HTMLElement, () => void>()
+
 const closeDatePicker = (root: HTMLElement, restoreFocus = false): void => {
   if (isOwnedByAnotherAdapter(root)) return
 
@@ -2978,6 +2986,11 @@ const closeDatePicker = (root: HTMLElement, restoreFocus = false): void => {
   const popover = root.querySelector<HTMLElement>('[data-ui-date-picker-popover]')
 
   if (!trigger || !popover) return
+
+  // Leave the top layer and restore the popover's inline styles before hiding it.
+  datePickerPanels.get(root)?.()
+
+  datePickerPanels.delete(root)
 
   popover.hidden = true
 
@@ -3060,6 +3073,14 @@ const openDatePicker = (root: HTMLElement): void => {
   popover.hidden = false
 
   popover.dataset.state = 'open'
+
+  datePickerPanels.get(root)?.()
+
+  datePickerPanels.set(root, connectLumenFloatingPanel(popover, trigger, {
+    onDismiss: () => {
+      closeDatePicker(root)
+    }
+  }))
 
   trigger.setAttribute('aria-expanded', 'true')
 

@@ -354,6 +354,20 @@ same-origin iframe documents.
 Data-mode collections preserve iframe keyboard focus across distant scrolling and keyed updates,
 and return focus to the list when the focused record is removed.
 
+## Floating panel placement
+
+`connectLumenFloatingPanel(panel, trigger, { onDismiss })` shows a panel anchored to its trigger. When the
+Popover API exists the panel enters the top layer, so scrolling or transformed dialogs cannot clip it;
+older browsers keep fixed placement. The panel flips above or below to stay in the visual viewport,
+aligns to the trigger's logical start or end in RTL, and follows scroll, resize, and enclosing transform
+transitions or animations once they settle. `onDismiss` runs when focus moves outside the panel and
+trigger, when the trigger's containing dialog closes, or when the trigger or panel leaves the document.
+Pass `placement`, `offset`, `collisionPadding`, or an `initialFocus` selector when needed. Connecting
+makes the panel visible, and the caller owns hiding it again: on dismissal, set your closed state and hide the
+panel, then call the returned cleanup. Cleanup leaves the top layer, returns owned focus to the trigger
+without stealing focus handed elsewhere, restores the panel's inline styles and popover attributes, and
+removes every listener and observer. React, Astro, and Elements date pickers and React menus share this helper.
+
 ## Virtual collections and direction
 
 `createLumenVirtualCollectionController(root, { items, getKey, renderItem, itemSize, overscan })`

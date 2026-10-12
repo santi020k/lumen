@@ -6,6 +6,7 @@ import {
   coerceThemeBuilderMode,
   coerceThemeBuilderScheme,
   coerceThemePreset,
+  connectLumenFloatingPanel,
   createLumenAttachmentPreviewController,
   createLumenBarGeometry,
   createLumenChartDatumActivation,
@@ -1685,6 +1686,122 @@ const getFocusable = (root: ParentNode | null): HTMLElement[] => {
 const getOwnedTarget = (event: Event): Node | null => event.target instanceof Node ? event.target : null
 // Markup whose behavior another adapter owns, such as a React island, is never enhanced here.
 const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
+const listBoxForwardedAttributes = ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage'] as const
+const listBoxObservedAttributes = [...listBoxForwardedAttributes, 'aria-invalid', 'disabled', 'required']
+
+// The first invalid control owns focus so several invalid fields do not race for it.
+const isFirstInvalidListBox = (select: HTMLSelectElement): boolean => {
+  const form = select.form
+
+  if (!form) return true
+
+  for (const element of form.elements) {
+    if (element.matches(':invalid') && element.tagName !== 'FIELDSET') return element === select
+  }
+
+  return true
+}
+
+const setOptionalListBoxAttribute = (element: HTMLElement, name: string, value: string | null): void => {
+  if (value === null) element.removeAttribute(name)
+  else element.setAttribute(name, value)
+}
+
+const syncListBoxName = (
+  root: HTMLElement,
+  select: HTMLSelectElement,
+  list: HTMLElement,
+  listOwned: ReadonlySet<string>,
+  createLabelId: () => string
+): void => {
+  for (const name of listBoxForwardedAttributes) {
+    if (listOwned.has(name)) continue
+
+    setOptionalListBoxAttribute(list, name, select.getAttribute(name) ?? (name === 'aria-label' ? root.getAttribute('aria-label') : null))
+  }
+
+  if (listOwned.has('aria-labelledby') || list.hasAttribute('aria-label') || list.hasAttribute('aria-labelledby')) return
+
+  const labelIds = [...select.labels].map(label => {
+    label.id ||= createLabelId()
+
+    return label.id
+  })
+
+  if (labelIds.length) list.setAttribute('aria-labelledby', labelIds.join(' '))
+}
+
+/**
+ * Once a list box is enhanced the visible list is its only focus stop and accessible control, while the
+ * native select keeps form submission, validation, and reset. Naming, description, error, required, and
+ * disabled semantics follow the select as they change, focus that reaches the select moves to the list,
+ * and native invalid events mark the list invalid until a valid change or an accepted reset. Consumer
+ * `aria-invalid` on the select always wins over generated state.
+ */
+const bindListBoxProxy = (
+  root: HTMLElement,
+  select: HTMLSelectElement,
+  list: HTMLElement,
+  createLabelId: () => string
+): void => {
+  // Attributes authored on the list itself stay under the author's control.
+  const listOwned = new Set<string>(listBoxForwardedAttributes.filter(name => list.hasAttribute(name)))
+  let generatedInvalid = false
+
+  const sync = (): void => {
+    select.tabIndex = -1
+
+    select.setAttribute('aria-hidden', 'true')
+
+    syncListBoxName(root, select, list, listOwned, createLabelId)
+
+    setOptionalListBoxAttribute(list, 'aria-required', select.required ? 'true' : null)
+
+    setOptionalListBoxAttribute(list, 'aria-invalid', select.getAttribute('aria-invalid') ?? (generatedInvalid ? 'true' : null))
+
+    list.tabIndex = select.disabled ? -1 : 0
+
+    setOptionalListBoxAttribute(list, 'aria-disabled', select.disabled ? 'true' : null)
+  }
+
+  sync()
+
+  new MutationObserver(sync).observe(select, { attributeFilter: listBoxObservedAttributes, attributes: true })
+
+  select.addEventListener('focus', () => {
+    // Only real select focus, such as a label click, moves to the list; focus moved elsewhere stays put.
+    if (select.ownerDocument.activeElement === select && !select.disabled) list.focus({ preventScroll: true })
+  })
+
+  select.addEventListener('invalid', event => {
+    event.preventDefault()
+
+    generatedInvalid = true
+
+    sync()
+
+    if (isFirstInvalidListBox(select) && !select.disabled) list.focus()
+  })
+
+  select.addEventListener('change', () => {
+    if (!select.validity.valid) return
+
+    generatedInvalid = false
+
+    sync()
+  })
+
+  select.form?.addEventListener('reset', event => {
+    // Reset listeners may cancel the reset; only an accepted reset clears generated invalid state.
+    globalThis.setTimeout(() => {
+      if (event.defaultPrevented) return
+
+      generatedInvalid = false
+
+      sync()
+    })
+  })
+}
 
 const getScopedElements = <ScopedElement extends Element>(
   scope: ParentNode,
@@ -2117,7 +2234,7 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
   for (const root of getScopedElements<HTMLElement>(
     scope, 'lumen-list-box, [data-ui-list-box]'
   )) {
-    if (root.dataset.uiListBoxBound === 'true') continue
+    if (root.dataset.uiListBoxBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     let select = root.querySelector<HTMLSelectElement>(
       '[data-ui-list-box-native], select'
@@ -2177,7 +2294,7 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
 
       list.tabIndex = select.disabled ? -1 : 0
 
-      list.toggleAttribute('aria-multiselectable', select.multiple)
+      list.setAttribute('aria-multiselectable', String(select.multiple))
 
       const nativeGroups = new Map<HTMLOptGroupElement, HTMLElement>()
 
@@ -2212,7 +2329,13 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
       ...list.querySelectorAll<HTMLElement>('[data-ui-list-box-option]')
     ]
 
-    list.toggleAttribute('aria-busy', loading)
+    if (loading) list.setAttribute('aria-busy', 'true')
+    else list.removeAttribute('aria-busy')
+
+    bindListBoxProxy(root, select, list, () => createId('ui-list-box-label'))
+
+    // Unnamed lists share no id, so each list gets its own option id prefix.
+    const optionIdPrefix = select.id || createId('ui-list-box')
 
     if (!options.length) {
       const message = document.createElement('div')
@@ -2249,7 +2372,7 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
 
     const syncActive = (): void => {
       options.forEach((option, index) => {
-        option.id ||= `${select.id || 'ui-list-box'}-option-${index}`
+        option.id ||= `${optionIdPrefix}-option-${index}`
 
         option.dataset.active = index === activeIndex ? 'true' : 'false'
       })
@@ -4330,9 +4453,14 @@ const initDatePickers = (scope: ParentNode): void => {
 
     let outsideController: AbortController | undefined
     let invalidAttempted = false
+    let disconnectPanel: (() => void) | undefined
 
     const closePopover = (restoreFocus = false): void => {
       outsideController?.abort()
+
+      disconnectPanel?.()
+
+      disconnectPanel = undefined
 
       popover.hidden = true
 
@@ -4402,6 +4530,14 @@ const initDatePickers = (scope: ParentNode): void => {
       popover.dataset.state = 'open'
 
       trigger.setAttribute('aria-expanded', 'true')
+
+      disconnectPanel?.()
+
+      disconnectPanel = connectLumenFloatingPanel(popover, trigger, {
+        onDismiss: () => {
+          closePopover()
+        }
+      })
 
       outsideController = new AbortController()
 

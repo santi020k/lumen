@@ -182,6 +182,7 @@ export {
   type LumenFigmaVariableMode,
   type LumenStructureDesignToken
 } from './figma.js'
+export { connectLumenFloatingPanel, type LumenFloatingPanelOptions, type LumenFloatingPanelPlacement } from './floating-panel.js'
 export {
   createLumenFormFailure,
   createLumenFormSuccess,

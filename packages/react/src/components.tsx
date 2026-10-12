@@ -108,6 +108,7 @@ import { ChartInspection } from './chart-inspection.js'
 import { ChartInteraction, type ChartInteractionProps } from './chart-interaction.js'
 import { getChartPlotLabel } from './chart-label.js'
 import { createReactChartDatumAction, formatReactChartTableValue, type ReactChartDatumAction, readReactChartDatumActivation } from './chart-recipes.js'
+import { useFloatingPanel } from './floating-panel.js'
 import {
   type DialogOptions,
   type DropdownMenuController,
@@ -2766,6 +2767,7 @@ export const DatePicker = ({
   const rootRef = useRef<HTMLDivElement | null>(null)
   const nativeInputRef = useRef<HTMLInputElement | null>(null)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const popoverRef = useRef<HTMLDivElement | null>(null)
   const [internalValue, setInternalValue] = useState(defaultValue ?? '')
   const { open: isOpen, setOpen } = useDatePickerDisclosure(disabled === true || readOnly === true)
   const selectedValue = value ?? internalValue
@@ -2777,6 +2779,13 @@ export const DatePicker = ({
   const accessibleLabel = props['aria-label']
   const consumerInvalid = props['aria-invalid']
   const invalidAttemptedRef = useRef(false)
+
+  const closePicker = useCallback(() => {
+    setOpen(false)
+  }, [setOpen])
+
+  // Lift the calendar into the top layer so scrolling dialogs cannot clip it.
+  useFloatingPanel(isOpen, triggerRef, popoverRef, closePicker, {})
 
   const syncValidity = useCallback(() => {
     const native = nativeInputRef.current
@@ -3001,6 +3010,7 @@ export const DatePicker = ({
           data-ui-date-picker-popover
           hidden={!isOpen}
           id={popoverId}
+          ref={popoverRef}
           role="dialog"
         >
           <Calendar
@@ -5377,6 +5387,7 @@ const ListBoxVisibleOptions = ({
     const options = group.options.map(option => (
       <div
         aria-disabled={option.disabled ? true : undefined}
+        id={`${controlId}-option-${option.index}`}
         aria-selected={selectedValues.has(option.value)}
         className={composeClassName(
           'ui-list-box__option', option.index === activeIndex && 'ui-list-box__option--active'
@@ -5445,11 +5456,77 @@ const ListBoxLabel = ({
   label: ReactNode
 }) => label ?
   (
-    <label className="ui-label" htmlFor={controlId}>
+    <label className="ui-label" htmlFor={controlId} id={`${controlId}-label`}>
       {label}
     </label>
   ) :
   null
+
+type ListBoxAriaProps = Pick<
+  ListBoxProps, 'aria-describedby' | 'aria-errormessage' | 'aria-invalid' | 'aria-label' | 'aria-labelledby'
+>
+
+interface ListBoxListState {
+  activeOptionId: string | undefined
+  controlId: string
+  disabled: boolean
+  generatedInvalid: boolean
+  label: ReactNode
+  loading: boolean
+  multiple: boolean
+  required: boolean
+}
+
+// Consumer naming and error semantics describe the visible list, which is the control people operate.
+const getListBoxListAria = (props: ListBoxAriaProps, state: ListBoxListState) => ({
+  'aria-activedescendant': state.loading ? undefined : state.activeOptionId,
+  'aria-busy': optionalTrue(state.loading),
+  'aria-describedby': props['aria-describedby'],
+  'aria-disabled': optionalTrue(state.disabled || state.loading),
+  'aria-errormessage': props['aria-errormessage'],
+  'aria-invalid': props['aria-invalid'] ?? (state.generatedInvalid ? true : undefined),
+  'aria-label': props['aria-label'],
+  'aria-labelledby': props['aria-labelledby'] ?? (props['aria-label'] === undefined && state.label ? `${state.controlId}-label` : undefined),
+  'aria-multiselectable': optionalTrue(state.multiple),
+  'aria-required': optionalTrue(state.required)
+})
+
+const isEnabledListBoxOption = (options: readonly Option[], index: number): boolean => {
+  const option = options[index]
+
+  return option !== undefined && !option.disabled
+}
+
+// Options can change after render, so the active option falls back to the first selected enabled option,
+// then the first enabled one, and never rests on a missing or disabled entry.
+const resolveListBoxActiveIndex = (
+  options: readonly Option[], activeIndex: number, selectedValues: ReadonlySet<string>
+): number => {
+  if (isEnabledListBoxOption(options, activeIndex)) return activeIndex
+
+  const selectedIndex = options.findIndex(option => !option.disabled && selectedValues.has(option.value))
+
+  return selectedIndex >= 0 ? selectedIndex : options.findIndex(option => !option.disabled)
+}
+
+const isInsideListBox = (root: HTMLElement | null, target: EventTarget | null): boolean => {
+  const NodeType = root?.ownerDocument.defaultView?.Node
+
+  return NodeType !== undefined && target instanceof NodeType && root?.contains(target) === true
+}
+
+// The first invalid control owns focus so several invalid fields do not race for it.
+const isFirstInvalidControl = (select: HTMLSelectElement): boolean => {
+  const form = select.form
+
+  if (!form) return true
+
+  for (const element of form.elements) {
+    if (element.matches(':invalid') && element.tagName !== 'FIELDSET') return element === select
+  }
+
+  return true
+}
 
 const normalizeListBoxProps = ({
   disabled = false,
@@ -5505,13 +5582,19 @@ export const ListBox = (inputProps: ListBoxProps) => {
   const [internalValues, setInternalValues] = useState(() => normalizeListBoxValues(defaultValue))
   const selectedValues = getListBoxSelectedValues(value, internalValues)
   const selectedSet = new Set(selectedValues)
-
-  const firstEnabledIndex = Math.max(
-    0, normalizedOptions.findIndex(option => !option.disabled)
-  )
-
-  const [activeIndex, setActiveIndex] = useState(firstEnabledIndex)
+  const firstEnabledIndex = normalizedOptions.findIndex(option => !option.disabled)
+  const isEnabledOption = (index: number): boolean => isEnabledListBoxOption(normalizedOptions, index)
+  // -1 means "no explicit active option"; see resolveListBoxActiveIndex.
+  const [activeIndex, setActiveIndex] = useState(-1)
+  const resolvedActiveIndex = resolveListBoxActiveIndex(normalizedOptions, activeIndex, selectedSet)
   const selectRef = useRef<HTMLSelectElement | null>(null)
+  const listRef = useRef<HTMLDivElement | null>(null)
+  const rootRef = useRef<HTMLDivElement | null>(null)
+  // Consumer focus callbacks describe the whole control, once per entry and exit.
+  const focusWithinRef = useRef(false)
+  // Only invalid state Lumen generated from native validation; consumer aria-invalid always wins.
+  const [generatedInvalid, setGeneratedInvalid] = useState(false)
+  const selectedKey = JSON.stringify(selectedValues)
   const typeaheadRef = useRef('')
 
   const typeaheadTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -5562,7 +5645,7 @@ export const ListBox = (inputProps: ListBoxProps) => {
   const moveActive = (direction: 1 | -1) => {
     if (!normalizedOptions.length || loading) return
 
-    let nextIndex = activeIndex
+    let nextIndex = Math.max(0, resolvedActiveIndex)
 
     for (const _option of normalizedOptions) {
       nextIndex =
@@ -5587,39 +5670,67 @@ export const ListBox = (inputProps: ListBoxProps) => {
 
   useEffect(() => {
     const select = selectRef.current
+
+    if (generatedInvalid && select && (!select.willValidate || select.validity.valid)) setGeneratedInvalid(false)
+  }, [disabled, generatedInvalid, loading, required, selectedKey])
+
+  const resetSourceRef = useRef({ defaultValue, value })
+
+  useLayoutEffect(() => {
+    resetSourceRef.current = { defaultValue, value }
+  })
+
+  useEffect(() => {
+    const select = selectRef.current
     const form = select?.form
 
-    if (!form || value !== undefined) return
+    if (!select || !form) return
 
-    const handleReset = () => {
-      setInternalValues(normalizeListBoxValues(defaultValue))
+    let resetTimer: ReturnType<typeof setTimeout> | undefined
 
-      setActiveIndex(firstEnabledIndex)
+    // Wait for reset listeners to run so a canceled reset keeps the current selection.
+    const handleReset = (event: Event) => {
+      clearTimeout(resetTimer)
+
+      resetTimer = setTimeout(() => {
+        if (event.defaultPrevented) return
+
+        const source = resetSourceRef.current
+        const defaults = normalizeListBoxValues(source.value ?? source.defaultValue)
+
+        if (source.value === undefined) setInternalValues(defaults)
+
+        for (const option of select.options) option.selected = defaults.includes(option.value)
+
+        setGeneratedInvalid(false)
+
+        setActiveIndex(-1)
+      })
     }
 
     form.addEventListener('reset', handleReset)
 
     return () => {
+      clearTimeout(resetTimer)
+
       form.removeEventListener('reset', handleReset)
     }
-  }, [defaultValue, firstEnabledIndex, value])
+  }, [props.form])
+
+  const activateIndex = (index: number) => {
+    if (index < 0) return
+
+    setActiveIndex(index)
+
+    if (selectionFollowsFocus) selectOption(index)
+  }
 
   const handleNavigationKey = (key: string): boolean => {
     if (key === 'ArrowDown') moveActive(1)
     else if (key === 'ArrowUp') moveActive(-1)
-    else if (key === 'Home') {
-      setActiveIndex(firstEnabledIndex)
-
-      if (selectionFollowsFocus) selectOption(firstEnabledIndex)
-    } else if (key === 'End') {
-      const lastEnabledIndex = findLastEnabledOptionIndex(normalizedOptions)
-
-      if (lastEnabledIndex >= 0) {
-        setActiveIndex(lastEnabledIndex)
-
-        if (selectionFollowsFocus) selectOption(lastEnabledIndex)
-      }
-    } else if (key === 'Enter' || key === ' ') selectOption(activeIndex)
+    else if (key === 'Home') activateIndex(firstEnabledIndex)
+    else if (key === 'End') activateIndex(findLastEnabledOptionIndex(normalizedOptions))
+    else if (key === 'Enter' || key === ' ') selectOption(resolvedActiveIndex)
     else return false
 
     return true
@@ -5664,10 +5775,14 @@ export const ListBox = (inputProps: ListBoxProps) => {
       className={composeClassName('ui-list-box', className)}
       data-multiple={multiple ? 'true' : undefined}
       data-ui-list-box
+      data-ui-owner="react"
+      ref={rootRef}
     >
       <ListBoxLabel controlId={controlId} label={label} />
       <select
         {...props}
+        // The visible list is the only focus stop and accessible control; the select keeps form semantics.
+        aria-hidden="true"
         className="ui-list-box__native"
         data-ui-enhanced
         data-ui-list-box-native
@@ -5675,33 +5790,86 @@ export const ListBox = (inputProps: ListBoxProps) => {
         id={controlId}
         multiple={multiple}
         name={name}
+        onChange={() => {
+          // The visible list owns selection; this controlled proxy only carries native form events.
+        }}
+        onBlur={event => {
+          if (!focusWithinRef.current || isInsideListBox(rootRef.current, event.relatedTarget)) return
+
+          focusWithinRef.current = false
+
+          props.onBlur?.(event)
+        }}
+        onFocus={event => {
+          if (!focusWithinRef.current) {
+            focusWithinRef.current = true
+
+            props.onFocus?.(event)
+          }
+
+          if (event.currentTarget.ownerDocument.activeElement === event.currentTarget) {
+            listRef.current?.focus({ preventScroll: true })
+          }
+        }}
+        onInvalid={event => {
+          props.onInvalid?.(event)
+
+          event.preventDefault()
+
+          setGeneratedInvalid(true)
+
+          if (isFirstInvalidControl(event.currentTarget)) listRef.current?.focus()
+        }}
         ref={node => {
           selectRef.current = node
 
           setRefValue(ref, node)
         }}
         required={required}
+        tabIndex={-1}
         value={getListBoxSelectValue(multiple, selectedValues)}
       >
+        {/* An empty choice keeps single selection unselected until the user picks an option. */}
+        {multiple ? null : <option value="" />}
         <ListBoxNativeOptions groups={optionGroups} />
       </select>
       <div
-        aria-busy={optionalTrue(loading)}
-        aria-disabled={optionalTrue(disabled || loading)}
-        aria-multiselectable={optionalTrue(multiple)}
+        {...getListBoxListAria(props, {
+          activeOptionId: resolvedActiveIndex >= 0 ? `${controlId}-option-${resolvedActiveIndex}` : undefined,
+          controlId,
+          disabled,
+          generatedInvalid,
+          label,
+          loading,
+          multiple,
+          required
+        })}
         className="ui-list-box__list"
         data-ui-list-box-list
+        onBlur={event => {
+          if (isInsideListBox(rootRef.current, event.relatedTarget)) return
+
+          selectRef.current?.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: event.relatedTarget }))
+        }}
+        onFocus={event => {
+          if (focusWithinRef.current) return
+
+          selectRef.current?.dispatchEvent(new FocusEvent('focusin', { bubbles: true, relatedTarget: event.relatedTarget }))
+        }}
         onKeyDown={handleListKeyDown}
+        ref={listRef}
         role="listbox"
         tabIndex={disabled || loading ? undefined : 0}
       >
         <ListBoxVisibleOptions
-          activeIndex={activeIndex}
+          activeIndex={resolvedActiveIndex}
           controlId={controlId}
           emptyMessage={emptyMessage}
           groups={optionGroups}
           loading={loading}
           onSelect={index => {
+            if (!isEnabledOption(index)) return
+
             setActiveIndex(index)
 
             selectOption(index)

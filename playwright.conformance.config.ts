@@ -47,13 +47,13 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   retries: process.env.CI ? 2 : 0,
   testDir: './tests/frameworks',
-  testMatch: ['framework-conformance.spec.ts', 'adapter-ownership.spec.ts'],
+  testMatch: ['framework-conformance.spec.ts', 'adapter-ownership.spec.ts', 'date-picker-dialog.spec.ts', 'list-box.spec.ts'],
   workers: 2,
   use: {
     baseURL
   },
   webServer: {
-    command: `pnpm --filter @santi020k/lumen-react run build && pnpm --filter @santi020k/lumen-elements run build && pnpm --filter @santi020k/lumen-next-smoke run build && node apps/next-smoke/node_modules/next/dist/bin/next start apps/next-smoke --hostname 127.0.0.1 --port ${port}`,
+    command: `pnpm --filter @santi020k/lumen-core run build && pnpm --filter @santi020k/lumen-react run build && pnpm --filter @santi020k/lumen-elements run build && pnpm --filter @santi020k/lumen-next-smoke run build && node apps/next-smoke/node_modules/next/dist/bin/next start apps/next-smoke --hostname 127.0.0.1 --port ${port}`,
     gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
     reuseExistingServer: false,
     url: baseURL
