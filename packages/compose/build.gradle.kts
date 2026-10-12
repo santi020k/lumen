@@ -31,7 +31,7 @@ apiValidation {
 
 fun Project.configureBinaryApiValidation() {
     pluginManager.withPlugin("com.android.library") {
-        dependencies.add("bcv-rt-jvm-cp", "org.jetbrains.kotlin:kotlin-metadata-jvm:2.4.20")
+        dependencies.add("bcv-rt-jvm-cp", "org.jetbrains.kotlin:kotlin-metadata-jvm:2.4.21")
 
         val generatedApi = layout.buildDirectory.file("api/${project.name}.api")
         val referenceApi = layout.projectDirectory.file("api/${project.name}.api")

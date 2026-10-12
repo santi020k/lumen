@@ -28,7 +28,7 @@
         "gradle": "9.8.0",
         "instrumentationApi": 35,
         "jdk": 21,
-        "kotlin": "2.4.20",
+        "kotlin": "2.4.21",
         "minSdk": 23
       }
     }

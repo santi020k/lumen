@@ -152,6 +152,14 @@ Retained phone metadata/validation, QR encoding, semantic version resolution, sc
 - Supply-chain age holds at selection time: Lucide 1.51.0 (published Oct 3 06:17 UTC), ESLint 10.12.0 (Oct 2 20:08 UTC), MCP server/client/core 2.3.0 and Express adapter 2.0.2 (Oct 2 17:44–17:48 UTC), EAS 24.9.0 and 24.10.0 (Oct 2 17:41/20:58 UTC). Latest policy-eligible releases selected instead. The regular `pnpm outdated` command applies the age policy, so registry publication metadata was checked separately.
 - Native tools already latest stable: Gradle 9.8.1, Android Gradle Plugin 9.4.1, Kotlin 2.4.20, Dokka 2.2.0, binary-compatibility-validator 0.18.2, activity-compose 1.13.0, libphonenumber 9.0.40, Espresso 3.7.0, AndroidX test JUnit 1.3.0 and runner 1.7.0. Swift packages have no external dependencies (only local package references). Platform SDK and minimum OS requirements were preserved.
 
+## v4.1 follow-up on October 12, 2026
+
+Android lint now identifies Kotlin 2.4.21 as the latest stable patch. Update the Compose compiler
+plugin and binary-validation metadata together from 2.4.20 to 2.4.21, including both Android
+consumers. The [official release notes](https://github.com/JetBrains/kotlin/releases/tag/v2.4.21)
+record the October 8 bug-fix release. JDK, Gradle, Android Gradle Plugin, SDK and minimum OS
+requirements remain unchanged.
+
 ## Generated icon impact
 
 Regenerated with `pnpm run generate:platform-icons`: 1864 interface (+4), 573 brand (unchanged), 1858 static web definitions (+4). New shared Lucide icons: bangladeshi-taka, layout-grid-circles, letters, printer-3d. Nut/nut-off use upstream compliant replacement artwork. The four additive icon cases and corresponding native API snapshots are reviewed together.
