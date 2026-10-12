@@ -99,12 +99,8 @@ const IntervalPlot = ({
                     width={mark.width}
                     height={mark.height}
                   >
-                    <title>
-                      {mark.label}
-                      :
-                      {' '}
-                      {formatValue(mark.value)}
-                    </title>
+                    {/* React SSR renders an SVG title with several children as empty, so it gets one string. */}
+                    <title>{`${mark.label}: ${formatValue(mark.value)}`}</title>
                   </rect>
                 ))}
               </g>
