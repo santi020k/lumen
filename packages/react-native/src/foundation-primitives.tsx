@@ -191,9 +191,10 @@ export interface LumenTextFieldProps extends TextInputProps {
 }
 
 const hasExplicitLumenTextFieldLabel = (
-  props: Pick<LumenTextFieldProps, 'accessibilityLabel' | 'aria-label' | 'aria-labelledby'>
+  props: Pick<LumenTextFieldProps, 'accessibilityLabel' | 'accessibilityLabelledBy' | 'aria-label' | 'aria-labelledby'>
 ): boolean => [
   props.accessibilityLabel,
+  props.accessibilityLabelledBy,
   props['aria-label'],
   props['aria-labelledby']
 ].some(value => value !== undefined)

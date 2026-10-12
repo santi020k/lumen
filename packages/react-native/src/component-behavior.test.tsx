@@ -42,6 +42,35 @@ import { LumenPicker, LumenRangeSlider, LumenSlider } from './value-components.j
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
+test.each([
+  { labelledBy: 'consumer-label' },
+  { labelledBy: ['consumer-label', 'consumer-context'] }
+])('grouped text fields retain explicit native labelled-by ownership: $labelledBy', async ({ labelledBy }) => {
+  const root = await renderNative(
+    <LumenFieldGroup label="Inherited label">
+      <LumenTextField accessibilityLabelledBy={labelledBy} />
+    </LumenFieldGroup>
+  )
+  const input = root.container.queryAll(instance => instance.type === 'TextInput')[0]
+  if (!input) throw new Error('Expected grouped text field')
+  expect(readProp(input, 'accessibilityLabelledBy')).toEqual(labelledBy)
+  expect(readProp(input, 'aria-labelledby')).toBeUndefined()
+  expect(readProp(input, 'accessibilityLabel')).toBeUndefined()
+})
+
+test('grouped text fields preserve explicit ARIA and native label references together', async () => {
+  const root = await renderNative(
+    <LumenFieldGroup label="Inherited label">
+      <LumenTextField accessibilityLabelledBy="native-label" aria-labelledby="aria-label" />
+    </LumenFieldGroup>
+  )
+  const input = root.container.queryAll(instance => instance.type === 'TextInput')[0]
+  if (!input) throw new Error('Expected grouped text field')
+  expect(readProp(input, 'accessibilityLabelledBy')).toBe('native-label')
+  expect(readProp(input, 'aria-labelledby')).toBe('aria-label')
+  expect(readProp(input, 'accessibilityLabel')).toBeUndefined()
+})
+
 const nativeDirection = vi.hoisted(() => ({ isRTL: false }))
 const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
 const nativeMotion = vi.hoisted(() => ({ enabled: false }))
