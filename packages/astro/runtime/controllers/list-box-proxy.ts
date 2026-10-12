@@ -69,6 +69,9 @@ export const bindListBoxProxy = (
 
     setOptionalAttribute(list, 'aria-required', select.required ? 'true' : null)
 
+    // A select that is valid again or barred from validation, such as disabled or no longer required, is not invalid.
+    if (!select.willValidate || select.validity.valid) generatedInvalid = false
+
     setOptionalAttribute(list, 'aria-invalid', select.getAttribute('aria-invalid') ?? (generatedInvalid ? 'true' : null))
 
     list.tabIndex = select.disabled ? -1 : 0

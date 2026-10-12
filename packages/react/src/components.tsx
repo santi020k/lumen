@@ -5469,12 +5469,38 @@ type ListBoxAriaProps = Pick<
 interface ListBoxListState {
   activeOptionId: string | undefined
   controlId: string
+  externalLabelledBy: string | undefined
   disabled: boolean
   generatedInvalid: boolean
   label: ReactNode
   loading: boolean
   multiple: boolean
   required: boolean
+}
+
+// Labels outside the component that target the hidden select; each gets an id so the list can reference it.
+const readExternalListBoxLabelIds = (root: HTMLElement, controlId: string): string | undefined => {
+  const ids: string[] = []
+  const select = root.querySelector<HTMLSelectElement>('[data-ui-list-box-native]')
+
+  for (const [index, external] of [...select?.labels ?? []].entries()) {
+    if (root.contains(external)) continue
+
+    external.id ||= `${controlId}-external-label-${index}`
+
+    ids.push(external.id)
+  }
+
+  return ids.length ? ids.join(' ') : undefined
+}
+
+// Explicit aria-labelledby wins, then aria-label, then the label prop, then labels pointing at the select.
+const resolveListBoxLabelledBy = (props: ListBoxAriaProps, state: ListBoxListState): string | undefined => {
+  if (props['aria-labelledby'] !== undefined) return props['aria-labelledby']
+
+  if (props['aria-label'] !== undefined) return undefined
+
+  return state.label ? `${state.controlId}-label` : state.externalLabelledBy
 }
 
 // Consumer naming and error semantics describe the visible list, which is the control people operate.
@@ -5486,7 +5512,7 @@ const getListBoxListAria = (props: ListBoxAriaProps, state: ListBoxListState) =>
   'aria-errormessage': props['aria-errormessage'],
   'aria-invalid': props['aria-invalid'] ?? (state.generatedInvalid ? true : undefined),
   'aria-label': props['aria-label'],
-  'aria-labelledby': props['aria-labelledby'] ?? (props['aria-label'] === undefined && state.label ? `${state.controlId}-label` : undefined),
+  'aria-labelledby': resolveListBoxLabelledBy(props, state),
   'aria-multiselectable': optionalTrue(state.multiple),
   'aria-required': optionalTrue(state.required)
 })
@@ -5590,6 +5616,19 @@ export const ListBox = (inputProps: ListBoxProps) => {
   const selectRef = useRef<HTMLSelectElement | null>(null)
   const listRef = useRef<HTMLDivElement | null>(null)
   const rootRef = useRef<HTMLDivElement | null>(null)
+  // Labels that point at the select by id name the visible list, since the select is hidden.
+  const [externalLabelledBy, setExternalLabelledBy] = useState<string | undefined>(undefined)
+
+  useLayoutEffect(() => {
+    const root = rootRef.current
+
+    if (!root) return
+
+    const ids = readExternalListBoxLabelIds(root, controlId)
+
+    if (ids !== externalLabelledBy) setExternalLabelledBy(ids)
+  }, [controlId, externalLabelledBy])
+
   // Consumer focus callbacks describe the whole control, once per entry and exit.
   const focusWithinRef = useRef(false)
   // Only invalid state Lumen generated from native validation; consumer aria-invalid always wins.
@@ -5837,6 +5876,7 @@ export const ListBox = (inputProps: ListBoxProps) => {
         {...getListBoxListAria(props, {
           activeOptionId: resolvedActiveIndex >= 0 ? `${controlId}-option-${resolvedActiveIndex}` : undefined,
           controlId,
+          externalLabelledBy,
           disabled,
           generatedInvalid,
           label,

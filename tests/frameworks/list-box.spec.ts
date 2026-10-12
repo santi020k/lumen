@@ -86,3 +86,15 @@ test('consumer focus callbacks fire once per entry and exit for label, pointer, 
   await page.getByRole('button', { name: 'Before' }).click();
   await expect(log).toHaveText('focus:reviewer blur:reviewer focus:reviewer blur:reviewer');
 });
+
+
+test('external labels name and focus the visible ListBox while explicit names keep precedence', async ({ page }) => {
+  const external = page.getByRole('listbox', { name: 'External reviewer', exact: true });
+
+  await expect(external).toBeVisible();
+  await page.getByText('External reviewer', { exact: true }).click();
+  await expect(external).toBeFocused();
+  await page.keyboard.press('ArrowDown');
+  await expect(external).toHaveAttribute('aria-activedescendant', /.+/);
+  await expect(page.getByRole('listbox', { name: 'Explicit reviewer name', exact: true })).toBeVisible();
+});

@@ -70,6 +70,25 @@ for (const adapter of ['Astro', 'Elements']) {
     await expect(list).toHaveAttribute('tabindex', '0')
   })
 
+  test(`${adapter} ListBox clears obsolete generated invalid state`, async ({ page }) => {
+    await page.goto('/internal/list-box-adapters')
+    const form = page.locator(`#${adapter.toLowerCase()}-list-form`)
+    const list = form.getByRole('listbox')
+    const native = form.locator('select')
+    await form.getByRole('button', { name: `Submit ${adapter}` }).click()
+    await expect(list).toHaveAttribute('aria-invalid', 'true')
+    await native.evaluate(element => { element.removeAttribute('required') })
+    await expect(list).not.toHaveAttribute('aria-invalid')
+    await native.evaluate(element => { element.setAttribute('required', '') })
+    await expect(list).not.toHaveAttribute('aria-invalid')
+    await form.getByRole('button', { name: `Submit ${adapter}` }).click()
+    await expect(list).toHaveAttribute('aria-invalid', 'true')
+    await native.evaluate(element => { element.setAttribute('disabled', '') })
+    await expect(list).not.toHaveAttribute('aria-invalid')
+    await native.evaluate(element => { element.removeAttribute('disabled') })
+    await expect(list).not.toHaveAttribute('aria-invalid')
+  })
+
   test(`${adapter} ListBox mirrors changing consumer accessibility state`, async ({ page }) => {
     await page.goto('/internal/list-box-adapters')
     const form = page.locator(`#${adapter.toLowerCase()}-list-form`)

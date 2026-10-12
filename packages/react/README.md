@@ -263,6 +263,7 @@ without wrapping or changing the resolver contract.
 See the [forms guide](https://lumen.santi020k.com/docs/forms/react-hook-form) for typed examples.
 
 `ListBox` exposes a single focusable list with `label`, `aria-label`, or `aria-labelledby` naming.
+External labels targeting its `id` and wrapping labels also name the visible list; explicit names take precedence.
 Its native select retains form submission and required validation while staying out of the tab order
 and accessibility tree. An unselected required single list remains invalid until a choice is made;
 validation focuses the visible list. Canceled form resets preserve the current selection, and

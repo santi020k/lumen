@@ -291,3 +291,61 @@ test('reset uses the latest controlled selection supplied by the consumer reset 
   expect(new FormData(form).get('reviewer')).toBe('amina')
   expect(container.querySelector('[data-value="amina"]')?.getAttribute('aria-selected')).toBe('true')
 })
+
+test('an external label names the visible list and its click focuses the list', async () => {
+  await run(() => {
+    root.render(
+      <>
+        <label htmlFor="regions" id="regions-label">Regions</label>
+        <ListBox id="regions" name="regions" options={options} />
+      </>
+    )
+  })
+
+  const label = container.querySelector('label')
+  const [list] = lists()
+
+  expect(label?.id).not.toBe('')
+  expect(list?.getAttribute('aria-labelledby')).toBe(label?.id)
+
+  // jsdom does not move focus on label activation; browsers focus the labelled select, which redirects.
+  await run(() => {
+    container.querySelector('select')?.focus()
+  })
+  expect(document.activeElement).toBe(list)
+})
+
+test('explicit names and the label prop keep precedence over an external label', async () => {
+  await run(() => {
+    root.render(
+      <>
+        <label htmlFor="named">Outside</label>
+        <ListBox aria-label="Explicit" id="named" options={options} />
+        <label htmlFor="labelled">Outside</label>
+        <ListBox id="labelled" label="Own label" options={options} />
+      </>
+    )
+  })
+
+  const [named, labelled] = lists()
+
+  expect(named?.getAttribute('aria-label')).toBe('Explicit')
+  expect(named?.hasAttribute('aria-labelledby')).toBe(false)
+  expect(labelled?.getAttribute('aria-labelledby')).toBe('labelled-label')
+})
+
+test('a wrapping label names the visible list', async () => {
+  await run(() => {
+    root.render(
+      <label>
+        Wrapped regions
+        <ListBox name="wrapped" options={options} />
+      </label>
+    )
+  })
+
+  const label = container.querySelector('label')
+
+  expect(label?.id).not.toBe('')
+  expect(lists()[0]?.getAttribute('aria-labelledby')).toBe(label?.id)
+})

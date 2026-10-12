@@ -124,3 +124,31 @@ test('an accepted reset clears generated invalid state on an empty required mult
   expect(select.validity.valid).toBe(false)
   expect(list.hasAttribute('aria-invalid')).toBe(false)
 })
+
+test('generated invalid state clears when the list stops validating after an invalid submission', async () => {
+  const { list, select } = fixture('multiple')
+
+  expect(select.form?.reportValidity()).toBe(false)
+  expect(list.getAttribute('aria-invalid')).toBe('true')
+
+  select.required = false
+  await settle()
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+
+  select.required = true
+  expect(select.form?.reportValidity()).toBe(false)
+  expect(list.getAttribute('aria-invalid')).toBe('true')
+
+  select.disabled = true
+  await settle()
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+
+  select.disabled = false
+  await settle()
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+
+  select.setAttribute('aria-invalid', 'true')
+  select.required = false
+  await settle()
+  expect(list.getAttribute('aria-invalid')).toBe('true')
+})

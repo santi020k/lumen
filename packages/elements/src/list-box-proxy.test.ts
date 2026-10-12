@@ -131,3 +131,29 @@ test('Elements list boxes follow later disabled and consumer invalid changes', a
   expect(list.getAttribute('aria-invalid')).toBe('true')
   expect(list.getAttribute('aria-label')).toBe('Lead reviewer')
 })
+
+test('Elements generated invalid state clears when required is removed or the select is disabled', async () => {
+  document.body.innerHTML = enhancedMarkup('multiple')
+  enhanceLumenListBoxes(document)
+
+  const form = element('form', HTMLFormElement)
+  const select = element('select', HTMLSelectElement)
+  const list = element('[data-ui-list-box-list]', HTMLElement)
+
+  expect(form.reportValidity()).toBe(false)
+  expect(list.getAttribute('aria-invalid')).toBe('true')
+
+  select.required = false
+  await settle()
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+
+  select.required = true
+  expect(form.reportValidity()).toBe(false)
+  select.disabled = true
+  await settle()
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+
+  select.disabled = false
+  await settle()
+  expect(list.hasAttribute('aria-invalid')).toBe(false)
+})

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { Button, Form, ListBox, Stack, Typography } from '@santi020k/lumen-react'
+import { Button, Form, Label, ListBox, Stack, Typography } from '@santi020k/lumen-react'
 
 const reviewers = [
   { label: 'Amina', value: 'amina' },
@@ -53,6 +53,12 @@ export default function ListBoxPage() {
           <Typography data-list-box-focus-log><p>{focusLog.join(' ')}</p></Typography>
         </Stack>
       </Form>
+      <Stack>
+        <Label htmlFor="external-reviewer" id="external-reviewer-label">External reviewer</Label>
+        <ListBox id="external-reviewer" options={reviewers} />
+        <Label htmlFor="explicit-reviewer">Visible reviewer label</Label>
+        <ListBox aria-label="Explicit reviewer name" id="explicit-reviewer" options={reviewers} />
+      </Stack>
     </main>
   )
 }

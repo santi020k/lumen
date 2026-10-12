@@ -105,6 +105,7 @@ application concerns.
 visible trigger or list as the focus target, so `setFocus` and invalid submits move focus to the
 control people use while native validity stays on the submitted native field. The field is marked
 touched when focus leaves the whole component, not when it moves into its calendar or options.
+A ListBox focus exit invokes blur validation once, including when its native proxy forwards focus events.
 
 ## Zod and Yup
 

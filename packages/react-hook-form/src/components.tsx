@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type {
   FieldPath,
   FieldValues,
@@ -68,10 +68,13 @@ const useManagedNativeControl = (
   parts: ManagedControlParts
 ): ((node: ManagedNativeControl | null) => void) => {
   const [root, setRoot] = useState<HTMLElement | null>(null)
+  const nativeNodeRef = useRef<ManagedNativeControl | null>(null)
   const { root: rootSelector, trigger: triggerSelector } = parts
 
   const nativeRef = useCallback((node: ManagedNativeControl | null) => {
     const owner = node?.closest<HTMLElement>(rootSelector) ?? null
+
+    nativeNodeRef.current = node
 
     setRoot(owner)
 
@@ -94,6 +97,9 @@ const useManagedNativeControl = (
     const NodeType = root.ownerDocument.defaultView?.Node
 
     const handleFocusOut = (event: FocusEvent) => {
+      // ListBox also forwards this exit through its native proxy; count the original list exit once.
+      if (root.hasAttribute('data-ui-list-box') && !event.isTrusted && event.target === nativeNodeRef.current) return
+
       if (NodeType && event.relatedTarget instanceof NodeType && root.contains(event.relatedTarget)) return
 
       fieldOnBlur()
