@@ -254,6 +254,9 @@ tracks catalog content and migration rules, excluding publication status and app
 5. GitHub Actions publishes packages and creates immutable release tags and GitHub releases from the
    merged commit. Public Apple builds and distribution run on standard GitHub macOS runners; private repositories use Xcode Cloud. Verify provenance, published
    consumers and deployed smoke checks before retiring the release branch.
+   A Compose version with a successful publication workflow and verified Maven Central artifacts
+   keeps its existing immutable tag and artifacts; an npm-only release does not republish it. Incomplete
+   Compose publications retain the source-revision check before recovery dispatch.
 
 The Changesets action can still create or update its version-preparation pull request when pending
 Changesets reach `main`. Integrate that generated preparation into the selected release branch;
