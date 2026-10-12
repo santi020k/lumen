@@ -183,3 +183,48 @@ test('focuses the first match of a valid initial focus selector', () => {
   disconnect()
   expect(document.activeElement).toBe(trigger)
 })
+
+test('a malformed initial focus selector in a same-origin iframe still lets the caller clean up on dialog dismissal', () => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+
+  const frameDocument = frame.contentDocument
+
+  if (!frameDocument) throw new Error('Expected a same-origin iframe document.')
+
+  const frameDialog = frameDocument.createElement('dialog')
+  const frameTrigger = frameDocument.createElement('button')
+  const framePanel = frameDocument.createElement('div')
+  const dismissals: string[] = []
+
+  framePanel.hidden = true
+  framePanel.style.left = '4px'
+  frameDialog.append(frameTrigger, framePanel)
+  frameDocument.body.append(frameDialog)
+  frameTrigger.focus()
+
+  const disconnect = connectLumenFloatingPanel(framePanel, frameTrigger, {
+    initialFocus: '[',
+    onDismiss: () => {
+      dismissals.push('dismiss')
+      framePanel.hidden = true
+      disconnect()
+    }
+  })
+
+  expect(framePanel.hidden).toBe(false)
+  expect(framePanel.style.position).toBe('fixed')
+  expect(frameDocument.activeElement).toBe(frameTrigger)
+  frameDialog.dispatchEvent(new Event('close'))
+  frameDialog.dispatchEvent(new Event('close'))
+  expect(dismissals).toEqual(['dismiss'])
+  expect(framePanel.hidden).toBe(true)
+  expect(framePanel.style.position).toBe('')
+  expect(framePanel.style.left).toBe('4px')
+  expect(framePanel.hasAttribute('popover')).toBe(false)
+  expect(framePanel.hasAttribute('data-placement')).toBe(false)
+  disconnect()
+  expect(framePanel.style.left).toBe('4px')
+  frame.remove()
+})

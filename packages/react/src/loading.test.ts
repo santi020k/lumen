@@ -1,4 +1,4 @@
-import { createElement, type CSSProperties } from 'react'
+import { createElement, type CSSProperties, isValidElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import { describe, expect, test } from 'vitest'
@@ -70,6 +70,39 @@ describe('Spinner', () => {
       .toBe('<span aria-label="Saving" class="ui-spinner" role="status"></span>')
     expect(render(createElement(Spinner, { 'aria-label': '   ' })))
       .toBe('<span aria-hidden="true" aria-label="   " class="ui-spinner"></span>')
+  })
+})
+
+// Untyped JavaScript can pass non-string names; React stringifies them, but they keep the unnamed fallback.
+const hostileNames = [
+  { name: 'number', rendered: '123', value: 123 },
+  { name: 'object', rendered: '[object Object]', value: { label: 'Loading' } },
+  { name: 'array', rendered: 'Loading,data', value: ['Loading', 'data'] }
+] as const
+
+const renderUntyped = (component: typeof Skeleton | typeof Spinner, props: Record<string, unknown>): string => {
+  const element: unknown = Reflect.apply(createElement, undefined, [component, props])
+
+  if (!isValidElement(element)) throw new Error('Expected a React element.')
+
+  return render(element)
+}
+
+describe('hostile runtime names', () => {
+  test.each(hostileNames)('Skeleton and Spinner keep the unnamed fallback for a $name name', ({ rendered, value }) => {
+    expect(renderUntyped(Skeleton, { 'aria-label': value }))
+      .toBe(`<div aria-hidden="true" aria-label="${rendered}" class="ui-skeleton"></div>`)
+    expect(renderUntyped(Skeleton, { 'aria-labelledby': value }))
+      .toBe(`<div aria-hidden="true" aria-labelledby="${rendered}" class="ui-skeleton"></div>`)
+    expect(renderUntyped(Spinner, { 'aria-label': value }))
+      .toBe(`<span aria-hidden="true" aria-label="${rendered}" class="ui-spinner"></span>`)
+    expect(renderUntyped(Spinner, { 'aria-labelledby': value }))
+      .toBe(`<span aria-hidden="true" aria-labelledby="${rendered}" class="ui-spinner"></span>`)
+  })
+
+  test('a string name beside a hostile one still makes a status region', () => {
+    expect(renderUntyped(Spinner, { 'aria-label': 123, 'aria-labelledby': 'saving-title' }))
+      .toBe('<span aria-label="123" aria-labelledby="saving-title" class="ui-spinner" role="status"></span>')
   })
 })
 

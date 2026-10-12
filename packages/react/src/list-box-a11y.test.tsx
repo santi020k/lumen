@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, useState } from 'react'
+import { act, StrictMode, useState } from 'react'
 import type { Root } from 'react-dom/client'
 import { createRoot } from 'react-dom/client'
 
@@ -440,4 +440,58 @@ test('unrelated document mutations do not reread labels, and unmounting releases
   root = createRoot(container)
   label.remove()
   unrelated.remove()
+})
+
+test('StrictMode lists transfer an external label without duplicate ids and keep consumer ids', async () => {
+  const owned = createExternalLabel('strict-first', 'Owned')
+  const moving = createExternalLabel('strict-first', 'Moving')
+
+  owned.id = 'consumer-label'
+  document.body.append(owned, moving)
+
+  const documentIds = () => [...document.querySelectorAll('[id]')].map(element => element.id)
+  const hasDuplicateIds = () => new Set(documentIds()).size !== documentIds().length
+
+  await run(() => {
+    root.render(
+      <StrictMode>
+        <ListBox id="strict-first" options={options} />
+        <ListBox id="strict-second" options={options} />
+      </StrictMode>
+    )
+  })
+
+  const [first, second] = lists()
+  const firstGeneratedId = moving.id
+
+  expect(firstGeneratedId).not.toBe('')
+  expect(first?.getAttribute('aria-labelledby')).toBe(`consumer-label ${firstGeneratedId}`)
+  expect(second?.hasAttribute('aria-labelledby')).toBe(false)
+  expect(hasDuplicateIds()).toBe(false)
+  await run(() => {
+    moving.htmlFor = 'strict-second'
+  })
+  expect(first?.getAttribute('aria-labelledby')).toBe('consumer-label')
+  expect(moving.id).not.toBe('')
+  expect(moving.id).not.toBe(firstGeneratedId)
+  expect(second?.getAttribute('aria-labelledby')).toBe(moving.id)
+  expect(hasDuplicateIds()).toBe(false)
+  await run(() => {
+    root.render(
+      <StrictMode>
+        <ListBox id="strict-first" options={options} />
+      </StrictMode>
+    )
+  })
+  expect(moving.hasAttribute('id')).toBe(false)
+  expect(first?.getAttribute('aria-labelledby')).toBe('consumer-label')
+  await run(() => {
+    root.unmount()
+  })
+  expect(owned.id).toBe('consumer-label')
+  expect(moving.hasAttribute('id')).toBe(false)
+  expect(hasDuplicateIds()).toBe(false)
+  root = createRoot(container)
+  owned.remove()
+  moving.remove()
 })
