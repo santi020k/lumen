@@ -2680,6 +2680,8 @@ export const useInputOTP = ({
         syncValue(event.currentTarget)
       }),
       onPaste: composeHandlers(props.onPaste, event => {
+        if (event.defaultPrevented) return
+
         const pasted = event.clipboardData.getData('text')
 
         if (!pasted) return

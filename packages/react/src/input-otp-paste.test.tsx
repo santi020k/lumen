@@ -145,6 +145,29 @@ test('a consumer onPaste still runs first and an empty clipboard leaves the defa
   expect(changes).toEqual([])
 })
 
+test('a consumer onPaste that prevents default cancels the Lumen paste', async () => {
+  const changes: string[] = []
+
+  await run(() => {
+    root.render(
+      <InputOTP
+        aria-label="Guarded code"
+        onChange={event => changes.push(event.currentTarget.value)}
+        onPaste={(event: ClipboardEvent<HTMLInputElement>) => {
+          event.preventDefault()
+        }}
+      />
+    )
+  })
+  await run(() => {
+    paste('654321')
+  })
+
+  expect(changes).toEqual([])
+  expect(native().value).toBe('')
+  expect(segments().trim()).toBe('')
+})
+
 const HookOtp = ({ notifications }: { notifications: string[] }) => {
   const otp = useInputOTP({ length: 4, onValueChange: next => notifications.push(next) })
 
