@@ -1,5 +1,94 @@
 # @santi020k/lumen-react
 
+## 4.1.0
+
+### Minor Changes
+
+- Strengthen loading feedback across Astro, React, and Elements.
+  
+  - Skeleton accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
+    (`shimmer`, `pulse`, `none`). The default shimmer rectangle and its 1rem height are unchanged,
+    but explicit heights and classes can now size placeholders below 1rem. Sizes accept pixels,
+    lengths, percentages, and `calc()` or `var()` expressions, and unsafe values are ignored.
+  - React and Elements Skeleton, and Elements Spinner, match Astro: decorative (`aria-hidden`) unless
+    named, `role="status"` when named, and explicit ARIA overrides win. Elements updates these as
+    labels change and after reconnecting.
+  - `lumen-skeleton` and `lumen-progress` now render as blocks instead of collapsing inline.
+  - Progress clamps NaN and infinite `max` or `value` to finite ARIA values in every adapter. The
+    Astro `ui:progress-change` runtime ignores missing, `null`, or non-numeric event detail.
+  - Core exports the shared `normalizeLumenProgress`, `resolveLumenLoadingSemantics`, and Skeleton
+    option resolvers.
+
+### Patch Changes
+
+- React DatePicker, Calendar (including `useCalendar` roots), and InputOTP now render
+  `data-ui-owner="react"`, and the document-wide Elements enhancers skip owned roots. On pages that
+  register Elements before or after a React island mounts, the React DatePicker keeps its trigger id
+  and label association, Calendar selections reach React state, and InputOTP segments stay rendered by
+  React. Standards-based `data-ui-*` markup and `lumen-*` elements are enhanced as before.
+
+- Fix DatePicker state when applications load values and provide validation feedback.
+  
+  - React reopens the calendar on the current selected month without preventing month navigation.
+  - The visible trigger mirrors consumer `aria-invalid`, `aria-describedby`, and `aria-errormessage`
+    attributes. Astro and Elements also respond when these native input attributes change.
+  - Generated native validation feedback clears after valid values, relevant constraint changes, or
+    uncanceled resets. Explicit application errors remain intact.
+  - Escape still dismisses React DatePicker when pointer month navigation moves focus to the document.
+
+- React `DatePicker` places its calendar with the shared floating panel, so short or scrolling dialogs no
+  longer clip it. The calendar follows its trigger through scroll and resize, respects RTL, closes on outside
+  focus, and restores its styles when it closes. The popover inherits its text color instead of the browser's
+  popover default.
+
+- `InputOTP` and `useInputOTP` leave a paste alone when the consumer `onPaste` handler calls
+  `preventDefault()`, matching the cancellation contract of other Lumen handlers.
+
+- `InputOTP` paste now reaches consumer `onChange` handlers, controlled values, and react-hook-form controllers
+  once with the sanitized code. Uncontrolled `InputOTP` keeps typed digits without an `onValueChange`, and
+  `useInputOTP` notifies `onValueChange` once per input instead of twice.
+
+- React `ListBox` now exposes one accessible control. The hidden native select leaves the tab order and the
+  accessibility tree, and the visible list receives the `label`, `aria-label`, `aria-labelledby`, description,
+  error, and required semantics. Label clicks focus the list. Options get stable ids, and
+  `aria-activedescendant` follows the active option, starting at the selected one and skipping disabled or
+  missing options. An unselected required single ListBox now fails native validation instead of submitting
+  the first option, marks the list invalid, and focuses it when it is the first invalid control. A canceled
+  form reset keeps the current selection.
+
+- React `ListBox` `onFocus` and `onBlur` now fire once when focus enters or leaves the visible list, whether
+  focus arrives by label click, pointer, keyboard, or the select ref, so touched-on-blur form integrations
+  work. The events keep their `HTMLSelectElement` target and form name.
+
+- React `ListBox` lists are now named by labels that target or wrap the hidden select, after an explicit
+  `aria-labelledby`, `aria-label`, or `label`. Astro and Elements list boxes clear Lumen-generated invalid state
+  when the select is valid again, disabled, or no longer required, while consumer `aria-invalid` stays. Leaving a
+  react-hook-form `LumenListBoxController` now validates once instead of twice.
+
+- Align Select and `useSelect` keyboard and dismissal behavior with the Astro reference. Space opens
+  the listbox and selects the focused option unless it continues an active typeahead query, moving
+  focus outside the field closes the listbox, and Select passes its `aria-label` or
+  `aria-labelledby` to the listbox. Opening with Space, Enter, the arrow keys, Home, End, or
+  typeahead now focuses the option after the listbox renders, so the selected option receives focus
+  in browsers that cannot focus hidden content.
+  
+  Refresh the MCP Select example to include the listbox's accessible name.
+
+- Mirror the Select and NativeSelect chevron in right-to-left layouts so it stays inside the
+  inline-end padding instead of overlapping the selected value. The position follows the nearest
+  `dir="rtl"` or `dir="ltr"` ancestor, including nested LTR regions, and does not depend on `:dir()`,
+  which some consumer CSS pipelines compile into language selectors.
+  The generated critical stylesheets retain these inherited direction rules.
+
+- Add `connectLumenFloatingPanel` to `@santi020k/lumen-core`: one shared placement helper for anchored panels.
+  React menus and date pickers now use it, and Astro and Elements date pickers do too, so their calendars
+  leave short or scrolling dialogs through the top layer instead of being clipped. Panels close when their
+  containing dialog closes, including in browsers that move focus to the page body without a focus event,
+  and settle back against their trigger after enclosing transform transitions or animations.
+- Updated dependencies [`14a6191`, `14a6191`, `80d908f`, `960b62b`, `131c5a9`, `14a6191`]:
+  - @santi020k/lumen@4.1.0
+  - @santi020k/lumen-core@4.1.0
+
 ## 4.0.0
 
 - Preserve draft validation when a native ancestor cancels form reset after React dispatch.

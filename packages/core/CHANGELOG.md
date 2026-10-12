@@ -1,5 +1,36 @@
 # @santi020k/lumen-core
 
+## 4.1.0
+
+### Minor Changes
+
+- Strengthen loading feedback across Astro, React, and Elements.
+  
+  - Skeleton accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
+    (`shimmer`, `pulse`, `none`). The default shimmer rectangle and its 1rem height are unchanged,
+    but explicit heights and classes can now size placeholders below 1rem. Sizes accept pixels,
+    lengths, percentages, and `calc()` or `var()` expressions, and unsafe values are ignored.
+  - React and Elements Skeleton, and Elements Spinner, match Astro: decorative (`aria-hidden`) unless
+    named, `role="status"` when named, and explicit ARIA overrides win. Elements updates these as
+    labels change and after reconnecting.
+  - `lumen-skeleton` and `lumen-progress` now render as blocks instead of collapsing inline.
+  - Progress clamps NaN and infinite `max` or `value` to finite ARIA values in every adapter. The
+    Astro `ui:progress-change` runtime ignores missing, `null`, or non-numeric event detail.
+  - Core exports the shared `normalizeLumenProgress`, `resolveLumenLoadingSemantics`, and Skeleton
+    option resolvers.
+
+- Add `connectLumenFloatingPanel` to `@santi020k/lumen-core`: one shared placement helper for anchored panels.
+  React menus and date pickers now use it, and Astro and Elements date pickers do too, so their calendars
+  leave short or scrolling dialogs through the top layer instead of being clipped. Panels close when their
+  containing dialog closes, including in browsers that move focus to the page body without a focus event,
+  and settle back against their trigger after enclosing transform transitions or animations.
+
+### Patch Changes
+
+- `connectLumenFloatingPanel` now dismisses a panel whose trigger or panel leaves its original
+  document, including adoption into another document, so an Astro or Elements date picker removed while open closes, releases its listeners, and reopens normally when
+  reinserted. The docs now state that callers own hiding the panel.
+
 ## 4.0.0
 
 - Reject malformed restored date ranges and attachment metadata without throwing. Preserve WorldMap center, pointer zoom anchors, and highlighted-country fitting in RTL scroll containers.

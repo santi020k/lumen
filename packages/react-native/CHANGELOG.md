@@ -1,5 +1,17 @@
 # @santi020k/lumen-react-native
 
+## 4.0.1
+
+### Patch Changes
+
+- Preserve explicit native accessibilityLabelledBy references on grouped text fields instead of overriding them with the inherited field label.
+
+- `LumenPicker` inside a `LumenFieldGroup` now announces the group's error or description as its accessibility
+  hint, reports `aria-invalid` while the group shows an error, and uses the danger border like other invalid
+  fields. Pickers outside a field group are unchanged.
+- Updated dependencies [`14a6191`, `960b62b`, `14a6191`]:
+  - @santi020k/lumen-core@4.1.0
+
 ## 4.0.0
 
 - Validate controlled table selections as native sets of string IDs before constructing interactive controls; malformed restored state renders the existing invalid feedback.

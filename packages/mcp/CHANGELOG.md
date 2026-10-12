@@ -1,5 +1,24 @@
 # @santi020k/lumen-mcp
 
+## 4.1.0
+
+### Patch Changes
+
+- React DatePicker, Calendar (including `useCalendar` roots), and InputOTP now render
+  `data-ui-owner="react"`, and the document-wide Elements enhancers skip owned roots. On pages that
+  register Elements before or after a React island mounts, the React DatePicker keeps its trigger id
+  and label association, Calendar selections reach React state, and InputOTP segments stay rendered by
+  React. Standards-based `data-ui-*` markup and `lumen-*` elements are enhanced as before.
+
+- Align Select and `useSelect` keyboard and dismissal behavior with the Astro reference. Space opens
+  the listbox and selects the focused option unless it continues an active typeahead query, moving
+  focus outside the field closes the listbox, and Select passes its `aria-label` or
+  `aria-labelledby` to the listbox. Opening with Space, Enter, the arrow keys, Home, End, or
+  typeahead now focuses the option after the listbox renders, so the selected option receives focus
+  in browsers that cannot focus hidden content.
+  
+  Refresh the MCP Select example to include the listbox's accessible name.
+
 ## 4.0.0
 
 - Animate bar geometry and filled line-chart areas inside ChartMotion using stable decorative identities, while keeping accessible chart data immediate.
