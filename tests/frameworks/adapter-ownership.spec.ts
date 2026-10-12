@@ -32,5 +32,13 @@ for (const prefix of ['early', 'late'] as const) {
     await island.getByRole('textbox', { name: `${prefix} code` }).pressSequentially('12');
     await expect(island.locator('[data-ownership-code]')).toHaveText('12');
     await expect(island.locator('[data-ui-input-otp-char]')).toHaveText(['1', '2', '', '']);
+    await island.getByRole('textbox', { name: `${prefix} code` }).fill('6543');
+    await expect(island.locator('[data-ownership-code]')).toHaveText('6543');
+    await island.getByRole('textbox', { name: `${prefix} code` }).fill('9876');
+    await expect(island.locator('[data-ownership-code]')).toHaveText('9876');
+    await expect(island.locator('[data-ui-input-otp-char]')).toHaveText(['9', '8', '7', '6']);
+    await island.getByRole('textbox', { name: `${prefix} code` }).selectText();
+    await page.keyboard.type('1234');
+    await expect(island.locator('[data-ownership-code]')).toHaveText('1234');
   });
 }

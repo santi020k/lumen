@@ -21,6 +21,7 @@
   "devDependencies": {
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   },
