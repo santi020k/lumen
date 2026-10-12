@@ -241,7 +241,9 @@ tracks catalog content and migration rules, excluding publication status and app
 
 1. Each user-visible change includes a Changeset. Use the installed generator to prepare package
    versions and changelogs, including any generated `changeset-release/main` work in the selected
-   release branch.
+   release branch. `pnpm run version-packages` also refreshes native playground catalogs when core
+   changes and synchronizes the portable plugin's exact MCP pin and generated package when MCP
+   changes. The plugin's own version and directory publication remain separate decisions.
 2. For a coordinated major release such as v4, fold stabilization notes into the prepared, unpublished
    version. Consume its Changesets so publishing does not introduce another version bump.
 3. Run the canonical validation and release gates, complete the independent pre-push review, and

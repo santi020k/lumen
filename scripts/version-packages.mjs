@@ -1,3 +1,6 @@
+import process from 'node:process'
+import { fileURLToPath } from 'node:url'
+
 import {
   classifyReleasePackages,
   readReleasePackageNamesFromEnvironment,
@@ -5,25 +8,40 @@ import {
   runReleaseCommand
 } from './release-scope.mjs'
 
-const names = process.env.LUMEN_RELEASE_PACKAGES
-  ? readReleasePackageNamesFromEnvironment()
-  : await resolveReleasePackageNames()
+/** Commands that prepare a release for the given package names, in order. */
+export const planVersionPackageCommands = names => {
+  const classification = classifyReleasePackages(names)
+  const includesUmbrella = names.includes('@santi020k/lumen')
 
-const classification = classifyReleasePackages(names)
-const includesUmbrella = names.includes('@santi020k/lumen')
+  const commands = [
+    ['pnpm', ['changeset', 'version']],
+    ['pnpm', ['run', 'sync:coordinated-v2-versions']]
+  ]
 
-runReleaseCommand('pnpm', ['changeset', 'version'])
+  if (classification.native) commands.push(['pnpm', ['run', 'sync:compose-version']])
 
-runReleaseCommand('pnpm', ['run', 'sync:coordinated-v2-versions'])
+  commands.push(['pnpm', ['install', '--lockfile-only']], ['pnpm', ['run', 'generate:release-manifest']])
 
-if (classification.native) runReleaseCommand('pnpm', ['run', 'sync:compose-version'])
+  if (includesUmbrella) commands.push(['pnpm', ['run', 'sync:swift-version']])
 
-runReleaseCommand('pnpm', ['install', '--lockfile-only'])
+  if (classification.mcp) commands.push(['pnpm', ['--filter', '@santi020k/lumen-mcp', 'run', 'generate']])
 
-runReleaseCommand('pnpm', ['run', 'generate:release-manifest'])
+  // Generated native catalogs embed the core version; the plugin pins the exact MCP version.
+  if (names.includes('@santi020k/lumen-core')) commands.push(['pnpm', ['run', 'generate:native-playground-catalogs']])
 
-if (includesUmbrella) runReleaseCommand('pnpm', ['run', 'sync:swift-version'])
+  if (classification.mcpPackage) {
+    commands.push(['pnpm', ['run', 'sync:plugin-mcp-version']], ['pnpm', ['run', 'generate:plugin-package']])
+  }
 
-if (classification.mcp) {
-  runReleaseCommand('pnpm', ['--filter', '@santi020k/lumen-mcp', 'run', 'generate'])
+  return commands
 }
+
+const run = async () => {
+  const names = process.env.LUMEN_RELEASE_PACKAGES
+    ? readReleasePackageNamesFromEnvironment()
+    : await resolveReleasePackageNames()
+
+  for (const [command, arguments_] of planVersionPackageCommands(names)) runReleaseCommand(command, arguments_)
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) await run()
