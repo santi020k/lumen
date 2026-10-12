@@ -1683,6 +1683,8 @@ const getFocusable = (root: ParentNode | null): HTMLElement[] => {
 }
 
 const getOwnedTarget = (event: Event): Node | null => event.target instanceof Node ? event.target : null
+// Markup whose behavior another adapter owns, such as a React island, is never enhanced here.
+const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
 
 const getScopedElements = <ScopedElement extends Element>(
   scope: ParentNode,
@@ -3490,7 +3492,7 @@ const initInputOtpFields = (scope: ParentNode): void => {
   }
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const length = getInputOtpLength(root)
     const input = ensureInputOtpNativeInput(root, length)
@@ -4085,7 +4087,7 @@ const initCalendars = (scope: ParentNode): void => {
   }
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     ensureCalendarStructure(root)
 
@@ -4274,7 +4276,7 @@ const initDatePickers = (scope: ParentNode): void => {
   if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) roots.unshift(closestRoot)
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const native = root.querySelector<HTMLInputElement>(datePickerNativeSelector)
     const control = root.querySelector<HTMLElement>(datePickerControlSelector)

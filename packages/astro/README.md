@@ -161,6 +161,9 @@ Set `data-lumen-preset="studio"` and an optional `data-lumen-scheme="light|dark"
 
 ## Compound interactive components
 
+DatePicker, Calendar, and InputOTP enhancement skips markup marked `data-ui-owner`, such as the
+matching React controls, so those islands keep their ids, labels, and state before and after hydration.
+
 Popover, dropdown menu, tabs, and tooltip parts expose the DOM and ARIA contracts consumed by the
 shared progressive-enhancement runtime. Prefer these parts over recreating roles and `data-ui-*`
 attributes by hand.

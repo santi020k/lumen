@@ -2428,6 +2428,8 @@ export const useCalendar = ({
       'data-disabled': disabled ? 'true' : undefined,
       'data-ui-calendar': true,
       'data-ui-calendar-initial-month': formatCalendarMonth(initialMonth),
+      // React owns this calendar's behavior; Elements and Astro enhancers skip owned roots.
+      'data-ui-owner': 'react',
       'data-ui-calendar-max': maxDate ? formatCalendarDate(maxDate) : undefined,
       'data-ui-calendar-min': minDate ? formatCalendarDate(minDate) : undefined,
       'data-ui-calendar-month': formatCalendarMonth(visibleMonth),
@@ -2732,6 +2734,7 @@ export const useInputOTP = ({
       'data-invalid': invalid ? 'true' : 'false',
       'data-ui-input-otp': true,
       'data-ui-input-otp-length': length,
+      'data-ui-owner': 'react',
       ref: rootRef
     },
     rootRef,

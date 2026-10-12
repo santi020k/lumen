@@ -2896,6 +2896,7 @@ export const DatePicker = ({
       )}
       data-placeholder={hasSelectedValue ? undefined : 'true'}
       data-ui-date-picker
+      data-ui-owner="react"
       data-ui-glass-track={glass ? true : undefined}
       ref={rootRef}
       onKeyDown={event => {

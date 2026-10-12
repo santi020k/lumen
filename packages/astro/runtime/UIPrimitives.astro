@@ -2205,9 +2205,12 @@ const sanitizeOtpValue = (input: HTMLInputElement, value: string, length: number
   return normalized.slice(0, length)
 }
 
+// Markup whose behavior another adapter owns, such as a React island, is never enhanced here.
+const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
+
 const initInputOtpFields = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-input-otp]')) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const input = root.querySelector<HTMLInputElement>('[data-ui-input-otp-native]')
     const segments = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-input-otp-segment]')]
@@ -2824,7 +2827,7 @@ const moveCalendarFocus = (root: HTMLElement, currentDate: Date, key: string): v
 
 const initCalendars = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-calendar]')) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const input = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
 
@@ -2969,6 +2972,8 @@ const formatDatePickerValue = (value: string, placeholder: string, locale: strin
 }
 
 const closeDatePicker = (root: HTMLElement, restoreFocus = false): void => {
+  if (isOwnedByAnotherAdapter(root)) return
+
   const trigger = root.querySelector<HTMLButtonElement>('[data-ui-date-picker-trigger]')
   const popover = root.querySelector<HTMLElement>('[data-ui-date-picker-popover]')
 
@@ -3070,7 +3075,7 @@ const openDatePicker = (root: HTMLElement): void => {
 
 const initDatePickers = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-date-picker]')) {
-    if (root.dataset.uiDatePickerBound === 'true') continue
+    if (root.dataset.uiDatePickerBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const native = root.querySelector<HTMLInputElement>('[data-ui-date-picker-native]')
     const control = root.querySelector<HTMLElement>('[data-ui-date-picker-control]')

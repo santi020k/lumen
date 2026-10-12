@@ -1,5 +1,6 @@
 // cspell:words teléfono
 import './consumer-date-regressions.js';
+import './mixed-adapter-regressions.js';
 
 import { expect, test } from "@playwright/test";
 

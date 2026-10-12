@@ -47,7 +47,7 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   retries: process.env.CI ? 2 : 0,
   testDir: './tests/frameworks',
-  testMatch: 'framework-conformance.spec.ts',
+  testMatch: ['framework-conformance.spec.ts', 'adapter-ownership.spec.ts'],
   workers: 2,
   use: {
     baseURL

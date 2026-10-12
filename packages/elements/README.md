@@ -402,6 +402,11 @@ listbox. The listbox shares the trigger's accessible name. Adding, removing, rel
 disabling native options re-renders the listbox while preserving focus on an available option.
 Toggling the native select's `disabled` state updates the trigger.
 
+React and Elements can share a page. React DatePicker, Calendar, and InputOTP render
+`data-ui-owner="react"` because React owns their behavior, so the document-wide Elements enhancers
+skip them whether elements are registered before or after the React island mounts. Standards-based
+`data-ui-*` markup without an owner, and `lumen-*` elements, are enhanced as before.
+
 Registering the elements wires behavior-heavy primitives without a framework runtime. DataTable,
 Dialog, Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder, Toast, Tooltip, forms,
 Calendar, InputOTP, DateRangePicker, RichTextEditor, Schedule, Resizable, and VirtualList track the

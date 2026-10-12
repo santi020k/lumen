@@ -351,6 +351,10 @@ const series = [{
 
 ## Next.js and server components
 
+React DatePicker, Calendar (including custom `useCalendar` roots), and InputOTP render
+`data-ui-owner="react"`. The Astro runtime and Elements enhancers skip owned roots, so React islands
+keep their ids, labels, and state on pages that also load those runtimes.
+
 The package entry is marked as a client module because the full catalog includes stateful
 components and behavior hooks. Next.js Server Components can import and render Lumen components;
 Next keeps the Lumen subtree behind the client boundary instead of evaluating React client APIs in
