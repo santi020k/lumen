@@ -91,6 +91,9 @@
   leave short or scrolling dialogs through the top layer instead of being clipped. Panels close when their
   containing dialog closes, including in browsers that move focus to the page body without a focus event,
   and settle back against their trigger after enclosing transform transitions or animations.
+
+- React `WaterfallChart` and `Histogram` bars render their `label: value` SVG tooltip during server rendering
+  instead of an empty `<title>`, without React's title-children warning.
 - Updated dependencies [[`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da), [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da), [`80d908f`](https://github.com/santi020k/lumen/commit/80d908f1cc9fbca3c506b3ee4c1eee78695a7a86), [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05), `e65d7e5`, [`131c5a9`](https://github.com/santi020k/lumen/commit/131c5a9f75a0b6196574f18c3ebc1451fd78ecd4), [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da)]:
   - @santi020k/lumen@4.1.0
   - @santi020k/lumen-core@4.1.0
