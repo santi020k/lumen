@@ -178,6 +178,11 @@ retain their native keyboard behavior; removing `inert` makes a region available
 Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
 buttons are excluded from the Tab sequence while Enter and pointer selection still insert a mention.
 
+Select and `useSelect` treat Space like Enter on the trigger and options unless it continues an
+active typeahead query, focus the target option after the opened listbox renders, and close the
+listbox when focus leaves the field. Select passes its
+`aria-label` or `aria-labelledby` to the listbox as well as the trigger.
+
 ```tsx
 import {
   DropdownMenu,
@@ -256,6 +261,13 @@ optional application dependencies; Lumen consumes the resulting React Hook Form 
 without wrapping or changing the resolver contract.
 
 See the [forms guide](https://lumen.santi020k.com/docs/forms/react-hook-form) for typed examples.
+
+`ListBox` exposes a single focusable list with `label`, `aria-label`, or `aria-labelledby` naming.
+External labels targeting its `id` and wrapping labels also name the visible list; explicit names take precedence.
+Its native select retains form submission and required validation while staying out of the tab order
+and accessibility tree. An unselected required single list remains invalid until a choice is made;
+validation focuses the visible list. Canceled form resets preserve the current selection, and
+`aria-activedescendant` identifies the enabled option reached by keyboard navigation.
 
 ## Error states
 
@@ -346,6 +358,10 @@ const series = [{
 
 ## Next.js and server components
 
+React DatePicker, Calendar (including custom `useCalendar` roots), and InputOTP render
+`data-ui-owner="react"`. The Astro runtime and Elements enhancers skip owned roots, so React islands
+keep their ids, labels, and state on pages that also load those runtimes.
+
 The package entry is marked as a client module because the full catalog includes stateful
 components and behavior hooks. Next.js Server Components can import and render Lumen components;
 Next keeps the Lumen subtree behind the client boundary instead of evaluating React client APIs in
@@ -385,12 +401,22 @@ export default function Status() {
 }
 ```
 
+Skeleton accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
+(`shimmer`, `pulse`, `none`). Numeric sizes are pixels, and explicit heights can be smaller than the
+1rem default. Unnamed Skeletons and Spinners are decorative; wrap a group in one `role="status"`
+region instead of naming each placeholder.
+
 The server entrypoint contains Badge, Card and its compound parts, Container, Direction, Grid,
 Input, Label, Progress, Separator, Skeleton, Spinner, Stack, Textarea, Typography, and
 VisuallyHidden plus the component-name metadata. The package root reuses those exact
 implementations and remains the full client catalog. Import interactive primitives, hooks, or
 stateless primitives that receive event handlers from the root entrypoint inside a Client
 Component.
+
+`DatePicker` reopens its calendar on the current selected month, including controlled values loaded
+while it was closed. The visible trigger receives `aria-invalid`, `aria-describedby`, and
+`aria-errormessage`. Native validation feedback clears after a valid update or an uncanceled reset;
+explicit application validation attributes remain authoritative.
 
 ## Compatibility wrappers
 

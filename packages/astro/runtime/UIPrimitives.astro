@@ -9,7 +9,7 @@
 ---
 
 <script>
-import { isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
+import { connectLumenFloatingPanel, isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels, resolveLumenDateLocale } from '@santi020k/lumen-core'
 import {
   coerceThemePreset,
   createLumenKanbanMoveDetail,
@@ -36,8 +36,10 @@ import {
 import { initAmountFields } from './controllers/amount-field'
 import { clearComboboxes, closeCombobox, initComboboxes } from './controllers/combobox'
 import { initDataTableSorting } from './controllers/data-table'
+import { bindListBoxProxy } from './controllers/list-box-proxy'
 import { initMessageFeeds } from './controllers/message-scroller'
 import { initOptionalMediaControllers } from './controllers/optional-media'
+import { initProgress } from './controllers/progress'
 
 /* eslint-disable complexity */
 /* Stateful DOM handlers stay local so Astro consumers do not need a framework runtime. */
@@ -773,9 +775,15 @@ const getListBoxSelectedValues = (select: HTMLSelectElement): string[] => [
   ...select.selectedOptions
 ].map(option => option.value)
 
+const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
+// A bound root that was removed and inserted again follows its external labels once reinitialized.
+const listBoxResyncs = new WeakMap<HTMLElement, () => void>()
+
 const initListBoxes = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-list-box]')) {
-    if (root.dataset.uiListBoxBound === 'true') continue
+    if (root.dataset.uiListBoxBound === 'true') listBoxResyncs.get(root)?.()
+
+    if (root.dataset.uiListBoxBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const select = root.querySelector<HTMLSelectElement>('[data-ui-list-box-native]')
     const list = root.querySelector<HTMLElement>('[data-ui-list-box-list]')
@@ -789,6 +797,8 @@ const initListBoxes = (scope: ParentNode): void => {
 
     list.hidden = false
 
+    const optionIdPrefix = select.id || nextRuntimeId('ui-list-box', root.ownerDocument)
+
     let activeIndex = Math.max(
       0, options.findIndex(option => option.getAttribute('aria-disabled') !== 'true')
     )
@@ -798,7 +808,7 @@ const initListBoxes = (scope: ParentNode): void => {
 
     const syncActive = (): void => {
       options.forEach((option, index) => {
-        option.id ||= `${select.id || 'ui-list-box'}-option-${index}`
+        option.id ||= `${optionIdPrefix}-option-${index}`
 
         option.dataset.active = index === activeIndex ? 'true' : 'false'
       })
@@ -929,19 +939,17 @@ const initListBoxes = (scope: ParentNode): void => {
       })
     })
 
+    listBoxResyncs.set(root, bindListBoxProxy(root, select, list, () => nextRuntimeId('ui-list-box-label', root.ownerDocument), () => {
+      if (!options.length) return
+
+      syncSelected()
+
+      activeIndex = Math.max(0, options.findIndex(option => option.getAttribute('aria-selected') === 'true'))
+
+      syncActive()
+    }))
+
     select.addEventListener('change', syncSelected)
-
-    select.form?.addEventListener('reset', () => {
-      window.setTimeout(() => {
-        syncSelected()
-
-        activeIndex = Math.max(
-          0, options.findIndex(option => option.getAttribute('aria-selected') === 'true')
-        )
-
-        syncActive()
-      })
-    })
 
     syncSelected()
 
@@ -1618,50 +1626,6 @@ const initCopyButtons = (scope: ParentNode): void => {
   }
 }
 
-interface ProgressChangeDetail {
-  max?: number
-  value?: number
-}
-
-const updateProgress = (
-  root: HTMLElement,
-  { max, value }: ProgressChangeDetail
-): void => {
-  const currentMax = Number(root.getAttribute('aria-valuemax')) || 100
-  const safeMax = max && max > 0 ? max : currentMax
-  const currentValue = Number(root.getAttribute('aria-valuenow')) || 0
-
-  const safeValue = Math.min(
-    safeMax, Math.max(0, Number.isFinite(value) ? (value ?? 0) : currentValue)
-  )
-
-  const indicator = root.querySelector<HTMLElement>(
-    '[data-slot="progress-indicator"]'
-  )
-
-  root.setAttribute('aria-valuemax', String(safeMax))
-
-  root.setAttribute('aria-valuenow', String(safeValue))
-
-  if (indicator) indicator.style.width = `${(safeValue / safeMax) * 100}%`
-}
-
-const initProgress = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-progress]')) {
-    if (root.dataset.uiProgressBound === 'true') continue
-
-    root.dataset.uiProgressBound = 'true'
-
-    root.addEventListener('ui:progress-change', event => {
-      const detail = event instanceof CustomEvent ?
-        (event.detail as ProgressChangeDetail) :
-        {}
-
-      updateProgress(root, detail)
-    })
-  }
-}
-
 const filterItems = (input: HTMLInputElement, items: HTMLElement[]): void => {
   const query = input.value.trim().toLowerCase()
 
@@ -2248,9 +2212,10 @@ const sanitizeOtpValue = (input: HTMLInputElement, value: string, length: number
   return normalized.slice(0, length)
 }
 
+// Markup whose behavior another adapter owns, such as a React island, is never enhanced here.
 const initInputOtpFields = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-input-otp]')) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const input = root.querySelector<HTMLInputElement>('[data-ui-input-otp-native]')
     const segments = [...root.querySelectorAll<HTMLButtonElement>('[data-ui-input-otp-segment]')]
@@ -2867,7 +2832,7 @@ const moveCalendarFocus = (root: HTMLElement, currentDate: Date, key: string): v
 
 const initCalendars = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-calendar]')) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const input = root.querySelector<HTMLInputElement>('[data-ui-calendar-input]')
 
@@ -3011,11 +2976,21 @@ const formatDatePickerValue = (value: string, placeholder: string, locale: strin
   }).format(date)
 }
 
+// Each open picker's shared floating-panel connection; closing disconnects it.
+const datePickerPanels = new WeakMap<HTMLElement, () => void>()
+
 const closeDatePicker = (root: HTMLElement, restoreFocus = false): void => {
+  if (isOwnedByAnotherAdapter(root)) return
+
   const trigger = root.querySelector<HTMLButtonElement>('[data-ui-date-picker-trigger]')
   const popover = root.querySelector<HTMLElement>('[data-ui-date-picker-popover]')
 
   if (!trigger || !popover) return
+
+  // Leave the top layer and restore the popover's inline styles before hiding it.
+  datePickerPanels.get(root)?.()
+
+  datePickerPanels.delete(root)
 
   popover.hidden = true
 
@@ -3024,6 +2999,24 @@ const closeDatePicker = (root: HTMLElement, restoreFocus = false): void => {
   trigger.setAttribute('aria-expanded', 'false')
 
   if (restoreFocus) trigger.focus()
+}
+
+const invalidDatePickerInputs = new WeakSet<HTMLInputElement>()
+
+const syncDatePickerValidity = (native: HTMLInputElement, trigger: HTMLElement): void => {
+  if (native.validity.valid) invalidDatePickerInputs.delete(native)
+
+  const invalid = native.getAttribute('aria-invalid') ?? (invalidDatePickerInputs.has(native) ? 'true' : null)
+
+  if (invalid === null) trigger.removeAttribute('aria-invalid')
+  else trigger.setAttribute('aria-invalid', invalid)
+
+  for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage']) {
+    const value = native.getAttribute(attribute)
+
+    if (value === null) trigger.removeAttribute(attribute)
+    else trigger.setAttribute(attribute, value)
+  }
 }
 
 const syncDatePickerValue = (root: HTMLElement): void => {
@@ -3043,9 +3036,9 @@ const syncDatePickerValue = (root: HTMLElement): void => {
     root.dataset.placeholder = 'true'
   }
 
-  if (native.validity.valid) {
-    root.querySelector<HTMLElement>('[data-ui-date-picker-trigger]')?.removeAttribute('aria-invalid')
-  }
+  const trigger = root.querySelector<HTMLElement>('[data-ui-date-picker-trigger]')
+
+  if (trigger) syncDatePickerValidity(native, trigger)
 }
 
 const openDatePicker = (root: HTMLElement): void => {
@@ -3081,6 +3074,14 @@ const openDatePicker = (root: HTMLElement): void => {
 
   popover.dataset.state = 'open'
 
+  datePickerPanels.get(root)?.()
+
+  datePickerPanels.set(root, connectLumenFloatingPanel(popover, trigger, {
+    onDismiss: () => {
+      closeDatePicker(root)
+    }
+  }))
+
   trigger.setAttribute('aria-expanded', 'true')
 
   window.requestAnimationFrame(() => {
@@ -3095,7 +3096,7 @@ const openDatePicker = (root: HTMLElement): void => {
 
 const initDatePickers = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-date-picker]')) {
-    if (root.dataset.uiDatePickerBound === 'true') continue
+    if (root.dataset.uiDatePickerBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const native = root.querySelector<HTMLInputElement>('[data-ui-date-picker-native]')
     const control = root.querySelector<HTMLElement>('[data-ui-date-picker-control]')
@@ -3147,13 +3148,13 @@ const initDatePickers = (scope: ParentNode): void => {
 
     syncState()
 
-    const observer = new MutationObserver(() => {
-      closeDatePicker(root)
+    const observer = new MutationObserver(mutations => {
+      if (mutations.some(mutation => !mutation.attributeName?.startsWith('aria-'))) closeDatePicker(root)
 
       syncState()
     })
 
-    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder'] })
+    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder', 'aria-invalid', 'aria-errormessage', 'aria-describedby', 'aria-label', 'aria-labelledby'] })
 
     observer.observe(root, { attributes: true, attributeFilter: ['locale', 'lang', 'data-locale', 'data-choose-date-label'] })
 
@@ -3207,7 +3208,9 @@ const initDatePickers = (scope: ParentNode): void => {
     native.addEventListener('invalid', event => {
       event.preventDefault()
 
-      trigger.setAttribute('aria-invalid', 'true')
+      invalidDatePickerInputs.add(native)
+
+      syncDatePickerValidity(native, trigger)
 
       trigger.focus()
     })
@@ -3215,6 +3218,8 @@ const initDatePickers = (scope: ParentNode): void => {
     native.form?.addEventListener('reset', event => {
       globalThis.setTimeout(() => {
         if (event.defaultPrevented || !root.isConnected) return
+
+        invalidDatePickerInputs.delete(native)
 
         syncDatePickerValue(root)
 

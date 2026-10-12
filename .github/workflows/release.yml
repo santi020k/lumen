@@ -254,6 +254,22 @@ jobs:
           COMPOSE_VERSION="$(sed -n 's/^lumenComposeVersion=//p' packages/compose/gradle.properties)"
           COMPOSE_TAG="compose-v${COMPOSE_VERSION}"
 
+          # An unchanged version with a successful publication needs no new tag or artifacts.
+          successful_runs="$(
+            gh run list \
+              --workflow publish-compose.yml \
+              --branch "$COMPOSE_TAG" \
+              --limit 20 \
+              --json conclusion \
+              --jq '[.[] | select(.conclusion == "success")] | length'
+          )"
+
+          if [[ "$successful_runs" != "0" ]]; then
+            node scripts/check-maven-release-artifacts.mjs --version "$COMPOSE_VERSION"
+            echo "Compose ${COMPOSE_VERSION} is already published; keeping its immutable tag and artifacts."
+            exit 0
+          fi
+
           if git ls-remote --exit-code --tags origin "refs/tags/${COMPOSE_TAG}" >/dev/null 2>&1; then
             git fetch --force origin "refs/tags/${COMPOSE_TAG}:refs/tags/${COMPOSE_TAG}"
             existing_commit="$(git rev-list -n 1 "$COMPOSE_TAG")"

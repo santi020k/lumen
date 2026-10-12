@@ -1,6 +1,69 @@
 // cspell:words Elegir fecha Précédent Suivant valuetext
 import { expect, test } from '@playwright/test'
 
+for (const adapter of ['astro', 'elements']) {
+  test(`${adapter} DatePicker closes when removed and can reopen after reinsertion`, async ({ page }) => {
+    await page.goto('/internal/date-controls')
+    const form = page.locator(`#${adapter}-form`)
+    const trigger = form.locator('[data-ui-date-picker-trigger]')
+    const popover = form.locator('[data-ui-date-picker-popover]')
+    await trigger.click()
+    await expect(popover).toBeVisible()
+    await form.evaluate(async element => {
+      const parent = element.parentElement
+      const next = element.nextSibling
+      if (!parent) throw new Error('Expected form parent')
+      element.remove()
+      await new Promise<void>(resolve => requestAnimationFrame(() => { resolve(); }))
+      parent.insertBefore(element, next)
+    })
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    await expect(popover).not.toHaveAttribute('popover')
+    await trigger.click()
+    await expect(popover).toBeVisible()
+    await popover.locator('[data-date="2026-07-24"]').click()
+    await expect(form.locator('[data-ui-date-picker-native]')).toHaveValue('2026-07-24')
+  })
+
+  test(`${adapter} DatePicker escapes a scrolling dialog and closes with its parent`, async ({ page }, testInfo) => {
+    await page.goto('/internal/date-controls')
+    const form = page.locator(`#${adapter}-form`)
+    const trigger = form.locator('[data-ui-date-picker-trigger]')
+    await expect(trigger).toBeVisible()
+    await form.evaluate(root => {
+      const dialog = document.createElement('dialog')
+      dialog.setAttribute('aria-label', 'Scrolling date form')
+      dialog.style.cssText = 'width:280px;height:150px;overflow:auto;padding:16px;margin:60px auto;'
+      root.before(dialog)
+      dialog.append(root)
+      dialog.showModal()
+    })
+    await trigger.click()
+    const popover = form.locator('[data-ui-date-picker-popover]')
+    const day = popover.locator('[data-date="2026-07-24"]')
+    await expect(popover).toBeVisible()
+    await expect(popover).toHaveCSS('opacity', '1')
+    await page.screenshot({ path: testInfo.outputPath(`date-overlay-${adapter}.png`) })
+    await expect.poll(() => day.evaluate(element => {
+      const bounds = element.getBoundingClientRect()
+      const hit = element.ownerDocument.elementFromPoint(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2)
+      return hit !== null && element.contains(hit)
+    })).toBe(true)
+    await day.click()
+    await expect(form.locator('[data-ui-date-picker-native]')).toHaveValue('2026-07-24')
+    await expect(trigger).toBeFocused()
+    await trigger.click()
+    await expect(popover).toBeVisible()
+    await page.getByRole('dialog', { name: 'Scrolling date form', exact: true }).evaluate(element => {
+      if (!(element instanceof HTMLDialogElement)) throw new Error('Expected containing dialog')
+      element.close()
+    })
+    await expect(page.locator(':popover-open')).toHaveCount(0)
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    await expect(popover).not.toHaveAttribute('popover')
+  })
+}
+
 test('Astro SSR renders the requested locale, real dates, custom labels and year bounds without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false })
   const page = await context.newPage()
@@ -28,6 +91,7 @@ for (const adapter of ['astro', 'elements']) {
     await expect(trigger).toBeVisible()
     await form.locator('label').click()
     await expect(popover).toBeVisible()
+    await expect(popover.locator('[data-ui-calendar-day][tabindex="0"]')).toBeFocused()
     await page.keyboard.press('Escape')
     await expect(trigger).toBeFocused()
     await trigger.press('ArrowDown')
@@ -41,6 +105,7 @@ for (const adapter of ['astro', 'elements']) {
     await expect(popover).toBeHidden()
     await expect(trigger).toBeFocused()
     await trigger.click()
+    await expect(popover.locator('[data-ui-calendar-day][tabindex="0"]')).toBeFocused()
     await page.keyboard.press('Escape')
     await expect(trigger).toBeFocused()
     await expect(popover).toBeHidden()
@@ -51,9 +116,17 @@ for (const adapter of ['astro', 'elements']) {
     })
     await expect(native).toHaveValue('2026-07-24')
     await expect(popover).toBeVisible()
+    // Close the calendar before clicking the reset control that it overlaps.
+    await expect(popover.locator('[data-ui-calendar-day][tabindex="0"]')).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(popover).toBeHidden()
     await form.locator('[type="reset"]').click()
     await expect(native).toHaveValue('2026-07-23')
     await expect(form.locator('[data-ui-date-picker-value]')).toContainText('23')
+    await trigger.click()
+    await expect(popover).toBeVisible()
+    await form.evaluate(element => { if (element instanceof HTMLFormElement) element.reset() })
+    await expect(popover).toBeHidden()
     await native.evaluate(input => { input.setAttribute('readonly', '') })
     await trigger.dispatchEvent('click')
     await expect(popover).toBeHidden()
@@ -241,3 +314,74 @@ test('ImageComparison follows reassigned and adopted form resets without canceli
     return form.querySelector<HTMLElement>('.ui-image-comparison__frame')?.style.getPropertyValue('--ui-image-comparison-position')
   })).toBe('25%')
 })
+
+for (const adapter of ['astro', 'elements']) {
+  test(`${adapter} DatePicker mirrors dynamic application errors and clears only generated validation`, async ({ page }) => {
+    await page.goto('/internal/date-controls')
+    const native = page.locator(`#${adapter}-form [data-ui-date-picker-native]`)
+    const trigger = page.locator(`#${adapter}-form [data-ui-date-picker-trigger]`)
+
+    await expect(trigger).toBeVisible()
+    await native.evaluate(input => {
+      input.setAttribute('aria-invalid', 'grammar')
+      input.setAttribute('aria-errormessage', 'application-date-error')
+      input.setAttribute('aria-describedby', 'application-date-help')
+    })
+    await expect(trigger).toHaveAttribute('aria-invalid', 'grammar')
+    await expect(trigger).toHaveAttribute('aria-errormessage', 'application-date-error')
+    await expect(trigger).toHaveAttribute('aria-describedby', 'application-date-help')
+    await native.evaluate(input => {
+      if (!(input instanceof HTMLInputElement)) throw new Error('Expected date input')
+      input.form?.reset()
+    })
+    await expect(trigger).toHaveAttribute('aria-invalid', 'grammar')
+    await native.evaluate(input => {
+      input.removeAttribute('aria-invalid')
+      input.removeAttribute('aria-errormessage')
+    })
+    await expect(trigger).not.toHaveAttribute('aria-invalid')
+    await expect(trigger).not.toHaveAttribute('aria-errormessage')
+    await native.evaluate(input => {
+      if (!(input instanceof HTMLInputElement)) throw new Error('Expected date input')
+      input.required = true
+      input.value = ''
+      input.checkValidity()
+    })
+    await expect(trigger).toHaveAttribute('aria-invalid', 'true')
+    await native.evaluate(input => {
+      if (!(input instanceof HTMLInputElement)) throw new Error('Expected date input')
+      input.value = '2026-07-24'
+      input.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    await expect(trigger).not.toHaveAttribute('aria-invalid')
+  })
+}
+
+for (const adapter of ['astro', 'elements']) {
+  test(`${adapter} DatePicker keeps its calendar and focus during ARIA updates`, async ({ page }) => {
+    await page.goto('/internal/date-controls')
+    const form = page.locator(`#${adapter}-form`)
+    const trigger = form.locator('[data-ui-date-picker-trigger]')
+    const popover = form.locator('[data-ui-date-picker-popover]')
+    const native = form.locator('[data-ui-date-picker-native]')
+    await trigger.click()
+    const day = popover.locator('[data-ui-calendar-day][tabindex="0"]')
+    await day.focus()
+    await native.evaluate(input => {
+      for (const [name, value] of Object.entries({
+        'aria-invalid': 'grammar', 'aria-errormessage': 'error', 'aria-describedby': 'help',
+        'aria-label': 'Appointment', 'aria-labelledby': 'appointment-label'
+      })) input.setAttribute(name, value)
+    })
+    await expect(popover).toBeVisible()
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await expect(day).toBeFocused()
+    await expect(trigger).toHaveAttribute('aria-invalid', 'grammar')
+    await expect(trigger).toHaveAttribute('aria-errormessage', 'error')
+    await expect(trigger).toHaveAttribute('aria-describedby', 'help')
+    await expect(trigger).toHaveAttribute('aria-label', 'Appointment')
+    await expect(trigger).toHaveAttribute('aria-labelledby', 'appointment-label')
+    await native.evaluate(input => { input.setAttribute('disabled', '') })
+    await expect(popover).toBeHidden()
+  })
+}

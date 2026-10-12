@@ -2,6 +2,7 @@
 import { act, createElement } from 'react'
 import { createPortal } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
@@ -101,6 +102,27 @@ test('renders histogram counts and waterfall balances in semantic tables', () =>
     }))
   })
   expect(container.querySelector('tbody tr:last-child')?.textContent).toBe('Spent10-5-15')
+})
+
+test('waterfall and histogram marks render one formatted SVG title text without React diagnostics', () => {
+  const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  const formatValue = (value: number) => `$${value.toFixed(1)}`
+  const waterfall = createElement(WaterfallChart, {
+    data: [{ id: 'a', label: 'Opening', kind: 'total', value: 10 }, { id: 'b', label: 'Spent', value: -15 }],
+    formatValue
+  })
+  const histogram = createElement(Histogram, { bins: [{ start: 0, end: 10, count: 4 }] })
+  const markup = renderToStaticMarkup(createElement('div', null, waterfall, histogram))
+  const host = document.createElement('div')
+
+  host.innerHTML = markup
+
+  const titles = [...host.querySelectorAll('rect > title')].map(title => title.textContent)
+
+  expect(titles).toEqual(['Opening: $10.0', 'Spent: $-15.0', '0–10: 4'])
+  expect(titles.every(title => title.trim().length > 0)).toBe(true)
+  expect(markup).not.toContain('<!-- -->')
+  expect(errors).not.toHaveBeenCalled()
 })
 
 test('bullet charts keep localized actual and target values readable and update missing and invalid states', () => {

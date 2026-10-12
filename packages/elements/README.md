@@ -383,8 +383,29 @@ Disclosure keyboard navigation skips hidden or inert regions, invisible controls
 disabled controls, including a disabled fieldset. Available controls in a fieldset's first legend
 retain their native keyboard behavior; removing `inert` makes a region available again.
 
+Enhanced DatePicker controls mirror native input `aria-invalid`, `aria-describedby`, and
+`aria-errormessage` onto the visible trigger, including dynamic changes. Valid updates and
+uncanceled form resets clear generated errors while preserving explicit application errors.
+
+`lumen-skeleton` and `lumen-spinner` are decorative (`aria-hidden="true"`) until they have an
+`aria-label` or `aria-labelledby`, then they become `role="status"`; explicit `aria-hidden` and
+`role` values are kept. `lumen-skeleton` and `lumen-progress` render as blocks. Skeleton
+`shape`, `width`, `height`, and `animation` attributes update and reset when changed or removed.
+A `loading` `lumen-button` also sets `aria-busy="true"`.
+
 Mentions keeps suggestion navigation on the textarea through `aria-activedescendant`; suggestion
 buttons are excluded from the Tab sequence while Enter and pointer selection still insert a mention.
+
+Select follows the Astro keyboard contract: Space opens the listbox or selects the focused option
+unless it continues an active typeahead query, and moving focus outside the field closes the
+listbox. The listbox shares the trigger's accessible name. Adding, removing, relabeling, or
+disabling native options re-renders the listbox while preserving focus on an available option.
+Toggling the native select's `disabled` state updates the trigger.
+
+React and Elements can share a page. React DatePicker, Calendar, and InputOTP render
+`data-ui-owner="react"` because React owns their behavior, so the document-wide Elements enhancers
+skip them whether elements are registered before or after the React island mounts. Standards-based
+`data-ui-*` markup without an owner, and `lumen-*` elements, are enhanced as before.
 
 Registering the elements wires behavior-heavy primitives without a framework runtime. DataTable,
 Dialog, Popover, DropdownMenu, ContextMenu, Tabs, Select, ThemeBuilder, Toast, Tooltip, forms,

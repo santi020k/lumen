@@ -32,6 +32,7 @@ export const lumenButtonElementConfig = {
     tabindex: '0',
     variant: 'default'
   },
+  observedAttributes: ['variant', 'size', 'disabled', 'loading', 'aria-busy', 'aria-disabled'],
   role: 'button',
   tagName: 'lumen-button'
 } as const satisfies LumenElementConfig
@@ -39,26 +40,51 @@ export const lumenButtonElementConfig = {
 export class LumenButtonElement extends LumenElement {
   static override config = lumenButtonElementConfig
   private spacePressed = false
-  private managedDisabled = false
-  private originalAriaDisabled: string | null = null
+  private applyingSemantics = false
 
   private hasBlockingAttribute(): boolean {
     return ['disabled', 'loading'].some(name => this.hasAttribute(name) && this.getAttribute(name) !== 'false')
   }
 
-  private syncDisabledSemantics(): void {
-    if (this.hasBlockingAttribute()) {
-      if (!this.managedDisabled) this.originalAriaDisabled = this.getAttribute('aria-disabled')
+  private isLoading(): boolean {
+    return this.hasAttribute('loading') && this.getAttribute('loading') !== 'false'
+  }
 
-      this.managedDisabled = true
+  // Persist the original value so cloned and serialized buttons can release generated state.
+  private syncManagedSemantic(name: 'aria-busy' | 'aria-disabled', active: boolean): void {
+    const ownership = `data-ui-button-${name}`
+    const recorded = this.getAttribute(ownership)
 
-      this.setAttribute('aria-disabled', 'true')
-    } else if (this.managedDisabled) {
-      this.managedDisabled = false
+    this.applyingSemantics = true
 
-      if (this.originalAriaDisabled === null) this.removeAttribute('aria-disabled')
-      else this.setAttribute('aria-disabled', this.originalAriaDisabled)
+    try {
+      if (active) {
+        if (recorded === null) {
+          const original = this.getAttribute(name)
+
+          this.setAttribute(ownership, original === null ? 'absent' : `value:${original}`)
+        }
+
+        this.setAttribute(name, 'true')
+      } else if (recorded !== null) {
+        this.removeAttribute(ownership)
+
+        if (this.getAttribute(name) !== 'true') return
+
+        if (recorded === 'absent') this.removeAttribute(name)
+        else if (recorded.startsWith('value:')) this.setAttribute(name, recorded.slice(6))
+      }
+    } finally {
+      this.applyingSemantics = false
     }
+  }
+
+  private syncBusySemantics(): void {
+    this.syncManagedSemantic('aria-busy', this.isLoading())
+  }
+
+  private syncDisabledSemantics(): void {
+    this.syncManagedSemantic('aria-disabled', this.hasBlockingAttribute())
   }
 
   private isBlocked(): boolean {
@@ -110,6 +136,8 @@ export class LumenButtonElement extends LumenElement {
 
     this.syncDisabledSemantics()
 
+    this.syncBusySemantics()
+
     this.addEventListener('keydown', this.onKeyDown)
 
     this.addEventListener('keyup', this.onKeyUp)
@@ -122,7 +150,17 @@ export class LumenButtonElement extends LumenElement {
   override attributeChangedCallback(name?: string, previousValue?: string | null, value?: string | null): void {
     super.attributeChangedCallback(name, previousValue, value)
 
+    if (this.applyingSemantics) return
+
+    if ((name === 'aria-busy' || name === 'aria-disabled') && previousValue !== null && previousValue !== undefined) {
+      this.removeAttribute(`data-ui-button-${name}`)
+    }
+
+    if (!this.isConnected) return
+
     this.syncDisabledSemantics()
+
+    this.syncBusySemantics()
   }
 
   override disconnectedCallback(): void {

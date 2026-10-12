@@ -1,7 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import { normalizeLumenProgress, resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
@@ -11,9 +11,7 @@ interface Props extends HTMLAttributes<'div'> {
 }
 
 const { class: classProp = '', className = '', max = 100, value = 0, ...rest } = Astro.props
-const safeMax = max > 0 ? max : 100
-const safeValue = Math.min(safeMax, Math.max(0, value))
-const percentage = (safeValue / safeMax) * 100
+const { max: safeMax, percentage, value: safeValue } = normalizeLumenProgress(max, value)
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-progress'

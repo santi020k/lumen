@@ -30,6 +30,20 @@ describe('docs search ranking', () => {
     expect(getMatchedSearchItems([item('Button', 'Component')], 'bu').map(result => result.title)).toEqual(['Button'])
   })
 
+  test('reflects searchable text changed on an item that was already searched', () => {
+    const entry = item('Card', 'Component', 'container surface')
+
+    expect(getMatchedSearchItems([entry], 'surface')).toEqual([entry])
+    entry.keywords = 'container panel'
+    expect(getMatchedSearchItems([entry], 'surface')).toEqual([])
+    expect(getMatchedSearchItems([entry], 'panel')).toEqual([entry])
+    entry.title = 'Tile'
+    expect(getMatchedSearchItems([entry], 'card')).toEqual([])
+    expect(getMatchedSearchItems([entry], 'tile')).toEqual([entry])
+    entry.category = 'Layout'
+    expect(getMatchedSearchItems([entry], 'layout')).toEqual([entry])
+  })
+
   test('preserves punctuation in exact guide titles', () => {
     const guide = item('Data & formatting', 'Recipe')
 

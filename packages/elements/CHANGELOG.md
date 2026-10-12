@@ -1,5 +1,104 @@
 # @santi020k/lumen-elements
 
+## 4.1.0
+
+### Minor Changes
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05) Thanks [@santi020k](https://github.com/santi020k)! - Strengthen loading feedback across Astro, React, and Elements.
+  
+  - Skeleton accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
+    (`shimmer`, `pulse`, `none`). The default shimmer rectangle and its 1rem height are unchanged,
+    but explicit heights and classes can now size placeholders below 1rem. Sizes accept pixels,
+    lengths, percentages, and `calc()` or `var()` expressions, and unsafe values are ignored.
+  - React and Elements Skeleton, and Elements Spinner, match Astro: decorative (`aria-hidden`) unless
+    named, `role="status"` when named, and explicit ARIA overrides win. Elements updates these as
+    labels change and after reconnecting.
+  - `lumen-skeleton` and `lumen-progress` now render as blocks instead of collapsing inline.
+  - Progress clamps NaN and infinite `max` or `value` to finite ARIA values in every adapter. The
+    Astro `ui:progress-change` runtime ignores missing, `null`, or non-numeric event detail.
+  - Core exports the shared `normalizeLumenProgress`, `resolveLumenLoadingSemantics`, and Skeleton
+    option resolvers.
+
+### Patch Changes
+
+- DatePicker preserves its open calendar and focused day when only input ARIA feedback changes.
+
+- ListBox follows dynamic external labels and current form reset ownership. Cloned and serialized Skeleton dimensions and loading-button busy/disabled state retain generated ownership while preserving consumer overrides.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`1b6ca9a`](https://github.com/santi020k/lumen/commit/1b6ca9acaa04a411a93259c1adc35245436f1c99) Thanks [@santi020k](https://github.com/santi020k)! - React DatePicker, Calendar (including `useCalendar` roots), and InputOTP now render
+  `data-ui-owner="react"`, and the document-wide Elements enhancers skip owned roots. On pages that
+  register Elements before or after a React island mounts, the React DatePicker keeps its trigger id
+  and label association, Calendar selections reach React state, and InputOTP segments stay rendered by
+  React. Standards-based `data-ui-*` markup and `lumen-*` elements are enhanced as before.
+
+- Astro `ListBox` names its visible list from external labels that mount, change, or leave after enhancement, stops
+  following labels when its root leaves the document, and resynchronizes when the same root is reinserted and
+  `LumenInitUiPrimitives` runs again. Elements `lumen-skeleton` and `lumen-spinner` copies made by cloning or
+  parsing their HTML again keep Lumen-generated `aria-hidden` and `role` values generated, so naming a copy announces it,
+  while consumer overrides stay explicit.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`936a640`](https://github.com/santi020k/lumen/commit/936a640b6ec1f9d635f9bb9bee878471996dcab1) Thanks [@santi020k](https://github.com/santi020k)! - Fix DatePicker state when applications load values and provide validation feedback.
+  
+  - React reopens the calendar on the current selected month without preventing month navigation.
+  - The visible trigger mirrors consumer `aria-invalid`, `aria-describedby`, and `aria-errormessage`
+    attributes. Astro and Elements also respond when these native input attributes change.
+  - Generated native validation feedback clears after valid values, relevant constraint changes, or
+    uncanceled resets. Explicit application errors remain intact.
+  - Escape still dismisses React DatePicker when pointer month navigation moves focus to the document.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05) Thanks [@santi020k](https://github.com/santi020k)! - A `loading` `lumen-button` now sets `aria-busy="true"` like the Astro and React buttons, and
+  restores any application `aria-busy` value when loading ends.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`131c5a9`](https://github.com/santi020k/lumen/commit/131c5a9f75a0b6196574f18c3ebc1451fd78ecd4) Thanks [@santi020k](https://github.com/santi020k)! - Align `lumen-select` keyboard and dismissal behavior with the Astro reference. Space opens the
+  listbox and selects the focused option instead of being consumed as a typeahead character, moving
+  focus outside the field closes the listbox, and the listbox shares the trigger's accessible name.
+  The listbox now re-renders when native options are added, removed, relabeled, or disabled, and the
+  trigger follows the native select's `disabled` state. A focused option keeps focus, and the
+  listbox stays open, when that re-render replaces it.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da) Thanks [@santi020k](https://github.com/santi020k)! - `connectLumenFloatingPanel` now dismisses a panel whose trigger or panel leaves its original
+  document, including adoption into another document, so an Astro or Elements date picker removed while open closes, releases its listeners, and reopens normally when
+  reinserted. The docs now state that callers own hiding the panel.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da) Thanks [@santi020k](https://github.com/santi020k)! - Enhanced Astro and Elements list boxes now expose one accessible control. The native select leaves the tab
+  order and the accessibility tree, label clicks and select focus move to the visible list, and the list
+  receives the native label, `aria-label`, description, error, and required semantics. Native validation
+  marks and focuses the first invalid list until a valid choice clears it, while consumer `aria-invalid`
+  wins. Elements reports `aria-busy` and `aria-multiselectable` as real values, and unnamed lists in either
+  adapter get distinct ids.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da) Thanks [@santi020k](https://github.com/santi020k)! - Enhanced Astro and Elements list boxes keep their visible list in sync when the native select changes after
+  enhancement: disabling it removes the list from the tab order and marks it disabled, and later label,
+  description, error, required, and consumer `aria-invalid` changes reach the list. An accepted form reset
+  clears Lumen-generated invalid state even when the restored selection is still invalid, while a canceled
+  reset keeps it.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`4140c1b`](https://github.com/santi020k/lumen/commit/4140c1b16cb581af41cd19cbab862f1d624c27da) Thanks [@santi020k](https://github.com/santi020k)! - React `ListBox` lists are now named by labels that target or wrap the hidden select, after an explicit
+  `aria-labelledby`, `aria-label`, or `label`. Astro and Elements list boxes clear Lumen-generated invalid state
+  when the select is valid again, disabled, or no longer required, while consumer `aria-invalid` stays. Leaving a
+  react-hook-form `LumenListBoxController` now validates once instead of twice.
+
+- Loading indicators treat non-string runtime `aria-label` and `aria-labelledby` values as unnamed instead of
+  throwing. Floating panels skip focus for a malformed `initialFocus` selector and still return their cleanup.
+  React `ListBox` keeps its list name current when an external label mounts, leaves, changes its `id` or `for`, or
+  is replaced after the first render, and releases the label ids it generated. Skeleton shimmer and pulse stop
+  looping under reduced motion in `critical.css`, which omits the full stylesheet's universal reduction.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`131c5a9`](https://github.com/santi020k/lumen/commit/131c5a9f75a0b6196574f18c3ebc1451fd78ecd4) Thanks [@santi020k](https://github.com/santi020k)! - Mirror the Select and NativeSelect chevron in right-to-left layouts so it stays inside the
+  inline-end padding instead of overlapping the selected value. The position follows the nearest
+  `dir="rtl"` or `dir="ltr"` ancestor, including nested LTR regions, and does not depend on `:dir()`,
+  which some consumer CSS pipelines compile into language selectors.
+  The generated critical stylesheets retain these inherited direction rules.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da) Thanks [@santi020k](https://github.com/santi020k)! - Add `connectLumenFloatingPanel` to `@santi020k/lumen-core`: one shared placement helper for anchored panels.
+  React menus and date pickers now use it, and Astro and Elements date pickers do too, so their calendars
+  leave short or scrolling dialogs through the top layer instead of being clipped. Panels close when their
+  containing dialog closes, including in browsers that move focus to the page body without a focus event,
+  and settle back against their trigger after enclosing transform transitions or animations.
+- Updated dependencies [[`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da), [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da), [`80d908f`](https://github.com/santi020k/lumen/commit/80d908f1cc9fbca3c506b3ee4c1eee78695a7a86), [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05), `e65d7e5`, [`131c5a9`](https://github.com/santi020k/lumen/commit/131c5a9f75a0b6196574f18c3ebc1451fd78ecd4), [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da)]:
+  - @santi020k/lumen@4.1.0
+  - @santi020k/lumen-core@4.1.0
+
 ## 4.0.0
 
 - Preserve WorldMap center, pointer zoom anchors, and highlighted-country fitting in RTL containers through the shared map navigation runtime.

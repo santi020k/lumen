@@ -58,6 +58,8 @@ export const LumenCheckbox = ({
       ref={ref}
       {...props}
       accessibilityRole="checkbox"
+      // An explicit native label hides the visible description, so it is announced as the hint, like LumenToggle.
+      accessibilityHint={props.accessibilityHint ?? description}
       accessibilityLabel={props.accessibilityLabel ?? label}
       aria-checked={checked}
       aria-disabled={disabled}

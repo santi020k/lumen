@@ -161,6 +161,9 @@ Set `data-lumen-preset="studio"` and an optional `data-lumen-scheme="light|dark"
 
 ## Compound interactive components
 
+DatePicker, Calendar, and InputOTP enhancement skips markup marked `data-ui-owner`, such as the
+matching React controls, so those islands keep their ids, labels, and state before and after hydration.
+
 Popover, dropdown menu, tabs, and tooltip parts expose the DOM and ARIA contracts consumed by the
 shared progressive-enhancement runtime. Prefer these parts over recreating roles and `data-ui-*`
 attributes by hand.
@@ -334,6 +337,24 @@ import { Anchor, CopyButton, ScrollProgress } from '@santi020k/lumen-astro'
   { depth: 2, href: '#install', label: 'Install' },
   { depth: 3, href: '#astro', label: 'Astro' }
 ]} />
+```
+
+Enhanced `DatePicker` controls mirror native input `aria-invalid`, `aria-describedby`, and
+`aria-errormessage` attributes onto the visible trigger, including later attribute changes.
+Valid updates and uncanceled resets clear generated validation feedback while preserving explicit
+application errors.
+
+`Skeleton` accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
+(`shimmer`, `pulse`, `none`). Numeric sizes are pixels; CSS lengths, percentages, and math or
+custom-property expressions also work. Explicit styles take precedence. Empty placeholders default
+to 1rem high, while text and element content can grow naturally. Reduced motion stops animations.
+Unnamed Skeletons and Spinners are decorative. Give a standalone indicator an accessible name, or
+wrap a group in one named status region with `VisuallyHidden` text.
+
+```astro
+<Skeleton shape="circle" width={40} />
+<Skeleton shape="text" width="80%" />
+<Skeleton animation="pulse" height={8} width="60%" />
 ```
 
 `Progress` can be updated after hydration by dispatching `ui:progress-change` from its root with

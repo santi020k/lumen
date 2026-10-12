@@ -52,7 +52,7 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
-| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `4.0.0`  | `LumenUI`                                    | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `4.1.0`  | `LumenUI`                                    | Not applicable                         |
 | Android / Compose          | Maven Central `com.santi020k:lumen-compose:4.0.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
 | Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:4.0.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
@@ -275,7 +275,16 @@ For long reading surfaces, use `Anchor` for local section navigation and pass ea
 heading `depth`, `index`, and `description` when hierarchy matters. Use `activationOffset` for fixed
 application headers. Use `ScrollProgress` for document position; keep `Progress` for
 application-controlled task completion. In Astro, dispatch `ui:progress-change` with
-`{ value, max? }` from the `Progress` root when browser state changes after hydration. `Pill`
+`{ value, max? }` from the `Progress` root when browser state changes after hydration. Non-finite or
+missing fields keep the current state, and every adapter clamps to finite ARIA values. Use `Spinner`
+for unknown-duration waits.
+
+Skeleton and Spinner are decorative (`aria-hidden`) unless named. For a group of placeholders,
+announce loading once: wrap them in one `role="status"` region with `aria-busy="true"` and a
+`VisuallyHidden` label, and keep the Skeletons unnamed. Size placeholders with `shape`
+(`rectangle`, `text`, `circle`), `width`, and `height`, and use deterministic widths rather than
+random values so server and client markup match. Data fetching and when to show placeholders stay
+in the application. `Pill`
 accepts `neutral`, `brand`, and `outline`
 variants, plus native link and count composition.
 

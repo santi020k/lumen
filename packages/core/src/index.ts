@@ -182,6 +182,7 @@ export {
   type LumenFigmaVariableMode,
   type LumenStructureDesignToken
 } from './figma.js'
+export { connectLumenFloatingPanel, type LumenFloatingPanelOptions, type LumenFloatingPanelPlacement } from './floating-panel.js'
 export {
   createLumenFormFailure,
   createLumenFormSuccess,
@@ -241,6 +242,21 @@ export {
   type LumenLocaleOption,
   normalizeLumenLocales
 } from './language.js'
+export {
+  type LumenLoadingSemantics,
+  type LumenLoadingSemanticsInput,
+  type LumenProgressState,
+  type LumenSkeletonAnimation,
+  lumenSkeletonAnimations,
+  type LumenSkeletonShape,
+  lumenSkeletonShapes,
+  type LumenSkeletonSize,
+  normalizeLumenProgress,
+  resolveLumenLoadingSemantics,
+  resolveLumenSkeletonAnimation,
+  resolveLumenSkeletonShape,
+  resolveLumenSkeletonSize
+} from './loading.js'
 export {
   bindLumenMediaViewport,
   formatLumenMediaZoom,

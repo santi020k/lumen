@@ -1,5 +1,20 @@
 # @santi020k/lumen-react-native
 
+## 4.0.1
+
+### Patch Changes
+
+- `LumenCheckbox` exposes its visible description as an accessibility hint, matching `LumenToggle`.
+  An explicit `accessibilityHint`, including an empty string, keeps precedence.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`eb922fb`](https://github.com/santi020k/lumen/commit/eb922fb7a211be2297a2acd7f1c7d60f5bb7b626) Thanks [@santi020k](https://github.com/santi020k)! - Preserve explicit native accessibilityLabelledBy references on grouped text fields instead of overriding them with the inherited field label.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`ba3a987`](https://github.com/santi020k/lumen/commit/ba3a987d87c63e2ecbcf7cebf4005698a653a8d5) Thanks [@santi020k](https://github.com/santi020k)! - `LumenPicker` inside a `LumenFieldGroup` now announces the group's error or description as its accessibility
+  hint, reports `aria-invalid` while the group shows an error, and uses the danger border like other invalid
+  fields. Pickers outside a field group are unchanged.
+- Updated dependencies [[`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da), [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05), `e65d7e5`, [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da)]:
+  - @santi020k/lumen-core@4.1.0
+
 ## 4.0.0
 
 - Validate controlled table selections as native sets of string IDs before constructing interactive controls; malformed restored state renders the existing invalid feedback.

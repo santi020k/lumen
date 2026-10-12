@@ -6,6 +6,7 @@ import {
   coerceThemeBuilderMode,
   coerceThemeBuilderScheme,
   coerceThemePreset,
+  connectLumenFloatingPanel,
   createLumenAttachmentPreviewController,
   createLumenBarGeometry,
   createLumenChartDatumActivation,
@@ -1683,6 +1684,217 @@ const getFocusable = (root: ParentNode | null): HTMLElement[] => {
 }
 
 const getOwnedTarget = (event: Event): Node | null => event.target instanceof Node ? event.target : null
+// Markup whose behavior another adapter owns, such as a React island, is never enhanced here.
+const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
+const forwardedAttributes = ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage'] as const
+// A new select id changes which labels name it.
+const observedAttributes = [...forwardedAttributes, 'aria-invalid', 'disabled', 'form', 'id', 'required']
+
+// The first invalid control owns focus so several invalid fields do not race for it.
+const isFirstInvalidControl = (select: HTMLSelectElement): boolean => {
+  const form = select.form
+
+  if (!form) return true
+
+  for (const element of form.elements) {
+    if (element.matches(':invalid') && element.tagName !== 'FIELDSET') return element === select
+  }
+
+  return true
+}
+
+const setOptionalAttribute = (element: HTMLElement, name: string, value: string | null): void => {
+  if (value === null) element.removeAttribute(name)
+  else element.setAttribute(name, value)
+}
+
+const syncListBoxName = (
+  root: HTMLElement,
+  select: HTMLSelectElement,
+  list: HTMLElement,
+  listOwned: ReadonlySet<string>,
+  createLabelId: () => string
+): void => {
+  for (const name of forwardedAttributes) {
+    if (listOwned.has(name)) continue
+
+    setOptionalAttribute(list, name, select.getAttribute(name) ?? (name === 'aria-label' ? root.getAttribute('aria-label') : null))
+  }
+
+  if (listOwned.has('aria-labelledby') || list.hasAttribute('aria-label') || list.hasAttribute('aria-labelledby')) return
+
+  const labelIds = [...select.labels].map(label => {
+    label.id ||= createLabelId()
+
+    return label.id
+  })
+
+  if (labelIds.length) list.setAttribute('aria-labelledby', labelIds.join(' '))
+}
+
+const mayHoldListBoxLabel = (node: Node, root: HTMLElement): boolean => {
+  // Adoption preserves a node's original realm, so instanceof the destination Element is insufficient.
+  if (node.nodeType !== 1) return false
+
+  const element = node as Element
+
+  return ['LABEL', 'FORM'].includes(element.nodeName) || element.contains(root) || element.querySelector('label, form') !== null
+}
+
+// Only label insertions, removals, `for` or `id` changes, or moving the list itself can change its labels.
+const affectsListBoxLabels = (
+  records: readonly MutationRecord[],
+  root: HTMLElement
+): boolean => (
+  records.some(record => record.type === 'attributes' ?
+    ['LABEL', 'FORM', 'SELECT'].includes(record.target.nodeName) :
+    [...record.addedNodes, ...record.removedNodes].some(node => mayHoldListBoxLabel(node, root)))
+)
+
+/**
+ * Once a list box is enhanced the visible list is its only focus stop and accessible control, while the
+ * native select keeps form submission, validation, and reset. Naming, description, error, required, and
+ * disabled semantics follow the select as they change, focus that reaches the select moves to the list,
+ * and native invalid events mark the list invalid until a valid change or an accepted reset. Consumer
+ * `aria-invalid` on the select always wins over generated state. External labels are followed while the root
+ * is connected; the returned function resynchronizes a root that was removed and inserted again.
+ */
+const bindListBoxProxy = (
+  root: HTMLElement,
+  select: HTMLSelectElement,
+  list: HTMLElement,
+  createLabelId: () => string,
+  onResetAccepted?: () => void
+): (() => void) => {
+  // Attributes authored on the list itself stay under the author's control.
+  const listOwned = new Set<string>(forwardedAttributes.filter(name => list.hasAttribute(name)))
+  let generatedInvalid = false
+  let resetForm: HTMLFormElement | null = null
+
+  const syncState = (): void => {
+    select.tabIndex = -1
+
+    select.setAttribute('aria-hidden', 'true')
+
+    syncListBoxName(root, select, list, listOwned, createLabelId)
+
+    setOptionalAttribute(list, 'aria-required', select.required ? 'true' : null)
+
+    // A select that is valid again or barred from validation, such as disabled or no longer required, is not invalid.
+    if (!select.willValidate || select.validity.valid) generatedInvalid = false
+
+    setOptionalAttribute(list, 'aria-invalid', select.getAttribute('aria-invalid') ?? (generatedInvalid ? 'true' : null))
+
+    list.tabIndex = select.disabled ? -1 : 0
+
+    setOptionalAttribute(list, 'aria-disabled', select.disabled ? 'true' : null)
+  }
+
+  const onReset = (event: Event): void => {
+    const form = event.currentTarget
+
+    globalThis.setTimeout(() => {
+      if (event.defaultPrevented || select.form !== form) return
+
+      generatedInvalid = false
+
+      syncState()
+
+      onResetAccepted?.()
+    })
+  }
+
+  const followForm = (): void => {
+    const next = root.isConnected ? select.form : null
+
+    if (next === resetForm) return
+
+    resetForm?.removeEventListener('reset', onReset)
+
+    resetForm = next
+
+    resetForm?.addEventListener('reset', onReset)
+  }
+
+  const sync = (): void => {
+    followForm()
+
+    syncState()
+  }
+
+  let labelObserver: MutationObserver | undefined
+  let observedDocument: Document | undefined
+
+  // The document observer stops once the root leaves, so a removed list box is not kept alive by it.
+  const followLabels = (): void => {
+    if (observedDocument !== root.ownerDocument) {
+      labelObserver?.disconnect()
+
+      labelObserver = undefined
+    }
+
+    const view = root.ownerDocument.defaultView
+
+    if (labelObserver || !view || !root.isConnected) return
+
+    observedDocument = root.ownerDocument
+
+    labelObserver = new view.MutationObserver(records => {
+      if (observedDocument !== root.ownerDocument) {
+        followLabels()
+
+        sync()
+      } else if (!root.isConnected) {
+        followForm()
+
+        labelObserver?.disconnect()
+
+        labelObserver = undefined
+      } else if (affectsListBoxLabels(records, root)) {
+        sync()
+      }
+    })
+
+    labelObserver.observe(root.ownerDocument, {
+      attributeFilter: ['for', 'form', 'id'], attributes: true, childList: true, subtree: true
+    })
+  }
+
+  sync()
+
+  followLabels()
+
+  new MutationObserver(sync).observe(select, { attributeFilter: observedAttributes, attributes: true })
+
+  select.addEventListener('focus', () => {
+    // Only real select focus, such as a label click, moves to the list; focus moved elsewhere stays put.
+    if (select.ownerDocument.activeElement === select && !select.disabled) list.focus({ preventScroll: true })
+  })
+
+  select.addEventListener('invalid', event => {
+    event.preventDefault()
+
+    generatedInvalid = true
+
+    sync()
+
+    if (isFirstInvalidControl(select) && !select.disabled) list.focus()
+  })
+
+  select.addEventListener('change', () => {
+    if (!select.validity.valid) return
+
+    generatedInvalid = false
+
+    sync()
+  })
+
+  return () => {
+    followLabels()
+
+    sync()
+  }
+}
 
 const getScopedElements = <ScopedElement extends Element>(
   scope: ParentNode,
@@ -2111,11 +2323,15 @@ const getListBoxGroup = (
   return group
 }
 
+const listBoxResyncs = new WeakMap<HTMLElement, () => void>()
+
 export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
   for (const root of getScopedElements<HTMLElement>(
     scope, 'lumen-list-box, [data-ui-list-box]'
   )) {
-    if (root.dataset.uiListBoxBound === 'true') continue
+    if (root.dataset.uiListBoxBound === 'true') listBoxResyncs.get(root)?.()
+
+    if (root.dataset.uiListBoxBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     let select = root.querySelector<HTMLSelectElement>(
       '[data-ui-list-box-native], select'
@@ -2175,7 +2391,7 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
 
       list.tabIndex = select.disabled ? -1 : 0
 
-      list.toggleAttribute('aria-multiselectable', select.multiple)
+      list.setAttribute('aria-multiselectable', String(select.multiple))
 
       const nativeGroups = new Map<HTMLOptGroupElement, HTMLElement>()
 
@@ -2210,9 +2426,15 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
       ...list.querySelectorAll<HTMLElement>('[data-ui-list-box-option]')
     ]
 
-    list.toggleAttribute('aria-busy', loading)
+    if (loading) list.setAttribute('aria-busy', 'true')
+    else list.removeAttribute('aria-busy')
+
+    // Unnamed lists share no id, so each list gets its own option id prefix.
+    const optionIdPrefix = select.id || createId('ui-list-box')
 
     if (!options.length) {
+      listBoxResyncs.set(root, bindListBoxProxy(root, select, list, () => createId('ui-list-box-label')))
+
       const message = document.createElement('div')
 
       message.className = loading ?
@@ -2247,7 +2469,7 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
 
     const syncActive = (): void => {
       options.forEach((option, index) => {
-        option.id ||= `${select.id || 'ui-list-box'}-option-${index}`
+        option.id ||= `${optionIdPrefix}-option-${index}`
 
         option.dataset.active = index === activeIndex ? 'true' : 'false'
       })
@@ -2406,21 +2628,17 @@ export const enhanceLumenListBoxes = (scope: ParentNode = document): void => {
       })
     })
 
+    listBoxResyncs.set(root, bindListBoxProxy(root, select, list, () => createId('ui-list-box-label'), () => {
+      if (!options.length) return
+
+      syncSelected()
+
+      activeIndex = Math.max(0, options.findIndex(option => option.getAttribute('aria-selected') === 'true'))
+
+      syncActive()
+    }))
+
     select.addEventListener('change', syncSelected)
-
-    select.form?.addEventListener('reset', () => {
-      globalThis.setTimeout(() => {
-        syncSelected()
-
-        activeIndex = Math.max(
-          0, options.findIndex(
-            option => option.getAttribute('aria-selected') === 'true'
-          )
-        )
-
-        syncActive()
-      })
-    })
 
     syncSelected()
 
@@ -3490,7 +3708,7 @@ const initInputOtpFields = (scope: ParentNode): void => {
   }
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const length = getInputOtpLength(root)
     const input = ensureInputOtpNativeInput(root, length)
@@ -4085,7 +4303,7 @@ const initCalendars = (scope: ParentNode): void => {
   }
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     ensureCalendarStructure(root)
 
@@ -4274,7 +4492,7 @@ const initDatePickers = (scope: ParentNode): void => {
   if (closestRoot instanceof HTMLElement && !roots.includes(closestRoot)) roots.unshift(closestRoot)
 
   for (const root of roots) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) continue
 
     const native = root.querySelector<HTMLInputElement>(datePickerNativeSelector)
     const control = root.querySelector<HTMLElement>(datePickerControlSelector)
@@ -4327,9 +4545,15 @@ const initDatePickers = (scope: ParentNode): void => {
       root.hasAttribute('disabled') || root.hasAttribute('readonly')
 
     let outsideController: AbortController | undefined
+    let invalidAttempted = false
+    let disconnectPanel: (() => void) | undefined
 
     const closePopover = (restoreFocus = false): void => {
       outsideController?.abort()
+
+      disconnectPanel?.()
+
+      disconnectPanel = undefined
 
       popover.hidden = true
 
@@ -4357,7 +4581,19 @@ const initDatePickers = (scope: ParentNode): void => {
 
       popover.setAttribute('aria-label', root.dataset.chooseDateLabel || labels.chooseDate)
 
-      if (native.validity.valid) trigger.removeAttribute('aria-invalid')
+      if (native.validity.valid) invalidAttempted = false
+
+      const invalid = native.getAttribute('aria-invalid') ?? (invalidAttempted ? 'true' : null)
+
+      if (invalid === null) trigger.removeAttribute('aria-invalid')
+      else trigger.setAttribute('aria-invalid', invalid)
+
+      for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage']) {
+        const value = native.getAttribute(attribute)
+
+        if (value === null) trigger.removeAttribute(attribute)
+        else trigger.setAttribute(attribute, value)
+      }
     }
 
     const openPopover = (): void => {
@@ -4388,6 +4624,14 @@ const initDatePickers = (scope: ParentNode): void => {
 
       trigger.setAttribute('aria-expanded', 'true')
 
+      disconnectPanel?.()
+
+      disconnectPanel = connectLumenFloatingPanel(popover, trigger, {
+        onDismiss: () => {
+          closePopover()
+        }
+      })
+
       outsideController = new AbortController()
 
       document.addEventListener('click', event => {
@@ -4411,12 +4655,12 @@ const initDatePickers = (scope: ParentNode): void => {
         if (mutation.target === root && mutation.attributeName === 'readonly') native.readOnly = root.hasAttribute('readonly')
       }
 
-      closePopover()
+      if (mutations.some(mutation => !mutation.attributeName?.startsWith('aria-'))) closePopover()
 
       syncState()
     })
 
-    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder'] })
+    observer.observe(native, { attributes: true, attributeFilter: ['disabled', 'readonly', 'required', 'value', 'min', 'max', 'placeholder', 'aria-invalid', 'aria-errormessage', 'aria-describedby', 'aria-label', 'aria-labelledby'] })
 
     observer.observe(root, { attributes: true, attributeFilter: ['disabled', 'readonly', 'locale', 'lang', 'data-locale', 'data-choose-date-label'] })
 
@@ -4474,7 +4718,9 @@ const initDatePickers = (scope: ParentNode): void => {
     native.addEventListener('invalid', event => {
       event.preventDefault()
 
-      trigger.setAttribute('aria-invalid', 'true')
+      invalidAttempted = true
+
+      syncState()
 
       trigger.focus()
     })
@@ -4482,6 +4728,8 @@ const initDatePickers = (scope: ParentNode): void => {
     native.form?.addEventListener('reset', event => {
       globalThis.setTimeout(() => {
         if (event.defaultPrevented || !root.isConnected) return
+
+        invalidAttempted = false
 
         syncState()
 
@@ -7580,6 +7828,7 @@ class LumenTabsBehaviorElement extends LumenElement {
 
 class LumenSelectBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
+  private renderingOptions = false
   private typeahead = ''
   private typeaheadTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
@@ -7602,11 +7851,7 @@ class LumenSelectBehaviorElement extends LumenElement {
 
     this.abortController = undefined
 
-    if (this.typeaheadTimer) {
-      globalThis.clearTimeout(this.typeaheadTimer)
-
-      this.typeaheadTimer = undefined
-    }
+    this.#resetTypeahead()
   }
 
   override attributeChangedCallback(name: string, previous: string | null, value: string | null): void {
@@ -7706,12 +7951,33 @@ class LumenSelectBehaviorElement extends LumenElement {
       )
     }
 
+    for (const attribute of ['aria-label', 'aria-labelledby']) {
+      const value = trigger.getAttribute(attribute)
+
+      if (value) listbox.setAttribute(attribute, value)
+    }
+
     this.#syncValue(select, trigger)
 
     this.#closeSelect(trigger, listbox)
 
+    this.addEventListener(
+      'focusout', event => {
+        // Replacing a focused option makes Chromium blur it; that internal rerender restores focus itself.
+        if (this.renderingOptions) return
+
+        if (event.relatedTarget instanceof Node && this.contains(event.relatedTarget)) return
+
+        this.#resetTypeahead()
+
+        this.#closeSelect(trigger, listbox)
+      }, { signal }
+    )
+
     trigger.addEventListener(
       'click', () => {
+        this.#resetTypeahead()
+
         if (trigger.getAttribute('aria-expanded') === 'true') {
           this.#closeSelect(trigger, listbox)
         } else {
@@ -7740,6 +8006,8 @@ class LumenSelectBehaviorElement extends LumenElement {
 
         event.preventDefault()
 
+        this.#resetTypeahead()
+
         this.#openSelect(trigger, listbox)
 
         if (event.key === 'Enter' || event.key === ' ') {
@@ -7766,49 +8034,52 @@ class LumenSelectBehaviorElement extends LumenElement {
       }, { signal }
     )
 
-    for (const item of this.#getItems()) {
-      item.tabIndex = -1
+    // Options are delegated so native option changes can re-render without rebinding handlers.
+    listbox.addEventListener(
+      'click', event => {
+        const item = this.#getEventItem(event)
 
-      item.addEventListener(
-        'click', () => {
-          this.#selectOption(select, trigger, listbox, item)
-        }, { signal }
-      )
+        if (item) this.#selectOption(select, trigger, listbox, item)
+      }, { signal }
+    )
 
-      item.addEventListener(
-        'keydown', event => {
-          if (event.defaultPrevented || event.isComposing) return
+    listbox.addEventListener(
+      'keydown', event => {
+        const item = this.#getEventItem(event)
 
-          if (this.#handleTypeahead(event, item)) return
+        if (!item || event.defaultPrevented || event.isComposing) return
 
-          if (event.key === 'Escape' && !listbox.hidden) {
-            event.preventDefault()
+        if (this.#handleTypeahead(event, item)) return
 
-            this.#closeSelect(trigger, listbox)
-
-            trigger.focus({ preventScroll: true })
-
-            return
-          }
-
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault()
-
-            this.#selectOption(select, trigger, listbox, item)
-
-            return
-          }
-
-          const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
-
-          if (!keys.includes(event.key)) return
-
+        if (event.key === 'Escape' && !listbox.hidden) {
           event.preventDefault()
 
-          this.#focusOption(event.key, item)
-        }, { signal }
-      )
-    }
+          this.#closeSelect(trigger, listbox)
+
+          trigger.focus({ preventScroll: true })
+
+          return
+        }
+
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+
+          this.#selectOption(select, trigger, listbox, item)
+
+          return
+        }
+
+        const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End']
+
+        if (!keys.includes(event.key)) return
+
+        event.preventDefault()
+
+        this.#resetTypeahead()
+
+        this.#focusOption(event.key, item)
+      }, { signal }
+    )
 
     document.addEventListener(
       'pointerdown', event => {
@@ -7821,6 +8092,74 @@ class LumenSelectBehaviorElement extends LumenElement {
         this.#closeSelect(trigger, listbox)
       }, { signal }
     )
+
+    this.#observeNativeSelect(select, trigger, listbox, signal)
+  }
+
+  #observeNativeSelect(
+    select: HTMLSelectElement,
+    trigger: HTMLButtonElement,
+    listbox: HTMLElement,
+    signal: AbortSignal
+  ): void {
+    if (typeof MutationObserver === 'undefined') return
+
+    const observer = new MutationObserver(() => {
+      const focusedValue = this.#getItems().find(item => item === this.ownerDocument.activeElement)?.dataset.value
+
+      this.renderingOptions = true
+
+      try {
+        this.#renderOptions(select, listbox)
+      } finally {
+        this.renderingOptions = false
+      }
+
+      this.#syncValue(select, trigger)
+
+      trigger.disabled = select.disabled
+
+      if (select.disabled) {
+        this.#closeSelect(trigger, listbox)
+
+        return
+      }
+
+      if (focusedValue === undefined) return
+
+      const nextItem = this.#getEnabledItems().find(item => item.dataset.value === focusedValue)
+
+      if (nextItem) nextItem.focus()
+      else trigger.focus({ preventScroll: true })
+    })
+
+    observer.observe(select, {
+      attributeFilter: ['disabled', 'label', 'value'],
+      attributes: true,
+      characterData: true,
+      childList: true,
+      subtree: true
+    })
+
+    signal.addEventListener('abort', () => {
+      observer.disconnect()
+    }, { once: true })
+  }
+
+  #getEventItem(event: Event): HTMLElement | undefined {
+    const target = event.target instanceof Element ? event.target.closest<HTMLElement>(selectOptionSelector) : null
+
+    return target && this.contains(target) ? target : undefined
+  }
+
+  #resetTypeahead(): void {
+    this.typeahead = ''
+
+    if (this.typeaheadTimer) {
+      globalThis.clearTimeout(this.typeaheadTimer)
+
+      this.typeaheadTimer = undefined
+    }
   }
 
   #ensureNativeSelect(): HTMLSelectElement {
@@ -7934,6 +8273,8 @@ class LumenSelectBehaviorElement extends LumenElement {
         item.dataset.uiSelectOption = ''
 
         item.dataset.value = option.value
+
+        item.tabIndex = -1
 
         item.textContent = option.label
 
@@ -8068,7 +8409,13 @@ class LumenSelectBehaviorElement extends LumenElement {
     event: KeyboardEvent,
     currentItem?: HTMLElement
   ): boolean {
-    if (!isPrintableKey(event)) return false
+    const trigger = this.querySelector<HTMLElement>('[data-ui-select-trigger]')
+    const listbox = this.querySelector<HTMLElement>('[data-ui-select-list]')
+
+    // Space only extends an active query; otherwise it opens or selects like Enter.
+    if (!isPrintableKey(event) || (
+      event.key === ' ' && (!this.typeahead || trigger?.getAttribute('aria-expanded') !== 'true')
+    )) return false
 
     event.preventDefault()
 
@@ -8081,9 +8428,6 @@ class LumenSelectBehaviorElement extends LumenElement {
     this.typeaheadTimer = globalThis.setTimeout(() => {
       this.typeahead = ''
     }, 700)
-
-    const trigger = this.querySelector<HTMLElement>('[data-ui-select-trigger]')
-    const listbox = this.querySelector<HTMLElement>('[data-ui-select-list]')
 
     if (trigger && listbox) {
       this.#openSelect(trigger, listbox)

@@ -329,7 +329,7 @@ return (
 https://github.com/santi020k/lumen
 
 # Dependency Rule
-Exact Version: 4.0.0
+Exact Version: 4.1.0
 
 # Add this product to your application target
 LumenUI`,
@@ -342,7 +342,7 @@ LumenUI`,
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "4.0.0"
+        exact: "4.1.0"
     )
 ],
 targets: [
@@ -384,7 +384,7 @@ struct ExampleApp: App {
     href: '/docs/apple',
     id: 'apple',
     installNote:
-      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 4.0.0 for reproducible builds, and attach the LumenUI product to your application target.',
+      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 4.1.0 for reproducible builds, and attach the LumenUI product to your application target.',
     label: 'Apple / SwiftUI',
     packageName: 'LumenUI',
     playgroundCommands: [
@@ -441,7 +441,7 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     setupSteps: [
       {
         description:
-          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 4.0.0 for reproducible builds. Use a compatible-version rule only when the application accepts compatible updates.',
+          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 4.1.0 for reproducible builds. Use a compatible-version rule only when the application accepts compatible updates.',
         title: 'Add the Swift package'
       },
       {

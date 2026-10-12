@@ -42,6 +42,37 @@ import { LumenPicker, LumenRangeSlider, LumenSlider } from './value-components.j
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
 
+test.each([
+  { labelledBy: 'consumer-label' },
+  { labelledBy: ['consumer-label', 'consumer-context'] },
+  { labelledBy: '' },
+  { labelledBy: [] }
+])('grouped text fields retain explicit native labelled-by ownership: $labelledBy', async ({ labelledBy }) => {
+  const root = await renderNative(
+    <LumenFieldGroup label="Inherited label">
+      <LumenTextField accessibilityLabelledBy={labelledBy} />
+    </LumenFieldGroup>
+  )
+  const input = root.container.queryAll(instance => instance.type === 'TextInput')[0]
+  if (!input) throw new Error('Expected grouped text field')
+  expect(readProp(input, 'accessibilityLabelledBy')).toEqual(labelledBy)
+  expect(readProp(input, 'aria-labelledby')).toBeUndefined()
+  expect(readProp(input, 'accessibilityLabel')).toBeUndefined()
+})
+
+test('grouped text fields preserve explicit ARIA and native label references together', async () => {
+  const root = await renderNative(
+    <LumenFieldGroup label="Inherited label">
+      <LumenTextField accessibilityLabelledBy="native-label" aria-labelledby="aria-label" />
+    </LumenFieldGroup>
+  )
+  const input = root.container.queryAll(instance => instance.type === 'TextInput')[0]
+  if (!input) throw new Error('Expected grouped text field')
+  expect(readProp(input, 'accessibilityLabelledBy')).toBe('native-label')
+  expect(readProp(input, 'aria-labelledby')).toBe('aria-label')
+  expect(readProp(input, 'accessibilityLabel')).toBeUndefined()
+})
+
 const nativeDirection = vi.hoisted(() => ({ isRTL: false }))
 const nativePlatform = vi.hoisted(() => ({ OS: 'ios' }))
 const nativeMotion = vi.hoisted(() => ({ enabled: false }))
@@ -807,6 +838,30 @@ describe('Lumen React Native component behavior', () => {
     expect(readProp(dateRange, 'accessibilityHint')).toBe('Choose a valid schedule')
   })
 
+  test('pickers inside field groups announce the group error and description', async () => {
+    const root = await renderNative(
+      <>
+        <LumenFieldGroup description="Used for billing" errorMessage="Choose a plan" label="Plan" required>
+          <LumenPicker label="Plan" onValueChange={() => {}} options={[{ label: 'Free', value: 'free' }]} value="free" />
+        </LumenFieldGroup>
+        <LumenFieldGroup description="Shown on invoices" label="Currency">
+          <LumenPicker label="Currency" onValueChange={() => {}} options={[{ label: 'USD', value: 'usd' }]} value="usd" />
+        </LumenFieldGroup>
+        <LumenPicker label="Region" onValueChange={() => {}} options={[{ label: 'EU', value: 'eu' }]} value="eu" />
+      </>
+    )
+    const [invalidPicker, describedPicker, standalonePicker] = root.container.queryAll(
+      instance => readProp(instance, 'accessibilityRole') === 'combobox'
+    )
+
+    expect(invalidPicker && readProp(invalidPicker, 'accessibilityHint')).toBe('Choose a plan')
+    expect(invalidPicker && readProp(invalidPicker, 'aria-invalid')).toBe(true)
+    expect(describedPicker && readProp(describedPicker, 'accessibilityHint')).toBe('Shown on invoices')
+    expect(describedPicker && readProp(describedPicker, 'aria-invalid')).toBeUndefined()
+    expect(standalonePicker && readProp(standalonePicker, 'accessibilityHint')).toBeUndefined()
+    expect(standalonePicker && readProp(standalonePicker, 'aria-invalid')).toBeUndefined()
+  })
+
   test('localizes required-field descriptions without exposing them on optional fields', async () => {
     const root = await renderNative(
       <>
@@ -1410,6 +1465,37 @@ describe('Lumen React Native component behavior', () => {
     )
 
     expect(readProp(findByAccessibilityRole(root, 'checkbox'), 'accessibilityLabel')).toBe('Include diagnostic report')
+  })
+
+  test('checkbox announces its visible description as a hint like toggle', async () => {
+    const root = await renderNative(
+      <>
+        <LumenCheckbox
+          checked={false}
+          description="Attach logs to the support ticket"
+          label="Include diagnostics"
+          onCheckedChange={() => undefined}
+        />
+        <LumenCheckbox
+          accessibilityHint="Consumer guidance"
+          checked={false}
+          description="Visible guidance"
+          label="Share usage"
+          onCheckedChange={() => undefined}
+        />
+        <LumenCheckbox
+          accessibilityHint=""
+          checked={false}
+          description="Visible guidance"
+          label="Quiet hints"
+          onCheckedChange={() => undefined}
+        />
+      </>
+    )
+
+    expect(readProp(findByAccessibilityLabel(root, 'Include diagnostics'), 'accessibilityHint')).toBe('Attach logs to the support ticket')
+    expect(readProp(findByAccessibilityLabel(root, 'Share usage'), 'accessibilityHint')).toBe('Consumer guidance')
+    expect(readProp(findByAccessibilityLabel(root, 'Quiet hints'), 'accessibilityHint')).toBe('')
   })
 
   test('toggle makes the full labeled row the single interactive switch', async () => {

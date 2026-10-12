@@ -5,6 +5,7 @@ import {
 } from 'react'
 import {
   type AccessibilityActionEvent,
+  type ColorValue,
   I18nManager,
   type LayoutChangeEvent,
   type NativeSyntheticEvent,
@@ -17,8 +18,10 @@ import {
 } from 'react-native'
 import { Circle, Svg } from 'react-native-svg'
 
+import { type LumenFieldContextValue, useLumenFieldContext } from './field-context.js'
 import type { LumenViewRef } from './native-ref-types.js'
 import { LumenIcon } from './primitives.js'
+import { resolveLumenAriaInvalid, resolveLumenValidationHint } from './recipes.js'
 import { resolveLumenProgressValue } from './shared-recipes.js'
 import {
   type LumenMetricTone,
@@ -53,6 +56,23 @@ const resolveControlOpacity = (enabled: boolean, pressed: boolean): number => {
   return pressed ? 0.82 : 1
 }
 
+const resolvePickerFieldValidation = (
+  field: LumenFieldContextValue | null
+): { hint: string | undefined, invalid: true | undefined } => ({
+  hint: resolveLumenValidationHint(field?.errorMessage, field?.description),
+  invalid: resolveLumenAriaInvalid(field?.errorMessage)
+})
+
+const resolvePickerBorderColor = (
+  open: boolean,
+  invalid: boolean,
+  colors: { brand: ColorValue, danger: ColorValue, line: ColorValue }
+): ColorValue => {
+  if (open) return colors.brand
+
+  return invalid ? colors.danger : colors.line
+}
+
 const LumenPickerControl = <Value extends number | string,>({
   enabled = true,
   label,
@@ -64,6 +84,8 @@ const LumenPickerControl = <Value extends number | string,>({
   ...props
 }: LumenPickerProps<Value>): ReactElement => {
   const theme = useLumenTheme()
+  // Inside a field group the trigger announces the group's error and description like other fields.
+  const validation = resolvePickerFieldValidation(useLumenFieldContext())
   const [expanded, setExpanded] = useState(false)
   const controlEnabled = enabled && options.length > 0
   const selected = options.find(option => option.value === value)
@@ -82,10 +104,12 @@ const LumenPickerControl = <Value extends number | string,>({
         {label}
       </Text>
       <Pressable
+        accessibilityHint={validation.hint}
         accessibilityLabel={label}
         accessibilityRole="combobox"
         accessibilityState={{ disabled: !controlEnabled, expanded: menuVisible }}
         accessibilityValue={{ text: selectedLabel }}
+        aria-invalid={validation.invalid}
         disabled={!controlEnabled}
         onPress={() => {
           setExpanded(current => !current)
@@ -93,7 +117,7 @@ const LumenPickerControl = <Value extends number | string,>({
         style={({ pressed }) => ({
           alignItems: 'center',
           backgroundColor: theme.colors.surface,
-          borderColor: menuVisible ? theme.colors.brand : theme.colors.line,
+          borderColor: resolvePickerBorderColor(menuVisible, validation.invalid === true, theme.colors),
           borderRadius: theme.radii.md,
           borderWidth: 1,
           flexDirection: 'row',

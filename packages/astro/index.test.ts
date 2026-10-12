@@ -36,6 +36,40 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('[data-slot="error-state-actions"]')
   })
 
+  test('mirrors the select chevron from inherited direction attributes', async () => {
+    const styles = await readFile(sharedStylesUrl, 'utf8')
+    const readBlock = (selector: string): string => {
+      const start = styles.indexOf(`\n${selector} {`)
+
+      expect(start).toBeGreaterThanOrEqual(0)
+
+      return styles.slice(start, styles.indexOf('}', start))
+    }
+    const readValue = (block: string, property: string): string => {
+      const declaration = block.slice(block.indexOf(`${property}:`) + property.length + 1)
+
+      return declaration.slice(0, declaration.indexOf(';')).trim()
+    }
+    const readInsets = (positions: string): string[] => positions.split(/,\s*(?![^(]*\))/u).map(value => value
+      .replace('calc(100% - ', '')
+      .replace(') 50%', '')
+      .replace(' 50%', ''))
+    const selectPosition = readValue(readBlock('.ui-select'), 'background-position')
+    const fallback = 'var(--_ui-select-chevron, '
+    const ltrDefault = selectPosition.slice(fallback.length, -1)
+    const rtlPosition = readValue(readBlock('[dir="rtl"]'), '--_ui-select-chevron')
+    const ltrPosition = readValue(readBlock('[dir="ltr"]'), '--_ui-select-chevron')
+
+    expect(styles).toContain('padding-inline-end: 2.4rem;')
+    expect(selectPosition.startsWith(fallback)).toBe(true)
+    expect(readInsets(ltrDefault)).toEqual(['1rem', '0.72rem'])
+    // Nested LTR regions must restore the default after an RTL ancestor.
+    expect(ltrPosition).toBe(ltrDefault)
+    expect(readInsets(rtlPosition)).toEqual(['0.72rem', '1rem'])
+    // Consumer pipelines may compile :dir() into :lang() selectors, which ignore explicit dir attributes.
+    expect(styles).not.toContain('.ui-select:dir(')
+  })
+
   test('documents every component export from the package index', async () => {
     const index = await readFile(new URL('./index.ts', packageRoot), 'utf8')
 
@@ -356,10 +390,11 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships dynamic progress, semantic items, and arbitrary text copy', async () => {
-    const [copyButton, item, progress, runtime] = await Promise.all([
+    const [copyButton, item, progress, progressController, runtime] = await Promise.all([
       readFile(new URL('./components/CopyButton.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Item.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Progress.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/controllers/progress.ts', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
     ])
 
@@ -372,7 +407,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(item).toContain('as: Tag = \'div\'')
     expect(item).toContain('data-slot="item"')
     expect(progress).toContain('data-slot="progress-indicator"')
-    expect(runtime).toContain('root.addEventListener(\'ui:progress-change\'')
+    expect(progressController).toContain('root.addEventListener(\'ui:progress-change\'')
+    expect(runtime).toContain('initProgress(scope)')
     expect(runtime).toContain('new CustomEvent(\'ui:copy-success\'')
     expect(runtime).toContain('new CustomEvent(\'ui:copy-error\'')
     expect(runtime).toContain('setCopyButtonState(\'copied\')')

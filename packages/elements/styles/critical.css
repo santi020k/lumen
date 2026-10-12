@@ -172,6 +172,17 @@
   }
 }
 
+@keyframes ui-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
 @keyframes ui-spin {
   to {
     transform: rotate(360deg);
@@ -790,13 +801,19 @@
   background-image:
     linear-gradient(45deg, transparent 50%, hsl(var(--ink-muted)) 50%),
     linear-gradient(135deg, hsl(var(--ink-muted)) 50%, transparent 50%);
-  background-position:
-    calc(100% - 1rem) 50%,
-    calc(100% - 0.72rem) 50%;
+  background-position: var(--_ui-select-chevron, calc(100% - 1rem) 50%, calc(100% - 0.72rem) 50%);
   background-size:
     0.32rem 0.32rem,
     0.32rem 0.32rem;
   background-repeat: no-repeat;
+}
+
+[dir="rtl"] {
+  --_ui-select-chevron: 0.72rem 50%, 1rem 50%;
+}
+
+[dir="ltr"] {
+  --_ui-select-chevron: calc(100% - 1rem) 50%, calc(100% - 0.72rem) 50%;
 }
 
 .ui-label {
@@ -1007,7 +1024,9 @@
 }
 
 .ui-skeleton {
-  min-height: 1rem;
+  /* A default height, not a minimum, lets explicit styles and classes size placeholders below 1rem. */
+  width: var(--ui-skeleton-width, auto);
+  height: var(--ui-skeleton-height, 1rem);
   border-radius: var(--ui-radius-sm);
   background: linear-gradient(
     90deg,
@@ -1017,6 +1036,42 @@
   );
   background-size: 200% 100%;
   animation: ui-shimmer 2.2s linear infinite;
+}
+
+.ui-skeleton:where(:not(:empty)) {
+  height: var(--ui-skeleton-height, auto);
+  min-height: 1rem;
+}
+
+lumen-skeleton.ui-skeleton,
+lumen-progress.ui-progress {
+  display: block;
+}
+
+.ui-skeleton--text {
+  height: var(--ui-skeleton-height, 0.75rem);
+}
+
+.ui-skeleton--circle {
+  flex: 0 0 auto;
+  width: var(--ui-skeleton-width, var(--ui-skeleton-height, 2.5rem));
+  height: var(--ui-skeleton-height, var(--ui-skeleton-width, 2.5rem));
+  border-radius: 50%;
+}
+
+.ui-skeleton--pulse {
+  background: hsl(var(--surface-strong));
+  animation: ui-skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+.ui-skeleton--static {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+.ui-skeleton {
+    animation: none;
+  }
 }
 
 .ui-spinner {
@@ -1586,7 +1641,9 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 
 .ui-input-otp__native[data-ui-enhanced="true"] {
   position: absolute;
-  width: 1px;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 100%;
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);

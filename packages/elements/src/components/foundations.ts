@@ -1,14 +1,178 @@
+import { resolveLumenLoadingSemantics, resolveLumenSkeletonSize } from '@santi020k/lumen-core'
+
 import {
   createLumenElementClass,
   defineLumenElement,
   type LumenCustomElementRegistry,
-  type LumenElementConfig
+  LumenElement,
+  type LumenElementConfig,
+  type LumenElementConstructor
 } from '../element-base.js'
 
-const createFoundation = (config: LumenElementConfig) => ({
-  config,
-  element: createLumenElementClass(config)
-})
+const createFoundation = (
+  config: LumenElementConfig,
+  element: LumenElementConstructor = createLumenElementClass(config)
+) => ({ config, element })
+
+type ManagedLoadingAttribute = 'aria-hidden' | 'role'
+
+const loadingSemanticAttributes = ['aria-hidden', 'aria-label', 'aria-labelledby', 'role'] as const
+// Internal ownership record that survives cloning and HTML serialization, unlike private fields.
+const loadingOwnershipAttribute = 'data-ui-loading-managed'
+const generatedLoadingValues: Readonly<Record<ManagedLoadingAttribute, string>> = { 'aria-hidden': 'true', role: 'status' }
+const isManagedLoadingAttribute = (value: string): value is ManagedLoadingAttribute => value === 'aria-hidden' || value === 'role'
+const skeletonSizeProperties = { height: '--ui-skeleton-height', width: '--ui-skeleton-width' } as const
+
+/**
+ * Applies the Astro loading-indicator contract: unnamed indicators are decorative, named ones are
+ * status regions. Only attributes Lumen applied are updated or removed, so explicit consumer
+ * `aria-hidden` and `role` values always win.
+ */
+class LumenLoadingIndicatorElement extends LumenElement {
+  readonly #applied = new Set<ManagedLoadingAttribute>()
+  #applying = false
+
+  override connectedCallback(): void {
+    super.connectedCallback()
+
+    this.#restoreOwnership()
+
+    this.syncLoadingState()
+  }
+
+  override attributeChangedCallback(name?: string, previousValue?: string | null, value?: string | null): void {
+    super.attributeChangedCallback(name, previousValue, value)
+
+    if (this.#applying) return
+
+    if (name === 'aria-hidden' || name === 'role') {
+      this.#applied.delete(name)
+
+      // Copies replay attributes as additions; replacing or removing a value, attached or not, is the consumer's.
+      if (previousValue !== null && previousValue !== undefined) this.#forgetOwnership(name)
+    }
+
+    if (this.isConnected) this.syncLoadingState()
+  }
+
+  // A cloned or parsed copy owns only the generated values it still carries; consumer values stay explicit.
+  #restoreOwnership(): void {
+    const recorded = this.getAttribute(loadingOwnershipAttribute)?.split(' ') ?? []
+
+    for (const name of recorded) {
+      if (isManagedLoadingAttribute(name) && this.getAttribute(name) === generatedLoadingValues[name]) {
+        this.#applied.add(name)
+      }
+    }
+  }
+
+  #recordOwnership(): void {
+    this.#writeOwnership([...this.#applied])
+  }
+
+  // A copy may not have restored ownership yet, so other recorded tokens are kept.
+  #forgetOwnership(name: ManagedLoadingAttribute): void {
+    const recorded = this.getAttribute(loadingOwnershipAttribute)?.split(' ') ?? []
+    const owned = [...recorded.filter(isManagedLoadingAttribute), ...this.#applied]
+
+    this.#writeOwnership(owned.filter(token => token !== name))
+  }
+
+  #writeOwnership(tokens: readonly ManagedLoadingAttribute[]): void {
+    const owned = [...new Set(tokens)].sort().join(' ')
+
+    if ((this.getAttribute(loadingOwnershipAttribute) ?? '') === owned) return
+
+    this.#applying = true
+
+    try {
+      if (owned) this.setAttribute(loadingOwnershipAttribute, owned)
+      else this.removeAttribute(loadingOwnershipAttribute)
+    } finally {
+      this.#applying = false
+    }
+  }
+
+  protected syncLoadingState(): void {
+    const semantics = resolveLumenLoadingSemantics({
+      ariaHidden: this.#readExplicit('aria-hidden'),
+      ariaLabel: this.getAttribute('aria-label'),
+      ariaLabelledby: this.getAttribute('aria-labelledby'),
+      role: this.#readExplicit('role')
+    })
+
+    this.#manage('aria-hidden', semantics.ariaHidden)
+
+    this.#manage('role', semantics.role)
+  }
+
+  #readExplicit(name: ManagedLoadingAttribute): string | null {
+    return this.#applied.has(name) ? null : this.getAttribute(name)
+  }
+
+  #manage(name: ManagedLoadingAttribute, value: string | undefined): void {
+    if (!this.#applied.has(name) && this.hasAttribute(name)) return
+
+    this.#applying = true
+
+    try {
+      if (value === undefined) {
+        this.removeAttribute(name)
+
+        this.#applied.delete(name)
+      } else {
+        this.setAttribute(name, value)
+
+        this.#applied.add(name)
+      }
+    } finally {
+      this.#applying = false
+    }
+
+    this.#recordOwnership()
+  }
+}
+
+class LumenSkeletonBehaviorElement extends LumenLoadingIndicatorElement {
+  readonly #appliedSizes = new Map<string, string>()
+
+  protected override syncLoadingState(): void {
+    super.syncLoadingState()
+
+    for (const [attribute, property] of Object.entries(skeletonSizeProperties)) {
+      const size = resolveLumenSkeletonSize(this.getAttribute(attribute))
+      const current = this.style.getPropertyValue(property)
+      const ownership = `data-ui-skeleton-${attribute}`
+
+      if (!this.#appliedSizes.has(property) && current && current === this.getAttribute(ownership)) {
+        this.#appliedSizes.set(property, current)
+      }
+
+      const applied = this.#appliedSizes.get(property)
+
+      // Inline consumer styles take precedence, including changes made after connection.
+      if (current && current !== applied) {
+        this.#appliedSizes.delete(property)
+
+        this.removeAttribute(ownership)
+
+        continue
+      }
+
+      if (size) {
+        this.style.setProperty(property, size)
+
+        this.#appliedSizes.set(property, size)
+
+        this.setAttribute(ownership, size)
+      } else if (this.#appliedSizes.delete(property)) {
+        this.style.removeProperty(property)
+
+        this.removeAttribute(ownership)
+      }
+    }
+  }
+}
 
 export const lumenCardContentElementConfig = {
   baseClassName: 'ui-card__content',
@@ -108,12 +272,18 @@ export const lumenSeparatorElementConfig = {
 } as const satisfies LumenElementConfig
 
 export const lumenSkeletonElementConfig = {
+  attributeClasses: {
+    animation: { none: 'ui-skeleton--static', pulse: 'ui-skeleton--pulse' },
+    shape: { circle: 'ui-skeleton--circle', text: 'ui-skeleton--text' }
+  },
   baseClassName: 'ui-skeleton',
+  observedAttributes: ['animation', 'height', 'shape', 'width', ...loadingSemanticAttributes],
   tagName: 'lumen-skeleton'
 } as const satisfies LumenElementConfig
 
 export const lumenSpinnerElementConfig = {
   baseClassName: 'ui-spinner',
+  observedAttributes: loadingSemanticAttributes,
   tagName: 'lumen-spinner'
 } as const satisfies LumenElementConfig
 
@@ -176,8 +346,21 @@ const direction = createFoundation(lumenDirectionElementConfig)
 const grid = createFoundation(lumenGridElementConfig)
 const label = createFoundation(lumenLabelElementConfig)
 const separator = createFoundation(lumenSeparatorElementConfig)
-const skeleton = createFoundation(lumenSkeletonElementConfig)
-const spinner = createFoundation(lumenSpinnerElementConfig)
+
+const skeleton = createFoundation(
+  lumenSkeletonElementConfig,
+  class extends LumenSkeletonBehaviorElement {
+    static override config = lumenSkeletonElementConfig
+  }
+)
+
+const spinner = createFoundation(
+  lumenSpinnerElementConfig,
+  class extends LumenLoadingIndicatorElement {
+    static override config = lumenSpinnerElementConfig
+  }
+)
+
 const stack = createFoundation(lumenStackElementConfig)
 const typography = createFoundation(lumenTypographyElementConfig)
 const visuallyHidden = createFoundation(lumenVisuallyHiddenElementConfig)

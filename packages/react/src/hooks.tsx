@@ -15,6 +15,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState
@@ -1337,14 +1338,33 @@ export const useSelect = ({
     selectedOption?.label ?? placeholder ?? 'Select an option'
 
   const hasSelection = Boolean(selectedOption && selectedValue !== '')
+  // Options stay hidden until React commits `open`, so focus requests run after that commit.
+  const pendingFocusRef = useRef<(() => void) | undefined>(undefined)
+  const [focusRequest, setFocusRequest] = useState(0)
 
   const close = useCallback(() => {
+    pendingFocusRef.current = undefined
+
     setOpen(false)
   }, [setOpen])
 
-  const openList = useCallback(() => {
+  const openAndFocus = useCallback((focus: () => void) => {
+    pendingFocusRef.current = focus
+
     setOpen(true)
+
+    setFocusRequest(request => request + 1)
   }, [setOpen])
+
+  useLayoutEffect(() => {
+    const focus = pendingFocusRef.current
+
+    if (!open || !focus) return
+
+    pendingFocusRef.current = undefined
+
+    focus()
+  }, [focusRequest, open])
 
   useSelectFormReset(rootRef, defaultValue, value, restoreSelectedValue, close)
 
@@ -1399,9 +1419,8 @@ export const useSelect = ({
   )
 
   const focusTypeaheadOption = useCallback(
-    (currentItem?: HTMLElement): void => {
+    (typeahead: string, currentItem?: HTMLElement): void => {
       const items = getEnabledItems()
-      const typeahead = typeaheadRef.current
 
       if (!items.length || !typeahead) return
 
@@ -1427,9 +1446,20 @@ export const useSelect = ({
     }, [getEnabledItems]
   )
 
+  const resetTypeahead = useCallback((): void => {
+    typeaheadRef.current = ''
+
+    if (typeaheadTimerRef.current) {
+      clearTimeout(typeaheadTimerRef.current)
+
+      typeaheadTimerRef.current = undefined
+    }
+  }, [])
+
   const handleTypeahead = useCallback(
     (event: KeyboardEvent, currentItem?: HTMLElement): boolean => {
-      if (!isPrintableKey(event)) return false
+      // Space only extends an active query; otherwise it opens or selects like Enter.
+      if (!isPrintableKey(event) || (event.key === ' ' && (!typeaheadRef.current || !open))) return false
 
       event.preventDefault()
 
@@ -1443,12 +1473,14 @@ export const useSelect = ({
         typeaheadRef.current = ''
       }, 700)
 
-      openList()
+      const query = typeaheadRef.current
 
-      focusTypeaheadOption(currentItem)
+      openAndFocus(() => {
+        focusTypeaheadOption(query, currentItem)
+      })
 
       return true
-    }, [focusTypeaheadOption, openList]
+    }, [focusTypeaheadOption, open, openAndFocus]
   )
 
   const selectOption = useCallback(
@@ -1474,6 +1506,16 @@ export const useSelect = ({
   const rootProps: LumenProps<'div'> = {
     'data-placeholder': hasSelection ? 'false' : 'true',
     'data-ui-select': true,
+    onBlur: event => {
+      const next = event.relatedTarget
+      const NodeType = event.currentTarget.ownerDocument.defaultView?.Node
+
+      if (NodeType && next instanceof NodeType && event.currentTarget.contains(next)) return
+
+      resetTypeahead()
+
+      close()
+    },
     ref: rootRef as Ref<HTMLDivElement>
   }
 
@@ -1505,6 +1547,8 @@ export const useSelect = ({
     disabled,
     id: `${selectId}-trigger`,
     onClick: () => {
+      resetTypeahead()
+
       setOpen(current => !current)
     },
     onKeyDown: event => {
@@ -1526,21 +1570,25 @@ export const useSelect = ({
 
       event.preventDefault()
 
-      openList()
+      resetTypeahead()
 
-      if (event.key === 'Enter' || event.key === ' ') {
-        const selectedItem = getEnabledItems().find(
-          item => item.getAttribute('aria-selected') === 'true'
-        )
+      const { key } = event
 
-        const firstItem = getEnabledItems()[0];
+      openAndFocus(() => {
+        if (key === 'Enter' || key === ' ') {
+          const items = getEnabledItems()
 
-        (selectedItem ?? firstItem)?.focus()
+          const selectedItem = items.find(
+            item => item.getAttribute('aria-selected') === 'true'
+          )
 
-        return
-      }
+          ;(selectedItem ?? items[0])?.focus()
 
-      focusOption(event.key)
+          return
+        }
+
+        focusOption(key)
+      })
     },
     ref: triggerRef as Ref<HTMLButtonElement>,
     role: 'combobox',
@@ -1596,12 +1644,14 @@ export const useSelect = ({
 
         event.preventDefault()
 
+        resetTypeahead()
+
         focusOption(event.key, event.currentTarget)
       }),
       role: 'option',
       tabIndex: -1,
       type: props.type ?? 'button'
-    }), [close, focusOption, handleTypeahead, open, selectOption, selectedValue]
+    }), [close, focusOption, handleTypeahead, open, resetTypeahead, selectOption, selectedValue]
   )
 
   return {
@@ -2379,6 +2429,8 @@ export const useCalendar = ({
       'data-disabled': disabled ? 'true' : undefined,
       'data-ui-calendar': true,
       'data-ui-calendar-initial-month': formatCalendarMonth(initialMonth),
+      // React owns this calendar's behavior; Elements and Astro enhancers skip owned roots.
+      'data-ui-owner': 'react',
       'data-ui-calendar-max': maxDate ? formatCalendarDate(maxDate) : undefined,
       'data-ui-calendar-min': minDate ? formatCalendarDate(minDate) : undefined,
       'data-ui-calendar-month': formatCalendarMonth(visibleMonth),
@@ -2517,9 +2569,19 @@ export const useInputOTP = ({
     }, [controlledValue, inputMode, length, onValueChange, pattern]
   )
 
+  const committedInputEventRef = useRef<Event | null>(null)
+
+  // React runs onInput and onChange for the same native input event; notify once per event.
   const commitInputValue = useCallback(
-    (input: HTMLInputElement): void => {
-      onValueChange?.(syncValue(input))
+    (input: HTMLInputElement, nativeEvent: Event): void => {
+      if (committedInputEventRef.current === nativeEvent) return
+
+      committedInputEventRef.current = nativeEvent
+
+      // Sync even without a callback so uncontrolled state follows the native value.
+      const nextValue = syncValue(input)
+
+      onValueChange?.(nextValue)
     }, [onValueChange, syncValue]
   )
 
@@ -2565,7 +2627,7 @@ export const useInputOTP = ({
         syncValue(event.currentTarget)
       }),
       onChange: composeHandlers(props.onChange, event => {
-        commitInputValue(event.currentTarget)
+        commitInputValue(event.currentTarget, event.nativeEvent)
       }),
       onClick: composeHandlers(props.onClick, event => {
         syncValue(event.currentTarget)
@@ -2576,7 +2638,7 @@ export const useInputOTP = ({
         syncValue(event.currentTarget)
       }),
       onInput: composeHandlers(props.onInput, event => {
-        commitInputValue(event.currentTarget)
+        commitInputValue(event.currentTarget, event.nativeEvent)
       }),
       onKeyDown: composeHandlers(props.onKeyDown, event => {
         if (event.key === 'ArrowLeft') {
@@ -2619,13 +2681,24 @@ export const useInputOTP = ({
         syncValue(event.currentTarget)
       }),
       onPaste: composeHandlers(props.onPaste, event => {
+        if (event.defaultPrevented) return
+
         const pasted = event.clipboardData.getData('text')
 
         if (!pasted) return
 
         event.preventDefault()
 
-        setValue(pasted)
+        const input = event.currentTarget
+        const sanitizedValue = sanitizeInputOtpValue(pasted, length, inputMode, pattern)
+
+        // The native setter keeps React's value tracker honest, so the dispatched input event reaches
+        // consumer onChange handlers and onValueChange exactly like typed input.
+        Reflect.set(HTMLInputElement.prototype, 'value', sanitizedValue, input)
+
+        input.setSelectionRange(sanitizedValue.length, sanitizedValue.length)
+
+        input.dispatchEvent(new Event('input', { bubbles: true }))
       }),
       pattern: props.pattern ?? pattern,
       ref: node => {
@@ -2644,7 +2717,6 @@ export const useInputOTP = ({
       length,
       pattern,
       setSelection,
-      setValue,
       syncValue,
       value
     ]
@@ -2683,6 +2755,7 @@ export const useInputOTP = ({
       'data-invalid': invalid ? 'true' : 'false',
       'data-ui-input-otp': true,
       'data-ui-input-otp-length': length,
+      'data-ui-owner': 'react',
       ref: rootRef
     },
     rootRef,

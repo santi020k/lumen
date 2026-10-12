@@ -1,0 +1,51 @@
+---
+import { createElement } from 'react'
+import { renderToString } from 'react-dom/server'
+
+import '@santi020k/lumen/styles.css'
+
+import { Button, DatePicker, Label, Stack, Typography } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+
+import { MixedAdapterIsland } from '../../components/internal/MixedAdapterIsland'
+
+const islandMarkup = renderToString(createElement(MixedAdapterIsland))
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Mixed adapter hydration regression fixture</title>
+  </head>
+  <body>
+    <main>
+    <Stack gap="xl">
+      <Typography><h1>Mixed adapter hydration regression fixture</h1></Typography>
+      <Label for="neighbor-date">Astro neighbor</Label>
+      <DatePicker id="neighbor-date" locale="en" value="2026-09-10" />
+      <Button id="hydrate-island">Hydrate React island</Button>
+      <div id="react-island" set:html={islandMarkup} />
+    </Stack>
+    </main>
+    <UIPrimitives />
+    <script>
+      import { createElement } from 'react'
+      import { hydrateRoot } from 'react-dom/client'
+
+      import { MixedAdapterIsland } from '../../components/internal/MixedAdapterIsland'
+
+      document.getElementById('hydrate-island')?.addEventListener('click', event => {
+        const root = document.getElementById('react-island')
+
+        if (!root || !(event.currentTarget instanceof HTMLButtonElement)) return
+
+        event.currentTarget.disabled = true
+
+        hydrateRoot(root, createElement(MixedAdapterIsland))
+      }, { once: true })
+    </script>
+  </body>
+</html>

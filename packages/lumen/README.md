@@ -68,6 +68,10 @@ also want to import its framework-neutral registry or diagnostics APIs:
 pnpm add @santi020k/lumen
 ```
 
+Set direction with the `dir` attribute on `html` or a containing element. Select and NativeSelect
+place their chevron from the nearest `dir="rtl"` or `dir="ltr"` ancestor, so nested LTR regions
+inside RTL work even when a consumer CSS pipeline compiles `:dir()` into language selectors.
+
 ## Typography
 
 Lumen defaults `--ui-font` to the canonical Santi020k Montserrat family stack:

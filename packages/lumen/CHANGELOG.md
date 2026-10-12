@@ -1,5 +1,47 @@
 # @santi020k/lumen
 
+## 4.1.0
+
+### Patch Changes
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da) Thanks [@santi020k](https://github.com/santi020k)! - React `DatePicker` places its calendar with the shared floating panel, so short or scrolling dialogs no
+  longer clip it. The calendar follows its trigger through scroll and resize, respects RTL, closes on outside
+  focus, and restores its styles when it closes. The popover inherits its text color instead of the browser's
+  popover default.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`80d908f`](https://github.com/santi020k/lumen/commit/80d908f1cc9fbca3c506b3ee4c1eee78695a7a86) Thanks [@santi020k](https://github.com/santi020k)! - The enhanced `InputOTP` native input now spans the field width while staying visually hidden. Its 1px width made
+  Chromium apply `maxlength` to the old value when select-all typing or Playwright `fill()` replaced
+  the code, which emptied or truncated it.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05) Thanks [@santi020k](https://github.com/santi020k)! - Strengthen loading feedback across Astro, React, and Elements.
+  
+  - Skeleton accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
+    (`shimmer`, `pulse`, `none`). The default shimmer rectangle and its 1rem height are unchanged,
+    but explicit heights and classes can now size placeholders below 1rem. Sizes accept pixels,
+    lengths, percentages, and `calc()` or `var()` expressions, and unsafe values are ignored.
+  - React and Elements Skeleton, and Elements Spinner, match Astro: decorative (`aria-hidden`) unless
+    named, `role="status"` when named, and explicit ARIA overrides win. Elements updates these as
+    labels change and after reconnecting.
+  - `lumen-skeleton` and `lumen-progress` now render as blocks instead of collapsing inline.
+  - Progress clamps NaN and infinite `max` or `value` to finite ARIA values in every adapter. The
+    Astro `ui:progress-change` runtime ignores missing, `null`, or non-numeric event detail.
+  - Core exports the shared `normalizeLumenProgress`, `resolveLumenLoadingSemantics`, and Skeleton
+    option resolvers.
+
+- Loading indicators treat non-string runtime `aria-label` and `aria-labelledby` values as unnamed instead of
+  throwing. Floating panels skip focus for a malformed `initialFocus` selector and still return their cleanup.
+  React `ListBox` keeps its list name current when an external label mounts, leaves, changes its `id` or `for`, or
+  is replaced after the first render, and releases the label ids it generated. Skeleton shimmer and pulse stop
+  looping under reduced motion in `critical.css`, which omits the full stylesheet's universal reduction.
+
+- [#103](https://github.com/santi020k/lumen/pull/103) [`131c5a9`](https://github.com/santi020k/lumen/commit/131c5a9f75a0b6196574f18c3ebc1451fd78ecd4) Thanks [@santi020k](https://github.com/santi020k)! - Mirror the Select and NativeSelect chevron in right-to-left layouts so it stays inside the
+  inline-end padding instead of overlapping the selected value. The position follows the nearest
+  `dir="rtl"` or `dir="ltr"` ancestor, including nested LTR regions, and does not depend on `:dir()`,
+  which some consumer CSS pipelines compile into language selectors.
+  The generated critical stylesheets retain these inherited direction rules.
+- Updated dependencies [[`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da), [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05), `e65d7e5`, [`14a6191`](https://github.com/santi020k/lumen/commit/14a61912dc0162cd3fc44f8df30ce0c9bf4cd4da)]:
+  - @santi020k/lumen-core@4.1.0
+
 ## 4.0.0
 
 - Retain adopted form/map interactions and honor late native reset cancellation in React workflows.

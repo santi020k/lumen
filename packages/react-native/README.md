@@ -162,6 +162,11 @@ receive focus after presentation or closing. Both refs must point to mounted nat
 Lumen leaves the choice of field and trigger to the application.
 `LumenFieldGroup.requiredLabel` and `LumenTabs.panelAccessibilityLabel` accept translated spoken
 text. A tab panel otherwise uses its selected tab's visible label without an English suffix.
+Text fields inherit the field group's label only when no explicit native or ARIA label is supplied.
+Native `accessibilityLabelledBy` accepts one or more consumer-owned label IDs without an inherited
+`aria-labelledby` overriding those references.
+Checkbox and Toggle expose their visible `description` as an accessibility hint unless the consumer
+supplies `accessibilityHint`, including an intentionally empty hint.
 Cards accept semantic `padding` and `radius` roles while preserving the extra-large/large defaults.
 Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
 a more specific symbol, so visual status is not conveyed by color alone.
@@ -246,6 +251,10 @@ the application supplies the active panel, so routing and data ownership stay ou
   <WorkspaceTabPanel value={activeTab} />
 </LumenTabs>
 ```
+
+`LumenPicker` inside a `LumenFieldGroup` inherits its validation hint and invalid state. The trigger
+announces the error before the description and uses the danger border while invalid; standalone
+pickers keep their existing behavior.
 
 Picker, Slider, and Gauge complete the shared phone control contract without adding another native
 dependency. Picker values remain controlled, Slider supports touch/drag plus screen-reader
