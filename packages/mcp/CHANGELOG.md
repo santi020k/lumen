@@ -4,13 +4,13 @@
 
 ### Patch Changes
 
-- React DatePicker, Calendar (including `useCalendar` roots), and InputOTP now render
+- [#103](https://github.com/santi020k/lumen/pull/103) [`1b6ca9a`](https://github.com/santi020k/lumen/commit/1b6ca9acaa04a411a93259c1adc35245436f1c99) Thanks [@santi020k](https://github.com/santi020k)! - React DatePicker, Calendar (including `useCalendar` roots), and InputOTP now render
   `data-ui-owner="react"`, and the document-wide Elements enhancers skip owned roots. On pages that
   register Elements before or after a React island mounts, the React DatePicker keeps its trigger id
   and label association, Calendar selections reach React state, and InputOTP segments stay rendered by
   React. Standards-based `data-ui-*` markup and `lumen-*` elements are enhanced as before.
 
-- Align Select and `useSelect` keyboard and dismissal behavior with the Astro reference. Space opens
+- [#103](https://github.com/santi020k/lumen/pull/103) [`131c5a9`](https://github.com/santi020k/lumen/commit/131c5a9f75a0b6196574f18c3ebc1451fd78ecd4) Thanks [@santi020k](https://github.com/santi020k)! - Align Select and `useSelect` keyboard and dismissal behavior with the Astro reference. Space opens
   the listbox and selects the focused option unless it continues an active typeahead query, moving
   focus outside the field closes the listbox, and Select passes its `aria-label` or
   `aria-labelledby` to the listbox. Opening with Space, Enter, the arrow keys, Home, End, or
