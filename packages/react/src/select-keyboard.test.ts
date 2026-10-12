@@ -65,6 +65,44 @@ afterEach(() => {
   }
 })
 
+test('an iframe select keeps internal keyboard focus and closes when focus leaves', () => {
+  const frame = document.createElement('iframe')
+
+  document.body.append(frame)
+  const owner = frame.contentDocument
+
+  if (!owner) throw new Error('Missing iframe select document')
+
+  const root = createRoot(owner.body)
+
+  mounted.push({ container: frame, root })
+  act(() => {
+    root.render(createElement('div', null, createElement(Select, { 'aria-label': 'Plan', options: ['Free', 'Pro'] }), createElement('button', { id: 'after', type: 'button' }, 'After')))
+  })
+
+  const trigger = requireElement(owner.querySelector<HTMLButtonElement>('[data-ui-select-trigger]'))
+  const listbox = requireElement(owner.querySelector<HTMLElement>('[data-ui-select-list]'))
+  const after = requireElement(owner.querySelector<HTMLButtonElement>('#after'))
+
+  act(() => {
+    trigger.focus()
+  })
+  press(trigger, ' ')
+
+  expect(listbox.hidden).toBe(false)
+  expect(owner.activeElement).toBe(getOption(owner.body, 'Free'))
+
+  press(getOption(owner.body, 'Free'), 'ArrowDown')
+  expect(owner.activeElement).toBe(getOption(owner.body, 'Pro'))
+  expect(listbox.hidden).toBe(false)
+
+  act(() => {
+    after.focus()
+  })
+  expect(listbox.hidden).toBe(true)
+  expect(trigger.getAttribute('aria-expanded')).toBe('false')
+})
+
 test('Space opens the select and selects the focused option', () => {
   const { changes, container, listbox, trigger } = renderSelect(['Free', 'Pro', 'Team'])
 

@@ -8,7 +8,7 @@ internal data class PlaygroundSection(
     val title: String
 )
 
-internal const val playgroundLumenVersion = "4.0.0"
+internal const val playgroundLumenVersion = "4.1.0"
 
 internal val playgroundSections = listOf(
     PlaygroundSection(

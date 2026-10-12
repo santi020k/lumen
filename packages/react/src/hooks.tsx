@@ -1508,8 +1508,9 @@ export const useSelect = ({
     'data-ui-select': true,
     onBlur: event => {
       const next = event.relatedTarget
+      const NodeType = event.currentTarget.ownerDocument.defaultView?.Node
 
-      if (next instanceof Node && event.currentTarget.contains(next)) return
+      if (NodeType && next instanceof NodeType && event.currentTarget.contains(next)) return
 
       resetTypeahead()
 
