@@ -1,8 +1,10 @@
 'use client'
 
+import { useCallback, useEffect, useState } from 'react'
 import type {
   FieldPath,
   FieldValues,
+  RefCallBack,
   UseControllerProps
 } from 'react-hook-form'
 import { useController } from 'react-hook-form'
@@ -48,6 +50,69 @@ export const LumenAmountFieldController = <Values extends FieldValues, Name exte
   return <AmountField {...props} ref={fieldRef} disabled={fieldDisabled} name={fieldName} onBlur={fieldOnBlur} onValueChange={fieldOnChange} value={typeof fieldValue === 'string' ? fieldValue : ''} />
 }
 
+interface ManagedControlParts {
+  root: string
+  trigger: string
+}
+
+/**
+ * DatePicker, Select, and ListBox keep a hidden native control for forms while users interact with a
+ * visible trigger or list. RHF focuses that trigger, keeps native validity on the native control, and
+ * marks the field touched only when focus leaves the whole component.
+ */
+type ManagedNativeControl = HTMLInputElement | HTMLSelectElement
+
+const useManagedNativeControl = (
+  fieldRef: RefCallBack,
+  fieldOnBlur: () => void,
+  parts: ManagedControlParts
+): ((node: ManagedNativeControl | null) => void) => {
+  const [root, setRoot] = useState<HTMLElement | null>(null)
+  const { root: rootSelector, trigger: triggerSelector } = parts
+
+  const nativeRef = useCallback((node: ManagedNativeControl | null) => {
+    const owner = node?.closest<HTMLElement>(rootSelector) ?? null
+
+    setRoot(owner)
+
+    if (!node) return
+
+    fieldRef({
+      focus: () => {
+        (owner?.querySelector<HTMLElement>(triggerSelector) ?? node).focus()
+      },
+      reportValidity: () => node.reportValidity(),
+      setCustomValidity: (message: string) => {
+        node.setCustomValidity(message)
+      }
+    })
+  }, [fieldRef, rootSelector, triggerSelector])
+
+  useEffect(() => {
+    if (!root) return
+
+    const NodeType = root.ownerDocument.defaultView?.Node
+
+    const handleFocusOut = (event: FocusEvent) => {
+      if (NodeType && event.relatedTarget instanceof NodeType && root.contains(event.relatedTarget)) return
+
+      fieldOnBlur()
+    }
+
+    root.addEventListener('focusout', handleFocusOut)
+
+    return () => {
+      root.removeEventListener('focusout', handleFocusOut)
+    }
+  }, [fieldOnBlur, root])
+
+  return nativeRef
+}
+
+const selectParts = { root: '[data-ui-select]', trigger: '[data-ui-select-trigger]' }
+const datePickerParts = { root: '[data-ui-date-picker]', trigger: '[data-ui-date-picker-trigger]' }
+const listBoxParts = { root: '[data-ui-list-box]', trigger: '[data-ui-list-box-list]' }
+
 type ControllerOptions<
   Values extends FieldValues,
   Name extends FieldPath<Values>
@@ -91,13 +156,14 @@ export const LumenSelectController = <
     value: fieldValue
   } = field
 
+  const nativeRef = useManagedNativeControl(fieldRef, fieldOnBlur, selectParts)
+
   return (
     <Select
       {...props}
       disabled={fieldDisabled}
-      inputRef={fieldRef}
+      inputRef={nativeRef}
       name={fieldName}
-      onBlur={fieldOnBlur}
       onValueChange={fieldOnChange}
       value={typeof fieldValue === 'string' ? fieldValue : ''}
     />
@@ -142,13 +208,14 @@ export const LumenDatePickerController = <
     value: fieldValue
   } = field
 
+  const nativeRef = useManagedNativeControl(fieldRef, fieldOnBlur, datePickerParts)
+
   return (
     <DatePicker
       {...props}
       disabled={fieldDisabled}
-      inputRef={fieldRef}
+      inputRef={nativeRef}
       name={fieldName}
-      onBlur={fieldOnBlur}
       onValueChange={fieldOnChange}
       value={typeof fieldValue === 'string' ? fieldValue : ''}
     />
@@ -259,17 +326,18 @@ export const LumenListBoxController = <
     value: fieldValue
   } = field
 
+  const nativeRef = useManagedNativeControl(fieldRef, fieldOnBlur, listBoxParts)
+
   return (
     <ListBox
       {...props}
       disabled={fieldDisabled}
       multiple={multiple}
       name={fieldName}
-      onBlur={fieldOnBlur}
       onValueChange={values => {
         fieldOnChange(multiple ? values : values[0] ?? '')
       }}
-      ref={fieldRef}
+      ref={nativeRef}
       value={normalizeListBoxValue(fieldValue, multiple)}
     />
   )

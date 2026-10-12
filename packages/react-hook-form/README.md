@@ -101,6 +101,11 @@ The package also exports `LumenDatePickerController`, `LumenInputOTPController`,
 `LumenListBoxController`. Schema resolvers, field arrays, authorization, and persistence remain
 application concerns.
 
+`LumenDatePickerController`, `LumenSelectController`, and `LumenListBoxController` register their
+visible trigger or list as the focus target, so `setFocus` and invalid submits move focus to the
+control people use while native validity stays on the submitted native field. The field is marked
+touched when focus leaves the whole component, not when it moves into its calendar or options.
+
 ## Zod and Yup
 
 Use the official React Hook Form resolvers for schema validation. Zod and Yup stay optional and are
