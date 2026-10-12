@@ -14,7 +14,7 @@ export const readProgressChangeDetail = (detail: unknown): ProgressChangeDetail 
   return { max, value }
 }
 
-export const updateProgress = (
+const updateProgress = (
   root: HTMLElement,
   { max, value }: ProgressChangeDetail
 ): void => {
