@@ -133,3 +133,24 @@ test('explicit false flags remain enabled and other released keys do not cancel 
   await new Promise(resolve => setTimeout(resolve, 0))
   expect(onClick).toHaveBeenCalledOnce()
 })
+
+test('loading reflects aria-busy like the Astro and React buttons and restores application values', () => {
+  const { button } = fixture()
+
+  button.setAttribute('loading', '')
+  expect(button.getAttribute('aria-busy')).toBe('true')
+
+  button.setAttribute('loading', 'false')
+  expect(button.hasAttribute('aria-busy')).toBe(false)
+
+  button.setAttribute('disabled', '')
+  expect(button.hasAttribute('aria-busy')).toBe(false)
+
+  button.removeAttribute('disabled')
+  button.setAttribute('aria-busy', 'false')
+  button.setAttribute('loading', '')
+  expect(button.getAttribute('aria-busy')).toBe('true')
+
+  button.removeAttribute('loading')
+  expect(button.getAttribute('aria-busy')).toBe('false')
+})

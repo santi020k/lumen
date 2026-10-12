@@ -390,10 +390,11 @@ describe('@santi020k/lumen-astro package surface', () => {
   })
 
   test('ships dynamic progress, semantic items, and arbitrary text copy', async () => {
-    const [copyButton, item, progress, runtime] = await Promise.all([
+    const [copyButton, item, progress, progressController, runtime] = await Promise.all([
       readFile(new URL('./components/CopyButton.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Item.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Progress.astro', packageRoot), 'utf8'),
+      readFile(new URL('./runtime/controllers/progress.ts', packageRoot), 'utf8'),
       readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
     ])
 
@@ -406,7 +407,8 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(item).toContain('as: Tag = \'div\'')
     expect(item).toContain('data-slot="item"')
     expect(progress).toContain('data-slot="progress-indicator"')
-    expect(runtime).toContain('root.addEventListener(\'ui:progress-change\'')
+    expect(progressController).toContain('root.addEventListener(\'ui:progress-change\'')
+    expect(runtime).toContain('initProgress(scope)')
     expect(runtime).toContain('new CustomEvent(\'ui:copy-success\'')
     expect(runtime).toContain('new CustomEvent(\'ui:copy-error\'')
     expect(runtime).toContain('setCopyButtonState(\'copied\')')

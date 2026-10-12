@@ -336,6 +336,19 @@ import { Anchor, CopyButton, ScrollProgress } from '@santi020k/lumen-astro'
 ]} />
 ```
 
+`Skeleton` accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
+(`shimmer`, `pulse`, `none`). Numeric sizes are pixels; CSS lengths, percentages, and math or
+custom-property expressions also work. Explicit styles take precedence. Empty placeholders default
+to 1rem high, while text and element content can grow naturally. Reduced motion stops animations.
+Unnamed Skeletons and Spinners are decorative. Give a standalone indicator an accessible name, or
+wrap a group in one named status region with `VisuallyHidden` text.
+
+```astro
+<Skeleton shape="circle" width={40} />
+<Skeleton shape="text" width="80%" />
+<Skeleton animation="pulse" height={8} width="60%" />
+```
+
 `Progress` can be updated after hydration by dispatching `ui:progress-change` from its root with
 `{ value, max? }`. Use `CopyButton` to copy arbitrary text or a referenced element without giving
 non-code content `Code` semantics.

@@ -73,6 +73,13 @@ It also publishes shared web behavior contracts such as `LumenTabsChangeDetail` 
 `LumenTabsChangeEvent`. Import them from the root or `@santi020k/lumen-core/tabs` when application
 code listens for `ui:tabs-change`.
 
+Loading helpers are available from the root export for custom web adapters:
+`normalizeLumenProgress(max, value)` produces finite, clamped progress values;
+`resolveLumenSkeletonShape`, `resolveLumenSkeletonAnimation`, and `resolveLumenSkeletonSize`
+normalize placeholder options. Numeric sizes become pixels, and bounded CSS size expressions retain
+custom-property casing. `resolveLumenLoadingSemantics` supplies decorative or named status defaults;
+adapters must preserve explicit consumer ARIA attributes when applying those defaults.
+
 Cross-platform foundations originate in `tokens/lumen.tokens.json` and are published as
 `@santi020k/lumen-tokens`. Core also exports generated hexadecimal light/dark palettes and native
 numeric spacing, radius, typography, duration, easing, and elevation values. The legacy

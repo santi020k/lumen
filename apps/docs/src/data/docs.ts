@@ -2416,6 +2416,15 @@ const apiReferenceByComponent = {
   ],
   Skeleton: [
     apiRow(
+      'shape', '"rectangle" | "text" | "circle"', '"rectangle"', 'Text lines default to 0.75rem high; circles stay square from one width or height.'
+    ),
+    apiRow(
+      'width, height', 'number | CSS length', '-', 'Numbers are pixels. Strings accept lengths, percentages, and calc() or var() expressions; heights below the 1rem default are allowed.'
+    ),
+    apiRow(
+      'animation', '"shimmer" | "pulse" | "none"', '"shimmer"', 'Pulse fades instead of sweeping; none is static. Reduced motion stops either animation.'
+    ),
+    apiRow(
       'aria-label, aria-labelledby', 'string', '-', 'Makes the placeholder accessible and changes the default role to status.'
     ),
     apiRow(

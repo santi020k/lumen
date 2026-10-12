@@ -38,6 +38,7 @@ import { clearComboboxes, closeCombobox, initComboboxes } from './controllers/co
 import { initDataTableSorting } from './controllers/data-table'
 import { initMessageFeeds } from './controllers/message-scroller'
 import { initOptionalMediaControllers } from './controllers/optional-media'
+import { initProgress } from './controllers/progress'
 
 /* eslint-disable complexity */
 /* Stateful DOM handlers stay local so Astro consumers do not need a framework runtime. */
@@ -1614,50 +1615,6 @@ const initCopyButtons = (scope: ParentNode): void => {
 
         getCodeCopyLiveRegion().textContent = ''
       }, resetAfter)
-    })
-  }
-}
-
-interface ProgressChangeDetail {
-  max?: number
-  value?: number
-}
-
-const updateProgress = (
-  root: HTMLElement,
-  { max, value }: ProgressChangeDetail
-): void => {
-  const currentMax = Number(root.getAttribute('aria-valuemax')) || 100
-  const safeMax = max && max > 0 ? max : currentMax
-  const currentValue = Number(root.getAttribute('aria-valuenow')) || 0
-
-  const safeValue = Math.min(
-    safeMax, Math.max(0, Number.isFinite(value) ? (value ?? 0) : currentValue)
-  )
-
-  const indicator = root.querySelector<HTMLElement>(
-    '[data-slot="progress-indicator"]'
-  )
-
-  root.setAttribute('aria-valuemax', String(safeMax))
-
-  root.setAttribute('aria-valuenow', String(safeValue))
-
-  if (indicator) indicator.style.width = `${(safeValue / safeMax) * 100}%`
-}
-
-const initProgress = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-progress]')) {
-    if (root.dataset.uiProgressBound === 'true') continue
-
-    root.dataset.uiProgressBound = 'true'
-
-    root.addEventListener('ui:progress-change', event => {
-      const detail = event instanceof CustomEvent ?
-        (event.detail as ProgressChangeDetail) :
-        {}
-
-      updateProgress(root, detail)
     })
   }
 }

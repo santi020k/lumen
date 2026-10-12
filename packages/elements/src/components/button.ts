@@ -41,9 +41,31 @@ export class LumenButtonElement extends LumenElement {
   private spacePressed = false
   private managedDisabled = false
   private originalAriaDisabled: string | null = null
+  private managedBusy = false
+  private originalAriaBusy: string | null = null
 
   private hasBlockingAttribute(): boolean {
     return ['disabled', 'loading'].some(name => this.hasAttribute(name) && this.getAttribute(name) !== 'false')
+  }
+
+  private isLoading(): boolean {
+    return this.hasAttribute('loading') && this.getAttribute('loading') !== 'false'
+  }
+
+  // Loading is busy as well as blocked, matching the Astro and React buttons.
+  private syncBusySemantics(): void {
+    if (this.isLoading()) {
+      if (!this.managedBusy) this.originalAriaBusy = this.getAttribute('aria-busy')
+
+      this.managedBusy = true
+
+      this.setAttribute('aria-busy', 'true')
+    } else if (this.managedBusy) {
+      this.managedBusy = false
+
+      if (this.originalAriaBusy === null) this.removeAttribute('aria-busy')
+      else this.setAttribute('aria-busy', this.originalAriaBusy)
+    }
   }
 
   private syncDisabledSemantics(): void {
@@ -110,6 +132,8 @@ export class LumenButtonElement extends LumenElement {
 
     this.syncDisabledSemantics()
 
+    this.syncBusySemantics()
+
     this.addEventListener('keydown', this.onKeyDown)
 
     this.addEventListener('keyup', this.onKeyUp)
@@ -123,6 +147,8 @@ export class LumenButtonElement extends LumenElement {
     super.attributeChangedCallback(name, previousValue, value)
 
     this.syncDisabledSemantics()
+
+    this.syncBusySemantics()
   }
 
   override disconnectedCallback(): void {

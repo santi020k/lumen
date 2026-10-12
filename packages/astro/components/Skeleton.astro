@@ -1,36 +1,77 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
-import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import {
+  type LumenSkeletonAnimation,
+  type LumenSkeletonShape,
+  type LumenSkeletonSize,
+  resolveLumenAstroProps,
+  resolveLumenLoadingSemantics,
+  resolveLumenSkeletonAnimation,
+  resolveLumenSkeletonShape,
+  resolveLumenSkeletonSize
+} from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
+  /** `shimmer` (default) keeps the existing sweep; `pulse` fades; `none` is static. */
+  animation?: LumenSkeletonAnimation
   class?: string | null
   className?: string
+  /** Pixels for numbers, or a CSS length such as `0.75rem` or `60%`. */
+  height?: LumenSkeletonSize
+  shape?: LumenSkeletonShape
+  width?: LumenSkeletonSize
 }
 
 const {
+  animation,
   'aria-hidden': ariaHidden,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledby,
   class: classProp = '',
   className = '',
+  height,
   role,
+  shape,
+  style,
+  width,
   ...rest
 } = Astro.props
 
-const isAccessible = Boolean(ariaLabel || ariaLabelledby)
+const semantics = resolveLumenLoadingSemantics({ ariaHidden, ariaLabel, ariaLabelledby, role })
+const resolvedShape = resolveLumenSkeletonShape(shape)
+const resolvedAnimation = resolveLumenSkeletonAnimation(animation)
+const sizeVariables: Record<string, string> = {}
+const resolvedHeight = resolveLumenSkeletonSize(height)
+const resolvedWidth = resolveLumenSkeletonSize(width)
+
+if (resolvedHeight) sizeVariables['--ui-skeleton-height'] = resolvedHeight
+
+if (resolvedWidth) sizeVariables['--ui-skeleton-width'] = resolvedWidth
+
+// Consumer styles follow the size variables so explicit declarations still win.
+const skeletonStyle = typeof style === 'object' && style !== null ?
+  { ...sizeVariables, ...style } :
+  [
+    ...Object.entries(sizeVariables).map(([name, value]) => `${name}:${value}`),
+    typeof style === 'string' ? style : ''
+  ].filter(Boolean).join(';')
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-  'ui-skeleton'
+  'ui-skeleton',
+  resolvedShape === 'rectangle' ? '' : `ui-skeleton--${resolvedShape}`,
+  resolvedAnimation === 'pulse' ? 'ui-skeleton--pulse' : '',
+  resolvedAnimation === 'none' ? 'ui-skeleton--static' : ''
 ], classProp, className)
 ---
 
 <div
-  aria-hidden={ariaHidden ?? (isAccessible ? undefined : 'true')}
+  aria-hidden={ariaHidden ?? semantics.ariaHidden}
   aria-label={ariaLabel}
   aria-labelledby={ariaLabelledby}
   class:list={classList}
-  role={role ?? (isAccessible ? 'status' : undefined)}
+  role={role ?? semantics.role}
+  style={skeletonStyle || undefined}
   {...passthrough}
 >
   <slot />

@@ -6,7 +6,18 @@ import {
   type ElementType
 } from 'react'
 
-import { composeClassName, type LumenControlVisualSize } from '@santi020k/lumen-core'
+import {
+  composeClassName,
+  type LumenControlVisualSize,
+  type LumenSkeletonAnimation,
+  type LumenSkeletonShape,
+  type LumenSkeletonSize,
+  normalizeLumenProgress,
+  resolveLumenLoadingSemantics,
+  resolveLumenSkeletonAnimation,
+  resolveLumenSkeletonShape,
+  resolveLumenSkeletonSize
+} from '@santi020k/lumen-core'
 
 export type LumenGlassProp = boolean | 'strong' | 'subtle'
 
@@ -270,9 +281,7 @@ export const Progress = ({
   value = 0,
   ...props
 }: ProgressProps) => {
-  const safeMax = max > 0 ? max : 100
-  const safeValue = Math.min(safeMax, Math.max(0, value))
-  const percentage = (safeValue / safeMax) * 100
+  const { max: safeMax, percentage, value: safeValue } = normalizeLumenProgress(max, value)
 
   return (
     <div
@@ -311,11 +320,56 @@ export const Separator = ({
   />
 )
 
-export type SkeletonProps = ComponentPropsWithRef<'div'>
+export interface SkeletonProps extends ComponentPropsWithRef<'div'> {
+  /** `shimmer` (default) keeps the existing sweep; `pulse` fades; `none` is static. */
+  animation?: LumenSkeletonAnimation
+  /** Pixels for numbers, or a CSS length such as `0.75rem` or `60%`. */
+  height?: LumenSkeletonSize
+  shape?: LumenSkeletonShape
+  width?: LumenSkeletonSize
+}
 
-export const Skeleton = ({ className, ...props }: SkeletonProps) => (
-  <div className={composeClassName('ui-skeleton', className)} {...props} />
-)
+export const Skeleton = ({
+  animation,
+  'aria-hidden': ariaHidden,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
+  className,
+  height,
+  role,
+  shape,
+  style,
+  width,
+  ...props
+}: SkeletonProps) => {
+  const semantics = resolveLumenLoadingSemantics({ ariaHidden, ariaLabel, ariaLabelledby, role })
+  const resolvedShape = resolveLumenSkeletonShape(shape)
+  const resolvedAnimation = resolveLumenSkeletonAnimation(animation)
+
+  const skeletonStyle: LumenCSSProperties = {
+    '--ui-skeleton-height': resolveLumenSkeletonSize(height),
+    '--ui-skeleton-width': resolveLumenSkeletonSize(width),
+    ...style
+  }
+
+  return (
+    <div
+      aria-hidden={ariaHidden ?? (semantics.ariaHidden ? true : undefined)}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
+      className={composeClassName(
+        'ui-skeleton',
+        resolvedShape !== 'rectangle' && `ui-skeleton--${resolvedShape}`,
+        resolvedAnimation === 'pulse' && 'ui-skeleton--pulse',
+        resolvedAnimation === 'none' && 'ui-skeleton--static',
+        className
+      )}
+      role={role ?? semantics.role}
+      style={skeletonStyle}
+      {...props}
+    />
+  )
+}
 
 export type SpinnerProps = ComponentPropsWithoutRef<'span'>
 
@@ -327,15 +381,15 @@ export const Spinner = ({
   role,
   ...props
 }: SpinnerProps) => {
-  const isAccessible = Boolean(ariaLabel || ariaLabelledby)
+  const semantics = resolveLumenLoadingSemantics({ ariaHidden, ariaLabel, ariaLabelledby, role })
 
   return (
     <span
-      aria-hidden={ariaHidden ?? (isAccessible ? undefined : true)}
+      aria-hidden={ariaHidden ?? (semantics.ariaHidden ? true : undefined)}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledby}
       className={composeClassName('ui-spinner', className)}
-      role={role ?? (isAccessible ? 'status' : undefined)}
+      role={role ?? semantics.role}
       {...props}
     />
   )

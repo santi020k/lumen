@@ -43,3 +43,16 @@ test('critical Select styles retain the inherited direction definitions they con
     assert.match(styles, /\[dir="ltr"\]\s*\{\s*--_ui-select-chevron:/u)
   }
 })
+
+
+test('critical Skeleton styles retain the keyframes used by every animation variant', async () => {
+  for (const output of outputs) {
+    const styles = await readFile(path.join(root, output), 'utf8')
+
+    assert.match(styles, /animation: ui-skeleton-pulse/u)
+
+    assert.match(styles, /@keyframes ui-skeleton-pulse\s*\{/u)
+
+    assert.match(styles, /@keyframes ui-shimmer\s*\{/u)
+  }
+})

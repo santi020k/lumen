@@ -242,6 +242,21 @@ export {
   normalizeLumenLocales
 } from './language.js'
 export {
+  type LumenLoadingSemantics,
+  type LumenLoadingSemanticsInput,
+  type LumenProgressState,
+  type LumenSkeletonAnimation,
+  lumenSkeletonAnimations,
+  type LumenSkeletonShape,
+  lumenSkeletonShapes,
+  type LumenSkeletonSize,
+  normalizeLumenProgress,
+  resolveLumenLoadingSemantics,
+  resolveLumenSkeletonAnimation,
+  resolveLumenSkeletonShape,
+  resolveLumenSkeletonSize
+} from './loading.js'
+export {
   bindLumenMediaViewport,
   formatLumenMediaZoom,
   isLumenMediaViewportAction,

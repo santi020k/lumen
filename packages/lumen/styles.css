@@ -179,6 +179,17 @@
   }
 }
 
+@keyframes ui-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
 @keyframes ui-spin {
   to {
     transform: rotate(360deg);
@@ -2137,7 +2148,9 @@
 }
 
 .ui-skeleton {
-  min-height: 1rem;
+  /* A default height, not a minimum, lets explicit styles and classes size placeholders below 1rem. */
+  width: var(--ui-skeleton-width, auto);
+  height: var(--ui-skeleton-height, 1rem);
   border-radius: var(--ui-radius-sm);
   background: linear-gradient(
     90deg,
@@ -2147,6 +2160,37 @@
   );
   background-size: 200% 100%;
   animation: ui-shimmer 2.2s linear infinite;
+}
+
+/* Skeletons that wrap text or elements keep growing with their content. */
+.ui-skeleton:where(:not(:empty)) {
+  height: var(--ui-skeleton-height, auto);
+  min-height: 1rem;
+}
+
+lumen-skeleton.ui-skeleton,
+lumen-progress.ui-progress {
+  display: block;
+}
+
+.ui-skeleton--text {
+  height: var(--ui-skeleton-height, 0.75rem);
+}
+
+.ui-skeleton--circle {
+  flex: 0 0 auto;
+  width: var(--ui-skeleton-width, var(--ui-skeleton-height, 2.5rem));
+  height: var(--ui-skeleton-height, var(--ui-skeleton-width, 2.5rem));
+  border-radius: 50%;
+}
+
+.ui-skeleton--pulse {
+  background: hsl(var(--surface-strong));
+  animation: ui-skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+.ui-skeleton--static {
+  animation: none;
 }
 
 .ui-icon {

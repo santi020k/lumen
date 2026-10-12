@@ -390,6 +390,11 @@ export default function Status() {
 }
 ```
 
+Skeleton accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
+(`shimmer`, `pulse`, `none`). Numeric sizes are pixels, and explicit heights can be smaller than the
+1rem default. Unnamed Skeletons and Spinners are decorative; wrap a group in one `role="status"`
+region instead of naming each placeholder.
+
 The server entrypoint contains Badge, Card and its compound parts, Container, Direction, Grid,
 Input, Label, Progress, Separator, Skeleton, Spinner, Stack, Textarea, Typography, and
 VisuallyHidden plus the component-name metadata. The package root reuses those exact

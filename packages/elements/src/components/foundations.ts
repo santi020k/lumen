@@ -1,14 +1,115 @@
+import { resolveLumenLoadingSemantics, resolveLumenSkeletonSize } from '@santi020k/lumen-core'
+
 import {
   createLumenElementClass,
   defineLumenElement,
   type LumenCustomElementRegistry,
-  type LumenElementConfig
+  LumenElement,
+  type LumenElementConfig,
+  type LumenElementConstructor
 } from '../element-base.js'
 
-const createFoundation = (config: LumenElementConfig) => ({
-  config,
-  element: createLumenElementClass(config)
-})
+const createFoundation = (
+  config: LumenElementConfig,
+  element: LumenElementConstructor = createLumenElementClass(config)
+) => ({ config, element })
+
+type ManagedLoadingAttribute = 'aria-hidden' | 'role'
+
+const loadingSemanticAttributes = ['aria-hidden', 'aria-label', 'aria-labelledby', 'role'] as const
+const skeletonSizeProperties = { height: '--ui-skeleton-height', width: '--ui-skeleton-width' } as const
+
+/**
+ * Applies the Astro loading-indicator contract: unnamed indicators are decorative, named ones are
+ * status regions. Only attributes Lumen applied are updated or removed, so explicit consumer
+ * `aria-hidden` and `role` values always win.
+ */
+class LumenLoadingIndicatorElement extends LumenElement {
+  readonly #applied = new Set<ManagedLoadingAttribute>()
+  #applying = false
+
+  override connectedCallback(): void {
+    super.connectedCallback()
+
+    this.syncLoadingState()
+  }
+
+  override attributeChangedCallback(name?: string, previousValue?: string | null, value?: string | null): void {
+    super.attributeChangedCallback(name, previousValue, value)
+
+    if (this.#applying) return
+
+    if (name === 'aria-hidden' || name === 'role') this.#applied.delete(name)
+
+    if (this.isConnected) this.syncLoadingState()
+  }
+
+  protected syncLoadingState(): void {
+    const semantics = resolveLumenLoadingSemantics({
+      ariaHidden: this.#readExplicit('aria-hidden'),
+      ariaLabel: this.getAttribute('aria-label'),
+      ariaLabelledby: this.getAttribute('aria-labelledby'),
+      role: this.#readExplicit('role')
+    })
+
+    this.#manage('aria-hidden', semantics.ariaHidden)
+
+    this.#manage('role', semantics.role)
+  }
+
+  #readExplicit(name: ManagedLoadingAttribute): string | null {
+    return this.#applied.has(name) ? null : this.getAttribute(name)
+  }
+
+  #manage(name: ManagedLoadingAttribute, value: string | undefined): void {
+    if (!this.#applied.has(name) && this.hasAttribute(name)) return
+
+    this.#applying = true
+
+    try {
+      if (value === undefined) {
+        this.removeAttribute(name)
+
+        this.#applied.delete(name)
+      } else {
+        this.setAttribute(name, value)
+
+        this.#applied.add(name)
+      }
+    } finally {
+      this.#applying = false
+    }
+  }
+}
+
+class LumenSkeletonBehaviorElement extends LumenLoadingIndicatorElement {
+  readonly #appliedSizes = new Map<string, string>()
+
+  protected override syncLoadingState(): void {
+    super.syncLoadingState()
+
+    for (const [attribute, property] of Object.entries(skeletonSizeProperties)) {
+      const size = resolveLumenSkeletonSize(this.getAttribute(attribute))
+      const current = this.style.getPropertyValue(property)
+      const applied = this.#appliedSizes.get(property)
+
+      // Inline consumer styles take precedence, including changes made after connection.
+      if (current && current !== applied) {
+        this.#appliedSizes.delete(property)
+
+        continue
+      }
+
+      if (size) {
+        this.style.setProperty(property, size)
+
+        this.#appliedSizes.set(property, size)
+      } else if (this.#appliedSizes.delete(property)) {
+        this.style.removeProperty(property)
+      }
+    }
+  }
+}
 
 export const lumenCardContentElementConfig = {
   baseClassName: 'ui-card__content',
@@ -108,12 +209,18 @@ export const lumenSeparatorElementConfig = {
 } as const satisfies LumenElementConfig
 
 export const lumenSkeletonElementConfig = {
+  attributeClasses: {
+    animation: { none: 'ui-skeleton--static', pulse: 'ui-skeleton--pulse' },
+    shape: { circle: 'ui-skeleton--circle', text: 'ui-skeleton--text' }
+  },
   baseClassName: 'ui-skeleton',
+  observedAttributes: ['animation', 'height', 'shape', 'width', ...loadingSemanticAttributes],
   tagName: 'lumen-skeleton'
 } as const satisfies LumenElementConfig
 
 export const lumenSpinnerElementConfig = {
   baseClassName: 'ui-spinner',
+  observedAttributes: loadingSemanticAttributes,
   tagName: 'lumen-spinner'
 } as const satisfies LumenElementConfig
 
@@ -176,8 +283,21 @@ const direction = createFoundation(lumenDirectionElementConfig)
 const grid = createFoundation(lumenGridElementConfig)
 const label = createFoundation(lumenLabelElementConfig)
 const separator = createFoundation(lumenSeparatorElementConfig)
-const skeleton = createFoundation(lumenSkeletonElementConfig)
-const spinner = createFoundation(lumenSpinnerElementConfig)
+
+const skeleton = createFoundation(
+  lumenSkeletonElementConfig,
+  class extends LumenSkeletonBehaviorElement {
+    static override config = lumenSkeletonElementConfig
+  }
+)
+
+const spinner = createFoundation(
+  lumenSpinnerElementConfig,
+  class extends LumenLoadingIndicatorElement {
+    static override config = lumenSpinnerElementConfig
+  }
+)
+
 const stack = createFoundation(lumenStackElementConfig)
 const typography = createFoundation(lumenTypographyElementConfig)
 const visuallyHidden = createFoundation(lumenVisuallyHiddenElementConfig)

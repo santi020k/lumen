@@ -275,7 +275,16 @@ For long reading surfaces, use `Anchor` for local section navigation and pass ea
 heading `depth`, `index`, and `description` when hierarchy matters. Use `activationOffset` for fixed
 application headers. Use `ScrollProgress` for document position; keep `Progress` for
 application-controlled task completion. In Astro, dispatch `ui:progress-change` with
-`{ value, max? }` from the `Progress` root when browser state changes after hydration. `Pill`
+`{ value, max? }` from the `Progress` root when browser state changes after hydration. Non-finite or
+missing fields keep the current state, and every adapter clamps to finite ARIA values. Use `Spinner`
+for unknown-duration waits.
+
+Skeleton and Spinner are decorative (`aria-hidden`) unless named. For a group of placeholders,
+announce loading once: wrap them in one `role="status"` region with `aria-busy="true"` and a
+`VisuallyHidden` label, and keep the Skeletons unnamed. Size placeholders with `shape`
+(`rectangle`, `text`, `circle`), `width`, and `height`, and use deterministic widths rather than
+random values so server and client markup match. Data fetching and when to show placeholders stay
+in the application. `Pill`
 accepts `neutral`, `brand`, and `outline`
 variants, plus native link and count composition.
 

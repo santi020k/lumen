@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 
 import { verifyFocusNavigation } from '../a11y/focus-navigation.js';
 
+
 test('React disclosure navigation skips unavailable controls and restores newly available actions', async ({ page }) => {
   await page.goto('/dashboard-recipes');
   await page.getByRole('button', { name: 'Open record actions' }).click();
@@ -721,4 +722,86 @@ test('React workflow retains validation when a native document listener cancels 
   await expect(input).toHaveValue('');
   await expect(validation).toHaveText('Attempted: true; errors: 1');
   await expect(page.getByRole('status', { name: 'Workflow dirty' })).toHaveText('Draft changed');
+});
+
+for (const framework of ['react', 'elements'] as const) {
+  test(`${framework} loading placeholders keep one status region and requested sizes in light and dark themes`, async ({ page }, testInfo) => {
+    await page.goto('/visual/loading-states');
+    const card = page.locator(`[data-loading-framework="${framework}"]`);
+    const group = card.locator(`[data-loading-group="${framework}"]`);
+    const pulse = group.locator('[data-loading-shape="pulse"]');
+    await expect(pulse).toBeVisible();
+    const label = framework === 'react' ? 'Loading React dashboard' : 'Loading Elements dashboard';
+    const box = async (shape: string) => {
+      const bounds = await group.locator(`[data-loading-shape="${shape}"]`).boundingBox();
+      if (!bounds) throw new Error(`Expected ${shape} skeleton bounds`);
+      return { height: Math.round(bounds.height), width: Math.round(bounds.width) };
+    };
+    const colors = async () => ({
+      card: await card.evaluate(element => getComputedStyle(element).backgroundColor),
+      pulse: await pulse.evaluate(element => getComputedStyle(element).backgroundColor)
+    });
+    const rendered: Record<string, { card: string, pulse: string }> = {};
+    for (const theme of ['light', 'dark'] as const) {
+      await page.locator('html').evaluate((element, value) => { element.setAttribute('data-theme', value); }, theme);
+      await card.screenshot({ path: testInfo.outputPath(`loading-${framework}-${theme}.png`) });
+      await expect(group).toHaveAttribute('role', 'status');
+      await expect(group).toHaveAttribute('aria-busy', 'true');
+      await expect(group).toContainText(label);
+      for (const shape of ['circle', 'text', 'bar', 'pulse']) {
+        const skeleton = group.locator(`[data-loading-shape="${shape}"]`);
+        await expect(skeleton).toHaveAttribute('aria-hidden', 'true');
+        await expect(skeleton).not.toHaveAttribute('role', /./);
+      }
+      expect(await box('circle')).toEqual({ height: 40, width: 40 });
+      expect((await box('text')).height).toBe(12);
+      expect((await box('bar')).height).toBe(8);
+      expect((await box('pulse')).height).toBe(48);
+      await expect(group.locator('[data-loading-shape="circle"]')).toHaveCSS('border-radius', '50%');
+      rendered[theme] = await colors();
+    }
+    // Dark coverage must be a different render, not a second light pass.
+    expect(rendered.dark?.card).not.toBe(rendered.light?.card);
+    expect(rendered.dark?.pulse).not.toBe(rendered.light?.pulse);
+  });
+
+  test(`${framework} spinners, loading buttons, and progress expose valid loading semantics`, async ({ page }) => {
+    await page.goto('/visual/loading-states');
+    const card = page.locator(`[data-loading-framework="${framework}"]`);
+    const label = framework === 'react' ? 'React' : 'Elements';
+    await expect(card.getByRole('status', { name: `Saving ${label} changes` })).toBeVisible();
+    await expect(card.locator('[data-loading-spinner="decorative"]')).toHaveAttribute('aria-hidden', 'true');
+    const button = card.getByRole('button', { name: `${label} save` });
+    await expect(button).toHaveAttribute('aria-busy', 'true');
+    await expect(button).toBeDisabled();
+    const progress = card.getByRole('progressbar', { name: `${label} upload` });
+    await expect(progress).toHaveAttribute('aria-valuemax', '100');
+    await expect(progress).toHaveAttribute('aria-valuenow', '40');
+    const ratio = await progress.evaluate(element => {
+      const indicator = element.querySelector('[data-slot="progress-indicator"]');
+      if (!(indicator instanceof HTMLElement)) throw new Error('Expected progress indicator');
+      return indicator.getBoundingClientRect().width / element.getBoundingClientRect().width;
+    });
+    expect(ratio).toBeCloseTo(0.4, 1);
+  });
+}
+
+test('loading animations settle when reduced motion is requested', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/visual/loading-states');
+  const indicators = page.locator('[data-loading-shape], [data-loading-spinner]');
+  await expect(indicators.first()).toBeVisible();
+  await expect.poll(async () => indicators.evaluateAll(elements => elements.flatMap(element => element.getAnimations()).filter(animation => animation.playState === 'running').length)).toBe(0);
+});
+
+
+test('Skeleton containers grow with wrapped text content in both adapters', async ({ page }) => {
+  await page.goto('/visual/loading-states');
+  for (const framework of ['react', 'elements']) {
+    const skeleton = page.locator(`[data-loading-framework="${framework}"] [data-loading-content="text"]`);
+    await expect(skeleton).toBeVisible();
+    const bounds = await skeleton.evaluate(element => ({ height: element.clientHeight, content: element.scrollHeight }));
+    expect(bounds.height).toBeGreaterThan(16);
+    expect(bounds.height).toBe(bounds.content);
+  }
 });
