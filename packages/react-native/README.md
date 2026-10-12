@@ -165,6 +165,8 @@ text. A tab panel otherwise uses its selected tab's visible label without an Eng
 Text fields inherit the field group's label only when no explicit native or ARIA label is supplied.
 Native `accessibilityLabelledBy` accepts one or more consumer-owned label IDs without an inherited
 `aria-labelledby` overriding those references.
+Checkbox and Toggle expose their visible `description` as an accessibility hint unless the consumer
+supplies `accessibilityHint`, including an intentionally empty hint.
 Cards accept semantic `padding` and `radius` roles while preserving the extra-large/large defaults.
 Status bars use a distinct decorative icon for every tone and accept `iconName` when a product needs
 a more specific symbol, so visual status is not conveyed by color alone.

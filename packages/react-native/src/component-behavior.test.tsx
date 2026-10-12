@@ -1467,6 +1467,37 @@ describe('Lumen React Native component behavior', () => {
     expect(readProp(findByAccessibilityRole(root, 'checkbox'), 'accessibilityLabel')).toBe('Include diagnostic report')
   })
 
+  test('checkbox announces its visible description as a hint like toggle', async () => {
+    const root = await renderNative(
+      <>
+        <LumenCheckbox
+          checked={false}
+          description="Attach logs to the support ticket"
+          label="Include diagnostics"
+          onCheckedChange={() => undefined}
+        />
+        <LumenCheckbox
+          accessibilityHint="Consumer guidance"
+          checked={false}
+          description="Visible guidance"
+          label="Share usage"
+          onCheckedChange={() => undefined}
+        />
+        <LumenCheckbox
+          accessibilityHint=""
+          checked={false}
+          description="Visible guidance"
+          label="Quiet hints"
+          onCheckedChange={() => undefined}
+        />
+      </>
+    )
+
+    expect(readProp(findByAccessibilityLabel(root, 'Include diagnostics'), 'accessibilityHint')).toBe('Attach logs to the support ticket')
+    expect(readProp(findByAccessibilityLabel(root, 'Share usage'), 'accessibilityHint')).toBe('Consumer guidance')
+    expect(readProp(findByAccessibilityLabel(root, 'Quiet hints'), 'accessibilityHint')).toBe('')
+  })
+
   test('toggle makes the full labeled row the single interactive switch', async () => {
     const onValueChange = vi.fn<(value: boolean) => void>()
     const root = await renderNative(
