@@ -72,8 +72,9 @@ const mcpConfiguration = JSON.parse(
 
 const portableManifest = JSON.parse(await readFile(join(pluginRoot, "plugin.json"), "utf8"));
 const portableMcp = JSON.parse(await readFile(join(pluginRoot, "mcp.json"), "utf8"));
+const mcpVersion = JSON.parse(await readFile(join(repositoryRoot, "packages/mcp/package.json"), "utf8")).version;
 
-validatePluginContracts({ portable: portableManifest, portableMcp, openai: openAIManifest, claude: claudeManifest, legacyMcp: mcpConfiguration, mcpVersion: JSON.parse(await readFile(join(repositoryRoot, 'packages/mcp/package.json'), 'utf8')).version });
+validatePluginContracts({ portable: portableManifest, portableMcp, openai: openAIManifest, claude: claudeManifest, legacyMcp: mcpConfiguration, mcpVersion });
 
 assert.equal(portableManifest.$schema, "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json");
 
@@ -119,7 +120,7 @@ assert.deepEqual(claudeMarketplace.plugins, [
 assert.deepEqual(mcpConfiguration, {
   mcpServers: {
     lumen: {
-      args: ["-y", "@santi020k/lumen-mcp@4.0.0"],
+      args: ["-y", `@santi020k/lumen-mcp@${mcpVersion}`],
       command: "npx",
     },
   },
