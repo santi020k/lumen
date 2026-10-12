@@ -5419,11 +5419,11 @@ const ListBoxVisibleOptions = ({
 }
 
 const normalizeListBoxValues = (
-  value: string | string[] | undefined
+  value: unknown
 ): string[] => {
-  if (value === undefined) return []
+  if (typeof value === 'string') return [value]
 
-  return Array.isArray(value) ? value : [value]
+  return Array.isArray(value) ? value.filter((entry: unknown): entry is string => typeof entry === 'string') : []
 }
 
 const findLastEnabledOptionIndex = (options: readonly Option[]): number => {
@@ -5485,22 +5485,19 @@ const readExternalListBoxLabels = (root: HTMLElement): HTMLLabelElement[] => {
   return [...select?.labels ?? []].filter(label => !root.contains(label))
 }
 
-type ElementConstructor = NonNullable<Document['defaultView']>['Element']
-
-const mayHoldListBoxLabel = (node: Node, root: HTMLElement, ElementType: ElementConstructor): boolean => (
-  node instanceof ElementType &&
-  (node.nodeName === 'LABEL' || node.contains(root) || node.querySelector('label') !== null)
+const mayHoldListBoxLabel = (node: Node, root: HTMLElement): boolean => (
+  node.nodeType === 1 &&
+  (node.nodeName === 'LABEL' || node.contains(root) || (node as Element).querySelector('label') !== null)
 )
 
 // Only label insertions, removals, `for` or `id` changes, or moving the list itself can change its labels.
 const affectsListBoxLabels = (
   records: readonly MutationRecord[],
-  root: HTMLElement,
-  ElementType: ElementConstructor
+  root: HTMLElement
 ): boolean => records.some(record => (
   record.type === 'attributes' ?
     record.target.nodeName === 'LABEL' :
-    [...record.addedNodes, ...record.removedNodes].some(node => mayHoldListBoxLabel(node, root, ElementType))
+    [...record.addedNodes, ...record.removedNodes].some(node => mayHoldListBoxLabel(node, root))
 ))
 
 // Keeps external label ids current, generating ids only for unnamed labels and releasing them afterwards.
@@ -5538,17 +5535,32 @@ const observeExternalListBoxLabels = (
     onChange(labels.length ? labels.map(label => label.id).join(' ') : undefined)
   }
 
-  const view = root.ownerDocument.defaultView
+  let observedDocument = root.ownerDocument
+  let observer: MutationObserver | undefined
 
-  const observer = view ?
-    new view.MutationObserver(records => {
-      if (affectsListBoxLabels(records, root, view.Element)) sync()
-    }) :
-    undefined
+  const observeDocument = (): void => {
+    observer?.disconnect()
+
+    observedDocument = root.ownerDocument
+
+    const view = observedDocument.defaultView
+
+    observer = view ?
+      new view.MutationObserver(records => {
+        if (root.ownerDocument !== observedDocument) {
+          observeDocument()
+
+          sync()
+        } else if (affectsListBoxLabels(records, root)) sync()
+      }) :
+      undefined
+
+    observer?.observe(observedDocument, { attributeFilter: ['for', 'id'], childList: true, subtree: true })
+  }
 
   sync()
 
-  observer?.observe(root.ownerDocument, { attributeFilter: ['for', 'id'], childList: true, subtree: true })
+  observeDocument()
 
   return () => {
     observer?.disconnect()

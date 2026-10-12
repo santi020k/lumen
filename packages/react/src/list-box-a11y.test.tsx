@@ -495,3 +495,15 @@ test('StrictMode lists transfer an external label without duplicate ids and keep
   owned.remove()
   moving.remove()
 })
+
+test.each(['value', 'defaultValue'] as const)('ListBox filters malformed runtime %s entries', async property => {
+  const circular: unknown[] = []
+  circular.push(circular)
+  const props = { options, multiple: true }
+  Reflect.set(props, property, [1n, null, {}, circular, 'bruno'])
+  await run(() => {
+    root.render(<ListBox {...props} />)
+  })
+  expect(container.querySelector('[data-value="bruno"]')?.getAttribute('aria-selected')).toBe('true')
+  expect(container.querySelector('[data-value="amina"]')?.getAttribute('aria-selected')).toBe('false')
+})

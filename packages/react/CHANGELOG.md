@@ -21,6 +21,8 @@
 
 ### Patch Changes
 
+- ListBox follows external labels across document adoption and ignores non-string runtime selection values.
+
 - [#103](https://github.com/santi020k/lumen/pull/103) [`1b6ca9a`](https://github.com/santi020k/lumen/commit/1b6ca9acaa04a411a93259c1adc35245436f1c99) Thanks [@santi020k](https://github.com/santi020k)! - React DatePicker, Calendar (including `useCalendar` roots), and InputOTP now render
   `data-ui-owner="react"`, and the document-wide Elements enhancers skip owned roots. On pages that
   register Elements before or after a React island mounts, the React DatePicker keeps its trigger id

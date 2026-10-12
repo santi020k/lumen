@@ -98,3 +98,31 @@ test('external labels name and focus the visible ListBox while explicit names ke
   await expect(external).toHaveAttribute('aria-activedescendant', /.+/);
   await expect(page.getByRole('listbox', { name: 'Explicit reviewer name', exact: true })).toBeVisible();
 });
+
+test('React ListBox follows labels after adoption into another document', async ({ page }) => {
+  await page.locator('#external-reviewer').evaluate(select => {
+    const root = select.closest('[data-ui-list-box]');
+    if (!root) throw new Error('Expected ListBox root');
+    const frame = document.createElement('iframe');
+    frame.title = 'Adopted ListBox';
+    document.body.append(frame);
+    const destination = frame.contentDocument;
+    if (!destination) throw new Error('Expected frame document');
+    const label = destination.createElement('label');
+    label.htmlFor = select.id;
+    label.id = 'destination-label';
+    label.textContent = 'Destination reviewer';
+    destination.body.append(label, root);
+  });
+  const frame = page.frameLocator('iframe[title="Adopted ListBox"]');
+  const list = frame.getByRole('listbox');
+  await expect(list).toHaveAccessibleName('Destination reviewer');
+  await frame.locator('label').evaluate(label => {
+    label.id = 'renamed-label';
+    label.textContent = 'Renamed reviewer';
+  });
+  await expect(list).toHaveAttribute('aria-labelledby', 'renamed-label');
+  await expect(list).toHaveAccessibleName('Renamed reviewer');
+  await frame.locator('label').evaluate(label => { label.remove(); });
+  await expect(list).not.toHaveAttribute('aria-labelledby');
+});

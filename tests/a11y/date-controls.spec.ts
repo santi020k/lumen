@@ -356,3 +356,32 @@ for (const adapter of ['astro', 'elements']) {
     await expect(trigger).not.toHaveAttribute('aria-invalid')
   })
 }
+
+for (const adapter of ['astro', 'elements']) {
+  test(`${adapter} DatePicker keeps its calendar and focus during ARIA updates`, async ({ page }) => {
+    await page.goto('/internal/date-controls')
+    const form = page.locator(`#${adapter}-form`)
+    const trigger = form.locator('[data-ui-date-picker-trigger]')
+    const popover = form.locator('[data-ui-date-picker-popover]')
+    const native = form.locator('[data-ui-date-picker-native]')
+    await trigger.click()
+    const day = popover.locator('[data-ui-calendar-day][tabindex="0"]')
+    await day.focus()
+    await native.evaluate(input => {
+      for (const [name, value] of Object.entries({
+        'aria-invalid': 'grammar', 'aria-errormessage': 'error', 'aria-describedby': 'help',
+        'aria-label': 'Appointment', 'aria-labelledby': 'appointment-label'
+      })) input.setAttribute(name, value)
+    })
+    await expect(popover).toBeVisible()
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await expect(day).toBeFocused()
+    await expect(trigger).toHaveAttribute('aria-invalid', 'grammar')
+    await expect(trigger).toHaveAttribute('aria-errormessage', 'error')
+    await expect(trigger).toHaveAttribute('aria-describedby', 'help')
+    await expect(trigger).toHaveAttribute('aria-label', 'Appointment')
+    await expect(trigger).toHaveAttribute('aria-labelledby', 'appointment-label')
+    await native.evaluate(input => { input.setAttribute('disabled', '') })
+    await expect(popover).toBeHidden()
+  })
+}

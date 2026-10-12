@@ -3148,8 +3148,8 @@ const initDatePickers = (scope: ParentNode): void => {
 
     syncState()
 
-    const observer = new MutationObserver(() => {
-      closeDatePicker(root)
+    const observer = new MutationObserver(mutations => {
+      if (mutations.some(mutation => !mutation.attributeName?.startsWith('aria-'))) closeDatePicker(root)
 
       syncState()
     })

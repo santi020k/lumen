@@ -4655,7 +4655,7 @@ const initDatePickers = (scope: ParentNode): void => {
         if (mutation.target === root && mutation.attributeName === 'readonly') native.readOnly = root.hasAttribute('readonly')
       }
 
-      closePopover()
+      if (mutations.some(mutation => !mutation.attributeName?.startsWith('aria-'))) closePopover()
 
       syncState()
     })

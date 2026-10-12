@@ -21,6 +21,8 @@
 
 ### Patch Changes
 
+- DatePicker preserves its open calendar and focused day when only input ARIA feedback changes.
+
 - ListBox follows external labels after document adoption and rebinds accepted reset handling when its form changes.
 
 - [#103](https://github.com/santi020k/lumen/pull/103) [`1b6ca9a`](https://github.com/santi020k/lumen/commit/1b6ca9acaa04a411a93259c1adc35245436f1c99) Thanks [@santi020k](https://github.com/santi020k)! - The Astro runtime skips DatePicker, Calendar, and InputOTP markup marked `data-ui-owner`, so React
