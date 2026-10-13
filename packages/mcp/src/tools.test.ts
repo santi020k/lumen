@@ -125,7 +125,12 @@ describe('lumen-mcp data snapshot', () => {
       expect(attributes).not.toContain(unsupported)
     }
     expect(picker?.frameworkDetails.elements.behavior?.setup).toContain('input marked data-ui-date-picker-native')
-    expect(result.text).toContain('<input data-ui-date-picker-native')
+    expect(result.text).toContain('<input class="ui-date-picker ui-date-picker__native" data-ui-date-picker-native')
+    for (const part of ['control', 'trigger', 'popover']) {
+      expect(result.text).toContain(`ui-date-picker__${part}`)
+    }
+    expect(result.text).toContain('type="button" aria-controls="launch-date-popover"')
+    expect(result.text).toContain('id="launch-date-popover" role="dialog"')
     expect(result.text).toContain('aria-describedby="launch-date-hint"')
     expect(result.text).not.toContain('- `aria-invalid, aria-describedby, aria-errormessage`')
   })

@@ -48,7 +48,7 @@ in its intentionally smaller package, including the supported metric and list-ro
 compositions.
 
 > **Local candidate:** This checkout uses the Lumen 4 adapter. Search accepts component IDs and
-> supports filter reset. See the [v4 playground guide](../../docs/playgrounds.md#lumen-4-candidate)
+> supports filter reset. See the [v4 playground guide](../../docs/playgrounds.md#lumen-4-workspace)
 > for release-version display and capture behavior.
 
 ## Run locally

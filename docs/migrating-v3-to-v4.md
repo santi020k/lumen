@@ -3,7 +3,7 @@
 This guide covers the released Lumen 4 contracts, using `v3.0.1` as the Swift API baseline.
 Use the [release manifest](../registry/release-manifest.json) for current package versions and
 the [v4 contract](../registry/lumen-4-contract.json) for the original major-version migration.
-Applications already on v4 can start with the [v4.1 highlights](lumen-4.1.md).
+Applications already on v4 can start with the [v4.2 highlights](lumen-4.2.md).
 
 ## Upgrade the dependencies
 

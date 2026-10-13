@@ -95,7 +95,7 @@ command migrates v1 contracts to v2; it does not automate either later upgrade.
 
 See the [dedicated v3 → v4 migration guide](migrating-v3-to-v4.md). It includes the content-flow
 spacing map, component review checklist, native API changes, and package installation guidance.
-For applications already on v4, read the [v4.1 highlights](lumen-4.1.md).
+For applications already on v4, read the [v4.2 highlights](lumen-4.2.md).
 
 ### Migrating from version 2 to version 3
 

@@ -638,11 +638,11 @@ const elementsExampleOverrides = {
 </script>`,
   DatePicker: `<p id="launch-date-hint">Choose a launch date.</p>
 <lumen-date-picker>
-  <input data-ui-date-picker-native type="date" name="launchDate" aria-label="Launch date" aria-describedby="launch-date-hint">
-  <div data-ui-date-picker-control hidden>
-    <button data-ui-date-picker-trigger aria-expanded="false"><span data-ui-date-picker-value>Choose a date</span></button>
+  <input class="ui-date-picker ui-date-picker__native" data-ui-date-picker-native type="date" name="launchDate" aria-label="Launch date" aria-describedby="launch-date-hint">
+  <div class="ui-date-picker__control" data-ui-date-picker-control hidden>
+    <button class="ui-input ui-date-picker ui-date-picker__trigger" data-ui-date-picker-trigger type="button" aria-controls="launch-date-popover" aria-haspopup="dialog" aria-expanded="false"><span data-ui-date-picker-value>Choose a date</span></button>
+    <div class="ui-date-picker__popover" data-ui-date-picker-popover id="launch-date-popover" role="dialog" aria-label="Choose a launch date" hidden><lumen-calendar></lumen-calendar></div>
   </div>
-  <div data-ui-date-picker-popover hidden><lumen-calendar></lumen-calendar></div>
 </lumen-date-picker>`,
   FilterBar: `<lumen-filter-bar aria-label="Filters">
   <details open><summary>Filters</summary>
