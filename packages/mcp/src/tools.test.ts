@@ -108,18 +108,25 @@ describe('lumen-mcp data snapshot', () => {
     const listBox = resolveComponent('ListBox', data)
     const dateRangePicker = resolveComponent('DateRangePicker', data)
     const imageComparison = resolveComponent('ImageComparison', data)
-    const table = resolveComponent('DataTable', data)
-    const lineChart = resolveComponent('LineChart', data)
-    const phoneInput = resolveComponent('PhoneInput', data)
 
     expect(listBox?.frameworkDetails.elements.attributes).toContain('value')
     expect(listBox?.frameworkDetails.elements.attributes).not.toContain('onFocus, onBlur')
     expect(dateRangePicker?.frameworkDetails.elements.attributes).not.toContain('onRangeChange')
     expect(imageComparison?.frameworkDetails.elements.attributes).not.toContain('onValueChange')
+    expect(listBox?.frameworkDetails.elements.attributes).toContain('selectionFollowsFocus')
+  })
+
+  test('preserves Elements values from mixed value and React callback rows', () => {
+    const data = loadLumenData()
+    const table = resolveComponent('DataTable', data)
+    const lineChart = resolveComponent('LineChart', data)
+    const phoneInput = resolveComponent('PhoneInput', data)
+
     expect(table?.frameworkDetails.elements.attributes).not.toContain('expandedRowIds, onExpandedRowIdsChange')
     expect(lineChart?.frameworkDetails.elements.attributes).not.toContain('cursor, onCursorChange')
     expect(phoneInput?.frameworkDetails.elements.attributes).not.toContain('value / onValueChange')
-    expect(listBox?.frameworkDetails.elements.attributes).toContain('selectionFollowsFocus')
+    expect(phoneInput?.frameworkDetails.elements.attributes).toContain('value')
+    expect(lineChart?.frameworkDetails.elements.attributes).toContain('cursor')
   })
 
   test('documents wrapped code and Astro motion runtime requirements', () => {

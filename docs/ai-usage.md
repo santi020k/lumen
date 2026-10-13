@@ -3,7 +3,7 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
-Lumen 4 is released. See the [v4.1 highlights](lumen-4.1.md) and use the
+Lumen 4 is released. See the [v4.2 highlights](lumen-4.2.md) and use the
 [release manifest](../registry/release-manifest.json) for each package's version; companion packages
 do not all share the umbrella version. The public plugin and hosted MCP describe their deployed
 snapshot, which can differ from this checkout. Inspect snapshot metadata before using its contracts.

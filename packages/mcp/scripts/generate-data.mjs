@@ -857,9 +857,13 @@ const buildFrameworkDetails = ({
       attributes: [
         ...new Set([
           ...element.attributes,
-          ...doc.apiReference
-            .filter(row => !/(?:^|[\s,/])on[A-Z]/u.test(row.attribute))
-            .map(row => row.attribute)
+          ...doc.apiReference.flatMap(row => {
+            const names = row.attribute.split(/[,/]/u).map(attribute => attribute.trim())
+
+            if (!names.some(attribute => /^on[A-Z]/u.test(attribute))) return [row.attribute]
+
+            return names.filter(attribute => !/^on[A-Z]/u.test(attribute) && !attribute.startsWith('ui:'))
+          })
         ])
       ],
       available: Boolean(element.source),
