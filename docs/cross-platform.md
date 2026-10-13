@@ -85,9 +85,10 @@ platform mappings, accessibility requirements, and contribution checks.
 The shared token foundation and the React Native, SwiftUI, Jetpack Compose, and Wear OS component
 contracts received their Supported classification in Lumen 2. For Lumen 4, review the changed
 baselines and migration guide; that classification alone does not prove consumer qualification.
-Package, migration, build, security, published-artifact, and stability checks remain release gates.
-External-consumer and physical-device evidence remains visible as post-release qualification work. Breaking changes
-require release notes and a practical migration path.
+Package, migration, build, compatibility, security, and published-artifact checks remain release gates.
+External-consumer and physical-device evidence is preserved as historical context and does not define
+current launch requirements. Follow the [current release policy](native-release-runbook.md#current-release-policy).
+Breaking changes require release notes and a practical migration path.
 
 A native adapter enters version 2 after it has:
 
