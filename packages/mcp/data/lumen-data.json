@@ -8,13 +8,13 @@
       "AspectRatio": "87bf3256c5da7d2f0d00560564111c51bdd188801c28fe0e3f1520f300559911",
       "Attachment": "9e477b26552bd9489f35e340ba53608c8e53a0cf7847745bce48f41a7ec062c4",
       "AttachmentList": "faeb2df7207af925fe72b046dbe8735a27c6cb269ade04f1f8536ba0e00963ca",
-      "AttachmentPreview": "f2d089ea8cf597e9c9592ef2ed429d37a72f6641f758c5c8479f430f14cf8314",
+      "AttachmentPreview": "32a9fe485c4defae12e10d5faf1be9b7781c15a63bcecbfa592abe20e23cd1e2",
       "Autocomplete": "7f17759d2ba590420283d16216c4fa12d7ab8296f4c4af259377646f61dc097f",
       "Avatar": "60a22d4181f2a04178e43eba02c96be0a4f08d3f3e2c6693d030326749a63220",
       "Backdrop": "69e54d576e43ebaecf5beec41c9594a8a1db1cbe8a3cb70f87a9b3da8b70eeed",
       "BackToTop": "90d46ec1afc97a2e229d671f2da139de68c2cda2610b72231f2946f1674a73ce",
       "Badge": "198c9577446e73721d27974d1950e98990034f63dc25fa2c01abd813945200c5",
-      "BarChart": "4237e682ceee311e16de5d4d8b73138e4831b22368767c6baec289948ce61cd3",
+      "BarChart": "8194186ee59a53e92b719352d45ef21ac7e7ef12ab9f9f35ee9662a124b57365",
       "Breadcrumb": "700d5860a964387089f8fc8918145bb8e82fca04f0e6c6d8fb2e20bd90cdb152",
       "Bubble": "61d1f46dd7b7695e8c1906faf487b5b8dc12c769b170af87269db24f0b91d916",
       "Button": "acfa846c121335fc3f7a67c8657eb5035aeef1b2fddfb4a1e1d65d7dde84ee56",
@@ -36,20 +36,20 @@
       "CodeTabs": "61dcbf3a401afee952c7935a639452c40eae2bbac7974c748dd4de58f9e4603d",
       "Combobox": "07e3fc8b0d0407064d8bc5d7110787bfbd94c8a122acee6917d524601f881fb8",
       "Container": "537320bf21c9d1e522523d143c12cf1578806c9e7f68b562926adb682ee12e38",
-      "CopyButton": "67a898558420299a6fc44c875bec428d63b118b384068f70cf744df0b816707e",
+      "CopyButton": "bfe6a15d112703cfc28d606549a9282b54afb26e57b129198ffbab0c52f14bb7",
       "Command": "3ed71d3282ba1188018417b14b6c62e90d111eed37693d57e83ae47df2142567",
       "ContextNavigation": "cb3b2b1ed4fa6e52f30d57b3217da7929ee218f8d00d1c31192d0604fed77e3f",
       "ContextMenu": "8b9b5b009deb7c99fb367bf68216d9fe144163b8cb759c46154e3d0bbaed5048",
       "ColorPicker": "c5c777fd5aa2c9d91d8eff7ef6386af457807ab01a1400cebd7204c40fdedaec",
-      "DataTable": "f32ba7145750e2198641960f75fffbfc0be28bc3df6ca57a93406b5200062036",
+      "DataTable": "c062c4405dbb154d41c4f6c7fae477263c366e44bff5f499383c4e7a11bb05d2",
       "DatePicker": "001bc636b423834392f53db798e07d39e3b00e9d33aafebc89163a4b13d3b14d",
-      "DateRangePicker": "232e68987e917e83d144ef8f449973e0e2e1bd7643df7ed4230f20856b6460de",
+      "DateRangePicker": "b29018be38fab4dc0cf84956d030a39fd2034b1fa9a922ab9f68783e8b044151",
       "Dialog": "2173bc40116da149c25d01f68b1d9cef7df3d1f0784dfae6775979bd420ea3a2",
       "DialogHeader": "80d453ce7eed0a7953386108ca9f93ff2392af6c7d0df51d0ad84c07f5cef0f9",
       "DialogTitle": "d7dd34901252475ae18b3e9be7def4e7ae4aee541aad4956298c39af19d33fbd",
       "DialogBody": "54b5c40a530eab6136467d7cafb16223ca188b9e1bb40300d24e473619adaab1",
       "DialogFooter": "9e9f1445f1f91dc73d5d3e2a73ca3678cb44303414dceda5e1974541fcb1ed10",
-      "DialogClose": "13162a38200589b454d0035a7cb752c4b5f29d112d5e05ff3fe637ddbd481db4",
+      "DialogClose": "343ed8c2a80feb4d661fbbd66cf9c866d3071ed5189c7badbd5806a08ef322f2",
       "Direction": "ac13fa49498f18ea7734a565324402953549202080eaa3054c5068f347ec29bf",
       "Drawer": "2f046cdf9f3b860c484b1a2e08000d04338428dd0c92344045b315bf2dadb2ed",
       "DropdownMenu": "edca5e544781fcce8e5fe3898ebc20c34a29953b528a62a930792aa4aba920da",
@@ -65,10 +65,10 @@
       "Graphic": "01b4a421cbc88a830cfa7002924639a1718b356a3bedfce0299e91bee43f2e1a",
       "HoverCard": "14bc75cc0138d0e0569bec1c36a0ef13eaba5ed128595f937806ea9b7638f4ee",
       "Icon": "5339c26722d3c3c0d9c70035ea043b4d8eb9667e38a401f124579f733994aeb6",
-      "Image": "c1ee057e6ea96bddd70f95794649b30b5f4b1ff426d8051983d0b299fe4a74a0",
+      "Image": "edd4f88f3829a70f6c8cb793e2cedf73c13e930ce1a3ccf6e9a6cab3d7d1768a",
       "DeviceFrame": "fa1fa5248cb797c09eb70da56823692c919ed6b160737cd2a0ce5d03ff3f9ce3",
-      "ImageComparison": "e79c682cda5a2aa7f66320b412d826d3d96c630ef8cc3fa2de7786a0a04b4c1e",
-      "MediaViewport": "2e360555669ed06e34a07446490da901fab05e2580b7954553a49cfa3f7e1690",
+      "ImageComparison": "e547f0aad30ec9aa90660b1308a7715b33760a5f716de035aaa51fff02eb6676",
+      "MediaViewport": "648368475d1149f8c6e39f556a5ecca48675d2d4b0b89cb00a8687da21b4cf81",
       "MediaThumbnail": "ee4fe6bf672d32a4b2bcd0e6eca1111036f2fdb5b1b8dc5d7670c291c88a7f32",
       "MediaFilmstrip": "985898797261d0a711be9e419f034a468c628f0c39cffa8409ce3f03537224da",
       "Illustration": "1db8d922e5a2490948bb7298d25ca50e10cf44eb297856548a5d2842be1bcfca",
@@ -81,8 +81,8 @@
       "Kbd": "14825287aa0d6ffcec6b51b61b61d8a7c44d7cba1c7c40a77a7d46d0632c25de",
       "Label": "10cb7069a9a24205bda0fd87e74d79bb9066164870dd5959b52fbdea6cd7b242",
       "Link": "d939a1c5f221f60c5dac42dc148434326728305fa0eb0e6b10094a538f9a7b04",
-      "LineChart": "50223eb892e8b3618fce6a52498de77c432826e54590cd837d4b89b6343b3972",
-      "ListBox": "23ec1ce1c2521086524a04335712985bc09b5c3d3a8d1ece489718c736a5ae19",
+      "LineChart": "cb77c2591bbfdc8bef127af77ba4e59c45df43ad7ea9ca7a9852bb407c16d874",
+      "ListBox": "66272d7148e8d53940d963fa648ad76059007c10e77ede35cc7f243e1cc395c7",
       "Marker": "b2c3679b841cee6cc4ce6322d6dd7758f85a9371bc4817a750f6de4e7c0cc3d2",
       "Menubar": "ceaa113420c1a99cc1d7e856c04b5a75d8569473ebd8a24a83c947ec3b6608e5",
       "Message": "26c4a46c2090e9834c52dc56bfd2d84f7d70d9fcff6885270df9839eb895ab8e",
@@ -93,8 +93,8 @@
       "NumberField": "26d8eff3b5d7eeab400b77e787585865af9f5c395f6f83d30d52cffc2c9c2a50",
       "Pagination": "1e85cbdac6aa9a6417ce9cc7e015f2dfceecba126803529c88d8fe228e2d50a9",
       "PasswordField": "784fb8457944c5d6879a3ed1db154de8e14cae7eec3ec3ef38c3b174dd1222b2",
-      "PhoneInput": "553fe569fd5dcd07963b2df3166e2c836b4e3d10afde93894f6ac34a64528d61",
-      "PieChart": "3bd9b9695586226f9c8238a38f307528d55e50631123791d531edbea1ee68230",
+      "PhoneInput": "b81efaf0cdb8aed417c938738d32db41a3055986b60f33d59b57c7c462990039",
+      "PieChart": "8ec3d6d45f391f05c7946a755865c8a68125e4882ab68e132bd87196d4dc59c9",
       "Pill": "a0dffa43c0e089ae68d8dd11df5ccca3b83eb0acb5d777752f29475b0bb064a1",
       "Popover": "91a1fc3fdc5b14b7c01fa5c9393d2b2257ed6da9b97977089f01e8643c0c1080",
       "Progress": "42a0a7e700806ff8c31dc793cf4e79fa62b59b6dd310571bcd775d034680081c",
@@ -131,7 +131,7 @@
       "Tree": "82fec780732d44258a1870898c9df666c5982433ce625ca3b8bf8d62d0dacd3c",
       "TreeGrid": "50577908772c53c08d336747253ca7c4527145d94caac2e268e6148cb21255a5",
       "Typography": "50c18e8bd632c5dff527a239c7e45ee010a619dc5fe1029c9e1b38d1882eecc5",
-      "VirtualList": "1b3cd9ccef388a165049bd24c3a22b06db6ed3fd2d61fc81c7bc0956843cb9b4",
+      "VirtualList": "54f833d758a881b9b71fe68495fe7eeca89c3f53e519ee5ba55cb05d12a48601",
       "LanguageToggle": "ff65170382ae5b1241ce142b670a32bb708e92fbfbeeac6a285bd39b13c612b6",
       "Particles": "74334a8aa6578b86f01da2ab63a96ce6c8d888e99f3bcc3ab9845667eb97d27e",
       "AnimatedNumber": "78cebe9ac425f1f2ab81c336ccaa166ff2007d1814398f451ca67702742aaa5a",
@@ -173,10 +173,10 @@
       "Affix": "554b64a7393d73e9b53ac7bb32793d16e82b609873c4c53a6ad39f844c1dcb23",
       "SpeedDial": "7e8c5ceb0cfd8e941343809ccec8109c5686872c29438686a494c330955804a1",
       "Grid": "d6c8c478ab1a19de7e523eec43a79f694a6ee47cff3907c509ca297b66f21234",
-      "ScatterChart": "8c4f68519691a856e5955126b23092d12cd69f1b8d6e12607053db78c589710e",
-      "Heatmap": "8954f3f5d032840bade6b941ada35948b4b584ff8d5530fc99e5c6eae9173f3e",
-      "RangeChart": "6a627f6a9903dc6475ce593e70c3d139406745aba373a8ee0f9c3d7e3bc152df",
-      "ComboChart": "ee968b6dbc63037f84c61b8ea9babd280e18bea15e2f05b8efa54e4bc54ccc83",
+      "ScatterChart": "ff64746a2b1a73ad394676e4092859992930391899f991a268a29c9e1fd6c679",
+      "Heatmap": "c514471eda6905601d744a6a41526b99eb0b911e8473d5cae6637274a538807b",
+      "RangeChart": "0455ea2a195e94ff1f6b7560c66ec5e1cd8edb64fd447ac923d8c1a2451af3be",
+      "ComboChart": "2d20981bc182cb0a7876570145acdd66ae1ce9b37943685068ad1a422167ac5c",
       "VisuallyHidden": "10562829ec1f598aacc2ad819e93c0cd3b257c7eec60818854a08723d9dcc888",
       "CalendarHeatmap": "45f91bc45a6a50274962146933338b852f57488d52108129f92abe279602054b",
       "FunnelChart": "a46ee7ad3fde691fee8140469a2a19bf9a2935e85b4ebbb8f57f372eb8b6dbfb",
@@ -196,7 +196,7 @@
       "SourceCitation": "07799bb00bf251ca0fa3d6663a7212bb9f07dacdc027e1bd01309a86b2dddb76",
       "StreamMessage": "c3753a27af188ef2aa3cb4e0e475a788c805a9326f4e010a365d7996d534f550",
       "ToolActivity": "4501917aa7b7ffe929bde82114d13ab5caf4a9f5ad17fa3a1f806bbe461a52d9",
-      "WorldMap": "b37bc8eacc4d9a588591e91c1e3fb3d344e4ed047c0842fe7fab56b8f4ffa8fe"
+      "WorldMap": "1b92c9c6bdebcd0e29afe5536ac6ceed3d6c5e79ee4a118097ab89134b60d839"
     },
     "nativeComponents": {
       "Sparkline": "bf7707572d45de0978788f7825831fcb3d89e390b5a474ff8aaf518d412738c6",
@@ -1724,6 +1724,9 @@
           "values": "React nodes / Astro named slots"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onStateChange",
           "defaultValue": "-",
           "description": "React callback for transitions after the initial render; DOM adapters emit ui:attachment-preview-change with { state }.",
@@ -2952,6 +2955,9 @@
           "values": "boolean (Astro / Elements attribute)"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onDatumActivate",
           "defaultValue": "-",
           "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
@@ -8147,6 +8153,9 @@
           "values": "\"default\" | \"sm\" | \"lg\" | \"icon\""
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "copiedContent, errorContent",
           "defaultValue": "localized labels",
           "description": "Customizes visible React feedback while label props remain the accessible announcement.",
@@ -8330,7 +8339,6 @@
             "label, copiedLabel, errorLabel",
             "resetAfter",
             "toast",
-            "copiedContent, errorContent",
             "class, className",
             "...native attributes"
           ],
@@ -9329,6 +9337,9 @@
           "values": "\"client\" | \"manual\""
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "column.render, renderDetails",
           "defaultValue": "-",
           "description": "Renders rich cells and stable record details without changing sort values.",
@@ -9344,6 +9355,9 @@
           "values": "controlled React expansion"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "DataTableSortControls",
           "defaultValue": "-",
           "description": "Shares controlled sort state with headers for a visible mobile sort path.",
@@ -9475,8 +9489,6 @@
             "glass",
             "layout",
             "sortMode",
-            "column.render, renderDetails",
-            "DataTableSortControls",
             "columns",
             "rows",
             "name",
@@ -10025,6 +10037,9 @@
           "values": "two DatePicker controls"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onRangeChange",
           "defaultValue": "-",
           "description": "React only: receives the synchronized start and end ISO date values.",
@@ -11194,6 +11209,9 @@
           "values": "boolean"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onClick",
           "defaultValue": "-",
           "description": "Calling preventDefault cancels dismissal.",
@@ -14681,6 +14699,9 @@
           "values": "boolean"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "as",
           "defaultValue": "\"img\"",
           "description": "React only: renders a compatible optimizer such as next/image while retaining Lumen classes and forwarding optimizer props.",
@@ -14769,7 +14790,6 @@
             "priority",
             "preload, fill, placeholder",
             "invertOnDark",
-            "as",
             "class, className",
             "...native attributes"
           ],
@@ -15194,6 +15214,9 @@
           "values": "number"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onValueChange",
           "defaultValue": "-",
           "description": "React callback for user changes. Astro and Elements emit ui:image-comparison-change with { value }.",
@@ -15590,6 +15613,9 @@
           "values": "number"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onValueChange",
           "defaultValue": "-",
           "description": "React callback; Astro and Elements emit ui:media-viewport-change with { zoom, x, y }.",
@@ -18275,6 +18301,9 @@
           "values": "boolean (Astro / Elements attribute)"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onDatumActivate",
           "defaultValue": "-",
           "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
@@ -18838,6 +18867,9 @@
           "values": "native select attributes"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onFocus, onBlur",
           "defaultValue": "-",
           "description": "Fire once when focus enters or leaves the visible list, with the native HTMLSelectElement event target and form name.",
@@ -21133,6 +21165,10 @@
           "values": "string"
         },
         {
+          "frameworks": [
+            "astro",
+            "react"
+          ],
           "attribute": "inputProps / inputRef",
           "defaultValue": "-",
           "description": "Passes native number-input attributes and exposes its ref without DOM patches.",
@@ -21362,7 +21398,6 @@
         "elements": {
           "attributes": [
             "id / input-id",
-            "inputProps / inputRef",
             "disabled / readOnly / required",
             "errorMessage / showValidationError",
             "countries",
@@ -21666,6 +21701,9 @@
           "values": "boolean (Astro / Elements attribute)"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onDatumActivate",
           "defaultValue": "-",
           "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
@@ -30148,18 +30186,27 @@
           "values": "\"mounted\" | \"data\""
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "items",
           "defaultValue": "-",
           "description": "React: enable data rendering with immutable records; do not supply children.",
           "values": "readonly T[]"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "getKey",
           "defaultValue": "-",
           "description": "React data mode: stable unique item identity.",
           "values": "(item: T, index: number) => string | number"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "renderItem",
           "defaultValue": "-",
           "description": "React data mode: render only the visible window and focused neighbors.",
@@ -30264,9 +30311,6 @@
             "glass",
             "tabindex",
             "mode",
-            "items",
-            "getKey",
-            "renderItem",
             "itemSize",
             "overscan",
             "class, className",
@@ -39103,6 +39147,9 @@
           "values": "boolean (Astro / Elements attribute)"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onDatumActivate",
           "defaultValue": "-",
           "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
@@ -39615,6 +39662,9 @@
           "values": "boolean (Astro / Elements attribute)"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onDatumActivate",
           "defaultValue": "-",
           "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
@@ -39980,6 +40030,9 @@
           "values": "boolean (Astro / Elements attribute)"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onDatumActivate",
           "defaultValue": "-",
           "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
@@ -40351,6 +40404,9 @@
           "values": "boolean (Astro / Elements attribute)"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onDatumActivate",
           "defaultValue": "-",
           "description": "Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.",
@@ -45522,6 +45578,9 @@
           "values": "boolean"
         },
         {
+          "frameworks": [
+            "react"
+          ],
           "attribute": "onCountrySelect",
           "defaultValue": "-",
           "description": "React callback; Astro and Elements emit ui:world-map-select with countryId, highlighted and label.",
@@ -45977,7 +46036,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <picture>\n      <source media=\"(prefers-color-scheme: dark)\" srcset=\"./docs/assets/readme/hero-dark.svg\">\n      <img src=\"./docs/assets/readme/hero-light.svg\" alt=\"Lumen UI — A shared language. Every interface.\" width=\"1200\" height=\"340\">\n    </picture>\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  <strong>Accessible primitives. Native authoring. Shared foundations.</strong><br>\n  An open-source UI system for Astro, React, Web Components, React Native, SwiftUI, and Jetpack Compose.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a> ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a> ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Playgrounds</a> ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a> ·\n  <a href=\"https://lumen.santi020k.com/support\">Support</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/ci.yml\"><img alt=\"CI status on main\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&amp;style=flat-square&amp;label=CI\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL status\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"Published Astro package version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&amp;label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-036b8c?style=flat-square\"></a>\n</p>\n\nLumen gives your product a consistent visual language while preserving each framework's native\nway of building. Compose accessible controls, forms, charts, and complete product layouts from\nshared tokens and explicit component contracts.\n\n**Explore:** [Quick start](#web-quick-start) · [Native apps](#native-playgrounds) · [Templates](#dashboards-and-templates) · [AI and Figma](#ai-and-design-workflows) · [Packages](#packages) · [Repository apps](#repository-apps) · [Contributing](#contributing)\n\n> **Lumen 4:** See the [v4.2 highlights](docs/lumen-4.2.md) for SwiftUI appearance and agent guidance,\n> and [v4.1 highlights](docs/lumen-4.1.md) for loading and forms. Follow the [migration guide](docs/migrating-v3-to-v4.md) when\n> upgrading from v3. Package versions and store builds follow their own release schedules.\n\n## See Lumen in action\n\n<p>\n  <a href=\"https://lumen.santi020k.com/docs/web/playground\">\n    <img src=\"./apps/docs/src/assets/platforms/web.webp\" alt=\"A Lumen web workspace with navigation, metric cards, an interactive chart, and a task form\" width=\"1184\" height=\"802\">\n  </a>\n</p>\n\n*Real Lumen components with illustrative data. [Open the web playground →](https://lumen.santi020k.com/docs/web/playground)*\n\n| Built for | What you get |\n| --- | --- |\n| **Web products** | Astro, React, and custom elements with standalone CSS and optional Tailwind integration. |\n| **Native interfaces** | React Native, SwiftUI, Compose, WidgetKit, and Wear OS foundations with platform conventions. |\n| **Accessible interaction** | Semantic structure, keyboard paths, focus management, and reduced-motion support. |\n| **Design and AI workflows** | Figma resources, a portable agent skill, MCP discovery, and machine-readable contracts. |\n\n## Web quick start\n\nChoose one adapter. Astro requires Astro 5+, React requires React 19+, and the web packages\nrequire Node.js 22.12+ for their tooling. Install in your existing application:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\n### Astro\n\nImport the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all\ninteractive Lumen markup on the page.\n\n```astro\n---\nimport '@santi020k/lumen-astro/styles.css'\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <lumen-label id=\"email-label\">Email</lumen-label>\n  <lumen-input aria-labelledby=\"email-label\" id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nBrowse the [package directory](https://lumen.santi020k.com/docs/packages) for framework adapters,\nshared foundations, and optional integrations, with links to focused examples and usage guides.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native qualification:** Check the [compatibility matrix](docs/native-compatibility.md) and\n> [device evidence](docs/native-device-validation.md) for your target. Local builds, published\n> artifacts, and physical-device accessibility are distinct verification steps.\n\n## Tailwind CSS\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Native playgrounds\n\n<table>\n  <tr>\n    <th>SwiftUI</th>\n    <th>Jetpack Compose</th>\n    <th>React Native</th>\n  </tr>\n  <tr>\n    <td><a href=\"https://lumen.santi020k.com/docs/apple/playground\"><img src=\"./apps/docs/src/assets/platforms/apple.webp\" alt=\"Native SwiftUI release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/android/playground\"><img src=\"./apps/docs/src/assets/platforms/android.webp\" alt=\"Native Compose release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/react-native/playground\"><img src=\"./apps/docs/src/assets/platforms/react-native.webp\" alt=\"Expo browser preview of the contributor profile example\" width=\"220\"></a></td>\n  </tr>\n  <tr>\n    <td>Native app capture</td>\n    <td>Native app capture</td>\n    <td>Expo browser preview</td>\n  </tr>\n</table>\n\nSee [capture provenance](apps/docs/src/assets/platforms/README.md) for sources and verification scope.\n\nTry Lumen before adding it to your project. The [playground section](https://lumen.santi020k.com/#playgrounds)\nbrings together the browser demos and native apps. Explore component states and themes, then use\nthe open-source apps as implementation references. Start with the\n[web playground](https://lumen.santi020k.com/docs/web/playground) for Astro, React, and Web Components,\nor choose a native gallery:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android. [Try the browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n  or use the local setup guide for native evaluation. EAS profiles cover TestFlight, Android App\n  Bundles, and APKs; this gallery has no separate public store listing.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for a platform chooser, reference-app source,\nand run, capture, and distribution commands. Store builds follow their own release schedule and\nmay differ from the current repository version.\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” The plugin bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nLumen is designed to reduce repetitive UI code and unnecessary agent context. Actual token usage\ndepends on the model, task, and corrections; see the [measurement method](docs/ai-efficiency.md).\n\n<details>\n<summary>Guides, registries, and integration references</summary>\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`apps/figma-plugin/README.md`](./apps/figma-plugin/README.md) for the **beta** Figma plugin,\n  Astro starters, and AI handoff.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n</details>\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\nThe private [`@santi020k/lumen-templates`](packages/templates/README.md) workspace supplies the\ngallery and preview renderer. Consumer recipes are installed through the public Lumen CLI.\n\n## Repository apps\n\nEach app has its own setup, source map, and verification guidance:\n\n| App | Purpose |\n| --- | --- |\n| [Documentation](apps/docs/README.md) | Public documentation, live examples, search, and native previews |\n| [Template showcase](apps/templates/README.md) | Standalone gallery of five product-template families |\n| [Next.js smoke app](apps/next-smoke/README.md) | Server/client boundaries and rendered consumer regression fixtures |\n| [Apple playground](apps/playground-apple/README.md) | iPhone, iPad, Mac, watchOS, and WidgetKit reference hosts |\n| [Android playground](apps/playground-android/README.md) | Compose phone/tablet app and separate Wear OS host |\n| [React Native playground](apps/playground-react-native/README.md) | Expo reference app and embedded browser gallery |\n| [Figma plugin](apps/figma-plugin/README.md) | Development beta for Astro starters and structured agent handoff |\n| [Motion studio](apps/motion/README.md) | Reusable product films and local video exports |\n| [Store artwork](apps/store-assets/README.md) | Canonical SVG sources for the playground app icons |\n\n## Lumen 4\n\nLumen 4 brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [v4.2 release highlights](docs/lumen-4.2.md). The community gallery includes published consumer\nscreenshots; it does not imply those applications already run the current release.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\nUse Node.js 22.22.2+, 24.15.0+, or 26+ and pnpm 12.8.1, as declared in the root manifest.\n\n```bash\npnpm install --frozen-lockfile\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\nCreate reusable product animations and social videos locally with the\n[Lumen motion studio](./apps/motion/README.md). Its first pilot previews one interface in four\nappearances and exports portrait, square, and landscape MP4s through HyperFrames.\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n\nCreated and maintained by [Santiago Molina](https://santi020k.com).\n"
   },
   "meta": {
-    "catalogHash": "9548e8347e4cef9ed54ba5dc23eb0a214c55c5326857e40e4d446b5878d561f4",
+    "catalogHash": "66da76d9f2ee6fc849402a9d54bc0e82379b574879bbc29fa20f262b4f2b1168",
     "componentCount": 196,
     "nativeComponentCount": 125,
     "packages": [

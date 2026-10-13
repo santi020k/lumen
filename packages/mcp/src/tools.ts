@@ -587,7 +587,7 @@ const componentDetail = (
 
   const usage = {
     ...summary,
-    apiReference: component.apiReference.filter(row => !row.frameworks || row.frameworks.includes(framework)),
+    apiReference: component.apiReference,
     dependencies: component.dependencies,
     files: component.files,
     framework: frameworkWithoutSource(selectedFramework),
@@ -784,12 +784,17 @@ export const getComponent = (
     }
   }
 
+  const scopedComponent = {
+    ...component,
+    apiReference: component.apiReference.filter(row => !row.frameworks || row.frameworks.includes(framework))
+  }
+
   return {
     data: {
-      component: componentDetail(component, framework, detail),
+      component: componentDetail(scopedComponent, framework, detail),
       found: true
     },
-    text: formatComponentUsage(component, framework, detail)
+    text: formatComponentUsage(scopedComponent, framework, detail)
   }
 }
 

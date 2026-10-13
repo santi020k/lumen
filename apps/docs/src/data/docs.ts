@@ -780,7 +780,7 @@ const apiRow = (
 
 const chartDatumApiRows = [
   apiRow('drilldown', 'boolean (Astro / Elements attribute)', 'false', 'Enables plotted datum actions and an equivalent native button disclosure, including with hidden tables. Astro requires UIPrimitives; Elements owns its lifecycle.'),
-  apiRow('onDatumActivate', '(detail: LumenChartDatumActivationDetail) => void (React)', '-', 'Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.'),
+  apiRow('onDatumActivate', '(detail: LumenChartDatumActivationDetail) => void (React)', '-', 'Enables React datum actions and receives validated values with raw identities. Navigation and filtering remain application owned.', ['react']),
   apiRow('explore-data-label, datum-action-prefix, datumActionFormatter', 'string attributes, (context: string) => string property (Elements)', 'English labels', 'Localizes the Elements disclosure and datum actions.'),
   apiRow('labels.exploreData, labels.formatDatumAction', 'string, (context: string) => string', 'English labels', 'Localizes the actions disclosure and each contextual datum button.')
 ] as const
@@ -1253,7 +1253,7 @@ const apiReferenceByComponent = {
     apiRow('labels', 'Partial<LumenAttachmentPreviewLabels>', 'English labels', 'Localizes fallback messages. Elements uses error-label, loading-label and unavailable-label.'),
     apiRow('retryKey / retry-key', 'string | number', '-', 'Changes the retry identity for the current image. Retry remains application controlled.'),
     apiRow('caption / actions', 'React nodes / Astro named slots', '-', 'Composes a caption and independent download, replace or remove actions.'),
-    apiRow('onStateChange', '(state) => void', '-', 'React callback for transitions after the initial render; DOM adapters emit ui:attachment-preview-change with { state }.')
+    apiRow('onStateChange', '(state) => void', '-', 'React callback for transitions after the initial render; DOM adapters emit ui:attachment-preview-change with { state }.', ['react'])
   ],
   Autocomplete: [
     apiRow(
@@ -1579,7 +1579,7 @@ const apiReferenceByComponent = {
       'size', '"default" | "sm" | "lg" | "icon"', '"default"', 'Uses the shared Button sizing and touch-target contract.'
     ),
     apiRow(
-      'copiedContent, errorContent', 'ReactNode', 'localized labels', 'Customizes visible React feedback while label props remain the accessible announcement.'
+      'copiedContent, errorContent', 'ReactNode', 'localized labels', 'Customizes visible React feedback while label props remain the accessible announcement.', ['react']
     )
   ],
   Collapsible: [
@@ -1655,9 +1655,9 @@ const apiReferenceByComponent = {
   DataTable: [
     apiRow('layout', '"records" | "scroll"', '"scroll"', 'Opt-in responsive record labels; rich authored Table children remain available.'),
     apiRow('sortMode', '"client" | "manual"', '"client"', 'Manual mode requests host sorting and preserves supplied server order.'),
-    apiRow('column.render, renderDetails', 'React render callbacks', '-', 'Renders rich cells and stable record details without changing sort values.'),
+    apiRow('column.render, renderDetails', 'React render callbacks', '-', 'Renders rich cells and stable record details without changing sort values.', ['react']),
     apiRow('expandedRowIds, onExpandedRowIdsChange', 'controlled React expansion', '-', 'Preserves expansion by stable record ID across pages.', ['react']),
-    apiRow('DataTableSortControls', 'React component', '-', 'Shares controlled sort state with headers for a visible mobile sort path.'),
+    apiRow('DataTableSortControls', 'React component', '-', 'Shares controlled sort state with headers for a visible mobile sort path.', ['react']),
     apiRow(
       'columns', 'DataTableColumn[]', '[]', 'Generates table headers and maps row cells by column key when rows are provided.'
     ),
@@ -1676,7 +1676,7 @@ const apiReferenceByComponent = {
       'children', 'two DatePicker controls', 'required', 'Composes the start and end fields from the custom Calendar-backed DatePicker component.'
     ),
     apiRow(
-      'onRangeChange', '(range) => void', '-', 'React only: receives the synchronized start and end ISO date values.'
+      'onRangeChange', '(range) => void', '-', 'React only: receives the synchronized start and end ISO date values.', ['react']
     ),
     apiRow(
       'data-range-state', '"empty" | "selecting-end" | "complete"', 'runtime-managed', 'Exposes the current range progress for styling and product feedback.'
@@ -1718,7 +1718,7 @@ const apiReferenceByComponent = {
   DialogClose: [
     apiRow('children', 'accessible button label', 'required', 'Closes the enclosing dialog. Elements require a native button child.'),
     apiRow('disabled / loading', 'boolean', 'false', 'Uses Button props in Astro and React. Elements set disabled on the native button.'),
-    apiRow('onClick', 'React mouse event handler', '-', 'Calling preventDefault cancels dismissal.')
+    apiRow('onClick', 'React mouse event handler', '-', 'Calling preventDefault cancels dismissal.', ['react'])
   ],
   Direction: [
     apiRow(
@@ -1839,7 +1839,7 @@ const apiReferenceByComponent = {
     apiRow('labels / listLabel', 'Record<string, string> / string', 'country names / "Choose a country"', 'Localizes country names and the native chooser. Elements uses labels JSON and list-label.'),
     apiRow('selectedCountry', 'string', '-', 'Initial selection in Astro, reflected selected-country in Elements, controlled selection in React; React also supports defaultSelectedCountry.'),
     apiRow('interactive / animated', 'boolean', 'true', 'Enable country selection and motion separately. Reduced motion disables animation automatically.'),
-    apiRow('onCountrySelect', '(detail: LumenWorldMapSelectDetail) => void', '-', 'React callback; Astro and Elements emit ui:world-map-select with countryId, highlighted and label.'),
+    apiRow('onCountrySelect', '(detail: LumenWorldMapSelectDetail) => void', '-', 'React callback; Astro and Elements emit ui:world-map-select with countryId, highlighted and label.', ['react']),
     apiRow('heading / description / caption', 'string', '-', 'Optional Astro and React figure content. Elements supports authored content outside the map.'),
     apiRow('CSS variables', '--ui-world-map-land / --ui-world-map-highlight / --ui-world-map-marker / --ui-world-map-surface', 'semantic tokens', 'Accept any CSS color to customize the map while preserving theme defaults.')
   ],
@@ -1857,7 +1857,7 @@ const apiReferenceByComponent = {
     apiRow('label / labels', 'string / Partial<LumenMediaViewportLabels>', 'required / English action labels', 'Names the preview and localizes visible actions. Elements exposes a labels property.'),
     apiRow('value / defaultValue', 'LumenMediaViewportValue / Partial<LumenMediaViewportValue>', 'fit at zoom 1', 'Zoom is relative to fit; x and y are bounded fractions (-1 to 1) of the pan extent. React value is controlled; defaultValue initializes local state. Astro value initializes data-zoom, data-pan-x and data-pan-y. Elements value is a reflected property.'),
     apiRow('maxZoom / ratio', 'number', '4 / 16:9', 'Zoom limits normalize into 1–16. Preview ratio accepts 0.1–10; invalid ratios fall back to 16:9. Elements uses max-zoom.'),
-    apiRow('onValueChange', '(value: LumenMediaViewportValue) => void', '-', 'React callback; Astro and Elements emit ui:media-viewport-change with { zoom, x, y }.'),
+    apiRow('onValueChange', '(value: LumenMediaViewportValue) => void', '-', 'React callback; Astro and Elements emit ui:media-viewport-change with { zoom, x, y }.', ['react']),
     apiRow('disabled / locale', 'boolean / string', 'false / environment locale', 'Disables gestures and actions; formats visible zoom percentage. Astro actions stay disabled until enhancement.'),
     apiRow('children', 'media content', 'required', 'Supplies an image or noninteractive media view with meaningful alternative text. Loading, caching, retries and editing remain consumer-owned.')
   ],
@@ -1866,7 +1866,7 @@ const apiReferenceByComponent = {
     apiRow('before / after', 'named Astro slots | ReactNode props | slotted child nodes', 'required', 'Supplies media with matching framing and meaningful alternative text. Media is clipped, never resized as the range moves.'),
     apiRow('beforeLabel / afterLabel', 'string', '"Before" / "After"', 'Labels each side. Elements uses before-label and after-label attributes.'),
     apiRow('value / defaultValue', 'number', '50', 'Percentage of the after image revealed (0–100). React value is controlled; defaultValue initializes local state. Astro value is the initial position; Elements value is reflected.'),
-    apiRow('onValueChange', '(value: number) => void', '-', 'React callback for user changes. Astro and Elements emit ui:image-comparison-change with { value }.'),
+    apiRow('onValueChange', '(value: number) => void', '-', 'React callback for user changes. Astro and Elements emit ui:image-comparison-change with { value }.', ['react']),
     apiRow('ratio', 'number', '16 / 9', 'Sets a shared positive finite aspect ratio. Invalid values fall back to 16 / 9.'),
     apiRow('fit', '"cover" | "contain"', '"cover"', 'Applies the same media fit to both layers.'),
     apiRow('disabled', 'boolean', 'false', 'Disables the native range without hiding either image. Astro keeps the range disabled until UIPrimitives enhances the static comparison.'),
@@ -1905,7 +1905,7 @@ const apiReferenceByComponent = {
       'invertOnDark', 'boolean', 'false', 'Inverts monochrome artwork in dark themes while preserving colorful images by default.'
     ),
     apiRow(
-      'as', 'React ElementType', '"img"', 'React only: renders a compatible optimizer such as next/image while retaining Lumen classes and forwarding optimizer props.'
+      'as', 'React ElementType', '"img"', 'React only: renders a compatible optimizer such as next/image while retaining Lumen classes and forwarding optimizer props.', ['react']
     )
   ],
   Illustration: [
@@ -2203,7 +2203,7 @@ const apiReferenceByComponent = {
   ],
   PhoneInput: [
     apiRow('id / input-id', 'string', 'Generated', 'Associates a visible label with the number input; Web Components use input-id.'),
-    apiRow('inputProps / inputRef', 'input attributes / React ref', '-', 'Passes native number-input attributes and exposes its ref without DOM patches.'),
+    apiRow('inputProps / inputRef', 'input attributes / React ref', '-', 'Passes native number-input attributes and exposes its ref without DOM patches.', ['astro', 'react']),
     apiRow('disabled / readOnly / required', 'boolean', 'false', 'Locks both controls when disabled or read-only and supports native required validation.'),
     apiRow('errorMessage / showValidationError', 'string / boolean', '- / true', 'Shows an associated field error or metadata validation feedback.'),
     apiRow(
@@ -2634,9 +2634,9 @@ const apiReferenceByComponent = {
   ],
   VirtualList: [
     apiRow('mode', '"mounted" | "data"', '"mounted"', 'Astro/Elements: initialize an empty data-mode root for the Core collection controller.'),
-    apiRow('items', 'readonly T[]', '-', 'React: enable data rendering with immutable records; do not supply children.'),
-    apiRow('getKey', '(item: T, index: number) => string | number', '-', 'React data mode: stable unique item identity.'),
-    apiRow('renderItem', '(item: T, index: number) => ReactNode', '-', 'React data mode: render only the visible window and focused neighbors.'),
+    apiRow('items', 'readonly T[]', '-', 'React: enable data rendering with immutable records; do not supply children.', ['react']),
+    apiRow('getKey', '(item: T, index: number) => string | number', '-', 'React data mode: stable unique item identity.', ['react']),
+    apiRow('renderItem', '(item: T, index: number) => ReactNode', '-', 'React data mode: render only the visible window and focused neighbors.', ['react']),
     apiRow(
       'itemSize', 'number | string', '-', 'Fixed row height in pixels (default 44). Default mode retains mounted rows; data mode mounts a bounded window.'
     ),
@@ -2993,7 +2993,7 @@ const apiReferenceByComponent = {
       'required, aria-invalid, aria-describedby, aria-errormessage', 'native select attributes', '-', 'Forwarded to the visible list. Required single selection stays invalid until a choice is made; native validation focuses the list. Consumer aria-invalid wins.'
     ),
     apiRow(
-      'onFocus, onBlur', 'React select focus event handlers', '-', 'Fire once when focus enters or leaves the visible list, with the native HTMLSelectElement event target and form name.'
+      'onFocus, onBlur', 'React select focus event handlers', '-', 'Fire once when focus enters or leaves the visible list, with the native HTMLSelectElement event target and form name.', ['react']
     ),
     apiRow(
       'options', 'Array<string | { label, value, disabled?, section? }>', '[]', 'Defines options and optional accessible sections.'
