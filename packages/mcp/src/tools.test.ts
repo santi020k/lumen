@@ -116,6 +116,20 @@ describe('lumen-mcp data snapshot', () => {
     expect(listBox?.frameworkDetails.elements.attributes).toContain('empty-message, data-selection-follows-focus')
   })
 
+  test('documents DatePicker ARIA on its authored native child instead of the Elements host', () => {
+    const picker = resolveComponent('DatePicker', loadLumenData())
+    const attributes = picker?.frameworkDetails.elements.attributes?.flatMap(attribute => attribute.split(',').map(name => name.trim()))
+    const result = getComponent({ framework: 'elements', name: 'DatePicker' })
+
+    for (const unsupported of ['aria-invalid', 'aria-describedby', 'aria-errormessage']) {
+      expect(attributes).not.toContain(unsupported)
+    }
+    expect(picker?.frameworkDetails.elements.behavior?.setup).toContain('input marked data-ui-date-picker-native')
+    expect(result.text).toContain('<input data-ui-date-picker-native')
+    expect(result.text).toContain('aria-describedby="launch-date-hint"')
+    expect(result.text).not.toContain('- `aria-invalid, aria-describedby, aria-errormessage`')
+  })
+
   test('advertises only supported Elements ListBox host naming and validation attributes', () => {
     const list = resolveComponent('ListBox', loadLumenData())
     const attributes = list?.frameworkDetails.elements.attributes?.flatMap(attribute => attribute.split(',').map(name => name.trim()))

@@ -636,6 +636,14 @@ const elementsExampleOverrides = {
     ]
   }
 </script>`,
+  DatePicker: `<p id="launch-date-hint">Choose a launch date.</p>
+<lumen-date-picker>
+  <input data-ui-date-picker-native type="date" name="launchDate" aria-label="Launch date" aria-describedby="launch-date-hint">
+  <div data-ui-date-picker-control hidden>
+    <button data-ui-date-picker-trigger aria-expanded="false"><span data-ui-date-picker-value>Choose a date</span></button>
+  </div>
+  <div data-ui-date-picker-popover hidden><lumen-calendar></lumen-calendar></div>
+</lumen-date-picker>`,
   FilterBar: `<lumen-filter-bar aria-label="Filters">
   <details open><summary>Filters</summary>
     <div class="ui-filter-bar__controls"><lumen-search-field aria-label="Search records"></lumen-search-field></div>
@@ -744,11 +752,12 @@ const getAstroBehavior = (runtimeRequired, runtimeBypass) => {
   }
 }
 
-const getElementsBehavior = runtimeRequired => ({
+const getElementsBehavior = (runtimeRequired, name) => ({
   mode: 'registration',
   setup:
     'Call defineLumenElements() once before rendering Lumen custom elements.' +
-    (runtimeRequired ? ' Registration includes this component’s interactive behavior.' : '')
+    (runtimeRequired ? ' Registration includes this component’s interactive behavior.' : '') +
+    (name === 'DatePicker' ? ' Author the native input, trigger, control and popover children. Place aria-invalid, aria-describedby and aria-errormessage on the input marked data-ui-date-picker-native; the enhancer mirrors them to the visible trigger and observes later input attribute changes. Host ARIA attributes are not forwarded.' : '')
 })
 
 const getReactBehavior = (hook, reactSource, runtimeRequired) => {
@@ -779,10 +788,10 @@ const worldMapImport = name => name === 'WorldMap' ?
   '\nimport { lumenWorldMapCountries } from \'@santi020k/lumen-core/world-map-data\'' :
   ''
 
-const frameworkBehavior = ({ framework, hook, reactSource, runtimeBypass, runtimeRequired }) => {
+const frameworkBehavior = ({ framework, hook, name, reactSource, runtimeBypass, runtimeRequired }) => {
   if (framework === 'astro') return getAstroBehavior(runtimeRequired, runtimeBypass)
 
-  if (framework === 'elements') return getElementsBehavior(runtimeRequired)
+  if (framework === 'elements') return getElementsBehavior(runtimeRequired, name)
 
   if (framework === 'react') return getReactBehavior(hook, reactSource, runtimeRequired)
 }
@@ -869,7 +878,7 @@ const buildFrameworkDetails = ({
         ])
       ],
       available: Boolean(element.source),
-      behavior: frameworkBehavior({ framework: 'elements', runtimeRequired }),
+      behavior: frameworkBehavior({ framework: 'elements', name, runtimeRequired }),
       example: elementsExample || `<${element.tagName}></${element.tagName}>`,
       importStatement: 'import { defineLumenElements } from \'@santi020k/lumen-elements/define\'',
       language: 'html',

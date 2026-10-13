@@ -1687,7 +1687,7 @@ const apiReferenceByComponent = {
   ],
   DatePicker: [
     apiRow(
-      'aria-invalid, aria-describedby, aria-errormessage', 'native input ARIA attributes', '-', 'Mirrored to the visible trigger. Astro and Elements track later attribute changes; application errors retain precedence.'
+      'aria-invalid, aria-describedby, aria-errormessage', 'native input ARIA attributes', '-', 'Mirrored to the visible trigger. Application errors retain precedence. Elements consumers put these attributes on the authored data-ui-date-picker-native input, not the custom-element host.', ['astro', 'react']
     ),
     apiRow(
       'value, defaultValue', 'ISO date string (YYYY-MM-DD)', '-', 'Sets the selected date while the trigger shows a localized, human-readable value. React reopens the calendar on the selected month.'
