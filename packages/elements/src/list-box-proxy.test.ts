@@ -81,7 +81,7 @@ test('consumer aria attributes on the select name the list and keep consumer inv
 test('generated lists report boolean busy and multiselectable states', () => {
   document.body.innerHTML = `
     <lumen-list-box aria-label="Loading reviewers" loading multiple name="loading"></lumen-list-box>
-    <lumen-list-box aria-label="Reviewers" multiple name="reviewers"><option value="amina">Amina</option></lumen-list-box>`
+    <lumen-list-box aria-label="Reviewers" required multiple name="reviewers"><option value="amina">Amina</option></lumen-list-box>`
   enhanceLumenListBoxes(document)
 
   const [loadingList, readyList] = [...document.querySelectorAll<HTMLElement>('[data-ui-list-box-list]')]
@@ -91,6 +91,7 @@ test('generated lists report boolean busy and multiselectable states', () => {
   expect(readyList?.hasAttribute('aria-busy')).toBe(false)
   expect(readyList?.getAttribute('aria-multiselectable')).toBe('true')
   expect(readyList?.getAttribute('aria-label')).toBe('Reviewers')
+  expect(readyList?.getAttribute('aria-required')).toBe('true')
 })
 
 test('unnamed lists without ids receive distinct option ids', () => {

@@ -2990,20 +2990,22 @@ const apiReferenceByComponent = {
     )
   ],
   ListBox: [
+    apiRow('empty-message, data-selection-follows-focus', 'string, boolean string', '"No options available", "false"', 'Sets the Elements empty-state text and optionally commits selection as keyboard focus moves.', ['elements']),
+    apiRow('aria-label, required', 'string, boolean', '-', 'Names the Elements visible list and marks its generated select required. For other label or feedback associations, author a native select child and put required and ARIA attributes on that select.', ['elements']),
     apiRow(
-      'label, aria-label, aria-labelledby', 'string', '-', 'Names the single accessible visible list. External labels targeting or wrapping the native select also name it; explicit ARIA names take precedence.'
+      'label, aria-label, aria-labelledby', 'string', '-', 'Names the single accessible visible list. External labels targeting or wrapping the native select also name it; explicit ARIA names take precedence.', ['astro', 'react']
     ),
     apiRow(
-      'required, aria-invalid, aria-describedby, aria-errormessage', 'native select attributes', '-', 'Forwarded to the visible list. Required single selection stays invalid until a choice is made; native validation focuses the list. Consumer aria-invalid wins.'
+      'required, aria-invalid, aria-describedby, aria-errormessage', 'native select attributes', '-', 'Forwarded to the visible list. Required single selection stays invalid until a choice is made; native validation focuses the list. Consumer aria-invalid wins.', ['astro', 'react']
     ),
     apiRow(
       'onFocus, onBlur', 'React select focus event handlers', '-', 'Fire once when focus enters or leaves the visible list, with the native HTMLSelectElement event target and form name.', ['react']
     ),
     apiRow(
-      'options', 'Array<string | { label, value, disabled?, section? }>', '[]', 'Defines options and optional accessible sections.'
+      'options', 'Array<string | { label, value, disabled?, section? }>', '[]', 'Defines options and optional accessible sections.', ['astro', 'react']
     ),
     apiRow(
-      'value', 'string | string[]', '-', 'Controls the selected value or values.'
+      'value', 'string | string[]', '-', 'Controls the selected value or values.', ['astro', 'react']
     ),
     apiRow(
       'multiple', 'boolean', 'false', 'Allows more than one selected value while preserving native form submission.'
@@ -3012,10 +3014,10 @@ const apiReferenceByComponent = {
       'loading', 'boolean', 'false', 'Marks the collection busy and disables selection while options load.'
     ),
     apiRow(
-      'emptyMessage', 'string', '"No options available"', 'Labels the empty collection state.'
+      'emptyMessage', 'string', '"No options available"', 'Labels the empty collection state.', ['astro', 'react']
     ),
     apiRow(
-      'selectionFollowsFocus', 'boolean', 'false', 'Selects each enabled option as keyboard focus moves instead of waiting for Space or Enter.'
+      'selectionFollowsFocus', 'boolean', 'false', 'Selects each enabled option as keyboard focus moves instead of waiting for Space or Enter.', ['astro', 'react']
     )
   ],
   PasswordField: [

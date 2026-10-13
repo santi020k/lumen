@@ -109,11 +109,22 @@ describe('lumen-mcp data snapshot', () => {
     const dateRangePicker = resolveComponent('DateRangePicker', data)
     const imageComparison = resolveComponent('ImageComparison', data)
 
-    expect(listBox?.frameworkDetails.elements.attributes).toContain('value')
+    expect(listBox?.frameworkDetails.elements.attributes).toContain('multiple')
     expect(listBox?.frameworkDetails.elements.attributes).not.toContain('onFocus, onBlur')
     expect(dateRangePicker?.frameworkDetails.elements.attributes).not.toContain('onRangeChange')
     expect(imageComparison?.frameworkDetails.elements.attributes).not.toContain('onValueChange')
-    expect(listBox?.frameworkDetails.elements.attributes).toContain('selectionFollowsFocus')
+    expect(listBox?.frameworkDetails.elements.attributes).toContain('empty-message, data-selection-follows-focus')
+  })
+
+  test('advertises only supported Elements ListBox host naming and validation attributes', () => {
+    const list = resolveComponent('ListBox', loadLumenData())
+    const attributes = list?.frameworkDetails.elements.attributes?.flatMap(attribute => attribute.split(',').map(name => name.trim()))
+
+    expect(attributes).toContain('aria-label')
+    expect(attributes).toContain('required')
+    for (const unsupported of ['label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage', 'aria-invalid', 'options', 'value', 'emptyMessage', 'selectionFollowsFocus']) {
+      expect(attributes).not.toContain(unsupported)
+    }
   })
 
   test('preserves Elements values from mixed value and React callback rows', () => {
