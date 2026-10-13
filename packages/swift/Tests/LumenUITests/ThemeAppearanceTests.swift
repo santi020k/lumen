@@ -8,6 +8,43 @@ import Testing
 @MainActor private final class AppearanceObservation {
     var colorScheme: ColorScheme?
     var themeScheme: LumenColorScheme?
+    var draft: String?
+    var editDraft: ((String) -> Void)?
+    var enforced: Bool?
+}
+
+@MainActor private final class AppearanceControl: ObservableObject {
+    @Published var enforce = false
+}
+
+private struct StatefulAppearanceProbe: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var draft = "Initial draft"
+    let observation: AppearanceObservation
+
+    var body: some View {
+        Text(draft)
+            .frame(width: 160, height: 100)
+            .onAppear {
+                observation.draft = draft
+                observation.colorScheme = colorScheme
+                observation.editDraft = { draft = $0 }
+            }
+            .task(id: draft) { observation.draft = draft }
+            .task(id: colorScheme) { observation.colorScheme = colorScheme }
+    }
+}
+
+private struct StatefulAppearanceFixture: View {
+    @ObservedObject var control: AppearanceControl
+    let observation: AppearanceObservation
+    let applyTint: Bool
+
+    var body: some View {
+        StatefulAppearanceProbe(observation: observation)
+            .lumenTheme(.dark, enforceColorScheme: control.enforce, applyTint: applyTint)
+            .task(id: control.enforce) { observation.enforced = control.enforce }
+    }
 }
 
 private struct AppearanceProbe: View {
@@ -20,7 +57,7 @@ private struct AppearanceProbe: View {
             .fill(colorScheme == .dark ? Color.black : Color.white)
             .frame(width: 160, height: 100)
             .onAppear { record(colorScheme) }
-            .onChange(of: colorScheme) { record($0) }
+            .task(id: colorScheme) { record(colorScheme) }
     }
 
     private func record(_ scheme: ColorScheme) {
@@ -35,7 +72,8 @@ private func observeAppearance<Content: View>(
     observation: AppearanceObservation,
     expected: ColorScheme,
     hostScheme: ColorScheme = .light,
-    fixture: String
+    fixture: String,
+    exercise: (@MainActor () async throws -> Void)? = nil
 ) async throws {
     _ = NSApplication.shared
     let window = NSWindow(
@@ -63,10 +101,66 @@ private func observeAppearance<Content: View>(
         }
     }
     #expect(observation.colorScheme == expected)
+    if let exercise { try await exercise() }
 }
 
 @Suite(.serialized)
 struct ThemeAppearanceTests {
+    @MainActor @Test
+    func enforcingThemeRetainsOutermostPreferencePrecedence() async throws {
+        for applyTint in [true, false] {
+            for callerFirst in [true, false] {
+                let observation = AppearanceObservation()
+                let probe = AppearanceProbe(observation: observation)
+                if callerFirst {
+                    try await observeAppearance(
+                        probe.preferredColorScheme(.light)
+                            .lumenTheme(.dark, enforceColorScheme: true, applyTint: applyTint),
+                        observation: observation, expected: .dark,
+                        fixture: "enforcing-outer-tint-\(applyTint)"
+                    )
+                } else {
+                    try await observeAppearance(
+                        probe.lumenTheme(.dark, enforceColorScheme: true, applyTint: applyTint)
+                            .preferredColorScheme(.light),
+                        observation: observation, expected: .light,
+                        fixture: "caller-outer-tint-\(applyTint)"
+                    )
+                }
+            }
+        }
+    }
+
+    @MainActor @Test
+    func changingEnforcementPreservesAnEditedChildDraft() async throws {
+        for applyTint in [true, false] {
+            let observation = AppearanceObservation()
+            let control = AppearanceControl()
+            try await observeAppearance(
+                StatefulAppearanceFixture(control: control, observation: observation, applyTint: applyTint),
+                observation: observation, expected: .light,
+                fixture: "state-retention-tint-\(applyTint)"
+            ) {
+                let edit = try #require(observation.editDraft)
+                edit("Unsaved application draft")
+                for _ in 0..<25 {
+                    try await Task.sleep(for: .milliseconds(20))
+                    if observation.draft == "Unsaved application draft" { break }
+                }
+                #expect(observation.draft == "Unsaved application draft")
+                for enforced in [true, false, true, false] {
+                    control.enforce = enforced
+                    for _ in 0..<25 {
+                        try await Task.sleep(for: .milliseconds(20))
+                        if observation.enforced == enforced { break }
+                    }
+                    #expect(observation.enforced == enforced)
+                    #expect(observation.draft == "Unsaved application draft")
+                }
+            }
+        }
+    }
+
     @MainActor @Test
     func nonEnforcingThemePreservesCallerAppearanceInBothModifierOrders() async throws {
         for expected in [ColorScheme.light, .dark] {
