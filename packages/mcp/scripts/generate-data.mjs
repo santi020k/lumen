@@ -858,6 +858,8 @@ const buildFrameworkDetails = ({
         ...new Set([
           ...element.attributes,
           ...doc.apiReference.flatMap(row => {
+            if (row.frameworks && !row.frameworks.includes('elements')) return []
+
             const names = row.attribute.split(/[,/]/u).map(attribute => attribute.trim())
 
             if (!names.some(attribute => /^on[A-Z]/u.test(attribute))) return [row.attribute]

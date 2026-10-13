@@ -126,7 +126,8 @@ describe('lumen-mcp data snapshot', () => {
     expect(lineChart?.frameworkDetails.elements.attributes).not.toContain('cursor, onCursorChange')
     expect(phoneInput?.frameworkDetails.elements.attributes).not.toContain('value / onValueChange')
     expect(phoneInput?.frameworkDetails.elements.attributes).toContain('value')
-    expect(lineChart?.frameworkDetails.elements.attributes).toContain('cursor')
+    expect(lineChart?.frameworkDetails.elements.attributes).not.toContain('cursor')
+    expect(table?.frameworkDetails.elements.attributes).not.toContain('expandedRowIds')
   })
 
   test('documents wrapped code and Astro motion runtime requirements', () => {

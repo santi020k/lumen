@@ -9,6 +9,7 @@ export interface LumenCatalogManifest {
 
 export interface LumenComponentSnapshot {
   apiReference: {
+    frameworks?: LumenFramework[]
     attribute: string
     defaultValue: string
     description: string

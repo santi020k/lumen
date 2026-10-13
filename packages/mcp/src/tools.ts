@@ -587,7 +587,7 @@ const componentDetail = (
 
   const usage = {
     ...summary,
-    apiReference: component.apiReference,
+    apiReference: component.apiReference.filter(row => !row.frameworks || row.frameworks.includes(framework)),
     dependencies: component.dependencies,
     files: component.files,
     framework: frameworkWithoutSource(selectedFramework),

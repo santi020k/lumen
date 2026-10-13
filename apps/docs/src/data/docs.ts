@@ -34,6 +34,7 @@ interface ComponentGuidance {
 }
 
 interface ComponentApiRow {
+  frameworks?: readonly ('astro' | 'elements' | 'react')[]
   attribute: string
   defaultValue: string
   description: string
@@ -767,8 +768,10 @@ const apiRow = (
   attribute: string,
   values: string,
   defaultValue: string,
-  description: string
+  description: string,
+  frameworks?: ComponentApiRow['frameworks']
 ): ComponentApiRow => ({
+  ...(frameworks ? { frameworks } : {}),
   attribute,
   defaultValue,
   description,
@@ -1653,7 +1656,7 @@ const apiReferenceByComponent = {
     apiRow('layout', '"records" | "scroll"', '"scroll"', 'Opt-in responsive record labels; rich authored Table children remain available.'),
     apiRow('sortMode', '"client" | "manual"', '"client"', 'Manual mode requests host sorting and preserves supplied server order.'),
     apiRow('column.render, renderDetails', 'React render callbacks', '-', 'Renders rich cells and stable record details without changing sort values.'),
-    apiRow('expandedRowIds, onExpandedRowIdsChange', 'controlled React expansion', '-', 'Preserves expansion by stable record ID across pages.'),
+    apiRow('expandedRowIds, onExpandedRowIdsChange', 'controlled React expansion', '-', 'Preserves expansion by stable record ID across pages.', ['react']),
     apiRow('DataTableSortControls', 'React component', '-', 'Shares controlled sort state with headers for a visible mobile sort path.'),
     apiRow(
       'columns', 'DataTableColumn[]', '[]', 'Generates table headers and maps row cells by column key when rows are provided.'
@@ -2110,7 +2113,7 @@ const apiReferenceByComponent = {
     apiRow('domain, xDomain', 'Partial<LumenChartDomain>', 'automatic', 'Sets finite axis bounds shared by all series.'),
     apiRow('interactive, syncGroup', 'boolean, string', 'false, unset', 'Enables keyboard/pointer/touch inspection, toggled legends, and exact-X cursor synchronization. Astro requires UIPrimitives.'),
     apiRow('annotations', 'LumenChartAnnotation[]', '[]', 'Places labeled X events or Y reference lines in data coordinates.'),
-    apiRow('cursor, onCursorChange', 'React cursor identity and callback', 'uncontrolled', 'React can supply the active X identity and receive cursor changes. Astro and Elements emit ui:chart-cursor-change.'),
+    apiRow('cursor, onCursorChange', 'React cursor identity and callback', 'uncontrolled', 'React can supply the active X identity and receive cursor changes. Astro and Elements emit ui:chart-cursor-change.', ['react']),
     apiRow('width, height', 'number', '640, 320', 'Sets the SVG coordinate dimensions; narrow plots retain internal scrolling.'),
     ...chartDatumApiRows,
     apiRow(

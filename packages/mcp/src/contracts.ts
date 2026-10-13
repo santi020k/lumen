@@ -44,7 +44,11 @@ const fileSchema = z.union([textSchema, z.strictObject({
 
 const webComponentSchema = z.strictObject({
   apiReference: z.array(z.strictObject({
-    attribute: textSchema, defaultValue: textSchema, description: textSchema, values: textSchema
+    attribute: textSchema,
+    defaultValue: textSchema,
+    description: textSchema,
+    values: textSchema,
+    frameworks: z.array(frameworkNameSchema).optional()
   })).optional(),
   category: textSchema,
   collections: stringsSchema,

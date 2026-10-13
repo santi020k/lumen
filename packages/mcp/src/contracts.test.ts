@@ -26,6 +26,19 @@ describe('structured usage contracts', () => {
     }
   })
 
+  test('scopes React-only API rows without removing shared Elements values', () => {
+    const react = componentOutputSchema.parse(getComponent({ framework: 'react', name: 'DataTable' }).data)
+    const elements = componentOutputSchema.parse(getComponent({ framework: 'elements', name: 'DataTable' }).data)
+    const phone = componentOutputSchema.parse(getComponent({ framework: 'elements', name: 'PhoneInput' }).data)
+
+    if (!react.found || !elements.found || !phone.found) throw new Error('Missing component fixtures')
+
+    expect(react.component.apiReference).toContainEqual(expect.objectContaining({ attribute: 'expandedRowIds, onExpandedRowIdsChange', frameworks: ['react'] }))
+    expect(elements.component.apiReference).not.toContainEqual(expect.objectContaining({ attribute: 'expandedRowIds, onExpandedRowIdsChange' }))
+    expect(phone.component.framework.attributes).toContain('value')
+    expect(componentOutputSchema.safeParse(react).success).toBe(true)
+  })
+
   test('rejects malformed nested props and success without a component', () => {
     const result = getComponent({ framework: 'react', name: 'Button' }).data
     if (!result.component) throw new Error('Missing Button fixture')
