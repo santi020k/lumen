@@ -35,8 +35,8 @@ shared tokens and explicit component contracts.
 
 **Explore:** [Quick start](#web-quick-start) · [Native apps](#native-playgrounds) · [Templates](#dashboards-and-templates) · [AI and Figma](#ai-and-design-workflows) · [Packages](#packages) · [Repository apps](#repository-apps) · [Contributing](#contributing)
 
-> **Lumen 4.1:** See the [release highlights](docs/lumen-4.1.md) for loading, form, and
-> mixed-framework improvements. Follow the [migration guide](docs/migrating-v3-to-v4.md) when
+> **Lumen 4:** See the [v4.2 highlights](docs/lumen-4.2.md) for SwiftUI appearance and agent guidance,
+> and [v4.1 highlights](docs/lumen-4.1.md) for loading and forms. Follow the [migration guide](docs/migrating-v3-to-v4.md) when
 > upgrading from v3. Package versions and store builds follow their own release schedules.
 
 ## See Lumen in action
@@ -335,7 +335,7 @@ Each app has its own setup, source map, and verification guidance:
 Lumen 4 brings consumer-driven date selection, chart readability, clipboard feedback,
 loading states, native layout improvements and a new ImageComparison primitive. Start with the
 [v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),
-and [v4.1 release highlights](docs/lumen-4.1.md). The community gallery includes published consumer
+and [v4.2 release highlights](docs/lumen-4.2.md). The community gallery includes published consumer
 screenshots; it does not imply those applications already run the current release.
 
 For existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then

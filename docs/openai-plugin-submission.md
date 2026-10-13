@@ -208,7 +208,7 @@ updates, deletes, sends, publishes, enqueues, logs user content, or changes exte
 
 The local candidate uses portable `plugin.json` and `mcp.json` manifests and generated Codex/Claude
 wrappers. Both client manifests carry version 1.1.0. The local stdio configuration pins
-`@santi020k/lumen-mcp@4.1.0`; publish that package before distributing the plugin update.
+`@santi020k/lumen-mcp@4.2.0`; publish that package before distributing the plugin update.
 
 The candidate includes three skills (build, review, migration), fourteen read-only catalog tools,
 and an optional read-only Claude reviewer. It adds installed-version compatibility checks, v4

@@ -24,7 +24,7 @@ Run `/reload-plugins` if Claude Code asks you to activate the new plugin. The bu
 namespaced as `/lumen-ui:lumen-ui`; Claude can also invoke it automatically when a request matches
 its description.
 
-Plugin 1.1.0 pins `@santi020k/lumen-mcp@4.1.0` through `npx`, matching the Codex package. This is
+Plugin 1.1.0 pins `@santi020k/lumen-mcp@4.2.0` through `npx`, matching the Codex package. This is
 an unpublished v4 candidate: the pinned server must be published before distributing this plugin.
 Call `lumen_check_compatibility` with resolved installed package versions before using catalog
 contracts. On a mismatch, use installed public types and README or a matching catalog; never upgrade

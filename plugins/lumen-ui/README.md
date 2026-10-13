@@ -25,7 +25,7 @@ the bundled stdio command. Submission copy, test cases, and the release checklis
 [`docs/openai-plugin-submission.md`](../../docs/openai-plugin-submission.md).
 
 Claude Code users can add this repository as the `lumen` marketplace and install
-`lumen-ui@lumen`. The package pins `@santi020k/lumen-mcp@4.1.0` so both clients receive the same catalog contract. Plugin 1.1.0 is a local candidate until the pinned MCP package is published and the directory update is approved. See the
+`lumen-ui@lumen`. The package pins `@santi020k/lumen-mcp@4.2.0` so both clients receive the same catalog contract. Plugin 1.1.0 is a local candidate until the pinned MCP package is published and the directory update is approved. See the
 [`Claude Code plugin guide`](../../docs/claude-code-plugin.md) for installation, validation, and
 community-marketplace submission steps.
 

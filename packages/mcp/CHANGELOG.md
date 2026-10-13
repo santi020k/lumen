@@ -1,5 +1,11 @@
 # @santi020k/lumen-mcp
 
+## 4.2.0
+
+### Patch Changes
+
+- Default AI guidance to enhanced Select and searchable Combobox controls for web products, while preserving NativeSelect for explicit platform-picker requirements.
+
 ## 4.1.0
 
 ### Patch Changes

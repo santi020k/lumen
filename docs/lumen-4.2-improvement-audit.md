@@ -92,7 +92,7 @@ The custom-select guidance source commit `8f8a68c0` is integrated on the task br
 `06cbe593`, using only that commit rather than merging its old v4.1 task history. It updates
 AGENTS, the portable skill and generated plugin, AI guidance, `llms.txt`, and the generated MCP
 snapshot. The MCP snapshot conflict was resolved by regenerating from the combined sources.
-The MCP Changeset remains a patch; this guidance alone does not establish a minor feature set.
+The guidance Changeset is a patch; the umbrella's appearance Changeset targets the requested minor.
 The independent ESLint-package helper is outside this repository and remains conditional on its
 own publication. No external repository was modified.
 
@@ -102,7 +102,8 @@ minor Changeset targets the requested 4.2 version; guidance and behavior changes
 
 ## Verification boundary
 
-- `swift test`: 144 tests passed on the local macOS host. This does not prove iOS, watchOS,
+- `swift test`: 148 tests passed on the local macOS host, including the failing-before/passing-after
+  appearance regression. This does not prove iOS, watchOS,
   visionOS, VoiceOver, or physical-device behavior.
 - The existing Swift tests cover picker label layout, native layout configuration, button content
   contrast, theme values, and consumer settings composition. They do not establish every
@@ -119,8 +120,9 @@ minor Changeset targets the requested 4.2 version; guidance and behavior changes
 
 1. Keep the selected scope to custom-select guidance, the appearance fix, and documentation.
 2. Preserve the remaining Open, Partial, and Recipe work for separately scoped changes.
-3. Use the repository version generator for Changesets, package versions, changelogs, release
-   manifests, native pins where affected, and plugin/MCP mirrors. Current versions remain v4.1/4.0.x.
+3. Version preparation used the repository generator: umbrella and MCP are 4.2.0, Swift uses
+   `v4.2.0`, and unaffected packages retain their existing versions. Changesets, changelogs,
+   manifests, Swift installation guidance, and plugin/MCP mirrors are synchronized.
 4. Run canonical validation on the final release candidate, obtain the independent pre-push review,
    and dispose of every finding. Publication still requires explicit authorization, required PR/CI
    checks and reviews, and any configured exact-revision delivery approval.

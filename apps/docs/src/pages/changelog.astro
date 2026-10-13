@@ -2,7 +2,8 @@
 
 import { Badge, Card, Icon, Link, Prose } from '@santi020k/lumen-astro'
 
-import { Content as ReleaseHighlights } from '../../../../docs/lumen-4.1.md'
+import { Content as PreviousReleaseHighlights } from '../../../../docs/lumen-4.1.md'
+import { Content as ReleaseHighlights } from '../../../../docs/lumen-4.2.md'
 import changelogSource from '../../../../packages/lumen/CHANGELOG.md?raw'
 import DocsActionLink from '../components/DocsActionLink.astro'
 import DocsPageHero from '../components/DocsPageHero.astro'
@@ -37,7 +38,7 @@ const changelogUrl = 'https://github.com/santi020k/lumen/blob/main/packages/lume
       title="What changed in Lumen."
     >
       <Fragment slot="actions">
-        <DocsActionLink href="#releases">Read the latest release</DocsActionLink>
+        <DocsActionLink href="#release-highlights">Read the latest release</DocsActionLink>
         <DocsActionLink
           href={changelogUrl}
           rel="noopener noreferrer"
@@ -70,7 +71,7 @@ const changelogUrl = 'https://github.com/santi020k/lumen/blob/main/packages/lume
       </Link>
     </div>
 
-    <Prose><ReleaseHighlights /></Prose>
+    <Prose id="release-highlights"><ReleaseHighlights /><PreviousReleaseHighlights /></Prose>
 
     <div class="changelog-releases" id="releases">
       {releases.map((release, releaseIndex) => (
