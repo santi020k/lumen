@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
 import { checkNativePlaygroundStructure } from './check-native-playground-structure.mjs'
@@ -68,4 +69,20 @@ test('rejects settings sections in a different order', () => {
     }),
     /Android playground is missing settings section value "App and platform"/u
   )
+})
+
+test('native playground headers display their adapter release coordinates', async () => {
+  const { release } = JSON.parse(await readFile(new URL('../registry/release-manifest.json', import.meta.url), 'utf8'))
+
+  const sources = [
+    ['../apps/playground-apple/Sources/LumenApplePlayground/PlaygroundCatalog.generated.swift', release.version],
+    ['../apps/playground-react-native/src/playground-catalog.generated.ts', release.npm.packages['@santi020k/lumen-react-native'].version],
+    ['../apps/playground-android/app/src/main/kotlin/com/santi020k/lumen/playground/compose/PlaygroundCatalog.generated.kt', release.compose.version]
+  ]
+
+  for (const [path, version] of sources) {
+    const source = await readFile(new URL(path, import.meta.url), 'utf8')
+
+    assert.match(source, new RegExp(`(?:lumenVersion|playgroundLumenVersion) = "${version.replaceAll('.', '\\.')}"`, 'u'), path)
+  }
 })

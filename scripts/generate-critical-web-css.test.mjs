@@ -23,6 +23,8 @@ test('critical CSS outputs stay identical, focused, and materially smaller', asy
 
   assert.match(canonical, /\.ui-data-table/u)
 
+  assert.match(canonical, /lumen-date-picker\.ui-date-picker-field\s*\{\s*display: block;/u)
+
   assert.match(canonical, /\.ui-table-wrap--records/u)
 
   assert.match(canonical, /\.ui-table__label/u)

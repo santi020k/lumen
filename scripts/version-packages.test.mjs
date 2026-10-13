@@ -22,7 +22,7 @@ test('a core and MCP release regenerates native catalogs and the plugin package 
 })
 
 test('the umbrella release keeps its Swift synchronization ahead of generated outputs', () => {
-  const steps = scripts(['@santi020k/lumen', '@santi020k/lumen-core', '@santi020k/lumen-mcp'])
+  const steps = scripts(['@santi020k/lumen', '@santi020k/lumen-mcp'])
 
   assert.ok(steps.indexOf('run sync:swift-version') < steps.indexOf('run generate:native-playground-catalogs'))
 
@@ -31,8 +31,8 @@ test('the umbrella release keeps its Swift synchronization ahead of generated ou
   assert.ok(steps.indexOf('run sync:plugin-mcp-version') < steps.indexOf('run generate:plugin-package'))
 })
 
-test('releases without core or MCP leave native catalogs and the plugin package alone', () => {
-  for (const names of [['@santi020k/lumen-react-native'], ['@santi020k/lumen-react'], ['@santi020k/lumen-react-hook-form']]) {
+test('web releases without umbrella or core leave native catalogs and the plugin package alone', () => {
+  for (const names of [['@santi020k/lumen-react'], ['@santi020k/lumen-react-hook-form']]) {
     const steps = scripts(names)
 
     assert.ok(!steps.includes('run generate:native-playground-catalogs'), names.join(','))
@@ -47,6 +47,14 @@ test('a web release that bumps MCP only through its snapshot does not repin the 
   const steps = scripts(['@santi020k/lumen-react'])
 
   assert.ok(steps.includes('--filter @santi020k/lumen-mcp run generate'))
+
+  assert.ok(!steps.includes('run sync:plugin-mcp-version'))
+})
+
+test('a React Native release refreshes its displayed version without repinning the plugin', () => {
+  const steps = scripts(['@santi020k/lumen-react-native'])
+
+  assert.ok(steps.includes('run generate:native-playground-catalogs'))
 
   assert.ok(!steps.includes('run sync:plugin-mcp-version'))
 })

@@ -515,7 +515,9 @@ Do not replace this behavior with a parallel native-dialog controller.
 
 ## DatePicker accessibility
 
-DatePicker requires authored native input, control, trigger, and popover children. Put
+DatePicker uses the positioned `ui-date-picker-field` host shell. It requires authored native input,
+control, trigger, and popover children with their `ui-date-picker__native`,
+`ui-date-picker__control`, `ui-date-picker__trigger`, and `ui-date-picker__popover` classes. Put
 `aria-invalid`, `aria-describedby`, and `aria-errormessage` on the input marked
 `data-ui-date-picker-native`. The enhancer mirrors those associations to the visible trigger and
 observes later native-input attribute changes. These host attributes are not forwarded.

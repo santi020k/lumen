@@ -588,7 +588,7 @@ const elementConfigs = {
   },
   DatePicker: {
     attributeClasses: glassAttributeClasses('ui-date-picker-field--glass'),
-    baseClassName: 'ui-input ui-date-picker',
+    baseClassName: 'ui-date-picker-field',
     defaults: { type: 'date' },
     tagName: 'lumen-date-picker'
   },

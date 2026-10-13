@@ -118,9 +118,9 @@ minor Changeset targets the requested 4.2 version; guidance and behavior changes
 
 ## Remaining release work
 
-1. Keep the selected scope to custom-select guidance, the appearance fix, and documentation.
+1. Keep the selected scope to custom-select guidance, the appearance fix, documentation, and the reviewed Elements DatePicker field-shell correction.
 2. Preserve the remaining Open, Partial, and Recipe work for separately scoped changes.
-3. Version preparation used the repository generator: umbrella and MCP are 4.2.0, Swift uses
+3. Version preparation used the repository generator: umbrella, Elements, and MCP are 4.2.0, Swift uses
    `v4.2.0`, and unaffected packages retain their existing versions. Changesets, changelogs,
    manifests, Swift installation guidance, and plugin/MCP mirrors are synchronized.
 4. Run canonical validation on the final release candidate, obtain the independent pre-push review,

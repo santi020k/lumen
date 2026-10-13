@@ -23,10 +23,17 @@ product option lists and `Combobox` for searchable choices. `NativeSelect` remai
 the product explicitly requires the browser or platform picker. Native fallbacks remain intact.
 This changes agent guidance; it does not rewrite existing application controls.
 
+### Elements DatePicker layout
+
+The DatePicker host uses the positioned field shell, matching Astro. Its authored native input,
+control, trigger, and popover keep their documented child classes; the visible trigger supplies
+input chrome without a second border or fixed-height wrapper. ARIA feedback belongs on the native
+input and is mirrored to that trigger.
+
 ### Package versions
 
-The umbrella and MCP packages use 4.2.0, and Swift consumers use repository tag `v4.2.0`.
-Astro, React, Elements, and Core remain at 4.1.0. React Native and React Hook Form remain at 4.0.1;
+The umbrella, Elements, and MCP packages use 4.2.0, and Swift consumers use repository tag `v4.2.0`.
+Astro, React, and Core remain at 4.1.0. React Native and React Hook Form remain at 4.0.1;
 tokens, brand icons, and Compose remain at 4.0.0. Install only the packages your application uses;
 do not upgrade unrelated native artifacts to an invented 4.2 version.
 

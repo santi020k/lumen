@@ -24,7 +24,7 @@
         },
         "@santi020k/lumen-elements": {
           "peerDependencies": {},
-          "version": "4.1.0"
+          "version": "4.2.0"
         },
         "@santi020k/lumen-icons-brand": {
           "peerDependencies": {},
