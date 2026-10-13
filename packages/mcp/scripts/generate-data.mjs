@@ -855,7 +855,12 @@ const buildFrameworkDetails = ({
     },
     elements: {
       attributes: [
-        ...new Set([...element.attributes, ...doc.apiReference.map(row => row.attribute)])
+        ...new Set([
+          ...element.attributes,
+          ...doc.apiReference
+            .filter(row => !/(?:^|[\s,/])on[A-Z]/u.test(row.attribute))
+            .map(row => row.attribute)
+        ])
       ],
       available: Boolean(element.source),
       behavior: frameworkBehavior({ framework: 'elements', runtimeRequired }),

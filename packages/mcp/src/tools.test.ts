@@ -103,6 +103,25 @@ describe('lumen-mcp data snapshot', () => {
     expect(otp?.frameworkDetails.elements.attributes).not.toContain('onPaste')
   })
 
+  test('keeps React callbacks out of Elements attributes across controls', () => {
+    const data = loadLumenData()
+    const listBox = resolveComponent('ListBox', data)
+    const dateRangePicker = resolveComponent('DateRangePicker', data)
+    const imageComparison = resolveComponent('ImageComparison', data)
+    const table = resolveComponent('DataTable', data)
+    const lineChart = resolveComponent('LineChart', data)
+    const phoneInput = resolveComponent('PhoneInput', data)
+
+    expect(listBox?.frameworkDetails.elements.attributes).toContain('value')
+    expect(listBox?.frameworkDetails.elements.attributes).not.toContain('onFocus, onBlur')
+    expect(dateRangePicker?.frameworkDetails.elements.attributes).not.toContain('onRangeChange')
+    expect(imageComparison?.frameworkDetails.elements.attributes).not.toContain('onValueChange')
+    expect(table?.frameworkDetails.elements.attributes).not.toContain('expandedRowIds, onExpandedRowIdsChange')
+    expect(lineChart?.frameworkDetails.elements.attributes).not.toContain('cursor, onCursorChange')
+    expect(phoneInput?.frameworkDetails.elements.attributes).not.toContain('value / onValueChange')
+    expect(listBox?.frameworkDetails.elements.attributes).toContain('selectionFollowsFocus')
+  })
+
   test('documents wrapped code and Astro motion runtime requirements', () => {
     const data = loadLumenData()
     const accordion = resolveComponent('Accordion', data)
