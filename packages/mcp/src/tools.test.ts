@@ -356,6 +356,27 @@ describe('listComponents', () => {
     expect(result.text.toLowerCase()).toContain('button')
   })
 
+  test('respects API framework scopes when filtering discovery queries', () => {
+    const snapshot = loadLumenData()
+    const table = resolveComponent('DataTable', snapshot)
+
+    if (!table) throw new Error('Missing DataTable fixture')
+    const data = {
+      ...snapshot,
+      components: [{
+        ...table,
+        apiReference: [{ attribute: 'sentinel', defaultValue: '-', description: 'Controlled option', frameworks: ['react'] satisfies 'react'[], values: 'string' }]
+      }]
+    }
+    const query = 'sentinel'
+
+    expect(listComponents({ framework: 'elements', query }, data).data.components).toHaveLength(0)
+    expect(search({ framework: 'elements', kind: 'component', query }, data).data.results).toHaveLength(0)
+    expect(listComponents({ framework: 'react', query }, data).data.components.map(component => component.name)).toEqual(['DataTable'])
+    expect(search({ framework: 'react', kind: 'component', query }, data).data.results.map(result => result.name)).toEqual(['DataTable'])
+    expect(listComponents({ query }, data).data.components).toHaveLength(1)
+  })
+
   test('filters by recipe membership', () => {
     const result = listComponents({ recipe: 'scheduler' })
 

@@ -48,7 +48,7 @@ The table records the decision for each project; it does not claim that consumer
 Public websites were opened in fresh anonymous contexts at 1440×1000 and 390×844. The selected
 captures appear on the community page; [capture provenance](showcase-captures.json) records exact
 URLs, dates, dimensions and HTTP status. They demonstrate deployed consumer designs, not adoption
-of this unpublished v4 candidate, public-store availability, or device qualification.
+of Lumen 4, public-store availability, or device qualification.
 
 No authenticated financial records, photo libraries, contraction history, driving history, live
 sensor readings, desktop window titles or guest messages were captured. KinJar is excluded from

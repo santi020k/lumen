@@ -2203,7 +2203,8 @@ const apiReferenceByComponent = {
   ],
   PhoneInput: [
     apiRow('id / input-id', 'string', 'Generated', 'Associates a visible label with the number input; Web Components use input-id.'),
-    apiRow('inputProps / inputRef', 'input attributes / React ref', '-', 'Passes native number-input attributes and exposes its ref without DOM patches.', ['astro', 'react']),
+    apiRow('inputProps', 'input attributes', '-', 'Passes native number-input attributes without DOM patches.', ['astro', 'react']),
+    apiRow('inputRef', 'React ref', '-', 'Exposes the native number-input ref.', ['react']),
     apiRow('disabled / readOnly / required', 'boolean', 'false', 'Locks both controls when disabled or read-only and supports native required validation.'),
     apiRow('errorMessage / showValidationError', 'string / boolean', '- / true', 'Shows an associated field error or metadata validation feedback.'),
     apiRow(
@@ -2231,7 +2232,10 @@ const apiReferenceByComponent = {
       'placeholder', 'string', '"Phone number"', 'Sets the placeholder for the number input.'
     ),
     apiRow(
-      'value / onValueChange', 'LumenPhoneNumber / callback', 'Uncontrolled', 'Controls formatted national input and exposes validity plus E.164 in React.'
+      'value', 'string (Astro / Elements) | LumenPhoneNumber (React)', 'Uncontrolled', 'Sets the national input value; React accepts the structured phone-number contract.'
+    ),
+    apiRow(
+      'onValueChange', '(value: LumenPhoneNumber) => void', '-', 'Receives formatting, validity, and E.164 changes in React.', ['react']
     ),
     apiRow(
       'size', '"default" | "sm" | "lg"', '"default"', 'Controls the height and font size of both controls.'
