@@ -85,7 +85,7 @@ Use the guide for your starting version:
 
 - [Lumen 1 → 2](migrating-v1-to-v2.md): source migration, removed aliases, and Swift enum additions.
 - [Lumen 2 → 3](migrating-v2-to-v3.md): coordinated package updates and Swift icon switches.
-- [Lumen 3 → 4](migrating-v3-to-v4.md): the unpublished v4 candidate, spacing changes,
+- [Lumen 3 → 4](migrating-v3-to-v4.md): spacing changes,
   component behavior, native signatures, and consumer verification.
 
 When skipping major versions, complete and verify each step in order. The `lumen migrate v2`
@@ -94,7 +94,8 @@ command migrates v1 contracts to v2; it does not automate either later upgrade.
 ### Migrating from version 3 to version 4
 
 See the [dedicated v3 → v4 migration guide](migrating-v3-to-v4.md). It includes the content-flow
-spacing map, component review checklist, native API changes, and candidate installation policy.
+spacing map, component review checklist, native API changes, and package installation guidance.
+For applications already on v4, read the [v4.1 highlights](lumen-4.1.md).
 
 ### Migrating from version 2 to version 3
 

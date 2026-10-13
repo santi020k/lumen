@@ -57,6 +57,50 @@ Use a visible label associated with the focusable input or trigger. Elements hos
 native inputs can have distinct IDs; follow the package's documented association contract. Keep
 required, disabled, read-only, and error descriptions consistent with visible copy.
 
+## ListBox accessibility and validation
+
+Enhanced Astro and Elements ListBox and React ListBox expose one accessible control: the visible
+list. The native select retains submission and validity but leaves the tab order and accessibility
+tree. Labels targeting or wrapping the select name the list; explicit `aria-labelledby` and
+`aria-label` take precedence. Label clicks and native select focus move focus to the visible list.
+Descriptions, required state, and consumer validation ARIA attributes reach that list.
+
+An unselected required single ListBox remains invalid until an option is chosen. Native validation
+marks and focuses the visible list when it is the first invalid control. Consumer `aria-invalid`
+takes precedence over Lumen-generated validity feedback. An accepted reset clears generated
+invalid feedback; a canceled reset preserves it and the current selection.
+
+React ListBox `onFocus` and `onBlur` fire once when focus enters or leaves the visible list.
+Their event target remains the `HTMLSelectElement`, including its form name, so existing form
+integrations retain their native event contract. `LumenListBoxController` validates once on blur.
+
+## DatePicker feedback and placement
+
+The visible trigger mirrors `aria-invalid`, `aria-describedby`, and `aria-errormessage` from the
+input. Astro and Elements also track later native input attribute changes. Generated native
+validation feedback clears after valid values, relevant constraint changes, or accepted resets;
+explicit application errors remain application-owned. Astro keeps an open calendar and focused
+day when only input ARIA feedback changes. React reopens on the currently selected month.
+
+Calendars use shared floating placement and enter the top layer when the Popover API is available,
+avoiding clipping inside scrolling dialogs. Older browsers retain fixed placement. Verify scroll,
+resize, Escape, and dialog dismissal in the application's supported browsers.
+
+## React InputOTP paste
+
+`InputOTP` paste reports the sanitized code once to consumer `onChange` and `onValueChange`
+callbacks, including controlled values and React Hook Form controllers. `useInputOTP` also
+notifies `onValueChange` once per input. A consumer `onPaste` handler can call `preventDefault()`
+to cancel Lumen's paste handling. Uncontrolled InputOTP retains typed digits without requiring
+an `onValueChange` callback.
+
+## Mixed web adapters
+
+React DatePicker, Calendar (including `useCalendar` roots), and InputOTP render
+`data-ui-owner="react"`. Astro and Elements enhancers skip those roots, preserving React IDs,
+label associations, and state across hydration. Retain the marker when composing custom roots;
+use each adapter's documented initialization rather than enhancing the same control twice.
+
 ## Verification coverage
 
 The web package suites cover controlled/uncontrolled values, canceled and accepted resets, pending

@@ -35,9 +35,9 @@ shared tokens and explicit component contracts.
 
 **Explore:** [Quick start](#web-quick-start) · [Native apps](#native-playgrounds) · [Templates](#dashboards-and-templates) · [AI and Figma](#ai-and-design-workflows) · [Packages](#packages) · [Repository apps](#repository-apps) · [Contributing](#contributing)
 
-> **Lumen 4 candidate:** This branch documents the upcoming major version. The npm badge reports
-> the published version; local examples and store builds may differ. See the
-> [migration and readiness notes](#lumen-4-candidate) before upgrading.
+> **Lumen 4.1:** See the [release highlights](docs/lumen-4.1.md) for loading, form, and
+> mixed-framework improvements. Follow the [migration guide](docs/migrating-v3-to-v4.md) when
+> upgrading from v3. Package versions and store builds follow their own release schedules.
 
 ## See Lumen in action
 
@@ -222,7 +222,7 @@ or choose a native gallery:
 
 See the [playground workflow](./docs/playgrounds.md) for a platform chooser, reference-app source,
 and run, capture, and distribution commands. Store builds follow their own release schedule and
-may differ from the current repository candidate.
+may differ from the current repository version.
 
 ## Appearance presets
 
@@ -330,13 +330,13 @@ Each app has its own setup, source map, and verification guidance:
 | [Motion studio](apps/motion/README.md) | Reusable product films and local video exports |
 | [Store artwork](apps/store-assets/README.md) | Canonical SVG sources for the playground app icons |
 
-## Lumen 4 candidate
+## Lumen 4
 
-The v4 release branch brings consumer-driven date selection, chart readability, clipboard feedback,
+Lumen 4 brings consumer-driven date selection, chart readability, clipboard feedback,
 loading states, native layout improvements and a new ImageComparison primitive. Start with the
 [v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),
-and [local readiness record](docs/lumen-4-readiness.md). The refreshed community gallery includes
-published consumer screenshots; it does not imply those applications already run this candidate.
+and [v4.1 release highlights](docs/lumen-4.1.md). The community gallery includes published consumer
+screenshots; it does not imply those applications already run the current release.
 
 For existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then
 [v2 → v3](docs/migrating-v2-to-v3.md) before

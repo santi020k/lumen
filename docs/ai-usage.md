@@ -3,9 +3,10 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
-This branch documents the locally prepared Lumen 4 candidate. Version 4 install examples become
-usable after publication; the public plugin and hosted MCP still describe their deployed version.
-Use the workspace packages and generated local MCP snapshot to evaluate this candidate.
+Lumen 4 is released. See the [v4.1 highlights](lumen-4.1.md) and use the
+[release manifest](../registry/release-manifest.json) for each package's version; companion packages
+do not all share the umbrella version. The public plugin and hosted MCP describe their deployed
+snapshot, which can differ from this checkout. Inspect snapshot metadata before using its contracts.
 
 ## Install in ChatGPT or Codex
 

@@ -1684,7 +1684,10 @@ const apiReferenceByComponent = {
   ],
   DatePicker: [
     apiRow(
-      'value, defaultValue', 'ISO date string (YYYY-MM-DD)', '-', 'Sets the selected date while the trigger shows a localized, human-readable value.'
+      'aria-invalid, aria-describedby, aria-errormessage', 'native input ARIA attributes', '-', 'Mirrored to the visible trigger. Astro and Elements track later attribute changes; application errors retain precedence.'
+    ),
+    apiRow(
+      'value, defaultValue', 'ISO date string (YYYY-MM-DD)', '-', 'Sets the selected date while the trigger shows a localized, human-readable value. React reopens the calendar on the selected month.'
     ),
     apiRow(
       'min, max', 'ISO date string (YYYY-MM-DD)', '-', 'Disables dates and month navigation outside the allowed range.'
@@ -1693,7 +1696,7 @@ const apiReferenceByComponent = {
       'placeholder', 'string', '"Choose a date"', 'Labels the trigger before a date is selected.'
     ),
     apiRow(
-      'UIPrimitives', 'Astro runtime', 'required', 'Enhances the form-backed input into the custom Calendar popover. React and registered Elements provide equivalent behavior.'
+      'UIPrimitives', 'Astro runtime', 'required', 'Enhances the form-backed input into a floating Calendar popover that follows scroll and resize and uses the top layer when supported. React and registered Elements provide equivalent behavior.'
     )
   ],
   Dialog: [
@@ -1945,6 +1948,9 @@ const apiReferenceByComponent = {
     )
   ],
   InputOTP: [
+    apiRow(
+      'onPaste', 'React clipboard event handler', '-', 'Calling preventDefault cancels Lumen paste handling. Otherwise sanitized paste invokes onChange and onValueChange once, including controlled and form-controller values.'
+    ),
     apiRow(
       'autocomplete', 'HTML autocomplete value', '"one-time-code"', 'Hints that password managers and mobile keyboards can offer one-time code autofill.'
     ),
@@ -2980,6 +2986,15 @@ const apiReferenceByComponent = {
     )
   ],
   ListBox: [
+    apiRow(
+      'label, aria-label, aria-labelledby', 'string', '-', 'Names the single accessible visible list. External labels targeting or wrapping the native select also name it; explicit ARIA names take precedence.'
+    ),
+    apiRow(
+      'required, aria-invalid, aria-describedby, aria-errormessage', 'native select attributes', '-', 'Forwarded to the visible list. Required single selection stays invalid until a choice is made; native validation focuses the list. Consumer aria-invalid wins.'
+    ),
+    apiRow(
+      'onFocus, onBlur', 'React select focus event handlers', '-', 'Fire once when focus enters or leaves the visible list, with the native HTMLSelectElement event target and form name.'
+    ),
     apiRow(
       'options', 'Array<string | { label, value, disabled?, section? }>', '[]', 'Defines options and optional accessible sections.'
     ),

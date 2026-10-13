@@ -1,7 +1,8 @@
 ---
 
-import { Badge, Card, Icon, Link } from '@santi020k/lumen-astro'
+import { Badge, Card, Icon, Link, Prose } from '@santi020k/lumen-astro'
 
+import { Content as ReleaseHighlights } from '../../../../docs/lumen-4.1.md'
 import changelogSource from '../../../../packages/lumen/CHANGELOG.md?raw'
 import DocsActionLink from '../components/DocsActionLink.astro'
 import DocsPageHero from '../components/DocsPageHero.astro'
@@ -59,14 +60,17 @@ const changelogUrl = 'https://github.com/santi020k/lumen/blob/main/packages/lume
 
     <div class="changelog-intro">
       <p>
-        Release notes focus on changes that affect people using Lumen. Internal dependency-only
-        updates are intentionally omitted from this view.
+        The timeline below follows the umbrella package. The release highlights include changes
+        from individual adapters and link to their complete histories. Internal dependency-only
+        updates are intentionally omitted from the timeline.
       </p>
       <Link href="https://github.com/santi020k/lumen/releases" rel="noopener noreferrer" target="_blank">
         Browse GitHub releases
         <Icon decorative name="arrow-up-right" size="sm" />
       </Link>
     </div>
+
+    <Prose><ReleaseHighlights /></Prose>
 
     <div class="changelog-releases" id="releases">
       {releases.map((release, releaseIndex) => (
