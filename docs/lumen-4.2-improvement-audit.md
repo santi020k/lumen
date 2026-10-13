@@ -16,10 +16,12 @@ policy and must not be reintroduced through this backlog.
 | Retired | 2 | Superseded by current release policy. |
 | Core present | 5 | Requested central API or fix exists; listed acceptance follow-up remains. |
 | Partial | 13 | Some requested behavior exists, with a concrete API or acceptance gap. |
-| Open | 13 | Requested contract or fix was not identified in current source. |
+| Open | 12 | Requested contract or fix was not identified in current source. |
+| Implemented locally | 1 | Appearance fix reproduced before implementation and verified in hosted macOS views; release CI remains separate. |
 | Recipe | 19 | Existing public primitives provide the foundation; the requested composed example and its acceptance evidence remain. |
 
-No proposal is marked fully complete solely because a symbol exists or a general suite passes.
+The appearance proposal was closed with a failing-before/passing-after hosted-view regression.
+No other proposal is marked fully complete solely because a symbol exists or a general suite passes.
 Recipe and Partial classifications do not claim that the precise requested consumer fixture already
 exists. External physical-device evidence is not a launch gate, but local tests must not be described
 as fresh VoiceOver/TalkBack or physical-device verification.
@@ -79,7 +81,7 @@ its detailed acceptance criteria; its historical consumer narrative is not a cur
 | [SwiftUI selection cards with directional consumer padding](../improvement.md#swiftui-selection-cards-with-directional-consumer-padding) | Recipe | Zero-padding Card is available. Document directional host insets and stable domain identities; evaluate a directional-inset API only if composition cannot satisfy the example. [Cards][shared], [rows][structured]. |
 | [SwiftUI non-action surfaces inside existing menu buttons](../improvement.md#swiftui-non-action-surfaces-inside-existing-menu-buttons) | Recipe | Use Surface inside the system-owned Button or Menu label. Add resolved-name/value fixtures, one activation owner, and before/after density checks. [Source][primitives]. |
 | [SwiftUI compact selected date tiles](../improvement.md#swiftui-compact-selected-date-tiles) | Open | No dedicated compact selection-tile contract was identified. First validate a composition with current primitives, selected traits, directional padding, and a 44-point target before adding a new primitive. [Source][selection]. |
-| [SwiftUI non-enforcing themes must preserve caller appearance](../improvement.md#swiftui-non-enforcing-themes-must-preserve-caller-appearance) | Open | Both lumenTheme branches still apply preferredColorScheme with a nil result when enforcement is false. Conditional omission and caller-before/after modifier-order rendering tests remain. [Source][theme]. |
+| SwiftUI non-enforcing themes must preserve caller appearance | Implemented locally | The modifier now omits preferredColorScheme when enforcement is disabled. ThemeAppearanceTests covers both caller modifier orders, light/dark host inheritance, explicit enforcement, and tint on/off; 146 local Swift tests pass. [Source][theme]. |
 | [SwiftUI section-header leading content and verbatim titles](../improvement.md#swiftui-section-header-leading-content-and-verbatim-titles) | Open | SectionHeader title and subtitle are LocalizedStringKey and only trailing actions are generic. Verbatim content, decorative leading slots, and intrinsic-fit action layout remain. [Source][structured]. |
 | [Compose sheet locale and form presentation](../improvement.md#compose-sheet-locale-and-form-presentation) | Partial | Sheet skips partial expansion, uses IME padding, and scrolls the complete layout for large text or short heights. Caller locale propagation and opposite-locale rendered fixtures remain to verify. [Source][compose-overlays]. |
 | [SwiftUI grouped list-card composition and selectable row semantics](../improvement.md#swiftui-grouped-list-card-composition-and-selectable-row-semantics) | Open | ListRow and Card exist separately; no dedicated grouped list-card/header/footer/selected-row contract was identified. Evaluate a public composition first, preserving native activation and context menus. [Cards][shared], [rows][structured]. |
@@ -94,9 +96,9 @@ The MCP Changeset remains a patch; this guidance alone does not establish a mino
 The independent ESLint-package helper is outside this repository and remains conditional on its
 own publication. No external repository was modified.
 
-The integration branch also contains `f9a06b40`, the v4.1 documentation follow-up. This audit does
-not silently add the remaining native API proposals to v4.2. The release scope still needs to
-identify which open contracts, if any, are intended for that version before version preparation.
+The integration branch also contains `f9a06b40`, the v4.1 documentation follow-up. The v4.2 scope now adds the confirmed non-enforcing SwiftUI appearance fix, with hosted-view
+regressions and documentation. Other native API proposals remain outside this release. The umbrella
+minor Changeset targets the requested 4.2 version; guidance and behavior changes remain compatible.
 
 ## Verification boundary
 
@@ -115,9 +117,8 @@ identify which open contracts, if any, are intended for that version before vers
 
 ## Remaining release work
 
-1. Confirm the intended v4.2 feature scope from the Open and Partial items, rather than repeating
-   already-shipped APIs or treating all Recipe entries as new components.
-2. Implement and verify only the selected contract changes, preserving stable v4 compatibility.
+1. Keep the selected scope to custom-select guidance, the appearance fix, and documentation.
+2. Preserve the remaining Open, Partial, and Recipe work for separately scoped changes.
 3. Use the repository version generator for Changesets, package versions, changelogs, release
    manifests, native pins where affected, and plugin/MCP mirrors. Current versions remain v4.1/4.0.x.
 4. Run canonical validation on the final release candidate, obtain the independent pre-push review,

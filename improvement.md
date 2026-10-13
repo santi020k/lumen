@@ -1,7 +1,7 @@
 # Active Lumen improvements
 
 Reconciled against released v4 code on October 12, 2026. The
-[v4.2 reconciliation](docs/lumen-4.2-improvement-audit.md) records all 52 original proposals,
+[v4.2 reconciliation](docs/lumen-4.2-improvement-audit.md) records all 52 original proposals, including the appearance fix completed for v4.2,
 current implementation evidence, and remaining acceptance work. The status note under each heading
 is authoritative; the older consumer observations describe the package version used at that time
 and must not be read as current v4 API limitations.
@@ -2050,33 +2050,6 @@ Acceptance criteria:
   Type, including long localized counts, light and dark appearances, and 44-point targets.
 - Verify the selected state moves after activation and clears when an external Today or reset
   action changes the bound value.
-
-## SwiftUI non-enforcing themes must preserve caller appearance
-
-**Reconciliation: Open.** Both lumenTheme branches still apply preferredColorScheme with a nil result when enforcement is false. Conditional omission and caller-before/after modifier-order rendering tests remain.
-
-PostLens's deterministic preview modifier applied `.preferredColorScheme(.dark)` before
-`.lumenTheme(..., enforceColorScheme: false)`, but the rendered app remained light. The current
-SwiftUI implementation handles `false` by applying `.preferredColorScheme(nil)`, which is still an
-environment write and can clear an explicit preference earlier in the modifier chain. Reordering
-the consumer modifiers so the explicit appearance is applied last restored real dark rendering.
-
-`enforceColorScheme: false` should mean Lumen does not write the preferred color-scheme environment
-at all. Consumers should not have to know that a non-enforcing theme can erase an app, preview,
-window, or test-level preference depending on modifier order.
-
-Acceptance criteria:
-
-- Change the SwiftUI `lumenTheme` modifier so `enforceColorScheme: false` omits
-  `.preferredColorScheme` instead of applying it with `nil`.
-- Preserve the existing enforcing behavior for light and dark Lumen themes.
-- Add modifier-order tests with the caller's `.preferredColorScheme(.dark)` both before and after a
-  non-enforcing Lumen theme; both orders must remain dark.
-- Add the inverse light test and a system-inherited test where no caller preference is present.
-- Verify theme colors still resolve from the supplied Lumen scheme without taking ownership of the
-  host app's appearance preference.
-- Document that the host controls appearance when enforcement is disabled, including previews,
-  multi-window apps, and deterministic screenshot fixtures.
 
 ## SwiftUI section-header leading content and verbatim titles
 

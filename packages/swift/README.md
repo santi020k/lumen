@@ -266,6 +266,11 @@ settings, menu-bar, widget, and preview roots. With `enforceColorScheme: false`,
 changes remain application-owned while Lumen components read the supplied palette. With
 `applyTint: false`, Lumen does not replace an application-owned native tint.
 
+As of v4.2, `enforceColorScheme: false` leaves the host's appearance preference untouched in either
+modifier order. A caller's `.preferredColorScheme(.dark)` or `.preferredColorScheme(.light)` remains
+effective whether it appears before or after `.lumenTheme(...)`; without a caller preference, the
+host appearance is inherited. The supplied Lumen palette still determines Lumen semantic colors.
+
 `LumenSurface` and `LumenCard` expose semantic padding and radius options. The larger `.xl`,
 `.size2xl`, and `.size3xl` radii support app-owned mobile cards and media surfaces without literal
 corner values.

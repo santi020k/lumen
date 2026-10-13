@@ -153,13 +153,21 @@ public extension View {
         enforceColorScheme: Bool = true,
         applyTint: Bool
     ) -> some View {
+        let themed = environment(\.lumenTheme, theme)
+        let preferredScheme = theme.resolvedPreferredColorScheme(enforceColorScheme: enforceColorScheme)
+
         if applyTint {
-            environment(\.lumenTheme, theme)
-                .tint(theme.colors.brandSolid)
-                .preferredColorScheme(theme.resolvedPreferredColorScheme(enforceColorScheme: enforceColorScheme))
+            if let preferredScheme {
+                themed.tint(theme.colors.brandSolid).preferredColorScheme(preferredScheme)
+            } else {
+                themed.tint(theme.colors.brandSolid)
+            }
         } else {
-            environment(\.lumenTheme, theme)
-                .preferredColorScheme(theme.resolvedPreferredColorScheme(enforceColorScheme: enforceColorScheme))
+            if let preferredScheme {
+                themed.preferredColorScheme(preferredScheme)
+            } else {
+                themed
+            }
         }
     }
 }
