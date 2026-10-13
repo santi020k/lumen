@@ -112,8 +112,7 @@ transparency and increased contrast. Compare captures using the same media, rout
 
 ## Release integration
 
-This addition is folded into the prepared, unpublished Lumen 4.0.0 changelogs under the coordinated
-major-release policy. Existing comparison callers keep reveal mode by default. Compose consumers
+This addition shipped in Lumen 4.0.0 under the coordinated major-release policy. Existing comparison callers keep reveal mode by default. Compose consumers
 must recompile against the new binary signature for the optional mode parameter; SwiftUI source
 callers retain their defaulted initializer. No persisted media format changes. Consumers can roll
 back to their prior package revision and keep drafts and job state in the application.

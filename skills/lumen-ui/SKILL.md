@@ -58,6 +58,10 @@ Treat Astro as the reference surface, while following the user's existing stack.
 ## Non-negotiable Rules
 
 - Prefer existing Lumen primitives over hand-built replacements.
+- For web product choices, default to `Select` for custom option lists and `Combobox` for
+  searchable choices. Use `NativeSelect` only when the product explicitly requires the native
+  platform picker. Keep Select's native fallback and verify the enhanced list, keyboard paths,
+  focus, and mobile layout with the matching framework runtime enabled.
 - Prefer Astro only for a new project with no requested framework; do not migrate an existing app
   merely because Astro is the reference implementation.
 - Load the matching package stylesheet once at the app boundary for web targets; native adapters do

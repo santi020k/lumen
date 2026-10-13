@@ -209,7 +209,7 @@ describe('@santi020k/lumen-elements primitives', () => {
     expect(classesOf(connect('lumen-scroll-area', { glass: 'subtle' })))
       .toEqual(['ui-scroll-area', 'ui-scroll-area--glass', 'ui-glass-subtle'].sort())
     expect(classesOf(connect('lumen-date-picker', { glass: 'strong' })))
-      .toEqual(['ui-date-picker', 'ui-date-picker-field--glass', 'ui-glass-strong', 'ui-input'].sort())
+      .toEqual(['ui-date-picker-field', 'ui-date-picker-field--glass', 'ui-glass-strong'].sort())
     expect(classesOf(connect('lumen-select', { glass: 'subtle' })))
       .toEqual(['ui-glass-subtle', 'ui-select-field', 'ui-select-field--glass'].sort())
   })

@@ -153,13 +153,19 @@ public extension View {
         enforceColorScheme: Bool = true,
         applyTint: Bool
     ) -> some View {
+        let preferredScheme = theme.resolvedPreferredColorScheme(enforceColorScheme: enforceColorScheme)
+        // Emit the optional window preference from a background child so changing enforcement
+        // does not move application content between conditional branches and reset its state.
+        let themed = environment(\.lumenTheme, theme).background {
+            if let preferredScheme {
+                Color.clear.preferredColorScheme(preferredScheme)
+            }
+        }
+
         if applyTint {
-            environment(\.lumenTheme, theme)
-                .tint(theme.colors.brandSolid)
-                .preferredColorScheme(theme.resolvedPreferredColorScheme(enforceColorScheme: enforceColorScheme))
+            themed.tint(theme.colors.brandSolid)
         } else {
-            environment(\.lumenTheme, theme)
-                .preferredColorScheme(theme.resolvedPreferredColorScheme(enforceColorScheme: enforceColorScheme))
+            themed
         }
     }
 }

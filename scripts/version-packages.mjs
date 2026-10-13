@@ -26,8 +26,8 @@ export const planVersionPackageCommands = names => {
 
   if (classification.mcp) commands.push(['pnpm', ['--filter', '@santi020k/lumen-mcp', 'run', 'generate']])
 
-  // Generated native catalogs embed the core version; the plugin pins the exact MCP version.
-  if (names.includes('@santi020k/lumen-core')) commands.push(['pnpm', ['run', 'generate:native-playground-catalogs']])
+  // Generated native catalogs show each adapter's release coordinate; the plugin pins MCP.
+  if (includesUmbrella || classification.native || names.includes('@santi020k/lumen-core')) commands.push(['pnpm', ['run', 'generate:native-playground-catalogs']])
 
   if (classification.mcpPackage) {
     commands.push(['pnpm', ['run', 'sync:plugin-mcp-version']], ['pnpm', ['run', 'generate:plugin-package']])

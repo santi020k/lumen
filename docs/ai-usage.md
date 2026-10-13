@@ -3,9 +3,10 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
-This branch documents the locally prepared Lumen 4 candidate. Version 4 install examples become
-usable after publication; the public plugin and hosted MCP still describe their deployed version.
-Use the workspace packages and generated local MCP snapshot to evaluate this candidate.
+Lumen 4 is released. See the [v4.2 highlights](lumen-4.2.md) and use the
+[release manifest](../registry/release-manifest.json) for each package's version; companion packages
+do not all share the umbrella version. The public plugin and hosted MCP describe their deployed
+snapshot, which can differ from this checkout. Inspect snapshot metadata before using its contracts.
 
 ## Install in ChatGPT or Codex
 
@@ -41,6 +42,25 @@ The skill and MCP server complement each other: the skill explains how to work, 
 `@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,
 source, tokens, resources, and rules.
 
+## Web selection controls
+
+Use `Select` as the default for web product option lists, and `Combobox` when the user needs to
+search the choices. `NativeSelect` remains supported for a product requirement that explicitly
+calls for the browser or platform picker. Do not remove native fallbacks from custom controls.
+
+Mount the matching framework behavior before verifying the result: Astro uses `UIPrimitives`,
+React uses the public Select behavior hook, and Elements uses registered custom elements. Check
+that opening the control shows the enhanced list, that keyboard selection and Escape work, and
+that dependent choices, forms, mobile layouts, and both appearances remain correct.
+
+For personal projects that require custom lists, enforce the choice in ESLint as well as agent
+guidance. The prepared `lumenCustomSelects()` helper in `@santi020k/eslint-config-libraries` rejects
+`NativeSelect` imports (including aliases), namespace JSX usage, raw JSX selects, and JSX native
+select custom elements without replacing the project's existing syntax restrictions. Enable it
+only after that package version is available. Keep intentional native-control exceptions scoped
+to specific files with a documented product reason. Library source and fallback implementations
+should not opt into a consumer-only policy.
+
 ## Pick the Right Package
 
 Use the framework requested by the user. Every adapter shares the same Lumen foundation.
@@ -52,7 +72,7 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
-| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `4.1.0`  | `LumenUI`                                    | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `4.2.0`  | `LumenUI`                                    | Not applicable                         |
 | Android / Compose          | Maven Central `com.santi020k:lumen-compose:4.0.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
 | Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:4.0.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |

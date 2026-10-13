@@ -26,6 +26,45 @@ describe('structured usage contracts', () => {
     }
   })
 
+  test('scopes React-only API rows without removing shared Elements values', () => {
+    const react = componentOutputSchema.parse(getComponent({ framework: 'react', name: 'DataTable' }).data)
+    const elements = componentOutputSchema.parse(getComponent({ framework: 'elements', name: 'DataTable' }).data)
+    const phone = componentOutputSchema.parse(getComponent({ framework: 'elements', name: 'PhoneInput' }).data)
+
+    if (!react.found || !elements.found || !phone.found) throw new Error('Missing component fixtures')
+
+    expect(react.component.apiReference).toContainEqual(expect.objectContaining({ attribute: 'expandedRowIds, onExpandedRowIdsChange', frameworks: ['react'] }))
+    expect(elements.component.apiReference).not.toContainEqual(expect.objectContaining({ attribute: 'expandedRowIds, onExpandedRowIdsChange' }))
+    expect(phone.component.framework.attributes).toContain('value')
+    expect(componentOutputSchema.safeParse(react).success).toBe(true)
+  })
+
+  test('applies every framework scope to both text and structured usage responses', () => {
+    const data = loadLumenData()
+    const scopedComponents = data.components.filter(component => component.apiReference.some(row => row.frameworks))
+
+    expect(scopedComponents.length).toBeGreaterThan(5)
+    for (const component of scopedComponents) {
+      for (const framework of ['astro', 'react', 'elements'] as const) {
+        for (const detail of ['usage', 'source'] as const) {
+          const result = getComponent({ detail, framework, name: component.name }, data)
+          const parsed = componentOutputSchema.parse(result.data)
+
+          if (!parsed.found) throw new Error(`Missing ${component.name}/${framework}`)
+          for (const row of component.apiReference.filter(row => row.frameworks)) {
+            const attributes = parsed.component.apiReference?.map(api => api.attribute)
+            const textRow = `- \`${row.attribute}\``
+
+            const supported = row.frameworks?.includes(framework)
+
+            expect(attributes?.includes(row.attribute)).toBe(supported)
+            expect(result.text.includes(textRow)).toBe(supported)
+          }
+        }
+      }
+    }
+  })
+
   test('rejects malformed nested props and success without a component', () => {
     const result = getComponent({ framework: 'react', name: 'Button' }).data
     if (!result.component) throw new Error('Missing Button fixture')

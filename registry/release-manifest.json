@@ -24,7 +24,7 @@
         },
         "@santi020k/lumen-elements": {
           "peerDependencies": {},
-          "version": "4.1.0"
+          "version": "4.2.0"
         },
         "@santi020k/lumen-icons-brand": {
           "peerDependencies": {},
@@ -34,11 +34,11 @@
           "peerDependencies": {
             "react": ">=19"
           },
-          "version": "4.1.0"
+          "version": "4.2.0"
         },
         "@santi020k/lumen-mcp": {
           "peerDependencies": {},
-          "version": "4.1.0"
+          "version": "4.2.0"
         },
         "@santi020k/lumen-react": {
           "peerDependencies": {
@@ -73,9 +73,9 @@
     "swift": {
       "package": "https://github.com/santi020k/lumen.git",
       "revision": null,
-      "tag": "v4.1.0"
+      "tag": "v4.2.0"
     },
-    "version": "4.1.0"
+    "version": "4.2.0"
   },
   "migration": {
     "codemod": null,

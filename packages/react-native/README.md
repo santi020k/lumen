@@ -55,9 +55,9 @@
 
 </details>
 
-> **Lumen 4 candidate:** This branch prepares the next major adapter contract. See the
-> [migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
-> publication, physical-device accessibility, or consumer-soak qualification.
+> **Lumen 4:** Read the
+> [migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) before upgrading.
+> Use the adapter version in the release manifest; playground store delivery has separate gates.
 
 ## Install
 

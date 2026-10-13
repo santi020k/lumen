@@ -96,6 +96,70 @@ describe('lumen-mcp data snapshot', () => {
     expect(comparison?.files).toContain('packages/astro/components/ImageComparison.astro')
   })
 
+  test('keeps React OTP paste handlers out of Elements attributes', () => {
+    const otp = resolveComponent('InputOTP', loadLumenData())
+
+    expect(otp?.frameworkDetails.elements.available).toBe(true)
+    expect(otp?.frameworkDetails.elements.attributes).not.toContain('onPaste')
+  })
+
+  test('keeps React callbacks out of Elements attributes across controls', () => {
+    const data = loadLumenData()
+    const listBox = resolveComponent('ListBox', data)
+    const dateRangePicker = resolveComponent('DateRangePicker', data)
+    const imageComparison = resolveComponent('ImageComparison', data)
+
+    expect(listBox?.frameworkDetails.elements.attributes).toContain('multiple')
+    expect(listBox?.frameworkDetails.elements.attributes).not.toContain('onFocus, onBlur')
+    expect(dateRangePicker?.frameworkDetails.elements.attributes).not.toContain('onRangeChange')
+    expect(imageComparison?.frameworkDetails.elements.attributes).not.toContain('onValueChange')
+    expect(listBox?.frameworkDetails.elements.attributes).toContain('empty-message, data-selection-follows-focus')
+  })
+
+  test('documents DatePicker ARIA on its authored native child instead of the Elements host', () => {
+    const picker = resolveComponent('DatePicker', loadLumenData())
+    const attributes = picker?.frameworkDetails.elements.attributes?.flatMap(attribute => attribute.split(',').map(name => name.trim()))
+    const result = getComponent({ framework: 'elements', name: 'DatePicker' })
+
+    for (const unsupported of ['aria-invalid', 'aria-describedby', 'aria-errormessage']) {
+      expect(attributes).not.toContain(unsupported)
+    }
+    expect(picker?.frameworkDetails.elements.behavior?.setup).toContain('input marked data-ui-date-picker-native')
+    expect(result.text).toContain('<input class="ui-date-picker ui-date-picker__native" data-ui-date-picker-native')
+    for (const part of ['control', 'trigger', 'popover']) {
+      expect(result.text).toContain(`ui-date-picker__${part}`)
+    }
+    expect(result.text).toContain('type="button" aria-controls="launch-date-popover"')
+    expect(result.text).toContain('id="launch-date-popover" role="dialog"')
+    expect(result.text).toContain('aria-describedby="launch-date-hint"')
+    expect(result.text).not.toContain('- `aria-invalid, aria-describedby, aria-errormessage`')
+  })
+
+  test('advertises only supported Elements ListBox host naming and validation attributes', () => {
+    const list = resolveComponent('ListBox', loadLumenData())
+    const attributes = list?.frameworkDetails.elements.attributes?.flatMap(attribute => attribute.split(',').map(name => name.trim()))
+
+    expect(attributes).toContain('aria-label')
+    expect(attributes).toContain('required')
+    for (const unsupported of ['label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage', 'aria-invalid', 'options', 'value', 'emptyMessage', 'selectionFollowsFocus']) {
+      expect(attributes).not.toContain(unsupported)
+    }
+  })
+
+  test('preserves Elements values from mixed value and React callback rows', () => {
+    const data = loadLumenData()
+    const table = resolveComponent('DataTable', data)
+    const lineChart = resolveComponent('LineChart', data)
+    const phoneInput = resolveComponent('PhoneInput', data)
+
+    expect(table?.frameworkDetails.elements.attributes).not.toContain('expandedRowIds, onExpandedRowIdsChange')
+    expect(lineChart?.frameworkDetails.elements.attributes).not.toContain('cursor, onCursorChange')
+    expect(phoneInput?.frameworkDetails.elements.attributes).not.toContain('value / onValueChange')
+    expect(phoneInput?.frameworkDetails.elements.attributes).toContain('value')
+    expect(lineChart?.frameworkDetails.elements.attributes).not.toContain('cursor')
+    expect(table?.frameworkDetails.elements.attributes).not.toContain('expandedRowIds')
+  })
+
   test('documents wrapped code and Astro motion runtime requirements', () => {
     const data = loadLumenData()
     const accordion = resolveComponent('Accordion', data)
@@ -320,6 +384,27 @@ describe('listComponents', () => {
     const result = listComponents({ query: 'button' })
 
     expect(result.text.toLowerCase()).toContain('button')
+  })
+
+  test('respects API framework scopes when filtering discovery queries', () => {
+    const snapshot = loadLumenData()
+    const table = resolveComponent('DataTable', snapshot)
+
+    if (!table) throw new Error('Missing DataTable fixture')
+    const data = {
+      ...snapshot,
+      components: [{
+        ...table,
+        apiReference: [{ attribute: 'sentinel', defaultValue: '-', description: 'Controlled option', frameworks: ['react'] satisfies 'react'[], values: 'string' }]
+      }]
+    }
+    const query = 'sentinel'
+
+    expect(listComponents({ framework: 'elements', query }, data).data.components).toHaveLength(0)
+    expect(search({ framework: 'elements', kind: 'component', query }, data).data.results).toHaveLength(0)
+    expect(listComponents({ framework: 'react', query }, data).data.components.map(component => component.name)).toEqual(['DataTable'])
+    expect(search({ framework: 'react', kind: 'component', query }, data).data.results.map(result => result.name)).toEqual(['DataTable'])
+    expect(listComponents({ query }, data).data.components).toHaveLength(1)
   })
 
   test('filters by recipe membership', () => {

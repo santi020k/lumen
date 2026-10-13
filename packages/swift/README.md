@@ -48,9 +48,9 @@
 
 </details>
 
-> **Lumen 4 candidate:** This branch prepares the next major adapter contract. See the
-> [migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
-> publication, physical-device accessibility, or consumer-soak qualification.
+> **Lumen 4:** Read the
+> [migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) before upgrading.
+> Swift Package Manager follows the repository release tag; playground store delivery has separate gates.
 
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
 design tokens as the web, React Native, and Compose adapters.
@@ -73,8 +73,8 @@ by the widget target.
 ## Install
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and use **Exact Version** `4.1.0` for a reproducible production
-build. Choose **Up to Next Major Version** from `4.1.0` when the application intentionally accepts
+`https://github.com/santi020k/lumen`, and use **Exact Version** `4.2.0` for a reproducible production
+build. Choose **Up to Next Major Version** from `4.2.0` when the application intentionally accepts
 compatible Lumen updates. Reserve the `main` branch for local evaluation. Add the `LumenUI` product
 to your application target. The package manifest lives at the repository root, so the Git
 dependency works directly; no npm package, CocoaPod, or copied source is required.
@@ -85,7 +85,7 @@ For a project managed with `Package.swift`, add the package and product explicit
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "4.1.0"
+        exact: "4.2.0"
     )
 ],
 targets: [
@@ -98,11 +98,11 @@ targets: [
 ]
 ```
 
-Use `.package(url: "https://github.com/santi020k/lumen", from: "4.1.0")` instead when the
+Use `.package(url: "https://github.com/santi020k/lumen", from: "4.2.0")` instead when the
 application's update policy accepts later compatible releases. Commit `Package.resolved` for
-applications, generated Xcode projects, and CI builds, then verify its `version` is `4.1.0` and its
-`revision` matches the `v4.1.0` tag before shipping. XcodeGen projects use the same policy in
-`project.yml` with `version: 4.1.0` for compatible updates or `exactVersion: 4.1.0` for an exact
+applications, generated Xcode projects, and CI builds, then verify its `version` is `4.2.0` and its
+`revision` matches the `v4.2.0` tag before shipping. XcodeGen projects use the same policy in
+`project.yml` with `version: 4.2.0` for compatible updates or `exactVersion: 4.2.0` for an exact
 pin. Deterministic project generators should declare the requirement in their checked-in source
 and regenerate the project instead of patching the generated `.xcodeproj`.
 
@@ -265,6 +265,11 @@ Apply the modifier to every independent scene that presents Lumen content, inclu
 settings, menu-bar, widget, and preview roots. With `enforceColorScheme: false`, system appearance
 changes remain application-owned while Lumen components read the supplied palette. With
 `applyTint: false`, Lumen does not replace an application-owned native tint.
+
+As of v4.2, `enforceColorScheme: false` leaves the host's appearance preference untouched in either
+modifier order. A caller's `.preferredColorScheme(.dark)` or `.preferredColorScheme(.light)` remains
+effective whether it appears before or after `.lumenTheme(...)`; without a caller preference, the
+host appearance is inherited. The supplied Lumen palette still determines Lumen semantic colors.
 
 `LumenSurface` and `LumenCard` expose semantic padding and radius options. The larger `.xl`,
 `.size2xl`, and `.size3xl` radii support app-owned mobile cards and media surfaces without literal

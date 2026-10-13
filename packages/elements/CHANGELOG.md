@@ -1,5 +1,13 @@
 # @santi020k/lumen-elements
 
+## 4.2.0
+
+### Patch Changes
+
+- Style the DatePicker custom-element host as a positioned field shell so its authored trigger supplies the input chrome without a duplicate border, padding, or fixed height.
+- Updated dependencies [[`089f823`](https://github.com/santi020k/lumen/commit/089f82307f288818e7110cfda6741e4d612472ef)]:
+  - @santi020k/lumen@4.2.0
+
 ## 4.1.0
 
 ### Minor Changes

@@ -242,6 +242,11 @@ const frameworkSearchText = (
   .flatMap(frameworkDetailsSearchText)
   .join(' ')
 
+const apiReferenceForFramework = (
+  component: LumenComponentSnapshot,
+  framework?: LumenFramework
+) => component.apiReference.filter(row => !framework || !row.frameworks || row.frameworks.includes(framework))
+
 const componentSearchText = (
   component: LumenComponentSnapshot,
   framework?: LumenFramework
@@ -256,7 +261,7 @@ const componentSearchText = (
   component.dependencies.join(' '),
   component.guidance?.when ?? '',
   component.guidance?.distinction ?? '',
-  component.apiReference
+  apiReferenceForFramework(component, framework)
     .map(row => `${row.attribute} ${row.values} ${row.description}`)
     .join(' '),
   frameworkSearchText(component, framework)
@@ -784,12 +789,17 @@ export const getComponent = (
     }
   }
 
+  const scopedComponent = {
+    ...component,
+    apiReference: apiReferenceForFramework(component, framework)
+  }
+
   return {
     data: {
-      component: componentDetail(component, framework, detail),
+      component: componentDetail(scopedComponent, framework, detail),
       found: true
     },
-    text: formatComponentUsage(component, framework, detail)
+    text: formatComponentUsage(scopedComponent, framework, detail)
   }
 }
 

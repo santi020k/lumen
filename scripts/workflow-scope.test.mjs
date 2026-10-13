@@ -10,6 +10,60 @@ import test from 'node:test'
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const readRepositoryFile = path => readFile(resolve(repositoryRoot, path), 'utf8')
 
+test('docs build hashes change when imported repository Markdown changes', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'lumen-docs-build-inputs-'))
+
+  try {
+    await mkdir(join(directory, 'apps/docs'), { recursive: true })
+
+    await mkdir(join(directory, 'docs'))
+
+    await writeFile(join(directory, 'package.json'), JSON.stringify({
+      name: 'docs-cache-fixture', private: true,
+      packageManager: JSON.parse(await readRepositoryFile('package.json')).packageManager
+    }))
+
+    await writeFile(join(directory, 'pnpm-workspace.yaml'), "packages:\n  - apps/*\n")
+
+    await writeFile(join(directory, 'pnpm-lock.yaml'), "lockfileVersion: '9.0'\nimporters:\n  .: {}\n  apps/docs: {}\n")
+
+    await writeFile(join(directory, 'turbo.json'), await readRepositoryFile('turbo.json'))
+
+    await writeFile(join(directory, 'apps/docs/turbo.json'), await readRepositoryFile('apps/docs/turbo.json'))
+
+    await writeFile(join(directory, 'apps/docs/package.json'), JSON.stringify({
+      name: '@santi020k/lumen-docs', version: '0.0.0', scripts: { build: 'node -e ""' }
+    }))
+
+    const markdown = join(directory, 'docs/release.md')
+
+    await writeFile(markdown, '# Release\nBefore\n')
+
+    const buildHash = () => {
+      const result = spawnSync(process.execPath, [
+        resolve(repositoryRoot, 'node_modules/turbo/bin/turbo'),
+        'run', 'build', '--filter=@santi020k/lumen-docs', '--dry=json', '--no-daemon'
+      ], { cwd: directory, encoding: 'utf8', timeout: 30_000 })
+
+      assert.equal(result.status, 0, result.stderr)
+
+      const task = JSON.parse(result.stdout).tasks.find(item => item.taskId === '@santi020k/lumen-docs#build')
+
+      assert.ok(task, 'The fixture must resolve the docs build task')
+
+      return task.hash
+    }
+
+    const before = buildHash()
+
+    await writeFile(markdown, '# Release\nAfter\n')
+
+    assert.notEqual(buildHash(), before, 'Imported Markdown must invalidate cached HTML')
+  } finally {
+    await rm(directory, { recursive: true, force: true })
+  }
+})
+
 const [ci, canary, release, docsManifestSource, versionPackages] = await Promise.all([
   readRepositoryFile('.github/workflows/ci.yml'),
   readRepositoryFile('.github/workflows/release-canary.yml'),

@@ -26,6 +26,7 @@ const criticalSelectors = [
   '.ui-checkbox',
   '.ui-combobox',
   '.ui-data-table',
+  'lumen-date-picker.ui-date-picker-field',
   '.ui-dialog',
   '.ui-field',
   '.ui-input',

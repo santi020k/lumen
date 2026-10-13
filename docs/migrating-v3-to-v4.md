@@ -1,9 +1,9 @@
 # Migrating from Lumen 3 to Lumen 4
 
-This guide targets the local `release/v4.0.0` candidate, using `v3.0.1` as the Swift API baseline.
-V4 is unpublished and its contract is still draft. These instructions describe the checked-in
-candidate, not a completed production release. Review the [readiness record](lumen-4-readiness.md)
-and [v4 contract](../registry/lumen-4-contract.json) before choosing a release revision.
+This guide covers the released Lumen 4 contracts, using `v3.0.1` as the Swift API baseline.
+Use the [release manifest](../registry/release-manifest.json) for current package versions and
+the [v4 contract](../registry/lumen-4-contract.json) for the original major-version migration.
+Applications already on v4 can start with the [v4.2 highlights](lumen-4.2.md).
 
 ## Upgrade the dependencies
 
@@ -11,13 +11,12 @@ and [v4 contract](../registry/lumen-4-contract.json) before choosing a release r
 2. Update only the adapters and companion packages your application uses. Do not install every
    adapter. Keep their versions aligned with the [release manifest](../registry/release-manifest.json),
    including direct core, token, icon, template, form-integration, and MCP dependencies when used.
-3. Before publication, evaluate built local packages or tarballs from one reviewed candidate
-   revision. Native consumers must use that same revision or locally built artifacts. Do not
-   assume `@4`, Swift tag `v4.0.0`, or Maven artifacts exist because manifests say `4.0.0`.
-4. After v4 publication, update your existing dependencies to the published v4 versions, resolve
-   their peer requirements, commit lock files, and rebuild the actual consumer.
+3. Use published packages and release tags for production adoption. When evaluating unreleased
+   changes, use local packages or tarballs from one reviewed revision instead.
+4. Resolve peer requirements, commit lock files, and rebuild the actual consumer. Use the
+   manifest's individual native pins rather than assuming every artifact has the web version.
 
-For example, **only after publication**, an Astro application's adapter update is:
+For example, an Astro application's adapter update is:
 
 ```bash
 pnpm add @santi020k/lumen-astro@4
@@ -130,8 +129,8 @@ Card no longer clips overflow. Move media clipping into AspectRatio, keeping Ima
 inside that rounded frame. Verify custom menus and focus rings rather than restoring card-wide
 clipping. Wrapping Stack actions now allow long labels to wrap inside their available width.
 
-Before publication, rollback is reverting this candidate commit or continuing to use released v3
-packages. After publication, use a new version for corrections; do not move published tags.
+For rollback, restore the application's prior dependency pins and source changes, then rebuild.
+Published library corrections require a new version; do not move published tags.
 
 ## Before/after consumer examples
 
@@ -254,8 +253,8 @@ by these source/API migrations.
 ## Component behavior checklist
 
 Lumen 4 consolidates fixes from twenty consumer audits. Upgrade the adapter and its companion
-packages together, import the matching stylesheet, and rebuild native consumers. The v4 branch
-is a local release candidate; published projects in the showcase still use their deployed versions.
+packages together, import the matching stylesheet, and rebuild native consumers. Published
+projects in the showcase still use their own deployed versions.
 
 | Surface | Required review |
 | --- | --- |
@@ -383,9 +382,8 @@ existing root imports remain supported. Adopt it only when its exported catalog 
 
 If validation fails, restore the prior application commit and its manifests/lock files, reinstall
 v3 dependencies, and rebuild all targets. Keep any application data changes separate from this UI
-upgrade so rollback does not require reversing persisted data. Before publication, candidate
-corrections can be ordinary commits; after publication, corrections require a new version and
-must not replace a published tag.
+upgrade so rollback does not require reversing persisted data. Published library corrections
+require a new version and must not replace a published tag.
 
 For a starting v2 application, first complete [v2 → v3](migrating-v2-to-v3.md).
 

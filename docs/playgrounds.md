@@ -1,9 +1,8 @@
 # Native playgrounds
 
 
-This branch prepares Lumen 4. Version 4 dependency pins below require the future published release;
-use the local workspace adapters for candidate evaluation. Existing store builds remain separate
-from this revision's validation.
+The playgrounds use the local workspace adapters. Published adapter versions and playground store
+builds have independent release workflows; check the release manifest and store listing for each.
 
 Lumen includes a native playground for each adapter. Use these apps to evaluate the real components,
 capture documentation screenshots, and prepare distributable marketing builds. The React Native,
@@ -48,10 +47,10 @@ With the React Native web preview running, verify keyboard selection, retained i
 layouts with `pnpm --filter @santi020k/lumen-playground-react-native test:appearance:web`.
 Set `LUMEN_REACT_NATIVE_URL` when the preview uses a different port.
 
-## Lumen 4 candidate
+## Lumen 4 workspace
 
 The repository playground consumes the current local Lumen 4 adapter; it does not depend on
-a published v4 artifact. The Components header displays the adapter release version generated
+a published adapter artifact. The Components header displays the adapter release version generated
 from the workspace manifest. Search accepts labels and component IDs (for example,
 `date-range-field` or `DateRangeField`), ignores surrounding whitespace, and supports
 case-insensitive partial matches. Reset filters returns to the complete catalog. Deterministic
@@ -208,7 +207,7 @@ production build.
 
 1. In Xcode, choose File → Add Package Dependencies.
 2. Paste `https://github.com/santi020k/lumen` into the search field.
-3. Choose Exact Version and enter `4.1.0`. Use Up to Next Major Version from `4.1.0` only when the
+3. Choose Exact Version and enter `4.2.0`. Use Up to Next Major Version from `4.2.0` only when the
    application intentionally accepts compatible updates; reserve `main` for local evaluation.
 4. Select the `LumenUI` product and add it to your application target.
 5. Add `import LumenUI` to the SwiftUI view that uses Lumen components.

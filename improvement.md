@@ -1,51 +1,35 @@
 # Active Lumen improvements
 
-This file contains only improvements that remain actionable after the August 2026 web and native
-adoption work. Completed items are intentionally removed instead of accumulating progress logs;
-their implementation, tests, Changesets, and Git history are the durable record.
+Reconciled against released v4 code on October 12, 2026. The
+[v4.2 reconciliation](docs/lumen-4.2-improvement-audit.md) records all 52 original proposals, including the appearance fix completed for v4.2,
+current implementation evidence, and remaining acceptance work. The status note under each heading
+is authoritative; the older consumer observations describe the package version used at that time
+and must not be read as current v4 API limitations.
+
+A shipped core API does not close all associated examples, interaction checks, or layout criteria.
+Keep those remaining requirements here until verified. Items labeled Recipe require composition and
+acceptance work, not automatically a new primitive. Retired requirements are retained only as short
+pointers to the current release policy. This backlog does not make every proposal a v4.2 launch gate.
 
 ## Maintained consumer canaries
 
-The in-repository release-candidate workflow verifies packed npm consumers, the Swift package and
-playground, Compose publications, and the Android playground. Repository-specific dispatch workflows
-and successful local candidate runs now exist for the maintained Astro, React, SwiftUI, and Compose
-consumers recorded in [`docs/native-consumer-validation.md`](docs/native-consumer-validation.md).
-The remaining work is external adoption and immutable remote evidence:
+**Reconciliation: Retired.** External real-consumer completion is not a release gate. Preserve the historical evidence; retain configured package-consumer canaries.
 
-- review, commit, and push each prepared workflow to its owning repository's default branch;
-- dispatch an immutable release-manifest URL and record the successful remote run for each adapter;
-  and
-- make the canaries required for a stable release only after each consumer owner confirms the
-  workflow is reliable.
-
-Acceptance criteria:
-
-- At least one maintained Astro, React, SwiftUI, and Compose consumer runs against a candidate.
-- The resolved adapter, umbrella, core, Swift, and Compose versions match the candidate manifest.
-- A tool crash is reported with its exact command and diagnostic without being mislabeled as a
-  Lumen product regression.
-
-The local workflow files are intentionally uncommitted because committing and pushing external
-repository changes requires explicit authorization. This item cannot be removed until those remote
-runs exist.
+See the
+[current release policy](docs/native-release-runbook.md#current-release-policy) and preserved
+historical records. No new external repository or device action is required by this item.
 
 ## Physical-device accessibility evidence
 
-Automated semantics, unit tests, simulator builds, and accessibility-test compilation are present.
-The remaining evidence requires representative hardware and human judgment. Continue recording
-results in [`docs/native-device-validation.md`](docs/native-device-validation.md), including:
+**Reconciliation: Retired.** The physical-device matrix is historical and is not a release gate. Automated accessibility checks remain required where configured.
 
-- VoiceOver, Dynamic Type, Reduce Motion, and Increase Contrast on iOS, macOS, and watchOS;
-- TalkBack, font/display scaling, reduced animation, and high contrast on Android;
-- TalkBack, rotary input, font scaling, Always On behavior, and round-screen clipping on Wear OS;
-- keyboard, switch, touch-target, focus-order, announcement, and live-region behavior where the
-  platform supports them.
-
-Every result must identify the device, OS, revision, tester, exercised surface, outcome, and an
-issue or recording when appropriate. Simulator or accessibility-tree output must not be recorded
-as a completed physical-device pass.
+See the
+[current release policy](docs/native-release-runbook.md#current-release-policy) and preserved
+historical records. No new external repository or device action is required by this item.
 
 ## SwiftUI semantic button roles
+
+**Reconciliation: Core present.** Button and IconButton accept ButtonRole and pass it to SwiftUI; the README explains role versus intent and system containers. Remaining acceptance work is role-specific interaction coverage and the complete native-treatment recipe.
 
 PostLens migrated ordinary primary, secondary, and quiet content actions to `LumenButton`, and it
 applied the public `LumenButtonStyle` to `PhotosPicker` actions in onboarding, the Photos permission
@@ -81,6 +65,8 @@ Acceptance criteria:
   confirmation-dialog actions.
 
 ## SwiftUI compact button hit targets
+
+**Reconciliation: Partial.** Regular small IconButton metrics are 44 points, but small text Button metrics remain 36 points. Expanded semantic-frame, adjacent-target, selected-action, and adaptive composition acceptance remain.
 
 PostLens migrated Publishing Studio's primary creation, recovery, and restoration actions to
 `LumenButton` while retaining the adjacent native destructive action and the system-owned sheet
@@ -269,6 +255,8 @@ Acceptance criteria:
 
 ## SwiftUI picker rich label and current-value content
 
+**Reconciliation: Core present.** Picker has rich label and currentValueLabel initializers and a README example. PickerLabelTests covers selected-label layout; the full opposite-locale and interaction matrix is not established by that test.
+
 PostLens evaluated the released SwiftUI `LumenPicker` 2.0.0 contract for two app-owned settings:
 the app Accent row presents a branded swatch beside the current accent name, and the publishing
 reminder row presents a clock icon beside `Notify me`. The released initializer accepts only a
@@ -293,6 +281,8 @@ Acceptance criteria:
   from APIs present only on Lumen's development branch.
 
 ## SwiftUI date-field verbatim and custom-label content
+
+**Reconciliation: Open.** DateField still stores LocalizedStringKey title, description, and error. LumenTextContent and custom-label overloads remain to implement and test.
 
 PostLens migrated both its create and edit posting-plan forms to the released SwiftUI
 `LumenDateField` 2.0.0 contract with date-and-time components and a lower bound at the current
@@ -332,6 +322,8 @@ Acceptance criteria:
 
 ## SwiftUI slider gesture and composition contract
 
+**Reconciliation: Partial.** onEditingChanged and showsLabel exist and are documented. The binding and bounds are still Double; generic floating-point support and the complete gesture/undo example remain.
+
 PostLens evaluated every remaining native editor slider against released `LumenSlider` 2.0.0. Its
 complete labeled stack works for a conventional settings field, but the photo editor needs lower-
 level composition: look intensity and manual adjustments use `onEditingChanged` to group a drag
@@ -360,6 +352,8 @@ Acceptance criteria:
   state, undo grouping, and regular versus accessibility text sizes.
 
 ## SwiftUI icon-button loading state
+
+**Reconciliation: Core present.** IconButton has loading, localized loadingAccessibilityValue, foreground-tinted progress, and disabled activation. The README documents the transition; the requested compact native interaction and semantic-frame fixtures remain.
 
 PostLens has an icon-only Apple Intelligence action that must remain visible, disabled, and
 animated while an on-device caption request is running. `LumenButton` owns a loading state, but
@@ -401,6 +395,8 @@ Acceptance criteria:
 
 ## SwiftUI button loading accessibility content
 
+**Reconciliation: Partial.** Button accepts LumenTextContent loadingAccessibilityValue and retains label geometry. Loading still couples disabling and the built-in spinner; independently configurable busy presentation and rendered locale assertions remain.
+
 PostLens migrated the shared Save and Share dock used by its photo editor, Carousel Builder,
 Layout Builder, Publishing Set, and publishing plan to `LumenButton`. The component
 unconditionally sets its loading accessibility value to the `LocalizedStringKey` literal
@@ -435,6 +431,8 @@ Acceptance criteria:
 
 ## SwiftUI accent-derived theme bridge
 
+**Reconciliation: Partial.** Palette overriding exposes brand, brandSolid, brandSoft, onBrand, and accent independently. A coherent derived-accent recipe with contrast verification remains.
+
 PostLens initially overrode Lumen's `brand`, `brandSoft`, and `accent` colors with its selected app
 accent, but `LumenButton(intent: .primary)` paints with the separate `brandSolid` and `onBrand`
 tokens. The first migrated controls therefore remained Lumen's default blue while the surrounding
@@ -454,6 +452,8 @@ Acceptance criteria:
   dark, disabled, pressed, and loading states.
 
 ## SwiftUI structured-state verbatim content
+
+**Reconciliation: Open.** EmptyState and ErrorState still store localized-key content. Verbatim title/description/reference overloads and their fixtures remain; generic action slots already exist.
 
 PostLens uses an in-app English, Spanish, or System language setting and resolves workflow copy
 before constructing its shared empty and unavailable states. `LumenEmptyState` and
@@ -509,6 +509,8 @@ Acceptance criteria:
 
 ## SwiftUI semantic icon tones in status labels
 
+**Reconciliation: Open.** Icon accepts explicit Color and inherits button content color, but has no public semantic-tone initializer. Tone resolution and combined noninteractive status examples remain.
+
 PostLens's shared inline status label already composed `LumenIcon` with explicit wording and kept
 the complete label as one accessibility element, but its icon colors bypassed Lumen with raw SwiftUI
 green, orange, red, and secondary styles. Routing success, warning, destructive, and neutral states
@@ -543,6 +545,8 @@ Acceptance criteria:
 
 ## SwiftUI icon-button verbatim accessibility labels
 
+**Reconciliation: Open.** IconButton accessible labels remain LocalizedStringKey even though its loading value accepts LumenTextContent. Both named-icon and SF Symbol label overloads remain.
+
 Between Contractions localizes its macOS interface with an in-app English/Spanish toggle that is
 independent of the system locale. `LumenButton` and `LumenBadge` accept `LumenTextContent`, so the
 consumer can pass already-resolved copy with `.verbatim(...)`. `LumenIconButton` accepts only
@@ -561,6 +565,8 @@ Acceptance criteria:
 - Verify an English system with Spanish selected in-app, then the inverse.
 
 ## SwiftUI selection-control rich option content
+
+**Reconciliation: Partial.** Typed selection and accessibility state exist, but SelectionOption labels are strings. Rich option labels/values and adaptive layouts need an intentional contract; the many nested-card recipes need separate acceptance.
 
 PostLens groups manual photo adjustments into Light, Color, and Detail & Focus. Each segment pairs
 an SF Symbol with its localized title, shows a live count only when that group contains changes,
@@ -703,6 +709,8 @@ Acceptance criteria:
 
 ## SwiftUI badge accessory and verbatim content
 
+**Reconciliation: Partial.** Badge supports LumenTextContent; Chip still takes LocalizedStringKey and Badge has no leading-content slot. Accessory/chip APIs and parent-owned count semantics examples remain.
+
 Between Contractions migrated simple macOS ready, active, count, and connection-state metadata to
 `LumenBadge`. Two compact pills still need application-owned content: the Live Sync header pairs an
 SF Symbol with a localized status, and the History scope menu trigger pairs a heart with its current
@@ -755,6 +763,8 @@ Acceptance criteria:
 
 ## Native spinner color in nested actions
 
+**Reconciliation: Partial.** SwiftUI and Compose Spinner accept an explicit tint; composed SwiftUI buttons tint progress from intent. Standalone defaults remain brand. Size, parent-owned announcement, nested-theme, and rendered cross-adapter acceptance remain.
+
 Between Contractions migrated its Android and macOS Partner Sync actions to `LumenButton` while
 preserving localized, immediate store progress states. The standalone Compose and SwiftUI
 `LumenSpinner` implementations always paint with the theme brand color, so composing one inside a
@@ -800,6 +810,8 @@ Acceptance criteria:
 
 ## Native button hierarchy and semantic tone
 
+**Reconciliation: Open.** Button intent still combines hierarchy and color, with a filled danger intent. Independent success/destructive tone across primary, secondary, and quiet hierarchies remains a public-contract proposal.
+
 Between Contractions exposes semantic actions at different levels of emphasis. Ending a whole
 Partner Sync group belongs in a prominent danger button behind confirmation, removing one device
 is a compact trailing destructive action, and calling the configured care team is a positive
@@ -820,6 +832,8 @@ Acceptance criteria:
 
 ## Compose disabled quiet-button background
 
+**Reconciliation: Core present.** The disabled-container helper explicitly preserves zero-alpha backgrounds and PrimitivesTest covers both themes. Representative long-label rendered and consumer acceptance remain unverified here.
+
 Rendered verification of the Spanish Partner Sync flow found that a disabled quiet `LumenButton`
 becomes a large dark rectangle instead of remaining visually quiet. The Compose recipe starts with
 `Color.Transparent`, then creates `disabledContainerColor` by copying a nonzero alpha onto that
@@ -837,6 +851,8 @@ Acceptance criteria:
 
 ## SwiftUI icon-only menu labels on macOS
 
+**Reconciliation: Partial.** Menu supports arbitrary label content, so the caller can label that content. A direct accessible-name parameter and rendered macOS locale/disabled tests remain.
+
 Between Contractions migrated its CSV/PDF export menu to `LumenMenu` and applied a localized
 `Export` accessibility label to the composed menu. The rendered macOS accessibility tree still
 announced the SF Symbol's inferred name, `Share`. Moving the accessibility label onto the custom
@@ -852,6 +868,8 @@ Acceptance criteria:
 - Document text, icon-plus-text, and icon-only label recipes.
 
 ## SwiftUI system-container boundary guidance
+
+**Reconciliation: Partial.** The Swift README tells consumers to retain native toolbar, alert, and confirmationDialog actions and apply public styles where appropriate. Complete per-container rendered and semantic regression coverage remains.
 
 Between Contractions can use `LumenDivider` between rows and sections rendered in application
 content, but a SwiftUI `Menu` or `contextMenu` requires the native `Divider` to create a semantic
@@ -878,6 +896,8 @@ Acceptance criteria:
   commands in unsupported custom presentation.
 
 ## SwiftUI share-button width and resolved-label contract
+
+**Reconciliation: Open.** ShareButton has custom-label initializers and localized-key convenience labels, but no explicit full-width/alignment or LumenTextContent convenience contract. System sharing stays host-owned.
 
 PostLens migrated its private diagnostic-report export from a plain `ShareLink` to
 `LumenShareButton`. The component is a full behavioral fit for an app-rendered text export: Lumen
@@ -908,6 +928,8 @@ Acceptance criteria:
   platform minimum target size.
 
 ## SwiftUI divider orientation and contrast contract
+
+**Reconciliation: Open.** Divider remains a horizontal one-point theme-line rectangle. Vertical orientation and semantic media-contrast treatment remain; retain native system-menu dividers.
 
 PostLens migrated ordinary horizontal separators in its Gallery and Studio selection bars, saved-
 photo picker, destination cards, editor review, and multi-photo readiness sheet to `LumenDivider`.
@@ -940,6 +962,8 @@ Acceptance criteria:
   added.
 
 ## SwiftUI pinned browser surfaces with independent controls
+
+**Reconciliation: Recipe.** Surface and Divider exist. Add the pinned opaque-bar recipe with directional insets, independent control semantics, scrolling geometry, and material-boundary guidance.
 
 PostLens replaced one shared manual `.bar` background with
 `LumenSurface(tone: .surface, padding: .none, radius: .none)` for pinned Gallery, Studio, and
@@ -1000,6 +1024,8 @@ Acceptance criteria:
   right-to-left layout, Accessibility text sizes, keyboard focus, and VoiceOver traversal.
 
 ## SwiftUI disclosure and nested-action ownership
+
+**Reconciliation: Recipe.** Disclosure has a separate header button and expanded sibling content. Add deterministic nested-action examples, collapsed/expanded focus assertions, and single-owner activation guidance.
 
 PostLens migrated the Image Playground explanation from a native `DisclosureGroup` with a custom
 card modifier to `LumenDisclosure`'s released custom-label initializer. The Lumen component can own
@@ -1089,6 +1115,8 @@ Acceptance criteria:
 
 ## SwiftUI text-input character-limit contract
 
+**Reconciliation: Open.** TextField and Textarea expose no character-limit contract. Specify grapheme counting, validation versus truncation, paste/composition behavior, and counters before implementing an additive API.
+
 A complete export audit corrected an earlier consumer assumption: released SwiftUI Lumen already
 provides `LumenTextarea`, so Between Contractions migrated both its contraction notes and macOS
 feedback details editors. The feedback form still owns a separate `0/2,000` counter and truncating
@@ -1130,6 +1158,8 @@ Acceptance criteria:
 
 ## SwiftUI phone-input in-app localization
 
+**Reconciliation: Partial.** PhoneInput already accepts explicit Locale and uses it for country metadata. Document the in-app locale bridge and verify mounted updates and opposite-locale behavior.
+
 Between Contractions can supply localized labels, descriptions, validation text, country-picker
 titles, and search labels to `LumenPhoneInput`, but its country sheet still hard-codes `Done` as a
 `LocalizedStringKey`. The app deliberately switches English and Spanish independently of the
@@ -1147,6 +1177,8 @@ Acceptance criteria:
   search.
 
 ## Native status-bar message reflow
+
+**Reconciliation: Partial.** SwiftUI StatusBar and sheet layouts respond to accessibility size; this is not the complete three-adapter 200-percent reflow and persistent progress recipe. Keep task lifecycle host-owned.
 
 Between Contractions uses `LumenStatusBar` to pair an on-device privacy statement with its Analyze
 action. The SwiftUI implementation forces the message to one line, so narrow resized windows,
@@ -1185,6 +1217,8 @@ Acceptance criteria:
 
 ## SwiftUI compact stat density
 
+**Reconciliation: Core present.** Stat exposes explicit compact density, with theme/layout tests and a native reference example. Complete the requested two-stat 360-point and localized-value rendering matrix.
+
 Between Contractions uses a 360-point macOS menu-bar window with two small metrics side by side.
 `LumenStat` always uses title typography, large padding, and a vertically stacked icon regardless
 of `lumenControlDensity`, making the released metric contract too tall for this compact surface.
@@ -1202,6 +1236,8 @@ Acceptance criteria:
   and with unusually long values.
 
 ## SwiftUI skeleton theme inheritance and media composition
+
+**Reconciliation: Partial.** Skeleton reads the nearest theme, supports shapes, and derives circle width from height. Add branded placeholder grids, one parent announcement, circle geometry regression coverage, and media-boundary examples.
 
 PostLens uses `LumenSkeleton` for generic text bars and badge-shaped placeholders while its gallery
 and Studio libraries load. An early wrapper selected `LumenTheme.light` or `.dark` from the local
@@ -1238,6 +1274,8 @@ Acceptance criteria:
   not require a redundant width or a raw `Circle` fallback.
 
 ## SwiftUI transient status actions and resolved localization
+
+**Reconciliation: Open.** Toast and related status surfaces still use localized-key content in their convenience contracts. Verbatim status/action content and multi-action ownership recipes remain.
 
 PostLens migrated Publishing Studio's temporary removal-and-undo bar to a `LumenAlert` contained
 inside the app's bottom safe-area material. The generic alert content closure was the right released
@@ -1311,6 +1349,8 @@ Acceptance criteria:
 
 ## SwiftUI informational card migration boundaries
 
+**Reconciliation: Recipe.** Card and Surface already provide non-action containers. Add before/after informational-card examples and ensure descriptions, summaries, and nearby actions stay consumer-owned.
+
 PostLens migrated the five repeated containers on its About screen from a hand-built secondary
 grouped background, 20-point corner radius, and 18-point inset to `LumenCard` with `.lg` padding
 and a `.size2xl` radius. The rendered comparison made the contract change visible: Lumen replaces
@@ -1342,6 +1382,8 @@ Acceptance criteria:
 
 ## SwiftUI sheet cards and scroll-to-action reachability
 
+**Reconciliation: Recipe.** Sheets already support scrolling and dismissal policy. Add nested-card reachability fixtures above safe-area actions, asserting visible/hittable controls rather than presence alone.
+
 PostLens also migrated Gallery Score's selection snapshot, pending explanation, and Quick Prepare
 groups from manual 14-point white panels to non-action `LumenCard` containers using `.md` padding
 and an `.xl` radius. A compact sheet benefits from the tokenized 12-point inset because its
@@ -1372,6 +1414,8 @@ Acceptance criteria:
   set so card spacing does not make the final action unreachable.
 
 ## SwiftUI membership information cards and selection boundaries
+
+**Reconciliation: Recipe.** Use non-action cards with independently selected leaf controls. Add the requested membership example and selection/large-text interaction acceptance.
 
 PostLens migrated its Supporter status, included-benefits, fairness, workflow-preview, and loading
 containers from hand-built rounded backgrounds to non-action `LumenCard` surfaces. The active
@@ -1420,6 +1464,8 @@ Acceptance criteria:
 
 ## SwiftUI control-rich scheduling cards and nested action targets
 
+**Reconciliation: Recipe.** Keep scheduling state and nested controls in the application. Add the non-action scheduling card with independent target, focus-order, and narrow-width assertions.
+
 PostLens migrated the three grouped regions in its posting calendar to non-action `LumenCard`
 surfaces: a horizontally scrolling set of upcoming-date buttons, a graphical `DatePicker`, and a
 planned-post group containing navigation and menu controls. The rendered result confirms that a
@@ -1457,6 +1503,8 @@ Acceptance criteria:
   calendar remains usable without horizontal clipping.
 
 ## SwiftUI result cards with independent score and picker controls
+
+**Reconciliation: Recipe.** Rich Picker labels exist. Add the result/sorting example with separate score and picker actions, static headings, resolved text, and viewport coverage.
 
 PostLens migrated the summary, sorting, and guidance regions in Collection Picks from manual
 18-point grouped panels to non-action `LumenCard` surfaces with `.lg` padding and a `.size2xl`
@@ -1498,6 +1546,8 @@ Acceptance criteria:
 
 ## SwiftUI action cards with independent overlaid accessories
 
+**Reconciliation: Recipe.** Keep secondary accessories outside the action card. Add sibling-overlay examples and assertions that accessory activation never triggers the primary action.
+
 PostLens migrated the reusable rows in Saved Creations from a manual `Button` plus grouped-card
 background to `LumenCard(action:)` with `.md` padding and a `.size2xl` radius. Each row has one clear
 primary action—opening the saved Carousel or Layout—so the interactive-card contract is appropriate.
@@ -1528,6 +1578,8 @@ Acceptance criteria:
   right-to-left layout while retaining the consumer-defined thumbnail crop.
 
 ## SwiftUI zero-padding cards as grouped selection rows
+
+**Reconciliation: Recipe.** Card supports zero padding and ListRow is a visual label layout. Add grouped native-button rows with selected traits, separators, target sizes, and no parent action.
 
 PostLens migrated its canonical destination-and-format sheet from manual grouped backgrounds to
 two non-action Lumen compositions. The current-target summary uses `LumenCard` with `.lg` padding,
@@ -1574,6 +1626,8 @@ Acceptance criteria:
 
 ## SwiftUI list-row inset ownership inside native lists
 
+**Reconciliation: Recipe.** ListRow owns fixed semantic insets. Add native List recipes that deliberately remove native row insets and preserve outer-button and secondary-control semantics.
+
 PostLens migrated its collection-destination picker from a manual `HStack` to `LumenListRow` while
 retaining the surrounding native `List` and `Button`. Leaving the list's default row inset in place
 would apply horizontal spacing twice because `LumenListRow` already owns semantic horizontal and
@@ -1619,6 +1673,8 @@ Acceptance criteria:
 
 ## SwiftUI responsive informational cards with a concise accessibility summary
 
+**Reconciliation: Recipe.** Add horizontal/vertical non-action card examples with a caller-owned concise summary, one static focus stop, and independently reachable external actions.
+
 PostLens migrated the Publishing Studio workflow preview from a manual 18-point grouped-card shell
 to a non-action `LumenCard` with `.lg` padding and a `.size2xl` radius. The card explains how one
 photo becomes three destination-specific drafts; its source thumbnail, format previews, and flow
@@ -1648,6 +1704,8 @@ Acceptance criteria:
   select `LumenCard(action:)` merely because a related action appears nearby.
 
 ## SwiftUI non-action cards with nested controls in a partial sheet
+
+**Reconciliation: Recipe.** Add partial-sheet fixtures with independent leaf identifiers and selected/cached/retry states. Verify that card-level modifiers do not mask child actions.
 
 PostLens migrated the Caption Assistant suggestion and style-picker panels from manual 18-point
 grouped-card shells to non-action `LumenCard` surfaces with `.lg` padding and a `.size2xl` radius.
@@ -1680,6 +1738,8 @@ Acceptance criteria:
   the example without moving product state into `LumenCard`.
 
 ## SwiftUI grouped cards above a persistent action bar
+
+**Reconciliation: Recipe.** Add grouped-card examples with score and copy/add actions above a safe-area bar, using exact token inspection and scroll-to-action assertions.
 
 PostLens migrated the Post readiness and Caption groups in a scrolling Posting Plan detail screen
 from manual 16-point, 20-radius grouped surfaces to non-action
@@ -1714,6 +1774,8 @@ Acceptance criteria:
 
 ## SwiftUI cards inside native navigation links
 
+**Reconciliation: Recipe.** Use a non-action Card inside the native NavigationLink. Add navigation/context-menu fixtures, one semantic action, and accessible-size media-summary reflow.
+
 PostLens migrated its Saved Collections summary from a manual 14-point, 22-radius grouped surface
 to `LumenCard(padding: .md, radius: .size2xl)` inside the existing value-based `NavigationLink`.
 The outer link remains the only navigation action and continues to own the destructive context
@@ -1745,6 +1807,8 @@ Acceptance criteria:
   public Lumen tokens, and require before-and-after visual inspection for the density tradeoff.
 
 ## SwiftUI grouped cards containing independent controls
+
+**Reconciliation: Recipe.** Add shared static-card helpers with independent choice and crop controls, preserving stable leaf identities, safe-area reachability, and token-density comparisons.
 
 PostLens migrated all four Publishing Set shells from a shared manual 18-point, 20-radius grouped
 style to non-action `LumenCard(padding: .lg, radius: .size2xl)` containers. The same wrapper now
@@ -1786,6 +1850,8 @@ Acceptance criteria:
 
 ## SwiftUI single-action selection cards inside a static group
 
+**Reconciliation: Recipe.** Add a static parent with independently actionable child cards, explicit selected traits, cached/ready/disabled states, and deterministic generating fixtures.
+
 PostLens migrated Caption Assistant's four manual tone buttons to
 `LumenCard(action:)` using `.md` padding and `.xl` radius. Those public tokens exactly preserve the
 former 12-point inset and 16-point radius. The selected tone uses the `.accent` variant and the
@@ -1826,6 +1892,8 @@ Acceptance criteria:
 
 ## SwiftUI action cards with sibling overlay controls
 
+**Reconciliation: Recipe.** Add enabled/capacity/over-capacity fixtures proving primary-action disabling does not disable useful sibling controls; assert separate identities and targets.
+
 PostLens migrated Posting Plan's saved-content rows from a manual plain button with an 8-point
 inset and 16-point radius to `LumenCard(padding: .sm, radius: .xl, action:)`. Those public tokens
 exactly preserve the compact row density while moving surface color, border, clipping, and pressed
@@ -1865,6 +1933,8 @@ Acceptance criteria:
   data used to determine capacity, so regression evidence cannot silently contradict its setup.
 
 ## SwiftUI selection cards with directional consumer padding
+
+**Reconciliation: Recipe.** Zero-padding Card is available. Document directional host insets and stable domain identities; evaluate a directional-inset API only if composition cannot satisfy the example.
 
 PostLens migrated Publishing Set's destination-format rows from manual buttons to
 `LumenCard(variant:padding:radius:action:)`. Selected rows use `.accent`, unselected rows use
@@ -1908,6 +1978,8 @@ Acceptance criteria:
 
 ## SwiftUI non-action surfaces inside existing menu buttons
 
+**Reconciliation: Recipe.** Use Surface inside the system-owned Button or Menu label. Add resolved-name/value fixtures, one activation owner, and before/after density checks.
+
 PostLens migrated its full-width destination-format menu label from a manual tertiary grouped
 background to `LumenSurface(tone: .muted, padding: .none, radius: .xl)`. The existing
 `PublishingTargetMenu` remains the sole `Button` that presents the selection sheet. Using
@@ -1947,6 +2019,8 @@ Acceptance criteria:
 
 ## SwiftUI compact selected date tiles
 
+**Reconciliation: Open.** No dedicated compact selection-tile contract was identified. First validate a composition with current primitives, selected traits, directional padding, and a 44-point target before adding a new primitive.
+
 PostLens kept its compact upcoming-date tiles as native `Button` values because the current SwiftUI
 Lumen contracts do not preserve this horizontal calendar density. `LumenButton` adds standard
 horizontal padding and uses the small button radius, while `LumenCard(action:)` is intentionally
@@ -1977,32 +2051,9 @@ Acceptance criteria:
 - Verify the selected state moves after activation and clears when an external Today or reset
   action changes the bound value.
 
-## SwiftUI non-enforcing themes must preserve caller appearance
-
-PostLens's deterministic preview modifier applied `.preferredColorScheme(.dark)` before
-`.lumenTheme(..., enforceColorScheme: false)`, but the rendered app remained light. The current
-SwiftUI implementation handles `false` by applying `.preferredColorScheme(nil)`, which is still an
-environment write and can clear an explicit preference earlier in the modifier chain. Reordering
-the consumer modifiers so the explicit appearance is applied last restored real dark rendering.
-
-`enforceColorScheme: false` should mean Lumen does not write the preferred color-scheme environment
-at all. Consumers should not have to know that a non-enforcing theme can erase an app, preview,
-window, or test-level preference depending on modifier order.
-
-Acceptance criteria:
-
-- Change the SwiftUI `lumenTheme` modifier so `enforceColorScheme: false` omits
-  `.preferredColorScheme` instead of applying it with `nil`.
-- Preserve the existing enforcing behavior for light and dark Lumen themes.
-- Add modifier-order tests with the caller's `.preferredColorScheme(.dark)` both before and after a
-  non-enforcing Lumen theme; both orders must remain dark.
-- Add the inverse light test and a system-inherited test where no caller preference is present.
-- Verify theme colors still resolve from the supplied Lumen scheme without taking ownership of the
-  host app's appearance preference.
-- Document that the host controls appearance when enforcement is disabled, including previews,
-  multi-window apps, and deterministic screenshot fixtures.
-
 ## SwiftUI section-header leading content and verbatim titles
+
+**Reconciliation: Open.** SectionHeader title and subtitle are LocalizedStringKey and only trailing actions are generic. Verbatim content, decorative leading slots, and intrinsic-fit action layout remain.
 
 PostLens's Saved Creations screen groups Carousels and Layouts with a leading concept symbol, an
 already-resolved app-localized title, and a trailing count. The released `LumenSectionHeader` 2.0.0
@@ -2031,6 +2082,8 @@ Acceptance criteria:
 
 ## Compose sheet locale and form presentation
 
+**Reconciliation: Partial.** Sheet skips partial expansion, uses IME padding, and scrolls the complete layout for large text or short heights. Caller locale propagation and opposite-locale rendered fixtures remain to verify.
+
 Between Contractions split Android Partner Sync into a subscription overview and separate create
 and join sheets. In rendered testing, a longer `LumenSheet` opened at the partial detent with its
 restore and debug actions below the viewport, but the public contract provides no sheet-state,
@@ -2054,6 +2107,8 @@ Acceptance criteria:
   presentation.
 
 ## SwiftUI grouped list-card composition and selectable row semantics
+
+**Reconciliation: Open.** ListRow and Card exist separately; no dedicated grouped list-card/header/footer/selected-row contract was identified. Evaluate a public composition first, preserving native activation and context menus.
 
 PostLens's Creator Kits are a custom grouped surface with a title, explanatory copy, a save action,
 multiple selectable rows, dividers, and native context menus. Applying `LumenListRow` inside a
@@ -2090,7 +2145,8 @@ Acceptance criteria:
 
 ## Completion rule
 
-An item can be removed from this file when its public contract and documentation exist, relevant
-automated checks pass, and required external or device evidence is recorded. Product-specific
-navigation, windowing, domain controls, safety policy, haptics, charts, widgets, and application
-state are not backlog items merely because Lumen does not own them.
+Remove an item when its public contract and documentation exist and the remaining automated and
+rendered acceptance criteria pass. Preserve evidence in Git history or the linked reconciliation.
+Do not reinstate retired consumer-completion, physical-device, or stability-soak release gates;
+follow [current release policy](docs/native-release-runbook.md#current-release-policy). Product
+navigation, domain state, safety policy, and platform presentation remain application-owned.

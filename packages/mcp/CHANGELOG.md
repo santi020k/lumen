@@ -1,5 +1,11 @@
 # @santi020k/lumen-mcp
 
+## 4.2.0
+
+### Patch Changes
+
+- [#105](https://github.com/santi020k/lumen/pull/105) [`06cbe59`](https://github.com/santi020k/lumen/commit/06cbe5936fc28c4fd6ea955ee770deac9e06d461) Thanks [@santi020k](https://github.com/santi020k)! - Default AI guidance to enhanced Select and searchable Combobox controls for web products, while preserving NativeSelect for explicit platform-picker requirements.
+
 ## 4.1.0
 
 ### Patch Changes

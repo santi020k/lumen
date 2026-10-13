@@ -13,7 +13,7 @@ in that adapter and prefer its native state, navigation, icon, and accessibility
 | --- | --- |
 | Primary or secondary action | `Button`, `ButtonLink`, `ButtonGroup` |
 | Copy arbitrary text or referenced content | `CopyButton` |
-| Labeled form control | `Field`, `Label`, `Input`, `Textarea`, `NativeSelect` |
+| Labeled form control | `Field`, `Label`, `Input`, `Textarea`, `Select` |
 | Search or suggestion input | `SearchField`, `Autocomplete`, `Combobox`, `Command` |
 | Boolean or mode choice | `Checkbox`, `Switch`, `Toggle`, `ToggleGroup`, `RadioGroup` |
 | Compact metadata or status | `Badge`, `Marker`, `Pill`, `TagGroup` |
@@ -94,3 +94,8 @@ Before adding a component, ask:
 3. Does the current framework target expose it and its needed behavior?
 4. Are loading, empty, error, disabled, and responsive states accounted for?
 5. Can a keyboard and screen-reader user complete the same task?
+
+For web selection controls, `Select` is the default. Use `Combobox` for searchable options.
+`NativeSelect` is an explicit choice for a required browser or platform picker, not a shortcut for
+missing runtime setup. Preserve the custom control's native fallback. Native adapters retain their
+platform conventions.

@@ -513,6 +513,15 @@ The dialog behavior focuses its first focusable control, handles Escape, traps f
 focus to its trigger. Keep draft state in the form control or application; closing does not reset it.
 Do not replace this behavior with a parallel native-dialog controller.
 
+## DatePicker accessibility
+
+DatePicker uses the positioned `ui-date-picker-field` host shell. It requires authored native input,
+control, trigger, and popover children with their `ui-date-picker__native`,
+`ui-date-picker__control`, `ui-date-picker__trigger`, and `ui-date-picker__popover` classes. Put
+`aria-invalid`, `aria-describedby`, and `aria-errormessage` on the input marked
+`data-ui-date-picker-native`. The enhancer mirrors those associations to the visible trigger and
+observes later native-input attribute changes. These host attributes are not forwarded.
+
 ## Glass surfaces
 
 Load `@santi020k/lumen-elements/styles.css` once, register the elements, then use the shared glass

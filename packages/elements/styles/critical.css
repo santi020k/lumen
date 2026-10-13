@@ -837,6 +837,10 @@
   width: min(100%, 34rem);
 }
 
+lumen-date-picker.ui-date-picker-field {
+  display: block;
+}
+
 .ui-combobox > .ui-input {
   width: 100%;
 }

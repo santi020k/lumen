@@ -1,5 +1,15 @@
 # @santi020k/lumen
 
+## 4.2.0
+
+### Minor Changes
+
+- [#105](https://github.com/santi020k/lumen/pull/105) [`089f823`](https://github.com/santi020k/lumen/commit/089f82307f288818e7110cfda6741e4d612472ef) Thanks [@santi020k](https://github.com/santi020k)! - Preserve the host application's appearance when SwiftUI `lumenTheme` uses
+  `enforceColorScheme: false`. Caller light/dark preferences now work in either modifier order,
+  including with tint disabled, while Lumen keeps the supplied semantic palette. Explicit appearance
+  enforcement retains its existing behavior. Includes hosted-view regression coverage for caller
+  preferences and inherited light/dark host appearance.
+
 ## 4.1.0
 
 ### Patch Changes

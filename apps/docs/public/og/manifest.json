@@ -7635,7 +7635,7 @@
     },
     "/docs/migrations/v3-to-v4": {
       "alt": "Lumen 3 to Lumen 4 migration — Documentation social preview from Lumen UI",
-      "description": "Evaluate the unpublished Lumen 4 candidate, migrate spacing and component behavior, and rebuild native consumers.",
+      "description": "Upgrade to Lumen 4, migrate spacing and component behavior, and rebuild native consumers.",
       "images": [
         {
           "format": "webp",
