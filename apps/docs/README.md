@@ -68,6 +68,8 @@ pnpm run docs:preview
 The root `docs:build` includes workspace dependencies. A direct docs-only build requires those
 packages and the Expo web export to have been built first. The post-build step audits metadata
 and navigation, then prepares `cloudflare/dist` for Cloudflare Pages.
+The docs build also tracks repository-root `docs/**` inputs so edits to imported migration guides
+and release highlights invalidate cached HTML.
 
 For visual changes, run `pnpm run test:visual` and the affected interaction/accessibility suites.
 Check mobile and desktop, light and dark themes, keyboard navigation, and reduced motion.

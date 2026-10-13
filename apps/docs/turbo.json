@@ -2,6 +2,7 @@
   "extends": ["//"],
   "tasks": {
     "build": {
+      "inputs": ["$TURBO_EXTENDS$", "$TURBO_ROOT$/docs/**"],
       "outputs": ["$TURBO_EXTENDS$", "cloudflare/dist/**"]
     }
   }
