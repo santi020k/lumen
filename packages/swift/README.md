@@ -48,9 +48,9 @@
 
 </details>
 
-> **Lumen 4 candidate:** This branch prepares the next major adapter contract. See the
-> [migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) before upgrading. Local checks do not replace
-> publication, physical-device accessibility, or consumer-soak qualification.
+> **Lumen 4:** Read the
+> [migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-to-lumen.md) before upgrading.
+> Swift Package Manager follows the repository release tag; playground store delivery has separate gates.
 
 `LumenUI` is Lumen's native SwiftUI package. Its foundations are generated from the same canonical
 design tokens as the web, React Native, and Compose adapters.

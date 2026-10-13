@@ -227,7 +227,7 @@ agents and local compatibility files. The command also produces a Claude archive
 checks. Archive generation validates snapshots first, includes only explicit plugin assets, and
 preserves existing output. It requires the system `zip` executable.
 
-Before uploading, verify the deployed catalog reports 4.1.0 and exposes all fourteen tools,
+Before uploading, verify the deployed catalog reports 4.2.0 and exposes all fourteen tools,
 including `lumen_check_compatibility` and `lumen_get_migration`. Check both a matching v4 consumer
 and an older consumer: the latter must use installed contracts without silently upgrading.
 

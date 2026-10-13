@@ -96,6 +96,13 @@ describe('lumen-mcp data snapshot', () => {
     expect(comparison?.files).toContain('packages/astro/components/ImageComparison.astro')
   })
 
+  test('keeps React OTP paste handlers out of Elements attributes', () => {
+    const otp = resolveComponent('InputOTP', loadLumenData())
+
+    expect(otp?.frameworkDetails.elements.available).toBe(true)
+    expect(otp?.frameworkDetails.elements.attributes).not.toContain('onPaste')
+  })
+
   test('documents wrapped code and Astro motion runtime requirements', () => {
     const data = loadLumenData()
     const accordion = resolveComponent('Accordion', data)

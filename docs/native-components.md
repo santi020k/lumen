@@ -7,10 +7,9 @@ each platform's rendering, image, focus, and accessibility systems. This referen
 the supported component surface, platform mappings, and the checks required for a component to be
 considered supported.
 
-> **Lumen 4 candidate:** Version 4 install examples describe the prepared release and are not yet
-> available from public registries. Evaluate the local packages and read the
-> [migration guide](migrating-to-lumen.md). Current API classifications do not replace publication,
-> physical-device, or consumer-soak qualification of this revision.
+> **Lumen 4:** Read the [migration guide](migrating-to-lumen.md) before upgrading.
+> Use the exact version for each adapter in the release manifest; package and store versions are
+> released independently.
 
 ## Install and consume
 

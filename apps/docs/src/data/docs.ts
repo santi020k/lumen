@@ -1949,9 +1949,6 @@ const apiReferenceByComponent = {
   ],
   InputOTP: [
     apiRow(
-      'onPaste', 'React clipboard event handler', '-', 'Calling preventDefault cancels Lumen paste handling. Otherwise sanitized paste invokes onChange and onValueChange once, including controlled and form-controller values.'
-    ),
-    apiRow(
       'autocomplete', 'HTML autocomplete value', '"one-time-code"', 'Hints that password managers and mobile keyboards can offer one-time code autofill.'
     ),
     apiRow(
@@ -3398,6 +3395,7 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
 }
 
 const adapterNotesByComponent: Partial<Record<LumenComponentName, readonly FrameworkUsageNote[]>> = {
+  InputOTP: [{ framework: 'React', text: 'The onPaste clipboard handler can call preventDefault to cancel Lumen paste handling. Otherwise sanitized paste invokes onChange and onValueChange once, including controlled and form-controller values.' }],
   LollipopChart: [{ framework: 'Elements', text: 'Register LollipopChart, assign numeric rows to the data property or a JSON data attribute, and use domain-min/domain-max for a shared scale. Assign a function to valueFormatter for units; functions cannot be HTML attributes.' }],
   DumbbellChart: [{ framework: 'Elements', text: 'Register DumbbellChart and assign rows with value and reference through the data property or a JSON data attribute. Use reference-label/value-label for the endpoint names and the valueFormatter property for units.' }],
   BulletChart: [{ framework: 'Elements', text: 'Register BulletChart. Use numeric value/target attributes and a ranges property or JSON attribute; assign valueFormatter as a function. Remove the value attribute, or set the value property to null, for an unavailable observation.' }],
