@@ -2143,6 +2143,29 @@ Acceptance criteria:
 - Test zero, one, and several rows; selected-state transfer after activation; context menus; long
   localized metadata; right-to-left layout; Accessibility text sizes; and light and dark themes.
 
+## Komori native localization and Watch composition
+
+**Consumer evidence: LumenUI 4.2.0, October 13, 2026.** Komori uses the public SwiftUI button/style,
+surface, text-field, spinner, progress, picker and toggle contracts. These are targeted follow-ups,
+not requests to move pet art, hatching rules or navigation state into Lumen. The consumer keeps its
+adaptations and removal conditions in `docs/future-refactors.md`.
+
+- **Locale-aware progress:** `packages/swift/Sources/LumenUI/SharedComponents.swift` constructs
+  `LumenProgress`'s accessibility value as English `N percent`, and its default label is `Progress`.
+  Komori supplies a localized label and overrides the value with SwiftUI's percentage formatter.
+  Add a `LumenTextContent`-compatible label and a locale-aware default percentage value without
+  breaking the existing String initializer. Verify English and Spanish VoiceOver values at zero,
+  partial and complete progress, including caller-supplied accessibility overrides. Remove the
+  consumer override only after a pinned release passes the same cases.
+- **Watch form primitives:** `FormControls.swift` and `SelectionControls.swift` exclude watchOS.
+  Komori currently needs only the supported Watch buttons and surfaces, so it does not fake an
+  unsupported Picker or Toggle import. Evaluate a native watchOS composition before adding Watch
+  settings: public controlled bindings, semantic theme, crown/VoiceOver interaction and compact
+  Dynamic Type layouts. A native tab bar, Apple sign-in and system dialogs remain platform-owned.
+
+The public contracts above were checked against the actual package source. No public Lumen API
+or package version changed for this consumer implementation.
+
 ## Completion rule
 
 Remove an item when its public contract and documentation exist and the remaining automated and
