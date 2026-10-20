@@ -575,6 +575,9 @@ columns and card-shaped `Skeleton` blocks while loading.
 Use `ScrollReveal` for one entrance, `RevealGroup` for tokenized child staggering, and
 `AnimatedNumber` for meaningful metric changes. Their `duration` prop uses the shared `fast`,
 `standard`, and `slow` vocabulary, and every primitive honors reduced-motion preferences.
+`ScrollReveal` and `RevealGroup` use the latest visibility update when the browser delivers a
+batch. They stop observing after that update reveals the content by default; use `once={false}`
+to repeat the entrance as the content leaves and enters the viewport.
 
 ```tsx
 <RevealGroup stagger={80}>

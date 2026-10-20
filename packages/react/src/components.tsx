@@ -6864,7 +6864,9 @@ export const ScrollReveal = ({
     }
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      entries => {
+        const entry = entries.at(-1)
+
         if (!entry) return
 
         root.classList.toggle('is-revealed', entry.isIntersecting)
@@ -6944,7 +6946,9 @@ export const RevealGroup = ({
     }
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      entries => {
+        const entry = entries.at(-1)
+
         if (!entry) return
 
         root.classList.toggle('is-revealed', entry.isIntersecting)
