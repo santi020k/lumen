@@ -6674,18 +6674,20 @@ lumen-dialog-close {
 
 .ui-pill {
   display: inline-flex;
+  min-width: 0;
   min-height: 1.75rem;
   max-width: 100%;
   align-items: center;
   border: var(--ui-border-width, 1px) solid hsl(var(--line));
-  border-radius: 999px;
+  border-radius: 1.5rem;
   padding: 0.3rem 0.75rem;
   background: hsl(var(--surface-muted));
   color: hsl(var(--ink-soft));
   font-size: 0.875rem;
   font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .ui-pill--brand {
@@ -6700,12 +6702,14 @@ lumen-dialog-close {
 }
 
 .ui-pill__count {
+  flex: none;
+  white-space: nowrap;
   margin-left: 0.5rem;
   padding-left: 0.5rem;
   border-left: var(--ui-border-width, 1px) solid hsl(var(--line));
   font-size: 0.75rem;
   line-height: 1;
-  color: hsl(var(--ink-muted));
+  color: inherit;
   font-variant-numeric: tabular-nums;
 }
 
@@ -7093,7 +7097,7 @@ a.ui-pill:focus-visible {
   padding: 0.25rem 0.75rem;
   margin-left: -2px;
   border-left: 2px solid transparent;
-  color: hsl(var(--ink-muted));
+  color: hsl(var(--ink-soft));
   text-decoration: none;
   font-size: 0.875rem;
 }
@@ -7103,7 +7107,7 @@ a.ui-pill:focus-visible {
 }
 .ui-anchor__index,
 .ui-anchor__description {
-  color: hsl(var(--ink-muted));
+  color: hsl(var(--ink-soft));
   font-size: var(--ui-text-xs);
 }
 .ui-anchor__index {

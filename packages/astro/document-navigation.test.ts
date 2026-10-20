@@ -5,6 +5,7 @@ import { initDocumentNavigationControllers } from './runtime/controllers/documen
 
 afterEach(() => {
   document.body.replaceChildren()
+  document.documentElement.removeAttribute('style')
   vi.restoreAllMocks()
   vi.unstubAllGlobals()
 })
@@ -75,6 +76,17 @@ test('keeps the first visible section current when the page cannot scroll', () =
   initDocumentNavigationControllers(document)
   expect(first?.getAttribute('aria-current')).toBe('location')
   expect(last?.hasAttribute('aria-current')).toBe(false)
+})
+
+test('keeps a fragment target current below the native scroll padding and margin', () => {
+  const [first, last] = fixture(2000)
+  document.documentElement.style.scrollPaddingTop = '20%'
+  const target = document.getElementById('last')
+  if (!target) throw new Error('Expected last heading')
+  target.style.scrollMarginTop = '40px'
+  initDocumentNavigationControllers(document)
+  expect(first?.hasAttribute('aria-current')).toBe(false)
+  expect(last?.getAttribute('aria-current')).toBe('location')
 })
 
 test('marks the final section current at the bottom of a scrollable page', () => {

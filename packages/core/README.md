@@ -64,6 +64,16 @@
 
 Shared metadata, token constants, and tiny utilities used by the Lumen package family.
 
+`getLumenActiveAnchorIndex(targets, activationOffset)` selects an index from document headings in
+reading order, or returns `-1` for an empty list. It accounts for live root scroll padding (including
+percentages), each target's scroll margin, an explicit minimum offset, and native rounding. The last
+heading wins at the bottom of a scrollable document; non-scrolling pages use heading positions.
+The framework adapters share this helper while retaining their event and lifecycle ownership.
+`decodeLumenAnchorFragment(fragment)` also decodes links safely, preserving literal percent signs
+when a fragment is not valid URI encoding. Mixed percentage/length scroll padding is resolved by
+the browser once per computed value and viewport size; ordinary pixel and percentage values need
+no measurement node.
+
 Most consumers should install a framework package such as `@santi020k/lumen-astro`, `@santi020k/lumen-react`, or `@santi020k/lumen-elements`.
 
 The package exports `lumenColors` and `lumenGlass` for consumers that need to mirror Lumen theme

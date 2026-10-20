@@ -162,3 +162,30 @@ No upgrade in this record implies a push, remote merge, deployment, npm publicat
 or fresh physical-device accessibility verification. Rollback restores the consumer's previous
 manifests, lock files, and Swift requirement/resolution, followed by its normal rebuild and tests.
 These dependency upgrades require no persisted-data migration.
+
+## Website reading fixes to carry upstream
+
+The website's later accessibility passes identified two shared web primitive fixes for this release:
+
+- **Anchor:** share native fragment activation across Astro, React, and Elements. Respect live root
+  scroll padding, per-heading scroll margin, percentage padding, enlarged text, and a one CSS pixel
+  rounding tolerance. Preserve explicit activation offsets and final-section detection only on
+  scrollable pages. This replaces the behavior in the website's temporary Astro package patch.
+- **Pill:** wrap long labels within the available width while retaining an unbroken count affix.
+  The shared standalone stylesheet owns this behavior, including plain text slots without wrappers.
+
+Keep the website patch and label overrides until the corresponding packages are published and the
+consumer's locked versions are upgraded and verified. Local Lumen integration alone does not make
+the website use these changes. No production dependency should point to a temporary local tarball.
+
+The website's header offsets, editorial layouts, card compositions, timeline markers, comment link
+targets, and code-block prose resets remain consumer-owned. Lumen's code primitive is `Code`; the
+website's code-block wrapper and its prose cascade are not a shared `CodeBlock` component. The
+proposed RevealGroup threshold reinterpretation is excluded: changing a visibility-ratio contract
+to a viewport-entry distance would change public behavior. Investigate that separately with a
+reproduction before removing the website's `threshold={0}` settings.
+
+Regression coverage includes all three web adapters, native keyboard fragment navigation, short
+documents, percentage offsets, and 390px/1440px layouts at 100%/200% text. Generated API and MCP
+contracts accompany the implementation. There is no data migration; recovery uses the preceding
+package versions and consumer lockfile.

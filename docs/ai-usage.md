@@ -292,7 +292,7 @@ Its visual variants are `default`, `accent`, and `glass`; reserve `accent` for f
 keep glass selective.
 
 For long reading surfaces, use `Anchor` for local section navigation and pass each item’s optional
-heading `depth`, `index`, and `description` when hierarchy matters. Use `activationOffset` for fixed
+heading `depth`, `index`, and `description` when hierarchy matters. Anchor also respects root `scroll-padding-top` and heading `scroll-margin-top` after text resizing. Use `activationOffset` for fixed
 application headers. Use `ScrollProgress` for document position; keep `Progress` for
 application-controlled task completion. In Astro, dispatch `ui:progress-change` with
 `{ value, max? }` from the `Progress` root when browser state changes after hydration. Non-finite or

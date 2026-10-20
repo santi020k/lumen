@@ -467,6 +467,13 @@ failure; application code owns exception capture, logging, and retry policy. See
 [Web Components error-handling guide](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md#web-components) for the complete
 light-DOM structure, ARIA ownership, retry boundary, and verification guidance.
 
+`lumen-anchor` uses the greater of `activation-offset` and the root `scroll-padding-top` plus
+heading `scroll-margin-top`, with one CSS pixel of rounding tolerance. It reads live styles for
+text resizing and responsive headers, and does not treat a non-scrolling page as the document end.
+
+`lumen-pill` wraps long text within its available width. A `.ui-pill__count` child stays together;
+plain text labels do not need a wrapper. This reflow behavior is shared by Astro and React `Pill`.
+
 ## Motion
 
 The elements adapter exposes the same motion vocabulary as Astro and React. Use

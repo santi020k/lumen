@@ -46,9 +46,11 @@ import {
   createLumenRangeGeometry,
   createLumenScatterGeometry,
   createLumenScatterReferences,
+  decodeLumenAnchorFragment,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
   formatLumenPhoneNumber,
+  getLumenActiveAnchorIndex,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
@@ -7770,7 +7772,7 @@ const createAnchorRef = () => {
     const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
 
     const targets = links.flatMap(link => {
-      const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
+      const id = decodeLumenAnchorFragment(link.getAttribute('href')?.slice(1) ?? '')
       const target = id ? document.getElementById(id) : null
 
       return target ? [{ link, target }] : []
@@ -7778,6 +7780,7 @@ const createAnchorRef = () => {
 
     if (!targets.length) return
 
+    const headings = targets.map(({ target }) => target)
     const abortController = new AbortController()
     let frame = 0
 
@@ -7798,24 +7801,8 @@ const createAnchorRef = () => {
     const update = () => {
       frame = 0
 
-      const scrollingElement =
-        document.scrollingElement ?? document.documentElement
-
-      const atEnd = scrollingElement.scrollTop + scrollingElement.clientHeight >=
-        scrollingElement.scrollHeight - 1
-
-      const offset = Number(root.dataset.uiAnchorOffset) || 0
-      let active = targets[0]?.link
-
-      if (atEnd) {
-        active = targets.at(-1)?.link
-      } else {
-        for (const item of targets) {
-          if (item.target.getBoundingClientRect().top > offset) break
-
-          active = item.link
-        }
-      }
+      const index = getLumenActiveAnchorIndex(headings, Number(root.dataset.uiAnchorOffset))
+      const active = targets[index]?.link
 
       if (active) setActive(active)
     }
