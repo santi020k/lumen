@@ -2264,7 +2264,7 @@ const apiReferenceByComponent = {
   ],
   Pill: [
     apiRow(
-      'count', 'number | string', '-', 'Appends a muted count affix that stays together when the label wraps in a narrow container.'
+      'count', 'number | string', '-', 'Appends a smaller count affix that stays together when the label wraps in a narrow container.'
     ),
     apiRow(
       'href', 'string', '-', 'Renders the pill as a focusable anchor when it represents a destination.'

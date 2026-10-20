@@ -6721,13 +6721,13 @@ a.ui-pill {
 
 a.ui-pill:hover {
   border-color: hsl(var(--brand) / 0.42);
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 
 a.ui-pill--brand:hover {
   border-color: hsl(var(--brand) / 0.6);
   background: hsl(var(--brand-solid));
-  color: hsl(var(--canvas));
+  color: hsl(var(--on-brand));
 }
 
 a.ui-pill:focus-visible {

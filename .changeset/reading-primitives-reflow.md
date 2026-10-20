@@ -17,6 +17,7 @@ escapes consistently. `decodeLumenAnchorFragment` preserves literal percent sign
 Allow Pill labels to wrap inside narrow containers while keeping their count affix together.
 Cap the corner radius so multiple lines remain inside the border.
 Increase inactive Anchor text contrast and let Pill counts inherit the label color so small text
-remains readable in light and dark themes, including linked pill hover states.
+remains readable in light and dark themes. Linked pills use brand text and on-brand foreground
+colors for contrast through hover and keyboard focus.
 Existing component props and markup remain supported; no consumer wrapper is required for plain
 text labels. Regenerate the shared critical styles and MCP usage data with these contracts.
