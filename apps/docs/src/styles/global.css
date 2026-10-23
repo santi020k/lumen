@@ -850,7 +850,6 @@ pre:where(:not(.ui-code pre)) code {
 
 .docs-shell {
   --docs-anchor-navigation-fallback: 3.25rem;
-  --docs-sticky-navigation-gap: 1rem;
   --docs-shell-inline-padding: clamp(1.25rem, 3vw, 3rem);
 
   position: relative;
@@ -862,7 +861,7 @@ pre:where(:not(.ui-code pre)) code {
 }
 
 .docs-shell [id] {
-  scroll-margin-top: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + var(--docs-sticky-navigation-gap) + 1rem);
+  scroll-margin-top: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + 1rem);
 }
 
 .docs-site-content:has(.docs-shell, .home) + .docs-site-footer {
@@ -1280,7 +1279,7 @@ pre:where(:not(.ui-code pre)) code {
 .docs-mobile-navigation-bar {
   position: sticky;
   z-index: 20;
-  top: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-gap));
+  top: var(--docs-sticky-header-height, 10rem);
   display: grid;
   gap: 0.65rem;
   margin: -0.5rem calc(-1 * var(--docs-shell-inline-padding)) 1.5rem;
