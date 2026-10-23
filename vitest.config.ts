@@ -67,6 +67,9 @@ export default defineConfig({
       }
     },
     includeTaskLocation: true,
+    // Turbo runs package suites concurrently; bound each suite's worker pool so
+    // large graph regressions retain CPU time within their normal timeout.
+    maxWorkers: 2,
     projects: [
       project('core', 'packages/core'),
       project('lumen', 'packages/lumen'),
