@@ -34,6 +34,14 @@ React Native and React Hook Form remain at 4.0.1; tokens, brand icons, and Compo
 Swift uses the repository's release tag without a native API change. Hosted MCP, plugin directory,
 and store delivery remain separate from local package preparation.
 
+### Release dependency security
+
+Release qualification updates Vite to 8.3.5, Next.js to 16.4.2, the MCP server/client SDK to 2.3.1,
+and the MCP Express adapter to 2.0.2. These address the security findings in the previous lockfile.
+Next.js 16.4.2 is the latest patched release eligible under the repository's 24-hour dependency-age
+policy at preparation time; no age exception or audit suppression is added. Lumen already creates
+an MCP server and transport for each HTTP request, matching the updated SDK lifecycle requirements.
+
 ### Verification and recovery
 
 Compiler tests load each adapter's exported styles and cover semantic colors, opacity, responsive
