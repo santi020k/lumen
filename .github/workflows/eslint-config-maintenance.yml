@@ -46,4 +46,5 @@ jobs:
         with:
           name: eslint-config-doctor
           path: .eslint-config-doctor.json
+          include-hidden-files: true
           if-no-files-found: warn
