@@ -327,6 +327,9 @@ import { Button, Icon } from '@santi020k/lumen-astro'
 
 `Anchor` accepts heading `depth`, `index`, and `description` metadata plus an `activationOffset`.
 Its current link stays synchronized on click and scroll, including at the end of the document.
+The activation line uses the greater of `activationOffset` and the root `scroll-padding-top` plus
+each heading's `scroll-margin-top`, with a one CSS pixel rounding tolerance. Styles are read live so
+text resizing and responsive headers keep native fragment links and the current section aligned.
 `ScrollProgress` derives reading progress from the document and pins the indicator to the top or
 bottom viewport edge. Both use the single root `UIPrimitives` runtime.
 

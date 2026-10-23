@@ -1,0 +1,89 @@
+---
+import { createElement } from 'react'
+import { renderToString } from 'react-dom/server'
+
+import '@santi020k/lumen/styles.css'
+
+import { Anchor, Pill } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+
+import { readingLinks } from '../../../components/internal/reading-links'
+import { ReadingPrimitives } from '../../../components/internal/ReadingPrimitives'
+
+export const getStaticPaths = () => ['astro', 'react', 'elements'].map(framework => ({ params: { framework } }))
+
+const { framework } = Astro.params
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Reading primitive reflow</title>
+  </head>
+  <body>
+    <main>
+      <h1>Reading primitive reflow</h1>
+      <div data-reading-controls>
+        {framework === 'astro' && (
+<>
+          <Anchor activationOffset={40} items={readingLinks} />
+          <div data-reading-pills>
+            <Pill count={12}>Web development</Pill>
+            <Pill count={1234}>Accessible interfaces and responsive layouts</Pill>
+            <Pill count={99}>VeryLongUnbrokenComponentNameForNarrowLayouts</Pill>
+          </div>
+        </>
+)}
+        {framework === 'react' && <div id="reading-react" set:html={renderToString(createElement(ReadingPrimitives))} />}
+        {framework === 'elements' && (
+<>
+          <lumen-anchor activation-offset="40" aria-label="On this page">
+            <ol>{readingLinks.map(item => <li><a href={item.href}>{item.label}</a></li>)}</ol>
+          </lumen-anchor>
+          <div data-reading-pills>
+            <lumen-pill>Web development<span class="ui-pill__count">12</span></lumen-pill>
+            <lumen-pill>Accessible interfaces and responsive layouts<span class="
+              ui-pill__count
+            "
+                                                                    >1234</span></lumen-pill>
+            <lumen-pill>VeryLongUnbrokenComponentNameForNarrowLayouts<span class="
+              ui-pill__count
+            "
+                                                                     >99</span></lumen-pill>
+          </div>
+        </>
+)}
+      </div>
+      {readingLinks.map(item => <section><h2 id={item.href.slice(1)}>{item.label}</h2><p>Content stays readable when text is enlarged.</p></section>)}
+    </main>
+    {framework === 'astro' && <UIPrimitives />}
+    <script>
+      import { createElement } from 'react'
+      import { hydrateRoot } from 'react-dom/client'
+
+      import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+      import { ReadingPrimitives } from '../../../components/internal/ReadingPrimitives'
+
+      const island = document.getElementById('reading-react')
+
+      if (island) hydrateRoot(island, createElement(ReadingPrimitives))
+
+      if (document.querySelector('lumen-anchor')) defineLumenElements(['Anchor', 'Pill'])
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  html { scroll-padding-top: 5em; }
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+  main { max-width: 50rem; margin-inline: auto; padding: 1rem; }
+  h1, h2, p { overflow-wrap: anywhere; }
+  h2 { scroll-margin-top: 1em; }
+  section { min-height: 100vh; padding-top: 2rem; }
+  [data-reading-controls] { max-width: 22rem; }
+  [data-reading-pills] { display: grid; justify-items: start; gap: 1rem; padding-block: 1rem; }
+</style>

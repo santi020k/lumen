@@ -288,7 +288,10 @@ example, error-boundary ownership, announcement behavior, and verification guida
 
 For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an
 `activationOffset`. It synchronizes the current link on click and scroll. `ScrollProgress` tracks
-the document without requiring a separate hook.
+the document without requiring a separate hook. The activation line uses the greater of
+`activationOffset` and the root `scroll-padding-top` plus each heading's `scroll-margin-top`, with a
+one CSS pixel rounding tolerance. Live styles keep enlarged text and responsive headers aligned
+with native fragment navigation. A page that cannot scroll keeps its first visible section current.
 
 ```tsx
 import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
@@ -572,6 +575,9 @@ columns and card-shaped `Skeleton` blocks while loading.
 Use `ScrollReveal` for one entrance, `RevealGroup` for tokenized child staggering, and
 `AnimatedNumber` for meaningful metric changes. Their `duration` prop uses the shared `fast`,
 `standard`, and `slow` vocabulary, and every primitive honors reduced-motion preferences.
+`ScrollReveal` and `RevealGroup` use the latest visibility update when the browser delivers a
+batch. They stop observing after that update reveals the content by default; use `once={false}`
+to repeat the entrance as the content leaves and enters the viewport.
 
 ```tsx
 <RevealGroup stagger={80}>

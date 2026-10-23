@@ -1,11 +1,4 @@
-const decodeFragment = (fragment: string): string => {
-  try {
-    return decodeURIComponent(fragment)
-  } catch {
-    // A literal percent sign can still identify a section; isolate malformed escapes.
-    return fragment
-  }
-}
+import { decodeLumenAnchorFragment, getLumenActiveAnchorIndex } from '@santi020k/lumen-core'
 
 interface AnchorDispatcher {
   callbacks: WeakMap<HTMLElement, () => void>
@@ -56,7 +49,7 @@ const initAnchors = (scope: ParentNode): void => {
 
     for (const link of links) {
       const fragment = link.getAttribute('href')?.slice(1) ?? ''
-      const id = decodeFragment(fragment)
+      const id = decodeLumenAnchorFragment(fragment)
       const target = id ? ownerDocument.getElementById(id) : null
 
       if (target) {
@@ -65,6 +58,8 @@ const initAnchors = (scope: ParentNode): void => {
     }
 
     if (!targets.length) continue
+
+    const headings = targets.map(({ target }) => target)
 
     const setActive = (active: HTMLAnchorElement): void => {
       for (const link of links) {
@@ -81,21 +76,8 @@ const initAnchors = (scope: ParentNode): void => {
     }
 
     const update = (): void => {
-      const scrollingElement = ownerDocument.scrollingElement ?? ownerDocument.documentElement
-      const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
-      const atEnd = maximum > 0 && scrollingElement.scrollTop >= maximum - 1
-      const offset = Number(root.dataset.uiAnchorOffset) || 0
-      let active = targets[0]?.link
-
-      if (atEnd) {
-        active = targets.at(-1)?.link
-      } else {
-        for (const item of targets) {
-          if (item.target.getBoundingClientRect().top > offset) break
-
-          active = item.link
-        }
-      }
+      const index = getLumenActiveAnchorIndex(headings, Number(root.dataset.uiAnchorOffset))
+      const active = targets[index]?.link
 
       if (active) setActive(active)
     }

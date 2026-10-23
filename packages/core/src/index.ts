@@ -1,5 +1,6 @@
 export * from './ai-surfaces.js'
 export { createLumenAmountFieldController, formatLumenAmountDraft, getLumenAmountValue, type LumenAmountChangeDetail, type LumenAmountFieldController, type LumenAmountOptions, parseLumenAmountDraft } from './amount-field.js'
+export { decodeLumenAnchorFragment, getLumenActiveAnchorIndex } from './anchor.js'
 export {
   createLumenAttachmentPreviewController,
   type LumenAttachmentPreviewController,

@@ -1,0 +1,34 @@
+---
+import '@santi020k/lumen/styles.css'
+
+import { Button, Pill } from '@santi020k/lumen-astro'
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Linked pill states</title>
+  </head>
+  <body>
+    <main>
+      <h1>Linked pill states</h1>
+      <Button id="keyboard-start">Start keyboard test</Button>
+      <div data-pill-links>
+        <Pill href="#destination" count={12}>Web development</Pill>
+        <Pill href="#destination" count={1234} variant="outline">Accessible interfaces and responsive layouts</Pill>
+        <Pill href="#destination" count={99} variant="brand">Component libraries</Pill>
+      </div>
+      <h2 id="destination">Destination</h2>
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+  main { max-width: 30rem; margin-inline: auto; padding: 1rem; }
+  h1, h2 { overflow-wrap: anywhere; }
+  [data-pill-links] { display: grid; justify-items: start; gap: 1rem; padding-block: 1rem; }
+</style>

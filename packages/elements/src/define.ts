@@ -23,10 +23,12 @@ import {
   createLumenScatterGeometry,
   createLumenWaterfallGeometry,
   createThemeBuilderTokens,
+  decodeLumenAnchorFragment,
   executeLumenRichTextCommand,
   exportThemeBuilderValue,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
+  getLumenActiveAnchorIndex,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
@@ -10043,7 +10045,7 @@ class LumenAnchorBehaviorElement extends LumenElement {
     const targets: { link: HTMLAnchorElement, target: HTMLElement }[] = []
 
     for (const link of links) {
-      const id = decodeURIComponent(link.getAttribute('href')?.slice(1) ?? '')
+      const id = decodeLumenAnchorFragment(link.getAttribute('href')?.slice(1) ?? '')
       const target = id ? document.getElementById(id) : null
 
       if (target) {
@@ -10052,6 +10054,8 @@ class LumenAnchorBehaviorElement extends LumenElement {
     }
 
     if (!targets.length) return
+
+    const headings = targets.map(({ target }) => target)
 
     const setActive = (active: HTMLAnchorElement) => {
       for (const link of links) {
@@ -10070,27 +10074,12 @@ class LumenAnchorBehaviorElement extends LumenElement {
     const update = () => {
       this.frame = 0
 
-      const scrollingElement =
-        document.scrollingElement ?? document.documentElement
-
-      const atEnd = scrollingElement.scrollTop + scrollingElement.clientHeight >=
-        scrollingElement.scrollHeight - 1
-
       const offset = Number(
         this.getAttribute('activation-offset') ?? this.dataset.uiAnchorOffset
-      ) || 0
+      )
 
-      let active = targets[0]?.link
-
-      if (atEnd) {
-        active = targets.at(-1)?.link
-      } else {
-        for (const item of targets) {
-          if (item.target.getBoundingClientRect().top > offset) break
-
-          active = item.link
-        }
-      }
+      const index = getLumenActiveAnchorIndex(headings, offset)
+      const active = targets[index]?.link
 
       if (active) setActive(active)
     }
