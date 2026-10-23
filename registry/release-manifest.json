@@ -6,7 +6,7 @@
         "com.santi020k:lumen-compose",
         "com.santi020k:lumen-compose-wear"
       ],
-      "version": "4.0.0"
+      "version": "4.0.1"
     },
     "npm": {
       "packages": {
@@ -14,17 +14,17 @@
           "peerDependencies": {
             "astro": ">=5"
           },
-          "version": "4.1.0"
+          "version": "4.3.0"
         },
         "@santi020k/lumen-core": {
           "peerDependencies": {
             "@rive-app/canvas": "^2.44.0"
           },
-          "version": "4.1.0"
+          "version": "4.3.0"
         },
         "@santi020k/lumen-elements": {
           "peerDependencies": {},
-          "version": "4.2.0"
+          "version": "4.3.0"
         },
         "@santi020k/lumen-icons-brand": {
           "peerDependencies": {},
@@ -34,18 +34,18 @@
           "peerDependencies": {
             "react": ">=19"
           },
-          "version": "4.2.0"
+          "version": "4.3.0"
         },
         "@santi020k/lumen-mcp": {
           "peerDependencies": {},
-          "version": "4.2.0"
+          "version": "4.3.0"
         },
         "@santi020k/lumen-react": {
           "peerDependencies": {
             "react": ">=19",
             "motion": "^14.0.0"
           },
-          "version": "4.1.0"
+          "version": "4.3.0"
         },
         "@santi020k/lumen-react-hook-form": {
           "peerDependencies": {
@@ -62,7 +62,7 @@
             "react-native": ">=0.86.2",
             "react-native-svg": ">=12 <16"
           },
-          "version": "4.0.1"
+          "version": "4.0.2"
         },
         "@santi020k/lumen-tokens": {
           "peerDependencies": {},
@@ -73,9 +73,9 @@
     "swift": {
       "package": "https://github.com/santi020k/lumen.git",
       "revision": null,
-      "tag": "v4.2.0"
+      "tag": "v4.3.0"
     },
-    "version": "4.2.0"
+    "version": "4.3.0"
   },
   "migration": {
     "codemod": null,

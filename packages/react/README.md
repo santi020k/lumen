@@ -288,7 +288,10 @@ example, error-boundary ownership, announcement behavior, and verification guida
 
 For long articles, `Anchor` accepts optional `depth`, `index`, and `description` metadata plus an
 `activationOffset`. It synchronizes the current link on click and scroll. `ScrollProgress` tracks
-the document without requiring a separate hook.
+the document without requiring a separate hook. The activation line uses the greater of
+`activationOffset` and the root `scroll-padding-top` plus each heading's `scroll-margin-top`, with a
+one CSS pixel rounding tolerance. Live styles keep enlarged text and responsive headers aligned
+with native fragment navigation. A page that cannot scroll keeps its first visible section current.
 
 ```tsx
 import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
@@ -572,6 +575,9 @@ columns and card-shaped `Skeleton` blocks while loading.
 Use `ScrollReveal` for one entrance, `RevealGroup` for tokenized child staggering, and
 `AnimatedNumber` for meaningful metric changes. Their `duration` prop uses the shared `fast`,
 `standard`, and `slow` vocabulary, and every primitive honors reduced-motion preferences.
+`ScrollReveal` and `RevealGroup` use the latest visibility update when the browser delivers a
+batch. They stop observing after that update reveals the content by default; use `once={false}`
+to repeat the entrance as the content leaves and enters the viewport.
 
 ```tsx
 <RevealGroup stagger={80}>
@@ -1141,3 +1147,20 @@ media loading, selection, adjustment algorithms, processing, export and persiste
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+## Tailwind CSS v4 complement
+
+Tailwind is optional. For utility-based customization, load these imports once in your global CSS:
+
+```css
+@import "@santi020k/lumen-react/layers.css";
+@import "tailwindcss";
+@import "@santi020k/lumen-react/styles.css";
+@import "@santi020k/lumen-react/tailwind.css";
+```
+
+The optional `tailwind.css` bridge (Lumen 4.3+) maps semantic colors to utilities such as
+`bg-surface`, `text-ink`, and `border-line`. Inline aliases follow root and nested Lumen themes.
+Use component props for behavior and utilities for local presentation. The standalone stylesheet
+does not require Tailwind. See the [Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind)
+for framework examples, source detection, and Preflight choices.

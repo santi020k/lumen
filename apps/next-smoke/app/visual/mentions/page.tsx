@@ -4,7 +4,11 @@ import { createElement, useEffect } from 'react'
 
 import { Button, Container, Input, Mentions, Stack, Typography } from '@santi020k/lumen-react'
 
+import { useFixtureReady } from '../use-fixture-ready'
+
 export default function MentionsKeyboardFixture() {
+  useFixtureReady()
+
   useEffect(() => {
     const register = async () => {
       const { defineLumenElements } = await import('@santi020k/lumen-elements/define')

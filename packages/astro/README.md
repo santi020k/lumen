@@ -103,12 +103,15 @@ The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI",
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
 your preferred delivery path, or override `--ui-font` in application CSS.
 
-With Tailwind, keep the Lumen import in the same shared CSS entry:
+With Tailwind CSS v4, keep the Lumen imports in the same shared CSS entry. The optional
+`tailwind.css` bridge (Lumen 4.3+) maps semantic colors to utilities such as `bg-surface` and
+`text-ink`, including nested themes. See the [Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind):
 
 ```css
 @import "@santi020k/lumen-astro/layers.css";
 @import "tailwindcss";
 @import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/lumen-astro/tailwind.css";
 ```
 
 ```astro
@@ -324,6 +327,9 @@ import { Button, Icon } from '@santi020k/lumen-astro'
 
 `Anchor` accepts heading `depth`, `index`, and `description` metadata plus an `activationOffset`.
 Its current link stays synchronized on click and scroll, including at the end of the document.
+The activation line uses the greater of `activationOffset` and the root `scroll-padding-top` plus
+each heading's `scroll-margin-top`, with a one CSS pixel rounding tolerance. Styles are read live so
+text resizing and responsive headers keep native fragment links and the current section aligned.
 `ScrollProgress` derives reading progress from the document and pins the indicator to the top or
 bottom viewport edge. Both use the single root `UIPrimitives` runtime.
 

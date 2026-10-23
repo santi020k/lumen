@@ -82,3 +82,5 @@ preview lumen migrate v4 --dry-run --json; review dependency updates and applica
 - [React form workflows](docs/powerful-forms.md): optional dependent validation, edit tracking, steps, repeatable rows, and async checks.
 
 - WorldMap: reusable dotted/solid SVG map in Astro, React and Elements. Import country geometry explicitly from @santi020k/lumen-core/world-map-data; see docs/world-map.md.
+
+- Tailwind CSS v4 complement: https://lumen.santi020k.com/docs/web/tailwind

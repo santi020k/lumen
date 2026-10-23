@@ -1114,6 +1114,53 @@ describe('Lumen React Native component behavior', () => {
     expect(root.container.queryAll(instance => instance.type === 'NativeDatePicker')).toHaveLength(0)
   })
 
+  test('Android date fields commit selections within bounds and ignore dismissal', async () => {
+    nativePlatform.OS = 'android'
+    const onValueChange = vi.fn()
+    const minimumDate = new Date(2026, 0, 10)
+    const maximumDate = new Date(2026, 0, 20)
+
+    try {
+      const root = await renderNative(
+        <LumenDateField label="Birthday" minimumDate={minimumDate} maximumDate={maximumDate} onValueChange={onValueChange} value={null} />
+      )
+
+      await runNativeAction(() => {
+        callAction(readProp(findByAccessibilityLabel(root, 'Birthday, Select a date'), 'onPress'), 'Missing date trigger')
+      })
+
+      const options = vi.mocked(DateTimePickerAndroid.open).mock.calls.at(-1)?.[0]
+
+      if (!options?.onValueChange) throw new Error('Missing Android date selection handler')
+
+      expect(options).not.toHaveProperty('onChange')
+
+      await runNativeAction(() => {
+        options.onDismiss?.()
+      })
+      expect(onValueChange).not.toHaveBeenCalled()
+
+      const change = options.onValueChange
+      const event = { nativeEvent: { timestamp: 0, utcOffset: 0 } }
+
+      await runNativeAction(() => {
+        change(event, new Date(2026, 0, 1))
+      })
+      expect(onValueChange).toHaveBeenLastCalledWith(minimumDate)
+      await runNativeAction(() => {
+        change(event, new Date(2026, 0, 30))
+      })
+      expect(onValueChange).toHaveBeenLastCalledWith(maximumDate)
+      await runNativeAction(() => {
+        change(event, new Date(2026, 0, 15))
+      })
+      expect(onValueChange).toHaveBeenLastCalledWith(new Date(2026, 0, 15))
+      expect(onValueChange).toHaveBeenCalledTimes(3)
+    } finally {
+      nativePlatform.OS = 'ios'
+    }
+  })
+
   test('disabling an Android date field dismisses its imperative native dialog', async () => {
     nativePlatform.OS = 'android'
 

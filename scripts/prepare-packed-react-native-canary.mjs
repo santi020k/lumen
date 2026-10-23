@@ -64,66 +64,66 @@ try {
     )
   }
 
-  const packedCoreDirectory = join(
-    playgroundDirectory,
-    'node_modules',
-    '@santi020k',
-    'lumen-core'
-  )
+  for (const packageName of ['core', 'react-native']) {
+    const packedDirectory = join(playgroundDirectory, 'node_modules', '@santi020k', `lumen-${packageName}`)
 
-  const packedCoreManifest = JSON.parse(
-    await readFile(join(packedCoreDirectory, 'package.json'), 'utf8')
-  )
-
-  assert.equal(
-    typeof packedCoreManifest.dependencies,
-    'object',
-    'Packed Core must declare its runtime dependencies'
-  )
-
-  for (const dependencyName of Object.keys(packedCoreManifest.dependencies)) {
-    assert.match(
-      dependencyName,
-      /^(?:@[^/]+\/)?[^/]+$/u,
-      `Packed Core contains an invalid dependency name: ${dependencyName}`
+    const packedManifest = JSON.parse(
+      await readFile(join(packedDirectory, 'package.json'), 'utf8')
     )
 
-    const dependencySegments = dependencyName.split('/')
-
-    assert.ok(
-      dependencySegments.every(segment => segment !== '.' && segment !== '..'),
-      `Packed Core contains an unsafe dependency name: ${dependencyName}`
+    assert.equal(
+      typeof packedManifest.dependencies,
+      'object',
+      'Packed Lumen package must declare its runtime dependencies'
     )
 
-    const sourceRoot = resolve(
-      repositoryRoot,
-      'packages',
-      'core',
-      'node_modules'
-    )
+    for (const dependencyName of Object.keys(packedManifest.dependencies)) {
+      // These two archives are already extracted into the playground's package tree.
+      if (dependencyName === '@santi020k/lumen-core' || dependencyName === '@santi020k/lumen-react-native') continue
 
-    const destinationRoot = resolve(packedCoreDirectory, 'node_modules')
-    const source = resolve(sourceRoot, ...dependencySegments)
-    const destination = resolve(destinationRoot, ...dependencySegments)
+      assert.match(
+        dependencyName,
+        /^(?:@[^/]+\/)?[^/]+$/u,
+        `Packed Lumen package contains an invalid dependency name: ${dependencyName}`
+      )
 
-    for (const [root, candidate] of [
-      [sourceRoot, source],
-      [destinationRoot, destination]
-    ]) {
-      const relativePath = relative(root, candidate)
+      const dependencySegments = dependencyName.split('/')
 
       assert.ok(
-        relativePath.length > 0 &&
-          !isAbsolute(relativePath) &&
-          relativePath !== '..' &&
-          !relativePath.startsWith(`..${sep}`),
-        `Packed Core dependency escapes its installation root: ${dependencyName}`
+        dependencySegments.every(segment => segment !== '.' && segment !== '..'),
+        `Packed Lumen package contains an unsafe dependency name: ${dependencyName}`
       )
+
+      const sourceRoot = resolve(
+        repositoryRoot,
+        'packages',
+        packageName,
+        'node_modules'
+      )
+
+      const destinationRoot = resolve(packedDirectory, 'node_modules')
+      const source = resolve(sourceRoot, ...dependencySegments)
+      const destination = resolve(destinationRoot, ...dependencySegments)
+
+      for (const [root, candidate] of [
+        [sourceRoot, source],
+        [destinationRoot, destination]
+      ]) {
+        const relativePath = relative(root, candidate)
+
+        assert.ok(
+          relativePath.length > 0 &&
+            !isAbsolute(relativePath) &&
+            relativePath !== '..' &&
+            !relativePath.startsWith(`..${sep}`),
+          `Packed Lumen package dependency escapes its installation root: ${dependencyName}`
+        )
+      }
+
+      await mkdir(dirname(destination), { recursive: true })
+
+      await cp(source, destination, { dereference: true, recursive: true })
     }
-
-    await mkdir(dirname(destination), { recursive: true })
-
-    await cp(source, destination, { dereference: true, recursive: true })
   }
 } finally {
   await rm(temporaryDirectory, { force: true, recursive: true })

@@ -153,7 +153,8 @@ export const globalStyleSetups: GlobalStyleSetup[] = [
   {
     code: `@import "@santi020k/lumen-astro/layers.css";
 @import "tailwindcss";
-@import "@santi020k/lumen-astro/styles.css";`,
+@import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/lumen-astro/tailwind.css";`,
     description:
       'Use the stylesheet exported by your framework package in your main CSS entry.',
     label: 'Astro + Tailwind',
@@ -2264,7 +2265,7 @@ const apiReferenceByComponent = {
   ],
   Pill: [
     apiRow(
-      'count', 'number | string', '-', 'Appends a muted count affix after the pill label.'
+      'count', 'number | string', '-', 'Appends a smaller count affix that stays together when the label wraps in a narrow container.'
     ),
     apiRow(
       'href', 'string', '-', 'Renders the pill as a focusable anchor when it represents a destination.'
@@ -2824,7 +2825,7 @@ const apiReferenceByComponent = {
       'items', 'Array<{ href, label, depth?, index?, description? }>', '[]', 'Defines compact or rich in-page navigation items with optional hierarchy and supporting content.'
     ),
     apiRow(
-      'activationOffset', 'number', '96', 'Sets the viewport-top offset in pixels used to activate sections during scrolling.'
+      'activationOffset', 'number', '96', 'Minimum viewport-top activation offset in pixels. Native root scroll padding plus heading scroll margin can move the line lower; one CSS pixel of rounding is tolerated.'
     )
   ],
   Segmented: [

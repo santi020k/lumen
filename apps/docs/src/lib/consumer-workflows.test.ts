@@ -4,11 +4,13 @@ import { act, createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { Button, Input } from '@santi020k/lumen-react'
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 
 import { ValidatedFormRecipe, type ValidatedFormRecipeProps } from '../../../../packages/lumen/templates/react/validated-form/src/lumen/validated-form'
 
 test('consumer form blocks invalid and duplicate submissions, retains failures and clears reset feedback', async () => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
+
   const container = document.createElement('div')
   const root = createRoot(container)
   let submissions = 0
@@ -89,5 +91,6 @@ test('consumer form blocks invalid and duplicate submissions, retains failures a
     })
 
     container.remove()
+    vi.unstubAllGlobals()
   }
 })

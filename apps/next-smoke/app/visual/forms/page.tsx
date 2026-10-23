@@ -5,7 +5,11 @@ import { useState } from 'react'
 import { Button, Combobox, DatePicker, DateRangeInput, Field, Form, Input, Label, PhoneInput, Stack, Typography } from '@santi020k/lumen-react'
 import { useLumenFormWorkflow } from '@santi020k/lumen-react/forms'
 
+import { useFixtureReady } from '../use-fixture-ready'
+
 export default function FormBehaviorPage() {
+  useFixtureReady()
+
   const [cancelReset, setCancelReset] = useState(false)
   const [nativeChanges, setNativeChanges] = useState(0)
   const [valueChanges, setValueChanges] = useState(0)

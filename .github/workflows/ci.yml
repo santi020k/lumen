@@ -232,7 +232,7 @@ jobs:
   browser-contracts:
     name: Browser interaction contracts
     needs: [classify, preflight]
-    if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.playwright == 'true'
+    if: needs.classify.outputs.playwright == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -265,7 +265,6 @@ jobs:
     needs: [classify, preflight]
     if: >-
       ${{
-        needs.classify.outputs.release-pr != 'true' &&
         needs.classify.outputs.react-native-captures == 'true'
       }}
     runs-on: ubuntu-latest
@@ -312,13 +311,15 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: react-native-captures
-          path: test-results/react-native-components
+          path: |
+            test-results/react-native-components
+            ${{ runner.temp }}/lumen-expo.log
           if-no-files-found: error
 
   mcp-node-20:
     name: MCP compatibility (Node 20)
     needs: [classify, preflight]
-    if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.mcp == 'true'
+    if: needs.classify.outputs.mcp == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -340,7 +341,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        node-version: '${{ fromJSON((needs.classify.outputs.release-pr == ''true'' || needs.classify.outputs.compatibility != ''true'') && ''["22.x"]'' || ''["22.x","24.x"]'') }}'
+        node-version: '${{ fromJSON(needs.classify.outputs.compatibility != ''true'' && ''["22.x"]'' || ''["22.x","24.x"]'') }}'
     env:
       # cspell:ignore SYNCKIT
       SYNCKIT_TIMEOUT: 120000
@@ -385,9 +386,16 @@ jobs:
           }}
         run: pnpm changeset status --since=origin/main
 
+      - name: Install Chromium for affected package tests
+        # Affected workspace tests include the motion app's browser suite.
+        # Browser binaries must exist before Turbo starts those package tests.
+        uses: ./.github/actions/setup-playwright
+        with:
+          browsers: chromium
+
       - name: Run CI checks
-        if: needs.classify.outputs.release-pr != 'true'
-        run: pnpm exec turbo run build typecheck lint test --affected
+        # Each Vitest suite already uses two workers; avoid oversubscribing the runner.
+        run: pnpm exec turbo run build typecheck lint test --affected --concurrency=50%
 
       - name: Validate portable AI plugin and migration artifacts
         run: pnpm run check:plugin-package && pnpm run test:plugin-package && pnpm run check:v4-migration
@@ -408,17 +416,6 @@ jobs:
             matrix.node-version == '22.x'
           }}
         run: pnpm run check:mcp-evaluation
-
-      - name: Install Playwright Chromium
-        if: >-
-          ${{
-            needs.classify.outputs.release-pr != 'true' &&
-            needs.classify.outputs.playwright == 'true' &&
-            matrix.node-version == '22.x'
-          }}
-        uses: ./.github/actions/setup-playwright
-        with:
-          browsers: chromium
 
       - name: Run accessibility checks
         if: >-

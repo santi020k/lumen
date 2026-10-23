@@ -467,6 +467,13 @@ failure; application code owns exception capture, logging, and retry policy. See
 [Web Components error-handling guide](https://github.com/santi020k/lumen/blob/main/docs/error-handling.md#web-components) for the complete
 light-DOM structure, ARIA ownership, retry boundary, and verification guidance.
 
+`lumen-anchor` uses the greater of `activation-offset` and the root `scroll-padding-top` plus
+heading `scroll-margin-top`, with one CSS pixel of rounding tolerance. It reads live styles for
+text resizing and responsive headers, and does not treat a non-scrolling page as the document end.
+
+`lumen-pill` wraps long text within its available width. A `.ui-pill__count` child stays together;
+plain text labels do not need a wrapper. This reflow behavior is shared by Astro and React `Pill`.
+
 ## Motion
 
 The elements adapter exposes the same motion vocabulary as Astro and React. Use
@@ -886,3 +893,20 @@ media loading, selection, adjustment algorithms, processing, export and persiste
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+## Tailwind CSS v4 complement
+
+Tailwind is optional. For utility-based customization, load these imports once in your global CSS:
+
+```css
+@import "@santi020k/lumen-elements/layers.css";
+@import "tailwindcss";
+@import "@santi020k/lumen-elements/styles.css";
+@import "@santi020k/lumen-elements/tailwind.css";
+```
+
+The optional `tailwind.css` bridge (Lumen 4.3+) maps semantic colors to utilities such as
+`bg-surface`, `text-ink`, and `border-line`. Inline aliases follow root and nested Lumen themes.
+Use component props for behavior and utilities for local presentation. The standalone stylesheet
+does not require Tailwind. See the [Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind)
+for framework examples, source detection, and Preflight choices.

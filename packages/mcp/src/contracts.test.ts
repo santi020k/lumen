@@ -5,22 +5,30 @@ import { loadLumenData } from './data.js'
 import { getComponent, getNativeComponent, getRecipe } from './tools.js'
 
 describe('structured usage contracts', () => {
-  test('validates all detail levels for every web and native adapter', () => {
-    const data = loadLumenData()
-    for (const detail of ['summary', 'usage', 'source'] as const) {
+  const data = loadLumenData()
+  const details = ['summary', 'usage', 'source'] as const
+
+  describe.each(details)('%s detail contracts', detail => {
+    test.each(['astro', 'react', 'elements'] as const)('validates every %s component', framework => {
       for (const component of data.components) {
-        for (const framework of ['astro', 'react', 'elements'] as const) {
-          expect(componentOutputSchema.safeParse(getComponent({ detail, framework, name: component.name }).data).success, `${component.name}/${framework}/${detail}`).toBe(true)
-        }
+        const result = getComponent({ detail, framework, name: component.name }, data)
+
+        expect(componentOutputSchema.safeParse(result.data).success, `${component.name}/${framework}/${detail}`).toBe(true)
       }
+    })
+
+    test.each(['react-native', 'swiftui', 'compose'] as const)('validates every %s component', platform => {
       for (const component of data.nativeComponents) {
-        for (const platform of ['react-native', 'swiftui', 'compose'] as const) {
-          expect(nativeComponentOutputSchema.safeParse(getNativeComponent({ detail, name: component.name, platform }).data).success, `${component.name}/${platform}/${detail}`).toBe(true)
-        }
+        const result = getNativeComponent({ detail, name: component.name, platform }, data)
+
+        expect(nativeComponentOutputSchema.safeParse(result.data).success, `${component.name}/${platform}/${detail}`).toBe(true)
       }
-    }
+    })
+  })
+
+  test('validates every recipe', () => {
     for (const recipe of data.recipes) {
-      const result = getRecipe({ name: recipe.name }).data
+      const result = getRecipe({ name: recipe.name }, data).data
 
       expect(recipeOutputSchema.safeParse(result).success).toBe(true)
     }

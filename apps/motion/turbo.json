@@ -3,7 +3,8 @@
   "extends": ["//"],
   "tasks": {
     "test": {
-      "passThroughEnv": ["LUMEN_MOTION_PORT"]
+      "dependsOn": ["$TURBO_EXTENDS$", "build"],
+      "passThroughEnv": ["$TURBO_EXTENDS$", "LUMEN_MOTION_PORT"]
     }
   }
 }

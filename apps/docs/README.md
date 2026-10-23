@@ -93,3 +93,10 @@ not a deployment.
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](../../LICENSE); third-party artwork retains its own notices.
+
+## Generated social images
+
+The documentation uses `@santi020k/og` 1.2 presets and a route manifest with content-versioned
+image URLs. Generation fingerprints include copy, assets, renderer configuration and the
+library version, so regenerated cards invalidate social preview caches. Run the workspace
+build to regenerate cards and verify the built metadata, images and sitemap audit.

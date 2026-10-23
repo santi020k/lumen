@@ -1,0 +1,23 @@
+/* Optional Tailwind CSS v4 theme bridge. Import after Tailwind and Lumen styles.
+ * Inline aliases resolve at the utility element so nested Lumen themes stay in sync.
+ * This file does not load Tailwind, Preflight, or Lumen component styles.
+ */
+@theme inline {
+  --color-canvas: hsl(var(--canvas));
+  --color-surface: hsl(var(--surface));
+  --color-surface-muted: hsl(var(--surface-muted));
+  --color-surface-strong: hsl(var(--surface-strong));
+  --color-line: hsl(var(--line));
+  --color-ink: hsl(var(--ink));
+  --color-ink-soft: hsl(var(--ink-soft));
+  --color-ink-muted: hsl(var(--ink-muted));
+  --color-brand: hsl(var(--brand));
+  --color-brand-solid: hsl(var(--brand-solid));
+  --color-brand-soft: hsl(var(--brand-soft));
+  --color-on-brand: hsl(var(--on-brand));
+  --color-accent: hsl(var(--accent));
+  --color-success: hsl(var(--success));
+  --color-warning: hsl(var(--warning));
+  --color-danger: hsl(var(--danger));
+  --color-on-danger: hsl(var(--on-danger));
+}

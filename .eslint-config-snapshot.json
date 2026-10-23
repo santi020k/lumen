@@ -1354,7 +1354,10 @@
           1
         ],
         "@eslint-react/dom-no-unsafe-target-blank": [
-          1
+          1,
+          {
+            "allowReferrer": false
+          }
         ],
         "@eslint-react/dom-no-use-form-state": [
           2
@@ -1474,7 +1477,10 @@
           1
         ],
         "@eslint-react/no-unstable-default-props": [
-          1
+          1,
+          {
+            "safeDefaultProps": []
+          }
         ],
         "@eslint-react/no-unused-class-component-members": [
           1
@@ -1507,7 +1513,12 @@
           2
         ],
         "@eslint-react/use-state": [
-          1
+          1,
+          {
+            "enforceAssignment": true,
+            "enforceLazyInitialization": true,
+            "enforceSetterName": true
+          }
         ],
         "@eslint-react/web-api-no-leaked-event-listener": [
           1

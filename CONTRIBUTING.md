@@ -62,9 +62,8 @@ on one kind of check.
 The canonical `pnpm run typecheck` also checks the local Figma Code Connect templates and their
 shared ambient types with `pnpm run typecheck:figma`.
 
-The root ESLint configuration explicitly supplies `@typescript-eslint/parser` for Astro files.
-Keep it as a declared development dependency: the Astro plugin resolves the parser from the
-consumer workspace, so a transitive installation alone does not guarantee type-aware linting.
+The shared ESLint composer supplies the TypeScript parser for Astro files. Keep parser ownership
+in `@santi020k/eslint-config-astro` instead of duplicating the parser in the root configuration.
 
 The Next.js smoke app runs type checking after its own build so the two tasks do not overwrite
 the same generated route types during combined checks.
@@ -89,6 +88,11 @@ The dedicated `pnpm run test:motion` suite also runs for ordinary and release pu
 covering primitive motion and reduced-motion behavior in Chromium, WebKit, and mobile Chromium.
 Quality's pinned pnpm setup action restores Turbo task outputs, while Java setup caches Gradle
 dependencies. Cache hits accelerate work but never replace the required checks or release approval.
+The build matrix installs Chromium before affected package tests; Turbo passes the cached browser
+location to those tests without using the machine-specific path as a cache key. Motion browser
+tests depend on their own preview build as well as dependency package builds.
+The matrix limits concurrent Turbo tasks to half the runner's logical CPUs because each Vitest
+suite uses two workers. This keeps CPU-heavy catalog tests within their normal timeouts.
 Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
 complete release gate.
 Linux browser setup configures 30-second APT connection/data timeouts and two retries per failed
@@ -271,9 +275,8 @@ commit, or the immutable existing version tag during recovery. Missing packages,
 and incorrect source provenance stop release creation. Version-preparation pull requests are not
 publication attempts; ordinary releases continue auditing their newly published packages.
 
-Feature pull requests run affected package checks plus the platform and integration gates selected
-from their changed paths. The automated release pull request resolves the exact Changesets package
-set and runs only its builds and publish dry-runs because its generated changes are limited to
-versions, changelogs, synchronized installation guidance, the lockfile, and the MCP snapshot. The
-publication run resolves the same scope from pending Changesets or unpublished local versions and
+All pull requests, including release branches, run affected builds, type checks, lint, and tests,
+plus the platform and integration gates selected from their changed paths. Release pull requests
+also resolve the exact Changesets package set for release builds and publish dry-runs. The
+publication run resolves that scope from pending Changesets or unpublished local versions and
 retains package-family, native, and MCP release gates only when that scope requires them.

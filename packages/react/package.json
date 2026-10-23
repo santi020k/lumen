@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-react",
-  "version": "4.1.0",
+  "version": "4.3.0",
   "publishConfig": {
     "access": "public"
   },
@@ -10,7 +10,8 @@
     "./layers.css",
     "./styles.css",
     "./styles/critical.css",
-    "./styles/data-table-view.css"
+    "./styles/data-table-view.css",
+    "./tailwind.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -108,7 +109,8 @@
     "./components/media-selection": {
       "types": "./dist/media-selection.d.ts",
       "import": "./dist/media-selection.js"
-    }
+    },
+    "./tailwind.css": "./tailwind.css"
   },
   "files": [
     "bin",
@@ -117,7 +119,8 @@
     "styles.css",
     "styles",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "tailwind.css"
   ],
   "bin": {
     "lumen": "./bin/lumen.mjs"

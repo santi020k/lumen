@@ -10,6 +10,25 @@ import test from 'node:test'
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const readRepositoryFile = path => readFile(resolve(repositoryRoot, path), 'utf8')
 
+test('motion browser tests wait for their preview build and inherit the browser cache path', () => {
+  const result = spawnSync(process.execPath, [
+    resolve(repositoryRoot, 'node_modules/turbo/bin/turbo'),
+    'run', 'test', '--filter=@santi020k/lumen-motion', '--dry=json', '--no-daemon'
+  ], { cwd: repositoryRoot, encoding: 'utf8', timeout: 30_000 })
+
+  assert.equal(result.status, 0, result.stderr)
+
+  const task = JSON.parse(result.stdout).tasks.find(item => item.taskId === '@santi020k/lumen-motion#test')
+
+  assert.ok(task, 'The task graph must include the motion browser suite')
+
+  assert.ok(task.dependencies.includes('@santi020k/lumen-motion#build'))
+
+  assert.ok(task.resolvedTaskDefinition.passThroughEnv.includes('PLAYWRIGHT_BROWSERS_PATH'))
+
+  assert.ok(task.resolvedTaskDefinition.passThroughEnv.includes('LUMEN_MOTION_PORT'))
+})
+
 test('docs build hashes change when imported repository Markdown changes', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'lumen-docs-build-inputs-'))
 

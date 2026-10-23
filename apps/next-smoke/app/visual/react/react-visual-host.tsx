@@ -26,6 +26,8 @@ import {
   VirtualList
 } from '@santi020k/lumen-react'
 
+import { useFixtureReady } from '../use-fixture-ready'
+
 const virtualRecords = Array.from({ length: 10000 }, (_, id) => ({ id, label: `Record ${id + 1}` }))
 
 const releaseColumns = [
@@ -46,6 +48,8 @@ const releaseRows = [
 ]
 
 export const ReactVisualHost = () => {
+  useFixtureReady()
+
   const [dialogOpen, setDialogOpen] = useState(false)
   const [progress, setProgress] = useState(68)
 

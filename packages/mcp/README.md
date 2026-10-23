@@ -184,6 +184,8 @@ catalog does not require user authentication.
 | `lumen_get_rules` | Return the Lumen agent rules from `llms.txt`. |
 
 Every tool returns both readable text and validated `structuredContent`.
+Record keys must match the canonical catalog or package names without surrounding whitespace.
+Malformed keys are rejected instead of trimmed, so distinct entries cannot silently collide.
 
 ## Resources
 

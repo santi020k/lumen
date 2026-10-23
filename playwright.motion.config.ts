@@ -13,7 +13,7 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   testDir: './tests/motion',
   workers: 2,
-  use: { baseURL },
+  use: { baseURL, screenshot: 'only-on-failure', trace: 'retain-on-failure' },
   webServer: {
     command: `pnpm --filter @santi020k/lumen-icons-brand... run build && pnpm --filter @santi020k/lumen-react run build && pnpm --filter @santi020k/lumen-elements run build && pnpm --filter @santi020k/lumen-docs exec astro dev --ignore-lock --host 127.0.0.1 --port ${port}`,
     gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
