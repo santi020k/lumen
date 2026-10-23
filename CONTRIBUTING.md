@@ -89,7 +89,8 @@ covering primitive motion and reduced-motion behavior in Chromium, WebKit, and m
 Quality's pinned pnpm setup action restores Turbo task outputs, while Java setup caches Gradle
 dependencies. Cache hits accelerate work but never replace the required checks or release approval.
 The build matrix installs Chromium before affected package tests; Turbo passes the cached browser
-location to those tests without using the machine-specific path as a cache key.
+location to those tests without using the machine-specific path as a cache key. Motion browser
+tests depend on their own preview build as well as dependency package builds.
 Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
 complete release gate.
 Linux browser setup configures 30-second APT connection/data timeouts and two retries per failed
