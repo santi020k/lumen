@@ -32,6 +32,7 @@ const adapters = [
 
 test('React workflow observes native reset-button defaults and final cancellation', async ({ page }) => {
   await page.goto('/visual/forms');
+  await expect(page.locator('html')).toHaveAttribute('data-fixture-ready', 'true');
   const input = page.getByRole('textbox', { name: 'Workflow value' });
   const dirty = page.getByRole('status', { name: 'Workflow dirty' });
   await input.fill('Draft');
@@ -220,6 +221,8 @@ for (const adapter of adapters) {
         await expect(
           page.locator('lumen-button[data-ready="true"]'),
         ).toBeVisible();
+      } else {
+        await expect(page.locator('html')).toHaveAttribute('data-fixture-ready', 'true');
       }
     });
 

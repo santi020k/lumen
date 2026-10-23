@@ -134,7 +134,23 @@ for (const width of [390, 1440]) {
           await target(page, id).evaluate(element => { element.scrollIntoView({ block: 'start' }); })
           await checkVisible(page, id)
         }
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
+        const layout = await page.evaluate(() => {
+          const width = document.documentElement.clientWidth
+
+          return {
+            width,
+            scrollWidth: document.documentElement.scrollWidth,
+            overflowingElements: [...document.querySelectorAll('*')]
+              .filter(element => element.getBoundingClientRect().right > width)
+              .map(element => ({
+                tag: element.tagName,
+                id: element.id,
+                className: element.getAttribute('class'),
+                right: element.getBoundingClientRect().right
+              }))
+          }
+        })
+        expect(layout.scrollWidth, JSON.stringify(layout)).toBeLessThanOrEqual(layout.width)
       })
 
       test('reduced motion keeps all content visible and accessible', async ({ page }) => {

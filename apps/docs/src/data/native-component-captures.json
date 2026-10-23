@@ -2276,7 +2276,7 @@
       "device": "Expo web renderer",
       "height": 847,
       "platform": "react-native",
-      "sha256": "2fc649fc624a207724cc538538a344ca9a3caad874883efbd5abad7a18897c8c",
+      "sha256": "c7cd668b9a714007119fa196112e400eb9a09993391861d766c3a5e6de7a8568",
       "slug": "agenda",
       "src": "/native-components/react-native/agenda.webp",
       "width": 350
@@ -2374,12 +2374,12 @@
     {
       "alt": "Breadcrumb rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 900,
+      "height": 200,
       "platform": "react-native",
-      "sha256": "33f1ca73ea985677a092179ac93af688d1adfe9cf5cd075c3750b174e15c76f3",
+      "sha256": "4bbf0259d505c52cd3248d3099e077e70e1940fa656769db45a0a90e199ba5ed",
       "slug": "breadcrumb",
       "src": "/native-components/react-native/breadcrumb.webp",
-      "width": 390
+      "width": 350
     },
     {
       "alt": "Bullet chart rendered in the Expo web renderer Lumen playground",
@@ -2414,9 +2414,9 @@
     {
       "alt": "Calendar rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 512,
+      "height": 516,
       "platform": "react-native",
-      "sha256": "46382fd80ff0973c0932fee631c8eded5d208d3adaebf1dbda4581cac79b8a1f",
+      "sha256": "7b660a9ce91a705ed452e11cc7b307fe58b2ba7ea04d99c5d2882da02299e358",
       "slug": "calendar",
       "src": "/native-components/react-native/calendar.webp",
       "width": 350
@@ -2444,12 +2444,12 @@
     {
       "alt": "Carousel rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 732,
+      "height": 768,
       "platform": "react-native",
-      "sha256": "d928d7bb32c82c59981394d21b83c1adef21b5ce78772ab95cfd1e99e12bfc76",
+      "sha256": "3d37e741ae71ed6f685da05d29e5dff0be5884f1bd21681a8781c14f6057ba08",
       "slug": "carousel",
       "src": "/native-components/react-native/carousel.webp",
-      "width": 358
+      "width": 350
     },
     {
       "alt": "Cascader rendered in the Expo web renderer Lumen playground",
@@ -2496,7 +2496,7 @@
       "device": "Expo web renderer",
       "height": 860,
       "platform": "react-native",
-      "sha256": "5a5e4bc9e2bc37b9b9677040962a82d7799f67932b8b1672ed2421888101b44c",
+      "sha256": "2b198863cf4118eab8e351121e9d32e993d2947c68f2e719aa13f61fecb1c3da",
       "slug": "color-picker",
       "src": "/native-components/react-native/color-picker.webp",
       "width": 350
@@ -2514,22 +2514,22 @@
     {
       "alt": "Command rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 1000,
+      "height": 268,
       "platform": "react-native",
-      "sha256": "e6e197cd5a3bb38eaa34c3899834cf74630e66109cb9b2b9083681839e0ec709",
+      "sha256": "a8448049f6b66fff407e9db74e2757f6e05204b3528fb2ca1fbf487bb771a877",
       "slug": "command",
       "src": "/native-components/react-native/command.webp",
-      "width": 390
+      "width": 350
     },
     {
       "alt": "Data table rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 900,
+      "height": 2020,
       "platform": "react-native",
-      "sha256": "6796b258749c53ad8b81cd7fd41b7b3bc2001e3ee9e472613a9a1efa67d79242",
+      "sha256": "2edacb8a34483d2648b0f6863ba1351d662cfdeb4efa4de6a7ca548c0428945c",
       "slug": "data-table",
       "src": "/native-components/react-native/data-table.webp",
-      "width": 390
+      "width": 350
     },
     {
       "alt": "Date field rendered in the Expo web renderer Lumen playground",
@@ -2724,22 +2724,22 @@
     {
       "alt": "Kanban board rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 900,
+      "height": 776,
       "platform": "react-native",
-      "sha256": "b4305ab0f6b061d42c1e7dbead53b418d0290b394c6e4375f18e6f962d61ee9c",
+      "sha256": "bb4319addb2f210b96e68c8f9edf8a68f7c02268da0e31ba19bc5b571eb233a4",
       "slug": "kanban-board",
       "src": "/native-components/react-native/kanban-board.webp",
-      "width": 390
+      "width": 350
     },
     {
       "alt": "Kanban column rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 1000,
+      "height": 824,
       "platform": "react-native",
-      "sha256": "6e9b976f624e1f89a96f5018739aae01a788dfe348b41be3c1fb5cebc09c8fa2",
+      "sha256": "c98469674831995c14d68d63caae296183cc3b29ff173d3d8fed1af121ab8f09",
       "slug": "kanban-column",
       "src": "/native-components/react-native/kanban-column.webp",
-      "width": 390
+      "width": 350
     },
     {
       "alt": "Line chart rendered in the Expo web renderer Lumen playground",
@@ -2804,12 +2804,12 @@
     {
       "alt": "Mentions rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 1552,
+      "height": 636,
       "platform": "react-native",
-      "sha256": "72b0ab6b7bdf775c5008b16d5c405eeaab9b57c079bd587326eaa6478f5ee28e",
+      "sha256": "a9d39d303973ff0aaf3f6e3dcf9d0eb4a5b1b7beef64713d4c14cbfc327eb9de",
       "slug": "mentions",
       "src": "/native-components/react-native/mentions.webp",
-      "width": 700
+      "width": 350
     },
     {
       "alt": "Menu rendered in the Expo web renderer Lumen playground",
@@ -2914,12 +2914,12 @@
     {
       "alt": "QR code rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 936,
+      "height": 468,
       "platform": "react-native",
-      "sha256": "e82890554fbf8f11cf12896dfacd0373258ffd4fffd5fd3d8aca281f70ac9009",
+      "sha256": "a94acf97ace6dfc9eea3a1e89610291b3ced4ba684e0ddc833c228484396e72e",
       "slug": "qr-code",
       "src": "/native-components/react-native/qr-code.webp",
-      "width": 700
+      "width": 350
     },
     {
       "alt": "Radio group rendered in the Expo web renderer Lumen playground",
@@ -2954,12 +2954,12 @@
     {
       "alt": "Rating rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 900,
+      "height": 440,
       "platform": "react-native",
-      "sha256": "c89b516a36d5a4d38aaa7be1a489b36cec6323edda8a0ce6dad51488343dce55",
+      "sha256": "09355351101f140082df8ff0a555f1f2825c64e2e131197730d26ab132674e17",
       "slug": "rating",
       "src": "/native-components/react-native/rating.webp",
-      "width": 390
+      "width": 350
     },
     {
       "alt": "Refresh control rendered in the Expo web renderer Lumen playground",
@@ -3114,12 +3114,12 @@
     {
       "alt": "Stepper rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 1000,
+      "height": 708,
       "platform": "react-native",
-      "sha256": "8a0d468f70293bfddcf87f589d4d7306a0f075f7ef4b9321fa5d82d7e2e446bd",
+      "sha256": "af21d7d46a5292c65465b5e5fcfd9fdb0cc2df88bd24ae43f9f0084721a0f993",
       "slug": "stepper",
       "src": "/native-components/react-native/stepper.webp",
-      "width": 390
+      "width": 350
     },
     {
       "alt": "Surface rendered in the Expo web renderer Lumen playground",
@@ -3134,12 +3134,12 @@
     {
       "alt": "Table rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 1632,
+      "height": 816,
       "platform": "react-native",
-      "sha256": "6ecc4a71cf60bf04bd166f0b52803345ca603233e136a35e172e7b2c90164165",
+      "sha256": "381a91a277c41177a456cc3009e4b5779a9acabaac4be98b8707277219949fec",
       "slug": "table",
       "src": "/native-components/react-native/table.webp",
-      "width": 700
+      "width": 350
     },
     {
       "alt": "Tabs rendered in the Expo web renderer Lumen playground",
@@ -3204,12 +3204,12 @@
     {
       "alt": "Timeline rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 1584,
+      "height": 792,
       "platform": "react-native",
-      "sha256": "1ee7224d2798e43c5afbbcce53d6d8c049da1e2af8560846e8f6e75f31a92997",
+      "sha256": "c32e4ad3e71517b41a4066fccee9726a95597bf1e442f244dd1ea0400030460e",
       "slug": "timeline",
       "src": "/native-components/react-native/timeline.webp",
-      "width": 700
+      "width": 350
     },
     {
       "alt": "Toast rendered in the Expo web renderer Lumen playground",
@@ -3236,17 +3236,17 @@
       "device": "Expo web renderer",
       "height": 268,
       "platform": "react-native",
-      "sha256": "09739a0df49623d198be45dcc94643b0cdc45e293220df90736a02f141a8be75",
+      "sha256": "1469685e157995da485807eba24e6a60dc97346923ad423e7a8483b588c2b31b",
       "slug": "tooltip",
       "src": "/native-components/react-native/tooltip.webp",
-      "width": 358
+      "width": 350
     },
     {
       "alt": "Tour rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 1000,
+      "height": 900,
       "platform": "react-native",
-      "sha256": "a089498e8fc2cfc40d7440bb060d36e6b300c5193436cdbbf607b8ba24670e52",
+      "sha256": "6ba6df915c79f5f2fc8a620f8b786e31ab1455208540833d227269ec9e31d830",
       "slug": "tour",
       "src": "/native-components/react-native/tour.webp",
       "width": 390
@@ -3266,7 +3266,7 @@
       "device": "Expo web renderer",
       "height": 632,
       "platform": "react-native",
-      "sha256": "be912f73d78c164ab6910681e39f77321705ee8a20747a5f3c197151973a390e",
+      "sha256": "a6a535889d2674a865cf6f567e120bf4dd0dcb7ec13c45328db98f409b111f4d",
       "slug": "tree",
       "src": "/native-components/react-native/tree.webp",
       "width": 350
@@ -3276,17 +3276,17 @@
       "device": "Expo web renderer",
       "height": 572,
       "platform": "react-native",
-      "sha256": "17797771ecca6795b758c3ce74704c52e6257f9f2ad30fe6df7719913104f9e9",
+      "sha256": "073e49d5e44c29c00b97c41c93e4ac78373fec3b04f316ea747d47450f91b94f",
       "slug": "tree-grid",
       "src": "/native-components/react-native/tree-grid.webp",
-      "width": 358
+      "width": 350
     },
     {
       "alt": "Tree select rendered in the Expo web renderer Lumen playground",
       "device": "Expo web renderer",
-      "height": 440,
+      "height": 408,
       "platform": "react-native",
-      "sha256": "d6f7ef4a005df87ce623f252fc1093c9e54cdfc63f7f4ff92b833794603c9d66",
+      "sha256": "297cf8f616ed65b00578226888944a45434d108bdbd799200d828d7986693c20",
       "slug": "tree-select",
       "src": "/native-components/react-native/tree-select.webp",
       "width": 350

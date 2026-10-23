@@ -20,6 +20,7 @@
     },
     "test": {
       "dependsOn": ["^build"],
+      "passThroughEnv": ["PLAYWRIGHT_BROWSERS_PATH"],
       "inputs": [
         "$TURBO_DEFAULT$",
         "$TURBO_ROOT$/tsconfig*.json",

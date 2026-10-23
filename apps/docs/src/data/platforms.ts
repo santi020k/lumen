@@ -72,8 +72,8 @@ export interface PlatformGuide {
   title: string
 }
 
-const lumenComposeCoordinate = 'com.santi020k:lumen-compose:4.0.0'
-const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:4.0.0'
+const lumenComposeCoordinate = 'com.santi020k:lumen-compose:4.0.1'
+const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:4.0.1'
 const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [

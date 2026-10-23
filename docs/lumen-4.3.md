@@ -25,6 +25,7 @@ React reveal components use the latest visibility entry in each observer batch. 
 visibility thresholds retain their existing behavior; the viewport-entry proposal is deferred.
 React Native date fields use the supported Android selection callback, so canceling a picker
 does not commit the original value. The existing datetimepicker peer range remains supported.
+Compose updates Google's libphonenumber to 9.0.42 for current phone-number metadata.
 The responsive documentation navigation stays directly beneath the header while scrolling.
 
 MCP rejects whitespace-padded record keys instead of silently merging distinct entries. Social
@@ -47,7 +48,9 @@ existing setup or migrate Tailwind before adopting this v4 bridge. Native adapte
 ### Package versions
 
 The umbrella, Astro, React, Elements, Core, and MCP packages are prepared at 4.3.0;
-React Native is prepared at 4.0.2 with the Android date selection fix; React Hook Form remains at 4.0.1; tokens, brand icons, and Compose remain at 4.0.0.
+React Native is prepared at 4.0.2 with the Android date selection fix. Compose and Wear are
+prepared at 4.0.1 with the phone-metadata update. React Hook Form remains at 4.0.1;
+tokens and brand icons remain at 4.0.0.
 Swift uses the repository's release tag without a native API change. Hosted MCP, plugin directory,
 and store delivery remain separate from local package preparation.
 

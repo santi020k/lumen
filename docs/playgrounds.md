@@ -319,7 +319,7 @@ link the platform package differently:
 - React Native installs `@santi020k/lumen-react-native` from npm and mounts one `LumenProvider`.
 - Apple applications add `https://github.com/santi020k/lumen` through Swift Package Manager and
   select the `LumenUI` product.
-- Android applications install `com.santi020k:lumen-compose:4.0.0` from Maven Central. The repository
+- Android applications install `com.santi020k:lumen-compose:4.0.1` from Maven Central. The repository
   playground intentionally references the local module so it can exercise unreleased changes.
 
 See the corresponding React Native, Apple, or Android documentation page for complete application
@@ -346,3 +346,8 @@ The PR workflow regenerates the React Native, iPhone, and Android phone captures
 runners and compares normalized output with the committed gallery. macOS, watchOS, and Wear OS
 captures remain represented in the manifest and are checked for coverage; regenerate those
 specialized targets with their package scripts when their implementations change.
+
+React Native parity examples use a 390-pixel phone viewport and capture the focused example.
+Tooltip captures explicitly open the help text; Tour captures include the open dialog and its
+surrounding page. Keep these states in the capture script so local regeneration and CI reproduce
+the same documentation images. Other React Native examples retain their desktop capture layout.
