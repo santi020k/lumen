@@ -180,7 +180,7 @@ const LumenDateFieldControl = ({
       DateTimePickerAndroid.open({
         ...pickerBounds,
         mode: 'date',
-        onChange: commitValue,
+        onValueChange: commitValue,
         value: pickerValue
       })
 
