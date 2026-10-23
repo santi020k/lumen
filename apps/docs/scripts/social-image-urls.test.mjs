@@ -21,3 +21,15 @@ test('replaces a stale version and stays idempotent on subsequent runs', () => {
 
   assert.equal(versionSocialImageUrls(expected, imageUrl), expected)
 })
+
+test('preserves different hosts and paths that resemble the image URL', () => {
+  const urls = [
+    'https://lumenXsanti020k.com/og/pages/docs.webp',
+    'https://lumen.santi020kXcom/og/pages/docs.webp',
+    'https://lumen.santi020k.com/og/pages/docsXwebp'
+  ]
+
+  const html = urls.map(url => `<meta content="${url}">`).join('')
+
+  assert.equal(versionSocialImageUrls(html, imageUrl), html)
+})
