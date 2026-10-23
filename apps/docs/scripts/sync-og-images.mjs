@@ -29,7 +29,7 @@ for (const route of Object.values(manifest.routes)) {
   const pathname = route.pathname.replace(/^\/+|\/+$/gu, '')
   const htmlPath = path.resolve(root, process.env.LUMEN_DOCS_OUT_DIR ?? 'dist', pathname, 'index.html')
   const html = await readFile(htmlPath, 'utf8')
-  const imageUrl = new URL(image.url, 'https://lumen.santi020k.com').href
+  const imageUrl = new URL(image.url, process.env.PUBLIC_SITE_URL ?? 'https://lumen.santi020k.com').href
 
   await writeFile(htmlPath, versionSocialImageUrls(html, imageUrl))
 }
