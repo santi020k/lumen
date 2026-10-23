@@ -355,7 +355,7 @@ test("release pull requests run source checks and social-image regressions", asy
 
   assert.doesNotMatch(sourceCheck, /\n\s+if:/u, "source validation must also run for release branches");
 
-  assert.match(sourceCheck, /run: pnpm exec turbo run build typecheck lint test --affected/u);
+  assert.match(sourceCheck, /run: pnpm exec turbo run build typecheck lint test --affected --concurrency=50%/u);
 
   const buildJob = ciWorkflow.split("  build:\n")[1];
 

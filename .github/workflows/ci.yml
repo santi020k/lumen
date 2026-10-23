@@ -394,7 +394,8 @@ jobs:
           browsers: chromium
 
       - name: Run CI checks
-        run: pnpm exec turbo run build typecheck lint test --affected
+        # Each Vitest suite already uses two workers; avoid oversubscribing the runner.
+        run: pnpm exec turbo run build typecheck lint test --affected --concurrency=50%
 
       - name: Validate portable AI plugin and migration artifacts
         run: pnpm run check:plugin-package && pnpm run test:plugin-package && pnpm run check:v4-migration
