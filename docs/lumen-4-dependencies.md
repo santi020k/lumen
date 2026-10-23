@@ -1,5 +1,29 @@
 # Lumen v4 dependency refresh — 2026-10-03
 
+## v4.3 publication security follow-up — 2026-10-23
+
+The publication audit stopped before publishing on the updated
+[Zod collection advisory](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5).
+All v4 dependency paths now resolve to stable Zod 4.6.7, including the MCP runtime and clean
+consumer fixture. This version satisfies the existing 24-hour dependency-age policy.
+
+Expo CLI and Chromium diagnostics still require Zod 3.25.76, whose latest v3 release has no
+published fix. The exact-version patch adapts
+[upstream's leading size checks](https://github.com/colinhacks/zod/pull/6652) to its v3 arrays/sets
+and embedded v4 runtime. Oversized bounded collections stop before element parsing; valid inputs,
+unbounded collections, asynchronous parsing, nested paths, and preprocessing retain their APIs.
+The embedded v4 gate respects check ordering so an earlier overwrite can shrink a collection.
+
+The existing security guard verifies the patch hash, all four changed runtime files, actual
+installed resolution, and behavior through default CommonJS and ESM entry points, including
+v4 mini/core and map bounds. The opt-in `@zod/source` export condition is not used by this workspace
+and still points at upstream TypeScript sources; this patch does not qualify that condition. The exact patched
+version can coexist with the fixed v4 release; different vulnerable versions still fail the audit.
+This workspace patch does not propagate to downstream package consumers. Remove it after the
+remaining tooling adopts a fixed compatible release. No audit ignore or age-policy exception is added.
+
+The following October 3 record is historical.
+
 The workspace remains on release/v4.0.0. No releases, pushes, deployments, account changes, or consumer repository changes were made. Versions were verified directly against npm, Google Maven, Maven Central, and Gradle metadata. Stable versions less than 24 hours old were held under the existing `minimumReleaseAgeStrict` policy; no exclusions or age bypasses were added.
 
 ## Consolidation security investigation

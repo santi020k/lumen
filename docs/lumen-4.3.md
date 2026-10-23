@@ -58,6 +58,13 @@ and store delivery remain separate from local package preparation.
 
 Release qualification updates Vite to 8.3.5, Next.js to 16.4.2, the MCP server/client SDK to 2.3.1,
 and the MCP Express adapter to 2.0.2. These address the security findings in the previous lockfile.
+The publication audit also updates Zod to 4.6.7 after the
+[collection advisory](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5) was revised to include
+4.6.5. The patched release rejects oversized constrained collections before parsing their elements.
+Expo and browser diagnostics still require Zod 3.25.76, so a version-locked backport preserves
+their APIs while rejecting oversized bounded arrays and sets before element validation. The patch
+also covers its embedded v4 entry points. Hash and behavior checks verify every installed patched
+instance; unrelated versions and advisories remain subject to the production audit.
 Next.js 16.4.2 is the latest patched release eligible under the repository's 24-hour dependency-age
 policy at preparation time; no age exception or audit suppression is added. Lumen already creates
 an MCP server and transport for each HTTP request, matching the updated SDK lifecycle requirements.

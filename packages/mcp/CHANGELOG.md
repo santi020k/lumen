@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Require patched Zod 4.6.7 to reject oversized constrained collections before parsing their elements.
+
 - Reject surrounding whitespace in MCP record keys instead of trimming and silently merging distinct entries. Canonical catalog and package names retain their existing behavior.
 
 - Keep Anchor highlighting aligned with native fragment navigation after text resizing. All web

@@ -113,7 +113,7 @@ try {
       'react-hook-form@7.89.0',
       'typescript@6.0.3',
       'yup@1.7.1',
-      'zod@4.6.5'
+      'zod@4.6.7'
     ],
     consumerDirectory
   )

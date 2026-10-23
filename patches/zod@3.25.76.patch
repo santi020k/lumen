@@ -1,0 +1,116 @@
+diff --git a/v3/types.cjs b/v3/types.cjs
+index 11ed4dfc4745f9af1f1501874576b78b77d294ef..5345c07fe996df84725640397bfb6b1fefc46d54 100644
+--- a/v3/types.cjs
++++ b/v3/types.cjs
+@@ -1819,6 +1819,11 @@ class ZodArray extends ZodType {
+                 status.dirty();
+             }
+         }
++        // Reject oversized collections before allocating per-element issues.
++        if ((def.exactLength !== null && ctx.data.length > def.exactLength.value) ||
++            (def.maxLength !== null && ctx.data.length > def.maxLength.value)) {
++            return parseUtil_js_1.INVALID;
++        }
+         if (ctx.common.async) {
+             return Promise.all([...ctx.data].map((item, i) => {
+                 return def.type._parseAsync(new ParseInputLazyPath(ctx, item, ctx.path, i));
+@@ -2846,6 +2851,10 @@ class ZodSet extends ZodType {
+                 status.dirty();
+             }
+         }
++        // Reject oversized collections before allocating per-element issues.
++        if (def.maxSize !== null && ctx.data.size > def.maxSize.value) {
++            return parseUtil_js_1.INVALID;
++        }
+         const valueType = this._def.valueType;
+         function finalizeSet(elements) {
+             const parsedSet = new Set();
+diff --git a/v3/types.js b/v3/types.js
+index 40b11c0f01b2af54e0ed48e198607bd8836d9a63..164e2f5779f21644f6b6aa7d191d6cc788fb4e78 100644
+--- a/v3/types.js
++++ b/v3/types.js
+@@ -1798,6 +1798,11 @@ export class ZodArray extends ZodType {
+                 status.dirty();
+             }
+         }
++        // Reject oversized collections before allocating per-element issues.
++        if ((def.exactLength !== null && ctx.data.length > def.exactLength.value) ||
++            (def.maxLength !== null && ctx.data.length > def.maxLength.value)) {
++            return INVALID;
++        }
+         if (ctx.common.async) {
+             return Promise.all([...ctx.data].map((item, i) => {
+                 return def.type._parseAsync(new ParseInputLazyPath(ctx, item, ctx.path, i));
+@@ -2817,6 +2822,10 @@ export class ZodSet extends ZodType {
+                 status.dirty();
+             }
+         }
++        // Reject oversized collections before allocating per-element issues.
++        if (def.maxSize !== null && ctx.data.size > def.maxSize.value) {
++            return INVALID;
++        }
+         const valueType = this._def.valueType;
+         function finalizeSet(elements) {
+             const parsedSet = new Set();
+diff --git a/v4/core/schemas.cjs b/v4/core/schemas.cjs
+index 7c77d2b5af031e086d535f4b2e1898cec17eda29..09827cceee154a8aec6c055ba41a9ebab201660a 100644
+--- a/v4/core/schemas.cjs
++++ b/v4/core/schemas.cjs
+@@ -104,6 +104,26 @@ exports.$ZodType = core.$constructor("$ZodType", (inst, def) => {
+             return payload;
+         };
+         inst._zod.run = (payload, ctx) => {
++            // Backport leading collection-size gates from upstream a0ebf970.
++            const value = payload.value;
++            const size = def.type === "array" && Array.isArray(value) ? value.length
++                : def.type === "set" && value instanceof Set ? value.size
++                : def.type === "map" && value instanceof Map ? value.size : -1;
++            if (size >= 0) {
++                for (const check of checks) {
++                    const bound = check._zod.def;
++                    if (!["min_length", "max_length", "length_equals", "min_size", "max_size", "size_equals"].includes(bound.check)) break;
++                    const maximum = bound.maximum ?? bound.length ?? bound.size;
++                    if (maximum >= 0 && size > maximum && (!bound.when || bound.when(payload))) {
++                        const start = payload.issues.length;
++                        check._zod.check(payload);
++                        if (payload.issues.length > start) {
++                            payload.issues[start].continue = false;
++                            return payload;
++                        }
++                    }
++                }
++            }
+             const result = inst._zod.parse(payload, ctx);
+             if (result instanceof Promise) {
+                 if (ctx.async === false)
+diff --git a/v4/core/schemas.js b/v4/core/schemas.js
+index 692ce1fc2d0e138b51b5af2bafe0e2b4a279c0bc..044185c4cc1996fc0f837b443703f06f9c4cdde9 100644
+--- a/v4/core/schemas.js
++++ b/v4/core/schemas.js
+@@ -74,6 +74,26 @@ export const $ZodType = /*@__PURE__*/ core.$constructor("$ZodType", (inst, def)
+             return payload;
+         };
+         inst._zod.run = (payload, ctx) => {
++            // Backport leading collection-size gates from upstream a0ebf970.
++            const value = payload.value;
++            const size = def.type === "array" && Array.isArray(value) ? value.length
++                : def.type === "set" && value instanceof Set ? value.size
++                : def.type === "map" && value instanceof Map ? value.size : -1;
++            if (size >= 0) {
++                for (const check of checks) {
++                    const bound = check._zod.def;
++                    if (!["min_length", "max_length", "length_equals", "min_size", "max_size", "size_equals"].includes(bound.check)) break;
++                    const maximum = bound.maximum ?? bound.length ?? bound.size;
++                    if (maximum >= 0 && size > maximum && (!bound.when || bound.when(payload))) {
++                        const start = payload.issues.length;
++                        check._zod.check(payload);
++                        if (payload.issues.length > start) {
++                            payload.issues[start].continue = false;
++                            return payload;
++                        }
++                    }
++                }
++            }
+             const result = inst._zod.parse(payload, ctx);
+             if (result instanceof Promise) {
+                 if (ctx.async === false)
