@@ -76,7 +76,10 @@ const checkVisible = async (page: Page, id: string) => {
   const root = target(page, id)
   await expect(root).toHaveClass(/is-revealed/)
   const animated = id.endsWith('group') ? root.locator(':scope > *') : root
-  for (const item of await animated.all()) await expect(item).toHaveCSS('opacity', '1')
+  for (const item of await animated.all()) {
+    await expect(item).toHaveCSS('opacity', '1')
+    await expect(item).toHaveCSS('transform', 'none')
+  }
 }
 
 for (const width of [390, 1440]) {
@@ -153,9 +156,20 @@ for (const width of [390, 1440]) {
         expect(layout.scrollWidth, JSON.stringify(layout)).toBeLessThanOrEqual(layout.width)
       })
 
-      test('reduced motion keeps all content visible and accessible', async ({ page }) => {
+      for (const theme of ['light', 'dark']) test(`reduced motion keeps all content visible and accessible in ${theme}`, async ({ page }) => {
         await page.emulateMedia({ reducedMotion: 'reduce' })
         await openFixture(page, width, scale)
+        await page.evaluate(value => { document.documentElement.dataset.theme = value }, theme)
+
+        const ink = await page.evaluate(() => {
+          const probe = document.createElement('span')
+          probe.style.color = 'hsl(var(--ink))'
+          document.body.append(probe)
+          const color = getComputedStyle(probe).color
+          probe.remove()
+          return color
+        })
+        await expect(page.locator('body')).toHaveCSS('color', ink)
         for (const id of ids) {
           await checkVisible(page, id)
           const root = target(page, id)
@@ -166,19 +180,8 @@ for (const width of [390, 1440]) {
           }
         }
         await page.addScriptTag({ path: axePath })
-        for (const theme of ['light', 'dark']) {
-          await page.evaluate(value => { document.documentElement.dataset.theme = value }, theme)
-          // Let inherited text colors and surface colors settle in the same frame.
-          await page.evaluate(() => new Promise<void>(resolve => {
-            requestAnimationFrame(() => requestAnimationFrame(() => { resolve() }))
-          }))
-          await expect.poll(() => page.locator('main :is(h1, h2, h3, p)').evaluateAll(elements => {
-            const foreground = getComputedStyle(document.body).color
-            return elements.every(element => getComputedStyle(element).color === foreground)
-          })).toBe(true)
-          const violations: unknown = await page.evaluate('axe.run("main", { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } }).then(result => result.violations)')
-          expect(violations).toEqual([])
-        }
+        const violations: unknown = await page.evaluate('axe.run("main", { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] } }).then(result => result.violations)')
+        expect(violations).toEqual([])
       })
     })
   }

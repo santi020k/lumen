@@ -8,6 +8,8 @@ import { defineConfig } from 'astro/config'
 import { migrationMarkdownLinks } from './src/lib/migration-markdown'
 
 export default defineConfig({
+  // CI measures application layout without the development toolbar's overlay.
+  devToolbar: { enabled: !process.env.CI },
   markdown: { processor: satteri({ mdastPlugins: [migrationMarkdownLinks] }) },
   integrations: [sitemap({
     filter: page => {

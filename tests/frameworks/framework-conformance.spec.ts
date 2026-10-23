@@ -105,6 +105,7 @@ test('Elements ContextMenu enters the last or first item from container focus', 
 for (const framework of ['React', 'Elements']) {
   test(`${framework} Mentions keeps suggestions out of the Tab sequence without losing selection`, async ({ page }) => {
     await page.goto('/visual/mentions');
+    await expect(page.locator('html')).toHaveAttribute('data-fixture-ready', 'true');
     const input = page.getByRole('combobox', { name: `${framework} mentions`, exact: true });
     await input.fill('@');
     await expect(input).toHaveAttribute('aria-expanded', 'true');
