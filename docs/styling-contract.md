@@ -51,7 +51,10 @@ Card additionally exposes `card-header`, `card-title`, `card-description`, `card
 ```
 
 Host overrides should live after Lumen styles or in Tailwind utilities. When Tailwind is present,
-import Lumen's layer prelude first, Tailwind second, and Lumen styles third.
+import Lumen's layer prelude first, Tailwind second, and Lumen styles third. The optional
+`tailwind.css` export comes last and maps semantic colors to Tailwind v4 utilities using
+`@theme inline`, preserving nested theme scopes. See the
+[Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind) for complete framework setup.
 
 ### Phone fields
 

@@ -35,7 +35,7 @@ shared tokens and explicit component contracts.
 
 **Explore:** [Quick start](#web-quick-start) · [Native apps](#native-playgrounds) · [Templates](#dashboards-and-templates) · [AI and Figma](#ai-and-design-workflows) · [Packages](#packages) · [Repository apps](#repository-apps) · [Contributing](#contributing)
 
-> **Lumen 4:** See the [v4.2 highlights](docs/lumen-4.2.md) for SwiftUI appearance and agent guidance,
+> **Lumen 4:** See the [upcoming v4.3 Tailwind complement](docs/lumen-4.3.md), the [v4.2 highlights](docs/lumen-4.2.md) for SwiftUI appearance and agent guidance,
 > and [v4.1 highlights](docs/lumen-4.1.md) for loading and forms. Follow the [migration guide](docs/migrating-v3-to-v4.md) when
 > upgrading from v3. Package versions and store builds follow their own release schedules.
 
@@ -168,6 +168,11 @@ and component contract; repository contributors can also use the
 
 ## Tailwind CSS
 
+Use Tailwind CSS v4 as an optional complement for responsive layouts and component customization.
+The `tailwind.css` bridge (Lumen 4.3+) exposes Lumen semantic colors such as `bg-surface`,
+`text-ink`, and `border-line`, including nested themes. See the
+[Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind) for framework examples and troubleshooting.
+
 Keep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace
 `lumen-astro` with the package for your framework.
 
@@ -175,6 +180,7 @@ Keep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared
 @import "@santi020k/lumen-astro/layers.css";
 @import "tailwindcss";
 @import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/lumen-astro/tailwind.css";
 ```
 
 This order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen

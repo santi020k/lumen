@@ -9729,6 +9729,22 @@
       "pathname": "/docs/web/reporting",
       "title": "Date ranges and reporting — Lumen UI"
     },
+    "/docs/web/tailwind": {
+      "alt": "Tailwind CSS with Lumen — Documentation social preview from Lumen UI",
+      "description": "Use Tailwind CSS v4 alongside Lumen components: installation, semantic colors, responsive utilities, cascade layers, and framework examples.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--tailwind.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--tailwind.webp",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/tailwind",
+      "title": "Tailwind CSS with Lumen - Lumen UI"
+    },
     "/docs/web/world-map/destinations": {
       "alt": "WorldMap destination examples — Documentation social preview from Lumen UI",
       "description": "Copy regional WorldMap examples for Astro, React, and Web Components, and customize country highlights, labels, and colors.",

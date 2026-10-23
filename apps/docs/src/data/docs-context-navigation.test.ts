@@ -8,6 +8,10 @@ import {
 } from './docs-context-navigation'
 
 describe('documentation context navigation', () => {
+  test('links the Tailwind guide from web documentation', () => {
+    expect(getCurrentDocsContextLink(getDocsContextLinks('web'), '/docs/web/tailwind')?.label).toBe('Tailwind CSS')
+  })
+
   test('marks the migration collection current on every version guide', () => {
     const links = getDocsContextLinks(undefined)
 

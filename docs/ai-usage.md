@@ -245,17 +245,21 @@ stylesheet.
 @import "@santi020k/lumen-react/styles.css";
 ```
 
-If Tailwind is present, keep both imports in the same shared CSS entry.
+If Tailwind is present, keep these imports in the same shared CSS entry.
 
 ```css
 @import "@santi020k/lumen-react/layers.css";
 @import "tailwindcss";
 @import "@santi020k/lumen-react/styles.css";
+@import "@santi020k/lumen-react/tailwind.css";
 ```
 
 Keep the layer prelude first. It places Tailwind base styles below Lumen components and Tailwind
 utilities above them, so consumer spacing, display, radius, width, and responsive visibility
-classes override Lumen defaults predictably.
+classes override Lumen defaults predictably. The optional `tailwind.css` bridge (Lumen 4.3+)
+provides semantic color utilities such as `bg-surface`, `text-ink`, and `border-line` through
+inline aliases that follow nested themes. Keep class names literal and scan consumer code only;
+Lumen ships its component CSS. See the [Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind).
 
 Astro apps should mount `UIPrimitives` once in the root layout when using interactive primitives
 such as dialogs, menus, popovers, tabs, carousels, command lists, toggles, validated forms, or

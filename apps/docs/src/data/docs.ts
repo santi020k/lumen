@@ -153,7 +153,8 @@ export const globalStyleSetups: GlobalStyleSetup[] = [
   {
     code: `@import "@santi020k/lumen-astro/layers.css";
 @import "tailwindcss";
-@import "@santi020k/lumen-astro/styles.css";`,
+@import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/lumen-astro/tailwind.css";`,
     description:
       'Use the stylesheet exported by your framework package in your main CSS entry.',
     label: 'Astro + Tailwind',

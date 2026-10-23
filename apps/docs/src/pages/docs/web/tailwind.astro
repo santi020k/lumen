@@ -1,0 +1,171 @@
+---
+import { ButtonLink, Card, CodeTabs, Grid, Link, Stack } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../../components/CodeBlock.astro'
+import DocsPageHero from '../../../components/DocsPageHero.astro'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+
+const labels = { astro: 'Astro', elements: 'Elements', react: 'React' }
+
+const styles = (['astro', 'react', 'elements'] as const).map(framework => ({
+  code: `@import "@santi020k/lumen-${framework}/layers.css";
+@import "tailwindcss";
+@import "@santi020k/lumen-${framework}/styles.css";
+@import "@santi020k/lumen-${framework}/tailwind.css";`,
+  label: labels[framework],
+  language: 'css',
+  value: framework
+}))
+
+const examples = [
+  {
+    code: `---
+import { ButtonLink, Card } from '@santi020k/lumen-astro'
+---
+
+<Card class="rounded-none p-6 sm:p-8">
+  <h3 class="text-xl font-bold text-ink">Your next project</h3>
+  <p class="text-ink-soft">Accessible components, your layout.</p>
+  <ButtonLink href="/projects" class="w-full sm:w-auto sm:self-start">
+    View projects
+  </ButtonLink>
+</Card>`,
+    label: 'Astro',
+language: 'astro',
+value: 'astro'
+  },
+  {
+    code: `import { ButtonLink, Card } from '@santi020k/lumen-react'
+
+export function ProjectCard() {
+  return (
+    <Card className="rounded-none p-6 sm:p-8">
+      <h3 className="text-xl font-bold text-ink">Your next project</h3>
+      <p className="text-ink-soft">Accessible components, your layout.</p>
+      <ButtonLink href="/projects" className="w-full sm:w-auto sm:self-start">
+        View projects
+      </ButtonLink>
+    </Card>
+  )
+}`,
+    label: 'React',
+language: 'tsx',
+value: 'react'
+  },
+  {
+    code: `<lumen-card class="rounded-none p-6 sm:p-8">
+  <h3 class="text-xl font-bold text-ink">Your next project</h3>
+  <p class="text-ink-soft">Accessible components, your layout.</p>
+</lumen-card>`,
+    label: 'Elements',
+language: 'html',
+value: 'elements'
+  }
+]
+
+const noPreflight = `@import "@santi020k/lumen-astro/layers.css";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "@santi020k/lumen-astro/styles.css";
+@import "@santi020k/lumen-astro/tailwind.css";`
+
+const scopedTheme = `<Card data-theme="lumen-dark" class="bg-surface text-ink">
+  <p class="text-ink-soft">This surface follows its local Lumen theme.</p>
+</Card>`
+---
+
+<DocsLayout
+  title="Tailwind CSS with Lumen - Lumen UI"
+  description="Use Tailwind CSS v4 alongside Lumen components: installation, semantic colors, responsive utilities, cascade layers, and framework examples."
+>
+  <Stack gap="section">
+    <DocsPageHero
+      eyebrow="Web integration · Tailwind CSS v4"
+      title="Tailwind CSS"
+      description="Keep Lumen's accessible controls and semantic themes. Add Tailwind for responsive composition and focused presentation changes through class or className."
+    />
+
+    <Stack as="section" gap="group" aria-labelledby="setup-title">
+      <h2 id="setup-title" class="text-xl font-bold text-ink">1. Connect your styles</h2>
+      <p class="text-ink-soft">The optional <code>tailwind.css</code> bridge is available from Lumen 4.3. It adds semantic color utilities to an existing Tailwind v4 build. Lumen's standalone stylesheet continues to work without Tailwind.</p>
+      <p class="text-ink-soft">Install your Lumen adapter, then set up Tailwind using its <Link href="https://tailwindcss.com/docs/installation/using-vite">Vite integration</Link> for Astro or React with Vite, or its <Link href="https://tailwindcss.com/docs/installation/using-postcss">PostCSS integration</Link> for Next.js. In Astro, register <code>tailwindcss()</code> in <code>vite.plugins</code>.</p>
+      <CodeBlock code={'pnpm add @santi020k/lumen-astro\npnpm add -D tailwindcss @tailwindcss/vite'} lang="bash" />
+      <p class="text-ink-soft">Keep all four imports in one global CSS entry, in this order. Load that file once from your root layout or app entry. Choose the adapter you installed:</p>
+      <CodeTabs ariaLabel="Tailwind stylesheet by framework" items={styles} />
+      <p class="text-ink-soft">The first import establishes the cascade before Tailwind's reset. Lumen's components then retain their defaults, while the final utilities layer can override presentation. The bridge maps colors; it does not import Tailwind, reset styles, or component CSS.</p>
+      <p class="text-ink-soft">Keep the usual runtime setup: mount <code>UIPrimitives</code> once in an Astro root layout; use React components normally; call <code>defineLumenElements()</code> once for Elements. Follow the <Link href="/docs/frameworks/astro">Astro</Link>, <Link href="/docs/frameworks/react">React</Link>, or <Link href="/docs/frameworks/elements">Elements</Link> guide. The CLI also prints this setup with <code>lumen init --framework astro --tailwind</code>.</p>
+    </Stack>
+
+    <Stack as="section" gap="group" aria-labelledby="compose-title">
+      <h2 id="compose-title" class="text-xl font-bold text-ink">2. Compose with utilities</h2>
+      <p class="text-ink-soft">Use component props for variants, sizes, disabled states, and behavior. Use utilities for local spacing, width, responsive layout, and presentation. Astro and Elements accept <code>class</code>; React accepts <code>className</code>.</p>
+      <Card
+class="
+  rounded-none p-6
+  sm:p-8
+"
+data-tailwind-example
+      >
+        <h3 class="text-xl font-bold text-ink">Your next project</h3>
+        <p class="text-ink-soft">Accessible components, your layout.</p>
+        <ButtonLink
+href="/docs/components"
+class="
+  w-full
+  sm:w-auto sm:self-start
+"
+        >Explore components</ButtonLink>
+      </Card>
+      <CodeTabs ariaLabel="Component utilities by framework" items={examples} />
+      <p class="text-ink-soft">The live card has square corners and responsive padding. Its link fills the available width on phones. Tailwind changes those properties while Lumen still supplies the component structure and keyboard focus treatment.</p>
+    </Stack>
+
+    <Stack as="section" gap="group" aria-labelledby="colors-title">
+      <h2 id="colors-title" class="text-xl font-bold text-ink">3. Share one semantic palette</h2>
+      <p class="text-ink-soft">The bridge exposes <code>canvas</code>, <code>surface</code>, <code>surface-muted</code>, <code>surface-strong</code>, <code>line</code>, <code>ink</code>, <code>ink-soft</code>, <code>ink-muted</code>, <code>brand</code>, <code>brand-solid</code>, <code>brand-soft</code>, <code>on-brand</code>, <code>accent</code>, <code>success</code>, <code>warning</code>, <code>danger</code>, and <code>on-danger</code>.</p>
+      <p class="text-ink-soft">Use them anywhere Tailwind accepts a color: <code>bg-surface</code>, <code>text-ink</code>, <code>border-line</code>, <code>ring-brand</code>, or <code>bg-brand/10</code>. Pair <code>bg-brand-solid</code> with <code>text-on-brand</code> and <code>bg-danger</code> with <code>text-on-danger</code>; check contrast for your theme overrides.</p>
+      <Grid columns={1} class="sm:grid-cols-2">
+        {['light', 'dark'].map(theme => (
+          <Card
+data-theme={`lumen-${theme}`}
+class="border-line bg-surface text-ink"
+data-tailwind-theme={theme}
+          >
+            <h3 class="font-bold">{theme === 'light' ? 'Light surface' : 'Dark surface'}</h3>
+            <p class="text-ink-soft">The same utility names follow this card's theme.</p>
+            <ButtonLink href="/docs/theme-playground" class="w-full">Explore themes</ButtonLink>
+          </Card>
+        ))}
+      </Grid>
+      <CodeBlock code={scopedTheme} lang="astro" />
+      <p class="text-ink-soft">Aliases use <code>@theme inline</code>, so colors resolve where the utility is used, including nested <code>data-theme</code> scopes. Set your theme on the root for the whole app. Semantic color utilities already follow that theme without <code>dark:</code> classes. The bridge does not change Tailwind's dark variant; configure that variant separately if you use it for structural changes.</p>
+    </Stack>
+
+    <Stack as="section" gap="group" aria-labelledby="customize-title">
+      <h2 id="customize-title" class="text-xl font-bold text-ink">Customize through public hooks</h2>
+      <p class="text-ink-soft">Prefer props and semantic tokens first, then documented component variables or stable <code>data-slot</code> parts. For example, tune the card's padding with a custom property utility:</p>
+      <CodeBlock code={'<Card class="[--ui-card-padding:2rem]">\n  Content with the documented Card padding hook.\n</Card>'} lang="astro" />
+      <p class="text-ink-soft">For compound components, place utilities on the public part you want to style. With Elements, a host class styles the custom element; it does not automatically style an internal input or button. Consult the component's public parts instead of targeting private <code>.ui-*</code> selectors. Preserve visible focus, readable contrast, and usable touch targets.</p>
+    </Stack>
+
+    <Stack as="section" gap="group" aria-labelledby="preflight-title">
+      <h2 id="preflight-title" class="text-xl font-bold text-ink">Choose whether to include Preflight</h2>
+      <p class="text-ink-soft">The standard Tailwind import includes Preflight, which resets native headings, lists, borders, and form styles across your app. If you already own a reset, omit Preflight and import Tailwind's theme and utilities separately:</p>
+      <CodeBlock code={noPreflight} lang="css" />
+      <p class="text-ink-soft">Keep the Lumen layer prelude first in either setup. Follow <Link href="https://tailwindcss.com/docs/preflight">Tailwind's Preflight guide</Link> when choosing the reset for your application.</p>
+    </Stack>
+
+    <Stack as="section" gap="group" aria-labelledby="troubleshooting-title">
+      <h2 id="troubleshooting-title" class="text-xl font-bold text-ink">When a utility does not apply</h2>
+      <ul class="list-disc space-y-3 pl-5 text-ink-soft">
+        <li><strong>Missing color utilities:</strong> confirm that the matching <code>tailwind.css</code> bridge is imported and your CSS passes through Tailwind v4. It is a build-time stylesheet, not a browser-only import.</li>
+        <li><strong>Utilities lose to defaults:</strong> put <code>layers.css</code> before the first Tailwind or Lumen stylesheet. Keep imports together and remove duplicate component stylesheet imports from JavaScript.</li>
+        <li><strong>Utilities are absent:</strong> keep complete class names in source. Use a map of literal classes instead of building names such as <code>{'`bg-${color}`'}</code>. In a monorepo, configure <code>@source</code> for your own shared UI files.</li>
+        <li><strong>Should I scan Lumen's package?</strong> No. Lumen ships its component CSS. Tailwind only needs to scan the consumer files where you write utilities.</li>
+        <li><strong>An override still loses:</strong> inline styles, unlayered app CSS, and important declarations can take precedence. Inspect the computed style and use a documented hook where the component owns that value.</li>
+        <li><strong>Using Tailwind v3?</strong> This bridge uses v4's <code>@theme</code> directive. Keep standalone Lumen CSS and your existing v3 setup, or migrate Tailwind before adopting the bridge.</li>
+      </ul>
+      <p class="text-ink-soft">See <Link href="https://tailwindcss.com/docs/theme#referencing-other-variables">Tailwind theme aliases</Link> and <Link href="https://tailwindcss.com/docs/detecting-classes-in-source-files">source detection</Link> for the underlying build behavior.</p>
+    </Stack>
+  </Stack>
+</DocsLayout>

@@ -64,6 +64,7 @@ const contextLinks: Record<DocsPlatformId | 'all', DocsContextLink[]> = {
     { href: '/docs/frameworks/astro', label: 'Astro', match: 'prefix' },
     { href: '/docs/frameworks/react', label: 'React', match: 'prefix' },
     { href: '/docs/frameworks/elements', label: 'Elements', match: 'prefix' },
+    { href: '/docs/web/tailwind', label: 'Tailwind CSS', match: 'prefix' },
     { href: '/docs/forms', label: 'Forms', match: 'prefix' },
     { href: '/docs/web/consumer-workflows', label: 'Consumer workflows' },
     { href: '/docs/icons', label: 'Icons', match: 'prefix' },

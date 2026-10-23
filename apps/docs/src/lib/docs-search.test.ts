@@ -51,9 +51,10 @@ describe('docs search ranking', () => {
   })
 
   test.each([
+    ['tailwind utilities', '/docs/web/tailwind'],
     ['ai react', '/guides/build-ui-with-ai'],
     ['ai token usage', '/guides/measure-ai-ui-token-usage']
-  ])('finds the practical AI guide for %s', (query, href) => {
+  ])('finds the practical guide for %s', (query, href) => {
     expect(getMatchedSearchItems(docsSearchIndex, query).some(result => result.href === href)).toBe(true)
   })
 

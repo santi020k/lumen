@@ -11,7 +11,8 @@
     "./styles.css",
     "./styles/critical.css",
     "./styles/motion.css",
-    "./styles/world-map.css"
+    "./styles/world-map.css",
+    "./tailwind.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -32,7 +33,8 @@
     "./layers.css": "./layers.css",
     "./package.json": "./package.json",
     "./styles/motion.css": "./styles/motion.css",
-    "./styles/world-map.css": "./styles/world-map.css"
+    "./styles/world-map.css": "./styles/world-map.css",
+    "./tailwind.css": "./tailwind.css"
   },
   "files": [
     "bin",
@@ -45,7 +47,8 @@
     "templates",
     "README.md",
     "LICENSE",
-    "v4-migration.json"
+    "v4-migration.json",
+    "tailwind.css"
   ],
   "bin": {
     "lumen": "./bin/lumen.mjs"

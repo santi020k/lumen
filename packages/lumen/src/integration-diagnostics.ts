@@ -1135,21 +1135,24 @@ export const createLumenSetup = (framework: 'astro' | 'elements' | 'react', tail
       tailwind:
         '@import "@santi020k/lumen-astro/layers.css";\n' +
         '@import "tailwindcss";\n' +
-        '@import "@santi020k/lumen-astro/styles.css";'
+        '@import "@santi020k/lumen-astro/styles.css";\n' +
+        '@import "@santi020k/lumen-astro/tailwind.css";'
     },
     elements: {
       styles: '@import "@santi020k/lumen-elements/styles.css";',
       tailwind:
         '@import "@santi020k/lumen-elements/layers.css";\n' +
         '@import "tailwindcss";\n' +
-        '@import "@santi020k/lumen-elements/styles.css";'
+        '@import "@santi020k/lumen-elements/styles.css";\n' +
+        '@import "@santi020k/lumen-elements/tailwind.css";'
     },
     react: {
       styles: '@import "@santi020k/lumen-react/styles.css";',
       tailwind:
         '@import "@santi020k/lumen-react/layers.css";\n' +
         '@import "tailwindcss";\n' +
-        '@import "@santi020k/lumen-react/styles.css";'
+        '@import "@santi020k/lumen-react/styles.css";\n' +
+        '@import "@santi020k/lumen-react/tailwind.css";'
     }
   } as const
 

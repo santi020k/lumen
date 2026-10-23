@@ -9,7 +9,9 @@
   "sideEffects": [
     "./styles/lumen.css",
     "./styles/critical.css",
-    "./styles.css"
+    "./styles.css",
+    "./styles/tailwind.css",
+    "./styles/layers.css"
   ],
   "types": "./index.ts",
   "exports": {
@@ -26,7 +28,8 @@
     "./layers.css": "./styles/layers.css",
     "./styles.css": "./styles/lumen.css",
     "./styles/critical.css": "./styles/critical.css",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./tailwind.css": "./styles/tailwind.css"
   },
   "files": [
     "bin",

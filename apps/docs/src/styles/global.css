@@ -1,6 +1,8 @@
+@import "@santi020k/lumen/layers.css";
 @import "tailwindcss";
 @import "./fonts.css";
 @import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen/tailwind.css";
 @import "@santi020k/theme/typography.css";
 
 @source "../../../../packages/astro/components";
@@ -96,21 +98,6 @@
 }
 
 @theme {
-  --color-canvas: hsl(var(--canvas));
-  --color-surface: hsl(var(--surface));
-  --color-surface-muted: hsl(var(--surface-muted));
-  --color-surface-strong: hsl(var(--surface-strong));
-  --color-line: hsl(var(--line));
-  --color-ink: hsl(var(--ink));
-  --color-ink-soft: hsl(var(--ink-soft));
-  --color-ink-muted: hsl(var(--ink-muted));
-  --color-brand: hsl(var(--brand));
-  --color-brand-solid: hsl(var(--brand-solid));
-  --color-brand-soft: hsl(var(--brand-soft));
-  --color-accent: hsl(var(--accent));
-  --color-success: hsl(var(--success));
-  --color-warning: hsl(var(--warning));
-  --color-danger: hsl(var(--danger));
   --font-sans: var(--app-font-sans);
   --font-display: var(--app-font-display);
   --font-brand: var(--app-font-brand);

@@ -143,6 +143,14 @@ const recipeItems: DocsSearchItem[] = [
     title: 'Install and use Lumen',
     type: 'Recipe'
   },
+  {
+    category: 'Web integrations',
+    description: 'Use Tailwind CSS v4 alongside Lumen components with semantic colors, responsive utilities, and predictable cascade layers.',
+    href: '/docs/web/tailwind',
+    keywords: 'tailwind css utilities theme inline layers preflight astro react elements class className dark mode',
+    title: 'Tailwind CSS with Lumen',
+    type: 'Recipe'
+  },
   ...platformGuides.map(guide => ({
     category: 'Platform documentation',
     description: guide.summary,
