@@ -91,7 +91,7 @@ catalog:
   vitest: ^5.0.3
   wrangler: ^4.147.0
   yup: ^1.7.1
-  zod: ^4.6.5
+  zod: ^4.6.7
 catalogs:
   # Keep this group aligned with `expo install --check` for SDK 57.
   # React 19.3, React Native 0.87, and their matching renderer/types are not
@@ -133,6 +133,7 @@ patchedDependencies:
   braces@3.0.3: patches/braces@3.0.3.patch
   node-forge@1.4.0: patches/node-forge@1.4.0.patch
   react-native@0.86.3: patches/react-native@0.86.3.patch
+  zod@3.25.76: patches/zod@3.25.76.patch
 peerDependencyRules:
   allowedVersions:
     eslint: "10"

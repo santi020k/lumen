@@ -6,8 +6,9 @@ import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import test from 'node:test'
+import { pathToFileURL } from 'node:url'
 
-import { collectPatchedInstances, evaluateAudit, verifyBracesBehavior, verifyForgeBehavior, verifyInstalledPatch, verifyPatchFiles } from './security-patches.mjs'
+import { collectPatchedInstances, evaluateAudit, verifyBracesBehavior, verifyForgeBehavior, verifyInstalledPatch, verifyPatchFiles, verifyZodBehavior } from './security-patches.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const policies = JSON.parse(await readFile(resolve(root, 'registry/security-patches.json'), 'utf8'))
@@ -23,6 +24,7 @@ const createFixture = async context => {
   const policy = {
     name: 'braces',
     version: '3.0.3',
+    advisory: 'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm',
     patch: 'braces.patch',
     sha256: hash('reviewed patch'),
     files: { 'index.js': hash('patched implementation') }
@@ -137,11 +139,11 @@ test('only verified exact advisory, package and version pairs are mitigated', ()
   const advisories = policies.map(policy => advisoryFor(policy))
   const result = evaluateAudit(reportFor(advisories), 1, policies)
 
-  assert.equal(result.mitigated.length, 2)
+  assert.equal(result.mitigated.length, policies.length)
 
   assert.equal(result.blocking.length, 0)
 
-  assert.equal(evaluateAudit(reportFor(advisories), 1, []).blocking.length, 2)
+  assert.equal(evaluateAudit(reportFor(advisories), 1, []).blocking.length, policies.length)
 
   for (const overrides of [
     { url: 'https://github.com/advisories/new-advisory' },
@@ -169,6 +171,25 @@ test('cache and new moderate-or-higher findings remain blocking', () => {
   assert.equal(evaluateAudit(reportFor([]), 0, policies).blocking.length, 0)
 })
 
+test('coexisting versions do not inherit an exact-version patch exception', async context => {
+  const { directory, policy, project } = await createFixture(context)
+  const parent = resolve(directory, 'other')
+  const packageDirectory = resolve(parent, 'node_modules/braces')
+
+  await mkdir(packageDirectory, { recursive: true })
+
+  await writeFile(resolve(packageDirectory, 'package.json'), JSON.stringify({ name: 'braces', version: '3.0.4' }))
+
+  const other = { path: parent, dependencies: { braces: { path: packageDirectory, version: '3.0.4' } } }
+  const installed = await collectPatchedInstances(directory, [project, other], [policy])
+
+  assert.equal(installed.get('braces').size, 1)
+
+  const advisory = advisoryFor(policy, { findings: [{ version: policy.version, paths: ['patched>braces'] }, { version: '3.0.4', paths: ['other>braces'] }] })
+
+  assert.equal(evaluateAudit(reportFor([advisory]), 1, [policy]).blocking.length, 1)
+})
+
 test('network errors, malformed reports, missing findings and inconsistent counts fail closed', () => {
   for (const report of [null, {}, { error: { code: 'network' } }, { advisories: {}, metadata: {} }]) {
     assert.throws(() => evaluateAudit(report, 1, policies))
@@ -191,13 +212,13 @@ test('network errors, malformed reports, missing findings and inconsistent count
   assert.throws(() => evaluateAudit(report, 1, policies), /count mismatch/u)
 })
 
-test('installed patch regressions preserve signatures, certificates, globs and ranges', async () => {
+test('installed patch regressions preserve signatures, globs and bounded collection validation', async () => {
   const inventory = spawnSync('pnpm', ['list', '--recursive', ...policies.map(policy => policy.name), '--depth', 'Infinity', '--json'], { cwd: root, encoding: 'utf8' })
 
   assert.equal(inventory.status, 0)
 
   const instances = await collectPatchedInstances(root, JSON.parse(inventory.stdout), policies)
-  const checks = { braces: verifyBracesBehavior, 'node-forge': verifyForgeBehavior }
+  const checks = { braces: verifyBracesBehavior, 'node-forge': verifyForgeBehavior, zod: verifyZodBehavior }
 
   for (const policy of policies) {
     const installed = instances.get(policy.name)
@@ -209,7 +230,11 @@ test('installed patch regressions preserve signatures, certificates, globs and r
 
       const require = createRequire(resolve(directory, 'package.json'))
 
-      checks[policy.name](require(directory))
+      await checks[policy.name](require(directory))
+
+      for (const entry of policy.additionalEntrypoints ?? []) {
+        await checks[policy.name](await import(pathToFileURL(resolve(directory, entry)).href))
+      }
     }
   }
 })

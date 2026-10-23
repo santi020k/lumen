@@ -50,6 +50,7 @@ export const collectPatchedInstances = async (root, projects, policies) => {
   const rootPath = await realpath(root)
   const pending = [...projects]
   const instances = new Map(policies.map(policy => [policy.name, new Map()]))
+  const patchedVersions = new Map(policies.map(policy => [policy.name, policy.version]))
 
   while (pending.length > 0) {
     const parent = pending.pop()
@@ -74,9 +75,8 @@ export const collectPatchedInstances = async (root, projects, policies) => {
         // Check actual resolution as well as pnpm's lockfile-derived inventory.
         assert.equal(await resolveDependency(parentPath, name), childPath, `Installed resolution differs from lockfile: ${name}`)
 
-        const matchingInstances = instances.get(name)
-
-        if (matchingInstances) matchingInstances.set(childPath, child.version)
+        // Other versions remain subject to the audit; only this exact version can receive a patch exception.
+        if (child.version === patchedVersions.get(name)) instances.get(name).set(childPath, child.version)
 
         pending.push(child)
       }
@@ -197,6 +197,115 @@ export const verifyBracesBehavior = braces => {
   cycle.parent = cycle
 
   assert.throws(() => braces.expand(cycle), /parent chain contains a cycle/u)
+}
+
+const verifyZodCoreBehavior = async core => {
+  const string = new core.$ZodString({ type: 'string' })
+  const maxLength = new core.$ZodCheckMaxLength({ check: 'max_length', maximum: 2 })
+  const maxSize = new core.$ZodCheckMaxSize({ check: 'max_size', maximum: 2 })
+  const entries = Array.from({ length: 10_000 }, (_, index) => [index, index])
+
+  const cases = [
+    [new core.$ZodArray({ type: 'array', element: string, checks: [maxLength] }), entries, ['a', 'b']],
+    [new core.$ZodSet({ type: 'set', valueType: string, checks: [maxSize] }), new Set(entries), new Set(['a', 'b'])],
+    [new core.$ZodMap({ type: 'map', keyType: string, valueType: string, checks: [maxSize] }), new Map(entries), new Map([['a', 'b']])]
+  ]
+
+  for (const [schema, oversized, valid] of cases) {
+    for (const result of [core.safeParse(schema, oversized), await core.safeParseAsync(schema, oversized)]) {
+      assert.equal(result.success, false)
+
+      assert.deepEqual(result.error.issues.map(issue => issue.code), ['too_big'])
+    }
+
+    assert.equal(core.safeParse(schema, valid).success, true)
+
+    assert.equal(core.safeParse(schema, null).error.issues[0].code, 'invalid_type')
+  }
+}
+
+export const verifyZodBehavior = async zod => {
+  if (zod.$ZodArray) return verifyZodCoreBehavior(zod)
+
+  if (typeof zod.array(zod.string()).max !== 'function') {
+    const schema = zod.array(zod.string()).check(zod.maxLength(2))
+
+    assert.equal(zod.safeParse(schema, [1, 2, 3]).error.issues.length, 1)
+
+    return verifyZodCoreBehavior(zod.core)
+  }
+
+  let parsed = 0
+  let refined = 0
+
+  const element = zod.preprocess(value => {
+    parsed++
+
+    return value
+  }, zod.string())
+
+  const oversized = Array.from({ length: 10_000 }, (_, index) => index)
+
+  const bounded = zod.array(element).max(2, 'too many').refine(() => {
+    refined++
+
+    return true
+  })
+
+  const result = bounded.safeParse(oversized)
+
+  assert.equal(result.success, false)
+
+  assert.deepEqual(result.error.issues.map(issue => [issue.code, issue.message]), [['too_big', 'too many']])
+
+  assert.equal((await bounded.safeParseAsync(oversized)).success, false)
+
+  assert.equal(parsed, 0)
+
+  assert.equal(refined, 0)
+
+  for (const schema of [zod.array(element).length(2), zod.array(element).min(1).max(2)]) {
+    const failure = schema.safeParse(oversized)
+
+    assert.equal(failure.success, false)
+
+    assert.equal(failure.error.issues.length, 1)
+
+    assert.equal(failure.error.issues[0].code, 'too_big')
+
+    assert.deepEqual(schema.parse(['a', 'b']), ['a', 'b'])
+  }
+
+  const nested = zod.object({ items: zod.array(zod.string()).max(2) }).safeParse({ items: oversized })
+
+  assert.deepEqual(nested.error.issues.map(issue => issue.path), [['items']])
+
+  assert.equal(zod.array(zod.string()).max(2).safeParse({ length: 10_000 }).error.issues[0].code, 'invalid_type')
+
+  const values = new Set(oversized)
+  const cappedSet = zod.set(element).max(2)
+
+  parsed = 0
+
+  assert.equal(cappedSet.safeParse(values).error.issues.length, 1)
+
+  assert.equal((await cappedSet.safeParseAsync(values)).error.issues[0].code, 'too_big')
+
+  assert.equal(parsed, 0)
+
+  assert.deepEqual([...cappedSet.parse(new Set(['a', 'b']))], ['a', 'b'])
+
+  assert.equal(zod.set(zod.string()).size(2).safeParse(values).error.issues.length, 1)
+
+  assert.equal(zod.array(zod.number()).parse(oversized).length, oversized.length)
+
+  assert.deepEqual(zod.preprocess(value => value.slice(0, 2), zod.array(zod.number()).max(2)).parse(oversized), [0, 1])
+
+  const array = zod.array(zod.number())
+
+  if (typeof array.overwrite === 'function') {
+    assert.deepEqual(array.overwrite(value => value.slice(0, 2)).max(2).parse(oversized), [0, 1])
+  }
 }
 
 const validateAdvisory = advisory => {

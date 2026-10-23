@@ -3,12 +3,13 @@ import { spawnSync } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
-import { collectPatchedInstances, evaluateAudit, verifyBracesBehavior, verifyForgeBehavior, verifyInstalledPatch, verifyPatchFiles } from './security-patches.mjs'
+import { collectPatchedInstances, evaluateAudit, verifyBracesBehavior, verifyForgeBehavior, verifyInstalledPatch, verifyPatchFiles, verifyZodBehavior } from './security-patches.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const policies = JSON.parse(await readFile(resolve(root, 'registry/security-patches.json'), 'utf8'))
-const behaviorChecks = { braces: verifyBracesBehavior, 'node-forge': verifyForgeBehavior }
+const behaviorChecks = { braces: verifyBracesBehavior, 'node-forge': verifyForgeBehavior, zod: verifyZodBehavior }
 
 const runPnpm = arguments_ => {
   const result = spawnSync('pnpm', arguments_, {
@@ -50,7 +51,11 @@ try {
 
       const require = createRequire(resolve(directory, 'package.json'))
 
-      verifyBehavior(require(directory))
+      await verifyBehavior(require(directory))
+
+      for (const entry of policy.additionalEntrypoints ?? []) {
+        await verifyBehavior(await import(pathToFileURL(resolve(directory, entry)).href))
+      }
     }
 
     console.log(`Verified ${policy.name}@${policy.version}: patch, installed resolution, ${installed.size} instance(s), and behavior.`)

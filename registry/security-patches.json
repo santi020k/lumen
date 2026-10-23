@@ -26,5 +26,31 @@
       "lib/parse.js": "72aabaadaa555cdfbd07fbd7c7f743373e4dc8eec04a97550cc57bbeec30eb6c",
       "lib/stringify.js": "49dc2d8bafa74f34715a18a845bcb82ce66caaf3bab4cf117998e06b1f9a50a9"
     }
+  },
+  {
+    "name": "zod",
+    "version": "3.25.76",
+    "advisory": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
+    "source": "https://github.com/colinhacks/zod/pull/6652",
+    "commit": "a0ebf970f2d752e5f58527cd2942ff48be4f46bd",
+    "patch": "patches/zod@3.25.76.patch",
+    "sha256": "72c936d966e466107c63c5cf6b914d901b4c5f87f99151743fd15caa1f5e877f",
+    "files": {
+      "v3/types.js": "420068b6ea0681c22e454aa3b0d1ceddde832e024d3ee13fba7648bf4bf9137b",
+      "v3/types.cjs": "1fa5128ef68a422972c7f8e5e2726e194c1fa09a274847be2f7d5210463e47e0",
+      "v4/core/schemas.js": "25f3b32a0045b5c5d941e28cbf69a8c68b0c2e40467053fa41bd09acd37ad5e4",
+      "v4/core/schemas.cjs": "6d51aa4287550e75dc64c9d7f6ee8cfcb69edd676ddb88af04f136c3d471950e"
+    },
+    "additionalEntrypoints": [
+      "index.js",
+      "v4/index.js",
+      "v4/index.cjs",
+      "v4/mini/index.js",
+      "v4/mini/index.cjs",
+      "v4-mini/index.js",
+      "v4-mini/index.cjs",
+      "v4/core/index.js",
+      "v4/core/index.cjs"
+    ]
   }
 ]
