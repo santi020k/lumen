@@ -270,9 +270,8 @@ commit, or the immutable existing version tag during recovery. Missing packages,
 and incorrect source provenance stop release creation. Version-preparation pull requests are not
 publication attempts; ordinary releases continue auditing their newly published packages.
 
-Feature pull requests run affected package checks plus the platform and integration gates selected
-from their changed paths. The automated release pull request resolves the exact Changesets package
-set and runs only its builds and publish dry-runs because its generated changes are limited to
-versions, changelogs, synchronized installation guidance, the lockfile, and the MCP snapshot. The
-publication run resolves the same scope from pending Changesets or unpublished local versions and
+All pull requests, including release branches, run affected builds, type checks, lint, and tests,
+plus the platform and integration gates selected from their changed paths. Release pull requests
+also resolve the exact Changesets package set for release builds and publish dry-runs. The
+publication run resolves that scope from pending Changesets or unpublished local versions and
 retains package-family, native, and MCP release gates only when that scope requires them.
