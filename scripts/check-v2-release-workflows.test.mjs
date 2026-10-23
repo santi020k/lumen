@@ -348,6 +348,28 @@ test("Android uploads permit automatic Google Play review submission", () => {
   );
 });
 
+test("release pull requests run source checks and social-image regressions", async () => {
+  const sourceCheck = ciWorkflow.split("      - name: Run CI checks\n")[1]?.split("      - name:")[0];
+
+  assert.ok(sourceCheck, "CI must retain its source validation step");
+
+  assert.doesNotMatch(sourceCheck, /\n\s+if:/u, "source validation must also run for release branches");
+
+  assert.match(sourceCheck, /run: pnpm exec turbo run build typecheck lint test --affected/u);
+
+  for (const job of ["browser-contracts", "react-native-captures", "mcp-node-20"]) {
+    const definition = ciWorkflow.split(`  ${job}:\n`)[1]?.split("    steps:")[0];
+
+    assert.ok(definition, `missing ${job} job`);
+
+    assert.ok(!definition.includes("release-pr"), `${job} must also cover release source changes`);
+  }
+
+  const manifest = JSON.parse(await readFile(resolve(repositoryRoot, "package.json"), "utf8"));
+
+  assert.ok(manifest.scripts["ci:preflight"].includes("pnpm run test:og-urls"));
+});
+
 test("pull-request compatibility checks reuse the affected build outputs", () => {
   assertOrderedCommands(ciWorkflow, "pull-request compatibility checks", [
     "pnpm exec turbo run build typecheck lint test --affected",

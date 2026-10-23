@@ -37,7 +37,10 @@ import UIPrimitives from '@santi020k/lumen-astro/runtime'
           <Input form="external-form" id="external-field" name="external" required />
           <FieldError id="external-error" />
         </Field>
-        <Button>After external field</Button>
+        <Field>
+          <Label for="after-external-field">Next control</Label>
+          <Input id="after-external-field" />
+        </Field>
       </Stack>
     </main>
     <UIPrimitives />

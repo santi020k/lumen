@@ -16,6 +16,22 @@ The [Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind) covers frame
 responsive customization, local themes, public styling hooks, source detection, and optional
 Preflight. The documentation site consumes the same bridge.
 
+### Reading, motion, and maintenance fixes
+
+Anchor highlighting follows native fragment positions, including root scroll padding, heading
+scroll margins, text resizing, short documents, and malformed fragment escapes. Pill labels wrap
+within narrow containers, their counts stay together, and linked foregrounds retain contrast.
+React reveal components use the latest visibility entry in each observer batch. Configured
+visibility thresholds retain their existing behavior; the viewport-entry proposal is deferred.
+React Native date fields use the supported Android selection callback, so canceling a picker
+does not commit the original value. The existing datetimepicker peer range remains supported.
+The responsive documentation navigation stays directly beneath the header while scrolling.
+
+MCP rejects whitespace-padded record keys instead of silently merging distinct entries. Social
+images use content-versioned URLs, and the maintained ESLint configuration owns Astro parsing.
+Compatible dependency updates preserve the Expo SDK 57 React and native dependency family,
+including its renderer and types. Updating that family requires a coordinated SDK upgrade.
+
 ### Adoption and compatibility
 
 Only applications using Tailwind v4 should import `tailwind.css`; it requires Tailwind's CSS
@@ -24,13 +40,14 @@ component stylesheet imports from JavaScript if they load before the layer prelu
 Applications with existing semantic Tailwind aliases can adopt the bridge instead of maintaining
 the same mappings. Review intentional custom mappings before replacing them.
 
-No component migration or data migration is required. Tailwind v3 consumers should retain their
+No component migration or data migration is required. MCP clients must send canonical record keys
+without surrounding whitespace; trim and detect duplicates before constructing catalog maps. Tailwind v3 consumers should retain their
 existing setup or migrate Tailwind before adopting this v4 bridge. Native adapters do not use it.
 
 ### Package versions
 
-The umbrella, Astro, React, Elements, and MCP packages are prepared at 4.3.0. Core remains at 4.1.0;
-React Native and React Hook Form remain at 4.0.1; tokens, brand icons, and Compose remain at 4.0.0.
+The umbrella, Astro, React, Elements, Core, and MCP packages are prepared at 4.3.0;
+React Native is prepared at 4.0.2 with the Android date selection fix; React Hook Form remains at 4.0.1; tokens, brand icons, and Compose remain at 4.0.0.
 Swift uses the repository's release tag without a native API change. Hosted MCP, plugin directory,
 and store delivery remain separate from local package preparation.
 
@@ -43,6 +60,10 @@ policy at preparation time; no age exception or audit suppression is added. Lume
 an MCP server and transport for each HTTP request, matching the updated SDK lifecycle requirements.
 
 ### Verification and recovery
+
+The consolidated changes include the completed v4.2.1 web fixes and the unshipped tooling, social
+image, and MCP fixes from the former v4.0 branch. Previously published branches are accounted for
+through their squash-merged releases; historical release approvals are not reused.
 
 Compiler tests load each adapter's exported styles and cover semantic colors, opacity, responsive
 utilities, a setup without Preflight, and the standalone path. Browser checks cover responsive

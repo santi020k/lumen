@@ -20,7 +20,7 @@
           "peerDependencies": {
             "@rive-app/canvas": "^2.44.0"
           },
-          "version": "4.1.0"
+          "version": "4.3.0"
         },
         "@santi020k/lumen-elements": {
           "peerDependencies": {},
@@ -62,7 +62,7 @@
             "react-native": ">=0.86.2",
             "react-native-svg": ">=12 <16"
           },
-          "version": "4.0.1"
+          "version": "4.0.2"
         },
         "@santi020k/lumen-tokens": {
           "peerDependencies": {},

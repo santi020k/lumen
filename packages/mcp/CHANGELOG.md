@@ -4,6 +4,23 @@
 
 ### Patch Changes
 
+- Reject surrounding whitespace in MCP record keys instead of trimming and silently merging distinct entries. Canonical catalog and package names retain their existing behavior.
+
+- Keep Anchor highlighting aligned with native fragment navigation after text resizing. All web
+  adapters now share `getLumenActiveAnchorIndex`, which honors root scroll padding and heading scroll
+  margins as well as the configured activation offset, with one CSS pixel of rounding tolerance.
+  React and Elements no longer select the last heading merely because the page cannot scroll.
+  Handle mixed CSS percentage/length padding, one-pixel document overflow, and malformed fragment
+  escapes consistently. `decodeLumenAnchorFragment` preserves literal percent signs in heading IDs.
+
+  Allow Pill labels to wrap inside narrow containers while keeping their count affix together.
+  Cap the corner radius so multiple lines remain inside the border.
+  Increase inactive Anchor text contrast and let Pill counts inherit the label color so small text
+  remains readable in light and dark themes. Linked pills use brand text and on-brand foreground
+  colors for contrast through hover and keyboard focus.
+  Existing component props and markup remain supported; no consumer wrapper is required for plain
+  text labels. Regenerate the shared critical styles and MCP usage data with these contracts.
+
 - Add an optional Tailwind CSS v4 theme bridge through `tailwind.css`, mapping Lumen semantic colors to utilities that follow root and nested themes. Include the bridge in `lumen init --tailwind`, preserve standalone CSS, and document framework setup, cascade order, component customization, and Preflight choices.
 
 ## 4.2.0

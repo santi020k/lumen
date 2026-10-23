@@ -232,7 +232,7 @@ jobs:
   browser-contracts:
     name: Browser interaction contracts
     needs: [classify, preflight]
-    if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.playwright == 'true'
+    if: needs.classify.outputs.playwright == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -265,7 +265,6 @@ jobs:
     needs: [classify, preflight]
     if: >-
       ${{
-        needs.classify.outputs.release-pr != 'true' &&
         needs.classify.outputs.react-native-captures == 'true'
       }}
     runs-on: ubuntu-latest
@@ -318,7 +317,7 @@ jobs:
   mcp-node-20:
     name: MCP compatibility (Node 20)
     needs: [classify, preflight]
-    if: needs.classify.outputs.release-pr != 'true' && needs.classify.outputs.mcp == 'true'
+    if: needs.classify.outputs.mcp == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -386,7 +385,6 @@ jobs:
         run: pnpm changeset status --since=origin/main
 
       - name: Run CI checks
-        if: needs.classify.outputs.release-pr != 'true'
         run: pnpm exec turbo run build typecheck lint test --affected
 
       - name: Validate portable AI plugin and migration artifacts

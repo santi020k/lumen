@@ -16,7 +16,7 @@ catalog:
   "@changesets/cli": ^3.0.3
   "@commitlint/cli": ^21.2.3
   "@commitlint/config-conventional": ^21.2.3
-  "@expo/metro-runtime": ^57.0.16
+  "@expo/metro-runtime": ^57.0.17
   "@figma/plugin-typings": 1.142.0
   "@fortawesome/free-brands-svg-icons": ^7.3.1
   "@hookform/resolvers": ^5.9.1
@@ -55,12 +55,12 @@ catalog:
   cspell: ^10.3.6
   esbuild: ^0.28.2
   eslint: ^10.13.0
-  expo: ^57.0.26
+  expo: ^57.0.31
   expo-build-properties: ~57.0.22
-  expo-splash-screen: ~57.0.9
+  expo-splash-screen: ~57.0.10
   expo-status-bar: ~57.0.1
   expo-system-ui: ~57.0.4
-  expo-updates: ~57.0.24
+  expo-updates: ~57.0.26
   express: ^5.2.1
   gsap: 3.15.0
   hyperframes: 0.8.185
