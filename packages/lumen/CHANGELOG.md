@@ -1,5 +1,11 @@
 # @santi020k/lumen
 
+## 4.3.0
+
+### Minor Changes
+
+- Add an optional Tailwind CSS v4 theme bridge through `tailwind.css`, mapping Lumen semantic colors to utilities that follow root and nested themes. Include the bridge in `lumen init --tailwind`, preserve standalone CSS, and document framework setup, cascade order, component customization, and Preflight choices.
+
 ## 4.2.0
 
 ### Minor Changes

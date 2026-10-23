@@ -1,5 +1,16 @@
 # @santi020k/lumen-astro
 
+## 4.3.0
+
+### Minor Changes
+
+- Add an optional Tailwind CSS v4 theme bridge through `tailwind.css`, mapping Lumen semantic colors to utilities that follow root and nested themes. Include the bridge in `lumen init --tailwind`, preserve standalone CSS, and document framework setup, cascade order, component customization, and Preflight choices.
+
+### Patch Changes
+
+- Updated dependencies [`29e3b05`]:
+  - @santi020k/lumen@4.3.0
+
 ## 4.1.0
 
 ### Minor Changes

@@ -6,7 +6,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@santi020k/lumen-mcp@4.2.0"
+        "@santi020k/lumen-mcp@4.3.0"
       ]
     }
   }
