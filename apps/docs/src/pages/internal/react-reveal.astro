@@ -10,6 +10,13 @@ import { ReactReveal } from '../../components/internal/ReactReveal'
 <!doctype html>
 <html lang="en" data-theme="light">
   <head>
+    <script is:inline>
+      const scenario = new URLSearchParams(window.location.search)
+
+      document.documentElement.dataset.theme = scenario.get('theme') === 'dark' ? 'dark' : 'light'
+
+      document.documentElement.style.fontSize = scenario.get('textScale') === '2' ? '200%' : '100%'
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="robots" content="noindex,nofollow" />

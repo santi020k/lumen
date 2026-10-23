@@ -57,16 +57,17 @@ const installBatchedObserver = async (page: Page) => {
   })
 }
 
-const openFixture = async (page: Page, width: number, scale: number) => {
+const openFixture = async (page: Page, width: number, scale: number, theme = 'light') => {
   await page.setViewportSize({ width, height: width === 390 ? 844 : 900 })
-  await page.goto(route)
+  // Establish the scenario before first paint. Live root-style mutation can leave
+  // WebKit's inherited colors and scrollable overflow stale during this audit.
+  await page.goto(`${route}?theme=${theme}&textScale=${scale}`)
   for (const id of ids) {
     await expect(target(page, id)).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
   }
-  await page.evaluate(value => {
-    document.documentElement.style.fontSize = `${value * 100}%`
-  }, scale)
-  await page.waitForFunction(value => getComputedStyle(document.documentElement).fontSize === `${16 * value}px`, scale)
+  await expect(page.locator('html')).toHaveCSS('font-size', `${16 * scale}px`)
+  await expect(page.locator('html')).toHaveCSS('color-scheme', theme)
+  await expect(page.locator('main')).toHaveCSS('padding-left', `${16 * scale}px`)
   await page.evaluate(() => new Promise<void>(resolve => {
     requestAnimationFrame(() => requestAnimationFrame(() => { resolve() }))
   }))
@@ -142,15 +143,26 @@ for (const width of [390, 1440]) {
 
           return {
             width,
+            scrollX: window.scrollX,
             scrollWidth: document.documentElement.scrollWidth,
             overflowingElements: [...document.querySelectorAll('*')]
-              .filter(element => element.getBoundingClientRect().right > width)
+              .filter(element => element.getBoundingClientRect().right + window.scrollX > width ||
+                element.scrollWidth > element.clientWidth)
               .map(element => ({
                 tag: element.tagName,
                 id: element.id,
                 className: element.getAttribute('class'),
-                right: element.getBoundingClientRect().right
-              }))
+                right: element.getBoundingClientRect().right + window.scrollX,
+                scrollWidth: element.scrollWidth,
+                clientWidth: element.clientWidth
+              })),
+            overflowingText: [...document.querySelectorAll('main h1, main h2, main h3, main p, main button')]
+              .flatMap(element => {
+                const range = document.createRange()
+                range.selectNodeContents(element)
+                const right = range.getBoundingClientRect().right + window.scrollX
+                return right > width ? [{ text: element.textContent, right }] : []
+              })
           }
         })
         expect(layout.scrollWidth, JSON.stringify(layout)).toBeLessThanOrEqual(layout.width)
@@ -158,18 +170,20 @@ for (const width of [390, 1440]) {
 
       for (const theme of ['light', 'dark']) test(`reduced motion keeps all content visible and accessible in ${theme}`, async ({ page }) => {
         await page.emulateMedia({ reducedMotion: 'reduce' })
-        await openFixture(page, width, scale)
-        await page.evaluate(value => { document.documentElement.dataset.theme = value }, theme)
+        await openFixture(page, width, scale, theme)
 
         const ink = await page.evaluate(() => {
           const probe = document.createElement('span')
-          probe.style.color = 'hsl(var(--ink))'
+          probe.style.color = `hsl(${getComputedStyle(document.documentElement).getPropertyValue('--ink')})`
           document.body.append(probe)
           const color = getComputedStyle(probe).color
           probe.remove()
           return color
         })
         await expect(page.locator('body')).toHaveCSS('color', ink)
+        for (const text of await page.locator('body > main').locator('h1, h2, h3, p').all()) {
+          await expect(text).toHaveCSS('color', ink)
+        }
         for (const id of ids) {
           await checkVisible(page, id)
           const root = target(page, id)
