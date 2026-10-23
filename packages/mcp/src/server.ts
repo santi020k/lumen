@@ -28,6 +28,8 @@ const readOnlyAnnotations = {
   readOnlyHint: true
 } as const
 
+const hasCanonicalRecordKey = (key: string): boolean => key === key.trim()
+
 const componentSummarySchema = z.strictObject({
   category: z.string().trim(),
   collections: z.array(z.string().trim()),
@@ -85,12 +87,12 @@ const tokensOutputSchema = z.strictObject({
       schemeAttribute: z.string().trim(),
       materialPolicy: z.literal('explicit-surfaces')
     }),
-    chart: z.record(z.string().trim(), z.string().trim()),
-    colors: z.record(z.string().trim(), z.string().trim()),
-    glass: z.record(z.string().trim(), z.string().trim()),
+    chart: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace'), z.string().trim()),
+    colors: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace'), z.string().trim()),
+    glass: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace'), z.string().trim()),
     semantic: z.array(z.string().trim()),
-    spacing: z.record(z.string().trim(), z.number().nonnegative()),
-    spacingRoles: z.record(z.string().trim(), z.string().trim()),
+    spacing: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace'), z.number().nonnegative()),
+    spacingRoles: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace'), z.string().trim()),
     themeAttribute: z.string().trim()
   })
 })
@@ -105,7 +107,7 @@ const metaOutputSchema = z.strictObject({
     componentCount: z.int().min(0),
     nativeComponentCount: z.int().min(0),
     packages: z.array(z.string().trim()),
-    packageVersions: z.record(z.string().trim(), z.string().trim()),
+    packageVersions: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace'), z.string().trim()),
     registryName: z.string().trim(),
     registryVersion: z.int().min(1),
     schemaVersion: z.int().min(1),
@@ -114,10 +116,10 @@ const metaOutputSchema = z.strictObject({
 })
 
 const catalogManifestSchema = z.strictObject({
-  components: z.record(z.string().trim(), z.string().trim().regex(/^[a-f0-9]{64}$/)),
-  nativeComponents: z.record(z.string().trim(), z.string().trim().regex(/^[a-f0-9]{64}$/))
+  components: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace'), z.string().trim().regex(/^[a-f0-9]{64}$/)),
+  nativeComponents: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace'), z.string().trim().regex(/^[a-f0-9]{64}$/))
     .optional(),
-  recipes: z.record(z.string().trim(), z.string().trim().regex(/^[a-f0-9]{64}$/))
+  recipes: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace'), z.string().trim().regex(/^[a-f0-9]{64}$/))
 })
 
 const catalogChangesSchema = z.strictObject({
@@ -313,7 +315,7 @@ export const createLumenServer = (): McpServer => {
       annotations: readOnlyAnnotations,
       description: 'Compare resolved installed Lumen package versions with this snapshot before generating or migrating code. Does not read repositories or change dependencies.',
       inputSchema: z.strictObject({
-        packageVersions: z.record(z.string().trim().min(1).max(160), z.string().trim().min(1).max(100))
+        packageVersions: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace').min(1).max(160), z.string().trim().min(1).max(100))
           .meta({ description: 'Resolved versions from installed package metadata or native lock files, not manifest ranges. Include only Lumen packages.' })
       }),
       outputSchema: compatibilityOutputSchema

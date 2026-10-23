@@ -59,7 +59,7 @@ export default definePresetConfig({
   clean: true,
   concurrency: 'auto',
   outputDirectory: 'public/og/pages',
-  routeManifest: { file: 'public/og/manifest.json', publicPath: '/og/pages' },
+  routeManifest: { cacheBust: true, file: 'public/og/manifest.json', publicPath: '/og/pages' },
   preset: {
     brand: {
       domain: 'lumen.santi020k.com',

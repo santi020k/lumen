@@ -1330,6 +1330,7 @@ test('Tabs switches regression fixture preserves localized and accessible SSR co
   })
   await page.getByLabel('External field').fill('Corrected value')
   await page.getByLabel('External field').press('Tab')
+  await expect(page.getByRole('button', { name: 'After external field' })).toBeFocused()
   await expect(page.getByLabel('External field')).not.toHaveAttribute('aria-invalid')
   await expect(page.locator('#external-error')).toBeHidden()
   await expect(form).toHaveAttribute('data-regression-valid', 'true')

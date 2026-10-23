@@ -240,6 +240,44 @@ describe('Lumen MCP protocol server', () => {
     })
   })
 
+  test('rejects ambiguous whitespace catalog keys instead of collapsing entries', async () => {
+    await withClient(async client => {
+      const data = loadLumenData()
+      const componentName = Object.keys(data.catalogManifest.components)[0]
+
+      if (componentName === undefined) throw new Error('Expected a component in the catalog')
+
+      const componentHash = data.catalogManifest.components[componentName]
+
+      if (componentHash === undefined) throw new Error('Expected a component fingerprint')
+      const spacedName = ` ${componentName} `
+      const diff = await client.callTool({
+        arguments: {
+          baseline: {
+            components: { [componentName]: componentHash, [spacedName]: componentHash },
+            recipes: {}
+          }
+        },
+        name: 'lumen_diff_catalog'
+      })
+
+      expect(diff.isError).toBe(true)
+      expect(resultText(diff)).toContain(`baseline.components.${spacedName}: Invalid key in record`)
+
+      const valid = await client.callTool({
+        arguments: {
+          baseline: { components: { [componentName]: componentHash }, recipes: {} }
+        },
+        name: 'lumen_diff_catalog'
+      })
+
+      expect(valid.isError).toBeFalsy()
+      expect(resultStructuredContent(valid)).toMatchObject({
+        components: { removed: [], unchanged: [componentName] }
+      })
+    })
+  })
+
   test('preserves domain errors as MCP tool errors', async () => {
     await withClient(async client => {
       const result = await client.callTool({
