@@ -1,5 +1,20 @@
 # Lumen v4 dependency refresh — 2026-10-03
 
+## v4.4 security refresh — 2026-10-25
+
+The release graph now resolves `body-parser` 2.4.0 through the MCP server's Express dependency,
+fixing the [compressed request-body denial of service](https://github.com/advisories/GHSA-27r3-jxmh-p828).
+Astro's font tooling now resolves `undici` 8.12.3, covering the
+[EventSource memory limit](https://github.com/advisories/GHSA-4qv8-2p9j-2685),
+[integrity token parsing](https://github.com/advisories/GHSA-f72v-6w45-q472), and
+[content-encoding error handling](https://github.com/advisories/GHSA-xjj6-f33q-929c) advisories.
+The existing `qs` override advances to 6.16.1 to satisfy body-parser 2.4.0's declared range.
+
+These stable releases fit the existing Node constraints and dependency-age policy. Scoped
+workspace overrides prevent vulnerable versions from returning to the lockfile. No advisory
+ignore, patch exception, or runtime constraint is loosened. `pnpm run check:security` passes
+with the existing node-forge, braces, and Zod patch integrity/behavior checks still enforced.
+
 ## v4.3 publication security follow-up — 2026-10-23
 
 The publication audit stopped before publishing on the updated
