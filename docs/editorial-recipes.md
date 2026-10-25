@@ -8,7 +8,7 @@ is required.
 ## Install in an Astro project
 
 ```bash
-pnpm add @santi020k/lumen-astro
+pnpm add @santi020k/lumen @santi020k/lumen-astro
 pnpm exec lumen add editorial --target astro
 ```
 
