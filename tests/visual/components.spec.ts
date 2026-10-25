@@ -25,6 +25,7 @@ const componentSlugs = componentPageNames.map(componentNameToSlug)
 
 const themes: Theme[] = ['light', 'dark']
 const templateSlugs = [
+  'editorial',
   'analytics-dashboard',
   'saas-admin',
   'commerce-dashboard',
@@ -253,6 +254,16 @@ const interactiveScenarios: VisualScenario[] = [
 for (const theme of themes) {
   test(`template gallery renders consistently (${theme})`, async ({ page }) => {
     await preparePage(page, '/templates', theme)
+
+    for (const card of await page.locator('.template-gallery-card').all()) {
+      await card.scrollIntoViewIfNeeded()
+      for (const image of await card.locator('img:visible').all()) {
+        await image.evaluate(async element => {
+          if (element instanceof HTMLImageElement) await element.decode()
+        })
+      }
+    }
+    await page.evaluate(() => { window.scrollTo(0, 0); })
 
     await expect(page).toHaveScreenshot(`template-gallery-${theme}.png`, {
       fullPage: true

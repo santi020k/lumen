@@ -1,0 +1,222 @@
+---
+import { Card, Icon, Link, ThemeToggle, Typography } from '@santi020k/lumen-astro'
+
+import EditorialCard from './editorial-card.astro'
+import EditorialContactPanel from './editorial-contact-panel.astro'
+import EditorialCoverSpread from './editorial-cover-spread.astro'
+import EditorialIntroduction from './editorial-introduction.astro'
+import EditorialReplacementNotice from './editorial-replacement-notice.astro'
+---
+
+<main class="editorial-showcase">
+  <nav class="editorial-showcase__navigation" aria-label="Editorial example">
+    <Link href="#editorial-collection" variant="inherit">Field notes</Link>
+    <ThemeToggle />
+  </nav>
+
+  <EditorialCoverSpread
+    eyebrow="An independent product journal"
+    headingId="editorial-title"
+    title="Good ideas deserve a clear story."
+  >
+    <div class="editorial-showcase__art" slot="media" aria-hidden="true">
+      <div class="editorial-showcase__orbit"></div>
+      <Card class="editorial-showcase__paper" variant="unstyled">
+        <Icon name="notebook-text" size="xl" />
+        <span class="editorial-showcase__paper-title">Observe.<br />Connect.<br />Create.</span>
+        <span class="editorial-showcase__paper-rule"></span>
+        <span>Notes from the process</span>
+      </Card>
+    </div>
+  </EditorialCoverSpread>
+
+  <EditorialIntroduction
+    category="Ideas in progress"
+    description="A collection of observations, decisions, and useful details from the work of turning an idea into something people can use."
+    label="Behind the work"
+  />
+
+  <section class="editorial-showcase__section" aria-labelledby="editorial-collection">
+    <Typography><h2 class="editorial-showcase__section-title" id="editorial-collection">A little context goes a long way.</h2></Typography>
+    <div class="editorial-showcase__cards">
+      <EditorialCard
+        category="01 / Perspective"
+        description="Give the reader a starting point: the problem, the people it affects, and the reason this work matters."
+        headingId="editorial-context-card"
+        href="#editorial-methods"
+        icon="scan-eye"
+        linkLabel="Explore the approach"
+        title="Make room for context."
+      />
+      <EditorialCard
+        category="02 / Practice"
+        description="Connect each decision to a concrete observation. Let the important details stay visible and easy to read."
+        headingId="editorial-evidence-card"
+        href="#editorial-methods"
+        icon="notebook-text"
+        linkLabel="Read the field notes"
+        title="Keep the evidence close."
+      />
+      <EditorialCard
+        category="03 / Continuation"
+        description="Leave the reader with one useful place to go next, whether that is another chapter or a conversation."
+        headingId="editorial-next-card"
+        href="#editorial-contact-heading"
+        icon="arrow-up-right"
+        linkLabel="Continue the conversation"
+        title="Create a useful next step."
+      />
+    </div>
+  </section>
+
+  <section class="editorial-showcase__section" aria-labelledby="editorial-methods">
+    <EditorialCoverSpread
+      description="Start with what people need to understand. Arrange the details around that question, then make the next action easy to find."
+      eyebrow="The approach"
+      headingId="editorial-methods"
+      headingLevel={2}
+      title="A story shaped by its evidence."
+    />
+    <EditorialIntroduction
+      description="A small observation can change the direction of a project. Capture what happened, explain the decision, and leave enough detail for someone else to learn from it."
+      label="Field notes"
+    />
+  </section>
+
+  <EditorialReplacementNotice
+    currentLabel="The first edition"
+    destinationLabel="Continue with the current guide"
+    href="#editorial-methods"
+    linkLabel="Read the updated approach"
+    replacementDetail="Field notes"
+    replacementLabel="A more useful way to begin"
+    title="This guide has a new chapter."
+  >
+    <p>The earlier ideas remain part of the story. The current guide adds the context that came from putting them into practice.</p>
+  </EditorialReplacementNotice>
+
+  <EditorialContactPanel
+    headingId="editorial-contact-heading"
+    label="Start a conversation"
+    title="What are you working on?"
+  >
+    <p>Start with the problem, the people it affects, and the next useful step. <Link href="#editorial-methods">Explore the approach</Link> before shaping your own story.</p>
+    <p slot="note">A useful conversation begins with a clear question.</p>
+  </EditorialContactPanel>
+
+  <footer class="editorial-showcase__footer">
+    <p>An editorial recipe built with <Link href="https://lumen.santi020k.com" newTab>Lumen UI</Link>.</p>
+    <Link href="https://santi020k.com" newTab>Santiago Molina</Link>
+  </footer>
+</main>
+
+<style>
+  .editorial-showcase {
+    box-sizing: border-box;
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4.5rem);
+    width: min(100% - 2.5rem, 72rem);
+    margin-inline: auto;
+    padding-block: 1.5rem 3rem;
+    color: hsl(var(--ink));
+  }
+
+  .editorial-showcase__navigation, .editorial-showcase__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .editorial-showcase__navigation {
+    padding-block-end: 1rem;
+    border-block-end: 1px solid hsl(var(--line));
+  }
+
+  .editorial-showcase__art {
+    position: relative;
+    display: grid;
+    min-height: clamp(18rem, 42vw, 30rem);
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(125deg, hsl(var(--brand-soft)), hsl(var(--surface-strong)));
+  }
+
+  .editorial-showcase__orbit {
+    position: absolute;
+    inset: 12% 18%;
+    border: 1px solid hsl(var(--brand) / 0.35);
+    border-radius: 50%;
+    rotate: -25deg;
+  }
+
+  .editorial-showcase__art :global(.editorial-showcase__paper) {
+    position: relative;
+    display: grid;
+    gap: 1.25rem;
+    width: min(16rem, 60%);
+    margin-block: 3.5rem 1.5rem;
+    padding: 1.75rem;
+    border: 1px solid hsl(var(--line));
+    border-radius: 0.375rem 1.75rem 0.375rem 0.375rem;
+    background: hsl(var(--surface));
+    color: hsl(var(--ink));
+    box-shadow: 1rem 1rem 0 hsl(var(--brand) / 0.1);
+    font-size: 0.6875rem;
+    line-height: 1.5;
+  }
+
+  .editorial-showcase__paper-title {
+    font-size: clamp(1.125rem, 4vw, 2rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+  }
+
+  .editorial-showcase__paper-rule {
+    width: 100%;
+    height: 1px;
+    background: hsl(var(--line));
+  }
+
+  .editorial-showcase__section {
+    display: grid;
+    gap: 1.75rem;
+    min-width: 0;
+  }
+
+  .editorial-showcase__section-title {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    overflow-wrap: anywhere;
+  }
+
+  .editorial-showcase__cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .editorial-showcase__footer {
+    padding-block-start: 1.75rem;
+    border-block-start: 1px solid hsl(var(--line));
+    color: hsl(var(--ink-soft));
+    font-size: 0.8125rem;
+    line-height: 1.75;
+  }
+
+  .editorial-showcase__footer p {
+    margin: 0;
+  }
+
+  @media (width < 48rem) {
+    .editorial-showcase__cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

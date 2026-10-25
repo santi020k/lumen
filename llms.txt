@@ -65,6 +65,8 @@ Rules for agents:
 
 ## Content flow
 
+- For content-led Astro pages, use lumen add editorial --target astro. Five independent recipes cover cover spreads, introductions, cards, replacement notices, and contact panels; see docs/editorial-recipes.md. Other framework targets are not available for this family.
+
 - Reuse content-flow-header, content-flow-settings, content-flow-list and content-flow-actions recipes; lumen_get_recipe returns complete framework source.
 - Container gutters grow from group to section spacing. Override --ui-container-gutter at the product boundary instead of adding nested page padding.
 - Prose and Typography trim their outer child margins and separate headings from preceding text. Card allows interactive overflow; AspectRatio owns media clipping.

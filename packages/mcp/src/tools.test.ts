@@ -512,6 +512,18 @@ describe('getRecipe', () => {
     expect(result.data.recipe?.categories).toContain('Forms')
   })
 
+  test('advertises editorial only for its installed Astro target', () => {
+    const result = getRecipe({ name: 'editorial', framework: 'astro' })
+    expect(result.data.found).toBe(true)
+    expect(result.data.recipe?.frameworks).toEqual(['astro'])
+    expect(result.text).toContain('lumen add editorial --target astro')
+    for (const framework of ['react', 'elements'] as const) {
+      expect(getRecipe({ name: 'editorial', framework }).data.found).toBe(false)
+      expect(search({ query: 'editorial', kind: 'recipe', framework }).data.results).toEqual([])
+    }
+    expect(search({ query: 'editorial', kind: 'recipe', framework: 'astro' }).data.results.map(item => item.name)).toContain('editorial')
+  })
+
   test('returns a structured domain error for unknown recipes', () => {
     const result = getRecipe({ name: 'missing-recipe' })
 

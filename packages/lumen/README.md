@@ -110,8 +110,7 @@ lumen migrate v4 --dry-run
 ```
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
-`--target elements` for a custom-elements starter. Bundled recipes support the same Astro, React,
-and Elements targets. With `--conflict error`, existing target files are checked before any recipe
+`--target elements` for a custom-elements starter. Recipe availability varies by family; the editorial family supports Astro. With `--conflict error`, existing target files are checked before any recipe
 files are written; runtime write failures can still require cleanup.
 
 Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin`,
@@ -305,6 +304,15 @@ so its apply ledger fingerprints the final source and repeat runs do not rewrite
 SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
 separate documented JSX/Astro spacing migration. The JSON report includes installed package
 versions and explicit SDK dependency-review findings.
+
+## Editorial recipes
+
+Run `pnpm exec lumen add editorial --target astro` to copy five independent content components and
+one example page into `src/lumen/`: a cover spread, introduction, card, replacement notice, and
+contact panel. They use public Lumen primitives and scoped semantic-token CSS. They need no
+Tailwind setup, website data, or private package. See the copied `EDITORIAL.md` and the
+[editorial guide](https://github.com/santi020k/lumen/blob/main/docs/editorial-recipes.md) for props,
+slots, unique heading IDs, media ownership, and runtime setup. React and Elements ports are not included.
 
 ## Dashboard header recipes
 

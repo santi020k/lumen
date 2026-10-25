@@ -15,6 +15,22 @@ export const lumenRegistry = {
   ],
   items: [
     {
+      name: 'editorial',
+      type: 'recipe',
+      components: [
+        'ButtonLink',
+        'Callout',
+        'Card',
+        'Icon',
+        'Link',
+        'ThemeToggle',
+        'Typography'
+      ],
+      files: [
+        'docs/editorial-recipes.md'
+      ]
+    },
+    {
       name: 'page-header',
       type: 'recipe',
       components: [

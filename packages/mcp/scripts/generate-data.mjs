@@ -1383,15 +1383,20 @@ const main = async () => {
 
       const categories = [...new Set(recipeComponents.map(component => component.category))].sort()
 
+      const examples = Object.fromEntries((await Promise.all(['astro', 'react', 'elements'].map(async framework => {
+        const extension = { astro: 'astro', elements: 'html', react: 'tsx' }[framework]
+        const example = await readIfExists(join(repoRoot, 'packages/lumen/templates', framework, item.name, 'src/lumen', `${item.name}.${extension}`))
+
+        return [framework, example]
+      }))).filter(([, source]) => source))
+
+      const frameworks = Object.keys(examples)
+
       return {
         ...item,
         categories,
-        examples: Object.fromEntries((await Promise.all(['astro', 'react', 'elements'].map(async framework => {
-          const extension = { astro: 'astro', elements: 'html', react: 'tsx' }[framework]
-          const example = await readIfExists(join(repoRoot, 'packages/lumen/templates', framework, item.name, 'src/lumen', `${item.name}.${extension}`))
-
-          return [framework, example]
-        }))).filter(([, source]) => source)),
+        examples,
+        ...(frameworks.length > 0 ? { frameworks } : {}),
         description:
           item.type === 'component-set' ?
             'The complete Lumen component catalog and shared runtime foundation.' :

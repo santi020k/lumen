@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 const templateSlugs = [
+  'editorial',
   'analytics-dashboard',
   'saas-admin',
   'commerce-dashboard',
@@ -166,3 +167,25 @@ for (const width of [390, 1440]) {
     })
   }
 }
+
+test('editorial keeps its supported target when another family remembers React', async ({ page }) => {
+  await page.addInitScript(() => { localStorage.setItem('lumen-template-platform', 'react'); })
+  await page.goto('/templates')
+  const card = page.locator('.template-gallery-card').filter({ has: page.locator('a[href="/templates/editorial"]') })
+  await expect(card.getByRole('tab', { name: 'Astro', exact: true })).toHaveAttribute('aria-selected', 'true')
+  await expect(card.getByRole('tab')).toHaveCount(1)
+  await expect(card.getByRole('tabpanel')).toContainText('lumen add editorial --target astro')
+})
+
+test('six gallery families form complete desktop rows', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/templates')
+  const cards = page.locator('.template-gallery-card')
+  await expect(cards).toHaveCount(6)
+  const previous = await cards.nth(4).boundingBox()
+  const last = await cards.nth(5).boundingBox()
+  if (!previous || !last) throw new Error('Expected both final-row cards to be visible')
+  expect(last.y).toBeCloseTo(previous.y, 0)
+  expect(last.width).toBeCloseTo(previous.width, 0)
+  expect(last.x).toBeGreaterThan(previous.x)
+})

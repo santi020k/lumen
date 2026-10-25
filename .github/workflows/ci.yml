@@ -424,7 +424,7 @@ jobs:
             needs.classify.outputs.playwright == 'true' &&
             matrix.node-version == '22.x'
           }}
-        run: pnpm run test:a11y
+        run: pnpm run test:a11y && pnpm run test:editorial --project=chromium
 
       - name: Repository checks
         if: needs.classify.outputs.release-pr != 'true' && matrix.node-version == '22.x'

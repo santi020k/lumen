@@ -624,7 +624,7 @@ behavior. A failed JDK, SDK, platform-package, or required-NDK preflight should 
 starting Gradle so native compilation does not obscure the setup problem.
 
 `lumen add <component>` defaults to an Astro wrapper. Use `--target react` for a local React wrapper
-or `--target elements` for a custom-elements starter. Bundled recipes also accept `--target astro`,
+or `--target elements` for a custom-elements starter. Check each recipe’s available frameworks before installation. Most bundled recipes accept `--target astro`,
 `--target react`, and `--target elements`; external registry inline files keep their authored paths
 and sources. Those paths must be unique, relative forward-slash paths: the installer rejects
 absolute paths, parent traversal, and symbolic-link path segments before writing any file. Registry
@@ -646,6 +646,10 @@ attributes, and accessible markup.
   `"comfortable"` (default) or `"spacious"` instead of scattering padding overrides.
 - Keep text rhythm inside Prose or Typography. Verify long and translated text, enlarged text,
   validation states, optional sections and mobile wrapping before calling a composition finished.
+- For content-led Astro pages, install `editorial` with `lumen add editorial --target astro`.
+  Reuse its cover spread, introduction, content card, replacement notice, and contact panel.
+  Pass application copy, links, media, and unique heading IDs explicitly. See the
+  [editorial recipe guide](editorial-recipes.md); React and Elements ports are not included.
 - Use the `page-header` and `section-header` recipes for dashboard identity, optional breadcrumbs,
   status/count badges and independent actions. Keep headings in document order, pass translated
   navigation/action labels and unique heading ids, and connect buttons to application-owned handlers.

@@ -1,0 +1,89 @@
+---
+import { Typography } from '@santi020k/lumen-astro'
+
+interface Props {
+  category?: string
+  description: string
+  label: string
+}
+
+const { category, description, label } = Astro.props
+---
+
+<div class="editorial-introduction">
+  <Typography class="editorial-introduction__spread">
+    <div class="editorial-introduction__margin">
+      <p class="editorial-introduction__label">{label}</p>
+      {category && <p class="editorial-introduction__category">{category}</p>}
+    </div>
+    <p class="editorial-introduction__description">{description}</p>
+  </Typography>
+</div>
+
+<style>
+  .editorial-introduction {
+    container: editorial-introduction / inline-size;
+    border-block: 1px solid hsl(var(--line));
+    padding-block: 1.625rem;
+    color: hsl(var(--ink));
+  }
+
+  .editorial-introduction :global(.editorial-introduction__spread) {
+    display: grid;
+    grid-template-columns: 9.375rem minmax(0, 1fr);
+    gap: 1.625rem;
+    color: inherit;
+  }
+
+  .editorial-introduction__margin {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+
+  .editorial-introduction p {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .editorial-introduction__label {
+    color: hsl(var(--brand));
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  .editorial-introduction__category {
+    color: hsl(var(--ink-soft));
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .editorial-introduction__description {
+    border-inline-start: 2px solid hsl(var(--brand));
+    padding-inline-start: 1.625rem;
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+
+  @container editorial-introduction (width < 28.75rem) {
+    .editorial-introduction :global(.editorial-introduction__spread) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.3125rem;
+    }
+    .editorial-introduction__margin {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.625rem 1.25rem;
+    }
+    .editorial-introduction__description {
+      padding-inline-start: 1.25rem;
+    }
+  }
+</style>

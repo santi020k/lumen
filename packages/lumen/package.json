@@ -73,10 +73,11 @@
     "@types/react": "catalog:",
     "@types/semver": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "astro": "catalog:",
+    "jsdom": "catalog:",
     "react": "catalog:",
     "tailwindcss": "catalog:",
-    "vitest": "catalog:",
-    "jsdom": "catalog:"
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "react": ">=19"

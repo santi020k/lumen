@@ -10,12 +10,19 @@ import {
 } from './templates'
 
 describe('Lumen templates catalog', () => {
-  test('publishes every planned template family for all targets', () => {
+  test('publishes each template with its supported targets', () => {
     expect(lumenTemplates.map(template => template.slug)).toEqual(templateSlugs)
 
     for (const template of lumenTemplates) {
-      expect(template.frameworks).toEqual(templateFrameworks)
+      expect(template.frameworks).toEqual(template.slug === 'editorial' ? ['astro'] : templateFrameworks)
       expect(template.description.length).toBeGreaterThan(40)
+    }
+  })
+
+  test('rejects unsupported editorial targets', () => {
+    expect(getTemplateInstallCommand('editorial', 'astro')).toBe('pnpm exec lumen add editorial --target astro')
+    for (const framework of ['react', 'elements'] as const) {
+      expect(() => getTemplateInstallCommand('editorial', framework)).toThrow('does not support')
     }
   })
 

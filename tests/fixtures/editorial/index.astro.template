@@ -1,0 +1,47 @@
+---
+import '@santi020k/lumen-astro/styles.css'
+import { Link } from '@santi020k/lumen-astro'
+import EditorialCard from '../lumen/editorial-card.astro'
+import EditorialContactPanel from '../lumen/editorial-contact-panel.astro'
+import EditorialCoverSpread from '../lumen/editorial-cover-spread.astro'
+import EditorialIntroduction from '../lumen/editorial-introduction.astro'
+import EditorialReplacementNotice from '../lumen/editorial-replacement-notice.astro'
+---
+
+<!doctype html>
+<html lang="en" data-theme="lumen-light">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>Editorial consumer verification</title></head>
+  <body>
+    <main>
+      <EditorialCoverSpread headingId="consumer-title" title="A reusable editorial opening" description="The consumer supplies all content.">
+        <svg slot="media" aria-label="Illustrative cover" role="img" viewBox="0 0 800 360"><rect width="800" height="360" fill="currentColor" /></svg>
+        <p slot="metadata">Updated by the reader</p>
+      </EditorialCoverSpread>
+      <EditorialCoverSpread headingId="contained-cover" headingLevel={2} layout="contained" title="Contained media">
+        <svg slot="media" aria-label="Contained illustration" role="img" viewBox="0 0 800 160"><rect width="800" height="160" fill="currentColor" /></svg>
+      </EditorialCoverSpread>
+      <EditorialCoverSpread headingId="text-cover" headingLevel={2} title="Text without media" />
+      <EditorialIntroduction label="Research" category="Field notes" description="A localized introduction with enough detail to explain what follows." />
+      <EditorialIntroduction label="More context" description="The category is optional." />
+      <div class="cards">
+        {[1, 2].map(index => <EditorialCard headingId={`card-${index}`} headingLevel={3} category={index === 1 ? 'Perspective' : undefined} icon="notebook-text" title={`Repeated card ${index}`} description="Keep the explanation independent from application data." href="https://example.com/guide" linkLabel="Read the external guide" newTab />)}
+      </div>
+      <EditorialReplacementNotice title="A revised guide" currentLabel="Earlier edition" destinationLabel="Current edition" replacementLabel="Updated guide" replacementDetail="Research" href="https://example.com/guide" linkLabel="Read the updated guide" newTab><p>Why the guide changed.</p></EditorialReplacementNotice>
+      <EditorialReplacementNotice title="Another revision" currentLabel="Earlier notes" destinationLabel="Continue reading" replacementLabel="New notes" href="#contact-1" linkLabel="Read more" />
+      {[1, 2].map(index => <EditorialContactPanel headingId={`contact-${index}`} headingLevel={2} label="Contact" title={`A conversation ${index}`}><p><Link href="https://example.com/contact" newTab>Continue the conversation</Link></p>{index === 1 && <p slot="note">An optional note.</p>}</EditorialContactPanel>)}
+      <section data-theme="lumen-dark" aria-label="Nested dark theme" class="nested">
+        <EditorialCard headingId="nested-card" headingLevel={2} title="A nested theme" description="Colors follow the nearest theme." href="#consumer-title" linkLabel="Back to the beginning" />
+      </section>
+    </main>
+    <footer><Link href="https://santi020k.com" newTab>Santiago Molina</Link></footer>
+  </body>
+</html>
+
+<style is:global>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: system-ui, sans-serif; }
+  main, footer { width: min(100% - 2rem, 64rem); margin-inline: auto; padding-block: 2rem; }
+  main { display: grid; gap: 2rem; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1rem; }
+  .nested { padding: 1rem; background: hsl(var(--canvas)); }
+</style>

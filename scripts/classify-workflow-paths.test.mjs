@@ -44,6 +44,14 @@ test('primitive motion regressions select CI and release browser coverage', () =
   }
 })
 
+test('editorial consumer regressions select browser coverage', () => {
+  for (const path of ['tests/editorial/editorial.spec.ts', 'tests/fixtures/editorial/index.astro.template', 'packages/lumen/scripts/prepare-editorial-consumer.mjs', 'playwright.editorial.config.ts']) {
+    assert.equal(classifyCiPaths([path]).playwright, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).browser, true, path)
+  }
+})
+
 test('a web package change skips every native platform job', () => {
   const classification = classifyCiPaths(['packages/react/src/Button.tsx'])
 

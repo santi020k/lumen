@@ -20,6 +20,9 @@ on:
       - "docs/playgrounds.md"
       - "docs/web-consumer-validation.md"
       - "packages/**"
+      - "tests/editorial/**"
+      - "tests/fixtures/editorial/**"
+      - "playwright.editorial.config.ts"
       - "tests/motion/**"
       - "playwright.motion.config.ts"
       - "registry/native-api-baseline.json"
@@ -329,6 +332,9 @@ jobs:
       - name: Verify release-candidate accessibility
         if: needs.classify.outputs.browser == 'true'
         run: pnpm run test:a11y --shard=${{ matrix.shard }}/2 --max-failures=1
+      - name: Verify installed editorial recipes
+        if: needs.classify.outputs.browser == 'true'
+        run: pnpm run test:editorial --shard=${{ matrix.shard }}/2 --max-failures=1
       - name: Verify release-candidate framework behavior
         if: matrix.shard == 1
         env:
