@@ -595,6 +595,35 @@ For keyboard scrolling before JavaScript loads, give that `pre` `tabindex="0"`,
 `role="region"`, and an accessible name; existing attributes are preserved.
 Wrapped blocks do not add an extra tab stop.
 
+Opt into `scrollCue` on an unwrapped block `Code` or a `Table` with the default
+`layout="scroll"`. The default messages are “Scroll horizontally to read more” and
+“Scroll horizontally to compare”; pass a string to localize either message. Inline
+or wrapped Code and records-layout Table ignore the option. Import `styles.css` and
+mount `UIPrimitives` once in the root layout; it includes the cue stylesheet. The cue is hidden without JavaScript.
+It appears only when content overflows, stays outside the scrolling viewport, and
+updates after resizing, font loading, hidden-panel changes, and Astro navigation.
+Native scrolling and existing accessible descriptions are preserved.
+
+```astro
+<Code variant="block" code={source} language="ts" copy scrollCue />
+<Table scrollCue="Scroll horizontally to compare" aria-label="Plan comparison">
+  <table><!-- Native caption, header and body cells --></table>
+</Table>
+```
+
+A cue-enabled Table supplies `role="region"`, `tabindex="0"`, and the fallback name
+“Table”; pass a meaningful `aria-label` or `aria-labelledby` for each table. With the
+option off, Table retains its original markup and runtime-free behavior. Style the
+optional message with `[data-slot="scroll-cue"]`.
+
+Markdown renderers can emit the same contract: an outer `[data-ui-scroll-cue]`, a
+native scrolling `[data-scroll-cue-viewport]` containing a `table` or `code`, and a
+sibling `[data-scroll-cue-message][data-slot="scroll-cue"]` with `hidden`. The runtime
+also finds Code's `pre` automatically, assigns a unique message ID if omitted, and
+adds only its own description token while the message is visible. Keep the viewport
+named and focusable in server HTML, and provide a decorative icon and localized text.
+
+
 `NavigationMenu` contains ordinary site links, so every enabled link remains in
 native Tab order. Use `Menubar` or `Toolbar` for their documented composite-widget
 keyboard behavior. A `ThemeToggle` with `controlled` respects the host theme at

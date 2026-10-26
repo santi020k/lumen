@@ -40,6 +40,7 @@ import { bindListBoxProxy } from './controllers/list-box-proxy'
 import { initMessageFeeds } from './controllers/message-scroller'
 import { initOptionalMediaControllers } from './controllers/optional-media'
 import { initProgress } from './controllers/progress'
+import { clearScrollCues, initScrollCues } from './controllers/scroll-cue'
 
 /* eslint-disable complexity */
 /* Stateful DOM handlers stay local so Astro consumers do not need a framework runtime. */
@@ -1784,6 +1785,8 @@ const initCommand = (scope: ParentNode): void => {
 }
 
 document.addEventListener('astro:before-swap', clearComboboxes)
+
+document.addEventListener('astro:before-swap', clearScrollCues)
 
 const initSelects = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-select]')) {
@@ -5462,6 +5465,8 @@ const initUiPrimitives = (scope: ParentNode = document): void => {
   initMessageFeeds(scope)
 
   initCodeRegions(scope)
+
+  initScrollCues(scope)
 
   initCopyButtons(scope)
 

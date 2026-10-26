@@ -9,6 +9,7 @@
   "sideEffects": [
     "./styles/lumen.css",
     "./styles/critical.css",
+    "./styles/scroll-cue.css",
     "./styles.css",
     "./styles/tailwind.css",
     "./styles/layers.css"

@@ -3,6 +3,8 @@ import type { HTMLAttributes } from 'astro/types'
 
 import { renderLumenCodeHtml, renderLumenIconSvg, resolveLumenAstroProps } from '@santi020k/lumen-core'
 
+import ScrollCue from '../internal/ScrollCue.astro'
+
 type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 
 type CodeVariant = 'block' | 'inline'
@@ -19,6 +21,7 @@ interface Props extends HTMLAttributes<'code'> {
   highlighted?: boolean
   label?: string
   language?: string
+  scrollCue?: boolean | string
   theme?: CodeTheme
   variant?: CodeVariant
   wrap?: boolean
@@ -36,6 +39,7 @@ const {
   highlighted = false,
   label,
   language,
+  scrollCue = false,
   theme = 'auto',
   variant = 'inline',
   wrap = false,
@@ -54,6 +58,8 @@ const { classList: inlineClassList } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 
 const shouldShowHeader = variant === 'block' && Boolean(copy || label || language)
+const cueLabel = typeof scrollCue === 'string' ? scrollCue : 'Scroll horizontally to read more'
+const showCue = Boolean(scrollCue) && !wrap
 const hasCode = code !== undefined
 const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
 ---
@@ -67,6 +73,7 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
       data-language={language}
       data-slot="code"
       data-ui-code
+      data-ui-scroll-cue={showCue ? '' : undefined}
       {...passthrough}
     >
       {shouldShowHeader && (
@@ -102,6 +109,7 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
       {highlighted && <slot />}
       {!highlighted && hasCode && <pre aria-label={!wrap ? codeLabel : undefined} role={!wrap ? 'region' : undefined} tabindex={!wrap ? 0 : undefined}><code set:html={renderedCode}></code></pre>}
       {!highlighted && !hasCode && <pre aria-label={!wrap ? codeLabel : undefined} role={!wrap ? 'region' : undefined} tabindex={!wrap ? 0 : undefined}><code><slot /></code></pre>}
+      {showCue && <ScrollCue label={cueLabel} />}
     </figure>
   ) :
   (
