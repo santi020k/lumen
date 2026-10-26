@@ -1,5 +1,5 @@
 /* Opt-in overflow guidance remains outside the native scrolling content. */
-.ui-scroll-cue:not([hidden]) { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; color: hsl(var(--ink-soft)); font-size: 0.75rem; line-height: 1.6; }
+.ui-scroll-cue:not([hidden]) { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; color: hsl(var(--ink-soft)); font: 400 0.75rem/1.6 var(--font-sans, sans-serif); }
 .ui-scroll-cue > svg { flex: none; width: 1rem; height: 1rem; color: hsl(var(--brand)); }
 .ui-scroll-cue > span { min-width: 0; overflow-wrap: anywhere; }
 .ui-code > .ui-scroll-cue { border-block-start: 1px solid hsl(var(--line)); }
