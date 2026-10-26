@@ -395,7 +395,14 @@ jobs:
 
       - name: Run CI checks
         # Each Vitest suite already uses two workers; avoid oversubscribing the runner.
-        run: pnpm exec turbo run build typecheck lint test --affected --concurrency=50%
+        env:
+          IS_RELEASE_PR: ${{ needs.classify.outputs.release-pr }}
+        run: |
+          scope=()
+          if [[ "$IS_RELEASE_PR" != "true" ]]; then
+            scope+=(--affected)
+          fi
+          pnpm exec turbo run build typecheck lint test "${scope[@]}" --concurrency=50%
 
       - name: Validate portable AI plugin and migration artifacts
         run: pnpm run check:plugin-package && pnpm run test:plugin-package && pnpm run check:v4-migration

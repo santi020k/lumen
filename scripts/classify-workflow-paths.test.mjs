@@ -1,11 +1,81 @@
 import assert from 'node:assert/strict'
+import { execFileSync } from 'node:child_process'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import test from 'node:test'
 
 import {
+  changedPaths,
   classifyCanaryPaths,
   classifyChangedNpmPackages,
   classifyCiPaths
 } from './classify-workflow-paths.mjs'
+
+test('Git scope includes both rename sides, deletions and unusual names from the merge base', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'lumen-workflow-scope-'))
+  const original = Object.fromEntries(Object.entries(process.env).filter(([key]) => key.startsWith('GIT_')))
+  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')))
+  const git = args => execFileSync('git', args, { cwd: directory, env, encoding: 'utf8', stdio: 'pipe' })
+
+  try {
+    git(['init', '--quiet', '-b', 'main'])
+
+    git(['config', 'user.name', 'CI fixture'])
+
+    git(['config', 'user.email', 'ci@example.test'])
+
+    mkdirSync(join(directory, 'packages/swift'), { recursive: true })
+
+    writeFileSync(join(directory, 'packages/swift/moved.swift'), 'source')
+
+    writeFileSync(join(directory, 'packages/swift/deleted.swift'), 'source')
+
+    git(['add', '.'])
+
+    git(['commit', '-m', 'fixture'])
+
+    git(['branch', 'feature'])
+
+    writeFileSync(join(directory, 'base-only'), 'unrelated base change')
+
+    git(['add', '.'])
+
+    git(['commit', '-m', 'base changes'])
+
+    git(['switch', 'feature'])
+
+    mkdirSync(join(directory, 'docs'))
+
+    git(['mv', 'packages/swift/moved.swift', 'docs/moved.md'])
+
+    git(['rm', 'packages/swift/deleted.swift'])
+
+    writeFileSync(join(directory, 'docs/line\nbreak.md'), 'unusual name')
+
+    git(['add', '.'])
+
+    git(['commit', '-m', 'feature changes'])
+
+    Object.assign(process.env, { GIT_DIR: '/missing/git', GIT_WORK_TREE: '/missing/tree' })
+
+    const paths = changedPaths('main', 'HEAD', directory)
+
+    assert.deepEqual(paths, ['docs/line\nbreak.md', 'docs/moved.md', 'packages/swift/deleted.swift', 'packages/swift/moved.swift'])
+
+    assert.equal(classifyCiPaths(paths).apple, true)
+
+    assert.equal(classifyCanaryPaths(paths).swift, true)
+
+    assert.throws(() => changedPaths('missing-revision', 'HEAD', directory))
+  } finally {
+    for (const key of Object.keys(process.env).filter(key => key.startsWith('GIT_'))) delete process.env[key]
+
+    Object.assign(process.env, original)
+
+    rmSync(directory, { recursive: true, force: true })
+  }
+})
 
 test('Figma plugin sources and browser regressions select browser coverage', () => {
   for (const path of ['apps/figma-plugin/src/plugin.ts', 'tests/figma/plugin-beta.spec.ts']) {
