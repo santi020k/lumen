@@ -146,11 +146,32 @@ reports reviewable; never replace published tags. Corrections to a published rel
 
 ## Progress
 
-- Completed: source audit, current import measurements, and approved distribution direction.
-- Completed P0 milestones: synchronized tab/scroll-cue fixes; feature-loaded Astro runtime with
-  cold interaction, navigation, failure recovery, and measured route budgets. See
-  [route evidence](import-and-icon-performance.md#november-5-2026-astro-route-delivery).
-- Completed P0 delivery milestone: generated component CSS, automatic Astro styles, and runtime-only
-  web adapters with separately installed CLI (maintainer-approved).
-- In progress: selective adapter coverage, styling hooks, migration contract, and consumer validation.
-- Pending: P1, P2, full candidate validation, independent review, and release approval.
+P0, P1, and P2 implementation is integrated locally on `release/v5.0.0`. The candidate is unpublished;
+full validation and the final independent review are in progress.
+
+- P0: route budgets, selective Astro runtime and CSS, runtime-only adapters, granular adapter
+  entries, synchronized tabs and scroll cues, styling parts, accessible reveal behavior, and v5
+  migration guidance are implemented.
+- P1: editable video, code-example, and share workflows, dependency/setup metadata, selective
+  installer output, and installed-consumer tests are implemented.
+- P2: React/Elements editorial recipes, explicit local rendered audits, CLI/MCP target-version
+  diagnostics, native import improvements, and measured delivery/install comparisons are implemented.
+- [Performance evidence](import-and-icon-performance.md) separates browser assets, installation
+  content, and native bundle costs. Existing budgets remain enforced.
+- Changesets resolve the six linked web/tooling packages to 5.0.0. Companion native packages follow
+  their own versions through the existing release process.
+
+The website `release/v5.2.0` was tested in an isolated copy using packed candidate `94cf6347`, with
+its Astro compatibility patch removed only there. Build, lint, types, SEO, archives, links, 23 focused
+unit tests, and 160 Chromium/WebKit/mobile browser cases passed. Forty Firefox cases could not start:
+the host browser reported “Could not find profile folder,” reproduced with the published baseline
+and a fresh matching browser download. This is an explicit verification limit, not a passing check.
+The actual website still uses published 4.4.0 and retains its patch until a published v5 upgrade.
+
+The initial independent review found one lazy-toast stylesheet loss during Astro navigation. The
+fix retains the stylesheet across page swaps and adds an exercised regression. Validation also
+caught Tailwind layer ordering, async runtime test callers, and unrelated styles entering the
+standalone DeviceFrame demo; those findings are being resolved before the final qualification run.
+
+Publication remains a separate authorized task through the normal GitHub workflow. Do not remove
+the real website patch or claim published-package adoption from local candidate evidence.
