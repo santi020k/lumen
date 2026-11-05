@@ -1,6 +1,8 @@
-import { getLoopedIndex } from './shared.js'
+import { getLoopedIndex, isOwnedByAnotherAdapter } from './shared.js'
 
 export const closeSelect = (root: HTMLElement): void => {
+  if (isOwnedByAnotherAdapter(root)) return
+
   const trigger = root.querySelector<HTMLElement>('[data-ui-select-trigger]')
   const listbox = root.querySelector<HTMLElement>('[data-ui-select-list]')
 
@@ -178,7 +180,7 @@ const focusSelectedItem = (root: HTMLElement): void => {
 }
 
 const bindSelects = (root: HTMLElement): void => {
-  if (root.dataset.uiBound === 'true') return
+  if (root.dataset.uiBound === 'true' || isOwnedByAnotherAdapter(root)) return
 
   const select = root.querySelector<HTMLSelectElement>('[data-ui-select-native]')
   const control = root.querySelector<HTMLElement>('[data-ui-select-control]')

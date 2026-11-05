@@ -98,8 +98,22 @@ for (const width of [390, 1280]) {
       await page.goto('/docs/visual-playground/effects')
       await context.grantPermissions(['clipboard-read', 'clipboard-write'])
       const section = page.getByRole('region', { name: 'Visual effects', exact: true })
+      const select = section.locator('[data-ui-select]')
+
+      await expect(select).toHaveAttribute('data-ui-owner', 'react')
 
       for (const variant of ['mesh', 'aurora', 'spotlight', 'grain', 'border', 'draw', 'depth']) {
+        await select.evaluate(async scope => {
+          const initialize = (window as Window & {
+            LumenInitUiPrimitives?: (root?: ParentNode) => Promise<void>
+          }).LumenInitUiPrimitives
+
+          if (!initialize) throw new Error('Expected the Astro runtime entry point')
+
+          await initialize(scope)
+          await initialize(scope)
+        })
+        await expect(select).not.toHaveAttribute('data-ui-bound')
         await section.getByRole('combobox', { name: 'Effect', exact: true }).click()
         await page.getByRole('option', { name: variant, exact: true }).click()
         await expect(section.locator('[data-ui-visual-effect]')).toHaveCount(2)

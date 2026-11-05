@@ -383,7 +383,8 @@ const series = [{
 
 ## Next.js and server components
 
-React DatePicker, Calendar (including custom `useCalendar` roots), and InputOTP render
+React Select (including custom `useSelect` roots), DatePicker, Calendar (including custom
+`useCalendar` roots), InputOTP, and ListBox render
 `data-ui-owner="react"`. The Astro runtime and Elements enhancers skip owned roots, so React islands
 keep their ids, labels, and state on pages that also load those runtimes.
 

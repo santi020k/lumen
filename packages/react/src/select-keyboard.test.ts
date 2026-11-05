@@ -239,3 +239,8 @@ test('unmounting with a pending option focus does not throw', () => {
   }).not.toThrow()
   container.remove()
 })
+
+test('Select exposes React ownership through its controller root props', () => {
+  const { container } = renderSelect(['mesh', 'aurora'])
+  expect(requireElement(container.querySelector('[data-ui-select]')).getAttribute('data-ui-owner')).toBe('react')
+})
