@@ -1,5 +1,22 @@
 import { expect, test } from '@playwright/test'
 
+test('the standalone device preview loads its own component styles without documentation fonts', async ({ page }) => {
+  const fontRequests: string[] = []
+
+  page.on('request', request => {
+    const pathname = new URL(request.url()).pathname
+
+    if (['.woff', '.woff2', '.ttf', '.otf'].some(extension => pathname.endsWith(extension))) fontRequests.push(pathname)
+  })
+  await page.goto('/device-frame-demo')
+  await expect(page.getByRole('heading', { name: /A thoughtful start/ })).toBeVisible()
+  await expect(page.locator('.ui-card').first()).toHaveCSS('display', 'flex')
+  await expect(page.locator('.ui-badge')).toHaveCSS('align-items', 'center')
+  await page.evaluate(() => document.fonts.ready)
+  expect(fontRequests).toEqual([])
+  expect(await page.evaluate(() => document.fonts.size)).toBe(0)
+})
+
 test('white, black and custom finishes preserve the screen content and dimensions', async ({ page }) => {
   await page.goto('/docs/components/device-frame')
   const frames = page.locator('[data-device-gallery] .ui-device-frame')
