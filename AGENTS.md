@@ -162,6 +162,8 @@ level-one heading that violates this repository's Markdown rules. Maintain this 
   `pnpm run generate:plugin-package`, then `pnpm run check:plugin-package` after changing them.
 - `registry/lumen-4-contract.json` supplies the CLI migration data and MCP migration tool; run
   `pnpm run generate:v4-migration` and regenerate the MCP snapshot after changing it.
+- `registry/lumen-5-contract.json` supplies the v5 migration/adoption contract; run
+  `pnpm run generate:v5-migration` and regenerate the MCP snapshot after changing it.
 - Actual authenticated agent benchmarks are opt-in; see `docs/lumen-4-ai.md`. They are separate from
   deterministic CI and public publication evidence.
 

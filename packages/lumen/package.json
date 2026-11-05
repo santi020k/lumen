@@ -51,7 +51,8 @@
     "README.md",
     "LICENSE",
     "v4-migration.json",
-    "tailwind.css"
+    "tailwind.css",
+    "v5-migration.json"
   ],
   "bin": {
     "lumen": "./bin/lumen.mjs"

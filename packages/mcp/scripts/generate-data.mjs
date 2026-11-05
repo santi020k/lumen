@@ -1416,6 +1416,7 @@ const main = async () => {
     }))
 
   const migration = JSON.parse(await readFile(join(repoRoot, 'registry/lumen-4-contract.json'), 'utf8'))
+  const migrationV5 = JSON.parse(await readFile(join(repoRoot, 'registry/lumen-5-contract.json'), 'utf8'))
   const docs = { aiUsage, readme }
 
   const tokens = {
@@ -1462,6 +1463,7 @@ const main = async () => {
     components,
     docs,
     migration,
+    migrationV5,
     nativeComponents,
     nativeSources,
     recipes,
@@ -1529,6 +1531,7 @@ const main = async () => {
       serverVersion: packageJson.version
     },
     migration,
+    migrationV5,
     nativeComponents,
     nativeSources,
     recipes,

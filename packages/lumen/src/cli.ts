@@ -268,8 +268,8 @@ const help = [
   '  lumen doctor-native    Inspect native versions, package pins, and theme placement',
   '  lumen init             Print canonical framework setup without changing files',
   '  lumen rollout [version] [repositories...]  Inventory or upgrade pnpm consumers',
-  '  lumen migrate v2|v3|v4 Preview source migrations and manual review findings',
-  '  --dependencies        Include coordinated pnpm upgrades for v3/v4 migrations',
+  '  lumen migrate v2|v3|v4|v5 Preview source migrations and manual review findings',
+  '  --dependencies        Include coordinated pnpm upgrades for v3/v4/v5 migrations',
   '',
   'Options:',
   '  --cwd <path>           Target directory for lumen add',
@@ -283,6 +283,7 @@ const help = [
   '  --framework <name>     Select astro, react, or elements for lumen init',
   '  --tailwind             Include the verified Tailwind cascade setup in lumen init',
   '  --json                 Print lumen doctor output as JSON',
+  '  --version <semver>    Explicit target for audit-consumer (default 4.0.0)',
   '  --manifest <path>      Use a specific cross-platform release manifest',
   '  --apply                Apply a rollout or supported migration (migrations default to dry-run)',
   '  --allow-dirty          Allow rollout after recording an uncommitted baseline',
@@ -313,7 +314,13 @@ const run = async () => {
 
   switch (command) {
     case 'audit-consumer': {
-      const report = await inspectLumenConsumerUpgrade(cwd ?? name ?? process.cwd())
+      const versionIndex = args.indexOf('--version')
+      const auditVersion = versionIndex >= 0 ? args[versionIndex + 1] : '4.0.0'
+
+      if (!auditVersion || auditVersion.startsWith('--')) throw new Error('audit-consumer --version requires an exact semantic version.')
+
+      const repository = cwd ?? (name && !name.startsWith('--') ? name : process.cwd())
+      const report = await inspectLumenConsumerUpgrade(repository, auditVersion)
 
       output = json ? JSON.stringify(report, undefined, 2) : formatLumenConsumerUpgradeAudit(report)
 
@@ -401,7 +408,7 @@ const run = async () => {
     }
 
     case 'migrate': {
-      if (name !== 'v2' && name !== 'v3' && name !== 'v4') throw new Error('Missing or invalid migration. Use lumen migrate v2, v3 or v4.')
+      if (name !== 'v2' && name !== 'v3' && name !== 'v4' && name !== 'v5') throw new Error('Missing or invalid migration. Use lumen migrate v2, v3, v4 or v5.')
 
       if (applyRollout && dryRun) throw new Error('Choose either --dry-run or --apply for lumen migrate.')
 

@@ -360,6 +360,9 @@ export const migrateLumenVersionSource = (
   file: string,
   version: LumenMigrationVersion
 ): LumenVersionSourceMigration => {
+  // V5 input is already v4: never replay spacing, control-size or SDK rewrites.
+  if (version === 'v5') return { changes: [], manualReview: [], source }
+
   const manualReview = generalFindings(source, file, version)
 
   if (version === 'v3' || file.endsWith('.css')) return { changes: [], manualReview, source }

@@ -14,7 +14,7 @@ import { migrateLumenVersionSource } from './version-migration-source.js'
 
 export { migrateLumenVersionSource } from './version-migration-source.js'
 
-export type LumenMigrationVersion = 'v3' | 'v4'
+export type LumenMigrationVersion = 'v3' | 'v4' | 'v5'
 export interface LumenVersionMigrationFinding {
   column: number
   file: string
@@ -159,7 +159,7 @@ const createReport = (
   manualReview: [],
   root,
   version: options.version,
-  dependencyVersion: options.version === 'v3' ? '3.0.1' : '4.0.0'
+  dependencyVersion: { v3: '3.0.1', v4: '4.0.0', v5: '5.0.0' }[options.version]
 })
 
 const refreshDependencyReport = async (report: LumenVersionMigrationReport): Promise<void> => {
@@ -198,7 +198,7 @@ export const migrateLumenVersion = async (
   const files = await discoverSourceFiles(root, extensions)
   const ledgerPath = resolve(root, '.lumen', 'migrations-v4.json')
 
-  await checkLedgerLocation(root)
+  if (options.version === 'v4') await checkLedgerLocation(root)
 
   const ledger = options.version === 'v4' ? await readLedger(ledgerPath) : {}
   const report = createReport(options, root, files.length)
@@ -242,9 +242,11 @@ export const formatLumenVersionMigration = (report: LumenVersionMigrationReport)
   ...report.manualReview.map(item => `${item.file}:${item.line}:${item.column} [manual review] ${item.message}`),
   ...(report.dependencies ? [formatConsumerRollout(report.dependencies)] : []),
   ...(report.consumerAudit ? [formatLumenConsumerUpgradeAudit(report.consumerAudit)] : []),
-  report.version === 'v3' ?
-    'V3 requires coordinated package versions and a native rebuild, with no web source rewrites. Review exhaustive Swift LumenIconName switches for added cases.' :
-    'Review product CSS, pending dialogs, chart identity, native initializers, exhaustive Swift icon switches and embedded MCP SDK v2 integrations. Source changes do not qualify the application for release.',
+  {
+    v3: 'V3 requires coordinated package versions and a native rebuild, with no web source rewrites. Review exhaustive Swift LumenIconName switches for added cases.',
+    v4: 'Review product CSS, pending dialogs, chart identity, native initializers, exhaustive Swift icon switches and embedded MCP SDK v2 integrations. Source changes do not qualify the application for release.',
+    v5: 'V5 performs no automatic source rewrites. Review async Astro readiness and separately installed CLI; delivery and recipes are optional adoption. The candidate contract does not establish publication availability.'
+  }[report.version],
   `Use --dependencies to inventory or upgrade the coordinated npm family to ${report.dependencyVersion} through the existing pnpm rollout. Native Swift/Maven pins remain application-owned.`,
   ...(!report.applied && report.changes.length ? [`Run lumen migrate ${report.version} --apply to write the source changes.`] : [])
 ].join('\n')

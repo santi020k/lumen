@@ -14,6 +14,24 @@ const webChanges = [
 ]
 
 describe('v4 migration inventory', () => {
+  test('selects v5 explicitly and separates optional adoption from contract reviews', () => {
+    const result = getMigration({ targetVersion: '5.0.0', packageName: '@santi020k/lumen-astro' })
+
+    expect(result.data.targetVersion).toBe('5.0.0')
+    expect(result.data.contractSource).toBe('registry/lumen-5-contract.json')
+    expect(result.data.publication).toBe('unpublished')
+    expect(result.data.changes).toContainEqual(expect.objectContaining({
+      id: 'async-astro-runtime', classification: 'compatibility-review'
+    }))
+    expect(result.data.changes).toContainEqual(expect.objectContaining({
+      id: 'component-css', classification: 'adoption-opportunity'
+    }))
+    expect(result.data.changes.some(change => webChanges.includes(change.id))).toBe(false)
+    expect(result.text).toContain('migrate v5 --dry-run --json')
+    expect(result.text).toContain('does not establish registry availability')
+    expect(getMigration().data.targetVersion).toBe('4.0.0')
+  })
+
   test('returns the complete breaking web inventory for each adapter', () => {
     for (const packageName of ['@santi020k/lumen-astro', '@santi020k/lumen-react', '@santi020k/lumen-elements']) {
       const result = getMigration({ packageName })

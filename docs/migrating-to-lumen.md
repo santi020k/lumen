@@ -88,6 +88,9 @@ Use the guide for your starting version:
 - [Lumen 3 → 4](migrating-v3-to-v4.md): spacing changes,
   component behavior, native signatures, and consumer verification.
 
+- [Lumen 4 → 5 candidate](migrating-v4-to-v5.md): runtime-only adapters, async Astro readiness,
+  modular delivery, and editable recipes. This candidate is not yet published.
+
 When skipping major versions, complete and verify each step in order. The `lumen migrate v2`
 command migrates v1 contracts to v2; it does not automate either later upgrade.
 

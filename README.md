@@ -35,7 +35,7 @@ shared tokens and explicit component contracts.
 
 **Explore:** [Quick start](#web-quick-start) · [Native apps](#native-playgrounds) · [Templates](#dashboards-and-templates) · [AI and Figma](#ai-and-design-workflows) · [Packages](#packages) · [Repository apps](#repository-apps) · [Contributing](#contributing)
 
-> **Lumen 4:** See the [upcoming v4.3 Tailwind complement](docs/lumen-4.3.md), the [v4.2 highlights](docs/lumen-4.2.md) for SwiftUI appearance and agent guidance,
+> **Lumen 4:** See the [v4.3 Tailwind complement](docs/lumen-4.3.md), the [v4.2 highlights](docs/lumen-4.2.md) for SwiftUI appearance and agent guidance,
 > and [v4.1 highlights](docs/lumen-4.1.md) for loading and forms. Follow the [migration guide](docs/migrating-v3-to-v4.md) when
 > upgrading from v3. Package versions and store builds follow their own release schedules.
 
@@ -338,6 +338,12 @@ Each app has its own setup, source map, and verification guidance:
 | [Figma plugin](apps/figma-plugin/README.md) | Development beta for Astro starters and structured agent handoff |
 | [Motion studio](apps/motion/README.md) | Reusable product films and local video exports |
 | [Store artwork](apps/store-assets/README.md) | Canonical SVG sources for the playground app icons |
+
+## Lumen 5 candidate
+
+The [v5 plan](docs/lumen-5-plan.md) prepares modular delivery in the existing packages, runtime-only
+web adapters, and editable product recipes. Follow the [v4 → v5 guide](docs/migrating-v4-to-v5.md)
+for required contract reviews and optional adoption. This work remains an unpublished candidate.
 
 ## Lumen 4
 
