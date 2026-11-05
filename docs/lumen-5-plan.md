@@ -1,6 +1,6 @@
 # Lumen 5: modular delivery
 
-Status: implementation in progress on `release/v5.0.0`, based on published v4.4.0
+Status: implemented and locally validated on `release/v5.0.0`, based on published v4.4.0
 (`fc264ae2`). The maintainer selected modular packages with editable recipes on November 5, 2026.
 P0, P1, and P2 are in scope. Publication requires a separately approved, validated revision.
 
@@ -146,8 +146,8 @@ reports reviewable; never replace published tags. Corrections to a published rel
 
 ## Progress
 
-P0, P1, and P2 implementation is integrated locally on `release/v5.0.0`. The candidate is unpublished;
-full validation and the final independent review are in progress.
+P0, P1, and P2 implementation is committed and integrated locally on `release/v5.0.0`. The candidate
+is unpublished. Full local validation passed on `420e0c72`; subsequent edits record these results.
 
 - P0: route budgets, selective Astro runtime and CSS, runtime-only adapters, granular adapter
   entries, synchronized tabs and scroll cues, styling parts, accessible reveal behavior, and v5
@@ -169,9 +169,42 @@ and a fresh matching browser download. This is an explicit verification limit, n
 The actual website still uses published 4.4.0 and retains its patch until a published v5 upgrade.
 
 The initial independent review found one lazy-toast stylesheet loss during Astro navigation. The
-fix retains the stylesheet across page swaps and adds an exercised regression. Validation also
-caught Tailwind layer ordering, async runtime test callers, and unrelated styles entering the
-standalone DeviceFrame demo; those findings are being resolved before the final qualification run.
+fix retains the stylesheet across page swaps and adds an exercised regression. The final independent
+review through implementation revision `b328b53f` found no actionable issues and independently
+verified two navigation cycles. Later changes address test readiness and validation boundaries.
+
+Validation findings are resolved: canonical CSS layer order, compact PhoneInput sizing, React Select
+ownership beside the Astro runtime, async initialization callers, and standalone DeviceFrame imports.
+Theme contrast checks wait for actual finite transitions to settle; colors and contrast assertions
+remain unchanged. Copied recipe imports retain a narrowly documented consumer-dependency exception;
+authored code remains checked, while ignored generated Expo output is checked at its source workspace.
+
+## Final local validation
+
+| Check | Result |
+| --- | --- |
+| `pnpm run validate` on `420e0c72` | Passed: builds, types, lint, spelling, unused code, contracts, security, publication contents, and clean package consumers |
+| Unit tests within validation | 3,164 passed across 304 files |
+| `pnpm run test:a11y --workers=2` on `420e0c72` | 2,137 passed, zero failed or skipped |
+| `test:interactions`, `test:framework-conformance` | 88 and 348 passed |
+| `test:motion` | 107 passed; one existing WebKit disclosure-interpolation capability skip |
+| `test:editorial`, `test:product-workflows`, `test:portable-editorial` | 44, 22, and 34 passed |
+| `test:rendered-audit` | 16 passed |
+| `pnpm run check:route-delivery` | All unchanged asset budgets and navigation/recovery checks passed |
+| v4/candidate `--render` comparison | All 35 style and screenshot comparisons matched |
+
+The seven browser suites outside accessibility ran on `b328b53f`, the final runtime implementation;
+`420e0c72` adds validation configuration, documentation, and settled-theme test readiness. Together,
+the configured local browser suites report 2,796 passes, zero failures, and one capability skip.
+The website Firefox host limitation above remains separate and unresolved.
+
+Detailed temporary logs, clean-install inventories, and consumer evidence are retained under
+`.cache/v5-final-evidence` and the isolated validation checkouts. Local OG URL fingerprint changes
+were excluded from commits: route metadata and renderer sources are unchanged, and the generator
+hashes absolute source paths. No generated image or build cache is included in the release diff.
+
+Use the [v4 → v5 migration guide](migrating-v4-to-v5.md) for the separately installed CLI, awaited
+Astro initialization, selective setup, and optional recipe adoption.
 
 Publication remains a separate authorized task through the normal GitHub workflow. Do not remove
 the real website patch or claim published-package adoption from local candidate evidence.
