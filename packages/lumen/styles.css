@@ -2008,7 +2008,7 @@ lumen-date-picker.ui-date-picker-field {
 }
 .ui-phone-input:not([data-disabled]):not([data-readonly]) > .ui-phone-input__picker:hover { background: hsl(var(--surface-muted)); }
 .ui-phone-input > .ui-phone-input__picker:has(select:focus-visible) { background: hsl(var(--brand-soft)); }
-.ui-phone-input > .ui-phone-input__number {
+.ui-phone-input > input.ui-phone-input__number {
   flex: 1 1 0;
   width: 0;
   min-width: 0;

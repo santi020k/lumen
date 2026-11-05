@@ -97,7 +97,7 @@
 }
 
 @layer lumen.components {
-.ui-phone-input > .ui-phone-input__number {
+.ui-phone-input > input.ui-phone-input__number {
   flex: 1 1 0;
   width: 0;
   min-width: 0;

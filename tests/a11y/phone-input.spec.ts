@@ -12,6 +12,8 @@ for (const width of [390, 1280]) {
     await expect(field).toHaveAttribute('data-phone-enhanced', 'true')
     await expect(input).toHaveAttribute('id', 'ex-phone')
     await expect(input).toHaveAttribute('required', '')
+    // Another component can append its shared Input styles after PhoneInput's chunk.
+    await page.addStyleTag({ path: 'packages/core/styles/parts/input.css' })
     const sizes = await preview.locator('.ui-phone-input').evaluateAll(elements => (
       elements.map(element => element.getBoundingClientRect().height)
     ))
