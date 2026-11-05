@@ -72,6 +72,17 @@ fingerprints without changing content or image bytes. Full `pnpm run validate` p
 The canonical `pnpm run typecheck` also checks the local Figma Code Connect templates and their
 shared ambient types with `pnpm run typecheck:figma`.
 
+The docs check excludes the generated, ignored Expo preview bundle under
+`public/native-previews/react-native-live`, just as it excludes `dist`. Its authored sources are
+checked by the React Native playground's own TypeScript commands. Checking that minified output
+again consumes excessive memory and reports generated-code hints without validating source types.
+
+Knip treats the CLI's installable recipe scripts and standalone styles as explicit asset entries.
+The CLI is not an Astro application, so its Astro application-discovery plugin is disabled; its
+existing TypeScript/CSS analysis scope is unchanged. Installed Astro and React recipes are checked
+through their consumer fixtures, while the Elements recipe entry scripts use a development-only
+adapter dependency for analysis. Template dependencies remain consumer-owned at runtime.
+
 The shared ESLint composer supplies the TypeScript parser for Astro files. Keep parser ownership
 in `@santi020k/eslint-config-astro` instead of duplicating the parser in the root configuration.
 

@@ -8,7 +8,7 @@ import type { LumenDiagnosticFinding } from './integration-diagnostics.js'
 import { discoverSourceFiles } from './v2-migration.js'
 import { loadLumenV5Contract, type LumenV5Contract } from './v5-contract.js'
 
-export interface LumenConsumerUpgradeFinding extends LumenDiagnosticFinding {
+interface LumenConsumerUpgradeFinding extends LumenDiagnosticFinding {
   classification: 'compatibility-failure' | 'compatibility-review' | 'adoption-opportunity'
 }
 

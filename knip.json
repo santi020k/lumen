@@ -36,12 +36,19 @@
       "project": ["src/**/*.ts"]
     },
     "packages/lumen": {
+      "astro": false,
       "entry": [
         "src/index.ts",
         "src/cli.ts",
         "bin/*.mjs",
         "templates/shared/common/src/lumen/lumen-template.css",
-        "templates/astro/site-search-dialog/src/lumen/site-search-provider.ts"
+        "templates/astro/site-search-dialog/src/lumen/site-search-provider.ts",
+        "templates/elements/article-reading/src/lumen/article-reading.ts",
+        "templates/elements/image-viewer/src/lumen/image-viewer.ts",
+        "templates/elements/site-search-dialog/src/lumen/site-search-dialog.ts",
+        "templates/react/article-reading/src/lumen/article-reading.css",
+        "templates/react/image-viewer/src/lumen/image-viewer.css",
+        "templates/react/site-search-dialog/src/lumen/site-search-dialog.css"
       ],
       "ignoreDependencies": ["@types/react", "react"],
       "project": ["bin/*.mjs", "**/*.{css,ts}"]

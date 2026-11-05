@@ -4,7 +4,7 @@ import { LumenElement } from './element-base.js'
 import { createLumenElementClass, defineLumenElement, type LumenCustomElementRegistry, type LumenElementConfig } from './element-base.js'
 import { observedAttributeNames } from './observed-attributes.js'
 
-export const focusableSelector = [
+const focusableSelector = [
   'a[href]',
   'button:not([disabled])',
   'input:not([disabled])',
@@ -26,7 +26,7 @@ export const createId = (prefix: string): string => {
   return `${prefix}-${Math.random().toString(36).slice(2)}`
 }
 
-export const isElementVisible = (element: HTMLElement): boolean => {
+const isElementVisible = (element: HTMLElement): boolean => {
   if (typeof element.checkVisibility === 'function') {
     return element.checkVisibility({ visibilityProperty: true })
   }
@@ -50,7 +50,7 @@ export const getOwnedTarget = (event: Event): Node | null => event.target instan
 
 export type LumenScalarNativeControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
-export const scalarControlAttributes = [
+const scalarControlAttributes = [
   'accept',
   'aria-describedby',
   'aria-label',
@@ -73,7 +73,7 @@ export const scalarControlAttributes = [
   'step'
 ] as const
 
-export const getValidityFlags = (validity: ValidityState): ValidityStateFlags => ({
+const getValidityFlags = (validity: ValidityState): ValidityStateFlags => ({
   badInput: validity.badInput,
   customError: validity.customError,
   patternMismatch: validity.patternMismatch,

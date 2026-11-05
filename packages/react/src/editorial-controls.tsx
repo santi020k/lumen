@@ -9,9 +9,9 @@ import { glassClass, type LumenGlassProp } from './primitive-surface.js'
 
 export type { LumenGlassProp } from './primitive-surface.js'
 
-export type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
+type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
 
-export type ButtonVariant =
+type ButtonVariant =
   'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
 
 export interface ButtonProps extends ComponentPropsWithRef<'button'> {
