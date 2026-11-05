@@ -1,0 +1,18 @@
+---
+import { Badge, Link, Prose, Stack } from '@santi020k/lumen-astro'
+
+import { Content } from '../../../../../../docs/migrating-v4-to-v5.md'
+import DocsLayout from '../../../layouts/DocsLayout.astro'
+---
+
+<DocsLayout
+  breadcrumbs={[{ href: '/docs/migrations', label: 'Migration guides' }]}
+  description="Upgrade to Lumen 5 with runtime-only adapters, asynchronous Astro enhancement, component CSS, and editable recipes."
+  title="Lumen 4 to Lumen 5 migration - Lumen UI"
+>
+  <Stack gap="group">
+    <Link href="/docs/migrations">All migration guides</Link>
+    <Badge class="w-fit" variant="outline">Lumen 5</Badge>
+    <Prose class="migration-guide"><Content /></Prose>
+  </Stack>
+</DocsLayout>

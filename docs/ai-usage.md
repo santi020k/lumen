@@ -3,7 +3,8 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
-Lumen 4 is released. See the [v4.2 highlights](lumen-4.2.md) and use the
+For Lumen 5, read the [migration guide](migrating-v4-to-v5.md) and
+[selective installation](selective-installation.md). Use the
 [release manifest](../registry/release-manifest.json) for each package's version; companion packages
 do not all share the umbrella version. The public plugin and hosted MCP describe their deployed
 snapshot, which can differ from this checkout. Inspect snapshot metadata before using its contracts.
@@ -65,12 +66,12 @@ should not opt into a consumer-only policy.
 
 Use the framework requested by the user. Every adapter shares the same Lumen foundation.
 
-| App Target                 | Install                                                                | Import Components From                       | Load Styles From                       |
+| App Target                 | Install                                                                | Import Components From                       | Style setup                       |
 | -------------------------- | ---------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------- |
-| Astro                      | `@santi020k/lumen-astro`                                               | `@santi020k/lumen-astro`                     | `@santi020k/lumen-astro/styles.css`    |
-| React                      | `@santi020k/lumen-react`                                               | `@santi020k/lumen-react`                     | `@santi020k/lumen-react/styles.css`    |
+| Astro                      | `@santi020k/lumen-astro`                                               | `@santi020k/lumen-astro`                     | Automatic component CSS in v5    |
+| React                      | `@santi020k/lumen-react`                                               | `@santi020k/lumen-react`                     | Foundation + component CSS, or full `styles.css`    |
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
-| Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
+| Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | Foundation + component CSS, or full `styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
 | Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `5.0.0`  | `LumenUI`                                    | Not applicable                         |
 | Android / Compose          | Maven Central `com.santi020k:lumen-compose:4.0.1`                       | `com.santi020k.lumen`                        | Not applicable                         |
@@ -79,7 +80,8 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | Optional web brand icons   | `@santi020k/lumen-icons-brand`                                         | Register once, then use the framework `Icon` | Uses framework styles                  |
 
 Each framework package includes the shared foundation. Install `@santi020k/lumen` separately only
-when you need its framework-neutral CLI or registry metadata.
+as a development dependency when you need its framework-neutral CLI or registry metadata. Web
+adapters do not install the `lumen` command in v5.
 
 For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
 Swift Package product to the application target, use an exact or compatible release-version rule,
@@ -779,6 +781,14 @@ Before applying MCP contracts, call `lumen_check_compatibility` with resolved ve
 metadata or native lock files. A manifest range is not an installed version. When versions differ,
 inspect installed public types and README or use a matching MCP package. Do not silently upgrade.
 Search supports English and Spanish queries with framework and platform filters.
+
+For a v5 upgrade, request `lumen_get_migration` with `targetVersion: "5.0.0"`, then run
+`lumen migrate v5 --dry-run --json` from the matching CLI. V5 performs no source rewrites;
+`--dependencies --apply` opts into dependency changes through the existing pnpm workflow.
+The bundled release manifest supplies each package's version, including companions still on v4.
+Await `window.LumenInitUiPrimitives(scope)` before using newly enhanced Astro markup. Keep full
+CSS and local patches until selective setup passes equivalent route and interaction checks.
+See [the v5 migration guide](migrating-v4-to-v5.md) for commands, failure recovery and rollback.
 
 For a v4 upgrade, read `lumen_get_migration` and preview `lumen migrate v4 --dry-run --json` locally.
 `--apply` rewrites only known static SDK import paths in JavaScript and TypeScript. It preserves

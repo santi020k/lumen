@@ -250,3 +250,29 @@ this preparation changes version metadata, migration tooling and release checks.
 logs and the prepared PR body are under `.cache/v5-release`. No package, GitHub branch, PR, tag or
 release was published by this local preparation. The v5 contract remains draft pending explicit
 release authorization through the documented GitHub workflow.
+
+## Documentation audit (2026-11-05)
+
+Draft [PR #113](https://github.com/santi020k/lumen/pull/113) now tracks the release branch. The
+documentation follow-up exposes the canonical v4-to-v5 guide at `/docs/migrations/v4-to-v5`, adds
+navigation and search discovery, and aligns the root/package READMEs, web setup, portable skills,
+plugin copies and MCP snapshot with the v5 contracts. The guide includes the separate CLI install,
+pnpm dependency rollout, independently versioned companions, awaited Astro enhancement, optional
+component CSS and editable recipes, and consumer recovery.
+
+Markdown code examples use the existing contrast-tested Lumen syntax theme. Browser verification
+covers the new guide at 390px and 1440px in light and dark themes, keyboard navigation, mobile search,
+and all previous migration guides. The new route has a generated social image and manifest entry;
+the generator also refreshes location-dependent image fingerprints without changing existing route
+metadata. Temporary before/after screenshots and accessibility reports are in `.cache/v5-docs-audit`.
+
+The documentation follow-up passed `pnpm run validate`, including 3,173 unit tests across 305 files,
+strict types, zero-warning lint, spelling, contracts, security and packed consumers. Focused browser
+checks passed for accessible guides and ThemeBuilder exports. The Astro ThemeBuilder now reuses the
+canonical core CSS exporter, addressing the CodeQL review comment without changing its output.
+
+GitHub CI on the preceding `dffee321` revision passed web validation but failed Compose lint:
+`packages/compose/settings.gradle.kts:9` reports Android Gradle Plugin 9.5.1 newer than 9.5.0, and
+`packages/compose/build.gradle.kts:10` reports Dokka 2.3.0 newer than 2.2.0. These Android tooling
+updates require separate validation before release. Local documentation validation does not clear
+that CI gate. Publication remains unauthorized and the v5 contract remains draft.

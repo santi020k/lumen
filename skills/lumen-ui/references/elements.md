@@ -1,29 +1,34 @@
 # Web Components Setup
 
-Install, load styles, and register once:
+This bundled-app example targets Lumen 5. Load the foundation once, select component CSS and
+register each required constructor. V4 consumers retain their existing stylesheet setup.
 
 ```bash
 pnpm add @santi020k/lumen-elements
+# Optional CLI for editable recipes and diagnostics
+pnpm add -D @santi020k/lumen
+```
+
+```ts
+import '@santi020k/lumen-elements/styles/foundation.css'
+import '@santi020k/lumen-elements/styles/components/card.css'
+import '@santi020k/lumen-elements/styles/components/button.css'
+import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
+
+defineLumenCard()
+defineLumenButton()
 ```
 
 ```html
-<script type="module">
-  import '@santi020k/lumen-elements/styles.css'
-  import { defineLumenElements } from '@santi020k/lumen-elements/define'
-
-  defineLumenElements()
-</script>
-
-<lumen-card>
-  <lumen-label id="email-label">Email</lumen-label>
-  <lumen-input aria-labelledby="email-label" id="email" name="email" type="email" required></lumen-input>
-  <lumen-button type="submit">Continue</lumen-button>
-</lumen-card>
+<lumen-card><lumen-button>Continue</lumen-button></lumen-card>
 ```
 
-In a bundled app, prefer importing `@santi020k/lumen-elements/styles.css` from the global CSS or
-entry module instead of writing a literal package path in HTML. Registered elements provide the
-matching behavior layer; do not add a parallel interaction library for the same primitive.
+Import CSS from a bundler entry, not a literal package path in an unbundled browser script. Full
+styles.css and `defineLumenElements` remain available. Components without a public granular export
+use a catalog fallback, which still traverses the catalog even when registering selected names.
+Compound children need their own CSS and registration. Registered elements own their behavior;
+do not add a parallel interaction library for the same primitive.
 
 ## Elements labels and dialogs
 
@@ -50,7 +55,8 @@ not `showModal()` on the custom host. A native `dialog` child is its documented 
 </lumen-dialog>
 ```
 
-Register `Button`, `Dialog`, `Field`, `Input`, and `Label` through `defineLumenElements` before use.
+For this dialog example, import the foundation and CSS for `Button`, `Dialog`, `Field`, `Input`,
+and `Label`, then register those names through `defineLumenElements` before use.
 The dialog behavior focuses its first focusable control, handles Escape, traps focus, and returns
 focus to its trigger. Keep draft state in the form control or application; closing does not reset it.
 Do not replace this behavior with a parallel native-dialog controller.

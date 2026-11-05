@@ -95,7 +95,7 @@ if (!guide || !setup) {
     </section>
 
     <Note>
-      <p>In an application with React Server Components, add <code>'use client'</code> to modules that call Lumen hooks. Import the stylesheet once at the application boundary. React hooks own interactive behavior; the Astro <code>UIPrimitives</code> runtime is for Astro markup.</p>
+      <p>In an application with React Server Components, add <code>'use client'</code> to modules that call Lumen hooks. Load the foundation once and the CSS for selected components, or retain full styles.css. React hooks own interactive behavior; the Astro <code>UIPrimitives</code> runtime is for Astro markup.</p>
     </Note>
 
     <section class="docs-section space-y-4" aria-labelledby="hooks-title">

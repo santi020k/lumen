@@ -16,7 +16,7 @@ describe('documentation context navigation', () => {
     const links = getDocsContextLinks(undefined)
 
     const routes = [
-      '/docs/migrations', '/docs/migrations/v1-to-v2', '/docs/migrations/v2-to-v3', '/docs/migrations/v3-to-v4'
+      '/docs/migrations', '/docs/migrations/v1-to-v2', '/docs/migrations/v2-to-v3', '/docs/migrations/v3-to-v4', '/docs/migrations/v4-to-v5'
     ]
 
     for (const route of routes) {

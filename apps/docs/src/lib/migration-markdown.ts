@@ -3,7 +3,8 @@ import type { SatteriProcessorOptions as MarkdownProcessorOptions } from '@astro
 const migrationRoutes: Readonly<Record<string, string>> = {
   '/docs/migrating-v1-to-v2.md': '/docs/migrations/v1-to-v2',
   '/docs/migrating-v2-to-v3.md': '/docs/migrations/v2-to-v3',
-  '/docs/migrating-v3-to-v4.md': '/docs/migrations/v3-to-v4'
+  '/docs/migrating-v3-to-v4.md': '/docs/migrations/v3-to-v4',
+  '/docs/migrating-v4-to-v5.md': '/docs/migrations/v4-to-v5'
 }
 
 export const resolveMigrationLink = (href: string): string => {
@@ -19,7 +20,9 @@ export const resolveMigrationLink = (href: string): string => {
 
 // Only the imported migration documents need repository-relative links adapted for the website.
 export const migrationMarkdownLinks: NonNullable<MarkdownProcessorOptions['mdastPlugins']>[number] = context => {
-  if (!context.fileURL || !/\/docs\/migrating-v[123]-to-v[234]\.md$/u.test(context.fileURL.pathname)) return false
+  const pathname = context.fileURL?.pathname
+
+  if (!pathname || !Object.keys(migrationRoutes).some(path => pathname.endsWith(path))) return false
 
   return {
     definition(node, ctx) {

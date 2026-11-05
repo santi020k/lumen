@@ -213,7 +213,7 @@ test('split guide links remain usable without JavaScript', async ({ browser }) =
 for (const theme of ['lumen-light', 'lumen-dark']) {
   test(`new visual guides remain accessible in ${theme}`, async ({ page }) => {
     await page.addInitScript(value => { localStorage.setItem('lumen-theme', value); }, theme)
-    for (const route of ['/docs/web/data-visualization', '/docs/components/box-plot', '/docs/frameworks/react/hooks', '/docs/react-native', '/docs/mcp/clients', '/docs/web/data-visualization/data', '/docs/web/data-visualization/accessibility']) {
+    for (const route of ['/docs/web/data-visualization', '/docs/components/box-plot', '/docs/frameworks/react/hooks', '/docs/react-native', '/docs/mcp/clients', '/docs/web/data-visualization/data', '/docs/web/data-visualization/accessibility', '/docs/migrations/v4-to-v5']) {
       await page.goto(route)
       if (route === '/docs/components/box-plot') await page.locator('.framework-example__code > summary').press('Enter')
       await page.addScriptTag({ path: axePath })

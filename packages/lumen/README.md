@@ -107,6 +107,7 @@ lumen init --framework astro --tailwind
 lumen migrate v2 --dry-run
 lumen migrate v3 --dry-run
 lumen migrate v4 --dry-run
+lumen migrate v5 --dry-run
 ```
 
 Lumen 5 wrappers use verified selective component entries and their required CSS. Elements wrappers
@@ -183,6 +184,8 @@ Run `lumen migrate v5` to review the v4-to-v5 contract without automatic source 
 companion packages and tokens can retain their v4 versions. Catalogs, package-manager update
 arguments, release-age exceptions, lockfile verification, and the consumer audit use that same map.
 An explicit v5 target must match the bundled manifest; native Swift/Maven pins remain application-owned.
+See the [v4-to-v5 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v4-to-v5.md)
+for the upgrade sequence, asynchronous Astro initialization, optional selective delivery and recovery.
 
 V4 apply records output fingerprints in `.lumen/migrations-v4.json`. Commit that ledger with the
 source changes: repeated applies skip migrated files, and later edits to them require manual review.

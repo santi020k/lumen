@@ -73,7 +73,7 @@
 </details>
 
 React components and behavior hooks for Lumen UI, using the shared standalone stylesheet.
-Start with one CSS import, then compose public primitives in your existing React application.
+Load the foundation and selected component CSS, or retain the full stylesheet convenience option.
 
 See the [shared web form contracts](https://github.com/santi020k/lumen/blob/main/docs/form-controls.md) for value ownership, reset,
 submission, disabled state, and event behavior.
@@ -83,6 +83,10 @@ Select, PhoneInput and Segmented follow Input and NativeSelect; numeric input/se
 its native meaning. See the [v4 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v3-to-v4.md#form-control-visual-sizing).
 
 ## Install
+
+Upgrading from v4? Follow the [v5 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v4-to-v5.md)
+for runtime changes and the [selective installation guide](https://github.com/santi020k/lumen/blob/main/docs/selective-installation.md)
+for optional component CSS, imports and editable recipes.
 
 Requires React 19 or newer in the consuming application.
 

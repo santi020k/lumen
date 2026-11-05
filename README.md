@@ -35,9 +35,10 @@ shared tokens and explicit component contracts.
 
 **Explore:** [Quick start](#web-quick-start) · [Native apps](#native-playgrounds) · [Templates](#dashboards-and-templates) · [AI and Figma](#ai-and-design-workflows) · [Packages](#packages) · [Repository apps](#repository-apps) · [Contributing](#contributing)
 
-> **Lumen 4:** See the [v4.3 Tailwind complement](docs/lumen-4.3.md), the [v4.2 highlights](docs/lumen-4.2.md) for SwiftUI appearance and agent guidance,
-> and [v4.1 highlights](docs/lumen-4.1.md) for loading and forms. Follow the [migration guide](docs/migrating-v3-to-v4.md) when
-> upgrading from v3. Package versions and store builds follow their own release schedules.
+> **Lumen 5:** Start with the [v4 → v5 migration guide](docs/migrating-v4-to-v5.md) and
+> [selective installation](docs/selective-installation.md) for component CSS, runtime-only adapters,
+> and editable recipes. Package versions and store builds follow their own release schedules;
+> verify the intended version in your registry before upgrading.
 
 ## See Lumen in action
 
@@ -108,10 +109,14 @@ import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
 
 ### React
 
-Load the stylesheet once from your app entry or global CSS:
+Load the foundation once and select the component styles used by your application:
 
 ```tsx
-import '@santi020k/lumen-react/styles.css'
+import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import '@santi020k/lumen-react/styles/components/card.css'
+import '@santi020k/lumen-react/styles/components/input.css'
+import '@santi020k/lumen-react/styles/components/label.css'
 import { Button, Card, Input, Label } from '@santi020k/lumen-react'
 
 export function SubscribeForm() {
@@ -127,17 +132,18 @@ export function SubscribeForm() {
 
 ### Web Components
 
-Import the styles and register the elements once:
+Import styles from a bundler entry and register the elements used by the page:
 
 ```html
-<style>
-  @import "@santi020k/lumen-elements/styles.css";
-</style>
-
 <script type="module">
+  import '@santi020k/lumen-elements/styles/foundation.css'
+  import '@santi020k/lumen-elements/styles/components/button.css'
+  import '@santi020k/lumen-elements/styles/components/card.css'
+  import '@santi020k/lumen-elements/styles/components/input.css'
+  import '@santi020k/lumen-elements/styles/components/label.css'
   import { defineLumenElements } from '@santi020k/lumen-elements/define'
 
-  defineLumenElements()
+  defineLumenElements(['Card', 'Label', 'Input', 'Button'])
 </script>
 
 <lumen-card>
@@ -146,6 +152,11 @@ Import the styles and register the elements once:
   <lumen-button>Subscribe</lumen-button>
 </lumen-card>
 ```
+
+Both adapters retain full `styles.css` as a convenience alternative. The catalog imports above
+cover components without granular JavaScript exports; selected registration alone does not guarantee
+smaller JavaScript. See [selective installation](docs/selective-installation.md) for verified exports,
+editable wrappers and route measurement.
 
 See the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,
 component examples, and API details.
@@ -356,7 +367,7 @@ screenshots; it does not imply those applications already run the current releas
 
 For existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then
 [v2 → v3](docs/migrating-v2-to-v3.md) before
-[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use
+[v3 → v4](docs/migrating-v3-to-v4.md) and [v4 → v5](docs/migrating-v4-to-v5.md). For initial adoption, use
 [Migrating to Lumen](docs/migrating-to-lumen.md).
 
 ## Contributing

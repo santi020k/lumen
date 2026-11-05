@@ -1,6 +1,6 @@
 ---
 name: lumen-migrate
-description: Plan and implement an explicitly requested Lumen version upgrade, including v4 migration diagnostics and consumer verification. Use when updating an application's Lumen dependencies or replacing older Lumen contracts.
+description: Plan and implement an explicitly requested Lumen version upgrade, including version-specific migration diagnostics and consumer verification. Use when updating an application's Lumen dependencies or replacing older Lumen contracts.
 ---
 
 # Migrate a Lumen consumer
@@ -15,13 +15,15 @@ types and release documentation. Verify target publication independently of work
 
 Read the migration guide and release notes for the requested source and target versions. Determine
 which preview/apply commands the target CLI actually supports; do not assume every major has the
-same automation. Read [references/v4.md](references/v4.md) only when targeting Lumen 4. When MCP
+same automation. Read [references/v4.md](references/v4.md) for Lumen 4 or
+[references/v5.md](references/v5.md) for Lumen 5. When MCP
 is connected, read the migration contract without a package filter before narrowing to affected
 packages so cross-package changes are not missed. If shell execution is unavailable, inspect a
 supplied target-CLI preview and report remaining commands as unverified.
 
 Apply only the reviewed migration scope. Use `--apply` for supported deterministic edits; inspect
-their diff. Update coordinated package pins and lock files with the consumer's package manager.
+their diff. Use the target release manifest for individual package pins and update the lock file with the
+consumer's package manager. V5 companions can remain on v4; never assign one version to the family.
 Review the changed public contracts and affected consumer workarounds. Keep ambiguous expressions
 and application-owned policy for explicit review.
 Never remove a workaround until the equivalent target behavior is verified. For changed setup,

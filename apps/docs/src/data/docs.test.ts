@@ -302,11 +302,13 @@ import { Button, Dialog } from '@santi020k/lumen-astro'
     expect(astroSnippet).not.toContain('UIPrimitives')
   })
 
-  test('documents the stylesheet as a one-time global setup', () => {
-    expect(globalStyleSetups.map(setup => setup.label)).toEqual(['Astro + Tailwind', 'Astro layout', 'App entry'])
+  test('documents automatic Astro CSS, selective styles and the full CSS alternative', () => {
+    expect(globalStyleSetups.map(setup => setup.label)).toEqual(['Astro + Tailwind', 'Selective component CSS', 'Full CSS alternative'])
     const styleSetupCode = globalStyleSetups.map(setup => setup.code).join('\n')
 
-    expect(styleSetupCode).toContain('@santi020k/lumen-astro/styles.css')
+    expect(styleSetupCode).toContain('@santi020k/lumen-react/styles/foundation.css')
+    expect(styleSetupCode).toContain('@santi020k/lumen-react/styles/components/button.css')
+    expect(globalStyleSetups[0]?.code).not.toContain('/styles.css')
     expect(styleSetupCode).toContain('@santi020k/lumen-react/styles.css')
   })
 

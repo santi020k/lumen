@@ -93,7 +93,9 @@ if (!guide || !setup) {
           Interactive components like Dialogs, Popovers, Tabs, and Selects rely on a lightweight,
           vanilla JavaScript runtime. Mount <code>&lt;UIPrimitives /&gt;</code> once in your Astro
           root layout to wire up keyboard navigation, focus trapping, and disclosure state
-          globally.
+          for matching components. In v5, controllers load on demand and initialization is asynchronous.
+          Await <code>window.LumenInitUiPrimitives(scope)</code> for application-created markup;
+          <code>ui:ready</code> follows completion and <code>ui:runtime-error</code> reports failures.
         </p>
       </div>
       <CodeBlock code={guide.code} lang={guide.lang} />

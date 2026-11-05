@@ -72,6 +72,10 @@ its native meaning. See the [v4 migration guide](https://github.com/santi020k/lu
 
 ## Install
 
+Upgrading from v4? Follow the [v5 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v4-to-v5.md)
+for runtime changes and the [selective installation guide](https://github.com/santi020k/lumen/blob/main/docs/selective-installation.md)
+for optional component CSS, imports and editable recipes.
+
 Requires Astro 5 or newer in the consuming application.
 
 ```bash

@@ -7,6 +7,7 @@ describe('migration document links', () => {
   test.each([
     ['migrating-v1-to-v2.md', '/docs/migrations/v1-to-v2'],
     ['migrating-v2-to-v3.md', '/docs/migrations/v2-to-v3'],
+    ['migrating-v4-to-v5.md#review-apply-and-verify', '/docs/migrations/v4-to-v5#review-apply-and-verify'],
     ['migrating-v3-to-v4.md#content-flow-and-layout-spacing', '/docs/migrations/v3-to-v4#content-flow-and-layout-spacing'],
     ['../registry/lumen-4-contract.json', 'https://github.com/santi020k/lumen/blob/main/registry/lumen-4-contract.json'],
     ['native-patterns.md', 'https://github.com/santi020k/lumen/blob/main/docs/native-patterns.md'],
@@ -27,6 +28,12 @@ describe('migration document links', () => {
 
     const firstUpgrade = await renderer.render(source, { fileURL: new URL('file:///repo/docs/migrating-v1-to-v2.md') })
 
+    const fifthUpgrade = await renderer.render('[Guide](migrating-v4-to-v5.md) and [CSS](selective-installation.md)', {
+      fileURL: new URL('file:///repo/docs/migrating-v4-to-v5.md')
+    })
+
+    expect(fifthUpgrade.code).toContain('href="/docs/migrations/v4-to-v5"')
+    expect(fifthUpgrade.code).toContain('href="https://github.com/santi020k/lumen/blob/main/docs/selective-installation.md"')
     expect(firstUpgrade.code).toContain('href="/docs/migrations/v2-to-v3"')
     expect(unrelated.code).toContain('href="migrating-v2-to-v3.md"')
     expect(migration.code).toContain('href="/docs/migrations/v2-to-v3"')

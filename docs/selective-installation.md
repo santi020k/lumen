@@ -1,5 +1,9 @@
 # Selective installation in Lumen 5
 
+Upgrading an existing application? Complete the required contract review in the
+[v4-to-v5 migration guide](migrating-v4-to-v5.md) first. Selective delivery is optional; full CSS
+and existing root exports remain supported. Verify publication before installing a registry version.
+
 Install the CLI separately from the runtime adapter, then copy an editable wrapper:
 
     pnpm add -D @santi020k/lumen

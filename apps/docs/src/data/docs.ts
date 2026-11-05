@@ -116,21 +116,26 @@ const buildInstallCommands = (...packages: string[]): InstallCommand[] => packag
 const installCommands = buildInstallCommands('@santi020k/lumen-astro')
 
 const astroUsage = `---
-import { Button, Card, Input } from '@santi020k/lumen-astro'
+import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
 ---
 
 <Card>
-  <label for="email">Email</label>
+  <Label for="email">Email</Label>
   <Input id="email" type="email" placeholder="you@example.com" />
   <Button>Subscribe</Button>
 </Card>`
 
-const reactUsage = `import { Button, Card, Input } from '@santi020k/lumen-react'
+const reactUsage = `import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/card.css'
+import '@santi020k/lumen-react/styles/components/input.css'
+import '@santi020k/lumen-react/styles/components/label.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import { Button, Card, Input, Label } from '@santi020k/lumen-react'
 
 export function SubscribeForm() {
   return (
     <Card>
-      <label htmlFor="email">Email</label>
+      <Label htmlFor="email">Email</Label>
       <Input id="email" type="email" placeholder="you@example.com" />
       <Button>Subscribe</Button>
     </Card>
@@ -138,14 +143,19 @@ export function SubscribeForm() {
 }`
 
 const elementsUsage = `<script type="module">
+  import '@santi020k/lumen-elements/styles/foundation.css'
+  import '@santi020k/lumen-elements/styles/components/card.css'
+  import '@santi020k/lumen-elements/styles/components/label.css'
+  import '@santi020k/lumen-elements/styles/components/input.css'
+  import '@santi020k/lumen-elements/styles/components/button.css'
   import { defineLumenElements } from '@santi020k/lumen-elements/define'
 
-  defineLumenElements()
+  defineLumenElements(['Card', 'Label', 'Input', 'Button'])
 </script>
 
 <lumen-card>
-  <label for="email">Email</label>
-  <lumen-input id="email" type="email" placeholder="you@example.com"></lumen-input>
+  <lumen-label id="email-label">Email</lumen-label>
+  <lumen-input aria-labelledby="email-label" id="email" type="email" placeholder="you@example.com"></lumen-input>
   <lumen-button>Subscribe</lumen-button>
 </lumen-card>`
 
@@ -153,37 +163,23 @@ export const globalStyleSetups: GlobalStyleSetup[] = [
   {
     code: `@import "@santi020k/lumen-astro/layers.css";
 @import "tailwindcss";
-@import "@santi020k/lumen-astro/styles.css";
 @import "@santi020k/lumen-astro/tailwind.css";`,
-    description:
-      'Use the stylesheet exported by your framework package in your main CSS entry.',
+    description: 'Astro v5 components import their own CSS. Keep the layer order and optional Tailwind bridge in the shared entry.',
     label: 'Astro + Tailwind',
     lang: 'css'
   },
   {
-    code: `---
-import '@santi020k/lumen-astro/styles.css'
----
-
-<html lang="en">
-  <body>
-    <slot />
-  </body>
-</html>`,
-    description:
-      'Use this in an Astro root layout when you do not already have a shared CSS entry.',
-    label: 'Astro layout',
-    lang: 'astro'
+    code: `import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import { Button } from '@santi020k/lumen-react/components/button'`,
+    description: 'Load the foundation once and each used component stylesheet. Include conditional and compound content. Elements exposes the same CSS paths.',
+    label: 'Selective component CSS',
+    lang: 'ts'
   },
   {
-    code: `import '@santi020k/lumen-react/styles.css'
-
-import { createRoot } from 'react-dom/client'
-
-import { App } from './App'`,
-    description:
-      'Use this in a bundled app entry, such as main.tsx, main.ts, or client.ts.',
-    label: 'App entry',
+    code: 'import \'@santi020k/lumen-react/styles.css\'',
+    description: 'Full styles.css remains a supported convenience option in every adapter. Retain it during migration until every route has equivalent coverage.',
+    label: 'Full CSS alternative',
     lang: 'ts'
   }
 ]
@@ -633,7 +629,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands,
     label: 'Astro',
     lang: 'astro',
-    note: 'With the stylesheet loaded globally, import components where you use them. Mount UIPrimitives once in your root layout only if you use interactive primitives; do not add it beside every component.',
+    note: 'V5 Astro components import their own CSS. Install @santi020k/lumen separately as a development dependency for CLI commands. Mount UIPrimitives once in your root layout only if you use interactive primitives; do not add it beside every component.',
     packageName: '@santi020k/lumen-astro',
     usage: astroUsage
   },
@@ -642,7 +638,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-react'),
     label: 'React',
     lang: 'tsx',
-    note: 'Install the React package, load its stylesheet once, then import primitives directly. React ships the same styled markup and data contract, including data-display, overlay, form, rich text, and schedule attributes; use hooks for behavior-heavy primitives.',
+    note: 'Install the runtime adapter; add @santi020k/lumen separately for the optional CLI. Load foundation and component CSS, or retain full styles.css. React ships the same styled markup and data contract, including data-display, overlay, form, rich text, and schedule attributes; use hooks for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-react',
     usage: reactUsage
   },
@@ -651,7 +647,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the Elements package, load its stylesheet once, register Lumen elements, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, context menus, advanced selection, file upload, tours, mentions, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
+    note: 'Install the runtime adapter; add @santi020k/lumen separately for the optional CLI. Load foundation and component CSS and register each used element. This bundled example uses a catalog fallback for Input; registration scope alone does not prove selective JavaScript delivery. Behavior-backed elements include overlays, context menus, advanced selection, file upload, tours, mentions, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }
@@ -687,14 +683,14 @@ export const frameworkPackages = [
 export const frameworkGuides = [
   {
     body: [
-      'Reference implementation for markup, props, standalone CSS, and progressive enhancement.',
+      'Reference implementation for markup, props, automatic component CSS, and selective progressive enhancement.',
+      'In v5, await LumenInitUiPrimitives(scope); ui:ready follows completion and ui:runtime-error reports failed enhancement.',
       'Mount UIPrimitives once in the root layout for interactive primitives and CustomEvents.',
       'Use lumen add Component or lumen add recipe-name --target astro when you want local .astro starter files.'
     ],
     code: `---
 import { Button, Card } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
-import '@santi020k/lumen-astro/styles.css'
 ---
 
 <UIPrimitives />
@@ -711,13 +707,12 @@ import '@santi020k/lumen-astro/styles.css'
       'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useKanban, useResizable, useThemeBuilder, useThemeToggle, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
-    code: `import '@santi020k/lumen-react/styles.css'
-import { Button, Card, useDialog } from '@santi020k/lumen-react'
+    code: `import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import { Button } from '@santi020k/lumen-react/components/button'
 
 export function Actions() {
-  const dialog = useDialog()
-
-  return <Card><Button {...dialog.triggerProps}>Open</Button></Card>
+  return <Button type="submit">Save</Button>
 }`,
     id: 'react',
     lang: 'tsx',
@@ -732,10 +727,14 @@ export function Actions() {
       'Use lumen add Component --target elements or lumen add recipe-name --target elements when you want local Elements starter files.'
     ],
     code: `<script type="module">
-  import { defineLumenElements } from '@santi020k/lumen-elements/define'
-  import '@santi020k/lumen-elements/styles.css'
+  import '@santi020k/lumen-elements/styles/foundation.css'
+  import '@santi020k/lumen-elements/styles/components/card.css'
+  import '@santi020k/lumen-elements/styles/components/button.css'
+  import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+  import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
 
-  defineLumenElements()
+  defineLumenCard()
+  defineLumenButton()
 </script>
 
 <lumen-card><lumen-button>Save</lumen-button></lumen-card>`,

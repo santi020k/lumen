@@ -385,10 +385,18 @@ const recipeItems: DocsSearchItem[] = [
   },
   {
     category: 'Migrations',
-    description: 'Review v4 candidate spacing, component behavior, native signatures, and consumer checks.',
+    description: 'Review v4 spacing, component behavior, native signatures, and consumer checks.',
     href: '/docs/migrations/v3-to-v4',
-    keywords: normalizeKeywords('migration upgrade v3 v4 version 3 version 4 candidate spacing focus dates native rollback'),
+    keywords: normalizeKeywords('migration upgrade v3 v4 version 3 version 4 spacing focus dates native rollback'),
     title: 'Migrating from Lumen 3 to Lumen 4',
+    type: 'Recipe'
+  },
+  {
+    category: 'Migrations',
+    description: 'Upgrade to runtime-only adapters and async Astro enhancement; adopt component CSS and editable recipes.',
+    href: '/docs/migrations/v4-to-v5',
+    keywords: normalizeKeywords('migration upgrade v4 v5 version 4 version 5 modular selective CSS CLI async runtime recipes rollback'),
+    title: 'Migrating from Lumen 4 to Lumen 5',
     type: 'Recipe'
   },
   {

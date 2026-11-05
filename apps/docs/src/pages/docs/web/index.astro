@@ -41,13 +41,13 @@ const frameworkHighlights = [
 const heroStats = [
   [String(componentDocs.length), 'components'],
   ['3', 'framework targets'],
-  ['1', 'shared stylesheet']
+  ['1', 'shared foundation']
 ] as const
 
 const setupSteps = [
-  ['1', 'Install a target package', 'Add Astro, React, or Elements; every target shares the same stylesheet package.'],
-  ['2', 'Load styles once', 'Import the standalone stylesheet from a global CSS file, root layout, or app entry.'],
-  ['3', 'Build on one contract', 'Markup, tokens, glass surfaces, and runtime behavior stay identical across targets.']
+  ['1', 'Install a runtime adapter', 'Choose Astro, React, or Elements. Add the optional Lumen CLI separately as a development dependency.'],
+  ['2', 'Load component styles', 'Astro v5 imports CSS automatically. React and Elements use the shared foundation plus selected component CSS.'],
+  ['3', 'Use framework behavior', 'Mount the Astro runtime once, use React controllers, or register the required custom elements.']
 ] as const
 
 const basicThemeSetups = themeSetups.slice(0, 2)
@@ -65,8 +65,8 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         Build once. Use Lumen everywhere.
       </h1>
       <p class="max-w-2xl text-lg/8 text-ink-soft">
-        Semantic markup, one token-driven stylesheet, and a small progressive-enhancement
-        runtime. Pick a framework below; the markup and class contract stay the same everywhere.
+        Accessible primitives, shared tokens, and component-specific CSS. Pick a framework below;
+        use its native behavior and load the components your product needs.
       </p>
       <div class="flex flex-wrap gap-3">
         <DocsActionLink href="#installation">Install Lumen</DocsActionLink>
@@ -146,6 +146,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
       <p>Start here</p>
       <h2 id="install-title">Install and use</h2>
     </div>
+    <p>Upgrading an existing application? Follow the <Link href="/docs/migrations/v4-to-v5">v4 → v5 migration guide</Link> before changing dependencies or removing full CSS.</p>
     <FrameworkSetupTabs setups={frameworkSetups} />
   </section>
 
@@ -193,11 +194,11 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
 
   <section class="docs-section" id="global-styles" aria-labelledby="global-styles-title">
     <div class="docs-section-heading">
-      <p>Shared stylesheet</p>
-      <h2 id="global-styles-title">Add styles once</h2>
+      <p>Component CSS</p>
+      <h2 id="global-styles-title">Choose your style setup</h2>
       <p>
-        Lumen ships standalone CSS. Load it once from a global CSS file, root layout, or app
-        entry; Tailwind configuration is optional.
+        Astro v5 imports component styles automatically. React and Elements load the foundation
+        once and each used component stylesheet. Full CSS remains supported; Tailwind is optional.
       </p>
     </div>
     <div class="

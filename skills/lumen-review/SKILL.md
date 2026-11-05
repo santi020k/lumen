@@ -18,6 +18,9 @@ Inspect public component imports and props, theme/style ownership, and the frame
 Astro runtime once, React hooks/controllers, Elements registration, or native providers/themes.
 Read only the matching setup reference from
 [framework contracts](../lumen-ui/references/frameworks.md) when checking adapter-specific details.
+For v5, check component CSS coverage, await Astro enhancement, and account for lazy first
+interactions and navigation cleanup. Full stylesheet usage is supported, not automatically a defect.
+Keep source-only setup findings separate from measured route requests.
 Look for duplicate primitive implementations, incorrect compound children, raw palettes,
 application CSS that breaks public slots, and unsupported adapter APIs.
 

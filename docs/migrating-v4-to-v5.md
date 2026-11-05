@@ -2,6 +2,8 @@
 
 This guide and the [versioned contract](../registry/lumen-5-contract.json) describe Lumen 5 migration
 behavior. Bundled guidance does not query the registry or establish publication availability.
+For a release candidate, validate packed packages from one reviewed revision. Use registry install
+commands below only after that version is published to your configured registry.
 
 ## Required contract review
 
@@ -19,6 +21,31 @@ that bundled manifest. Swift and Maven pins remain application-owned.
 Astro's `LumenInitUiPrimitives(scope)` returns a promise. Await it before relying on enhancement of
 newly inserted markup. The runtime dispatches `ui:ready` after initialization and `ui:runtime-error`
 when automatic initialization fails. Keep the public `UIPrimitives` component in the shared layout.
+After that runtime has loaded and your application has inserted its markup, replace synchronous
+initialization with an awaited call:
+
+```js
+const scope = document.querySelector('#dynamic-content')
+const initialize = window.LumenInitUiPrimitives
+
+if (!scope || typeof initialize !== 'function') {
+  throw new Error('The content and Lumen runtime must be ready before enhancement.')
+}
+
+try {
+  await initialize(scope)
+  // Enhanced controls are now ready for application interaction.
+} catch (error) {
+  // Keep readable fallback content and expose the application's retry action.
+  console.error('Unable to enhance dynamic content.', error)
+}
+```
+
+Handle rejection of an explicit call in the caller. Observe `ui:runtime-error` on `document` for
+automatic initialization failures; `ui:ready` is also dispatched on `document`. Avoid relying on an
+event listener attached after initialization has already completed. A call interrupted by client
+navigation must not be used to interact with the previous page's markup.
+
 `LumenToast` still returns an ID immediately, but loads its controller and stylesheet before rendering.
 Do not synchronously query for the newly requested toast node. Test cold interactions, failed chunk
 recovery, client navigation and application-created markup.
@@ -35,6 +62,22 @@ documented component. `lumen add` generates the supported setup. Full `styles.cs
 Remove full CSS only after checking all routes, themes, compound children, Markdown, and runtime-created
 markup. Frameworks may share CSS and JavaScript chunks across routes.
 
+For example, a React button can use these public imports:
+
+```tsx
+import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import { Button } from '@santi020k/lumen-react/components/button'
+
+export function SaveAction() {
+  return <Button type="submit">Save</Button>
+}
+```
+
+This is optional after the required contract review. Keep full CSS while auditing coverage, then
+choose one delivery approach for the application. See [selective installation](selective-installation.md)
+for compound components, catalog fallbacks and generated wrappers.
+
 Use exported selective JavaScript entries where available. Elements registrations must cover every
 component a route uses. Root imports remain supported; a facade over the whole catalog does not
 guarantee selective delivery. [Measurements](import-and-icon-performance.md) separate installed
@@ -44,15 +87,18 @@ Prefer documented `data-slot` parts for Timeline, ThemeToggle and WorldMap. Them
 `--ui-theme-toggle-icon-size`. Keep application styling and local patches until their replacements
 pass equivalent consumer tests; names or source matches alone cannot prove a patch is obsolete.
 
-Editable [product recipes](interactive-editorial-recipes.md) compose maintained primitives for video,
-code, sharing, article reading, search and image viewing. Applications still own content, localization,
+Editable [product workflow recipes](product-workflow-recipes.md) cover video, code and sharing;
+[interactive editorial recipes](interactive-editorial-recipes.md) cover article reading, search and
+image viewing. Both compose maintained primitives. Applications still own content, localization,
 requests and routing. Installing a new library version does not overwrite recipe copies.
 
 ## Review, apply and verify
 
-Run the separately installed v5 CLI in the consumer:
+Start from a clean consumer revision and record its installed versions and current local patches.
+Install the target CLI separately with the application's package manager. For pnpm:
 
 ```sh
+pnpm add -D @santi020k/lumen@5.0.0
 pnpm exec lumen migrate v5 --dry-run --json
 pnpm exec lumen audit-consumer --version 5.0.0 --json
 ```
@@ -62,9 +108,28 @@ code transformations. Reports separate incompatible version evidence, compatibil
 adoption opportunities. Source matches are advisory and can include examples or comments. The target
 is explicit; an audit cannot establish registry availability or prove a route is correctly rendered.
 
-Dependency changes remain opt-in with `--dependencies --apply` and the existing package-manager and
-dirty-worktree safeguards. Use them only once your intended version is available from the configured
-registry. Ordinary `doctor` and migration commands never start browsers or application servers.
+Commit or otherwise preserve the reviewed CLI manifest and lockfile changes before using the automated
+dependency rollout, which requires a clean worktree and pnpm:
+
+```sh
+pnpm exec lumen migrate v5 --dependencies --dry-run --json
+pnpm exec lumen migrate v5 --dependencies --apply --json
+```
+
+Dependency changes remain opt-in. Inspect the manifest and lockfile diff before continuing. The
+rollout uses the bundled per-package release map and does not change native Swift or Maven pins.
+Other package managers should update their own manifest and lockfile using the versions in the
+release manifest; source-only diagnostics do not require pnpm. For example, update only the web
+adapter the app actually uses, keeping it in production dependencies. Do not install all adapters.
+
+Apply the required runtime changes above, then run:
+
+```sh
+pnpm exec lumen doctor --json
+pnpm exec lumen audit-consumer --version 5.0.0 --json
+```
+
+Ordinary `doctor` and migration commands never start browsers or application servers.
 The explicit [rendered audit](rendered-audit.md) accepts a local URL and uses caller-installed Playwright.
 
 Validate types, lint, tests, builds, package exports, mobile/desktop rendering, RTL, enlarged text,
