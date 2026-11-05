@@ -27,10 +27,11 @@ Caption resources and the video source stay deferred until the reader opens the 
 
 The artwork slot remains separate from the play control. Playback starts through the native play
 control. Closing, Astro navigation, page exit, and disconnection pause playback. Failure exposes an
-explicit retry and the direct-file link. Supply loadingLabel and retryLabel for localized feedback.
+explicit retry and the direct-file link. Retrying moves focus to the native video control. Supply loadingLabel and retryLabel for localized feedback.
 
 Put the transcript in the transcript slot. It appears in a native disclosure before enhancement,
-then the same disclosure moves into the video dialog. IDs in the transcript stay unique. Keep the
+then the same disclosure moves into the video dialog. IDs in the transcript stay unique. The
+public DialogHeader keeps the close control above the scrolling transcript. Keep the
 transcript useful when media playback is unavailable and provide caption tracks for meaningful audio.
 
 ## Long examples and Markdown
@@ -86,6 +87,9 @@ Opening a destination or invoking native sharing is always an explicit reader ac
 share results are ignored after the viewer closes, navigation, or disconnection.
 
 ## Verification
+
+Run pnpm run test:product-workflows from the repository root to build and install the recipes,
+check the isolated Astro application, and run Chromium and WebKit checks.
 
 The installed consumer uses the public CLI to install these files. Browser checks cover deferred
 media and caption requests, recovery and transcript access, full-source copying, native-share

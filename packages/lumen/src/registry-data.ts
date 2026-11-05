@@ -26,6 +26,7 @@ export const lumenRegistry = {
         'Collapsible',
         'Dialog',
         'DialogBody',
+        'DialogHeader',
         'DialogTitle',
         'Icon',
         'Link',

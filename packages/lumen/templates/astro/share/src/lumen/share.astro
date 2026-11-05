@@ -39,7 +39,7 @@ const urlLabel = labels?.url ?? 'Link to share'
   <Collapsible class="share-fallback">
     <summary>{openLabel}</summary>
     <Input aria-label={urlLabel} value={url} readonly />
-    <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>
+    {destinations.length > 0 && <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>}
   </Collapsible>
   <Button class="share-trigger" data-ui-dialog-trigger={id} variant="outline">{openLabel}</Button>
   <Dialog id={id} aria-labelledby={id + '-title'}>
@@ -58,7 +58,7 @@ const urlLabel = labels?.url ?? 'Link to share'
         errorLabel={labels?.copyFailure ?? 'Could not copy the link.'}
         recoveryLabel={labels?.recovery ?? 'Link for manual copying'}
       >{labels?.copy ?? 'Copy link'}</CopyButton>
-      <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>
+      {destinations.length > 0 && <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>}
     </DialogBody>
   </Dialog>
 </lumen-recipe-share>

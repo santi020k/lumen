@@ -122,6 +122,24 @@ test('editorial consumer regressions select browser coverage', () => {
   }
 })
 
+test('product workflow consumer regressions select browser coverage', () => {
+  for (const path of [
+    'tests/product-workflows/workflows.spec.ts',
+    'tests/fixtures/product-workflows/index.astro.template',
+    'tests/fixtures/product-workflows/captions.vtt',
+    'packages/lumen/scripts/prepare-product-workflow-consumer.mjs',
+    'playwright.product-workflows.config.ts'
+  ]) {
+    assert.equal(classifyCiPaths([path]).playwright, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).browser, true, path)
+
+    assert.equal(classifyCiPaths([path]).apple, false, path)
+
+    assert.equal(classifyCiPaths([path]).android, false, path)
+  }
+})
+
 test('a web package change skips every native platform job', () => {
   const classification = classifyCiPaths(['packages/react/src/Button.tsx'])
 

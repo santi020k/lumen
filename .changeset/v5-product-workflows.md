@@ -8,4 +8,5 @@ copy, highlighted Markdown slots, native disclosure fallbacks, native-share canc
 and stale-result protection. Publish dependency and setup metadata through registry and MCP discovery.
 
 Enhance the editorial product video recipe with deferred captions, one transcript disclosure,
-navigation pause, loading feedback, and explicit media retry.
+navigation pause, loading feedback, and explicit media retry. Keep the close control above a long
+transcript and move focus to the native player after retrying.

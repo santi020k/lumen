@@ -24,6 +24,7 @@
         "Collapsible",
         "Dialog",
         "DialogBody",
+        "DialogHeader",
         "DialogTitle",
         "Icon",
         "Link",

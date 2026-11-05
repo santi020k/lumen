@@ -17,7 +17,7 @@
       "BarChart": "e3b3bb816a396b71bdac18ce80ba06c8c23b8a28dc41e9ed67c36037391a9787",
       "Breadcrumb": "863f537445faecdb134879ea3b81522ab90e76a2bf06d7ce42a67956e566a884",
       "Bubble": "3f8acfce05736c2f434c7e76b5e05e17103b76d0ce80742e8b9112928c7d483e",
-      "Button": "fe1172988ee5d7ae66c62591ffef5e0f79d5abd43a64d6171f12c0c1c8b4914a",
+      "Button": "6281ef34e91bf41d43c81ff15a0432dd6840b16289a111c5b0f591a33d15627b",
       "ButtonGroup": "2cf8bb2c54134025a399dfd6a9154f4fd605aed44dd3bf1c85482404120482c5",
       "Calendar": "217904a9be45cb6bfc538d3af8b5486e7dbe547b6b26ab6e156fde3770c4fb0e",
       "Callout": "472d86da10f70441e76d34d0b6ce172750166a23b30ff1e246cc75e9c1bce58a",
@@ -31,7 +31,7 @@
       "Chart": "04ea9dd0180cf036274e1d483d530f5e407627a5a33fdec712300e0f2a96d1ca",
       "Checkbox": "85aa94fb65ddbde0a0d2e296ff580f0dec7fc209306eb5e6c61787e7feb10d6f",
       "CheckboxGroup": "264088d3c2a0b9f9a35eefe918128aa34f5175719aed2354d4ff55f66c116dec",
-      "Collapsible": "36c876a7ba43bac905ab14b46e95c5cac3d947b73a26580a36a38bff9db10417",
+      "Collapsible": "9721269fe544045e997710c31365a5f16109b07799567bc706729c6c343dce0a",
       "Code": "f63562a34b2f5c65c6c180572cb025527014c32ea40d34f500ef4ebd726afadf",
       "CodeTabs": "98d6a470e449d4a531b7fc4de993cd58c8fd32d5b29887fe57fa6d86b09441f0",
       "Combobox": "e9bd1977e87d85b45d1bf3cf534b414940a5efde90fa8d10ded83a39ca4a82e1",
@@ -44,16 +44,16 @@
       "DataTable": "9908d48a8a9140d0b989371fe49ad21a93242bc05570cd2e004095826138d950",
       "DatePicker": "d7e07526c027256bd286d62039f62844826dd138892603a9893fe36f61bc05c0",
       "DateRangePicker": "2df2360d4b8e6bb8d88a87407d637c64e891584511f984d4be414bd8f41164ab",
-      "Dialog": "fce4a7ea20016b9e6794c9089e9998420047ef487d5c3f01b30e4dbea27a593c",
-      "DialogHeader": "09cbc2757afb20be809f518e73a2e23a7c78fa655727b259f72b2dbebf045446",
-      "DialogTitle": "7b226b3351063d8789b5313754427d0e2c5ddb2073e0ecd7d2f5e46be2c2f5fe",
-      "DialogBody": "8298e778cbd2cf81c8d3b416a9ba00e41839670c0016ef7b2e2f38f00aa352d7",
-      "DialogFooter": "25eb887fe3ee40022db1927d7265b5caa46c5a41b90e3419a9518e61d7d4e4db",
-      "DialogClose": "e14eec66d3d47460de5d95ef67eb53f4508aea12ebd3cb5d08938e9ba5864c6e",
+      "Dialog": "ed1aaa16f354c4c90c5dc6e3ec7b2387bed48f069fc97861b379a319c8f9a9c4",
+      "DialogHeader": "5bbd462f9208a5f103687353d729ed38ea2d75e4e1e54dc29c9177be29576cdb",
+      "DialogTitle": "743613a9b9b63b9d6dc7e621df6bad34e6080a3003eb79a08da69b1c49a9e1a2",
+      "DialogBody": "0d8c235f3b8c94deac220c496a7919a0350a52f56f393812aaf291245ca964fa",
+      "DialogFooter": "74c029aa9d219405d40106f7c0678279ecf4accf11de3932e966fea118fa81b3",
+      "DialogClose": "8bab489e756953ad1f321aae7af851a8b7afed480f08e501edd5ce6c20e94a47",
       "Direction": "739273fc3f0b743f3d0a427b74cdfef7951d43d34de53d46c302df02e56e3e5f",
       "Drawer": "7d752a45932493c7a6ed0423914a235a55ad14d108417f3f820f32f29227fa8e",
       "DropdownMenu": "0ead926c85f7aa00c9f992a13db79cbd133d20897ecd1412cfbfcdeccef89fdb",
-      "Empty": "f9a00582efc0aae5cd01c3e67d53c203a86465bba837135aba0b7dc8b1bc643e",
+      "Empty": "f9436ea9fbd9c285658783744ca2ad8e0250d1db52676d19b92352cc440e78fe",
       "ErrorState": "9a147b87bf33b5ebc27c5adb6593dd9cc979b842ef031f8858829e42b2ffbe9e",
       "ErrorSummary": "5d6534d86bd7b00abf2a6327c26e7bdb5e7f3f24ce9ff155ce190530837d530c",
       "Eyebrow": "84e8c718b47713897829beac2eaaae5a135618e0d3b294b58829e03aa5fa5f52",
@@ -78,9 +78,9 @@
       "Item": "fd448e9decf1ddf8726c1c7ff843097813a6279466f9b5f1b545ccacc617474c",
       "KanbanBoard": "362a4def0f75267a114cfa88ec3ebd414d71e20e8af92e722de603b4dfa80a64",
       "KanbanColumn": "769376f352077962e7da4ac2117d9c2ee9092711d996cbde673f15905d8f3f67",
-      "Kbd": "a8fc3ca84e0d056b5bcc0b6bec0699a06b728edf23df6abcb3c5361eaa2ce00b",
-      "Label": "530935d0f1f7d6770b87c4f44bfa2a74ba5b0669929d9034dc68fe3baeb40c56",
-      "Link": "c64cdef9431994709b4facafb6def7a8d87eb6a3a5cafb6ecb747890b9f5510a",
+      "Kbd": "03f3aa83e624413c9209389d39242f79a5fb36218421dba647481cb384b2ce88",
+      "Label": "8e967ecea48e90906d43558920419b8ea50c99bdd0f0f047a681354eb4f1a00d",
+      "Link": "ff0aab920832d6b046be22c132c6c2f5dbd9704b75370f3ac7c75cd400e4aeb1",
       "LineChart": "8d81487bad2d54e5eb1e75b1d76ae16a370f48a968dafeae4b3cda63b0a82ba7",
       "ListBox": "7203c0956f522ac6791ee09d620dd34c06bda742b79a8c14d1b2186ff843773c",
       "Marker": "654b8fc3f357ef852ac5c7317c268b62c13b3132f1f9deff7790bf452943c985",
@@ -103,15 +103,15 @@
       "Resizable": "ef0024d7e05d5f734d433e84f3706a0dbd58a0340cdfc7bc2dabf680684cbd4a",
       "RichTextEditor": "6a9182e04193066af282a1136a137cd2b9fdcb6673e19b82b00552d5aa76f185",
       "ScrollArea": "234f3d085fe300bcf24473131931f654cd03e277e7a90e8de3086cf35696e05e",
-      "ScrollProgress": "f46525803c8d1f467c27c946d2bd5f20047f31e878a230af8c42525878cf1dd5",
+      "ScrollProgress": "7dc12b356aeb851b08eff727db428756c9be20e3b97c666c5a0c101ccbfea02e",
       "Schedule": "019f4e8d3059a9f6ea9c75498bfaf24c0cf9216b39f6ec92d25ac56dcdca9189",
-      "SearchField": "b268fafd0ea191a4188f91d1a03a577e41a19020c5973849ca8035106ac9719a",
+      "SearchField": "3716196751539f302668dda102d262058d6d5d1ad282fdbcdcd31e6e7f75ba74",
       "Select": "33eb44ae7e9f4edc59416d36f182bb5035eb6a537fad335d08259daa773d4e8d",
       "Separator": "f29759dd83b00c58569117b8e2538aa1fbbdcc2c444303cccb701867b2f211db",
       "Sheet": "c0175a4839040dc15254f698eaa043c8065a6f62d6f9058001b510faf10e9f72",
       "Sidebar": "a37a3cbd6622d4106e89b90d4cedd7acea07bf4068d46b4dfcdde27d61b0c545",
       "Skeleton": "c18e6caa7cb94fdf5f7ab44f87082e5d444287000333604a78715b2cc84e706e",
-      "SkipLink": "ce42e9131ec71316b85fff5aa0990430510045e6a17f0c6cdc1b60e2a29168cd",
+      "SkipLink": "0afd5dec4bef072130aa7de167eac4b867ea6181438949674ddf934569660d1e",
       "Slider": "0e5fee7836ce61a539f12b28bf29f66f5780d8ddf306631e97808c3992301684",
       "Sparkline": "5ffeed9f98f26de427f5d3288f48ac9bfd99874168221d68d13564dde46779f2",
       "Spinner": "76ba2165e33f320d03eb3defdaf68600289b61047897626d351ac62d6d225e31",
@@ -121,7 +121,7 @@
       "TagGroup": "1add288d64495fe6c99c250b7b920e09363c0542f5f8465eb97de31081f21c44",
       "Textarea": "453e36ec96440e7fffa488bf2a0897fcd0f3fa8d212f3f68a878548a2c0adb08",
       "ThemeBuilder": "01f917fc73a087e7e2e9c3f779b935cd5b4120a154b28ea022b76108738893ae",
-      "ThemeToggle": "9123b38e92b1f20ebcaaecad4eab23e211c6db787c66dd1941ddcc6b9dc26f7e",
+      "ThemeToggle": "d42f070f8dfd6bb042c33e4277b4759364ed319d1b4d38f668b16c4371794073",
       "TimeField": "164af4c067de2a52f0a2ad49999b3de62303a8d0a84a49ea711ff93da7a98452",
       "Toast": "56e6f9a4af928c1131b9494a335d92e30c3a3ce975fbcd5b0036b5925215bc26",
       "ToastViewport": "ba378125a6f176a85e0ccde57b1cc3866150b9db347f4756a195cb3ae9c026d8",
@@ -147,7 +147,7 @@
       "Meter": "1214c9d181390a53c80338576a086fa76d187dc9d8886e397e1694680223b518",
       "Note": "f02429c1989198a3af77f779681d2ae47cd57f88464a7459e84545c14bd7395b",
       "Rating": "8364bc3da70c6ac7ea678c05a688d63876e42e85ca30d9cae9cd7a86a8dfc77b",
-      "Timeline": "df2c5ee859b8215e1ca107bbffaf7d881fe43e2442dbc73c3a547c44dd7e08d3",
+      "Timeline": "bc4b2a229a21d1980a16f06885e2f27b689f38c07ac72285fdd6219fbade71aa",
       "AnimatedLogo": "e0cbc37bda31a8e8d0d71696262bff0c28e7947d4c034b60503752f20727a3ba",
       "AnimatedPortrait": "4998e080181971c7b59f9c091dd725ddda9ff0e65d204c54b8c3356fc102e1d2",
       "ButtonLink": "0ea2b5bb29af5a7f73f892608f100faa42ac7e0c89e12abd6a7c8b91a749037a",
@@ -156,7 +156,7 @@
       "Stepper": "7530c386fccdc3a9c94b5f18bd3d92a82fb3e5168ad6462a158226eddcc13efe",
       "FileUpload": "0f22abc1cf51c932a2cbc92447d7e637281078c4d1a4978943b79010a7ee387f",
       "Tour": "b7b4c5775758a32433f4470b34b3cebc097b26eff3a27eb01a54475064c1da4c",
-      "Anchor": "936780e7348dd84e77ad921be07db38130e19843f5e3ad3021151d7148492ef9",
+      "Anchor": "d839c321946eab300cadc64023ea83a61018e4970c8feb2e93f0bf4295deeb22",
       "Segmented": "b55b9e699a8f2a6ffbb1067308a35aaf5c7ef3738874c8a0a653f66b0d4a9add",
       "Toolbar": "9c2fc3a692fd7de5599518696dbab6d77631d1158e0af02e13718bb38d6a589f",
       "Descriptions": "1a6f3099b72e7adc41dd649c52780ed1345aa74009d9603b5097a242f35ccaf1",
@@ -196,7 +196,7 @@
       "SourceCitation": "937aec9ffe81ea5ede42800de778dfa5c8dc173091030a5bee89712e1133585f",
       "StreamMessage": "2c027cdd2c4126572176b4d876d3a6da9a482e07d3960449a0bd164d40241fd5",
       "ToolActivity": "4cd7cc5f105465a4a83c93c3d774b25ee03260211dde8a8ae384667ae6c49a5f",
-      "WorldMap": "d30bd8f6777d7107d39be750020f252acb80d386cce159c9749850a4f98e2bfe"
+      "WorldMap": "2336c6b92f7e966a374bae0dce6e9cd9de778003f46e8b070ad1dca2930406fc"
     },
     "nativeComponents": {
       "Sparkline": "bf7707572d45de0978788f7825831fcb3d89e390b5a474ff8aaf518d412738c6",
@@ -326,8 +326,8 @@
       "Cascader": "f5a0667116111a10dcd08bab4514063a6587a3807d30633932ec79d3c0d23920"
     },
     "recipes": {
-      "editorial": "9b31e0fc3f698a54082a00cf679fe1b1e14ec47f951c201b21c67bc95a2437bf",
-      "share": "72e23ebbd99d60f5ebaff221a37c82b81c847f95f832aa328b3fd54084257eb2",
+      "editorial": "d6ed6a7a2ca770118df5960eb1f307bf805079c0ae1663df417d5097cd24260a",
+      "share": "7de3657410a19fd5071351a707e564df55de5c0ff0c07beb41dec826bd978bb9",
       "code-example": "950a9128dbc96103a051ae4697664788ee269781124fedc643f2f9a81f9422d9",
       "article-reading": "bd1bf5e97a23e5e62174ff81ae231899e453113ad1362bffa2fe5e86c5ff8c41",
       "site-search-dialog": "5dc7d67df92793a4c28da4cc7352dbe29ef4d1ce6dacf49787b6069cf9e22494",
@@ -3949,21 +3949,42 @@
           "tagName": "lumen-button"
         },
         "react": {
-          "available": false,
+          "available": true,
           "example": "<Button variant=\"default\">Save changes</Button><Button variant=\"secondary\">Cancel</Button>",
           "importStatement": "import { Button } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [],
-          "propsExtends": null,
-          "source": "",
+          "props": [
+            {
+              "name": "asChild",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "loading",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "size",
+              "optional": true,
+              "type": "ButtonSize"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "ButtonVariant"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithRef<'button'>",
+          "source": "export interface ButtonProps extends ComponentPropsWithRef<'button'> {\n  asChild?: boolean\n  loading?: boolean\n  size?: ButtonSize\n  variant?: ButtonVariant\n}\n\nexport const Button = ({\n  asChild = false,\n  children,\n  className,\n  disabled,\n  loading = false,\n  ref,\n  size = 'default',\n  type = 'button',\n  variant = 'default',\n  ...props\n}: ButtonProps) => {\n  const isDisabled = disabled === true || loading\n  const classes = buttonClassName(className, isDisabled, loading, size, variant)\n\n  if (asChild) return (\n    <SlottedButton\n      className={classes}\n      disabled={isDisabled}\n      loading={loading}\n      forwardedRef={ref}\n      props={props}\n    >\n      {children}\n    </SlottedButton>\n  )\n\n  return (\n    <button\n      aria-busy={loading || undefined}\n      className={classes}\n      data-slot=\"button\"\n      disabled={isDisabled}\n      ref={ref}\n      type={type}\n      {...props}\n    >\n      {loading && <span aria-hidden=\"true\" className=\"ui-spinner\" />}\n      <span className=\"ui-button__content\">{children}</span>\n    </button>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
         "elements": true,
-        "react": false
+        "react": true
       },
       "guidance": null,
       "kebab": "button",
@@ -6830,12 +6851,13 @@
         },
         "elements": {
           "attributes": [
+            "data-ui-collapsible",
             "open",
             "children",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -6847,26 +6869,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenCollapsibleElementConfig = {\n  baseClassName: 'ui-collapsible',\n  defaults: { 'data-ui-collapsible': '' },\n  tagName: 'lumen-collapsible'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-collapsible"
         },
         "react": {
-          "available": false,
+          "available": true,
           "example": "<Collapsible><summary>Advanced filters</summary><p>Filter controls</p></Collapsible>",
           "importStatement": "import { Collapsible } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": null,
-          "source": "",
+          "propsExtends": "ComponentPropsWithoutRef<'details'>",
+          "source": "export type CollapsibleProps = ComponentPropsWithoutRef<'details'>\n\nexport const Collapsible = ({ className, ...props }: CollapsibleProps) => (\n  <details\n    className={composeClassName('ui-collapsible', className)}\n    data-ui-collapsible\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": {
         "when": "Use for one optional region such as advanced settings, details, or filters.",
@@ -10471,6 +10493,7 @@
         },
         "elements": {
           "attributes": [
+            "data-ui-dialog",
             "glass",
             "layout",
             "id",
@@ -10479,7 +10502,7 @@
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
@@ -10491,12 +10514,12 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenDialogElementConfig = {\n  attributeClasses: {\n    glass: {\n      strong: 'ui-dialog--glass ui-glass-strong',\n      subtle: 'ui-dialog--glass ui-glass-subtle',\n      true: 'ui-dialog--glass'\n    },\n    layout: { fullscreen: 'ui-dialog--fullscreen' }\n  },\n  baseClassName: 'ui-dialog',\n  defaults: { 'data-ui-dialog': '', layout: 'centered' },\n  tagName: 'lumen-dialog'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog"
         },
         "react": {
-          "available": false,
+          "available": true,
           "behavior": {
             "controller": [
               {
@@ -10589,16 +10612,22 @@
           "importStatement": "import { Button, Dialog, Card } from '@santi020k/lumen-react'\nimport { useDialog } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [],
-          "propsExtends": null,
-          "source": "",
+          "props": [
+            {
+              "name": "layout",
+              "optional": true,
+              "type": "'centered' | 'fullscreen'"
+            }
+          ],
+          "propsExtends": "Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> & SurfaceProps & Omit<DialogOptions, 'id'>",
+          "source": "export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &\n  SurfaceProps &\n  Omit<DialogOptions, 'id'> & {\n    layout?: 'centered' | 'fullscreen'\n  }\n\nexport const Dialog = ({\n  children,\n  className,\n  defaultOpen,\n  dismissOnEscape,\n  dismissOnOutsidePress,\n  glass = false,\n  layout = 'centered',\n  onCancel,\n  onClick,\n  onClose,\n  onOpenChange,\n  onPointerDown,\n  open,\n  ...props\n}: DialogProps) => {\n  const dialog = useDialog({ defaultOpen, dismissOnEscape, dismissOnOutsidePress, onOpenChange, open })\n\n  return (\n    <dialog\n      {...dialog.dialogProps}\n      {...props}\n      className={composeClassName(\n        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', glass), className\n      )}\n      data-layout={layout}\n      data-surface={resolveSurface(glass)}\n      onCancel={composeHandlers(onCancel, dialog.dialogProps.onCancel)}\n      onPointerDown={composeHandlers(onPointerDown, dialog.dialogProps.onPointerDown)}\n      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}\n      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}\n    >\n      <DialogCloseContext value={dialog.close}>{children}</DialogCloseContext>\n    </dialog>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": {
         "when": "Use for a focused task or decision that temporarily interrupts the page.",
@@ -10758,11 +10787,12 @@
         },
         "elements": {
           "attributes": [
+            "data-slot",
             "children",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -10774,7 +10804,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenDialogHeaderElementConfig = {\n  baseClassName: 'ui-dialog-header',\n  defaults: { 'data-slot': 'dialog-header' },\n  tagName: 'lumen-dialog-header'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-header"
         },
@@ -10792,7 +10822,7 @@
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
+        "elements": true,
         "react": true
       },
       "guidance": null,
@@ -10834,6 +10864,10 @@
       ],
       "propsExtends": "HTMLAttributes<'header'>",
       "recipes": [
+        {
+          "name": "editorial",
+          "type": "recipe"
+        },
         {
           "name": "share",
           "type": "recipe"
@@ -10925,12 +10959,13 @@
         },
         "elements": {
           "attributes": [
+            "data-slot",
             "as",
             "id",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -10942,7 +10977,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenDialogTitleElementConfig = {\n  baseClassName: 'ui-dialog-title',\n  defaults: { 'data-slot': 'dialog-title' },\n  tagName: 'lumen-dialog-title'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-title"
         },
@@ -10966,7 +11001,7 @@
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
+        "elements": true,
         "react": true
       },
       "guidance": null,
@@ -11099,11 +11134,12 @@
         },
         "elements": {
           "attributes": [
+            "data-slot",
             "children",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -11115,7 +11151,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenDialogBodyElementConfig = {\n  baseClassName: 'ui-dialog-body',\n  defaults: { 'data-slot': 'dialog-body' },\n  tagName: 'lumen-dialog-body'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-body"
         },
@@ -11133,7 +11169,7 @@
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
+        "elements": true,
         "react": true
       },
       "guidance": null,
@@ -11262,11 +11298,12 @@
         },
         "elements": {
           "attributes": [
+            "data-slot",
             "children",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -11278,7 +11315,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenDialogFooterElementConfig = {\n  baseClassName: 'ui-dialog-footer',\n  defaults: { 'data-slot': 'dialog-footer' },\n  tagName: 'lumen-dialog-footer'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-footer"
         },
@@ -11296,7 +11333,7 @@
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
+        "elements": true,
         "react": true
       },
       "guidance": null,
@@ -11445,12 +11482,14 @@
         },
         "elements": {
           "attributes": [
+            "data-slot",
+            "data-ui-dialog-close",
             "children",
             "disabled / loading",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
@@ -11462,12 +11501,12 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenDialogCloseElementConfig = {\n  baseClassName: 'ui-dialog-close',\n  defaults: { 'data-slot': 'dialog-close', 'data-ui-dialog-close': '' },\n  tagName: 'lumen-dialog-close'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-close"
         },
         "react": {
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "adapter",
             "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
@@ -11477,15 +11516,15 @@
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": null,
-          "source": "",
+          "propsExtends": "ButtonProps",
+          "source": "export type DialogCloseProps = ButtonProps\n\nexport const DialogClose = ({ className, onClick, ...props }: DialogCloseProps) => {\n  const close = use(DialogCloseContext)\n\n  return (\n    <Button\n      {...props}\n      className={composeClassName('ui-dialog-close', className)}\n      data-slot=\"dialog-close\"\n      onClick={event => {\n        onClick?.(event)\n\n        if (event.defaultPrevented) return\n\n        if (close) close()\n        else event.currentTarget.closest('dialog')?.close()\n      }}\n    />\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": null,
       "kebab": "dialog-close",
@@ -12340,12 +12379,12 @@
         "elements": {
           "attributes": [
             "glass",
-            "children",
             "variant",
+            "children",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -12357,26 +12396,37 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenEmptyElementConfig = {\n  attributeClasses: {\n    glass: { strong: 'ui-empty--glass ui-glass-strong', subtle: 'ui-empty--glass ui-glass-subtle', true: 'ui-empty--glass' },\n    variant: { compact: 'ui-empty--compact' }\n  },\n  baseClassName: 'ui-empty',\n  defaults: { variant: 'default' },\n  tagName: 'lumen-empty'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-empty"
         },
         "react": {
-          "available": false,
+          "available": true,
           "example": "<Empty><h2>No projects yet</h2><p>Create your first workspace.</p></Empty>",
           "importStatement": "import { Empty } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [],
-          "propsExtends": null,
-          "source": "",
+          "props": [
+            {
+              "name": "glass",
+              "optional": true,
+              "type": "LumenGlassProp"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "'compact' | 'default'"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithoutRef<'section'>",
+          "source": "export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {\n  glass?: LumenGlassProp\n  variant?: 'compact' | 'default'\n}\n\nexport const Empty = ({\n  className,\n  glass = false,\n  variant = 'default',\n  ...props\n}: EmptyProps) => (\n  <section\n    className={composeClassName(\n      'ui-empty',\n      variant === 'compact' && 'ui-empty--compact',\n      glassClass('ui-empty', glass),\n      className\n    )}\n    data-variant={variant}\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": null,
       "kebab": "empty",
@@ -18004,7 +18054,7 @@
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -18016,26 +18066,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenKbdElementConfig = { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' } as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-kbd"
         },
         "react": {
-          "available": false,
+          "available": true,
           "example": "<p>Open the command menu with <Kbd>Cmd K</Kbd>.</p>",
           "importStatement": "import { Kbd } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": null,
-          "source": "",
+          "propsExtends": "ComponentPropsWithoutRef<'kbd'>",
+          "source": "export type KbdProps = ComponentPropsWithoutRef<'kbd'>\n\nexport const Kbd = ({ className, ...props }: KbdProps) => (\n  <kbd className={composeClassName('ui-kbd', className)} {...props} />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": null,
       "kebab": "kbd",
@@ -18156,21 +18206,21 @@
           "tagName": "lumen-label"
         },
         "react": {
-          "available": false,
+          "available": true,
           "example": "<Label htmlFor=\"workspace\">Workspace name</Label><Input id=\"workspace\" />",
           "importStatement": "import { Label, Input } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": null,
-          "source": "",
+          "propsExtends": "ComponentPropsWithRef<'label'>",
+          "source": "export type LabelProps = ComponentPropsWithRef<'label'>\n\nexport const Label = ({ className, ...props }: LabelProps) => (\n  <label className={composeClassName('ui-label', className)} {...props} />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
         "elements": true,
-        "react": false
+        "react": true
       },
       "guidance": null,
       "kebab": "label",
@@ -18318,14 +18368,15 @@
         },
         "elements": {
           "attributes": [
+            "data-slot",
+            "variant",
             "href",
             "newTab",
-            "variant",
             "target, rel",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -18337,26 +18388,37 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenLinkElementConfig = {\n  attributeClasses: { variant: { inherit: 'ui-link--inherit' } },\n  baseClassName: 'ui-link',\n  defaults: { 'data-slot': 'link' },\n  tagName: 'lumen-link'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-link"
         },
         "react": {
-          "available": false,
+          "available": true,
           "example": "<Link href=\"/docs\">Read the documentation</Link>",
           "importStatement": "import { Link } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [],
-          "propsExtends": null,
-          "source": "",
+          "props": [
+            {
+              "name": "newTab",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "'default' | 'inherit'"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithRef<'a'>",
+          "source": "export type LinkProps = ComponentPropsWithRef<'a'> & {\n  newTab?: boolean\n  variant?: 'default' | 'inherit'\n}\n\nexport const Link = ({\n  className,\n  newTab = false,\n  ref,\n  rel,\n  target,\n  variant = 'default',\n  ...props\n}: LinkProps) => (\n  <a\n    className={composeClassName(\n      'ui-link', variant === 'inherit' && 'ui-link--inherit', className\n    )}\n    data-slot=\"link\"\n    data-variant={variant}\n    ref={ref}\n    rel={\n      newTab ?\n        [\n          ...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\\s+/))\n        ].join(' ') :\n        rel\n    }\n    target={newTab ? '_blank' : target}\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": null,
       "kebab": "link",
@@ -24310,12 +24372,18 @@
         },
         "elements": {
           "attributes": [
-            "position",
             "aria-label",
+            "aria-valuemax",
+            "aria-valuemin",
+            "aria-valuenow",
+            "data-ui-scroll-progress",
+            "position",
+            "role",
+            "target-id",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
@@ -24327,30 +24395,41 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenScrollProgressElementConfig = {\n  observedAttributes: ['position', 'target-id'],\n  attributeClasses: {\n    position: { bottom: 'ui-scroll-progress--bottom' }\n  },\n  baseClassName: 'ui-scroll-progress',\n  defaults: {\n    'aria-label': 'Reading progress',\n    'aria-valuemax': '100',\n    'aria-valuemin': '0',\n    'aria-valuenow': '0',\n    'data-ui-scroll-progress': '',\n    position: 'top',\n    role: 'progressbar'\n  },\n  tagName: 'lumen-scroll-progress'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-scroll-progress"
         },
         "react": {
-          "available": false,
+          "available": true,
           "behavior": {
-            "mode": "adapter",
-            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
+            "mode": "built-in",
+            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
           },
           "example": "<ScrollProgress aria-label=\"Article reading progress\" />",
           "importStatement": "import { ScrollProgress } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [],
-          "propsExtends": null,
-          "source": "",
+          "props": [
+            {
+              "name": "position",
+              "optional": true,
+              "type": "'bottom' | 'top'"
+            },
+            {
+              "name": "targetId",
+              "optional": true,
+              "type": "string"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithoutRef<'div'>",
+          "source": "export interface ScrollProgressProps extends ComponentPropsWithoutRef<'div'> {\n  position?: 'bottom' | 'top'\n  targetId?: string\n}\n\nexport const ScrollProgress = ({\n  'aria-label': ariaLabel = 'Reading progress',\n  className,\n  position = 'top',\n  targetId,\n  ...props\n}: ScrollProgressProps) => {\n  const rootRef = useRef<HTMLDivElement>(null)\n\n  useEffect(() => {\n    const root = rootRef.current\n\n    if (!root) return\n\n    const view = root.ownerDocument.defaultView\n\n    if (!view) return\n\n    let frame = 0\n\n    const update = () => {\n      frame = 0\n\n      const scrollingElement =\n        root.ownerDocument.scrollingElement ?? root.ownerDocument.documentElement\n\n      const percentage = getLumenScrollProgress(\n        scrollingElement, targetId ? root.ownerDocument.getElementById(targetId) : null\n      ) * 100\n\n      const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')\n\n      root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)\n\n      if (bar) bar.style.transform = `scaleX(${percentage / 100})`\n    }\n\n    const scheduleUpdate = () => {\n      if (frame) return\n\n      frame = view.requestAnimationFrame(update)\n    }\n\n    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(scheduleUpdate) : undefined\n    const target = targetId ? root.ownerDocument.getElementById(targetId) : null\n\n    observer?.observe(root.ownerDocument.documentElement)\n\n    if (target) observer?.observe(target)\n\n    scheduleUpdate()\n\n    view.addEventListener('resize', scheduleUpdate, { passive: true })\n\n    view.addEventListener('scroll', scheduleUpdate, { passive: true })\n\n    return () => {\n      observer?.disconnect()\n\n      if (frame) view.cancelAnimationFrame(frame)\n\n      view.removeEventListener('resize', scheduleUpdate)\n\n      view.removeEventListener('scroll', scheduleUpdate)\n    }\n  }, [targetId])\n\n  return (\n    <div\n      aria-label={ariaLabel}\n      aria-valuemax={100}\n      aria-valuemin={0}\n      aria-valuenow={0}\n      className={composeClassName(\n        'ui-scroll-progress', position === 'bottom' && 'ui-scroll-progress--bottom', className\n      )}\n      data-position={position}\n      data-ui-scroll-progress\n      data-ui-scroll-progress-target={targetId}\n      ref={rootRef}\n      role=\"progressbar\"\n      {...props}\n    >\n      <span className=\"ui-scroll-progress__bar\" />\n    </div>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": {
         "when": "Use on long reading surfaces when readers benefit from knowing how far they have moved through the current document.",
@@ -24766,7 +24845,7 @@
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -24778,26 +24857,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenSearchFieldElementConfig = {\n  baseClassName: 'ui-input ui-search-field',\n  defaults: { type: 'search' },\n  tagName: 'lumen-search-field'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-search-field"
         },
         "react": {
-          "available": false,
+          "available": true,
           "example": "<SearchField name=\"q\" placeholder=\"Search docs\" />",
           "importStatement": "import { SearchField } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": null,
-          "source": "",
+          "propsExtends": "ComponentPropsWithRef<'input'>",
+          "source": "export type SearchFieldProps = ComponentPropsWithRef<'input'>\n\nexport const SearchField = ({\n  className,\n  ref,\n  type = 'search',\n  ...props\n}: SearchFieldProps) => (\n  <input\n    className={composeClassName('ui-input ui-search-field', className)}\n    ref={ref}\n    type={type}\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": null,
       "kebab": "search-field",
@@ -26236,7 +26315,7 @@
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -26248,26 +26327,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenSkipLinkElementConfig = { baseClassName: 'ui-skip-link', tagName: 'lumen-skip-link' } as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-skip-link"
         },
         "react": {
-          "available": false,
+          "available": true,
           "example": "<SkipLink href=\"#main\">Skip to main content</SkipLink>",
           "importStatement": "import { SkipLink } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": null,
-          "source": "",
+          "propsExtends": "ComponentPropsWithoutRef<'a'>",
+          "source": "export type SkipLinkProps = ComponentPropsWithoutRef<'a'>\n\nexport const SkipLink = ({ className, ...props }: SkipLinkProps) => (\n  <a className={composeClassName('ui-skip-link', className)} {...props} />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": {
         "when": "Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until a keyboard user focuses it.",
@@ -28352,7 +28431,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/theme-toggle.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport Icon from './Icon.astro'\n\ninterface Props extends HTMLAttributes<'button'> {\n  class?: string | null\n  className?: string\n  controlled?: boolean\n  darkTheme?: string\n  lightTheme?: string\n  storageKey?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  controlled = false,\n  darkTheme = 'dark',\n  lightTheme = 'light',\n  storageKey = 'lumen-theme',\n  type = 'button',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-theme-toggle'\n], classProp, className)\n---\n\n<button\n  class:list={classList}\n  data-dark-theme={darkTheme}\n  data-light-theme={lightTheme}\n  data-slot=\"theme-toggle\"\n  data-storage-key={storageKey}\n  data-ui-controlled={controlled || undefined}\n  data-ui-theme-toggle\n  type={type}\n  {...passthrough}\n>\n  <span class=\"ui-sr-only\">Toggle color theme</span>\n  <Icon\n    aria-hidden=\"true\"\n    class=\"ui-theme-toggle__sun\"\n    name=\"sun\"\n  />\n  <Icon\n    aria-hidden=\"true\"\n    class=\"ui-theme-toggle__moon\"\n    name=\"moon\"\n  />\n</button>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/theme-toggle.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport Icon from './Icon.astro'\n\ninterface Props extends HTMLAttributes<'button'> {\n  class?: string | null\n  className?: string\n  controlled?: boolean\n  darkTheme?: string\n  lightTheme?: string\n  storageKey?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  controlled = false,\n  darkTheme = 'dark',\n  lightTheme = 'light',\n  storageKey = 'lumen-theme',\n  type = 'button',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-theme-toggle'\n], classProp, className)\n---\n\n<button\n  class:list={classList}\n  data-dark-theme={darkTheme}\n  data-light-theme={lightTheme}\n  data-slot=\"theme-toggle\"\n  data-storage-key={storageKey}\n  data-ui-controlled={controlled || undefined}\n  data-ui-theme-toggle\n  type={type}\n  {...passthrough}\n>\n  <span class=\"ui-sr-only\">Toggle color theme</span>\n  <Icon\n    aria-hidden=\"true\"\n    class=\"ui-theme-toggle__sun\"\n    data-slot=\"theme-toggle-sun\"\n    name=\"sun\"\n  />\n  <Icon\n    aria-hidden=\"true\"\n    class=\"ui-theme-toggle__moon\"\n    data-slot=\"theme-toggle-moon\"\n    name=\"moon\"\n  />\n</button>\n",
       "category": "Actions",
       "collections": [],
       "contract": null,
@@ -28413,7 +28492,7 @@
             }
           ],
           "propsExtends": "HTMLAttributes<'button'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/theme-toggle.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport Icon from './Icon.astro'\n\ninterface Props extends HTMLAttributes<'button'> {\n  class?: string | null\n  className?: string\n  controlled?: boolean\n  darkTheme?: string\n  lightTheme?: string\n  storageKey?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  controlled = false,\n  darkTheme = 'dark',\n  lightTheme = 'light',\n  storageKey = 'lumen-theme',\n  type = 'button',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-theme-toggle'\n], classProp, className)\n---\n\n<button\n  class:list={classList}\n  data-dark-theme={darkTheme}\n  data-light-theme={lightTheme}\n  data-slot=\"theme-toggle\"\n  data-storage-key={storageKey}\n  data-ui-controlled={controlled || undefined}\n  data-ui-theme-toggle\n  type={type}\n  {...passthrough}\n>\n  <span class=\"ui-sr-only\">Toggle color theme</span>\n  <Icon\n    aria-hidden=\"true\"\n    class=\"ui-theme-toggle__sun\"\n    name=\"sun\"\n  />\n  <Icon\n    aria-hidden=\"true\"\n    class=\"ui-theme-toggle__moon\"\n    name=\"moon\"\n  />\n</button>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/theme-toggle.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport Icon from './Icon.astro'\n\ninterface Props extends HTMLAttributes<'button'> {\n  class?: string | null\n  className?: string\n  controlled?: boolean\n  darkTheme?: string\n  lightTheme?: string\n  storageKey?: string\n}\n\nconst {\n  class: classProp = '',\n  className = '',\n  controlled = false,\n  darkTheme = 'dark',\n  lightTheme = 'light',\n  storageKey = 'lumen-theme',\n  type = 'button',\n  ...rest\n} = Astro.props\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-theme-toggle'\n], classProp, className)\n---\n\n<button\n  class:list={classList}\n  data-dark-theme={darkTheme}\n  data-light-theme={lightTheme}\n  data-slot=\"theme-toggle\"\n  data-storage-key={storageKey}\n  data-ui-controlled={controlled || undefined}\n  data-ui-theme-toggle\n  type={type}\n  {...passthrough}\n>\n  <span class=\"ui-sr-only\">Toggle color theme</span>\n  <Icon\n    aria-hidden=\"true\"\n    class=\"ui-theme-toggle__sun\"\n    data-slot=\"theme-toggle-sun\"\n    name=\"sun\"\n  />\n  <Icon\n    aria-hidden=\"true\"\n    class=\"ui-theme-toggle__moon\"\n    data-slot=\"theme-toggle-moon\"\n    name=\"moon\"\n  />\n</button>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -28453,7 +28532,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'button'>",
-          "source": "export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>\n\nexport const ThemeToggle = ({\n  className,\n  type = 'button',\n  ...props\n}: ThemeToggleProps) => (\n  <button\n    className={composeClassName('ui-theme-toggle', className)}\n    data-slot=\"theme-toggle\"\n    type={type}\n    {...props}\n  >\n    <span className=\"ui-sr-only\">Toggle color theme</span>\n    <Icon className=\"ui-theme-toggle__sun\" name=\"sun\" />\n    <Icon className=\"ui-theme-toggle__moon\" name=\"moon\" />\n  </button>\n)",
+          "source": "export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>\n\nexport const ThemeToggle = ({\n  className,\n  type = 'button',\n  ...props\n}: ThemeToggleProps) => (\n  <button\n    className={composeClassName('ui-theme-toggle', className)}\n    data-slot=\"theme-toggle\"\n    type={type}\n    {...props}\n  >\n    <span className=\"ui-sr-only\">Toggle color theme</span>\n    <Icon data-slot=\"theme-toggle-sun\" className=\"ui-theme-toggle__sun\" name=\"sun\" />\n    <Icon data-slot=\"theme-toggle-moon\" className=\"ui-theme-toggle__moon\" name=\"moon\" />\n  </button>\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -34012,7 +34091,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/timeline.css'\n\nimport { composeClassName } from '@santi020k/lumen-core'\n\nexport type Props = HTMLAttributes<'ol'>\n\nconst { class: className, ...props } = Astro.props\n---\n\n<ol class={composeClassName('ui-timeline', className)} {...props}>\n  <slot />\n</ol>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/timeline.css'\n\nimport { composeClassName } from '@santi020k/lumen-core'\n\nexport type Props = HTMLAttributes<'ol'>\n\nconst { class: className, ...props } = Astro.props\n---\n\n<ol data-slot=\"timeline\" class={composeClassName('ui-timeline', className)} {...props}>\n  <slot />\n</ol>\n",
       "category": "Data display",
       "collections": [],
       "contract": null,
@@ -34036,11 +34115,12 @@
           "packageName": "@santi020k/lumen-astro",
           "props": [],
           "propsExtends": null,
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/timeline.css'\n\nimport { composeClassName } from '@santi020k/lumen-core'\n\nexport type Props = HTMLAttributes<'ol'>\n\nconst { class: className, ...props } = Astro.props\n---\n\n<ol class={composeClassName('ui-timeline', className)} {...props}>\n  <slot />\n</ol>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/timeline.css'\n\nimport { composeClassName } from '@santi020k/lumen-core'\n\nexport type Props = HTMLAttributes<'ol'>\n\nconst { class: className, ...props } = Astro.props\n---\n\n<ol data-slot=\"timeline\" class={composeClassName('ui-timeline', className)} {...props}>\n  <slot />\n</ol>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
+            "data-slot",
             "children",
             "class, className",
             "...native attributes"
@@ -34057,7 +34137,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Timeline: { baseClassName: 'ui-timeline', tagName: 'lumen-timeline' }",
+          "source": "lumenTimelineElementConfig = {\n  baseClassName: 'ui-timeline',\n  defaults: { 'data-slot': 'timeline' },\n  role: 'list',\n  tagName: 'lumen-timeline'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-timeline"
         },
@@ -34069,7 +34149,7 @@
           "packageName": "@santi020k/lumen-react",
           "props": [],
           "propsExtends": "ComponentPropsWithoutRef<'ol'>",
-          "source": "export type TimelineProps = ComponentPropsWithoutRef<'ol'>\n\nexport const Timeline = ({ className, ...props }: TimelineProps) => (\n  <ol className={composeClassName('ui-timeline', className)} {...props} />\n)",
+          "source": "export type TimelineProps = ComponentPropsWithoutRef<'ol'>\n\nexport const Timeline = ({ className, ...props }: TimelineProps) => (\n  <ol data-slot=\"timeline\" className={composeClassName('ui-timeline', className)} {...props} />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -35998,12 +36078,16 @@
         },
         "elements": {
           "attributes": [
+            "activation-offset",
+            "aria-label",
+            "data-ui-anchor",
+            "data-ui-anchor-offset",
             "items",
             "activationOffset",
             "class, className",
             "...native attributes"
           ],
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
@@ -36015,12 +36099,12 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "",
+          "source": "lumenAnchorElementConfig = {\n  baseClassName: 'ui-anchor',\n  defaults: {\n    'aria-label': 'On this page',\n    'activation-offset': '96',\n    'data-ui-anchor': '',\n    'data-ui-anchor-offset': '96'\n  },\n  tagName: 'lumen-anchor'\n} as const satisfies LumenElementConfig",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-anchor"
         },
         "react": {
-          "available": false,
+          "available": true,
           "behavior": {
             "mode": "adapter",
             "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
@@ -36029,16 +36113,27 @@
           "importStatement": "import { Anchor } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [],
-          "propsExtends": null,
-          "source": "",
+          "props": [
+            {
+              "name": "activationOffset",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "name": "items",
+              "optional": true,
+              "type": "AnchorLink[]"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithoutRef<'nav'>",
+          "source": "export interface AnchorProps extends ComponentPropsWithoutRef<'nav'> {\n  activationOffset?: number\n  items?: AnchorLink[]\n}\n\nexport const Anchor = ({\n  'aria-label': ariaLabel = 'On this page',\n  activationOffset = 96,\n  children,\n  className,\n  items = emptyAnchorLinks,\n  ...props\n}: AnchorProps) => {\n  const anchorRef = createAnchorRef()\n\n  return (\n    <nav\n      aria-label={ariaLabel}\n      className={composeClassName('ui-anchor', className)}\n      data-ui-anchor\n      data-ui-anchor-offset={Math.max(0, activationOffset)}\n      ref={anchorRef}\n      {...props}\n    >\n      {items.length > 0 && (\n        <ol>\n          {items.map((item, index) => (\n            <li key={item.href}>\n              <a\n                aria-current={index === 0 ? 'location' : undefined}\n                data-active={index === 0 ? 'true' : 'false'}\n                data-depth={item.depth}\n                href={item.href}\n              >\n                {item.index !== undefined && (\n                  <span className=\"ui-anchor__index\">{item.index}</span>\n                )}\n                <span className=\"ui-anchor__content\">\n                  <span className=\"ui-anchor__label\">{item.label}</span>\n                  {item.description && (\n                    <span className=\"ui-anchor__description\">{item.description}</span>\n                  )}\n                </span>\n              </a>\n            </li>\n          ))}\n        </ol>\n      )}\n      {children}\n    </nav>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": false,
-        "react": false
+        "elements": true,
+        "react": true
       },
       "guidance": null,
       "kebab": "anchor",
@@ -45899,7 +45994,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/world-map.css'\n\nimport {\n  findLumenWorldMapCountry,\n  LUMEN_WORLD_MAP_VIEW_BOX,\n  type LumenWorldMapCountryGeometry,\n  type LumenWorldMapMarker,\n  type LumenWorldMapVariant,\n  normalizeLumenWorldMapCountries,\n  normalizeLumenWorldMapHighlightedCountries,\n  normalizeLumenWorldMapMarkers,\n  projectLumenWorldMapCoordinate,\n  resolveLumenAstroProps,\n  resolveLumenWorldMapCountryLabel\n} from '@santi020k/lumen-core'\nimport { type LumenWorldMapZoomLabels, lumenWorldMapZoomLabels } from '@santi020k/lumen-core/world-map-zoom'\n\nimport Button from './Button.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  initialView?: 'world' | 'highlighted'\n  zoomable?: boolean\n  zoomLabels?: Partial<LumenWorldMapZoomLabels>\n  animated?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  countries: readonly LumenWorldMapCountryGeometry[]\n  description?: string\n  heading?: string\n  highlightedCountries?: readonly string[]\n  interactive?: boolean\n  label: string\n  labels?: Readonly<Record<string, string>>\n  listLabel?: string\n  markers?: readonly LumenWorldMapMarker[]\n  selectedCountry?: string\n  variant?: LumenWorldMapVariant\n}\n\nconst {\n  animated = true,\n  caption,\n  class: classProp = '',\n  className = '',\n  countries: inputCountries,\n  description,\n  heading,\n  highlightedCountries,\n  interactive = true,\n  label,\n  labels,\n  listLabel = 'Choose a country',\n  markers,\n  selectedCountry,\n  variant = 'dotted',\n  initialView = 'world',\n  zoomable = true,\n  zoomLabels,\n  ...rest\n} = Astro.props\n\nconst countries = normalizeLumenWorldMapCountries(inputCountries)\nconst highlightedIds = normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries)\nconst highlightedSet = new Set(highlightedIds)\nconst normalizedMarkers = normalizeLumenWorldMapMarkers(markers)\nconst selected = findLumenWorldMapCountry(countries, selectedCountry)\nconst zoomText = { ...lumenWorldMapZoomLabels, ...zoomLabels }\nconst instanceId = `ui-world-map-${crypto.randomUUID()}`\nconst neutralPatternId = `${instanceId}-dot-neutral`\nconst highlightPatternId = `${instanceId}-dot-highlight`\nconst { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map'], classProp, className)\n---\n\n<figure\n  class:list={classList}\n  data-animated={String(animated)}\n  data-interactive={String(interactive)}\n  data-ui-world-map\n  data-initial-view={initialView}\n  data-variant={variant}\n  id={instanceId}\n  {...passthrough}\n>\n  {\n    (heading || description) && (\n      <header class=\"ui-world-map__heading\">\n        {heading && <h3>{heading}</h3>}\n        {description && <p>{description}</p>}\n      </header>\n    )\n  }\n  {zoomable && (\n    <div class=\"ui-world-map__zoom-controls\">\n      <Button aria-label={zoomText.zoomOut} data-ui-world-map-zoom=\"out\" disabled size=\"icon\" variant=\"outline\">−</Button>\n      <output aria-label={zoomText.level} aria-live=\"polite\" data-ui-world-map-zoom-status>100%</output>\n      <Button aria-label={zoomText.zoomIn} data-ui-world-map-zoom=\"in\" disabled size=\"icon\" variant=\"outline\">+</Button>\n      <Button data-ui-world-map-zoom=\"fit\" disabled size=\"sm\" variant=\"outline\">{zoomText.fit}</Button>\n      <Button data-ui-world-map-zoom=\"reset\" disabled size=\"sm\" variant=\"outline\">{zoomText.reset}</Button>\n    </div>\n  )}\n  <div class=\"ui-world-map__frame\">\n    <div\n      aria-label={`${zoomText.viewport}: ${label}`}\n      class=\"ui-world-map__viewport\"\n      data-ui-world-map-viewport\n      role=\"region\"\n      tabindex={zoomable ? 0 : undefined}\n    >\n      <svg\n        aria-label={label}\n        class=\"ui-world-map__plot\"\n        role=\"img\"\n        viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}\n        xmlns=\"http://www.w3.org/2000/svg\"\n      >\n        {\n          variant === 'dotted' && (\n            <defs>\n              <pattern height=\"4\" id={neutralPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n                <circle class=\"ui-world-map__dot ui-world-map__dot--neutral\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n              </pattern>\n              <pattern height=\"4\" id={highlightPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n                <circle class=\"ui-world-map__dot ui-world-map__dot--highlight\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n              </pattern>\n            </defs>\n          )\n        }\n        <g aria-hidden=\"true\" class=\"ui-world-map__countries\">\n          {countries.map(country => {\n            const isHighlighted = highlightedSet.has(country.id)\n            const isSelected = selected?.id === country.id\n            const countryLabel = resolveLumenWorldMapCountryLabel(country, labels)\n\n            return (\n              <path\n                class:list={[\n                  'ui-world-map__country',\n                  isHighlighted && 'ui-world-map__country--highlighted',\n                  isSelected && 'ui-world-map__country--selected'\n                ]}\n                d={country.path}\n                data-label={countryLabel}\n                data-label-x={country.labelX}\n                data-label-y={country.labelY}\n                data-ui-world-map-country={country.id}\n                fill={\n                  variant === 'dotted' ?\n                    `url(#${isHighlighted ? highlightPatternId : neutralPatternId})` :\n                    undefined\n                }\n                fill-rule=\"evenodd\"\n              >\n                <title>{countryLabel}</title>\n              </path>\n            )\n          })}\n        </g>\n        {\n          normalizedMarkers.length > 0 && (\n            <g aria-hidden=\"true\" class=\"ui-world-map__markers\">\n              {normalizedMarkers.map(marker => {\n                const { x, y } = projectLumenWorldMapCoordinate(marker.longitude, marker.latitude)\n\n                return (\n                  <circle class=\"ui-world-map__marker\" cx={x} cy={y} r=\"4\">\n                    <title>{marker.label}</title>\n                  </circle>\n                )\n              })}\n            </g>\n          )\n        }\n        <path aria-hidden=\"true\" class=\"ui-world-map__selection\" d={selected?.path ?? ''} />\n      </svg>\n    </div>\n    <span class=\"ui-world-map__inspection\" data-ui-world-map-inspection hidden />\n  </div>\n  {\n    interactive && (\n      <label class=\"ui-world-map__select-label\">\n        <span>{listLabel}</span>\n        <select class=\"ui-select ui-world-map__select\" data-ui-world-map-select disabled>\n          <option value=\"\">{listLabel}</option>\n          {countries.map(country => (\n            <option selected={selected?.id === country.id} value={country.id}>\n              {resolveLumenWorldMapCountryLabel(country, labels)}\n            </option>\n          ))}\n        </select>\n      </label>\n    )\n  }\n  {\n    highlightedIds.length > 0 && (\n      <ul aria-label=\"Highlighted countries\" class=\"ui-world-map__highlights\" data-ui-world-map-highlights>\n        {highlightedIds.map(id => {\n          const country = findLumenWorldMapCountry(countries, id)\n\n          return country && <li>{resolveLumenWorldMapCountryLabel(country, labels)}</li>\n        })}\n      </ul>\n    )\n  }\n  {normalizedMarkers.length > 0 && (\n    <ul aria-label=\"Map markers\" class=\"ui-sr-only\">\n      {normalizedMarkers.map(marker => <li>{marker.label}</li>)}\n    </ul>\n  )}\n  {caption && <figcaption>{caption}</figcaption>}\n</figure>\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/world-map.css'\n\nimport {\n  findLumenWorldMapCountry,\n  LUMEN_WORLD_MAP_VIEW_BOX,\n  type LumenWorldMapCountryGeometry,\n  type LumenWorldMapMarker,\n  type LumenWorldMapVariant,\n  normalizeLumenWorldMapCountries,\n  normalizeLumenWorldMapHighlightedCountries,\n  normalizeLumenWorldMapMarkers,\n  projectLumenWorldMapCoordinate,\n  resolveLumenAstroProps,\n  resolveLumenWorldMapCountryLabel\n} from '@santi020k/lumen-core'\nimport { type LumenWorldMapZoomLabels, lumenWorldMapZoomLabels } from '@santi020k/lumen-core/world-map-zoom'\n\nimport Button from './Button.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  initialView?: 'world' | 'highlighted'\n  zoomable?: boolean\n  zoomLabels?: Partial<LumenWorldMapZoomLabels>\n  animated?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  countries: readonly LumenWorldMapCountryGeometry[]\n  description?: string\n  heading?: string\n  highlightedCountries?: readonly string[]\n  interactive?: boolean\n  label: string\n  labels?: Readonly<Record<string, string>>\n  listLabel?: string\n  markers?: readonly LumenWorldMapMarker[]\n  selectedCountry?: string\n  variant?: LumenWorldMapVariant\n}\n\nconst {\n  animated = true,\n  caption,\n  class: classProp = '',\n  className = '',\n  countries: inputCountries,\n  description,\n  heading,\n  highlightedCountries,\n  interactive = true,\n  label,\n  labels,\n  listLabel = 'Choose a country',\n  markers,\n  selectedCountry,\n  variant = 'dotted',\n  initialView = 'world',\n  zoomable = true,\n  zoomLabels,\n  ...rest\n} = Astro.props\n\nconst countries = normalizeLumenWorldMapCountries(inputCountries)\nconst highlightedIds = normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries)\nconst highlightedSet = new Set(highlightedIds)\nconst normalizedMarkers = normalizeLumenWorldMapMarkers(markers)\nconst selected = findLumenWorldMapCountry(countries, selectedCountry)\nconst zoomText = { ...lumenWorldMapZoomLabels, ...zoomLabels }\nconst instanceId = `ui-world-map-${crypto.randomUUID()}`\nconst neutralPatternId = `${instanceId}-dot-neutral`\nconst highlightPatternId = `${instanceId}-dot-highlight`\nconst { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map'], classProp, className)\n---\n\n<figure\n  class:list={classList}\n  data-animated={String(animated)}\n  data-interactive={String(interactive)}\n  data-slot=\"world-map\"\n  data-ui-world-map\n  data-initial-view={initialView}\n  data-variant={variant}\n  id={instanceId}\n  {...passthrough}\n>\n  {\n    (heading || description) && (\n      <header class=\"ui-world-map__heading\">\n        {heading && <h3>{heading}</h3>}\n        {description && <p>{description}</p>}\n      </header>\n    )\n  }\n  {zoomable && (\n    <div data-slot=\"world-map-zoom-controls\" class=\"ui-world-map__zoom-controls\">\n      <Button aria-label={zoomText.zoomOut} data-ui-world-map-zoom=\"out\" disabled size=\"icon\" variant=\"outline\">−</Button>\n      <output aria-label={zoomText.level} aria-live=\"polite\" data-ui-world-map-zoom-status>100%</output>\n      <Button aria-label={zoomText.zoomIn} data-ui-world-map-zoom=\"in\" disabled size=\"icon\" variant=\"outline\">+</Button>\n      <Button data-ui-world-map-zoom=\"fit\" disabled size=\"sm\" variant=\"outline\">{zoomText.fit}</Button>\n      <Button data-ui-world-map-zoom=\"reset\" disabled size=\"sm\" variant=\"outline\">{zoomText.reset}</Button>\n    </div>\n  )}\n  <div data-slot=\"world-map-frame\" class=\"ui-world-map__frame\">\n    <div\n      aria-label={`${zoomText.viewport}: ${label}`}\n      class=\"ui-world-map__viewport\"\n      data-ui-world-map-viewport\n      role=\"region\"\n      tabindex={zoomable ? 0 : undefined}\n    >\n      <svg\n        aria-label={label}\n        class=\"ui-world-map__plot\"\n        role=\"img\"\n        viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}\n        xmlns=\"http://www.w3.org/2000/svg\"\n      >\n        {\n          variant === 'dotted' && (\n            <defs>\n              <pattern height=\"4\" id={neutralPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n                <circle class=\"ui-world-map__dot ui-world-map__dot--neutral\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n              </pattern>\n              <pattern height=\"4\" id={highlightPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n                <circle class=\"ui-world-map__dot ui-world-map__dot--highlight\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n              </pattern>\n            </defs>\n          )\n        }\n        <g aria-hidden=\"true\" class=\"ui-world-map__countries\">\n          {countries.map(country => {\n            const isHighlighted = highlightedSet.has(country.id)\n            const isSelected = selected?.id === country.id\n            const countryLabel = resolveLumenWorldMapCountryLabel(country, labels)\n\n            return (\n              <path\n                class:list={[\n                  'ui-world-map__country',\n                  isHighlighted && 'ui-world-map__country--highlighted',\n                  isSelected && 'ui-world-map__country--selected'\n                ]}\n                d={country.path}\n                data-label={countryLabel}\n                data-label-x={country.labelX}\n                data-label-y={country.labelY}\n                data-ui-world-map-country={country.id}\n                fill={\n                  variant === 'dotted' ?\n                    `url(#${isHighlighted ? highlightPatternId : neutralPatternId})` :\n                    undefined\n                }\n                fill-rule=\"evenodd\"\n              >\n                <title>{countryLabel}</title>\n              </path>\n            )\n          })}\n        </g>\n        {\n          normalizedMarkers.length > 0 && (\n            <g aria-hidden=\"true\" class=\"ui-world-map__markers\">\n              {normalizedMarkers.map(marker => {\n                const { x, y } = projectLumenWorldMapCoordinate(marker.longitude, marker.latitude)\n\n                return (\n                  <circle class=\"ui-world-map__marker\" cx={x} cy={y} r=\"4\">\n                    <title>{marker.label}</title>\n                  </circle>\n                )\n              })}\n            </g>\n          )\n        }\n        <path aria-hidden=\"true\" class=\"ui-world-map__selection\" d={selected?.path ?? ''} />\n      </svg>\n    </div>\n    <span class=\"ui-world-map__inspection\" data-ui-world-map-inspection hidden />\n  </div>\n  {\n    interactive && (\n      <label class=\"ui-world-map__select-label\">\n        <span>{listLabel}</span>\n        <select class=\"ui-select ui-world-map__select\" data-ui-world-map-select disabled>\n          <option value=\"\">{listLabel}</option>\n          {countries.map(country => (\n            <option selected={selected?.id === country.id} value={country.id}>\n              {resolveLumenWorldMapCountryLabel(country, labels)}\n            </option>\n          ))}\n        </select>\n      </label>\n    )\n  }\n  {\n    highlightedIds.length > 0 && (\n      <ul aria-label=\"Highlighted countries\" class=\"ui-world-map__highlights\" data-ui-world-map-highlights>\n        {highlightedIds.map(id => {\n          const country = findLumenWorldMapCountry(countries, id)\n\n          return country && <li>{resolveLumenWorldMapCountryLabel(country, labels)}</li>\n        })}\n      </ul>\n    )\n  }\n  {normalizedMarkers.length > 0 && (\n    <ul aria-label=\"Map markers\" class=\"ui-sr-only\">\n      {normalizedMarkers.map(marker => <li>{marker.label}</li>)}\n    </ul>\n  )}\n  {caption && <figcaption>{caption}</figcaption>}\n</figure>\n",
       "category": "Data display",
       "collections": [],
       "contract": null,
@@ -46024,7 +46119,7 @@
             }
           ],
           "propsExtends": "HTMLAttributes<'figure'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/world-map.css'\n\nimport {\n  findLumenWorldMapCountry,\n  LUMEN_WORLD_MAP_VIEW_BOX,\n  type LumenWorldMapCountryGeometry,\n  type LumenWorldMapMarker,\n  type LumenWorldMapVariant,\n  normalizeLumenWorldMapCountries,\n  normalizeLumenWorldMapHighlightedCountries,\n  normalizeLumenWorldMapMarkers,\n  projectLumenWorldMapCoordinate,\n  resolveLumenAstroProps,\n  resolveLumenWorldMapCountryLabel\n} from '@santi020k/lumen-core'\nimport { type LumenWorldMapZoomLabels, lumenWorldMapZoomLabels } from '@santi020k/lumen-core/world-map-zoom'\n\nimport Button from './Button.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  initialView?: 'world' | 'highlighted'\n  zoomable?: boolean\n  zoomLabels?: Partial<LumenWorldMapZoomLabels>\n  animated?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  countries: readonly LumenWorldMapCountryGeometry[]\n  description?: string\n  heading?: string\n  highlightedCountries?: readonly string[]\n  interactive?: boolean\n  label: string\n  labels?: Readonly<Record<string, string>>\n  listLabel?: string\n  markers?: readonly LumenWorldMapMarker[]\n  selectedCountry?: string\n  variant?: LumenWorldMapVariant\n}\n\nconst {\n  animated = true,\n  caption,\n  class: classProp = '',\n  className = '',\n  countries: inputCountries,\n  description,\n  heading,\n  highlightedCountries,\n  interactive = true,\n  label,\n  labels,\n  listLabel = 'Choose a country',\n  markers,\n  selectedCountry,\n  variant = 'dotted',\n  initialView = 'world',\n  zoomable = true,\n  zoomLabels,\n  ...rest\n} = Astro.props\n\nconst countries = normalizeLumenWorldMapCountries(inputCountries)\nconst highlightedIds = normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries)\nconst highlightedSet = new Set(highlightedIds)\nconst normalizedMarkers = normalizeLumenWorldMapMarkers(markers)\nconst selected = findLumenWorldMapCountry(countries, selectedCountry)\nconst zoomText = { ...lumenWorldMapZoomLabels, ...zoomLabels }\nconst instanceId = `ui-world-map-${crypto.randomUUID()}`\nconst neutralPatternId = `${instanceId}-dot-neutral`\nconst highlightPatternId = `${instanceId}-dot-highlight`\nconst { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map'], classProp, className)\n---\n\n<figure\n  class:list={classList}\n  data-animated={String(animated)}\n  data-interactive={String(interactive)}\n  data-ui-world-map\n  data-initial-view={initialView}\n  data-variant={variant}\n  id={instanceId}\n  {...passthrough}\n>\n  {\n    (heading || description) && (\n      <header class=\"ui-world-map__heading\">\n        {heading && <h3>{heading}</h3>}\n        {description && <p>{description}</p>}\n      </header>\n    )\n  }\n  {zoomable && (\n    <div class=\"ui-world-map__zoom-controls\">\n      <Button aria-label={zoomText.zoomOut} data-ui-world-map-zoom=\"out\" disabled size=\"icon\" variant=\"outline\">−</Button>\n      <output aria-label={zoomText.level} aria-live=\"polite\" data-ui-world-map-zoom-status>100%</output>\n      <Button aria-label={zoomText.zoomIn} data-ui-world-map-zoom=\"in\" disabled size=\"icon\" variant=\"outline\">+</Button>\n      <Button data-ui-world-map-zoom=\"fit\" disabled size=\"sm\" variant=\"outline\">{zoomText.fit}</Button>\n      <Button data-ui-world-map-zoom=\"reset\" disabled size=\"sm\" variant=\"outline\">{zoomText.reset}</Button>\n    </div>\n  )}\n  <div class=\"ui-world-map__frame\">\n    <div\n      aria-label={`${zoomText.viewport}: ${label}`}\n      class=\"ui-world-map__viewport\"\n      data-ui-world-map-viewport\n      role=\"region\"\n      tabindex={zoomable ? 0 : undefined}\n    >\n      <svg\n        aria-label={label}\n        class=\"ui-world-map__plot\"\n        role=\"img\"\n        viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}\n        xmlns=\"http://www.w3.org/2000/svg\"\n      >\n        {\n          variant === 'dotted' && (\n            <defs>\n              <pattern height=\"4\" id={neutralPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n                <circle class=\"ui-world-map__dot ui-world-map__dot--neutral\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n              </pattern>\n              <pattern height=\"4\" id={highlightPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n                <circle class=\"ui-world-map__dot ui-world-map__dot--highlight\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n              </pattern>\n            </defs>\n          )\n        }\n        <g aria-hidden=\"true\" class=\"ui-world-map__countries\">\n          {countries.map(country => {\n            const isHighlighted = highlightedSet.has(country.id)\n            const isSelected = selected?.id === country.id\n            const countryLabel = resolveLumenWorldMapCountryLabel(country, labels)\n\n            return (\n              <path\n                class:list={[\n                  'ui-world-map__country',\n                  isHighlighted && 'ui-world-map__country--highlighted',\n                  isSelected && 'ui-world-map__country--selected'\n                ]}\n                d={country.path}\n                data-label={countryLabel}\n                data-label-x={country.labelX}\n                data-label-y={country.labelY}\n                data-ui-world-map-country={country.id}\n                fill={\n                  variant === 'dotted' ?\n                    `url(#${isHighlighted ? highlightPatternId : neutralPatternId})` :\n                    undefined\n                }\n                fill-rule=\"evenodd\"\n              >\n                <title>{countryLabel}</title>\n              </path>\n            )\n          })}\n        </g>\n        {\n          normalizedMarkers.length > 0 && (\n            <g aria-hidden=\"true\" class=\"ui-world-map__markers\">\n              {normalizedMarkers.map(marker => {\n                const { x, y } = projectLumenWorldMapCoordinate(marker.longitude, marker.latitude)\n\n                return (\n                  <circle class=\"ui-world-map__marker\" cx={x} cy={y} r=\"4\">\n                    <title>{marker.label}</title>\n                  </circle>\n                )\n              })}\n            </g>\n          )\n        }\n        <path aria-hidden=\"true\" class=\"ui-world-map__selection\" d={selected?.path ?? ''} />\n      </svg>\n    </div>\n    <span class=\"ui-world-map__inspection\" data-ui-world-map-inspection hidden />\n  </div>\n  {\n    interactive && (\n      <label class=\"ui-world-map__select-label\">\n        <span>{listLabel}</span>\n        <select class=\"ui-select ui-world-map__select\" data-ui-world-map-select disabled>\n          <option value=\"\">{listLabel}</option>\n          {countries.map(country => (\n            <option selected={selected?.id === country.id} value={country.id}>\n              {resolveLumenWorldMapCountryLabel(country, labels)}\n            </option>\n          ))}\n        </select>\n      </label>\n    )\n  }\n  {\n    highlightedIds.length > 0 && (\n      <ul aria-label=\"Highlighted countries\" class=\"ui-world-map__highlights\" data-ui-world-map-highlights>\n        {highlightedIds.map(id => {\n          const country = findLumenWorldMapCountry(countries, id)\n\n          return country && <li>{resolveLumenWorldMapCountryLabel(country, labels)}</li>\n        })}\n      </ul>\n    )\n  }\n  {normalizedMarkers.length > 0 && (\n    <ul aria-label=\"Map markers\" class=\"ui-sr-only\">\n      {normalizedMarkers.map(marker => <li>{marker.label}</li>)}\n    </ul>\n  )}\n  {caption && <figcaption>{caption}</figcaption>}\n</figure>\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/world-map.css'\n\nimport {\n  findLumenWorldMapCountry,\n  LUMEN_WORLD_MAP_VIEW_BOX,\n  type LumenWorldMapCountryGeometry,\n  type LumenWorldMapMarker,\n  type LumenWorldMapVariant,\n  normalizeLumenWorldMapCountries,\n  normalizeLumenWorldMapHighlightedCountries,\n  normalizeLumenWorldMapMarkers,\n  projectLumenWorldMapCoordinate,\n  resolveLumenAstroProps,\n  resolveLumenWorldMapCountryLabel\n} from '@santi020k/lumen-core'\nimport { type LumenWorldMapZoomLabels, lumenWorldMapZoomLabels } from '@santi020k/lumen-core/world-map-zoom'\n\nimport Button from './Button.astro'\n\ninterface Props extends HTMLAttributes<'figure'> {\n  initialView?: 'world' | 'highlighted'\n  zoomable?: boolean\n  zoomLabels?: Partial<LumenWorldMapZoomLabels>\n  animated?: boolean\n  caption?: string\n  class?: string | null\n  className?: string\n  countries: readonly LumenWorldMapCountryGeometry[]\n  description?: string\n  heading?: string\n  highlightedCountries?: readonly string[]\n  interactive?: boolean\n  label: string\n  labels?: Readonly<Record<string, string>>\n  listLabel?: string\n  markers?: readonly LumenWorldMapMarker[]\n  selectedCountry?: string\n  variant?: LumenWorldMapVariant\n}\n\nconst {\n  animated = true,\n  caption,\n  class: classProp = '',\n  className = '',\n  countries: inputCountries,\n  description,\n  heading,\n  highlightedCountries,\n  interactive = true,\n  label,\n  labels,\n  listLabel = 'Choose a country',\n  markers,\n  selectedCountry,\n  variant = 'dotted',\n  initialView = 'world',\n  zoomable = true,\n  zoomLabels,\n  ...rest\n} = Astro.props\n\nconst countries = normalizeLumenWorldMapCountries(inputCountries)\nconst highlightedIds = normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries)\nconst highlightedSet = new Set(highlightedIds)\nconst normalizedMarkers = normalizeLumenWorldMapMarkers(markers)\nconst selected = findLumenWorldMapCountry(countries, selectedCountry)\nconst zoomText = { ...lumenWorldMapZoomLabels, ...zoomLabels }\nconst instanceId = `ui-world-map-${crypto.randomUUID()}`\nconst neutralPatternId = `${instanceId}-dot-neutral`\nconst highlightPatternId = `${instanceId}-dot-highlight`\nconst { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX\nconst { classList, passthrough } = resolveLumenAstroProps(rest, ['ui-world-map'], classProp, className)\n---\n\n<figure\n  class:list={classList}\n  data-animated={String(animated)}\n  data-interactive={String(interactive)}\n  data-slot=\"world-map\"\n  data-ui-world-map\n  data-initial-view={initialView}\n  data-variant={variant}\n  id={instanceId}\n  {...passthrough}\n>\n  {\n    (heading || description) && (\n      <header class=\"ui-world-map__heading\">\n        {heading && <h3>{heading}</h3>}\n        {description && <p>{description}</p>}\n      </header>\n    )\n  }\n  {zoomable && (\n    <div data-slot=\"world-map-zoom-controls\" class=\"ui-world-map__zoom-controls\">\n      <Button aria-label={zoomText.zoomOut} data-ui-world-map-zoom=\"out\" disabled size=\"icon\" variant=\"outline\">−</Button>\n      <output aria-label={zoomText.level} aria-live=\"polite\" data-ui-world-map-zoom-status>100%</output>\n      <Button aria-label={zoomText.zoomIn} data-ui-world-map-zoom=\"in\" disabled size=\"icon\" variant=\"outline\">+</Button>\n      <Button data-ui-world-map-zoom=\"fit\" disabled size=\"sm\" variant=\"outline\">{zoomText.fit}</Button>\n      <Button data-ui-world-map-zoom=\"reset\" disabled size=\"sm\" variant=\"outline\">{zoomText.reset}</Button>\n    </div>\n  )}\n  <div data-slot=\"world-map-frame\" class=\"ui-world-map__frame\">\n    <div\n      aria-label={`${zoomText.viewport}: ${label}`}\n      class=\"ui-world-map__viewport\"\n      data-ui-world-map-viewport\n      role=\"region\"\n      tabindex={zoomable ? 0 : undefined}\n    >\n      <svg\n        aria-label={label}\n        class=\"ui-world-map__plot\"\n        role=\"img\"\n        viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}\n        xmlns=\"http://www.w3.org/2000/svg\"\n      >\n        {\n          variant === 'dotted' && (\n            <defs>\n              <pattern height=\"4\" id={neutralPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n                <circle class=\"ui-world-map__dot ui-world-map__dot--neutral\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n              </pattern>\n              <pattern height=\"4\" id={highlightPatternId} patternUnits=\"userSpaceOnUse\" width=\"4\">\n                <circle class=\"ui-world-map__dot ui-world-map__dot--highlight\" cx=\"2\" cy=\"2\" r=\"1.1\" />\n              </pattern>\n            </defs>\n          )\n        }\n        <g aria-hidden=\"true\" class=\"ui-world-map__countries\">\n          {countries.map(country => {\n            const isHighlighted = highlightedSet.has(country.id)\n            const isSelected = selected?.id === country.id\n            const countryLabel = resolveLumenWorldMapCountryLabel(country, labels)\n\n            return (\n              <path\n                class:list={[\n                  'ui-world-map__country',\n                  isHighlighted && 'ui-world-map__country--highlighted',\n                  isSelected && 'ui-world-map__country--selected'\n                ]}\n                d={country.path}\n                data-label={countryLabel}\n                data-label-x={country.labelX}\n                data-label-y={country.labelY}\n                data-ui-world-map-country={country.id}\n                fill={\n                  variant === 'dotted' ?\n                    `url(#${isHighlighted ? highlightPatternId : neutralPatternId})` :\n                    undefined\n                }\n                fill-rule=\"evenodd\"\n              >\n                <title>{countryLabel}</title>\n              </path>\n            )\n          })}\n        </g>\n        {\n          normalizedMarkers.length > 0 && (\n            <g aria-hidden=\"true\" class=\"ui-world-map__markers\">\n              {normalizedMarkers.map(marker => {\n                const { x, y } = projectLumenWorldMapCoordinate(marker.longitude, marker.latitude)\n\n                return (\n                  <circle class=\"ui-world-map__marker\" cx={x} cy={y} r=\"4\">\n                    <title>{marker.label}</title>\n                  </circle>\n                )\n              })}\n            </g>\n          )\n        }\n        <path aria-hidden=\"true\" class=\"ui-world-map__selection\" d={selected?.path ?? ''} />\n      </svg>\n    </div>\n    <span class=\"ui-world-map__inspection\" data-ui-world-map-inspection hidden />\n  </div>\n  {\n    interactive && (\n      <label class=\"ui-world-map__select-label\">\n        <span>{listLabel}</span>\n        <select class=\"ui-select ui-world-map__select\" data-ui-world-map-select disabled>\n          <option value=\"\">{listLabel}</option>\n          {countries.map(country => (\n            <option selected={selected?.id === country.id} value={country.id}>\n              {resolveLumenWorldMapCountryLabel(country, labels)}\n            </option>\n          ))}\n        </select>\n      </label>\n    )\n  }\n  {\n    highlightedIds.length > 0 && (\n      <ul aria-label=\"Highlighted countries\" class=\"ui-world-map__highlights\" data-ui-world-map-highlights>\n        {highlightedIds.map(id => {\n          const country = findLumenWorldMapCountry(countries, id)\n\n          return country && <li>{resolveLumenWorldMapCountryLabel(country, labels)}</li>\n        })}\n      </ul>\n    )\n  }\n  {normalizedMarkers.length > 0 && (\n    <ul aria-label=\"Map markers\" class=\"ui-sr-only\">\n      {normalizedMarkers.map(marker => <li>{marker.label}</li>)}\n    </ul>\n  )}\n  {caption && <figcaption>{caption}</figcaption>}\n</figure>\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
@@ -46177,7 +46272,7 @@
             }
           ],
           "propsExtends": "Omit<ComponentPropsWithoutRef<'figure'>, 'label'>",
-          "source": "export interface WorldMapProps extends Omit<ComponentPropsWithoutRef<'figure'>, 'label'> {\n  initialView?: 'world' | 'highlighted'\n  zoomable?: boolean\n  zoomLabels?: Partial<LumenWorldMapZoomLabels>\n  animated?: boolean\n  caption?: string\n  countries: readonly LumenWorldMapCountryGeometry[]\n  defaultSelectedCountry?: string\n  description?: string\n  heading?: string\n  highlightedCountries?: readonly string[]\n  interactive?: boolean\n  label: string\n  labels?: Readonly<Record<string, string>>\n  listLabel?: string\n  markers?: readonly LumenWorldMapMarker[]\n  onCountrySelect?: (detail: LumenWorldMapSelectDetail) => void\n  onSelectedCountryChange?: (countryId: string) => void\n  selectedCountry?: string\n  variant?: LumenWorldMapVariant\n}\n\nexport const WorldMap = ({\n  animated = true,\n  caption,\n  className,\n  countries: inputCountries,\n  defaultSelectedCountry,\n  description,\n  heading,\n  highlightedCountries,\n  interactive = true,\n  label,\n  labels,\n  listLabel = 'Choose a country',\n  markers,\n  onCountrySelect,\n  onSelectedCountryChange,\n  selectedCountry,\n  variant = 'dotted',\n  initialView,\n  zoomable: zoomEnabled,\n  zoomLabels,\n  ...props\n}: WorldMapProps) => {\n  const zoomable = zoomEnabled !== false\n  const rootRef = useRef<HTMLElement>(null)\n  const zoomText = { ...lumenWorldMapZoomLabels, ...zoomLabels }\n\n  useEffect(() => {\n    const root = rootRef.current\n    const abort = new AbortController()\n\n    if (root) initLumenWorldMapZoom(root, abort.signal)\n\n    return () => {\n      abort.abort()\n    }\n  }, [zoomable, initialView])\n\n  const countries = useMemo(() => normalizeLumenWorldMapCountries(inputCountries), [inputCountries])\n  const instanceId = useId().replaceAll(':', '')\n  const neutralPatternId = `${instanceId}-dot-neutral`\n  const highlightPatternId = `${instanceId}-dot-highlight`\n  const [internalSelectedId, setInternalSelectedId] = useState(defaultSelectedCountry)\n  const [hoveredId, setHoveredId] = useState<string | undefined>(undefined)\n  const selectedId = findLumenWorldMapCountry(countries, selectedCountry ?? internalSelectedId)?.id\n\n  const highlightedIds = useMemo(\n    () => normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries),\n    [highlightedCountries, countries]\n  )\n\n  const highlightedSet = useMemo(() => new Set(highlightedIds), [highlightedIds])\n\n  useEffect(() => {\n    const button = rootRef.current?.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom=\"fit\"]')\n\n    if (!button) return\n\n    button.disabled = highlightedIds.length === 0\n\n    button.classList.toggle('ui-button--disabled', button.disabled)\n  }, [highlightedIds, zoomable])\n\n  const normalizedMarkers = useMemo(() => normalizeLumenWorldMapMarkers(markers), [markers])\n  const activeId = hoveredId ?? selectedId\n  const activeCountry = findLumenWorldMapCountry(countries, activeId)\n  const { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX\n\n  const selectCountry = (countryId: string): void => {\n    const country = findLumenWorldMapCountry(countries, countryId)\n\n    if (isCurrentCountry(country, selectedId)) return\n\n    if (selectedCountry === undefined) setInternalSelectedId(country?.id)\n\n    onSelectedCountryChange?.(country?.id ?? '')\n\n    if (country) onCountrySelect?.(createLumenWorldMapSelectDetail(country, highlightedSet, labels))\n  }\n\n  return (\n    <figure\n      {...props}\n      ref={rootRef}\n      className={composeClassName('ui-world-map', className)}\n      data-initial-view={initialView}\n      data-animated={animated}\n      data-interactive={interactive}\n      data-variant={variant}\n    >\n      <MapHeading description={description} heading={heading} />\n      <ZoomControls enabled={zoomable} labels={zoomText} />\n      <div className=\"ui-world-map__frame\">\n        <MapViewport label={`${zoomText.viewport}: ${label}`} zoomable={zoomable}>\n          <svg\n            aria-label={label}\n            className=\"ui-world-map__plot\"\n            role=\"img\"\n            viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}\n          >\n            {variant === 'dotted' && (\n              <DotPatterns highlightPatternId={highlightPatternId} neutralPatternId={neutralPatternId} />\n            )}\n            <g aria-hidden=\"true\" className=\"ui-world-map__countries\">\n              {countries.map(country => (\n                <CountryPath\n                  key={country.id}\n                  country={country}\n                  highlightPatternId={highlightPatternId}\n                  interactive={interactive}\n                  isHighlighted={highlightedSet.has(country.id)}\n                  isSelected={selectedId === country.id}\n                  label={resolveLumenWorldMapCountryLabel(country, labels)}\n                  neutralPatternId={neutralPatternId}\n                  onHoverChange={setHoveredId}\n                  onSelect={selectCountry}\n                  variant={variant}\n                />\n              ))}\n            </g>\n            <MarkerLayer markers={normalizedMarkers} />\n\n            <SelectionOutline country={findLumenWorldMapCountry(countries, selectedId)} />\n          </svg>\n        </MapViewport>\n        <Inspection country={activeCountry} labels={labels} />\n      </div>\n      {interactive && (\n        <SelectControl\n          countries={countries}\n          labelOverrides={labels}\n          listLabel={listLabel}\n          onSelect={selectCountry}\n          selectedId={selectedId}\n        />\n      )}\n      <HighlightedList countries={countries} highlightedIds={highlightedIds} labelOverrides={labels} />\n      <MarkerList markers={normalizedMarkers} />\n      <MapCaption caption={caption} />\n    </figure>\n  )\n}",
+          "source": "export interface WorldMapProps extends Omit<ComponentPropsWithoutRef<'figure'>, 'label'> {\n  initialView?: 'world' | 'highlighted'\n  zoomable?: boolean\n  zoomLabels?: Partial<LumenWorldMapZoomLabels>\n  animated?: boolean\n  caption?: string\n  countries: readonly LumenWorldMapCountryGeometry[]\n  defaultSelectedCountry?: string\n  description?: string\n  heading?: string\n  highlightedCountries?: readonly string[]\n  interactive?: boolean\n  label: string\n  labels?: Readonly<Record<string, string>>\n  listLabel?: string\n  markers?: readonly LumenWorldMapMarker[]\n  onCountrySelect?: (detail: LumenWorldMapSelectDetail) => void\n  onSelectedCountryChange?: (countryId: string) => void\n  selectedCountry?: string\n  variant?: LumenWorldMapVariant\n}\n\nexport const WorldMap = ({\n  animated = true,\n  caption,\n  className,\n  countries: inputCountries,\n  defaultSelectedCountry,\n  description,\n  heading,\n  highlightedCountries,\n  interactive = true,\n  label,\n  labels,\n  listLabel = 'Choose a country',\n  markers,\n  onCountrySelect,\n  onSelectedCountryChange,\n  selectedCountry,\n  variant = 'dotted',\n  initialView,\n  zoomable: zoomEnabled,\n  zoomLabels,\n  ...props\n}: WorldMapProps) => {\n  const zoomable = zoomEnabled !== false\n  const rootRef = useRef<HTMLElement>(null)\n  const zoomText = { ...lumenWorldMapZoomLabels, ...zoomLabels }\n\n  useEffect(() => {\n    const root = rootRef.current\n    const abort = new AbortController()\n\n    if (root) initLumenWorldMapZoom(root, abort.signal)\n\n    return () => {\n      abort.abort()\n    }\n  }, [zoomable, initialView])\n\n  const countries = useMemo(() => normalizeLumenWorldMapCountries(inputCountries), [inputCountries])\n  const instanceId = useId().replaceAll(':', '')\n  const neutralPatternId = `${instanceId}-dot-neutral`\n  const highlightPatternId = `${instanceId}-dot-highlight`\n  const [internalSelectedId, setInternalSelectedId] = useState(defaultSelectedCountry)\n  const [hoveredId, setHoveredId] = useState<string | undefined>(undefined)\n  const selectedId = findLumenWorldMapCountry(countries, selectedCountry ?? internalSelectedId)?.id\n\n  const highlightedIds = useMemo(\n    () => normalizeLumenWorldMapHighlightedCountries(highlightedCountries, countries),\n    [highlightedCountries, countries]\n  )\n\n  const highlightedSet = useMemo(() => new Set(highlightedIds), [highlightedIds])\n\n  useEffect(() => {\n    const button = rootRef.current?.querySelector<HTMLButtonElement>('[data-ui-world-map-zoom=\"fit\"]')\n\n    if (!button) return\n\n    button.disabled = highlightedIds.length === 0\n\n    button.classList.toggle('ui-button--disabled', button.disabled)\n  }, [highlightedIds, zoomable])\n\n  const normalizedMarkers = useMemo(() => normalizeLumenWorldMapMarkers(markers), [markers])\n  const activeId = hoveredId ?? selectedId\n  const activeCountry = findLumenWorldMapCountry(countries, activeId)\n  const { height: viewBoxHeight, width: viewBoxWidth } = LUMEN_WORLD_MAP_VIEW_BOX\n\n  const selectCountry = (countryId: string): void => {\n    const country = findLumenWorldMapCountry(countries, countryId)\n\n    if (isCurrentCountry(country, selectedId)) return\n\n    if (selectedCountry === undefined) setInternalSelectedId(country?.id)\n\n    onSelectedCountryChange?.(country?.id ?? '')\n\n    if (country) onCountrySelect?.(createLumenWorldMapSelectDetail(country, highlightedSet, labels))\n  }\n\n  return (\n    <figure\n      {...props}\n      ref={rootRef}\n      className={composeClassName('ui-world-map', className)}\n      data-slot=\"world-map\"\n      data-initial-view={initialView}\n      data-animated={animated}\n      data-interactive={interactive}\n      data-variant={variant}\n    >\n      <MapHeading description={description} heading={heading} />\n      <ZoomControls enabled={zoomable} labels={zoomText} />\n      <div data-slot=\"world-map-frame\" className=\"ui-world-map__frame\">\n        <MapViewport label={`${zoomText.viewport}: ${label}`} zoomable={zoomable}>\n          <svg\n            aria-label={label}\n            className=\"ui-world-map__plot\"\n            role=\"img\"\n            viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}\n          >\n            {variant === 'dotted' && (\n              <DotPatterns highlightPatternId={highlightPatternId} neutralPatternId={neutralPatternId} />\n            )}\n            <g aria-hidden=\"true\" className=\"ui-world-map__countries\">\n              {countries.map(country => (\n                <CountryPath\n                  key={country.id}\n                  country={country}\n                  highlightPatternId={highlightPatternId}\n                  interactive={interactive}\n                  isHighlighted={highlightedSet.has(country.id)}\n                  isSelected={selectedId === country.id}\n                  label={resolveLumenWorldMapCountryLabel(country, labels)}\n                  neutralPatternId={neutralPatternId}\n                  onHoverChange={setHoveredId}\n                  onSelect={selectCountry}\n                  variant={variant}\n                />\n              ))}\n            </g>\n            <MarkerLayer markers={normalizedMarkers} />\n\n            <SelectionOutline country={findLumenWorldMapCountry(countries, selectedId)} />\n          </svg>\n        </MapViewport>\n        <Inspection country={activeCountry} labels={labels} />\n      </div>\n      {interactive && (\n        <SelectControl\n          countries={countries}\n          labelOverrides={labels}\n          listLabel={listLabel}\n          onSelect={selectCountry}\n          selectedId={selectedId}\n        />\n      )}\n      <HighlightedList countries={countries} highlightedIds={highlightedIds} labelOverrides={labels} />\n      <MarkerList markers={normalizedMarkers} />\n      <MapCaption caption={caption} />\n    </figure>\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -46324,7 +46419,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <picture>\n      <source media=\"(prefers-color-scheme: dark)\" srcset=\"./docs/assets/readme/hero-dark.svg\">\n      <img src=\"./docs/assets/readme/hero-light.svg\" alt=\"Lumen UI — A shared language. Every interface.\" width=\"1200\" height=\"340\">\n    </picture>\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  <strong>Accessible primitives. Native authoring. Shared foundations.</strong><br>\n  An open-source UI system for Astro, React, Web Components, React Native, SwiftUI, and Jetpack Compose.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a> ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a> ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Playgrounds</a> ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a> ·\n  <a href=\"https://lumen.santi020k.com/support\">Support</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/ci.yml\"><img alt=\"CI status on main\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&amp;style=flat-square&amp;label=CI\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL status\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"Published Astro package version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&amp;label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-036b8c?style=flat-square\"></a>\n</p>\n\nLumen gives your product a consistent visual language while preserving each framework's native\nway of building. Compose accessible controls, forms, charts, and complete product layouts from\nshared tokens and explicit component contracts.\n\n**Explore:** [Quick start](#web-quick-start) · [Native apps](#native-playgrounds) · [Templates](#dashboards-and-templates) · [AI and Figma](#ai-and-design-workflows) · [Packages](#packages) · [Repository apps](#repository-apps) · [Contributing](#contributing)\n\n> **Lumen 4:** See the [upcoming v4.3 Tailwind complement](docs/lumen-4.3.md), the [v4.2 highlights](docs/lumen-4.2.md) for SwiftUI appearance and agent guidance,\n> and [v4.1 highlights](docs/lumen-4.1.md) for loading and forms. Follow the [migration guide](docs/migrating-v3-to-v4.md) when\n> upgrading from v3. Package versions and store builds follow their own release schedules.\n\n## See Lumen in action\n\n<p>\n  <a href=\"https://lumen.santi020k.com/docs/web/playground\">\n    <img src=\"./apps/docs/src/assets/platforms/web.webp\" alt=\"A Lumen web workspace with navigation, metric cards, an interactive chart, and a task form\" width=\"1184\" height=\"802\">\n  </a>\n</p>\n\n*Real Lumen components with illustrative data. [Open the web playground →](https://lumen.santi020k.com/docs/web/playground)*\n\n| Built for | What you get |\n| --- | --- |\n| **Web products** | Astro, React, and custom elements with standalone CSS and optional Tailwind integration. |\n| **Native interfaces** | React Native, SwiftUI, Compose, WidgetKit, and Wear OS foundations with platform conventions. |\n| **Accessible interaction** | Semantic structure, keyboard paths, focus management, and reduced-motion support. |\n| **Design and AI workflows** | Figma resources, a portable agent skill, MCP discovery, and machine-readable contracts. |\n\n## Web quick start\n\nChoose one adapter. Astro requires Astro 5+, React requires React 19+, and the web packages\nrequire Node.js 22.12+ for their tooling. Install in your existing application:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\nThe optional CLI is a separate development dependency in v5: `pnpm add -D @santi020k/lumen`.\nUse it for editable recipes, discovery, and diagnostics.\n\n### Astro\n\nIn v5, Astro components load their own CSS and shared foundations. Mount `UIPrimitives` once in\nyour root layout; it loads only the controllers used by the page. The full stylesheet remains available\nfor legacy setup and application-generated markup.\n\n```astro\n---\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <lumen-label id=\"email-label\">Email</lumen-label>\n  <lumen-input aria-labelledby=\"email-label\" id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nBrowse the [package directory](https://lumen.santi020k.com/docs/packages) for framework adapters,\nshared foundations, and optional integrations, with links to focused examples and usage guides.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native qualification:** Check the [compatibility matrix](docs/native-compatibility.md) and\n> [device evidence](docs/native-device-validation.md) for your target. Local builds, published\n> artifacts, and physical-device accessibility are distinct verification steps.\n\n## Tailwind CSS\n\nUse Tailwind CSS v4 as an optional complement for responsive layouts and component customization.\nThe `tailwind.css` bridge (Lumen 4.3+) exposes Lumen semantic colors such as `bg-surface`,\n`text-ink`, and `border-line`, including nested themes. See the\n[Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind) for framework examples and troubleshooting.\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n@import \"@santi020k/lumen-astro/tailwind.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Native playgrounds\n\n<table>\n  <tr>\n    <th>SwiftUI</th>\n    <th>Jetpack Compose</th>\n    <th>React Native</th>\n  </tr>\n  <tr>\n    <td><a href=\"https://lumen.santi020k.com/docs/apple/playground\"><img src=\"./apps/docs/src/assets/platforms/apple.webp\" alt=\"Native SwiftUI release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/android/playground\"><img src=\"./apps/docs/src/assets/platforms/android.webp\" alt=\"Native Compose release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/react-native/playground\"><img src=\"./apps/docs/src/assets/platforms/react-native.webp\" alt=\"Expo browser preview of the contributor profile example\" width=\"220\"></a></td>\n  </tr>\n  <tr>\n    <td>Native app capture</td>\n    <td>Native app capture</td>\n    <td>Expo browser preview</td>\n  </tr>\n</table>\n\nSee [capture provenance](apps/docs/src/assets/platforms/README.md) for sources and verification scope.\n\nTry Lumen before adding it to your project. The [playground section](https://lumen.santi020k.com/#playgrounds)\nbrings together the browser demos and native apps. Explore component states and themes, then use\nthe open-source apps as implementation references. Start with the\n[web playground](https://lumen.santi020k.com/docs/web/playground) for Astro, React, and Web Components,\nor choose a native gallery:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android. [Try the browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n  or use the local setup guide for native evaluation. EAS profiles cover TestFlight, Android App\n  Bundles, and APKs; this gallery has no separate public store listing.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for a platform chooser, reference-app source,\nand run, capture, and distribution commands. Store builds follow their own release schedule and\nmay differ from the current repository version.\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” The plugin bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nLumen is designed to reduce repetitive UI code and unnecessary agent context. Actual token usage\ndepends on the model, task, and corrections; see the [measurement method](docs/ai-efficiency.md).\n\n<details>\n<summary>Guides, registries, and integration references</summary>\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`apps/figma-plugin/README.md`](./apps/figma-plugin/README.md) for the **beta** Figma plugin,\n  Astro starters, and AI handoff.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n</details>\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\nThe private [`@santi020k/lumen-templates`](packages/templates/README.md) workspace supplies the\ngallery and preview renderer. Consumer recipes are installed through the public Lumen CLI.\n\n## Repository apps\n\nEach app has its own setup, source map, and verification guidance:\n\n| App | Purpose |\n| --- | --- |\n| [Documentation](apps/docs/README.md) | Public documentation, live examples, search, and native previews |\n| [Template showcase](apps/templates/README.md) | Standalone gallery of five product-template families |\n| [Next.js smoke app](apps/next-smoke/README.md) | Server/client boundaries and rendered consumer regression fixtures |\n| [Apple playground](apps/playground-apple/README.md) | iPhone, iPad, Mac, watchOS, and WidgetKit reference hosts |\n| [Android playground](apps/playground-android/README.md) | Compose phone/tablet app and separate Wear OS host |\n| [React Native playground](apps/playground-react-native/README.md) | Expo reference app and embedded browser gallery |\n| [Figma plugin](apps/figma-plugin/README.md) | Development beta for Astro starters and structured agent handoff |\n| [Motion studio](apps/motion/README.md) | Reusable product films and local video exports |\n| [Store artwork](apps/store-assets/README.md) | Canonical SVG sources for the playground app icons |\n\n## Lumen 4\n\nLumen 4 brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [v4.2 release highlights](docs/lumen-4.2.md). The community gallery includes published consumer\nscreenshots; it does not imply those applications already run the current release.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\nUse Node.js 22.22.2+, 24.15.0+, or 26+ and pnpm 12.8.1, as declared in the root manifest.\n\n```bash\npnpm install --frozen-lockfile\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\nCreate reusable product animations and social videos locally with the\n[Lumen motion studio](./apps/motion/README.md). Its first pilot previews one interface in four\nappearances and exports portrait, square, and landscape MP4s through HyperFrames.\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n\nCreated and maintained by [Santiago Molina](https://santi020k.com).\n"
   },
   "meta": {
-    "catalogHash": "723952f4c060542a3623f135a3a1b809a923c58f421e596b3427faac7f384e83",
+    "catalogHash": "6d83914d6600fabf8d32296d948127f41577e4b23ef4146647cb030e2a72e08a",
     "componentCount": 196,
     "nativeComponentCount": 125,
     "packages": [
@@ -60856,6 +60951,7 @@
         "Collapsible",
         "Dialog",
         "DialogBody",
+        "DialogHeader",
         "DialogTitle",
         "Icon",
         "Link",
@@ -60892,7 +60988,7 @@
       "frameworks": [
         "astro"
       ],
-      "description": "An editorial composition using Avatar, Button, ButtonLink, Callout, Card, Collapsible, Dialog, DialogBody, DialogTitle, Icon, Link, ThemeToggle, Timeline, Typography.",
+      "description": "An editorial composition using Avatar, Button, ButtonLink, Callout, Card, Collapsible, Dialog, DialogBody, DialogHeader, DialogTitle, Icon, Link, ThemeToggle, Timeline, Typography.",
       "install": {
         "astro": "lumen add editorial --target astro",
         "elements": "lumen add editorial --target elements",
@@ -60937,7 +61033,7 @@
         "Overlays"
       ],
       "examples": {
-        "astro": "---\nimport Button from '@santi020k/lumen-astro/components/Button'\nimport Collapsible from '@santi020k/lumen-astro/components/Collapsible'\nimport CopyButton from '@santi020k/lumen-astro/components/CopyButton'\nimport Dialog from '@santi020k/lumen-astro/components/Dialog'\nimport DialogBody from '@santi020k/lumen-astro/components/DialogBody'\nimport DialogClose from '@santi020k/lumen-astro/components/DialogClose'\nimport DialogHeader from '@santi020k/lumen-astro/components/DialogHeader'\nimport DialogTitle from '@santi020k/lumen-astro/components/DialogTitle'\nimport Input from '@santi020k/lumen-astro/components/Input'\nimport Link from '@santi020k/lumen-astro/components/Link'\n\ninterface Props {\n  id: string\n  url: string\n  title: string\n  text?: string\n  destinations?: readonly { label: string, href: string, newTab?: boolean }[]\n  labels?: Partial<{\n    open: string\n    close: string\n    native: string\n    canceled: string\n    failure: string\n    url: string\n    copy: string\n    copied: string\n    copyFailure: string\n    recovery: string\n  }>\n}\n\nconst { id, url, title, text, destinations = [], labels } = Astro.props\nconst openLabel = labels?.open ?? 'Share this page'\nconst urlLabel = labels?.url ?? 'Link to share'\n---\n\n<lumen-recipe-share data-url={url} data-title={title} data-text={text} data-canceled={labels?.canceled ?? 'Sharing canceled.'} data-failure={labels?.failure ?? 'Sharing could not complete. Choose a destination or copy the link.'}>\n  <Collapsible class=\"share-fallback\">\n    <summary>{openLabel}</summary>\n    <Input aria-label={urlLabel} value={url} readonly />\n    <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>\n  </Collapsible>\n  <Button class=\"share-trigger\" data-ui-dialog-trigger={id} variant=\"outline\">{openLabel}</Button>\n  <Dialog id={id} aria-labelledby={id + '-title'}>\n    <DialogHeader class=\"share-header\">\n      <DialogTitle id={id + '-title'}>{openLabel}</DialogTitle>\n      <DialogClose variant=\"outline\">{labels?.close ?? 'Close'}</DialogClose>\n    </DialogHeader>\n    <DialogBody>\n      <Button data-native-share hidden variant=\"outline\">{labels?.native ?? 'Share using this device'}</Button>\n      <p data-share-status role=\"status\"></p>\n      <Input aria-label={urlLabel} value={url} readonly />\n      <CopyButton\n        value={url}\n        label={labels?.copy ?? 'Copy link'}\n        copiedLabel={labels?.copied ?? 'Link copied'}\n        errorLabel={labels?.copyFailure ?? 'Could not copy the link.'}\n        recoveryLabel={labels?.recovery ?? 'Link for manual copying'}\n      >{labels?.copy ?? 'Copy link'}</CopyButton>\n      <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>\n    </DialogBody>\n  </Dialog>\n</lumen-recipe-share>\n\n<script>\n  const isCanceled = (error: unknown): boolean => (\n    error instanceof Error && error.name === 'AbortError'\n  )\n\n  class LumenRecipeShare extends HTMLElement {\n    #listeners?: AbortController\n\n    connectedCallback() {\n      const button = this.querySelector<HTMLButtonElement>('[data-native-share]')\n      const dialog = this.querySelector('dialog')\n      const status = this.querySelector<HTMLElement>('[data-share-status]')\n\n      if (!button || !dialog || !status || typeof navigator.share !== 'function') return\n\n      this.#listeners?.abort()\n\n      this.#listeners = new AbortController()\n\n      const { signal } = this.#listeners\n      let operation = 0\n      const isCurrent = (ticket: number) => ticket === operation && !signal.aborted && this.isConnected\n\n      const invalidate = () => {\n        operation += 1\n\n        button.disabled = false\n\n        button.removeAttribute('aria-busy')\n      }\n\n      dialog.addEventListener('close', invalidate, { signal })\n\n      window.addEventListener('pagehide', invalidate, { signal })\n\n      document.addEventListener('astro:before-swap', invalidate, { signal })\n\n      const message = (canceled: boolean) => (canceled ? this.dataset.canceled : this.dataset.failure) ?? ''\n\n      button.hidden = false\n\n      button.addEventListener('click', async () => {\n        const ticket = ++operation\n\n        button.disabled = true\n\n        button.setAttribute('aria-busy', 'true')\n\n        status.textContent = ''\n\n        try {\n          await navigator.share({ url: this.dataset.url, title: this.dataset.title, text: this.dataset.text })\n\n          if (isCurrent(ticket)) dialog.close()\n        } catch (error: unknown) {\n          if (isCurrent(ticket)) status.textContent = message(isCanceled(error))\n        } finally {\n          if (isCurrent(ticket)) {\n            button.disabled = false\n\n            button.removeAttribute('aria-busy')\n\n            if (dialog.open) button.focus({ preventScroll: true })\n          }\n        }\n      }, { signal })\n    }\n\n    disconnectedCallback() {\n      this.#listeners?.abort()\n    }\n  }\n\n  if (!customElements.get('lumen-recipe-share')) {\n    customElements.define('lumen-recipe-share', LumenRecipeShare)\n  }\n</script>\n\n<style>\n  lumen-recipe-share { display: block; min-inline-size: 0; overflow-wrap: anywhere; }\n  .share-trigger, [data-native-share][hidden] { display: none; }\n  .share-trigger[data-ui-bound='true'] { display: inline-flex; }\n  lumen-recipe-share:has(.share-trigger[data-ui-bound='true']) > .share-fallback { display: none; }\n  .share-header { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }\n  :global(lumen-recipe-share button) { max-inline-size: 100%; block-size: auto; white-space: normal; }\n  [data-share-status]:empty { margin: 0; }\n  li { margin-block: 0.5rem; }\n</style>\n"
+        "astro": "---\nimport Button from '@santi020k/lumen-astro/components/Button'\nimport Collapsible from '@santi020k/lumen-astro/components/Collapsible'\nimport CopyButton from '@santi020k/lumen-astro/components/CopyButton'\nimport Dialog from '@santi020k/lumen-astro/components/Dialog'\nimport DialogBody from '@santi020k/lumen-astro/components/DialogBody'\nimport DialogClose from '@santi020k/lumen-astro/components/DialogClose'\nimport DialogHeader from '@santi020k/lumen-astro/components/DialogHeader'\nimport DialogTitle from '@santi020k/lumen-astro/components/DialogTitle'\nimport Input from '@santi020k/lumen-astro/components/Input'\nimport Link from '@santi020k/lumen-astro/components/Link'\n\ninterface Props {\n  id: string\n  url: string\n  title: string\n  text?: string\n  destinations?: readonly { label: string, href: string, newTab?: boolean }[]\n  labels?: Partial<{\n    open: string\n    close: string\n    native: string\n    canceled: string\n    failure: string\n    url: string\n    copy: string\n    copied: string\n    copyFailure: string\n    recovery: string\n  }>\n}\n\nconst { id, url, title, text, destinations = [], labels } = Astro.props\nconst openLabel = labels?.open ?? 'Share this page'\nconst urlLabel = labels?.url ?? 'Link to share'\n---\n\n<lumen-recipe-share data-url={url} data-title={title} data-text={text} data-canceled={labels?.canceled ?? 'Sharing canceled.'} data-failure={labels?.failure ?? 'Sharing could not complete. Choose a destination or copy the link.'}>\n  <Collapsible class=\"share-fallback\">\n    <summary>{openLabel}</summary>\n    <Input aria-label={urlLabel} value={url} readonly />\n    {destinations.length > 0 && <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>}\n  </Collapsible>\n  <Button class=\"share-trigger\" data-ui-dialog-trigger={id} variant=\"outline\">{openLabel}</Button>\n  <Dialog id={id} aria-labelledby={id + '-title'}>\n    <DialogHeader class=\"share-header\">\n      <DialogTitle id={id + '-title'}>{openLabel}</DialogTitle>\n      <DialogClose variant=\"outline\">{labels?.close ?? 'Close'}</DialogClose>\n    </DialogHeader>\n    <DialogBody>\n      <Button data-native-share hidden variant=\"outline\">{labels?.native ?? 'Share using this device'}</Button>\n      <p data-share-status role=\"status\"></p>\n      <Input aria-label={urlLabel} value={url} readonly />\n      <CopyButton\n        value={url}\n        label={labels?.copy ?? 'Copy link'}\n        copiedLabel={labels?.copied ?? 'Link copied'}\n        errorLabel={labels?.copyFailure ?? 'Could not copy the link.'}\n        recoveryLabel={labels?.recovery ?? 'Link for manual copying'}\n      >{labels?.copy ?? 'Copy link'}</CopyButton>\n      {destinations.length > 0 && <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>}\n    </DialogBody>\n  </Dialog>\n</lumen-recipe-share>\n\n<script>\n  const isCanceled = (error: unknown): boolean => (\n    error instanceof Error && error.name === 'AbortError'\n  )\n\n  class LumenRecipeShare extends HTMLElement {\n    #listeners?: AbortController\n\n    connectedCallback() {\n      const button = this.querySelector<HTMLButtonElement>('[data-native-share]')\n      const dialog = this.querySelector('dialog')\n      const status = this.querySelector<HTMLElement>('[data-share-status]')\n\n      if (!button || !dialog || !status || typeof navigator.share !== 'function') return\n\n      this.#listeners?.abort()\n\n      this.#listeners = new AbortController()\n\n      const { signal } = this.#listeners\n      let operation = 0\n      const isCurrent = (ticket: number) => ticket === operation && !signal.aborted && this.isConnected\n\n      const invalidate = () => {\n        operation += 1\n\n        button.disabled = false\n\n        button.removeAttribute('aria-busy')\n      }\n\n      dialog.addEventListener('close', invalidate, { signal })\n\n      window.addEventListener('pagehide', invalidate, { signal })\n\n      document.addEventListener('astro:before-swap', invalidate, { signal })\n\n      const message = (canceled: boolean) => (canceled ? this.dataset.canceled : this.dataset.failure) ?? ''\n\n      button.hidden = false\n\n      button.addEventListener('click', async () => {\n        const ticket = ++operation\n\n        button.disabled = true\n\n        button.setAttribute('aria-busy', 'true')\n\n        status.textContent = ''\n\n        try {\n          await navigator.share({ url: this.dataset.url, title: this.dataset.title, text: this.dataset.text })\n\n          if (isCurrent(ticket)) dialog.close()\n        } catch (error: unknown) {\n          if (isCurrent(ticket)) status.textContent = message(isCanceled(error))\n        } finally {\n          if (isCurrent(ticket)) {\n            button.disabled = false\n\n            button.removeAttribute('aria-busy')\n\n            if (dialog.open) button.focus({ preventScroll: true })\n          }\n        }\n      }, { signal })\n    }\n\n    disconnectedCallback() {\n      this.#listeners?.abort()\n    }\n  }\n\n  if (!customElements.get('lumen-recipe-share')) {\n    customElements.define('lumen-recipe-share', LumenRecipeShare)\n  }\n</script>\n\n<style>\n  lumen-recipe-share { display: block; min-inline-size: 0; overflow-wrap: anywhere; }\n  .share-trigger, [data-native-share][hidden] { display: none; }\n  .share-trigger[data-ui-bound='true'] { display: inline-flex; }\n  lumen-recipe-share:has(.share-trigger[data-ui-bound='true']) > .share-fallback { display: none; }\n  .share-header { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }\n  :global(lumen-recipe-share button) { max-inline-size: 100%; block-size: auto; white-space: normal; }\n  [data-share-status]:empty { margin: 0; }\n  li { margin-block: 0.5rem; }\n</style>\n"
       },
       "frameworks": [
         "astro"

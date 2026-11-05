@@ -20,6 +20,7 @@ test('video defers media and captions, retries, and moves a single transcript in
   await expect(dialog.getByRole('status')).toHaveText('Film unavailable.')
   await expect(dialog.getByRole('link', { name: 'Open film file' })).toHaveAttribute('href', '/film.mp4')
   await dialog.getByRole('button', { name: 'Retry video' }).click()
+  await expect(dialog.locator('video')).toBeFocused()
   await expect.poll(async () => dialog.locator('video').evaluate(video => {
     if (!(video instanceof HTMLVideoElement)) throw new TypeError('Expected video')
     return video.readyState
@@ -199,4 +200,24 @@ test('workflow interactions request their own feature modules', async ({ page },
     contentType: 'application/json'
   })
   expect(scripts.filter(path => /phone-input|world-map|kanban|rich-text|schedule/.test(path))).toEqual([])
+})
+
+test('a long enlarged transcript keeps the close control reachable', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
+  await page.goto('/')
+  await page.locator('html').evaluate(root => { root.style.fontSize = '200%' })
+  const trigger = page.getByRole('button', { name: 'Watch film' })
+  await trigger.click()
+  const dialog = page.getByRole('dialog', { name: 'Product film' })
+  await dialog.locator('[data-video-transcript] summary').click()
+  await dialog.locator('[data-video-transcript]').evaluate(transcript => {
+    const paragraph = document.createElement('p')
+    paragraph.textContent = 'A complete accessible transcript. '.repeat(80)
+    transcript.append(paragraph)
+  })
+  await dialog.locator('[data-slot="dialog-body"]').evaluate(body => { body.scrollTop = body.scrollHeight })
+  const close = dialog.getByRole('button', { name: 'Close film' })
+  await expect(close).toBeInViewport()
+  await close.click()
+  await expect(trigger).toBeFocused()
 })

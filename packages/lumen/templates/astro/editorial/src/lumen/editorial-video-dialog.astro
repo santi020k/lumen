@@ -4,6 +4,7 @@ import ButtonLink from '@santi020k/lumen-astro/components/ButtonLink'
 import Collapsible from '@santi020k/lumen-astro/components/Collapsible'
 import Dialog from '@santi020k/lumen-astro/components/Dialog'
 import DialogBody from '@santi020k/lumen-astro/components/DialogBody'
+import DialogHeader from '@santi020k/lumen-astro/components/DialogHeader'
 import DialogTitle from '@santi020k/lumen-astro/components/DialogTitle'
 import Icon from '@santi020k/lumen-astro/components/Icon'
 import Link from '@santi020k/lumen-astro/components/Link'
@@ -51,14 +52,14 @@ const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, tr
     <slot name="tracks" />
   </template>
   <Dialog aria-labelledby={`${id}-title`} id={id}>
-    <DialogBody class="editorial-video__body">
-      <div class="editorial-video__heading">
+    <DialogHeader class="editorial-video__heading">
         <DialogTitle id={`${id}-title`}>{title}</DialogTitle>
         <form method="dialog">
           <Button autofocus class="editorial-video__control" type="submit" variant="outline">{closeLabel}</Button>
         </form>
-      </div>
-      <video aria-label={title} controls playsinline preload="none"></video>
+    </DialogHeader>
+    <DialogBody class="editorial-video__body">
+      <video aria-label={title} controls playsinline preload="none" tabindex="0"></video>
       <p data-video-error={errorLabel} role="status"></p>
       <Button data-video-retry hidden variant="outline">{retryLabel}</Button>
       <Link data-video-file href={src}>{fileLabel}</Link>
@@ -122,7 +123,11 @@ const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, tr
         if (!video.hasAttribute('src') || video.error) load()
       }, { signal })
 
-      retry.addEventListener('click', load, { signal })
+      retry.addEventListener('click', () => {
+        load()
+
+        video.focus({ preventScroll: true })
+      }, { signal })
 
       video.addEventListener('loadedmetadata', () => {
  error.textContent = ''
