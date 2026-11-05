@@ -108,6 +108,13 @@ Use documented subpath exports such as `/charts`, `/phone`, and `/icon-data` for
 Image-comparison helpers use `/image-comparison`; DOM windowing uses
 `/virtual-list`, and data-renderer window calculations use `/virtual-window`.
 
+## Shared web styles
+
+Core publishes the generated web foundation, full stylesheet, and component CSS. Adapter exports
+forward these files without installing CLI tooling. `styles/manifest.json` records component style
+parts and dependencies. Contributors edit `packages/lumen/styles.css` and `registry/web-css.json`,
+then run `pnpm run generate:component-css`; generated files are never edited directly.
+
 ## Quick start
 
 Read semantic foundations through the focused token entry:

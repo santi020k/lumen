@@ -89,7 +89,7 @@
     "test:lumen-3-contract": "node --test scripts/check-lumen-3-contract.test.mjs",
     "check:lumen-4-contract": "node scripts/check-lumen-4-contract.mjs",
     "test:lumen-4-contract": "node --test scripts/check-lumen-4-contract.test.mjs",
-    "check:framework-contracts": "node scripts/check-framework-contracts.mjs && pnpm run check:critical-web-css && pnpm run check:web-consumer-evidence && pnpm run test:web-consumer-evidence",
+    "check:framework-contracts": "node scripts/check-framework-contracts.mjs && pnpm run check:critical-web-css && pnpm run check:component-css && pnpm run check:web-consumer-evidence && pnpm run test:web-consumer-evidence",
     "check:native-contracts": "node scripts/check-native-contracts.mjs && pnpm run check:native-cli-registry",
     "sync:native-cli-registry": "node scripts/sync-native-cli-registry.mjs",
     "check:native-cli-registry": "node scripts/sync-native-cli-registry.mjs --check",
@@ -191,7 +191,9 @@
     "test:figma-plugin": "playwright test -c playwright.figma.config.ts",
     "ci:preflight": "pnpm run lint:repo && pnpm run test:og-urls && node --test scripts/classify-workflow-paths.test.mjs scripts/workflow-scope.test.mjs scripts/check-v2-release-workflows.test.mjs && pnpm run check:security",
     "test:motion": "playwright test -c playwright.motion.config.ts",
-    "import:world-map-data": "node scripts/import-natural-earth-world-map.mjs"
+    "import:world-map-data": "node scripts/import-natural-earth-world-map.mjs",
+    "generate:component-css": "node scripts/generate-component-css.mjs",
+    "check:component-css": "node scripts/generate-component-css.mjs --check && node --test scripts/component-css.test.mjs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",

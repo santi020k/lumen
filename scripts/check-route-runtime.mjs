@@ -1,5 +1,40 @@
 import assert from 'node:assert/strict'
 
+/** @param {import('@playwright/test').Browser} browser @param {string} origin */
+export const checkDynamicToast = async (browser, origin) => {
+  const page = await browser.newPage()
+  const styles = []
+  const errors = []
+
+  page.on('request', request => { if (request.url().endsWith('.css')) styles.push(request.url()) })
+
+  page.on('pageerror', error => { errors.push(error.message) })
+
+  await page.goto(`${origin}/static-runtime/`)
+
+  await page.waitForLoadState('networkidle')
+
+  assert(!styles.some(url => url.includes('toast')), 'Absent toasts must not load their styles.')
+
+  await page.evaluate(() => {
+    window.LumenToast.create({ title: 'Saved', duration: 0, action: { label: 'Undo' } })
+  })
+
+  const toast = page.locator('.ui-toast')
+
+  await toast.waitFor({ state: 'visible' })
+
+  assert(styles.some(url => url.includes('toast')), 'Dynamic toasts load their own stylesheet.')
+
+  assert.equal(await toast.evaluate(element => getComputedStyle(element).display), 'grid')
+
+  assert.equal(await toast.getByRole('button', { name: 'Undo', exact: true }).count(), 1)
+
+  assert.deepEqual(errors, [])
+
+  await page.close()
+}
+
 /** @param {Record<string, string[]>} graph @param {string} suffix */
 const featureAsset = (graph, suffix) => {
   const asset = Object.entries(graph).find(([, modules]) => modules.some(module => module.endsWith(suffix)))?.[0]

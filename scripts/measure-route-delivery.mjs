@@ -8,11 +8,13 @@ import { gzipSync } from 'node:zlib'
 
 import { chromium } from '@playwright/test'
 
-import { checkColdInteractions, checkFailedChunkRecovery, checkNavigation } from './check-route-runtime.mjs'
+import { captureStyleMatrix, compareStyleMatrix } from './check-component-css-rendering.mjs'
+import { checkColdInteractions, checkDynamicToast, checkFailedChunkRecovery, checkNavigation } from './check-route-runtime.mjs'
 
 const repo = fileURLToPath(new URL('../', import.meta.url))
 const astroDirectory = await realpath(resolve(process.env.LUMEN_DELIVERY_ASTRO_DIR ?? join(repo, 'packages/astro')))
 const label = process.env.LUMEN_DELIVERY_LABEL ?? 'candidate'
+const selectiveStyles = process.env.LUMEN_DELIVERY_CSS !== 'full'
 
 assert.match(label, /^[a-z\d.-]+$/i, 'Delivery label must be a simple filename.')
 
@@ -21,6 +23,8 @@ const fixtures = join(repo, 'tests/fixtures/delivery')
 const routes = ['static', 'static-runtime', 'dialog', 'code', 'forms', 'calendar']
 const navigationRoutes = ['navigation-dialog', 'navigation-calendar']
 const check = process.argv.includes('--check')
+const render = process.argv.includes('--render')
+const renderingRoutes = [...routes, 'composition', 'composition-reversed']
 
 await rm(directory, { recursive: true, force: true })
 
@@ -32,7 +36,7 @@ await symlink(join(repo, 'apps/docs/node_modules'), join(directory, 'node_module
 
 // Capture the actual emitted client graph so requested assets can be traced to owning modules.
 await writeFile(join(directory, 'astro.config.mjs'), `export default {
-  output: 'static', devToolbar: { enabled: false }, vite: { plugins: [{
+  output: 'static', build: { inlineStylesheets: 'never' }, devToolbar: { enabled: false }, vite: { plugins: [{
     name: 'lumen-delivery-graph',
     generateBundle(options, bundle) {
       const chunks = Object.values(bundle).filter(item => item.type === 'chunk')
@@ -46,7 +50,7 @@ const resolveImports = source => source
   .replaceAll(/@santi020k\/lumen-astro\/components\/([A-Za-z\d]+)/g, (_, name) => `${astroDirectory}/components/${name}.astro`)
   .replaceAll('@santi020k/lumen-astro/runtime', `${astroDirectory}/runtime/UIPrimitives.astro`)
 
-for (const route of [...routes, ...navigationRoutes]) {
+for (const route of [...(render ? renderingRoutes : routes), ...navigationRoutes]) {
   const navigation = navigationRoutes.includes(route)
   const fixture = route === 'static-runtime' ? 'static' : route.replace('navigation-', '')
   let source = await readFile(join(fixtures, `${fixture}.astro.template`), 'utf8')
@@ -63,7 +67,7 @@ for (const route of [...routes, ...navigationRoutes]) {
     source += `<Link href="/${next}/">Next fixture</Link>`
   }
 
-  source = source.replace('---\n', `---\nimport '${astroDirectory}/styles/lumen.css'\n`)
+  if (!selectiveStyles) source = source.replace('---\n', `---\nimport '${astroDirectory}/styles/lumen.css'\n`)
 
   const boundary = source.indexOf('\n---', 4)
   const frontmatter = source.slice(0, boundary + 4)
@@ -77,7 +81,7 @@ for (const route of [...routes, ...navigationRoutes]) {
 }
 
 execFileSync(process.execPath, [join(repo, 'apps/docs/node_modules/astro/bin/astro.mjs'), 'build', '--root', directory], {
-  cwd: repo, stdio: ['ignore', 'pipe', 'pipe']
+  cwd: repo, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']
 })
 
 const dist = join(directory, 'dist')
@@ -95,15 +99,25 @@ for (const file of await readdir(dist, { recursive: true, withFileTypes: true })
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json' }
 
 const server = createServer((request, response) => {
-  const pathname = new URL(request.url ?? '/', 'http://127.0.0.1').pathname
+  const url = new URL(request.url ?? '/', 'http://127.0.0.1')
+  const pathname = url.pathname
   const path = extname(pathname) ? pathname : `${pathname.replace(/\/$/, '')}/index.html`
-  const content = files.get(path)
+  let content = files.get(path)
 
   if (!content) { response.writeHead(404);
 
  response.end();
 
  return }
+
+  // Apply rendering scenarios before the first paint, avoiding inherited transition races.
+  if (path.endsWith('.html') && url.searchParams.has('theme')) {
+    const theme = url.searchParams.get('theme') === 'lumen-dark' ? 'lumen-dark' : 'lumen-light'
+    const direction = url.searchParams.get('direction') === 'rtl' ? 'rtl' : 'ltr'
+    const text = url.searchParams.get('text') === '200%' ? '200%' : '100%'
+
+    content = Buffer.from(content.toString().replace('data-theme="lumen-light"', `data-theme="${theme}" dir="${direction}" style="font-size:${text}"`))
+  }
 
   response.setHeader('Content-Type', mime[extname(path)] ?? 'application/octet-stream')
 
@@ -117,7 +131,7 @@ const address = server.address()
 assert(address && typeof address !== 'string')
 
 const browser = await chromium.launch()
-const report = { label, scope: 'Astro, full CSS, cold Chromium routes; raw and gzip level 9 asset bytes', routes: {} }
+const report = { label, scope: `Astro, ${selectiveStyles ? 'selective' : 'full'} CSS (inlining disabled), cold Chromium routes; raw and gzip level 9 asset bytes`, routes: {} }
 
 const totals = assets => {
   const result = { javascript: { raw: 0, gzip: 0 }, css: { raw: 0, gzip: 0 } }
@@ -191,6 +205,14 @@ try {
     await page.close()
   }
 
+  if (render) {
+    await captureStyleMatrix(browser, origin, directory, renderingRoutes)
+
+    if (process.env.LUMEN_DELIVERY_COMPARE) {
+      await compareStyleMatrix(resolve(process.env.LUMEN_DELIVERY_COMPARE), directory, renderingRoutes)
+    }
+  }
+
   if (check) {
     const budgets = JSON.parse(await readFile(join(fixtures, 'budgets.json'), 'utf8'))
 
@@ -215,6 +237,8 @@ try {
     await checkNavigation(browser, origin)
 
     await checkFailedChunkRecovery(browser, origin, graph)
+
+    await checkDynamicToast(browser, origin)
   }
 } finally {
   await browser.close()

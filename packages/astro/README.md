@@ -78,14 +78,17 @@ Requires Astro 5 or newer in the consuming application.
 pnpm add @santi020k/lumen-astro
 ```
 
-The adapter also exposes Lumen's discovery and diagnostics CLI:
+The v5 adapter contains runtime code and styles. Install the optional CLI separately for discovery,
+editable recipes, and diagnostics:
 
 ```bash
+pnpm add -D @santi020k/lumen
 pnpm exec lumen show Tabs
 pnpm exec lumen doctor
 ```
 
-Import the CSS once in your root layout and mount `UIPrimitives` once in that same app shell if you
+Astro components import their own styles and shared foundations automatically in v5. Mount
+`UIPrimitives` once in the app shell if you
 use interactive components such as dialogs, menus, popovers, tabs, carousels, toggles, command
 lists, or toasts. Do not add `UIPrimitives` beside each component instance; one root include
 enhances all matching Lumen markup on the page.
@@ -106,6 +109,8 @@ error. Keep native fallbacks and provide a reload path for unavailable deploymen
 controller; `create` returns a stable ID immediately, and rendering follows asynchronously. Mount a
 `ToastViewport` and await initialization if an application needs the controller ready in advance.
 
+
+The full stylesheet remains available for legacy setup or application-generated markup:
 
 ```css
 @import "@santi020k/lumen-astro/styles.css";

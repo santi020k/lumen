@@ -90,14 +90,25 @@ Requires React 19 or newer in the consuming application.
 pnpm add @santi020k/lumen-react
 ```
 
-The adapter also exposes Lumen's discovery and diagnostics CLI:
+The v5 adapter contains runtime code and styles. Install the optional CLI separately for discovery,
+editable recipes, and diagnostics:
 
 ```bash
+pnpm add -D @santi020k/lumen
 pnpm exec lumen show Tabs
 pnpm exec lumen doctor
 ```
 
-Load the shared stylesheet once from your app entry or global CSS.
+Import the shared foundation once and component CSS where the component is used. Include styles for
+conditional and runtime-inserted content as well as the initial render.
+
+```tsx
+import "@santi020k/lumen-react/styles/foundation.css";
+import "@santi020k/lumen-react/styles/components/button.css";
+import "@santi020k/lumen-react/styles/components/dialog.css";
+```
+
+The full stylesheet remains available as a convenient alternative:
 
 ```tsx
 import "@santi020k/lumen-react/styles.css";

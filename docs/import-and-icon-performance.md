@@ -20,33 +20,44 @@ an explicit Card, Input, and Button set through the same minified browser bundle
 
 ## November 5, 2026 Astro route delivery
 
-The v5 runtime split is measured against published v4.4.0 (`fc264ae2`) with the same six cold
-Chromium routes, Node 22.23.4, pnpm 12.8.1, Astro 7.3.5, and full stylesheet. Each row reports the
-sum of the assets actually requested after initialization, compressed individually with gzip level 9.
-These are local fixture bytes, not measured network transfer or production traffic.
+The modular candidate is measured against published v4.4.0 (`fc264ae2`) using the same six cold
+Chromium routes, Node 22.23.4, pnpm 12.8.1, and Astro 7.3.5. Each row sums requested assets,
+compressed individually with gzip level 9. CSS inlining is disabled so the stylesheet totals include
+all styles. These are local fixture bytes, not production traffic or measured network transfer.
 
-| Route | v4.4.0 JavaScript gzip | v5 modular runtime gzip | v5 controller modules |
-| --- | ---: | ---: | --- |
-| Static Card/Button, no runtime | 0 B | 0 B | None |
-| Static Card/Button, root runtime mounted | 35,300 B | 4,716 B | Loader only |
-| Dialog | 35,985 B | 5,401 B | Dialog |
-| CodeTabs with scroll cues | 35,300 B | 9,591 B | Tabs, code, scroll cues, shared helpers |
-| Form, Field, Input, Select | 35,300 B | 8,644 B | Forms, select, shared helpers |
-| Calendar | 35,300 B | 8,721 B | Calendar, calendar helpers, shared helpers |
+| Route | v4 JS gzip | v5 JS gzip | v4 CSS gzip | v5 CSS gzip |
+| --- | ---: | ---: | ---: | ---: |
+| Static Card/Button, no runtime | 0 B | 0 B | 35,620 B | 6,973 B |
+| Static Card/Button, root runtime | 35,300 B | 4,910 B | 36,026 B | 7,420 B |
+| Dialog | 35,985 B | 5,595 B | 36,026 B | 8,647 B |
+| CodeTabs with scroll cues | 35,300 B | 9,785 B | 36,026 B | 8,035 B |
+| Form, Field, Input, Select | 35,300 B | 8,838 B | 36,026 B | 6,464 B |
+| Calendar | 35,300 B | 8,915 B | 36,026 B | 6,094 B |
 
-The full stylesheet remains 35,620 gzip bytes on these routes. This comparison establishes runtime
-savings; selective CSS is a separate v5 milestone. No additional script requests occurred during the
-measured first interaction. The module report maps fetched chunks back to their source modules; the
-simple routes contain no phone, map, rich-text, or scheduler controller.
+No additional assets were requested during the measured first interaction. Simple routes contain no
+phone, map, rich-text, or scheduler controller. Dynamic toasts separately load their controller and
+stylesheet when first requested, including when the initial page has no toast markup.
 
-`measure:route-delivery` builds the fixtures in `.cache/route-delivery/candidate` and writes a JSON
-report there. `check:route-delivery` additionally enforces the budgets and allowed controller lists in
-`tests/fixtures/delivery/budgets.json`, tests slow first clicks and native Enter/Space activation,
-checks actual Astro client navigation, and verifies a reload after a failed controller request.
-The performance fixture uses public component/runtime contracts with direct source resolution so an
-archived Astro source tree can be compared using `LUMEN_DELIVERY_ASTRO_DIR` and
-`LUMEN_DELIVERY_LABEL`. Baseline source must match the intended revision, with the same shared package
-builds and toolchain; never compare different consumer markup and call it a library improvement.
+`measure:route-delivery` defaults to selective CSS and writes `.cache/route-delivery/candidate/report.json`.
+Use `LUMEN_DELIVERY_CSS=full` for full-catalog setup. `check:route-delivery` enforces byte budgets and
+allowed controller lists, delayed first clicks and native Enter/Space activation, Astro client
+navigation, failed-chunk reload recovery, and deferred dynamic toast styling. The default fixtures
+exercise a multi-route build; shared chunk composition can change these totals in another app.
+
+Pass `--render` to capture computed properties and screenshots for seven routes, including composed
+components in forward/reversed import order, across mobile/desktop themes and mobile RTL at 200% text.
+Set `LUMEN_DELIVERY_COMPARE` to a previous fixture directory to require identical styles and pixels.
+Archived source is selected through `LUMEN_DELIVERY_ASTRO_DIR`, with a separate `LUMEN_DELIVERY_LABEL`.
+A v4 baseline needs its archived shared stylesheet as well as its Astro sources. Keep the same
+consumer markup, shared behavior builds, and toolchain when comparing revisions.
+
+The first runtime-only Astro installation comparison used packed candidate Core/Astro packages and
+published v4.4.0, with identical transitive runtime dependency versions. The runtime graph decreased
+from eight packages to five; the umbrella, TypeScript, and semver were absent from the candidate.
+This isolated library comparison disables automatic peer installation and scripts; it excludes the
+host Astro toolchain and is not a complete application-install claim. Generated CSS increases file
+count even while removal of CLI tooling reduces installed bytes. Recheck final candidate tarballs
+before publishing installation-size claims.
 
 The earlier barrel regression below no longer reproduces at v4.4.0: root and component imports each
 emit 684 bytes for Card/Button/Icon, or 287 bytes without Icon, across three builds. Prefer granular

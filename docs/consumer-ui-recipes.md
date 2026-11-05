@@ -260,7 +260,7 @@ actions. Never use real identity documents in demonstration data.
 
 ## Page and section headers
 
-Install `page-header` or `section-header` through the bundled CLI for Astro, React or Elements:
+Install `page-header` or `section-header` through the separately installed `@santi020k/lumen` CLI for Astro, React or Elements:
 
 ```bash
 pnpm exec lumen add page-header --target astro

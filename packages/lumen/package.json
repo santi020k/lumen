@@ -12,7 +12,8 @@
     "./styles/critical.css",
     "./styles/motion.css",
     "./styles/world-map.css",
-    "./tailwind.css"
+    "./tailwind.css",
+    "./styles/**/*.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -34,7 +35,9 @@
     "./package.json": "./package.json",
     "./styles/motion.css": "./styles/motion.css",
     "./styles/world-map.css": "./styles/world-map.css",
-    "./tailwind.css": "./tailwind.css"
+    "./tailwind.css": "./tailwind.css",
+    "./styles/foundation.css": "./styles/foundation.css",
+    "./styles/components/*.css": "./styles/components/*.css"
   },
   "files": [
     "bin",

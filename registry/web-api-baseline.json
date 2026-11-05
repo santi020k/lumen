@@ -215,7 +215,9 @@
         "./package.json": "./package.json",
         "./runtime": "./runtime/UIPrimitives.astro",
         "./styles.css": "./styles/lumen.css",
+        "./styles/components/*.css": "./styles/components/*.css",
         "./styles/critical.css": "./styles/critical.css",
+        "./styles/foundation.css": "./styles/foundation.css",
         "./tailwind.css": "./styles/tailwind.css"
       },
       "packageJson": "packages/astro/package.json",
@@ -697,6 +699,7 @@
           "import": "./dist/image-comparison.js",
           "types": "./dist/image-comparison.d.ts"
         },
+        "./layers.css": "./styles/layers.css",
         "./media-viewport": {
           "import": "./dist/media-viewport.js",
           "types": "./dist/media-viewport.d.ts"
@@ -722,10 +725,18 @@
           "import": "./dist/schedule.js",
           "types": "./dist/schedule.d.ts"
         },
+        "./styles.css": "./styles/lumen.css",
+        "./styles/components/*.css": "./styles/components/*.css",
+        "./styles/critical.css": "./styles/critical.css",
+        "./styles/foundation.css": "./styles/foundation.css",
+        "./styles/manifest.json": "./styles/manifest.json",
+        "./styles/motion.css": "./styles/motion.css",
+        "./styles/world-map.css": "./styles/world-map.css",
         "./tabs": {
           "import": "./dist/tabs.js",
           "types": "./dist/tabs.d.ts"
         },
+        "./tailwind.css": "./styles/tailwind.css",
         "./theme": {
           "import": "./dist/theme.js",
           "types": "./dist/theme.d.ts"
@@ -1843,7 +1854,9 @@
         "./layers.css": "./layers.css",
         "./package.json": "./package.json",
         "./styles.css": "./styles.css",
+        "./styles/components/*.css": "./styles/components/*.css",
         "./styles/critical.css": "./styles/critical.css",
+        "./styles/foundation.css": "./styles/foundation.css",
         "./tailwind.css": "./tailwind.css"
       },
       "packageJson": "packages/elements/package.json",
@@ -2345,7 +2358,9 @@
         },
         "./release-manifest.json": "./release-manifest.json",
         "./styles.css": "./styles.css",
+        "./styles/components/*.css": "./styles/components/*.css",
         "./styles/critical.css": "./styles/critical.css",
+        "./styles/foundation.css": "./styles/foundation.css",
         "./styles/motion.css": "./styles/motion.css",
         "./styles/world-map.css": "./styles/world-map.css",
         "./tailwind.css": "./tailwind.css"
@@ -2990,8 +3005,10 @@
           "types": "./dist/server.d.ts"
         },
         "./styles.css": "./styles.css",
+        "./styles/components/*.css": "./styles/components/*.css",
         "./styles/critical.css": "./styles/critical.css",
         "./styles/data-table-view.css": "./styles/data-table-view.css",
+        "./styles/foundation.css": "./styles/foundation.css",
         "./tailwind.css": "./tailwind.css"
       },
       "packageJson": "packages/react/package.json",

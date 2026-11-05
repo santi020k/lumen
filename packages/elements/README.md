@@ -81,14 +81,25 @@ its native meaning. See the [v4 migration guide](https://github.com/santi020k/lu
 pnpm add @santi020k/lumen-elements
 ```
 
-The adapter also exposes Lumen's discovery and diagnostics CLI:
+The v5 adapter contains runtime code and styles. Install the optional CLI separately for discovery,
+editable recipes, and diagnostics:
 
 ```bash
+pnpm add -D @santi020k/lumen
 pnpm exec lumen show Tabs
 pnpm exec lumen doctor
 ```
 
-Load the shared stylesheet once from your app entry or global CSS.
+Import the shared foundation once and component CSS where the component is used. Include styles for
+conditional and runtime-inserted content as well as the initial render.
+
+```tsx
+import "@santi020k/lumen-elements/styles/foundation.css";
+import "@santi020k/lumen-elements/styles/components/button.css";
+import "@santi020k/lumen-elements/styles/components/dialog.css";
+```
+
+The full stylesheet remains available as a convenient alternative:
 
 ```css
 @import "@santi020k/lumen-elements/styles.css";

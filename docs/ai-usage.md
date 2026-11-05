@@ -236,7 +236,10 @@ local repository, and programmatic examples.
 
 ## Minimal Setup
 
-Import the stylesheet once in the app's global CSS, root layout, or app entry.
+In v5, Astro components import their own CSS and shared foundation automatically. React and Elements
+import `styles/foundation.css` once, then `styles/components/<kebab-name>.css` with each component.
+Include styles for conditional content and application-generated markup. The full stylesheet remains
+a supported convenience option in all web adapters, as shown below.
 
 This section applies to web targets. Native adapters use their provider or theme APIs instead of a
 stylesheet.
@@ -587,9 +590,8 @@ uses these CustomEvents:
 ## Registry Helper
 
 `@santi020k/lumen` exports typed component, recipe, and documentation metadata from
-`@santi020k/lumen/registry`. The umbrella package and every web adapter expose the same small
-`lumen` binary, so projects that install Astro, React, or Elements can use discovery and diagnostics
-without another direct dependency. Individual components are addressable by name, including
+`@santi020k/lumen/registry`. Install the optional `@santi020k/lumen` development dependency for its small
+`lumen` binary. Web adapters do not install CLI tooling in v5. Individual components are addressable by name, including
 kebab-case aliases such as `data-table`:
 
 ```bash

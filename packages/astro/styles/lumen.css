@@ -1,8 +1,8 @@
 /*
  * Compatibility stylesheet entry for existing Astro consumers.
- * New applications should import "@santi020k/lumen/styles.css".
+ * Astro v5 components import their styles automatically; this entry retains full-catalog setup.
  */
-@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen-core/styles.css";
 
 /* Exact amount controls keep their visible input inside the available width. */
 [data-ui-amount-field], lumen-amount-field { display: inline-block; min-width: 0; max-width: 100%; }

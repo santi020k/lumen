@@ -181,7 +181,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     ).resolves.toContain('<script>')
     await expect(
       readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
-    ).resolves.toContain('@import "@santi020k/lumen/styles.css"')
+    ).resolves.toContain('@import "@santi020k/lumen-core/styles.css"')
     await expect(readFile(sharedStylesUrl, 'utf8')).resolves.toContain(
       '.ui-button'
     )

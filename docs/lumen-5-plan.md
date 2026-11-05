@@ -150,5 +150,7 @@ reports reviewable; never replace published tags. Corrections to a published rel
 - Completed P0 milestones: synchronized tab/scroll-cue fixes; feature-loaded Astro runtime with
   cold interaction, navigation, failure recovery, and measured route budgets. See
   [route evidence](import-and-icon-performance.md#november-5-2026-astro-route-delivery).
-- In progress: remaining P0 CSS/package boundaries, styling hooks, migration contract, and consumer validation.
+- Completed P0 delivery milestone: generated component CSS, automatic Astro styles, and runtime-only
+  web adapters with separately installed CLI (maintainer-approved).
+- In progress: selective adapter coverage, styling hooks, migration contract, and consumer validation.
 - Pending: P1, P2, full candidate validation, independent review, and release approval.

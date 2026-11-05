@@ -1,3 +1,5 @@
+@layer lumen.tokens, lumen.base, lumen.components, lumen.glass;
+
 /* Let synchronized panels settle before the document chooses another scroll anchor. */
 :root[data-ui-tabs-layout] { overflow-anchor: none; }
 

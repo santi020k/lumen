@@ -838,9 +838,6 @@ importers:
 
   packages/astro:
     dependencies:
-      '@santi020k/lumen':
-        specifier: workspace:^
-        version: link:../lumen
       '@santi020k/lumen-core':
         specifier: workspace:^
         version: link:../core
@@ -891,9 +888,6 @@ importers:
 
   packages/elements:
     dependencies:
-      '@santi020k/lumen':
-        specifier: workspace:^
-        version: link:../lumen
       '@santi020k/lumen-core':
         specifier: workspace:^
         version: link:../core
@@ -1015,9 +1009,6 @@ importers:
 
   packages/react:
     dependencies:
-      '@santi020k/lumen':
-        specifier: workspace:^
-        version: link:../lumen
       '@santi020k/lumen-core':
         specifier: workspace:^
         version: link:../core

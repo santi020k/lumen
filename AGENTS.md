@@ -76,6 +76,11 @@ before release-oriented work or broad cross-package changes.
   `on-brand`, `accent`, `success`, `warning`, `danger`, and `on-danger`.
 - Standalone component CSS lives in `packages/astro/styles/lumen.css`. The docs app can layer its
   own theme tokens in `apps/docs/src/styles/global.css`.
+- Canonical shared CSS remains in `packages/lumen/styles.css`; `registry/web-css.json` declares
+  component style dependencies, including dynamically inserted markup. Run
+  `pnpm run generate:component-css` after changing either source. Do not edit generated core or
+  adapter component styles. Astro imports them automatically; React and Elements import the shared
+  foundation once and the styles for their components.
 - Interactive Astro primitives should keep working without requiring Tailwind configuration from
   consumers.
 - Treat all library input as uncontrolled. Avoid backtracking-prone regular expressions and

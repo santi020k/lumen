@@ -11,7 +11,8 @@
     "./styles.css",
     "./styles/critical.css",
     "./styles/data-table-view.css",
-    "./tailwind.css"
+    "./tailwind.css",
+    "./styles/**/*.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -110,10 +111,11 @@
       "types": "./dist/media-selection.d.ts",
       "import": "./dist/media-selection.js"
     },
-    "./tailwind.css": "./tailwind.css"
+    "./tailwind.css": "./tailwind.css",
+    "./styles/foundation.css": "./styles/foundation.css",
+    "./styles/components/*.css": "./styles/components/*.css"
   },
   "files": [
-    "bin",
     "dist",
     "layers.css",
     "styles.css",
@@ -122,9 +124,6 @@
     "LICENSE",
     "tailwind.css"
   ],
-  "bin": {
-    "lumen": "./bin/lumen.mjs"
-  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/minify-build.mjs",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
@@ -137,7 +136,6 @@
     "measure:selective-imports": "node scripts/measure-selective-imports.mjs"
   },
   "dependencies": {
-    "@santi020k/lumen": "workspace:^",
     "@santi020k/lumen-core": "workspace:^",
     "@tanstack/react-table": "catalog:",
     "uqr": "catalog:"

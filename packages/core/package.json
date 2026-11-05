@@ -6,7 +6,9 @@
   },
   "description": "Shared tokens, metadata, and behavior helpers for Lumen UI packages.",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./styles/**/*.css"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -103,14 +105,24 @@
     "./media-viewport": {
       "types": "./dist/media-viewport.d.ts",
       "import": "./dist/media-viewport.js"
-    }
+    },
+    "./styles/foundation.css": "./styles/foundation.css",
+    "./styles/components/*.css": "./styles/components/*.css",
+    "./styles.css": "./styles/lumen.css",
+    "./styles/manifest.json": "./styles/manifest.json",
+    "./styles/critical.css": "./styles/critical.css",
+    "./styles/motion.css": "./styles/motion.css",
+    "./styles/world-map.css": "./styles/world-map.css",
+    "./layers.css": "./styles/layers.css",
+    "./tailwind.css": "./styles/tailwind.css"
   },
   "files": [
     "dist",
     "README.md",
     "LICENSE",
     "PHONE_FLAG_LICENSE.txt",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "styles"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

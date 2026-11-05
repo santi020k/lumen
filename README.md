@@ -72,14 +72,17 @@ pnpm add @santi020k/lumen-react
 pnpm add @santi020k/lumen-elements
 ```
 
+The optional CLI is a separate development dependency in v5: `pnpm add -D @santi020k/lumen`.
+Use it for editable recipes, discovery, and diagnostics.
+
 ### Astro
 
-Import the stylesheet and mount `UIPrimitives` once in your root layout. The runtime enhances all
-interactive Lumen markup on the page.
+In v5, Astro components load their own CSS and shared foundations. Mount `UIPrimitives` once in
+your root layout; it loads only the controllers used by the page. The full stylesheet remains available
+for legacy setup and application-generated markup.
 
 ```astro
 ---
-import '@santi020k/lumen-astro/styles.css'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
 ---
 
