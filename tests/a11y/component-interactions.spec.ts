@@ -1284,13 +1284,12 @@ behaviorTest(['ScrollProgress'], 'ScrollProgress tracks document reading positio
 
   const progress = page.locator('.component-doc-preview [data-ui-scroll-progress]')
 
-  await expect(page.locator('html')).toHaveAttribute('data-ui-scroll-progress-bound', 'true')
+  await expect(progress).toHaveAttribute('aria-valuenow', '0')
   await page.evaluate(() => {
     window.scrollTo(0, document.documentElement.scrollHeight)
   })
 
-  await expect.poll(async () => Number(await progress.getAttribute('aria-valuenow')))
-    .toBeGreaterThan(0)
+  await expect(progress).toHaveAttribute('aria-valuenow', '100')
 })
 
 test('runtime behavior registry is completely represented', () => {

@@ -109,6 +109,11 @@ android {
 }
 
 dependencies {
+    constraints {
+        implementation("androidx.lifecycle:lifecycle-runtime:2.11.0") {
+            because("Android Gradle Plugin 9.5 requires compatible Lifecycle lint checks")
+        }
+    }
     val composeBom = platform("androidx.compose:compose-bom:2026.09.00")
 
     implementation(composeBom)
