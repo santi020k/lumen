@@ -561,3 +561,8 @@ media loading, selection, adjustment algorithms, processing, export and persiste
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+The DOM-only `@santi020k/lumen-core/reveal` entry shares reveal threshold normalization and observer
+lifecycle across web adapters. `createLumenRevealController(element, { once, threshold })` returns a
+`destroy()` cleanup; use the framework components in application code. This helper is intentionally
+outside the root entry so native consumers do not traverse browser behavior.

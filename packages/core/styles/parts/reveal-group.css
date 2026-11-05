@@ -26,6 +26,16 @@
 
 @layer lumen.components {
 @media (prefers-reduced-motion: reduce) {
+.ui-reveal-group:not([data-ui-scroll-reveal-bound]) > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+}
+
+@layer lumen.components {
+@media (prefers-reduced-motion: reduce) {
 .ui-reveal-group[data-ui-scroll-reveal-bound="true"] > * {
     opacity: 1;
     transform: none;

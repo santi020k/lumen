@@ -1186,3 +1186,11 @@ The optional `tailwind.css` bridge (Lumen 4.3+) maps semantic colors to utilitie
 Use component props for behavior and utilities for local presentation. The standalone stylesheet
 does not require Tailwind. See the [Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind)
 for framework examples, source detection, and Preflight choices.
+
+## Reveal visibility safety
+
+`ScrollReveal` and `RevealGroup` preserve explicit thresholds (clamped to 0–1; the default is 0.15).
+An intersecting element waits until that ratio is reached. If its size or a clipping ancestor makes
+the threshold unreachable, it stays visible without animation. Resizing and enlarged text are
+rechecked. Keyboard focus within a reveal and reduced motion bypass decorative hiding immediately.
+Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.

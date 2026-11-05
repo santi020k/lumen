@@ -262,7 +262,8 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     selector: '[data-ui-back-to-top], [data-ui-scroll-reveal], [data-ui-reveal-group], [data-ui-animated-number]',
     load: () => import('./controllers/motion.js').then(m => ({ init: scope => {
       m.initMotionControllers(scope)
-    }  })) },
+    },
+    cleanup: m.cleanupMotionControllers })) },
   { name: 'attachments',
     selector: '[data-ui-attachment-preview]',
     load: () => import('./controllers/attachments.js').then(m => ({ init: scope => {

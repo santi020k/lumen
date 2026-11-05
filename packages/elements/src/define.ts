@@ -86,6 +86,7 @@ import {
   scrollLumenTabIntoView,
   tuneThemeContrast
 } from '@santi020k/lumen-core'
+import { createLumenRevealController } from '@santi020k/lumen-core/reveal'
 
 import {
   LumenApprovalCardElement as GranularLumenApprovalCardElement,
@@ -10354,53 +10355,31 @@ class LumenRatingBehaviorElement extends LumenElement {
 }
 
 class LumenScrollRevealBehaviorElement extends LumenElement {
-  private observer: IntersectionObserver | undefined
+  #controller: { destroy: () => void } | undefined
 
-  override connectedCallback() {
+  override connectedCallback(): void {
     super.connectedCallback()
 
-    if (!hasDocument()) return
+    this.#controller?.destroy()
 
-    this.dataset.uiScrollRevealBound = 'true'
+    if (!hasDocument()) return
 
     const delay = Math.max(0, Number(this.getAttribute('delay')) || 0)
 
     this.style.setProperty('--ui-reveal-delay', `${delay}ms`)
 
-    if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      typeof IntersectionObserver === 'undefined'
-    ) {
-      this.classList.add('is-revealed')
+    const raw = this.getAttribute('threshold')
 
-      return
-    }
-
-    const once = this.getAttribute('once') !== 'false'
-
-    const threshold = Math.min(
-      1, Math.max(0, Number(this.getAttribute('threshold')) || 0)
-    )
-
-    this.observer = new IntersectionObserver(
-      entries => {
-        for (const entry of entries) {
-          entry.target.classList.toggle('is-revealed', entry.isIntersecting)
-
-          if (entry.isIntersecting && once) {
-            this.observer?.unobserve(entry.target)
-          }
-        }
-      }, { threshold }
-    )
-
-    this.observer.observe(this)
+    this.#controller = createLumenRevealController(this, {
+      once: this.getAttribute('once') !== 'false',
+      ...(raw === null ? {} : { threshold: Number(raw) })
+    })
   }
 
-  override disconnectedCallback() {
-    this.observer?.disconnect()
+  override disconnectedCallback(): void {
+    this.#controller?.destroy()
 
-    this.observer = undefined
+    this.#controller = undefined
   }
 }
 

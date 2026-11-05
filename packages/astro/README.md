@@ -918,3 +918,11 @@ Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); thir
 - Set `fallbackFormat="webp"` on `CoverImage` to generate an AVIF source with a WebP fallback. Omit the prop to keep the default picture formats.
 
 Mount `UIPrimitives` once to enable the reading and clipboard controls.
+
+## Reveal visibility safety
+
+`ScrollReveal` and `RevealGroup` preserve explicit thresholds (clamped to 0–1; the default is 0.15).
+An intersecting element waits until that ratio is reached. If its size or a clipping ancestor makes
+the threshold unreachable, it stays visible without animation. Resizing and enlarged text are
+rechecked. Keyboard focus within a reveal and reduced motion bypass decorative hiding immediately.
+Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.

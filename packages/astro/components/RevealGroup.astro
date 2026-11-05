@@ -5,6 +5,7 @@ import '../styles/foundation.css'
 import '../styles/components/reveal-group.css'
 
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+import { normalizeLumenRevealThreshold } from '@santi020k/lumen-core/reveal'
 
 interface Props extends HTMLAttributes<'div'> {
   animation?: 'fade' | 'slide-up' | 'scale'
@@ -34,7 +35,7 @@ const {
 
 const safeDelay = Math.max(0, delay)
 const safeStagger = Math.max(0, stagger)
-const safeThreshold = Math.min(1, Math.max(0, threshold))
+const safeThreshold = normalizeLumenRevealThreshold(threshold)
 
 const motionStyle = [
   typeof style === 'string' ? style : '',

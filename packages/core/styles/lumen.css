@@ -1474,12 +1474,14 @@
     animation: none;
   }
 
+  .ui-scroll-reveal:not([data-ui-scroll-reveal-bound]),
   .ui-scroll-reveal[data-ui-scroll-reveal-bound="true"] {
     opacity: 1;
     transform: none;
     transition: none;
   }
 
+  .ui-reveal-group:not([data-ui-scroll-reveal-bound]) > *,
   .ui-reveal-group[data-ui-scroll-reveal-bound="true"] > * {
     opacity: 1;
     transform: none;

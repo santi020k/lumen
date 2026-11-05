@@ -122,6 +122,10 @@
     "./loading": {
       "types": "./dist/loading.d.ts",
       "import": "./dist/loading.js"
+    },
+    "./reveal": {
+      "types": "./dist/reveal.d.ts",
+      "import": "./dist/reveal.js"
     }
   },
   "files": [

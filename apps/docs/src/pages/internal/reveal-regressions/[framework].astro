@@ -1,0 +1,87 @@
+---
+import { createElement } from 'react'
+import { renderToString } from 'react-dom/server'
+
+import '@santi020k/lumen/styles.css'
+
+import { Button, RevealGroup, ScrollReveal } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+
+import { RevealRegressions } from '../../../components/internal/RevealRegressions'
+
+export const getStaticPaths = () => ['astro', 'react', 'elements'].map(framework => ({ params: { framework } }))
+
+const { framework } = Astro.params
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Reveal accessibility regressions</title>
+  </head>
+  <body>
+    <main>
+      <h1>Reveal accessibility regressions</h1>
+      {framework === 'astro' && (
+<>
+        <RevealGroup data-case="tall" threshold={0.8} style="min-height:10000px">
+          <p>Tall content remains readable.</p>
+          <Button>Reach the tall group</Button>
+        </RevealGroup>
+        <ScrollReveal data-case="threshold" once={false} threshold={0.8} style="min-height:300px">
+          <p>Wait for the requested threshold.</p>
+          <Button>Reach the threshold content</Button>
+        </ScrollReveal>
+        <RevealGroup data-case="resize" once={false} threshold={0.8} style="min-height:300px">
+          <p>Enlarged content remains readable.</p>
+          <Button>Reach the enlarged group</Button>
+        </RevealGroup>
+      </>
+)}
+      {framework === 'react' && <div id="reveal-react" set:html={renderToString(createElement(RevealRegressions))} />}
+      {framework === 'elements' && (
+<>
+        <lumen-reveal-group data-case="tall" threshold="0.8" style="min-height:10000px">
+          <p>Tall content remains readable.</p>
+          <lumen-button>Reach the tall group</lumen-button>
+        </lumen-reveal-group>
+        <lumen-scroll-reveal data-case="threshold" once="false" threshold="0.8" style="min-height:300px">
+          <p>Wait for the requested threshold.</p>
+          <lumen-button>Reach the threshold content</lumen-button>
+        </lumen-scroll-reveal>
+        <lumen-reveal-group data-case="resize" once="false" threshold="0.8" style="min-height:300px">
+          <p>Enlarged content remains readable.</p>
+          <lumen-button>Reach the enlarged group</lumen-button>
+        </lumen-reveal-group>
+      </>
+)}
+      <div style="min-height:100vh" aria-hidden="true"></div>
+    </main>
+    {framework === 'astro' && <UIPrimitives />}
+    <script>
+      import { createElement } from 'react'
+      import { hydrateRoot } from 'react-dom/client'
+
+      import { defineLumenElements } from '@santi020k/lumen-elements/define'
+
+      import { RevealRegressions } from '../../../components/internal/RevealRegressions'
+
+      const island = document.getElementById('reveal-react')
+
+      if (island) hydrateRoot(island, createElement(RevealRegressions))
+
+      if (document.querySelector('lumen-reveal-group')) {
+        defineLumenElements(['Button', 'ScrollReveal', 'RevealGroup'])
+      }
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+  main { max-width: 50rem; margin-inline: auto; padding: 1rem; }
+  [data-case] { display: block; }
+</style>

@@ -69,7 +69,7 @@ const deliver = (target: HTMLElement, states: boolean[]) => {
 beforeEach(() => {
   observers.length = 0
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
-  vi.stubGlobal('matchMedia', () => ({ matches: false }))
+  vi.stubGlobal('matchMedia', () => Object.assign(new EventTarget(), { matches: false }))
   vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
 })
 
@@ -123,7 +123,7 @@ describe.each(components)('$name', ({ render }) => {
   })
 
   test('reveals immediately when reduced motion is preferred', () => {
-    vi.stubGlobal('matchMedia', () => ({ matches: true }))
+    vi.stubGlobal('matchMedia', () => Object.assign(new EventTarget(), { matches: true }))
     const reveal = mount(render(true))
     expect(reveal.classList.contains('is-revealed')).toBe(true)
     expect(observers).toHaveLength(0)

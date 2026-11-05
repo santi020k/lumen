@@ -101,6 +101,7 @@ import {
   tokenizeLumenCode
 } from '@santi020k/lumen-core'
 import { parseLumenDate as parseCalendarDate, resolveLumenDateLabels as resolveDateControlLabels, resolveLumenDateLocale as getCalendarLocale } from '@santi020k/lumen-core'
+import { createLumenRevealController, normalizeLumenRevealThreshold } from '@santi020k/lumen-core/reveal'
 import { renderSVG } from 'uqr'
 
 import { ChartInspection } from './chart-inspection.js'
@@ -6465,34 +6466,7 @@ export const ScrollReveal = ({
 
     if (!root) return
 
-    root.dataset.uiScrollRevealBound = 'true'
-
-    if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      typeof IntersectionObserver === 'undefined'
-    ) {
-      root.classList.add('is-revealed')
-
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      entries => {
-        const entry = entries.at(-1)
-
-        if (!entry) return
-
-        root.classList.toggle('is-revealed', entry.isIntersecting)
-
-        if (entry.isIntersecting && once) observer.disconnect()
-      }, { threshold: Math.min(1, Math.max(0, threshold)) }
-    )
-
-    observer.observe(root)
-
-    return () => {
-      observer.disconnect()
-    }
+    return createLumenRevealController(root, { once, threshold }).destroy
   }, [once, threshold])
 
   return (
@@ -6501,7 +6475,7 @@ export const ScrollReveal = ({
         'ui-scroll-reveal', `ui-scroll-reveal-${animation}`, `ui-motion-duration-${duration}`, className
       )}
       data-ui-reveal-once={String(once)}
-      data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}
+      data-ui-reveal-threshold={normalizeLumenRevealThreshold(threshold)}
       data-ui-scroll-reveal
       ref={rootRef}
       style={
@@ -6541,40 +6515,13 @@ export const RevealGroup = ({
 
     if (!root) return
 
-    root.dataset.uiScrollRevealBound = 'true'
-
     for (const [index, child] of [...root.children].entries()) {
       if (child instanceof HTMLElement) {
         child.style.setProperty('--ui-reveal-index', String(index))
       }
     }
 
-    if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      typeof IntersectionObserver === 'undefined'
-    ) {
-      root.classList.add('is-revealed')
-
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      entries => {
-        const entry = entries.at(-1)
-
-        if (!entry) return
-
-        root.classList.toggle('is-revealed', entry.isIntersecting)
-
-        if (entry.isIntersecting && once) observer.disconnect()
-      }, { threshold: Math.min(1, Math.max(0, threshold)) }
-    )
-
-    observer.observe(root)
-
-    return () => {
-      observer.disconnect()
-    }
+    return createLumenRevealController(root, { once, threshold }).destroy
   }, [once, threshold])
 
   return (
@@ -6584,7 +6531,7 @@ export const RevealGroup = ({
       )}
       data-ui-reveal-group
       data-ui-reveal-once={String(once)}
-      data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}
+      data-ui-reveal-threshold={normalizeLumenRevealThreshold(threshold)}
       ref={rootRef}
       style={
         {
