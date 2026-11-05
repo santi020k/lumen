@@ -8,10 +8,10 @@ for (const width of [390, 1440]) {
   for (const theme of ['lumen-light', 'lumen-dark']) {
     test(`Tailwind guide preserves component customization and nested colors at ${width}px in ${theme}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 })
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await page.addInitScript(value => { localStorage.setItem('lumen-theme', value) }, theme)
       await page.goto('/docs/web/tailwind')
-      await page.evaluate(value => {
-        document.documentElement.dataset.theme = value
-      }, theme)
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
 
       const card = page.locator('[data-tailwind-example]')
 
