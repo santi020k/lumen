@@ -1,4 +1,4 @@
-import { coerceThemePreset, createThemeBuilderTokens, exportThemeCss, exportThemeDesignTokens, exportThemeFigmaVariables, type LumenThemeTokens, lumenTokenNames } from '@santi020k/lumen-core'
+import { coerceThemePreset, createThemeBuilderTokens, exportThemeBuilderCss, exportThemeDesignTokens, exportThemeFigmaVariables, type LumenThemeTokens, lumenTokenNames } from '@santi020k/lumen-core'
 
 type ThemeBuilderExportFormat = 'css' | 'figma' | 'tokens'
 
@@ -204,11 +204,6 @@ const applyThemeBuilderTokens = (
   }
 }
 
-const buildThemeBuilderCss = (
-  tokens: LumenThemeTokens,
-  scheme: ThemeBuilderScheme
-): string => exportThemeCss(tokens).replace('{', `{\n  color-scheme: ${scheme};`)
-
 const buildThemeBuilderExport = (
   tokens: LumenThemeTokens,
   scheme: ThemeBuilderScheme,
@@ -225,7 +220,7 @@ const buildThemeBuilderExport = (
     return JSON.stringify(exportThemeDesignTokens(tokens), null, 2)
   }
 
-  return buildThemeBuilderCss(tokens, scheme)
+  return exportThemeBuilderCss(tokens, scheme)
 }
 
 const firstThemeValue = (...values: (string | null | undefined)[]): string | null => (

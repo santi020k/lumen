@@ -952,6 +952,7 @@ behaviorTest(['ThemeBuilder'], 'ThemeBuilder updates its exported CSS when token
 
   await expect(builder).toHaveAttribute('data-ui-theme-builder-bound', 'true')
   await hue.fill('212')
+  await expect(output).toHaveValue(/^:root \{\n {2}color-scheme: (light|dark);/)
   await expect(output).toHaveValue(/--brand: 212/)
 })
 
