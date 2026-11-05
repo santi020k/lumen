@@ -147,7 +147,8 @@ reports reviewable; never replace published tags. Corrections to a published rel
 ## Progress
 
 P0, P1, and P2 implementation is committed and integrated locally on `release/v5.0.0`. The candidate
-is unpublished. Full local validation passed on `420e0c72`; subsequent edits record these results.
+is unpublished as of 2026-11-05. Initial implementation validation passed on `420e0c72`; the
+prepared release and its follow-up validation are recorded below.
 
 - P0: route budgets, selective Astro runtime and CSS, runtime-only adapters, granular adapter
   entries, synchronized tabs and scroll cues, styling parts, accessible reveal behavior, and v5
@@ -208,3 +209,44 @@ Astro initialization, selective setup, and optional recipe adoption.
 
 Publication remains a separate authorized task through the normal GitHub workflow. Do not remove
 the real website patch or claim published-package adoption from local candidate evidence.
+
+
+## Prepared release validation (2026-11-05)
+
+Release preparation is integrated locally on `release/v5.0.0` in `1a183174`, followed by the CLI
+stabilization in `b15052a5`. Changesets are consumed into package versions and changelogs: the six linked
+web/tooling packages are 5.0.0; React Native is 4.0.3, React Hook Form 4.0.2, and brand icons 4.0.1.
+Tokens stay at 4.0.0 and Compose/Wear at 4.0.1. Swift sources are unchanged and follow the v5.0.0 tag.
+
+Independent pre-push review and its bounded final review produced four findings, all addressed:
+
+- Initial publication, partial recovery, and no-op retries audit the complete reviewed nine-package
+  version set and provenance. The manifest must match the immutable set in the v5 contract.
+- Migration, catalogs, update commands, lockfile verification, and audits use individual package
+  versions. Explicit audit targets remain strict. Native Swift/Maven pins stay application-owned.
+- V5 approval requires attributable owner decision evidence and the exact reviewed draft revision.
+  CLI/MCP mirrors must match, and only approval metadata may change after that revision.
+- The CLI follows its bundled v5 release target, with a simulated 5.0.1 regression, so later patch
+  releases preserve source-only migration and dependency upgrades.
+
+Additional preparation preserves React Hook Form's v4 peer support alongside v5, validates the Swift
+baseline, and reports registry availability as `unverified` rather than baking an unpublished claim
+into immutable packages. The subsequent-release umbrella-version constraint is documented in
+[CONTRIBUTING.md](../CONTRIBUTING.md#publishing); the initial publication set is never rewritten.
+
+| Prepared-release check | Result |
+| --- | --- |
+| `pnpm run validate` on `b15052a5` | Passed: builds, strict types, zero-warning lint, spelling, unused code, contracts, security, publish contents, and packed consumers |
+| Unit tests within that run | 3,171 passed across 305 files |
+| Focused migration/rollout/audit suites | 73 passed, including future-patch targeting, mixed-version lockfile checks and 100,000 blank-line inputs |
+| Approval/publication/Swift-selector tests | 60 passed; the independent reviewer also ran these tests |
+| `pnpm run check:swift-source-compatibility` | Zero source breakages against v4.4.0 |
+| Clean packed consumers | Core, umbrella, React, React Hook Form, Elements, Astro, Next.js, brand icons, React Native and MCP passed |
+| Legacy React Hook Form consumer | Strict peer resolution, TypeScript and rendered form values passed with published Lumen React 4.3.0 |
+| MCP packed transport checks | External stdio and Streamable HTTP passed |
+
+The prior runtime browser and website evidence retains the exact revision/environment limits above;
+this preparation changes version metadata, migration tooling and release checks. Temporary release
+logs and the prepared PR body are under `.cache/v5-release`. No package, GitHub branch, PR, tag or
+release was published by this local preparation. The v5 contract remains draft pending explicit
+release authorization through the documented GitHub workflow.
