@@ -6,7 +6,7 @@
 
 /* Cascade layers: consumer (unlayered) CSS always wins over Lumen styles.
  * Layer order also guarantees glass variants beat component base styles. */
-@layer lumen.tokens, lumen.base, lumen.components, lumen.glass;
+@layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities;
 @import "./world-map.css";
 
 @layer lumen.tokens {
