@@ -4,6 +4,10 @@ import { Link } from '@santi020k/lumen-astro'
 import EditorialCard from '../lumen/editorial-card.astro'
 import EditorialContactPanel from '../lumen/editorial-contact-panel.astro'
 import EditorialCoverSpread from '../lumen/editorial-cover-spread.astro'
+import EditorialFooter from '../lumen/editorial-footer.astro'
+import EditorialLinkedTimeline from '../lumen/editorial-linked-timeline.astro'
+import EditorialTestimonialSpotlight from '../lumen/editorial-testimonial-spotlight.astro'
+import EditorialVideoDialog from '../lumen/editorial-video-dialog.astro'
 import EditorialIntroduction from '../lumen/editorial-introduction.astro'
 import EditorialReplacementNotice from '../lumen/editorial-replacement-notice.astro'
 ---
@@ -32,8 +36,22 @@ import EditorialReplacementNotice from '../lumen/editorial-replacement-notice.as
       <section data-theme="lumen-dark" aria-label="Nested dark theme" class="nested">
         <EditorialCard headingId="nested-card" headingLevel={2} title="A nested theme" description="Colors follow the nearest theme." href="#consumer-title" linkLabel="Back to the beginning" />
       </section>
+      <EditorialTestimonialSpotlight headingId="testimonials" title="Reader testimonials" items={[
+        { quote: 'The examples made it easier to get started.', author: 'Alex', detail: 'Designer' },
+        { quote: 'The notes explained the decisions.', author: 'Morgan' },
+        { quote: 'I could follow the whole process.', author: 'Sam' }
+      ]} />
+      <EditorialLinkedTimeline headingId="timeline" title="Project timeline" items={[
+        { title: 'First field notes', dateLabel: 'March 2025', dateTime: '2025-03', href: '#consumer-title' },
+        { title: 'Open review', dateLabel: 'June 2025' }
+      ]} />
+      <EditorialVideoDialog id="sample-video" title="Example film" src="/film.mp4" playLabel="Watch example film" closeLabel="Close film" fileLabel="Open the video file" errorLabel="The video could not load." transcriptLabel="Read the transcript">
+        <p slot="transcript">A short illustration of the workflow.</p>
+      </EditorialVideoDialog>
     </main>
-    <footer><Link href="https://santi020k.com" newTab>Santiago Molina</Link></footer>
+    <EditorialFooter title="Stay in touch" groups={[{ title: 'Project links', links: [{ href: '#timeline', label: 'Read the timeline' }] }]}>
+      <Link slot="credits" href="https://santi020k.com" newTab>Santiago Molina</Link>
+    </EditorialFooter>
   </body>
 </html>
 

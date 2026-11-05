@@ -63,5 +63,64 @@ test('static recipes remain usable without client JavaScript', async ({ browser 
   await page.goto('/')
   await expect(page.getByRole('link', { name: 'Read the external guide' })).toHaveCount(2)
   await expect(page.getByRole('heading', { name: 'Text without media' })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Reader testimonials' }).locator('blockquote')).toHaveCount(3)
+  await expect(page.getByRole('region', { name: 'Project timeline' }).getByRole('link', { name: 'First field notes' })).toHaveAttribute('href', '#consumer-title')
+  await expect(page.locator('footer').getByRole('navigation', { name: 'Project links' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Watch example film' })).toHaveAttribute('href', '/film.mp4')
+  await page.getByText('Read the transcript', { exact: true }).click()
+  await expect(page.getByText('A short illustration of the workflow.')).toBeVisible()
   await context.close()
+})
+
+test('video waits for a request and recovers from a failed source on reopen', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 })
+  let requests = 0
+  await page.route('**/film.mp4', async route => {
+    requests += 1
+    await route.abort()
+  })
+  await page.goto('/')
+  const trigger = page.getByRole('button', { name: 'Watch example film' })
+  const dialog = page.getByRole('dialog', { name: 'Example film' })
+  await expect(trigger).toBeVisible()
+  expect(requests).toBe(0)
+  await page.locator('html').evaluate(html => { html.style.fontSize = '200%' })
+  await trigger.press('Enter')
+  await expect(dialog).toBeVisible()
+  const dialogFits = await dialog.evaluate(element => {
+    const bounds = element.getBoundingClientRect()
+    return bounds.left >= 0 && bounds.right <= window.innerWidth && element.scrollWidth <= element.clientWidth
+  })
+  expect(dialogFits).toBe(true)
+  await expect(dialog.getByRole('status')).toHaveText('The video could not load.')
+  await expect(dialog.getByRole('link', { name: 'Open the video file' })).toHaveAttribute('href', '/film.mp4')
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+  await expect(trigger).toBeFocused()
+  const requestsAfterFailure = requests
+  await trigger.press('Enter')
+  await expect.poll(() => requests).toBeGreaterThan(requestsAfterFailure)
+  await dialog.getByRole('button', { name: 'Close film' }).click()
+  await expect(dialog).toBeHidden()
+  await expect(trigger).toBeFocused()
+})
+
+test('closing the video dialog pauses playback', async ({ page }) => {
+  await page.goto('/')
+  const trigger = page.getByRole('button', { name: 'Watch example film' })
+  const dialog = page.getByRole('dialog', { name: 'Example film' })
+  const video = page.locator('#sample-video video')
+  await trigger.click()
+  await expect(video).toBeVisible()
+  await video.evaluate(async element => {
+    if (!(element instanceof HTMLVideoElement)) throw new TypeError('Expected a video element')
+
+    element.muted = true
+    await element.play()
+  })
+  await expect(video).toHaveJSProperty('paused', false)
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+  await expect(video).toHaveJSProperty('paused', true)
+  await expect(trigger).toBeFocused()
 })

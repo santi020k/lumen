@@ -1,6 +1,6 @@
 # Editorial recipes
 
-The `editorial` family brings five reusable compositions from Santiago Molina's website 4.1.0
+The `editorial` family brings reusable compositions from versions 4.1 and 5 of Santiago Molina's website
 into Lumen. It belongs in the existing recipe installer: consumers own editable source, while
 Lumen continues to own the primitives and tokens. No separate cards or personal-brand package
 is required.
@@ -22,10 +22,11 @@ node packages/lumen/bin/lumen.mjs add editorial --target astro --cwd /path/to/yo
 The target project needs `@santi020k/lumen-astro` installed. React and Web Components targets
 are not available for this family.
 
-The installer writes five independent components, an example page, and `EDITORIAL.md` into
+The installer writes nine independent components, an example page, and `EDITORIAL.md` into
 `src/lumen/`. It preserves existing files by default. Review local edits before using `--force`.
-Import `@santi020k/lumen-astro/styles.css` once in the root layout. Individual recipes render
-without client JavaScript; the example's theme toggle needs Lumen's standard Astro runtime.
+Import `@santi020k/lumen-astro/styles.css` once in the root layout. The video dialog uses a small
+Astro script and provides a direct video link and optional transcript without JavaScript.
+The example's theme toggle needs Lumen's standard Astro runtime.
 
 See the [installed component guide](../packages/lumen/templates/astro/editorial/src/lumen/EDITORIAL.md)
 for the complete props and slots contract. The showcase imports those same files directly;
@@ -40,6 +41,10 @@ there is no second implementation to synchronize.
 | `ShippedSystemCard` | `editorial-card.astro` | Heading level/ID, category, description, destination and action label |
 | `ProjectReplacementNotice` | `editorial-replacement-notice.astro` | Earlier/current names, destination, explanation and action label |
 | `PolicyContactCard` | `editorial-contact-panel.astro` | Heading level/ID, label, body and optional note |
+| `TestimonialSpotlight` | `editorial-testimonial-spotlight.astro` | Quotes, attributions, and optional portraits |
+| `CareerTimeline` | `editorial-linked-timeline.astro` | Chronological order, dates, optional links, and logos |
+| `SiteFooter` | `editorial-footer.astro` | Closing message, grouped links, action, and credits |
+| `HomeProductFilm` | `editorial-video-dialog.astro` | Video URL, poster, artwork, captions, and transcript |
 
 The recipes contain no collection queries, personal copy, client assets, fixed component IDs,
 website routes, or private styles. Choose unique heading IDs for every instance and meaningful

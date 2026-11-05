@@ -1,12 +1,13 @@
 # Editorial recipes for Astro
 
-These five independent components and one example page are copied into your project by
+These nine independent components and one example page are copied into your project by
 `lumen add editorial --target astro`. Edit the copies to fit your content. React and Elements
 implementations are not included in this family.
 
-Import `@santi020k/lumen-astro/styles.css` once in your root layout. The five components are
-static and do not require the runtime. The example's `ThemeToggle` needs the standard single
-`UIPrimitives` mount in the root layout. Tailwind and the private templates package are not required.
+Import `@santi020k/lumen-astro/styles.css` once in your root layout. The static compositions need
+only CSS. The video dialog ships with its own small Astro script. The example's `ThemeToggle`
+needs the standard single `UIPrimitives` mount in the root layout. Tailwind and the private
+templates package are not required.
 
 ```astro
 ---
@@ -32,6 +33,15 @@ import EditorialCard from './editorial-card.astro'
 | `editorial-card.astro` | Required `headingId`, `title`, `description`, `href`, `linkLabel`; optional `category`, `icon`, `headingLevel` (2–4, default 3), `newTab`. | None |
 | `editorial-replacement-notice.astro` | Required `title`, `currentLabel`, `destinationLabel`, `replacementLabel`, `href`, `linkLabel`; optional `replacementDetail`, `newTab`. | Default explanatory content |
 | `editorial-contact-panel.astro` | Required `headingId`, `label`, `title`; optional `headingLevel` (2–4, default 2), `icon` (default `mail`). | Default body and optional `note` |
+| `editorial-testimonial-spotlight.astro` | `headingId`, `title`, and ordered `items` with `quote`, `author`, and optional `detail` or `portrait`. The first quote is featured. | None |
+| `editorial-linked-timeline.astro` | `headingId`, `title`, and ordered `items` with `title`, `dateLabel`, and optional `dateTime`, `href`, `description`, `logo`, or `newTab`. | None |
+| `editorial-footer.astro` | `title`, optional `description`, and `groups` with a unique `title` and `links` (`label`, `href`, and optional `newTab`). Place outside the main landmark for a site footer. | `action`, `credits` |
+| `editorial-video-dialog.astro` | Unique `id`, `title`, `src`, optional `poster`, and localized `playLabel`, `closeLabel`, `fileLabel`, `errorLabel`, and `transcriptLabel`. | `artwork`, `transcript`, `tracks` |
+
+Supply caption tracks for spoken or meaningful audio. The video loads on opening, pauses on
+closing, and retries load failures on reopen. The direct file link and transcript remain
+available without JavaScript. Artwork is separate from the play control and may use Astro
+`Picture`; applications choose the appropriate media URL and formats.
 
 Give each heading a unique ID when composing multiple instances. Choose heading levels to fit
 the surrounding document. All visible copy comes from your props or slots, so it can be localized.
@@ -48,9 +58,9 @@ fixed component ID, or Tailwind utility is required. Customize the copied styles
 and readable wrapping intact.
 
 The example `editorial.astro` contains one page landmark and illustrative content. Use it once
-per page, or import the five components into your own layout. Replace example links and copy
+per page, or import individual compositions into your own layout. Replace example links and copy
 before using it as a product page.
 
 These generalized compositions are part of Lumen under its MIT license. Their design originated
-in Santiago Molina's website 4.1.0; personal writing, photographs, and client assets remain outside
+in versions 4.1 and 5 of Santiago Molina's website; personal writing, photographs, and client assets remain outside
 the recipe. Keep the copyright and license notice supplied with Lumen when redistributing copies.

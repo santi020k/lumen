@@ -48,8 +48,8 @@ Available families are analytics dashboard, SaaS admin, commerce dashboard, proj
 authentication/onboarding, and editorial. The five product templates support all three web targets;
 editorial supports Astro. Preview them in the gallery before choosing a recipe.
 
-The [editorial recipes](../../docs/editorial-recipes.md) extract five independent content compositions
-from the website 4.1.0 release. Install them with `pnpm exec lumen add editorial --target astro`.
+The [editorial recipes](../../docs/editorial-recipes.md) extract nine independent content compositions
+from versions 4.1 and 5 of the website. Install them with `pnpm exec lumen add editorial --target astro`.
 The showcase imports the installable sources directly so the preview and copied components stay aligned.
 
 Dashboard metric cards own their frame and spacing. Their public `Stat` uses the bare

@@ -10,6 +10,8 @@ await rm(consumer, { force: true, recursive: true })
 
 await mkdir(new URL('src/pages/', consumer), { recursive: true })
 
+await mkdir(new URL('public/', consumer), { recursive: true })
+
 await writeFile(new URL('package.json', consumer), JSON.stringify({ private: true, type: 'module' }))
 
 await writeFile(new URL('tsconfig.json', consumer), JSON.stringify({ extends: 'astro/tsconfigs/strict', include: ['.astro/types.d.ts', 'src/**/*'], exclude: ['dist', 'node_modules'] }))
@@ -19,6 +21,8 @@ await writeFile(new URL('astro.config.mjs', consumer), 'export default { output:
 await symlink(new URL('../../../apps/docs/node_modules/', import.meta.url), new URL('node_modules', consumer), 'dir')
 
 await copyFile(new URL('../../../tests/fixtures/editorial/index.astro.template', import.meta.url), new URL('src/pages/index.astro', consumer))
+
+await copyFile(new URL('../../../apps/docs/public/launch/prompt-to-verified-ui.mp4', import.meta.url), new URL('public/film.mp4', consumer))
 
 await copyFile(new URL('../../../tests/fixtures/editorial/reading-controls.astro.template', import.meta.url), new URL('src/pages/reading-controls.astro', consumer))
 

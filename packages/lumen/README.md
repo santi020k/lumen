@@ -307,9 +307,10 @@ versions and explicit SDK dependency-review findings.
 
 ## Editorial recipes
 
-Run `pnpm exec lumen add editorial --target astro` to copy five independent content components and
-one example page into `src/lumen/`: a cover spread, introduction, card, replacement notice, and
-contact panel. They use public Lumen primitives and scoped semantic-token CSS. They need no
+Run `pnpm exec lumen add editorial --target astro` to copy nine independent content components and
+one example page into `src/lumen/`. The components include a cover spread, introduction, card,
+replacement notice, contact panel, testimonial spotlight, linked timeline, site footer, and
+video dialog. They use public Lumen primitives and scoped semantic-token CSS. They need no
 Tailwind setup, website data, or private package. See the copied `EDITORIAL.md` and the
 [editorial guide](https://github.com/santi020k/lumen/blob/main/docs/editorial-recipes.md) for props,
 slots, unique heading IDs, media ownership, and runtime setup. React and Elements ports are not included.

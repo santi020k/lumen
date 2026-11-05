@@ -647,7 +647,8 @@ attributes, and accessible markup.
 - Keep text rhythm inside Prose or Typography. Verify long and translated text, enlarged text,
   validation states, optional sections and mobile wrapping before calling a composition finished.
 - For content-led Astro pages, install `editorial` with `lumen add editorial --target astro`.
-  Reuse its cover spread, introduction, content card, replacement notice, and contact panel.
+  Reuse its cover spread, introduction, content card, replacement notice, contact panel,
+  testimonial spotlight, linked timeline, site footer, or video dialog.
   Pass application copy, links, media, and unique heading IDs explicitly. See the
   [editorial recipe guide](editorial-recipes.md); React and Elements ports are not included.
 - For interactive Astro editorial pages, install `article-reading`, `site-search-dialog`, or

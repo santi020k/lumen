@@ -17,7 +17,11 @@ describe('editorial recipe installation', () => {
         'editorial-contact-panel.astro',
         'editorial-cover-spread.astro',
         'editorial-introduction.astro',
+        'editorial-footer.astro',
+        'editorial-linked-timeline.astro',
         'editorial-replacement-notice.astro',
+        'editorial-testimonial-spotlight.astro',
+        'editorial-video-dialog.astro',
         'editorial.astro'
       ].map(name => `src/lumen/${name}`)
       expect(new Set(result.added)).toEqual(new Set(files))

@@ -1,0 +1,45 @@
+---
+import { Link, Typography } from '@santi020k/lumen-astro'
+
+interface FooterGroup {
+  title: string
+  links: readonly { label: string, href: string, newTab?: boolean }[]
+}
+
+interface Props {
+  title: string
+  description?: string
+  groups: readonly FooterGroup[]
+}
+
+const { title, description, groups } = Astro.props
+---
+
+<footer class="editorial-footer">
+  <div class="editorial-footer__layout">
+    <div>
+      <Typography><h2>{title}</h2></Typography>
+      {description && <p>{description}</p>}
+      <slot name="action" />
+    </div>
+    {groups.filter(group => group.links.length > 0).map(group => (
+      <nav aria-label={group.title}>
+        <h3>{group.title}</h3>
+        <ul role="list">
+          {group.links.map(link => <li><Link href={link.href} newTab={link.newTab}>{link.label}</Link></li>)}
+        </ul>
+      </nav>
+    ))}
+  </div>
+  {Astro.slots.has('credits') && <div class="editorial-footer__credits"><slot name="credits" /></div>}
+</footer>
+
+<style>
+  .editorial-footer { padding-block: 2rem; border-block-start: 1px solid hsl(var(--line)); color: hsl(var(--ink)); overflow-wrap: anywhere; }
+  .editorial-footer__layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1.5rem; }
+  .editorial-footer__layout > * { min-inline-size: 0; }
+  h3 { margin: 0 0 0.5rem; font-size: 1em; }
+  p { color: hsl(var(--ink-soft)); }
+  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
+  .editorial-footer__credits { margin-block-start: 1.5rem; border-block-start: 1px solid hsl(var(--line)); padding-block-start: 1rem; }
+</style>

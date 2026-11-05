@@ -18,12 +18,19 @@ export const lumenRegistry = {
       name: 'editorial',
       type: 'recipe',
       components: [
+        'Avatar',
+        'Button',
         'ButtonLink',
         'Callout',
         'Card',
+        'Dialog',
+        'DialogBody',
+        'DialogTitle',
         'Icon',
         'Link',
         'ThemeToggle',
+        'Timeline',
+        'TimelineItem',
         'Typography'
       ],
       files: [

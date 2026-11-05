@@ -1,0 +1,54 @@
+---
+import { Avatar, Card, Typography } from '@santi020k/lumen-astro'
+
+interface Testimonial {
+  quote: string
+  author: string
+  detail?: string
+  portrait?: string
+}
+
+interface Props {
+  headingId: string
+  title: string
+  items: readonly Testimonial[]
+}
+
+const { headingId, title, items } = Astro.props
+---
+
+{items.length > 0 && (
+  <section aria-labelledby={headingId} class="testimonial-spotlight">
+    <Typography><h2 id={headingId}>{title}</h2></Typography>
+    <div class="testimonial-spotlight__grid" style={`--testimonial-rows: ${Math.max(1, items.length - 1)}`}>
+      {items.map((item, index) => (
+        <Card class="testimonial-spotlight__card" data-featured={index === 0 ? '' : undefined} variant="unstyled">
+          <figure>
+            <blockquote><p>{item.quote}</p></blockquote>
+            <figcaption>
+              {item.portrait && <Avatar src={item.portrait} alt="" />}
+              <div><strong>{item.author}</strong>{item.detail && <p>{item.detail}</p>}</div>
+            </figcaption>
+          </figure>
+        </Card>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .testimonial-spotlight { container-type: inline-size; min-inline-size: 0; overflow-wrap: anywhere; }
+  .testimonial-spotlight__grid { display: grid; gap: 1rem; margin-block-start: 1rem; }
+  .testimonial-spotlight__card { padding: clamp(0.75rem, 3cqi, 1.5rem); border-block-start: 1px solid hsl(var(--line)); }
+  .testimonial-spotlight__card[data-featured] { border: 1px solid hsl(var(--line)); border-radius: 1rem; background: hsl(var(--surface-muted)); }
+  figure, blockquote, p { margin: 0; }
+  blockquote { color: hsl(var(--ink)); line-height: 1.6; }
+  [data-featured] blockquote { font-size: 1.25em; }
+  figcaption { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-block-start: 1rem; color: hsl(var(--ink-soft)); }
+  @container (min-width: 40rem) {
+    .testimonial-spotlight__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+    .testimonial-spotlight__card { grid-column: 2; }
+    .testimonial-spotlight__card[data-featured] { grid-area: 1 / 1 / span var(--testimonial-rows); }
+    .testimonial-spotlight__card:only-child { grid-area: auto / 1 / auto / -1; }
+  }
+</style>

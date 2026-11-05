@@ -1,0 +1,131 @@
+---
+import { Button, ButtonLink, Dialog, DialogBody, DialogTitle, Icon, Link } from '@santi020k/lumen-astro'
+
+interface Props {
+  id: string
+  title: string
+  src: string
+  poster?: string
+  playLabel: string
+  closeLabel: string
+  fileLabel: string
+  errorLabel: string
+  transcriptLabel: string
+}
+
+const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, transcriptLabel } = Astro.props
+---
+
+<lumen-editorial-video data-src={src} data-poster={poster}>
+  <slot name="artwork" />
+  <ButtonLink class="editorial-video__control" data-video-fallback href={src} variant="secondary">{playLabel}</ButtonLink>
+  <Button
+    aria-controls={id}
+    aria-haspopup="dialog"
+    class="editorial-video__control"
+    data-video-open
+    hidden
+    type="button"
+  >
+    <Icon aria-hidden="true" name="play" />
+    <span>{playLabel}</span>
+  </Button>
+  {Astro.slots.has('transcript') && <details><summary>{transcriptLabel}</summary><slot name="transcript" /></details>}
+  <Dialog aria-labelledby={`${id}-title`} id={id}>
+    <DialogBody class="editorial-video__body">
+      <div class="editorial-video__heading">
+        <DialogTitle id={`${id}-title`}>{title}</DialogTitle>
+        <form method="dialog">
+          <Button autofocus class="editorial-video__control" type="submit" variant="outline">{closeLabel}</Button>
+        </form>
+      </div>
+      <video aria-label={title} controls playsinline preload="metadata">
+        <slot name="tracks" />
+      </video>
+      <p data-video-error={errorLabel} role="status"></p>
+      <Link href={src}>{fileLabel}</Link>
+    </DialogBody>
+  </Dialog>
+</lumen-editorial-video>
+
+<script>
+  class LumenEditorialVideo extends HTMLElement {
+    #listeners?: AbortController
+    #video?: HTMLVideoElement
+
+    connectedCallback() {
+      const dialog = this.querySelector('dialog')
+      const video = this.querySelector('video')
+      const trigger = this.querySelector<HTMLButtonElement>('[data-video-open]')
+      const fallback = this.querySelector<HTMLElement>('[data-video-fallback]')
+      const error = this.querySelector<HTMLElement>('[data-video-error]')
+      const src = this.dataset.src
+
+      if (!dialog || !video || !trigger || !fallback || !error || !src || typeof dialog.showModal !== 'function') return
+
+      this.#listeners?.abort()
+
+      this.#listeners = new AbortController()
+
+      this.#video = video
+
+      const { signal } = this.#listeners
+
+      trigger.addEventListener('click', () => {
+        if (dialog.open) return
+
+        dialog.showModal()
+
+        if (!video.hasAttribute('src') || video.error) {
+          error.textContent = ''
+
+          if (this.dataset.poster) video.poster = this.dataset.poster
+
+          video.src = src
+
+          video.load()
+        }
+      }, { signal })
+
+      dialog.addEventListener('close', () => {
+        if (dialog.open) return
+
+        video.pause()
+
+        trigger.focus({ preventScroll: true })
+      }, { signal })
+
+      video.addEventListener('error', () => {
+        error.textContent = error.dataset.videoError ?? ''
+      }, { signal })
+
+      trigger.hidden = false
+
+      fallback.hidden = true
+    }
+
+    disconnectedCallback() {
+      this.#listeners?.abort()
+
+      this.#video?.pause()
+    }
+  }
+
+  if (!customElements.get('lumen-editorial-video')) {
+    customElements.define('lumen-editorial-video', LumenEditorialVideo)
+  }
+</script>
+
+<style>
+  lumen-editorial-video { display: block; min-inline-size: 0; overflow-wrap: anywhere; }
+  lumen-editorial-video > [hidden] { display: none; }
+  [data-video-error] { margin: 0; }
+  .editorial-video__control { max-inline-size: 100%; block-size: auto; white-space: normal; }
+  .editorial-video__control :global(.ui-button__content) { min-inline-size: 0; }
+  .editorial-video__control span { min-inline-size: 0; }
+  .editorial-video__body { display: grid; gap: 1rem; min-inline-size: 0; }
+  .editorial-video__heading { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 0.75rem; }
+  video { inline-size: 100%; max-block-size: 55dvh; background: hsl(var(--surface-strong)); }
+  details { margin-block-start: 0.75rem; }
+  summary { cursor: pointer; }
+</style>
