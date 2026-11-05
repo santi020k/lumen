@@ -952,6 +952,9 @@ const initListBoxes = (scope: ParentNode): void => {
   }
 }
 
+const synchronizedTabs = new WeakMap<HTMLElement, (value: string) => void>()
+const isEnabledTab = (tab: HTMLElement): boolean => !tab.matches(':disabled, [aria-disabled="true"]')
+
 const initTabs = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tabs]')) {
     if (root.dataset.uiBound === 'true') continue
@@ -998,7 +1001,9 @@ const initTabs = (scope: ParentNode): void => {
       }
     }
 
-    const activate = (tab: HTMLElement, emit = true): void => {
+    const activate = (tab: HTMLElement, source: 'initial' | 'local' | 'sync' = 'local'): void => {
+      if (!isEnabledTab(tab)) return
+
       const value = tab.dataset.value ?? ''
       const wasSelected = tab.getAttribute('aria-selected') === 'true'
 
@@ -1018,13 +1023,13 @@ const initTabs = (scope: ParentNode): void => {
 
       root.dataset.value = value
 
-      if (!emit || wasSelected) return
+      if (source === 'initial' || wasSelected) return
 
-      scrollLumenTabIntoView(tab)
+      if (source === 'local') scrollLumenTabIntoView(tab)
 
       const storageKey = root.dataset.storageKey
 
-      if (storageKey) {
+      if (storageKey && source === 'local') {
         try {
           localStorage.setItem(storageKey, value)
         } catch {
@@ -1036,10 +1041,7 @@ const initTabs = (scope: ParentNode): void => {
             continue
           }
 
-          const matchingTab = [...otherRoot.querySelectorAll<HTMLElement>('[role="tab"]')]
-            .find(candidate => candidate.closest('[data-ui-tabs]') === otherRoot && candidate.dataset.value === value)
-
-          matchingTab?.click()
+          synchronizedTabs.get(otherRoot)?.(value)
         }
       }
 
@@ -1048,6 +1050,12 @@ const initTabs = (scope: ParentNode): void => {
         detail: { storageKey, value }
       }))
     }
+
+    synchronizedTabs.set(root, value => {
+      const tab = tabs.find(candidate => candidate.dataset.value === value && isEnabledTab(candidate))
+
+      if (tab) activate(tab, 'sync')
+    })
 
     let storedValue: string | null = null
 
@@ -1059,15 +1067,13 @@ const initTabs = (scope: ParentNode): void => {
       }
     }
 
-    const initialValue = storedValue ?? root.dataset.initialValue
+    const enabledTabs = tabs.filter(isEnabledTab)
 
-    const initiallySelected = (
-      initialValue ?
-        tabs.find(tab => tab.dataset.value === initialValue) :
-        undefined
-    ) ?? tabs.find(tab => tab.getAttribute('aria-selected') === 'true') ?? tabs[0]
+    const initiallySelected = enabledTabs.find(tab => tab.dataset.value === storedValue) ??
+      enabledTabs.find(tab => tab.dataset.value === root.dataset.initialValue) ??
+      enabledTabs.find(tab => tab.getAttribute('aria-selected') === 'true') ?? enabledTabs[0]
 
-    if (initiallySelected) activate(initiallySelected, false)
+    if (initiallySelected) activate(initiallySelected, 'initial')
 
     for (const tab of tabs) {
       tab.addEventListener('click', () => activate(tab))
@@ -1081,7 +1087,7 @@ const initTabs = (scope: ParentNode): void => {
 
         event.preventDefault()
 
-        const enabledTabs = tabs.filter(candidate => !candidate.matches(':disabled, [aria-disabled="true"]'))
+        const enabledTabs = tabs.filter(isEnabledTab)
 
         const nextTab = enabledTabs[
           getLoopedIndex(
@@ -1518,6 +1524,48 @@ const initCopyButtons = (scope: ParentNode): void => {
 
     let resetTimer = 0
     let operation = 0
+    let recovery: HTMLTextAreaElement | undefined
+    const recoveryLabel = button.dataset.copyRecoveryLabel
+    const codeRoot = button.closest('[data-ui-code]')
+    const panel = button.closest<HTMLElement>('[role="tabpanel"]')
+    const tabs = panel?.closest('[data-ui-tabs]')
+
+    if (recoveryLabel && panel && tabs) {
+      tabs.addEventListener('ui:tabs-change', event => {
+        if (event.target !== tabs || !panel.hidden) return
+
+        operation += 1
+
+        recovery?.remove()
+
+        recovery = undefined
+      })
+    }
+
+    const showRecovery = (value: string): void => {
+      if (!recoveryLabel) return
+
+      if (!recovery) {
+        recovery = button.ownerDocument.createElement('textarea')
+
+        recovery.className = 'ui-textarea'
+
+        recovery.readOnly = true
+
+        recovery.rows = 2
+
+        recovery.setAttribute('aria-label', recoveryLabel)
+
+        recovery.addEventListener('focus', () => recovery?.select())
+
+        recovery.addEventListener('click', () => recovery?.select())
+
+        if (codeRoot) codeRoot.append(recovery)
+        else button.after(recovery)
+      }
+
+      recovery.value = value
+    }
 
     const setCopyButtonState = (state: 'copied' | 'error' | 'idle'): void => {
       button.dataset.state = state
@@ -1548,8 +1596,10 @@ const initCopyButtons = (scope: ParentNode): void => {
       const errorLabel = button.dataset.copyErrorLabel ??
         'Could not copy to clipboard'
 
+      let value: string | undefined
+
       try {
-        const value = getCopyButtonValue(button)
+        value = getCopyButtonValue(button)
 
         if (value === undefined || !navigator.clipboard) {
           throw new Error(errorLabel)
@@ -1558,6 +1608,10 @@ const initCopyButtons = (scope: ParentNode): void => {
         await navigator.clipboard.writeText(value)
 
         if (operation !== currentOperation || !button.isConnected) return
+
+        recovery?.remove()
+
+        recovery = undefined
 
         setCopyButtonState('copied')
 
@@ -1591,7 +1645,11 @@ const initCopyButtons = (scope: ParentNode): void => {
           detail: { error }
         }))
 
-        getCodeCopyLiveRegion().textContent = errorLabel
+        if (value !== undefined) showRecovery(value)
+
+        getCodeCopyLiveRegion().textContent = value !== undefined && recoveryLabel ?
+          `${errorLabel} ${recoveryLabel}` :
+errorLabel
 
         if (button.dataset.copyToast === 'true') {
           document.dispatchEvent(new CustomEvent('ui:toast', {

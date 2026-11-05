@@ -16,9 +16,13 @@ await writeFile(new URL('tsconfig.json', consumer), JSON.stringify({ extends: 'a
 
 await writeFile(new URL('astro.config.mjs', consumer), 'export default { output: "static", devToolbar: { enabled: false } }\n')
 
-await symlink(new URL('../../../apps/templates/node_modules/', import.meta.url), new URL('node_modules', consumer), 'dir')
+await symlink(new URL('../../../apps/docs/node_modules/', import.meta.url), new URL('node_modules', consumer), 'dir')
 
 await copyFile(new URL('../../../tests/fixtures/editorial/index.astro.template', import.meta.url), new URL('src/pages/index.astro', consumer))
+
+await copyFile(new URL('../../../tests/fixtures/editorial/reading-controls.astro.template', import.meta.url), new URL('src/pages/reading-controls.astro', consumer))
+
+await copyFile(new URL('../../../apps/docs/src/assets/cover-dummy.jpg', import.meta.url), new URL('src/cover.jpg', consumer))
 
 execFileSync(process.execPath, ['packages/lumen/bin/lumen.mjs', 'add', 'editorial', '--target', 'astro', '--cwd', cwd], { cwd: root, stdio: 'inherit' })
 

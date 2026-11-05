@@ -6,6 +6,7 @@ import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
+  targetId?: string
   position?: 'bottom' | 'top'
 }
 
@@ -14,6 +15,7 @@ const {
   class: classProp = '',
   className = '',
   position = 'top',
+  targetId,
   ...rest
 } = Astro.props
 
@@ -31,6 +33,7 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   class:list={classList}
   data-position={position}
   data-ui-scroll-progress
+  data-ui-scroll-progress-target={targetId}
   role="progressbar"
   {...passthrough}
 >

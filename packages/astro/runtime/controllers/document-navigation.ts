@@ -95,6 +95,32 @@ const initAnchors = (scope: ParentNode): void => {
 }
 
 let scrollProgressFrame = 0
+let scrollProgressObserver: ResizeObserver | undefined
+let scrollProgressListening = false
+
+const getProgressTarget = (root: HTMLElement): HTMLElement | null => {
+  const id = root.dataset.uiScrollProgressTarget
+
+  return id ? root.ownerDocument.getElementById(id) : null
+}
+
+const getTargetProgress = (target: HTMLElement, scrollingElement: Element): number => {
+  const bounds = target.getBoundingClientRect()
+
+  if (bounds.height <= 0) return 0
+
+  const height = scrollingElement.clientHeight
+  const padding = window.getComputedStyle(scrollingElement).scrollPaddingTop.trim()
+  const amount = Number.parseFloat(padding)
+  const resolved = padding.endsWith('%') ? amount * height / 100 : amount
+  const start = Number.isFinite(resolved) ? Math.max(0, resolved) : 0
+
+  if (bounds.bottom <= height) return 100
+
+  const distance = bounds.height - (height - start)
+
+  return distance > 0 ? Math.min(100, Math.max(0, (start - bounds.top) / distance * 100)) : 0
+}
 
 const updateScrollProgress = (): void => {
   scrollProgressFrame = 0
@@ -102,12 +128,20 @@ const updateScrollProgress = (): void => {
   const scrollingElement = document.scrollingElement ?? document.documentElement
   const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
 
-  const percentage = maximum > 0 ?
+  const documentPercentage = maximum > 0 ?
     Math.min(100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)) :
     0
 
-  for (const root of document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')) {
+  const progress = [...document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')].map(root => {
+    const target = getProgressTarget(root)
+
+    return { percentage: target ? getTargetProgress(target, scrollingElement) : documentPercentage, root }
+  })
+
+  for (const { percentage, root } of progress) {
     const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
+
+    root.dataset.uiBound = 'true'
 
     root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
 
@@ -121,14 +155,30 @@ const requestScrollProgressUpdate = (): void => {
   scrollProgressFrame = requestAnimationFrame(updateScrollProgress)
 }
 
-const initScrollProgress = (scope: ParentNode): void => {
-  if (!scope.querySelector('[data-ui-scroll-progress]')) return
+const initScrollProgress = (): void => {
+  scrollProgressObserver?.disconnect()
+
+  const roots = document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')
+
+  if (!roots.length) return
+
+  if (typeof ResizeObserver !== 'undefined') {
+    scrollProgressObserver ??= new ResizeObserver(requestScrollProgressUpdate)
+
+    scrollProgressObserver.observe(document.body)
+
+    for (const root of roots) {
+      const target = getProgressTarget(root)
+
+      if (target) scrollProgressObserver.observe(target)
+    }
+  }
 
   requestScrollProgressUpdate()
 
-  if (document.documentElement.dataset.uiScrollProgressBound === 'true') return
+  if (scrollProgressListening) return
 
-  document.documentElement.dataset.uiScrollProgressBound = 'true'
+  scrollProgressListening = true
 
   window.addEventListener('resize', requestScrollProgressUpdate, { passive: true })
 
@@ -138,5 +188,5 @@ const initScrollProgress = (scope: ParentNode): void => {
 export const initDocumentNavigationControllers = (scope: ParentNode): void => {
   initAnchors(scope)
 
-  initScrollProgress(scope)
+  initScrollProgress()
 }

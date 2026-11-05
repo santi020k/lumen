@@ -15,6 +15,24 @@ class MockResizeObserver {
 }
 
 vi.stubGlobal('ResizeObserver', MockResizeObserver)
+let nextFrame = 0
+const frames = new Map<number, FrameRequestCallback>()
+
+vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+  frames.set(++nextFrame, callback)
+
+  return nextFrame
+})
+vi.stubGlobal('cancelAnimationFrame', (id: number) => frames.delete(id))
+
+const flushFrame = (): void => {
+  const queued = [...frames.values()]
+
+  frames.clear()
+
+  for (const callback of queued) callback(0)
+}
+
 Object.defineProperty(document, 'fonts', { configurable: true, value: { ready: Promise.resolve() } })
 
 const fixture = (type: 'code' | 'table' = 'table') => {
@@ -50,6 +68,7 @@ test.each(['code', 'table'] as const)('describes overflowing %s and follows view
   const { message, size, viewport } = fixture(type)
 
   initScrollCues(document)
+  flushFrame()
   expect(message.hidden).toBe(false)
   expect(viewport.getAttribute('aria-describedby')).toBe(`author-note ${message.id}`)
   expect(observers[0]?.observe).toHaveBeenCalledTimes(2)
@@ -57,17 +76,21 @@ test.each(['code', 'table'] as const)('describes overflowing %s and follows view
   viewport.setAttribute('aria-describedby', `${viewport.getAttribute('aria-describedby') ?? ''} later-note`)
   size.width = 600
   observers[0]?.update()
+  flushFrame()
   expect(message.hidden).toBe(true)
   expect(viewport.getAttribute('aria-describedby')).toBe('author-note later-note')
   size.content = 800
   observers[0]?.update()
+  flushFrame()
   expect(message.hidden).toBe(false)
   expect(viewport.getAttribute('aria-describedby')).toBe(`author-note later-note ${message.id}`)
   size.width = 0
   observers[0]?.update()
+  flushFrame()
   expect(message.hidden).toBe(true)
   size.width = 300
   observers[0]?.update()
+  flushFrame()
   expect(message.hidden).toBe(false)
 })
 
@@ -77,7 +100,9 @@ test('uses distinct IDs, preserves caller IDs and initializes each instance once
 
   first.message.id = 'comparison-hint'
   initScrollCues(document)
+  flushFrame()
   initScrollCues(document)
+  flushFrame()
   expect(observers).toHaveLength(2)
   expect(first.message.id).toBe('comparison-hint')
   expect(second.message.id).not.toBe(first.message.id)
@@ -88,16 +113,20 @@ test('cleans up descriptions and observers across navigation, then reconnects', 
   const { message, root, viewport } = fixture()
 
   initScrollCues(document)
+  flushFrame()
   clearScrollCues()
   expect(observers[0]?.disconnect).toHaveBeenCalledOnce()
   expect(message.hidden).toBe(true)
   expect(viewport.getAttribute('aria-describedby')).toBe('author-note')
   observers[0]?.update()
+  flushFrame()
   expect(message.hidden).toBe(true)
   initScrollCues(document)
+  flushFrame()
   expect(message.hidden).toBe(false)
   root.remove()
   initScrollCues(document)
+  flushFrame()
   expect(observers[1]?.disconnect).toHaveBeenCalledOnce()
 })
 
@@ -106,11 +135,13 @@ test('hides guidance at the overflow tolerance and ignores incomplete markup', (
 
   size.content = size.width + 1
   initScrollCues(document)
+  flushFrame()
   expect(message.hidden).toBe(true)
   clearScrollCues()
   root.querySelector('table')?.remove()
   expect(() => {
     initScrollCues(document)
+    flushFrame()
   }).not.toThrow()
   expect(message.hidden).toBe(true)
 })

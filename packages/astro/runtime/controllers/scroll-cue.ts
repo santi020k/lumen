@@ -1,4 +1,29 @@
-const bindings = new Map<HTMLElement, () => void>()
+interface ScrollCueBinding {
+  cleanup: () => void
+  measure: () => boolean
+  render: (visible: boolean) => void
+}
+
+const bindings = new Map<HTMLElement, ScrollCueBinding>()
+const pending = new Set<ScrollCueBinding>()
+let frame = 0
+
+const schedule = (binding: ScrollCueBinding): void => {
+  pending.add(binding)
+
+  if (frame) return
+
+  frame = requestAnimationFrame(() => {
+    frame = 0
+
+    const measured = [...pending].map(item => ({ item, visible: item.measure() }))
+
+    pending.clear()
+
+    for (const { item, visible } of measured) item.render(visible)
+  })
+}
+
 let nextId = 0
 
 const updateDescription = (viewport: HTMLElement, id: string, visible: boolean): void => {
@@ -12,9 +37,37 @@ const updateDescription = (viewport: HTMLElement, id: string, visible: boolean):
 }
 
 export const clearScrollCues = (): void => {
-  for (const cleanup of bindings.values()) cleanup()
+  for (const binding of bindings.values()) binding.cleanup()
+
+  if (frame) cancelAnimationFrame(frame)
+
+  frame = 0
+
+  pending.clear()
 
   bindings.clear()
+}
+
+const getMessageId = (message: HTMLElement): string => {
+  if (message.id) return message.id
+
+  let candidate: string
+
+  do {
+    nextId += 1
+
+    candidate = `ui-scroll-cue-${nextId}`
+  } while (message.ownerDocument.getElementById(candidate))
+
+  message.id = candidate
+
+  return candidate
+}
+
+const hasOverflow = (viewport: HTMLElement): boolean => {
+  const width = viewport.clientWidth
+
+  return width > 0 && viewport.scrollWidth > width + 1
 }
 
 const bindScrollCue = (root: HTMLElement): void => {
@@ -24,46 +77,46 @@ const bindScrollCue = (root: HTMLElement): void => {
 
   if (!viewport || !content || !message) return
 
-  if (!message.id) {
-    let candidate: string
-
-    do {
-      nextId += 1
-
-      candidate = `ui-scroll-cue-${nextId}`
-    } while (root.ownerDocument.getElementById(candidate))
-
-    message.id = candidate
-  }
-
-  const id = message.id
+  const id = getMessageId(message)
   let active = true
+  let observer: ResizeObserver | undefined
+  let previousVisibility: boolean | undefined
+
+  const binding: ScrollCueBinding = {
+    cleanup: () => {
+      active = false
+
+      observer?.disconnect()
+
+      pending.delete(binding)
+
+      message.hidden = true
+
+      updateDescription(viewport, id, false)
+    },
+    measure: () => root.isConnected && hasOverflow(viewport),
+    render: visible => {
+      if (!active || !root.isConnected || previousVisibility === visible) return
+
+      previousVisibility = visible
+
+      message.hidden = !visible
+
+      updateDescription(viewport, id, visible)
+    }
+  }
 
   const update = (): void => {
-    if (!active || !root.isConnected) return
-
-    const visible = viewport.clientWidth > 0 && viewport.scrollWidth > viewport.clientWidth + 1
-
-    message.hidden = !visible
-
-    updateDescription(viewport, id, visible)
+    if (active) schedule(binding)
   }
 
-  const observer = new ResizeObserver(update)
+  if (typeof ResizeObserver !== 'undefined') observer = new ResizeObserver(update)
 
-  observer.observe(viewport)
+  observer?.observe(viewport)
 
-  observer.observe(content)
+  observer?.observe(content)
 
-  bindings.set(root, () => {
-    active = false
-
-    observer.disconnect()
-
-    message.hidden = true
-
-    updateDescription(viewport, id, false)
-  })
+  bindings.set(root, binding)
 
   void root.ownerDocument.fonts.ready.then(update)
 
@@ -72,9 +125,9 @@ const bindScrollCue = (root: HTMLElement): void => {
 
 /** Enhance the documented Code/Table markup without owning native scrolling or focus. */
 export const initScrollCues = (scope: ParentNode): void => {
-  for (const [root, cleanup] of bindings) {
+  for (const [root, binding] of bindings) {
     if (!root.isConnected) {
-      cleanup()
+      binding.cleanup()
 
       bindings.delete(root)
     }

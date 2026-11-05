@@ -881,3 +881,12 @@ media loading, selection, adjustment algorithms, processing, export and persiste
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+### Long-form article controls
+
+- Give `ScrollProgress` a `targetId` to measure an article or another named element. Progress starts at the root scroll padding and ends when the bottom of the content fits in the viewport. A missing target falls back to document progress. Use `Anchor` for fragment links that respect sticky headers and heading scroll margins.
+- Use `scrollCue` with `wrap={false}` on `CodeTabs` to describe horizontal overflow in the visible panel. Pass a string to localize the cue. With a shared `storageKey`, matching groups change selection in place; only the group the reader operates scrolls its trigger into view.
+- Pass a localized `recoveryLabel` such as “Select and copy the code” to `CopyButton`, `Code`, or `CodeTabs` to opt into manual recovery. If clipboard access fails, the next available copy field holds the full text and selects it on focus. Successful retries and tab changes clear the field.
+- Set `fallbackFormat="webp"` on `CoverImage` to generate an AVIF source with a WebP fallback. Omit the prop to keep the default picture formats.
+
+Mount `UIPrimitives` once to enable the reading and clipboard controls.
