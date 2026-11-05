@@ -194,7 +194,8 @@
     "test:motion": "playwright test -c playwright.motion.config.ts",
     "import:world-map-data": "node scripts/import-natural-earth-world-map.mjs",
     "generate:component-css": "node scripts/generate-component-css.mjs",
-    "check:component-css": "node scripts/generate-component-css.mjs --check && node --test scripts/component-css.test.mjs"
+    "check:component-css": "node scripts/generate-component-css.mjs --check && node --test scripts/component-css.test.mjs",
+    "test:portable-editorial": "pnpm --filter @santi020k/lumen --filter @santi020k/lumen-react... --filter @santi020k/lumen-elements... run build && node packages/lumen/scripts/prepare-portable-editorial-consumer.mjs && playwright test -c playwright.portable-editorial.config.ts"
   },
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",

@@ -1,0 +1,8 @@
+import '@santi020k/lumen-react/styles/foundation.css'
+import { hydrateRoot } from 'react-dom/client'
+import { App } from './react-app'
+import './fixture.css'
+
+const root = document.getElementById('app')
+if (!root) throw new Error('Missing fixture root')
+hydrateRoot(root, <App />)

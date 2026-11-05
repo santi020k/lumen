@@ -1,0 +1,30 @@
+import '@santi020k/lumen-elements/styles/foundation.css'
+import './elements/article-reading'
+import './elements/image-viewer'
+import { setSiteSearchProvider, type SiteSearchResult } from './elements/site-search-dialog'
+import './fixture.css'
+
+const search = async (query: string, signal: AbortSignal): Promise<readonly SiteSearchResult[]> => {
+  const output = document.querySelector('[data-aborts]')
+  signal.addEventListener('abort', () => {
+    if (output) output.textContent = String(Number(output.textContent) + 1)
+  }, { once: true })
+  const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+  if (!response.ok) throw new Error('Search unavailable')
+  const value: unknown = await response.json()
+  if (!Array.isArray(value)) throw new Error('Invalid search response')
+  return value.map((row: unknown) => {
+    if (!row || typeof row !== 'object' || !('href' in row) || !('title' in row) ||
+      typeof row.href !== 'string' || typeof row.title !== 'string') throw new Error('Invalid search result')
+    return { href: row.href, title: row.title }
+  })
+}
+setSiteSearchProvider('site-search', search)
+
+const main = document.querySelector('main')
+const template = document.querySelector<HTMLTemplateElement>('[data-recipe-template]')
+document.querySelector('[data-remount]')?.addEventListener('click', () => {
+  if (!main || !template) return
+  main.replaceChildren(document.importNode(template.content, true))
+  setSiteSearchProvider('site-search', search)
+})

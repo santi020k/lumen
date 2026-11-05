@@ -1,0 +1,26 @@
+<!-- Import site-search-dialog.ts and foundation.css once. Replace example IDs, labels, and routes. -->
+<lumen-recipe-elements-site-search id="site-search" data-search-shortcut data-loading="Searching…" data-empty="No results found." data-failure="Search could not be loaded." data-results="Results found: {count}">
+  <lumen-link class="search-fallback"><a href="/search/">Search</a></lumen-link>
+  <lumen-button class="search-trigger" data-search-trigger data-ui-dialog-trigger="site-search-owner" aria-controls="site-search-dialog" aria-haspopup="dialog" hidden><span class="search-trigger-label">Search <lumen-kbd aria-hidden="true" data-search-shortcut-hint>Ctrl/⌘ K</lumen-kbd></span></lumen-button>
+  <lumen-dialog id="site-search-owner" data-native-dialog>
+    <dialog id="site-search-dialog" class="portable-dialog search-dialog" aria-labelledby="site-search-title">
+      <lumen-dialog-header class="search-heading">
+        <lumen-dialog-title><h2 id="site-search-title">Search this site</h2></lumen-dialog-title>
+        <lumen-button data-ui-dialog-close>Close</lumen-button>
+      </lumen-dialog-header>
+      <lumen-dialog-body>
+        <lumen-label id="site-search-label">Search query</lumen-label>
+        <lumen-search-field data-search-field aria-labelledby="site-search-label" autocomplete="off"></lumen-search-field>
+        <p class="search-status" data-search-status role="status"></p>
+        <lumen-empty data-search-recovery hidden variant="compact">
+          <p data-search-message></p>
+          <lumen-button data-search-retry hidden>Retry search</lumen-button>
+        </lumen-empty>
+        <ol class="search-results" data-search-results></ol>
+      </lumen-dialog-body>
+    </dialog>
+  </lumen-dialog>
+  <template data-search-result>
+    <li><lumen-link><a class="search-result" href="#"><span data-search-result-title></span><span data-search-result-description></span></a></lumen-link></li>
+  </template>
+</lumen-recipe-elements-site-search>

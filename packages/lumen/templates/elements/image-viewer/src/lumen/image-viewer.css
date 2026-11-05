@@ -1,0 +1,60 @@
+
+  lumen-recipe-elements-image-viewer {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .image-viewer-trigger,
+  .image-viewer-fallback,
+  .image-viewer-header button,
+  [data-image-retry] {
+    max-inline-size: 100%;
+    min-block-size: 2.75rem;
+    block-size: auto;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .image-viewer-dialog {
+    inline-size: min(54rem, calc(100% - 1.25rem));
+    max-inline-size: none;
+    overflow-wrap: anywhere;
+  }
+
+  .image-viewer-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .image-viewer-trigger,
+  [data-image-retry][hidden] {
+    display: none;
+  }
+
+  [data-image-viewer-ready] .image-viewer-trigger {
+    display: inline-flex;
+  }
+
+  [data-image-viewer-ready] .image-viewer-fallback {
+    display: none;
+  }
+
+  [data-image-mount] {
+    block-size: 100%;
+  }
+
+  [data-image-status]:empty {
+    margin: 0;
+  }
+
+lumen-dialog[data-native-dialog] { display: contents; }
+.portable-dialog { inline-size: min(54rem, calc(100% - 1.25rem)); max-block-size: calc(100dvh - 1.25rem); border: 1px solid hsl(var(--line)); border-radius: 1rem; background: hsl(var(--surface)); color: hsl(var(--ink)); padding: 0; overflow: auto; overflow-wrap: anywhere; }
+.portable-dialog::backdrop { background: hsl(var(--ink) / 0.45); }
+.portable-dialog lumen-dialog-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 0.75rem; padding: 1rem; }
+.portable-dialog lumen-dialog-body { display: block; padding: 1rem; }
+.portable-dialog h2 { margin: 0; }
+.portable-dialog lumen-button { max-inline-size: 100%; white-space: normal; }
+.portable-dialog [hidden] { display: none; }

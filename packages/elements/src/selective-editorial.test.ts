@@ -6,14 +6,18 @@ import { defineLumenScrollProgress, LumenScrollProgressElement } from './entries
 import { defineLumenSearchField, LumenSearchFieldElement } from './entries/search-field.js'
 import { defineLumenElements, lumenElementDefinitions } from './define.js'
 
-test('selective and full registration use the same editorial constructors in either order', () => {
+test.each(['selective-first', 'full-first'])('selective and full registration share constructors with %s', order => {
   const definitions = new Map<string, CustomElementConstructor>()
   const registry = {
     define: (name: string, constructor: CustomElementConstructor) => {
+      if (definitions.has(name)) throw new Error('Duplicate element registration')
+
       definitions.set(name, constructor)
     },
     get: (name: string) => definitions.get(name)
   }
+  if (order === 'full-first') defineLumenElements(registry)
+
   defineLumenDialog(registry)
   defineLumenDialogParts(registry)
   defineLumenAnchor(registry)

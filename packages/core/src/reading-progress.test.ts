@@ -20,3 +20,15 @@ test('content progress excludes page content before and after the reading target
   expect(getLumenScrollProgress(scroller, target)).toBe(0)
   target.remove()
 })
+
+test('document progress remains bounded when a content target is absent', () => {
+  const scroller = document.createElement('div')
+  Object.defineProperty(scroller, 'clientHeight', { configurable: true, value: 600 })
+  Object.defineProperty(scroller, 'scrollHeight', { configurable: true, value: 1800 })
+  scroller.scrollTop = 600
+  expect(getLumenScrollProgress(scroller)).toBe(0.5)
+  scroller.scrollTop = -40
+  expect(getLumenScrollProgress(scroller)).toBe(0)
+  scroller.scrollTop = 1800
+  expect(getLumenScrollProgress(scroller)).toBe(1)
+})

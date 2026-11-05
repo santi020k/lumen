@@ -1,0 +1,16 @@
+<!-- Import article-reading.ts and foundation.css once. Keep chapter destinations aligned with the article headings. -->
+<lumen-recipe-elements-article-reading class="article-reading">
+  <lumen-skip-link><a href="#article-text">Skip to article text</a></lumen-skip-link>
+  <div class="chapter-rail">
+    <lumen-anchor aria-label="On this page"><nav aria-label="On this page"><ol><li><a href="#first-chapter">First chapter</a></li><li><a href="#second-chapter">Second chapter</a></li></ol></nav></lumen-anchor>
+  </div>
+  <lumen-collapsible class="chapter-disclosure">
+    <details><summary>On this page</summary><lumen-anchor aria-label="On this page"><nav aria-label="On this page"><ol><li><a href="#first-chapter">First chapter</a></li><li><a href="#second-chapter">Second chapter</a></li></ol></nav></lumen-anchor></details>
+  </lumen-collapsible>
+  <article id="article-text" class="article-text" tabindex="-1">
+    <lumen-scroll-progress class="article-progress" target-id="article-text" aria-label="Reading progress"></lumen-scroll-progress>
+    <h1>Article title</h1>
+    <h2 id="first-chapter">First chapter</h2><p>The consumer supplies article content.</p>
+    <h2 id="second-chapter">Second chapter</h2><p>The consumer supplies article content.</p>
+  </article>
+</lumen-recipe-elements-article-reading>

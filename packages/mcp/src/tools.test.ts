@@ -524,13 +524,12 @@ describe('getRecipe', () => {
     expect(search({ query: 'editorial', kind: 'recipe', framework: 'astro' }).data.results.map(item => item.name)).toContain('editorial')
   })
 
-  test.each(['article-reading', 'site-search-dialog', 'image-viewer'])('advertises %s only for Astro', name => {
-    const result = getRecipe({ name, framework: 'astro' })
-
-    expect(result.data.recipe?.frameworks).toEqual(['astro'])
-    expect(result.text).toContain(`lumen add ${name} --target astro`)
-    for (const framework of ['react', 'elements'] as const) {
-      expect(getRecipe({ name, framework }).data.found).toBe(false)
+  test.each(['article-reading', 'site-search-dialog', 'image-viewer'])('advertises %s for each web adapter', name => {
+    for (const framework of ['astro', 'react', 'elements'] as const) {
+      const result = getRecipe({ name, framework })
+      expect(result.data.found).toBe(true)
+      expect(new Set(result.data.recipe?.frameworks)).toEqual(new Set(['astro', 'react', 'elements']))
+      expect(result.text).toContain('lumen add ' + name + ' --target ' + framework)
     }
   })
 

@@ -6,9 +6,51 @@
     "moduleResolution": "Bundler",
     "rootDir": "../../../../",
     "paths": {
-      "@santi020k/lumen-react": ["../../../react/src/index.ts"]
+      "@santi020k/lumen-react": [
+        "../../../react/src/index.ts"
+      ],
+      "@santi020k/lumen-react/components/media-viewport": [
+        "../../../react/src/media-viewport.tsx"
+      ],
+      "@santi020k/lumen-react/components/button": [
+        "../../../react/src/entries/button.ts"
+      ],
+      "@santi020k/lumen-react/components/collapsible": [
+        "../../../react/src/entries/collapsible.ts"
+      ],
+      "@santi020k/lumen-react/components/empty": [
+        "../../../react/src/entries/empty.ts"
+      ],
+      "@santi020k/lumen-react/components/search-field": [
+        "../../../react/src/entries/search-field.ts"
+      ],
+      "@santi020k/lumen-react/components/link": [
+        "../../../react/src/entries/link.ts"
+      ],
+      "@santi020k/lumen-react/components/skip-link": [
+        "../../../react/src/entries/skip-link.ts"
+      ],
+      "@santi020k/lumen-react/components/label": [
+        "../../../react/src/entries/label.ts"
+      ],
+      "@santi020k/lumen-react/components/dialog": [
+        "../../../react/src/entries/dialog.ts"
+      ],
+      "@santi020k/lumen-react/components/anchor": [
+        "../../../react/src/entries/anchor.ts"
+      ],
+      "@santi020k/lumen-react/components/scroll-progress": [
+        "../../../react/src/entries/scroll-progress.ts"
+      ],
+      "@santi020k/lumen-react/components/kbd": [
+        "../../../react/src/entries/kbd.ts"
+      ]
     },
     "noEmit": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.d.ts"
+  ]
 }
