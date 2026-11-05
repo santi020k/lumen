@@ -20,7 +20,7 @@ an explicit Card, Input, and Button set through the same minified browser bundle
 
 ## November 5, 2026 Astro route delivery
 
-The modular candidate (`66e62ce5`) is measured against published v4.4.0 (`fc264ae2`) using the same six cold
+The modular candidate (`b328b53f`) is measured against published v4.4.0 (`fc264ae2`) using the same six cold
 Chromium routes, Node 22.23.4, pnpm 12.8.1, and Astro 7.3.5. Each row sums requested assets,
 compressed individually with gzip level 9. CSS inlining is disabled so the stylesheet totals include
 all styles. These are local fixture bytes, not production traffic or measured network transfer.
@@ -28,11 +28,11 @@ all styles. These are local fixture bytes, not production traffic or measured ne
 | Route | v4 JS gzip | v5 JS gzip | v4 CSS gzip | v5 CSS gzip |
 | --- | ---: | ---: | ---: | ---: |
 | Static Card/Button, no runtime | 0 B | 0 B | 35,620 B | 7,025 B |
-| Static Card/Button, root runtime | 35,300 B | 4,754 B | 36,026 B | 7,472 B |
-| Dialog | 35,985 B | 5,439 B | 36,026 B | 8,705 B |
-| CodeTabs with scroll cues | 35,300 B | 9,629 B | 36,026 B | 8,071 B |
-| Form, Field, Input, Select | 35,300 B | 8,682 B | 36,026 B | 6,501 B |
-| Calendar | 35,300 B | 8,759 B | 36,026 B | 6,132 B |
+| Static Card/Button, root runtime | 35,300 B | 4,763 B | 36,026 B | 7,472 B |
+| Dialog | 35,985 B | 5,448 B | 36,026 B | 8,705 B |
+| CodeTabs with scroll cues | 35,300 B | 9,638 B | 36,026 B | 8,071 B |
+| Form, Field, Input, Select | 35,300 B | 8,734 B | 36,026 B | 6,501 B |
+| Calendar | 35,300 B | 8,768 B | 36,026 B | 6,132 B |
 
 No additional assets were requested during the measured first interaction. Simple routes contain no
 phone, map, rich-text, or scheduler controller. Dynamic toasts separately load their controller and

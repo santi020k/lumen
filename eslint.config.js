@@ -32,4 +32,16 @@ export default defineConfig({
   tailwind: {
     noUnknownClasses: false
   }
+}, {
+  // These copied recipe sources run in the consumer, not the CLI. The registry
+  // declares their adapter dependency; test:portable-editorial installs it and
+  // verifies the published-source imports. Keep other unpublished imports errors.
+  files: [
+    'packages/lumen/templates/elements/article-reading/src/lumen/article-reading.ts',
+    'packages/lumen/templates/elements/image-viewer/src/lumen/image-viewer.ts',
+    'packages/lumen/templates/elements/site-search-dialog/src/lumen/site-search-dialog.ts'
+  ],
+  rules: {
+    'n/no-unpublished-import': ['error', { allowModules: ['@santi020k/lumen-elements'] }]
+  }
 })
