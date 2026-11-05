@@ -90,14 +90,31 @@ use interactive components such as dialogs, menus, popovers, tabs, carousels, to
 lists, or toasts. Do not add `UIPrimitives` beside each component instance; one root include
 enhances all matching Lumen markup on the page.
 
+The runtime loads controllers only for features present in the page. Static components do not need
+it. The loader shares in-flight module requests, initializes controllers in dependency order, and
+cleans up navigation-sensitive controllers before an Astro page swap. Cold button clicks and
+navigation keys wait for the required feature; native inputs and links retain their browser fallback.
+
+Enhancement is asynchronous in v5. After inserting new markup, await
+`window.LumenInitUiPrimitives(container)` in browser code before reading enhanced state. A successful
+initialization also dispatches `ui:ready` on `document`, with the initialized `scope` in its detail.
+A failed module does not prevent other available controllers from initializing. The returned promise
+rejects with an `AggregateError`; automatic initialization reports `ui:runtime-error` and a browser
+error. Keep native fallbacks and provide a reload path for unavailable deployment assets.
+
+`window.LumenToast` remains available when no toast markup exists. Its first operation loads the toast
+controller; `create` returns a stable ID immediately, and rendering follows asynchronously. Mount a
+`ToastViewport` and await initialization if an application needs the controller ready in advance.
+
+
 ```css
 @import "@santi020k/lumen-astro/styles.css";
 ```
 
 Applications using the essential forms, feedback, tabs, dialogs, calendar, and data-table surface
-can instead load `@santi020k/lumen-astro/styles/critical.css`. The generated entry is about 50 KiB
-raw versus 170 KiB for the complete catalog; switch to `styles.css` when using components outside
-that documented critical set.
+can instead load `@santi020k/lumen-astro/styles/critical.css`. The generated entry includes shared foundations and the documented critical components;
+switch to `styles.css` when using components outside that set. Measure the built route rather than
+assuming source stylesheet size equals transferred bytes.
 
 The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
 It declares the family stack but does not bundle or load font files. Load Montserrat once through

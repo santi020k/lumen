@@ -147,5 +147,8 @@ reports reviewable; never replace published tags. Corrections to a published rel
 ## Progress
 
 - Completed: source audit, current import measurements, and approved distribution direction.
-- In progress: P0 implementation and regression fixtures.
+- Completed P0 milestones: synchronized tab/scroll-cue fixes; feature-loaded Astro runtime with
+  cold interaction, navigation, failure recovery, and measured route budgets. See
+  [route evidence](import-and-icon-performance.md#november-5-2026-astro-route-delivery).
+- In progress: remaining P0 CSS/package boundaries, styling hooks, migration contract, and consumer validation.
 - Pending: P1, P2, full candidate validation, independent review, and release approval.

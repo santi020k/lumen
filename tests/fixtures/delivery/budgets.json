@@ -1,0 +1,8 @@
+{
+  "static": { "javascriptGzip": 0, "cssGzip": 36000, "controllers": [] },
+  "static-runtime": { "javascriptGzip": 5000, "cssGzip": 36000, "controllers": [] },
+  "dialog": { "javascriptGzip": 6000, "cssGzip": 36000, "controllers": ["controllers/dialogs.ts"] },
+  "code": { "javascriptGzip": 11000, "cssGzip": 36000, "controllers": ["controllers/scroll-cue.ts", "features/code.ts", "features/shared.ts", "features/tabs.ts"] },
+  "forms": { "javascriptGzip": 10000, "cssGzip": 36000, "controllers": ["features/forms.ts", "features/select.ts", "features/shared.ts"] },
+  "calendar": { "javascriptGzip": 10000, "cssGzip": 36000, "controllers": ["features/calendar-shared.ts", "features/calendar.ts", "features/shared.ts"] }
+}

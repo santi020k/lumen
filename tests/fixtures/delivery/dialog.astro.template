@@ -1,0 +1,14 @@
+---
+import Button from '@santi020k/lumen-astro/components/Button'
+import Dialog from '@santi020k/lumen-astro/components/Dialog'
+import DialogClose from '@santi020k/lumen-astro/components/DialogClose'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+<h1>Dialog delivery</h1>
+<Button data-ui-dialog-trigger="delivery-dialog">Open dialog</Button>
+<Dialog id="delivery-dialog" aria-labelledby="dialog-title">
+  <h2 id="dialog-title">Delivery dialog</h2>
+  <p>A small route with one interactive feature.</p>
+  <DialogClose>Close</DialogClose>
+</Dialog>
+<UIPrimitives />
