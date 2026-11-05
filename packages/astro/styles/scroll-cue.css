@@ -1,3 +1,6 @@
+/* Let synchronized panels settle before the document chooses another scroll anchor. */
+:root[data-ui-tabs-layout] { overflow-anchor: none; }
+
 @layer lumen.components {
 /* Opt-in overflow guidance remains outside the native scrolling content. */
 .ui-scroll-cue:not([hidden]) { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; color: hsl(var(--ink-soft)); font: 400 0.75rem/1.6 var(--font-sans, sans-serif); }

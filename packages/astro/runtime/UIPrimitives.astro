@@ -34,7 +34,7 @@ import { bindListBoxProxy } from './controllers/list-box-proxy'
 import { initMessageFeeds } from './controllers/message-scroller'
 import { initOptionalMediaControllers } from './controllers/optional-media'
 import { initProgress } from './controllers/progress'
-import { clearScrollCues, initScrollCues } from './controllers/scroll-cue'
+import { clearScrollCues, initScrollCues, refreshScrollCues } from './controllers/scroll-cue'
 
 /* eslint-disable complexity */
 /* Stateful DOM handlers stay local so Astro consumers do not need a framework runtime. */
@@ -954,6 +954,27 @@ const initListBoxes = (scope: ParentNode): void => {
 
 const synchronizedTabs = new WeakMap<HTMLElement, (value: string) => void>()
 const isEnabledTab = (tab: HTMLElement): boolean => !tab.matches(':disabled, [aria-disabled="true"]')
+let tabLayoutFrame = 0
+
+// Cue measurements can flush intermediate panel layouts. Suspend document
+// anchoring until the final synchronized layout has painted, without scrolling.
+const settleTabLayout = (root: HTMLElement): void => {
+  if (!root.querySelector('[data-ui-scroll-cue]')) return
+
+  const viewport = root.ownerDocument.documentElement
+
+  viewport.setAttribute('data-ui-tabs-layout', '')
+
+  cancelAnimationFrame(tabLayoutFrame)
+
+  tabLayoutFrame = requestAnimationFrame(() => {
+    tabLayoutFrame = requestAnimationFrame(() => {
+      viewport.removeAttribute('data-ui-tabs-layout')
+
+      tabLayoutFrame = 0
+    })
+  })
+}
 
 const initTabs = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tabs]')) {
@@ -1007,6 +1028,8 @@ const initTabs = (scope: ParentNode): void => {
       const value = tab.dataset.value ?? ''
       const wasSelected = tab.getAttribute('aria-selected') === 'true'
 
+      if (source === 'local' && !wasSelected) settleTabLayout(root)
+
       for (const [index, item] of tabs.entries()) {
         const selected = item === tab
         const panelId = item.getAttribute('aria-controls')
@@ -1023,9 +1046,9 @@ const initTabs = (scope: ParentNode): void => {
 
       root.dataset.value = value
 
-      if (source === 'initial' || wasSelected) return
+      refreshScrollCues(root)
 
-      if (source === 'local') scrollLumenTabIntoView(tab)
+      if (source === 'initial' || wasSelected) return
 
       const storageKey = root.dataset.storageKey
 
@@ -1043,6 +1066,38 @@ const initTabs = (scope: ParentNode): void => {
 
           synchronizedTabs.get(otherRoot)?.(value)
         }
+      }
+
+      // Avoid a native scroll transaction for a trigger already inside its visible area.
+      // WebKit can otherwise move the document while synchronized panels reflow.
+      if (source === 'local') {
+        const bounds = tab.getBoundingClientRect()
+        const listBounds = tabList?.getBoundingClientRect()
+        const viewport = root.ownerDocument.documentElement
+        const topInset = Number.parseFloat(getComputedStyle(viewport).scrollPaddingTop) || 0
+
+        let fullyVisible = Boolean(listBounds &&
+          bounds.top >= Math.max(topInset, listBounds.top) &&
+          bounds.bottom <= Math.min(viewport.clientHeight, listBounds.bottom) &&
+          bounds.left >= Math.max(0, listBounds.left) &&
+          bounds.right <= Math.min(viewport.clientWidth, listBounds.right))
+
+        for (let ancestor = tabList?.parentElement; fullyVisible && ancestor; ancestor = ancestor.parentElement) {
+          const style = getComputedStyle(ancestor)
+          const box = ancestor.getBoundingClientRect()
+          const left = box.left + ancestor.clientLeft
+          const top = box.top + ancestor.clientTop
+
+          if (['auto', 'scroll', 'hidden', 'clip'].includes(style.overflowX)) {
+            fullyVisible = bounds.left >= left && bounds.right <= left + ancestor.clientWidth
+          }
+
+          if (fullyVisible && ['auto', 'scroll', 'hidden', 'clip'].includes(style.overflowY)) {
+            fullyVisible = bounds.top >= top && bounds.bottom <= top + ancestor.clientHeight
+          }
+        }
+
+        if (!fullyVisible) scrollLumenTabIntoView(tab)
       }
 
       root.dispatchEvent(new CustomEvent<LumenTabsChangeDetail>('ui:tabs-change', {
@@ -1101,7 +1156,7 @@ const initTabs = (scope: ParentNode): void => {
         if (nextTab) {
           activate(nextTab)
 
-          nextTab.focus()
+          nextTab.focus({ preventScroll: true })
         }
       })
     }

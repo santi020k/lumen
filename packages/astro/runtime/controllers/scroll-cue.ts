@@ -1,3 +1,4 @@
+// cspell:words loadingdone
 interface ScrollCueBinding {
   cleanup: () => void
   measure: () => boolean
@@ -6,7 +7,14 @@ interface ScrollCueBinding {
 
 const bindings = new Map<HTMLElement, ScrollCueBinding>()
 const pending = new Set<ScrollCueBinding>()
+const fontListeners = new Map<FontFaceSet, () => void>()
 let frame = 0
+
+const renderCues = (cues: Iterable<ScrollCueBinding>): void => {
+  const measured = [...cues].map(item => ({ item, visible: item.measure() }))
+
+  for (const { item, visible } of measured) item.render(visible)
+}
 
 const schedule = (binding: ScrollCueBinding): void => {
   pending.add(binding)
@@ -16,11 +24,11 @@ const schedule = (binding: ScrollCueBinding): void => {
   frame = requestAnimationFrame(() => {
     frame = 0
 
-    const measured = [...pending].map(item => ({ item, visible: item.measure() }))
+    const queued = [...pending]
 
     pending.clear()
 
-    for (const { item, visible } of measured) item.render(visible)
+    renderCues(queued)
   })
 }
 
@@ -46,6 +54,10 @@ export const clearScrollCues = (): void => {
   pending.clear()
 
   bindings.clear()
+
+  for (const [fonts, update] of fontListeners) fonts.removeEventListener('loadingdone', update)
+
+  fontListeners.clear()
 }
 
 const getMessageId = (message: HTMLElement): string => {
@@ -70,7 +82,7 @@ const hasOverflow = (viewport: HTMLElement): boolean => {
   return width > 0 && viewport.scrollWidth > width + 1
 }
 
-const bindScrollCue = (root: HTMLElement): void => {
+const bindScrollCue = (root: HTMLElement): ScrollCueBinding | undefined => {
   const viewport = root.querySelector<HTMLElement>('[data-scroll-cue-viewport], pre')
   const content = viewport?.querySelector<HTMLElement>('table, code')
   const message = root.querySelector<HTMLElement>('[data-scroll-cue-message]')
@@ -118,9 +130,37 @@ const bindScrollCue = (root: HTMLElement): void => {
 
   bindings.set(root, binding)
 
-  void root.ownerDocument.fonts.ready.then(update)
+  return binding
+}
 
-  update()
+const syncFontListeners = (): void => {
+  const documents = new Set([...bindings.keys()].map(root => root.ownerDocument))
+  const activeFonts = new Set([...documents].map(ownerDocument => ownerDocument.fonts))
+
+  for (const [fonts, update] of fontListeners) {
+    if (activeFonts.has(fonts)) continue
+
+    fonts.removeEventListener('loadingdone', update)
+
+    fontListeners.delete(fonts)
+  }
+
+  for (const ownerDocument of documents) {
+    const { fonts } = ownerDocument
+
+    if (fontListeners.has(fonts)) continue
+
+    const update = (): void => {
+      const cues = [...bindings].filter(([root]) => root.ownerDocument === ownerDocument)
+
+      renderCues(cues.map(([, binding]) => binding))
+    }
+
+    // Font completion must not force style resolution through document.fonts.ready.
+    fonts.addEventListener('loadingdone', update)
+
+    fontListeners.set(fonts, update)
+  }
 }
 
 /** Enhance the documented Code/Table markup without owning native scrolling or focus. */
@@ -133,7 +173,28 @@ export const initScrollCues = (scope: ParentNode): void => {
     }
   }
 
+  const added: ScrollCueBinding[] = []
+
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-scroll-cue]')) {
-    if (!bindings.has(root)) bindScrollCue(root)
+    const binding = bindings.has(root) ? undefined : bindScrollCue(root)
+
+    if (binding) added.push(binding)
   }
+
+  renderCues(added)
+
+  syncFontListeners()
+}
+
+/** Measure visible panels before a tab scroll or a document anchor can move the reader. */
+export const refreshScrollCues = (scope: ParentNode): void => {
+  const cues: ScrollCueBinding[] = []
+
+  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-scroll-cue]')) {
+    const binding = bindings.get(root)
+
+    if (binding) cues.push(binding)
+  }
+
+  renderCues(cues)
 }

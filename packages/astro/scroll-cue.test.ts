@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
+// cspell:words loadingdone
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { clearScrollCues, initScrollCues } from './runtime/controllers/scroll-cue.js'
+import { clearScrollCues, initScrollCues, refreshScrollCues } from './runtime/controllers/scroll-cue.js'
 
 const observers: { update: () => void, disconnect: ReturnType<typeof vi.fn>, observe: ReturnType<typeof vi.fn> }[] = []
 
@@ -33,7 +34,12 @@ const flushFrame = (): void => {
   for (const callback of queued) callback(0)
 }
 
-Object.defineProperty(document, 'fonts', { configurable: true, value: { ready: Promise.resolve() } })
+const fonts = new EventTarget()
+
+Object.defineProperty(fonts, 'ready', { get: () => {
+  throw new Error('Font readiness must not force style resolution')
+} })
+Object.defineProperty(document, 'fonts', { configurable: true, value: fonts })
 
 const fixture = (type: 'code' | 'table' = 'table') => {
   const root = document.createElement('div')
@@ -51,7 +57,7 @@ const fixture = (type: 'code' | 'table' = 'table') => {
   const size = { width: 300, content: 500 }
 
   Object.defineProperties(viewport, {
-    clientWidth: { get: () => size.width },
+    clientWidth: { configurable: true, get: () => size.width },
     scrollWidth: { get: () => size.content }
   })
 
@@ -144,4 +150,65 @@ test('hides guidance at the overflow tolerance and ignores incomplete markup', (
     flushFrame()
   }).not.toThrow()
   expect(message.hidden).toBe(true)
+})
+
+test('settles initial cue geometry synchronously and measures every region before writing', () => {
+  const first = fixture()
+  const second = fixture('code')
+  const measurements: boolean[] = []
+
+  Object.defineProperty(second.viewport, 'clientWidth', {
+    get: () => {
+      measurements.push(first.message.hidden === true)
+
+      return 300
+    }
+  })
+  initScrollCues(document)
+  expect(measurements).toEqual([true])
+  expect(first.message.hidden).toBe(false)
+  expect(second.message.hidden).toBe(false)
+  expect(frames.size).toBe(0)
+})
+
+test('refreshes visible tab-panel cues before the next animation frame', () => {
+  const { message, root, size } = fixture()
+  const other = fixture('code')
+  const panel = document.createElement('section')
+
+  root.before(panel)
+  panel.append(root)
+  size.width = 0
+  initScrollCues(document)
+  expect(message.hidden).toBe(true)
+  size.width = 300
+  other.size.width = 0
+  refreshScrollCues(panel)
+  expect(message.hidden).toBe(false)
+  expect(other.message.hidden).toBe(false)
+  expect(frames.size).toBe(0)
+})
+
+test('observes font completion once per document and releases it on navigation', () => {
+  const addListener = vi.spyOn(fonts, 'addEventListener')
+  const removeListener = vi.spyOn(fonts, 'removeEventListener')
+  const first = fixture()
+  const second = fixture('code')
+
+  initScrollCues(document)
+  initScrollCues(document)
+  expect(addListener).toHaveBeenCalledTimes(1)
+  first.size.content = 100
+  second.size.content = 100
+  fonts.dispatchEvent(new Event('loadingdone'))
+  expect(first.message.hidden).toBe(true)
+  expect(second.message.hidden).toBe(true)
+  clearScrollCues()
+  expect(removeListener).toHaveBeenCalledTimes(1)
+  first.size.content = 500
+  fonts.dispatchEvent(new Event('loadingdone'))
+  expect(first.message.hidden).toBe(true)
+  initScrollCues(document)
+  expect(addListener).toHaveBeenCalledTimes(2)
+  expect(first.message.hidden).toBe(false)
 })

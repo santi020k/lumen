@@ -1,5 +1,44 @@
 import { expect, test } from '@playwright/test'
 
+for (const theme of ['light', 'dark']) {
+  for (const textSize of ['100%', '200%']) {
+    test(`visible synchronized tabs preserve the reading position in ${theme} at ${textSize} text`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 })
+      await page.goto('/reading-controls')
+      await page.locator('html').evaluate((html, settings) => {
+        html.style.fontSize = settings.textSize
+        html.dataset.theme = settings.theme
+      }, { textSize, theme })
+      const first = page.getByRole('tablist', { name: 'First code group' })
+      const last = page.getByRole('tablist', { name: 'Last code group' })
+      const short = last.getByRole('tab', { name: 'Short' })
+
+      await expect(short).toHaveAttribute('aria-selected', 'true')
+      await short.focus()
+      await last.evaluate(async list => {
+        window.scrollTo(0, window.scrollY + list.getBoundingClientRect().top - 150)
+        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => { resolve(); })))
+      })
+      const start = await page.evaluate(() => window.scrollY)
+
+      await short.press('ArrowRight')
+      await expect(last.getByRole('tab', { name: 'Long' })).toBeFocused()
+      await expect(first.getByRole('tab', { name: 'Long' })).toHaveAttribute('aria-selected', 'true')
+      await page.evaluate(async () => {
+        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => { resolve(); })))
+      })
+      expect(Math.abs(await page.evaluate(() => window.scrollY) - start)).toBeLessThanOrEqual(1)
+      await last.getByRole('tab', { name: 'Long' }).press('ArrowLeft')
+      await expect(short).toBeFocused()
+      await expect(first.getByRole('tab', { name: 'Short' })).toHaveAttribute('aria-selected', 'true')
+      await page.evaluate(async () => {
+        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => { resolve(); })))
+      })
+      expect(Math.abs(await page.evaluate(() => window.scrollY) - start)).toBeLessThanOrEqual(1)
+    })
+  }
+}
+
 test('article progress excludes the opening and footer and Anchor follows native fragments', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 440 })
   await page.goto('/reading-controls')
