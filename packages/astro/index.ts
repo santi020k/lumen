@@ -213,6 +213,7 @@ export {
   normalizeAstroActionErrors
 } from './forms.ts'
 export type {
+  LumenMediaViewportLabels,
   LumenTabsChangeDetail,
   LumenTabsChangeEvent
 } from '@santi020k/lumen-core'

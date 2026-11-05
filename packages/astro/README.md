@@ -595,6 +595,35 @@ For keyboard scrolling before JavaScript loads, give that `pre` `tabindex="0"`,
 `role="region"`, and an accessible name; existing attributes are preserved.
 Wrapped blocks do not add an extra tab stop.
 
+Opt into `scrollCue` on an unwrapped block `Code` or a `Table` with the default
+`layout="scroll"`. The default messages are “Scroll horizontally to read more” and
+“Scroll horizontally to compare”; pass a string to localize either message. Inline
+or wrapped Code and records-layout Table ignore the option. Import `styles.css` and
+mount `UIPrimitives` once in the root layout; it includes the cue stylesheet. The cue is hidden without JavaScript.
+It appears only when content overflows, stays outside the scrolling viewport, and
+updates after resizing, font loading, hidden-panel changes, and Astro navigation.
+Native scrolling and existing accessible descriptions are preserved.
+
+```astro
+<Code variant="block" code={source} language="ts" copy scrollCue />
+<Table scrollCue="Scroll horizontally to compare" aria-label="Plan comparison">
+  <table><!-- Native caption, header and body cells --></table>
+</Table>
+```
+
+A cue-enabled Table supplies `role="region"`, `tabindex="0"`, and the fallback name
+“Table”; pass a meaningful `aria-label` or `aria-labelledby` for each table. With the
+option off, Table retains its original markup and runtime-free behavior. Style the
+optional message with `[data-slot="scroll-cue"]`.
+
+Markdown renderers can emit the same contract: an outer `[data-ui-scroll-cue]`, a
+native scrolling `[data-scroll-cue-viewport]` containing a `table` or `code`, and a
+sibling `[data-scroll-cue-message][data-slot="scroll-cue"]` with `hidden`. The runtime
+also finds Code's `pre` automatically, assigns a unique message ID if omitted, and
+adds only its own description token while the message is visible. Keep the viewport
+named and focusable in server HTML, and provide a decorative icon and localized text.
+
+
 `NavigationMenu` contains ordinary site links, so every enabled link remains in
 native Tab order. Use `Menubar` or `Toolbar` for their documented composite-widget
 keyboard behavior. A `ThemeToggle` with `controlled` respects the host theme at
@@ -852,3 +881,12 @@ media loading, selection, adjustment algorithms, processing, export and persiste
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+### Long-form article controls
+
+- Give `ScrollProgress` a `targetId` to measure an article or another named element. Progress starts at the root scroll padding and ends when the bottom of the content fits in the viewport. A missing target falls back to document progress. Use `Anchor` for fragment links that respect sticky headers and heading scroll margins.
+- Use `scrollCue` with `wrap={false}` on `CodeTabs` to describe horizontal overflow in the visible panel. Pass a string to localize the cue. With a shared `storageKey`, matching groups change selection in place; only the group the reader operates scrolls its trigger into view.
+- Pass a localized `recoveryLabel` such as “Select and copy the code” to `CopyButton`, `Code`, or `CodeTabs` to opt into manual recovery. If clipboard access fails, the next available copy field holds the full text and selects it on focus. Successful retries and tab changes clear the field.
+- Set `fallbackFormat="webp"` on `CoverImage` to generate an AVIF source with a WebP fallback. Omit the prop to keep the default picture formats.
+
+Mount `UIPrimitives` once to enable the reading and clipboard controls.

@@ -9,7 +9,7 @@
 
 <h1 align="center">Lumen UI · Product Templates</h1>
 
-<p align="center">Live previews · Five product families · Three framework targets</p>
+<p align="center">Live previews · Six families · Framework-specific recipes</p>
 
 <p align="center">
   <a href="https://github.com/santi020k/lumen/tree/main/packages/templates"><img src="https://img.shields.io/badge/workspace-private-0369a0?style=flat-square" alt="Private workspace package"></a>
@@ -45,7 +45,12 @@ React and Web Components consumers use `@santi020k/lumen-react` with `--target r
 and runtime setup, then adapt the generated files to the application's data and workflows.
 
 Available families are analytics dashboard, SaaS admin, commerce dashboard, project workspace,
-and authentication/onboarding. Preview them in the gallery before choosing a recipe.
+authentication/onboarding, and editorial. The five product templates support all three web targets;
+editorial supports Astro. Preview them in the gallery before choosing a recipe.
+
+The [editorial recipes](../../docs/editorial-recipes.md) extract nine independent content compositions
+from versions 4.1 and 5 of the website. Install them with `pnpm exec lumen add editorial --target astro`.
+The showcase imports the installable sources directly so the preview and copied components stay aligned.
 
 Dashboard metric cards own their frame and spacing. Their public `Stat` uses the bare
 variant, and change badges wrap below the value when a narrow card needs more room.

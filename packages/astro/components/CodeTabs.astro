@@ -24,8 +24,10 @@ interface Props extends HTMLAttributes<'div'> {
   copyLabel?: string
   copiedLabel?: string
   errorLabel?: string
+  recoveryLabel?: string
   initialValue?: string
   items: readonly CodeTabItem[]
+  scrollCue?: boolean | string
   storageKey?: string
   theme?: CodeTheme
   wrap?: boolean
@@ -39,9 +41,11 @@ const {
   codeLabel = 'Code example',
   copyLabel = 'Copy code to clipboard',
   copiedLabel = 'Code copied to clipboard',
+  recoveryLabel,
   errorLabel = 'Could not copy code. Select and copy it manually.',
   initialValue,
   items,
+  scrollCue = false,
   storageKey,
   theme = 'auto',
   wrap = true,
@@ -95,6 +99,8 @@ const { classList, passthrough } = resolveLumenAstroProps(
         copiedLabel={copiedLabel}
         errorLabel={errorLabel}
         {...(item.language === undefined ? {} : { language: item.language })}
+        {...(recoveryLabel === undefined ? {} : { recoveryLabel })}
+        scrollCue={scrollCue}
         theme={theme}
         variant="block"
         wrap={wrap}

@@ -1004,6 +1004,12 @@ export const getRecipe = (
 
   const framework = args.framework ?? 'astro'
 
+  if (recipe.frameworks && !recipe.frameworks.includes(framework)) {
+    const message = `Recipe "${recipe.name}" supports ${recipe.frameworks.join(', ')}; ${framework} starter files are not available.`
+
+    return { data: { found: false, message }, isError: true, text: message }
+  }
+
   const componentLines = (recipe.components ?? []).map(name => {
     const component = resolveComponent(name, data)
 
@@ -1056,7 +1062,15 @@ export const search = (
 
   const results = collectSearchResults(
     query, meaningfulSearchTerms(query), data, args.framework, args.platform
-  ).filter(result => !args.kind || result.kind === args.kind)
+  ).filter(result => {
+    if (args.kind && result.kind !== args.kind) return false
+
+    if (result.kind !== 'recipe' || !args.framework) return true
+
+    const recipe = resolveRecipe(result.name, data)
+
+    return !recipe?.frameworks || recipe.frameworks.includes(args.framework)
+  })
 
   const kindPriority: Record<SearchResult['kind'], number> = {
     component: 0,

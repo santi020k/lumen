@@ -36,7 +36,13 @@
       "project": ["src/**/*.ts"]
     },
     "packages/lumen": {
-      "entry": ["src/index.ts", "src/cli.ts", "bin/*.mjs", "templates/shared/common/src/lumen/lumen-template.css"],
+      "entry": [
+        "src/index.ts",
+        "src/cli.ts",
+        "bin/*.mjs",
+        "templates/shared/common/src/lumen/lumen-template.css",
+        "templates/astro/site-search-dialog/src/lumen/site-search-provider.ts"
+      ],
       "ignoreDependencies": ["@types/react", "react"],
       "project": ["bin/*.mjs", "**/*.{css,ts}"]
     },

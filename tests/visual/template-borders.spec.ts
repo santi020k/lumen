@@ -11,7 +11,7 @@ for (const width of [390, 1440]) {
       }, theme)
 
       const previews = page.locator('.template-gallery-card__preview')
-      await expect(previews).toHaveCount(5)
+      await expect(previews).toHaveCount(6)
 
       for (const preview of await previews.all()) {
         await preview.scrollIntoViewIfNeeded()

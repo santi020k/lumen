@@ -213,6 +213,7 @@ export interface LumenRecipeSnapshot {
   description: string
   examples: Partial<Record<LumenFramework, string>>
   files?: unknown[]
+  frameworks?: LumenFramework[]
   install: Record<LumenFramework, string>
   name: string
   type: string

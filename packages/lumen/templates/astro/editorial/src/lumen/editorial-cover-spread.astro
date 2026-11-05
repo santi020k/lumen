@@ -1,0 +1,161 @@
+---
+import { Typography } from '@santi020k/lumen-astro'
+
+interface Props {
+  description?: string
+  eyebrow?: string
+  headingId: string
+  headingLevel?: 1 | 2 | 3 | 4
+  layout?: 'wide' | 'contained'
+  title: string
+}
+
+const { description, eyebrow, headingId, headingLevel = 1, layout = 'wide', title } = Astro.props
+const Heading = `h${headingLevel}` as const
+const hasMedia = Astro.slots.has('media')
+---
+
+<section class="editorial-cover" aria-labelledby={headingId}>
+  <div class="editorial-cover__spread" data-layout={hasMedia ? layout : 'text'}>
+    <header class="editorial-cover__heading">
+      <Typography class="editorial-cover__copy">
+        {eyebrow && <p class="editorial-cover__eyebrow">{eyebrow}</p>}
+        <Heading id={headingId}>{title}</Heading>
+        {description && <p class="editorial-cover__description">{description}</p>}
+        <slot name="metadata" />
+      </Typography>
+    </header>
+    {hasMedia && <div class="editorial-cover__media"><slot name="media" /></div>}
+  </div>
+</section>
+
+<style>
+  .editorial-cover {
+    container: editorial-cover / inline-size;
+    color: hsl(var(--ink));
+  }
+
+  .editorial-cover__spread {
+    --cover-overlap: clamp(2.625rem, 6.5cqi, 4.375rem);
+    --cover-tail: 25%;
+    --cover-corner: 2rem;
+    --cover-corner-offset: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    isolation: isolate;
+  }
+
+  .editorial-cover__heading {
+    z-index: 1;
+    grid-column: 1 / -1;
+    min-width: 0;
+    padding-block-end: 1.875rem;
+  }
+
+  [data-layout='wide'] .editorial-cover__heading {
+    grid-column: 1 / 10;
+    padding-inline-end: 1.75rem;
+    margin-block-end: calc(-1 * var(--cover-overlap));
+    border-end-end-radius: 2rem;
+  }
+
+  .editorial-cover__heading :global(.editorial-cover__copy) {
+    color: inherit;
+    overflow-wrap: anywhere;
+  }
+
+  .editorial-cover__heading :global(:is(h1, h2, h3, h4)) {
+    margin: 0;
+    padding-block: 0.1em;
+    font-size: clamp(2rem, 6.5cqi, 4.25rem);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.055em;
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+    hyphens: manual;
+  }
+
+  .editorial-cover__eyebrow {
+    margin: 0 0 1rem;
+    color: hsl(var(--brand));
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .editorial-cover__description {
+    margin: 1rem 0 0;
+    color: hsl(var(--ink-soft));
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .editorial-cover__media {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 0 2rem 2rem 0.25rem;
+  }
+
+  .editorial-cover__media :global(:is(img, video, svg)) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  [data-layout='wide'] .editorial-cover__media {
+    mask: linear-gradient(#000 0 0) bottom / 100% calc(100% - var(--cover-overlap)) no-repeat, linear-gradient(#000 0 0) right / var(--cover-tail) 100% no-repeat, radial-gradient(circle at top left, transparent calc(var(--cover-corner) - 0.5px), #000 var(--cover-corner)) left calc(100% - var(--cover-tail) - var(--cover-corner-offset)) top calc(var(--cover-overlap) - var(--cover-corner)) / var(--cover-corner) var(--cover-corner) no-repeat;
+  }
+
+  [data-layout='contained'] .editorial-cover__media {
+    width: 100%;
+    max-width: 56rem;
+    margin-inline: auto;
+    border-radius: 1.5rem;
+  }
+
+  @container editorial-cover (width < 36.25rem) {
+    .editorial-cover__spread {
+      --cover-overlap: 2.125rem;
+      --cover-tail: 16.666667%;
+      --cover-corner: 1.625rem;
+      --cover-corner-offset: 0.270833rem;
+    }
+    [data-layout='wide'] .editorial-cover__heading {
+      grid-column: 1 / 11;
+      padding-inline-end: 1.375rem;
+      padding-block-end: 1.5rem;
+      border-end-end-radius: 1.625rem;
+    }
+    .editorial-cover__heading :global(:is(h1, h2, h3, h4)) {
+      font-size: clamp(1.875rem, 6.5cqi, 2.375rem);
+    }
+  }
+
+  @container editorial-cover (width < 23.75rem) {
+    [data-layout='wide'] .editorial-cover__heading {
+      grid-column: 1 / -1;
+      padding: 0 0 1.375rem;
+      margin: 0;
+      border-radius: 0;
+    }
+    .editorial-cover__heading :global(:is(h1, h2, h3, h4)) {
+      font-size: 1.875rem;
+      line-height: 1.12;
+      letter-spacing: -0.045em;
+    }
+    [data-layout='wide'] .editorial-cover__media {
+      mask: none;
+    }
+    .editorial-cover__media {
+      border-radius: 1.375rem 0.25rem 1.375rem 0.25rem;
+    }
+  }
+
+  @container editorial-cover (width < 16rem) {
+    .editorial-cover__heading :global(:is(h1, h2, h3, h4)) {
+      font-size: 1.25rem;
+    }
+  }
+</style>

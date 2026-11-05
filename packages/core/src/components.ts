@@ -381,7 +381,7 @@ export const lumenComponentBehavior = {
   StatValue: { astro: 'none', elements: 'registered-element', react: 'component' },
   Stepper: { astro: 'none', elements: 'registered-element', react: 'component' },
   Switch: { astro: 'none', elements: 'registered-element', react: 'component' },
-  Table: { astro: 'none', elements: 'registered-element', react: 'component' },
+  Table: { astro: 'ui-primitives', elements: 'registered-element', react: 'component' },
   Tabs: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   TagGroup: { astro: 'ui-primitives', elements: 'registered-element', react: 'hook' },
   Textarea: { astro: 'none', elements: 'registered-element', react: 'component' },
@@ -477,7 +477,7 @@ export const lumenStylingContracts = {
       '--ui-code-header-bg',
       '--ui-code-muted'
     ],
-    parts: [],
+    parts: ['scroll-cue'],
     rootSlot: 'code',
     stability: 'stable'
   },
@@ -535,7 +535,7 @@ export const lumenStylingContracts = {
   },
   Table: {
     customProperties: ['--ui-table-cell-padding'],
-    parts: [],
+    parts: ['scroll-cue'],
     rootSlot: 'table',
     stability: 'stable'
   },

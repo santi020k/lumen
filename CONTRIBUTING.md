@@ -59,6 +59,16 @@ Set `TURBO_SCM_BASE` and, when needed, `TURBO_SCM_HEAD` to compare another range
 `build:affected`, `typecheck:affected`, `test:affected`, and `lint:affected` commands when iterating
 on one kind of check.
 
+The October 2026 rollout benchmark compared the same Turbo task set with and without `--affected`
+at 50% concurrency on macOS arm64 (pnpm 12.8.1, Turbo 2.11.7). A docs change selected 13 tasks:
+49.84 seconds affected versus 90.72 seconds full, a 45.1% reduction with empty task caches.
+An Elements change selected 20 tasks: 53.73 versus 90.86 seconds, a 40.9% reduction.
+Two warm runs per mode showed no meaningful improvement (medians between 1.62 and 1.79 seconds).
+These measurements quantify the existing Turbo selection, not total hosted CI duration. Compiler
+caches were prewarmed equally and remote caching was disabled; installation and separate repository,
+platform, and release gates were excluded. The isolated fixture normalized generated OG cache
+fingerprints without changing content or image bytes. Full `pnpm run validate` passed separately.
+
 The canonical `pnpm run typecheck` also checks the local Figma Code Connect templates and their
 shared ambient types with `pnpm run typecheck:figma`.
 
@@ -75,7 +85,9 @@ publishing. It intentionally remains exhaustive.
 
 Pull request CI classifies changed paths before starting platform jobs. Web packages, React Native,
 SwiftUI, Compose, browser suites, playground captures, MCP checks, package smoke tests, and bundle
-budgets run only when their owning sources or shared foundations changed. The release canary uses
+budgets run only when their owning sources or shared foundations changed. Classification uses the
+PR merge base and includes deleted paths and both sides of renames, including unusual filenames.
+Invalid history stops classification instead of producing an empty selection. The release canary uses
 the same package boundaries; dispatch it manually when an explicit full web, Swift, and Compose
 qualification run is required.
 
@@ -275,8 +287,8 @@ commit, or the immutable existing version tag during recovery. Missing packages,
 and incorrect source provenance stop release creation. Version-preparation pull requests are not
 publication attempts; ordinary releases continue auditing their newly published packages.
 
-All pull requests, including release branches, run affected builds, type checks, lint, and tests,
-plus the platform and integration gates selected from their changed paths. Release pull requests
-also resolve the exact Changesets package set for release builds and publish dry-runs. The
+Ordinary pull requests run affected builds, type checks, lint, and tests. Release pull requests run
+those four tasks for the full workspace. Both retain the platform and integration gates selected
+from their changed paths. Release pull requests also resolve the exact Changesets package set for release builds and publish dry-runs. The
 publication run resolves that scope from pending Changesets or unpublished local versions and
 retains package-family, native, and MCP release gates only when that scope requires them.

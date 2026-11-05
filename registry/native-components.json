@@ -23,7 +23,7 @@
         "packages/compose/wear/src/main/kotlin/com/santi020k/lumen/wear"
       ],
       "toolchain": {
-        "androidGradlePlugin": "9.4.1",
+        "androidGradlePlugin": "9.5.0",
         "compileSdk": 37,
         "gradle": "9.8.0",
         "instrumentationApi": 35,

@@ -1,0 +1,51 @@
+---
+import { Avatar, Link, Timeline, TimelineItem, Typography } from '@santi020k/lumen-astro'
+
+interface TimelineEntry {
+  title: string
+  dateLabel: string
+  dateTime?: string
+  href?: string
+  description?: string
+  logo?: string
+  newTab?: boolean
+}
+
+interface Props {
+  headingId: string
+  title: string
+  items: readonly TimelineEntry[]
+}
+
+const { headingId, title, items } = Astro.props
+---
+
+{items.length > 0 && (
+  <section aria-labelledby={headingId} class="linked-timeline">
+    <Typography><h2 id={headingId}>{title}</h2></Typography>
+    <Timeline>
+      {items.map(item => (
+        <TimelineItem>
+          <div class="linked-timeline__entry">
+            {item.logo && <Avatar src={item.logo} alt="" />}
+            <div>
+              <p>{item.dateTime ? <time datetime={item.dateTime}>{item.dateLabel}</time> : item.dateLabel}</p>
+              <h3>
+                {item.href ? <Link href={item.href} newTab={item.newTab}>{item.title}</Link> : item.title}
+              </h3>
+              {item.description && <p>{item.description}</p>}
+            </div>
+          </div>
+        </TimelineItem>
+      ))}
+    </Timeline>
+  </section>
+)}
+
+<style>
+  .linked-timeline { overflow-wrap: anywhere; min-inline-size: 0; }
+  .linked-timeline__entry { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .linked-timeline__entry > div { flex: 1 1 12rem; min-inline-size: 0; }
+  h3 { margin: 0.25rem 0; color: hsl(var(--ink)); font-size: 1.125em; }
+  p { margin: 0; color: hsl(var(--ink-soft)); }
+</style>

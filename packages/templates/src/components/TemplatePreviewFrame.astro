@@ -108,9 +108,9 @@ const installCommands = template.frameworks.map(framework => ({
     <div class="template-gallery-card__availability">
       <Badge variant="outline">
         <Icon name="blocks" size="sm" />
-        One recipe, three targets
+        {template.slug === 'editorial' ? 'Astro recipe' : 'One recipe, three targets'}
       </Badge>
-      <span>Switch once; every card remembers your platform.</span>
+      <span>{template.slug === 'editorial' ? 'Copy nine independent components into your Astro project.' : 'Switch once; every card remembers your platform.'}</span>
     </div>
     <CodeTabs
       ariaLabel={`Install ${template.name} by platform`}

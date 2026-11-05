@@ -1,0 +1,181 @@
+---
+import { Button, ButtonLink, Dialog, DialogBody, DialogClose, DialogHeader, DialogTitle, Link, type LumenMediaViewportLabels, MediaViewport } from '@santi020k/lumen-astro'
+
+interface Props {
+  id: string
+  href: string
+  title: string
+  ratio?: number
+  locale?: string
+  viewportLabels?: Partial<LumenMediaViewportLabels>
+  labels?: Partial<{ close: string, failure: string, loading: string, open: string, original: string, retry: string }>
+}
+
+const { id, href, title, ratio, locale, labels, viewportLabels } = Astro.props
+const openLabel = labels?.open ?? 'View larger image'
+const titleId = `${id}-title`
+---
+
+<lumen-recipe-image-viewer data-loading={labels?.loading ?? 'Loading image…'} data-failure={labels?.failure ?? 'The image could not be loaded.'}>
+  <ButtonLink class="image-viewer-fallback" href={href} variant="secondary">{openLabel}</ButtonLink>
+  <Button class="image-viewer-trigger" data-ui-dialog-trigger={id} variant="outline">{openLabel}</Button>
+  <Dialog id={id} class="image-viewer-dialog" aria-labelledby={titleId}>
+    <DialogHeader class="image-viewer-header">
+      <DialogTitle id={titleId}>{title}</DialogTitle>
+      <DialogClose variant="outline" autofocus>{labels?.close ?? 'Close'}</DialogClose>
+    </DialogHeader>
+    <DialogBody>
+      <p data-image-status role="status"></p>
+      <Button data-image-retry hidden variant="outline">{labels?.retry ?? 'Retry'}</Button>
+      <div data-image-viewport hidden>
+        <MediaViewport label={title} labels={viewportLabels} locale={locale} ratio={ratio}>
+          <div data-image-mount></div>
+        </MediaViewport>
+      </div>
+      <slot name="caption" />
+      <Link href={href}>{labels?.original ?? 'Open original image'}</Link>
+    </DialogBody>
+  </Dialog>
+  <template data-image-template><slot /></template>
+</lumen-recipe-image-viewer>
+
+<script>
+  class LumenRecipeImageViewer extends HTMLElement {
+    private observer?: MutationObserver
+    private connection?: AbortController
+
+    connectedCallback() {
+      const dialog = this.querySelector('dialog')
+      const status = this.querySelector<HTMLElement>('[data-image-status]')
+      const retry = this.querySelector<HTMLButtonElement>('[data-image-retry]')
+      const viewport = this.querySelector<HTMLElement>('[data-image-viewport]')
+      const mount = this.querySelector<HTMLElement>('[data-image-mount]')
+      const template = this.querySelector<HTMLTemplateElement>('[data-image-template]')
+
+      if (!dialog || !status || !retry || !viewport || !mount || !template) return
+
+      this.connection = new AbortController()
+
+      const { signal } = this.connection
+      let state: 'idle' | 'loading' | 'failed' | 'ready' = 'idle'
+
+      const fail = () => {
+        state = 'failed'
+
+        status.textContent = this.dataset.failure ?? ''
+
+        retry.hidden = false
+      }
+
+      const load = () => {
+        state = 'loading'
+
+        status.textContent = this.dataset.loading ?? ''
+
+        retry.hidden = true
+
+        viewport.hidden = true
+
+        const media = document.importNode(template.content, true)
+        const image = media.querySelector('img')
+
+        if (!image) return fail()
+
+        image.loading = 'eager'
+
+        image.addEventListener('load', () => {
+          state = 'ready'
+
+          status.textContent = ''
+
+          viewport.hidden = false
+        }, { once: true, signal })
+
+        image.addEventListener('error', fail, { once: true, signal })
+
+        mount.replaceChildren(media)
+      }
+
+      this.observer = new MutationObserver(() => {
+        if (dialog.open && (state === 'idle' || state === 'failed')) load()
+      })
+
+      this.observer.observe(dialog, { attributes: true, attributeFilter: ['open'] })
+
+      retry.addEventListener('click', () => {
+        dialog.querySelector<HTMLButtonElement>('[data-ui-dialog-close]')?.focus()
+
+        load()
+      }, { signal })
+
+      if (dialog.open) load()
+
+      this.dataset.imageViewerReady = ''
+    }
+
+    disconnectedCallback() {
+      this.observer?.disconnect()
+
+      this.connection?.abort()
+
+      this.removeAttribute('data-image-viewer-ready')
+    }
+  }
+
+  if (!customElements.get('lumen-recipe-image-viewer')) {
+    customElements.define('lumen-recipe-image-viewer', LumenRecipeImageViewer)
+  }
+</script>
+
+<style>
+  lumen-recipe-image-viewer {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .image-viewer-trigger,
+  .image-viewer-fallback,
+  .image-viewer-header :global(button),
+  [data-image-retry] {
+    max-inline-size: 100%;
+    min-block-size: 2.75rem;
+    block-size: auto;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .image-viewer-dialog {
+    inline-size: min(54rem, calc(100% - 1.25rem));
+    max-inline-size: none;
+    overflow-wrap: anywhere;
+  }
+
+  .image-viewer-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .image-viewer-trigger,
+  [data-image-retry][hidden] {
+    display: none;
+  }
+
+  [data-image-viewer-ready]:has(.image-viewer-trigger[data-ui-bound='true']) .image-viewer-trigger {
+    display: inline-flex;
+  }
+
+  [data-image-viewer-ready]:has(.image-viewer-trigger[data-ui-bound='true']) .image-viewer-fallback {
+    display: none;
+  }
+
+  [data-image-mount] {
+    block-size: 100%;
+  }
+
+  [data-image-status]:empty {
+    margin: 0;
+  }
+</style>

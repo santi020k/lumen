@@ -1,0 +1,149 @@
+---
+import { Anchor, Collapsible, ScrollProgress, SkipLink } from '@santi020k/lumen-astro'
+
+interface Props {
+  articleId: string
+  chapters: readonly { id: string, label: string, depth?: 2 | 3 | 4 | 5 | 6 }[]
+  labels?: Partial<{ contents: string, progress: string, skip: string }>
+  activationOffset?: number
+}
+
+const { articleId, chapters, labels, activationOffset } = Astro.props
+const contentsLabel = labels?.contents ?? 'On this page'
+
+const items = chapters.map(({ id, label, depth }) => ({
+  href: `#${encodeURIComponent(id)}`,
+  label,
+  depth
+}))
+
+const articleHref = `#${encodeURIComponent(articleId)}`
+---
+
+<lumen-recipe-article-reading class="article-reading">
+  <SkipLink href={articleHref}>{labels?.skip ?? 'Skip to article text'}</SkipLink>
+  {items.length > 0 && (
+    <div class="chapter-rail">
+      <Anchor activationOffset={activationOffset} aria-label={contentsLabel} items={items} />
+    </div>
+    <Collapsible class="chapter-disclosure">
+      <summary>{contentsLabel}</summary>
+      <Anchor activationOffset={activationOffset} aria-label={contentsLabel} items={items} />
+    </Collapsible>
+  )}
+  <article id={articleId} class="article-text" tabindex="-1">
+    <ScrollProgress class="article-progress" targetId={articleId} aria-label={labels?.progress ?? 'Reading progress'} />
+    <slot />
+  </article>
+</lumen-recipe-article-reading>
+
+<script>
+  class LumenRecipeArticleReading extends HTMLElement {
+    constructor() {
+      super()
+
+      this.addEventListener('click', event => {
+        if (!(event.target instanceof Element) || event.button !== 0 ||
+          event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+
+        const link = event.target.closest<HTMLAnchorElement>('.chapter-disclosure a[href^="#"]')
+
+        if (!link) return
+
+        const disclosure = link.closest('details')
+        const destinationId = link.hash.slice(1)
+
+        if (!disclosure || !destinationId) return
+
+        window.setTimeout(() => {
+          if (event.defaultPrevented || !this.isConnected) return
+
+          // The recipe generated this encoded fragment from a caller-owned heading ID.
+          const heading = document.getElementById(decodeURIComponent(destinationId))
+
+          if (!heading || !this.contains(heading)) return
+
+          disclosure.open = false
+
+          if (!heading.hasAttribute('tabindex')) {
+            heading.setAttribute('tabindex', '-1')
+
+            heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true })
+          }
+
+          heading.focus({ preventScroll: true })
+
+          heading.scrollIntoView({ block: 'start' })
+        }, 0)
+      })
+    }
+  }
+
+  if (!customElements.get('lumen-recipe-article-reading')) {
+    customElements.define('lumen-recipe-article-reading', LumenRecipeArticleReading)
+  }
+</script>
+
+<style>
+  .article-reading {
+    display: grid;
+    align-items: start;
+    gap: 1.25rem;
+    overflow-wrap: anywhere;
+  }
+
+  .chapter-rail,
+  .article-text {
+    min-inline-size: 0;
+  }
+
+  .chapter-rail {
+    display: none;
+  }
+
+  .chapter-disclosure > summary {
+    min-block-size: 2.75rem;
+    padding-block: 0.65rem;
+  }
+
+  :where(.article-text) :global(:where(h2, h3, h4, h5, h6)) {
+    scroll-margin-block-start: var(--article-reading-heading-offset, 2.25rem);
+  }
+
+  .article-text:focus-visible {
+    outline: 2px solid hsl(var(--brand));
+    outline-offset: 0.25rem;
+  }
+
+  .article-progress {
+    display: none;
+  }
+
+  .article-progress[data-ui-bound='true'] {
+    display: block;
+    position: sticky;
+    inset: auto;
+    inset-block-start: var(--article-reading-sticky-offset, 1.25rem);
+    z-index: 1;
+    margin-block-end: 1.25rem;
+  }
+
+  @media (min-width: 64rem) {
+    .article-reading:has(.chapter-rail) {
+      grid-template-columns: minmax(12rem, 18rem) minmax(0, 1fr);
+      gap: clamp(1.5rem, 4vw, 4rem);
+    }
+
+    .chapter-rail {
+      display: block;
+      position: sticky;
+      inset-block-start: var(--article-reading-sticky-offset, 1.25rem);
+      max-block-size: calc(100dvb - var(--article-reading-sticky-offset, 1.25rem) - 1.25rem);
+      overflow: auto;
+    }
+
+    .chapter-disclosure {
+      display: none;
+    }
+  }
+</style>

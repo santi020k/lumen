@@ -1,40 +1,71 @@
 import { decodeLumenAnchorFragment, getLumenActiveAnchorIndex } from '@santi020k/lumen-core'
 
-interface AnchorDispatcher {
-  callbacks: WeakMap<HTMLElement, () => void>
-  frame: number
+const anchors = new WeakMap<HTMLElement, () => void>()
+let observer: ResizeObserver | undefined
+const bars = () => document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')
+const getTarget = (root: HTMLElement) => document.getElementById(root.dataset.uiScrollProgressTarget ?? '')
+const clamp = (ratio: number) => Math.min(1, Math.max(0, ratio))
+
+const readProgress = (scroller: Element, target: HTMLElement | null): number => {
+  const height = scroller.clientHeight
+
+  if (!target) return clamp(scroller.scrollTop / Math.max(1, scroller.scrollHeight - height))
+
+  const rect = target.getBoundingClientRect()
+
+  if (!rect.height) return 0
+
+  if (rect.bottom <= height) return 1
+
+  const padding = getComputedStyle(scroller).scrollPaddingTop
+  let start = parseFloat(padding) || 0
+
+  if (padding.endsWith('%')) start *= height / 100
+
+  return clamp((start - rect.top) / Math.max(1, rect.height - height + start))
 }
 
-const anchorDispatchers = new WeakMap<Document, AnchorDispatcher>()
+const updateProgress = (): void => {
+  const scroller = document.scrollingElement ?? document.documentElement
+  const progress = Array.from(bars(), root => [root, readProgress(scroller, getTarget(root))] as const)
 
-const getAnchorDispatcher = (ownerDocument: Document): AnchorDispatcher => {
-  const existing = anchorDispatchers.get(ownerDocument)
+  for (const [root, ratio] of progress) {
+    const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
+
+    root.dataset.uiBound = 'true'
+
+    root.setAttribute('aria-valuenow', String(Math.round(ratio * 100)))
+
+    if (bar) bar.style.transform = `scaleX(${ratio})`
+  }
+}
+
+const refreshers = new WeakMap<Document, () => void>()
+
+const bindRefresh = (doc: Document) => {
+  const existing = refreshers.get(doc)
 
   if (existing) return existing
 
-  const dispatcher: AnchorDispatcher = { callbacks: new WeakMap(), frame: 0 }
+  let frame = 0
 
-  const runUpdates = (): void => {
-    dispatcher.frame = 0
+  const refresh = (): void => {
+    if (frame) return
 
-    for (const root of ownerDocument.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
-      dispatcher.callbacks.get(root)?.()
-    }
+    frame = requestAnimationFrame(() => {
+      frame = 0
+
+      for (const root of doc.querySelectorAll<HTMLElement>('[data-ui-anchor]')) anchors.get(root)?.()
+
+      if (doc === document) updateProgress()
+    })
   }
 
-  const requestUpdates = (): void => {
-    if (dispatcher.frame) return
+  for (const event of ['resize', 'scroll']) doc.defaultView?.addEventListener(event, refresh, { passive: true })
 
-    dispatcher.frame = requestAnimationFrame(runUpdates)
-  }
+  refreshers.set(doc, refresh)
 
-  ownerDocument.defaultView?.addEventListener('resize', requestUpdates, { passive: true })
-
-  ownerDocument.defaultView?.addEventListener('scroll', requestUpdates, { passive: true })
-
-  anchorDispatchers.set(ownerDocument, dispatcher)
-
-  return dispatcher
+  return refresh
 }
 
 const initAnchors = (scope: ParentNode): void => {
@@ -43,19 +74,14 @@ const initAnchors = (scope: ParentNode): void => {
 
     root.dataset.uiBound = 'true'
 
-    const ownerDocument = root.ownerDocument
-    const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
-    const targets: { link: HTMLAnchorElement, target: HTMLElement }[] = []
+    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
 
-    for (const link of links) {
-      const fragment = link.getAttribute('href')?.slice(1) ?? ''
-      const id = decodeLumenAnchorFragment(fragment)
-      const target = id ? ownerDocument.getElementById(id) : null
+    const targets = links.flatMap(link => {
+      const id = decodeLumenAnchorFragment(link.hash.slice(1))
+      const target = root.ownerDocument.getElementById(id)
 
-      if (target) {
-        targets.push({ link, target })
-      }
-    }
+      return target ? [{ link, target }] : []
+    })
 
     if (!targets.length) continue
 
@@ -67,11 +93,8 @@ const initAnchors = (scope: ParentNode): void => {
 
         link.dataset.active = String(isActive)
 
-        if (isActive) {
-          link.setAttribute('aria-current', 'location')
-        } else {
-          link.removeAttribute('aria-current')
-        }
+        if (isActive) link.setAttribute('aria-current', 'location')
+        else link.removeAttribute('aria-current')
       }
     }
 
@@ -82,61 +105,44 @@ const initAnchors = (scope: ParentNode): void => {
       if (active) setActive(active)
     }
 
-    for (const { link } of targets) {
-      link.addEventListener('click', () => {
-        setActive(link)
-      })
-    }
+    for (const { link } of targets) link.addEventListener('click', () => {
+      setActive(link)
+    })
 
-    getAnchorDispatcher(ownerDocument).callbacks.set(root, update)
+    anchors.set(root, update)
+
+    bindRefresh(root.ownerDocument)
 
     update()
   }
 }
 
-let scrollProgressFrame = 0
+const initScrollProgress = (): void => {
+  observer?.disconnect()
 
-const updateScrollProgress = (): void => {
-  scrollProgressFrame = 0
+  const roots = bars()
 
-  const scrollingElement = document.scrollingElement ?? document.documentElement
-  const maximum = scrollingElement.scrollHeight - scrollingElement.clientHeight
+  if (!roots.length) return
 
-  const percentage = maximum > 0 ?
-    Math.min(100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)) :
-    0
+  const refresh = bindRefresh(document)
 
-  for (const root of document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')) {
-    const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
+  if (typeof ResizeObserver !== 'undefined') {
+    observer ??= new ResizeObserver(refresh)
 
-    root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
+    observer.observe(document.body)
 
-    if (bar) bar.style.transform = `scaleX(${percentage / 100})`
+    for (const root of roots) {
+      const target = getTarget(root)
+
+      if (target) observer.observe(target)
+    }
   }
-}
 
-const requestScrollProgressUpdate = (): void => {
-  if (scrollProgressFrame) return
-
-  scrollProgressFrame = requestAnimationFrame(updateScrollProgress)
-}
-
-const initScrollProgress = (scope: ParentNode): void => {
-  if (!scope.querySelector('[data-ui-scroll-progress]')) return
-
-  requestScrollProgressUpdate()
-
-  if (document.documentElement.dataset.uiScrollProgressBound === 'true') return
-
-  document.documentElement.dataset.uiScrollProgressBound = 'true'
-
-  window.addEventListener('resize', requestScrollProgressUpdate, { passive: true })
-
-  window.addEventListener('scroll', requestScrollProgressUpdate, { passive: true })
+  refresh()
 }
 
 export const initDocumentNavigationControllers = (scope: ParentNode): void => {
   initAnchors(scope)
 
-  initScrollProgress(scope)
+  initScrollProgress()
 }

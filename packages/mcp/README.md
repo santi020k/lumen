@@ -172,7 +172,7 @@ catalog does not require user authentication.
 | `lumen_get_component` | Get a component for `astro`, `react`, or `elements` at `summary`, `usage`, or `source` detail. Usage includes imports, styles, props or attributes, examples, keyboard interactions, guidance, and events. |
 | `lumen_list_native_components` | List native components and filter them by `react-native`, `swiftui`, or `compose`. |
 | `lumen_get_native_component` | Get native installation, setup, import, API, example, accessibility guidance, and optional adapter source for one platform. |
-| `lumen_get_recipe` | Get a recipe or component set with its purpose, components, files, categories, and framework-specific install command. |
+| `lumen_get_recipe` | Get a recipe or component set with its purpose, components, files, categories, and framework-specific install command. Recipes with starter source expose `frameworks`; unsupported framework requests return a domain error and are excluded from filtered searches. The legacy `install` map retains its keys for compatibility. |
 | `lumen_search` | Rank natural-language matches across web contracts, recipes, tokens, and agent rules. Supply `platform` to search native contracts; optionally filter web results by `framework` and matches by `kind`. |
 | `lumen_get_meta` | Return deterministic snapshot provenance, package versions, schema version, component count, and catalog hash. |
 | `lumen_get_catalog_manifest` | Return stable web component, native component, and recipe fingerprints that clients can retain between upgrades. |

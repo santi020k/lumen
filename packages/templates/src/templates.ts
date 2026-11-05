@@ -3,6 +3,7 @@ export const templateFrameworks = ['astro', 'react', 'elements'] as const
 export type TemplateFramework = typeof templateFrameworks[number]
 
 export const templateSlugs = [
+  'editorial',
   'analytics-dashboard',
   'saas-admin',
   'commerce-dashboard',
@@ -22,6 +23,14 @@ export interface LumenTemplate {
 }
 
 export const lumenTemplates = [
+  {
+    description: 'Cover spreads, introductions, cards, replacement notices, and contact panels for content-led experiences.',
+    eyebrow: 'Stories and evidence',
+    frameworks: ['astro'],
+    icon: 'notebook-text',
+    name: 'Editorial',
+    slug: 'editorial'
+  },
   {
     description: 'Revenue, acquisition, and retention signals arranged for fast weekly decisions.',
     eyebrow: 'Growth intelligence',
@@ -79,6 +88,12 @@ export const getLumenTemplate = (slug: string): LumenTemplate | undefined => {
 export const getTemplateInstallCommand = (
   slug: TemplateSlug,
   framework: TemplateFramework
-): string => (
-  `pnpm exec lumen add ${slug} --target ${framework}`
-)
+): string => {
+  const template = getLumenTemplate(slug)
+
+  if (!template?.frameworks.includes(framework)) {
+    throw new Error(`Template "${slug}" does not support ${framework}.`)
+  }
+
+  return `pnpm exec lumen add ${slug} --target ${framework}`
+}

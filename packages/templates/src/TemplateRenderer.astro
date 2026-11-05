@@ -1,4 +1,6 @@
 ---
+import Editorial from '../../lumen/templates/astro/editorial/src/lumen/editorial.astro'
+
 import AnalyticsDashboard from './templates/AnalyticsDashboard.astro'
 import AuthOnboarding from './templates/AuthOnboarding.astro'
 import CommerceDashboard from './templates/CommerceDashboard.astro'
@@ -18,3 +20,5 @@ const { slug } = Astro.props
 {slug === 'commerce-dashboard' && <CommerceDashboard />}
 {slug === 'project-workspace' && <ProjectWorkspace />}
 {slug === 'auth-onboarding' && <AuthOnboarding />}
+
+{slug === 'editorial' && <Editorial />}

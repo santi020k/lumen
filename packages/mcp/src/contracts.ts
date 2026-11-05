@@ -116,6 +116,7 @@ export const recipeOutputSchema = z.union([
         astro: textSchema.optional(), elements: textSchema.optional(), react: textSchema.optional()
       }),
       files: z.array(fileSchema).optional(),
+      frameworks: z.array(z.enum(['astro', 'elements', 'react'])).optional(),
       install: z.strictObject({ astro: textSchema, elements: textSchema, react: textSchema }),
       name: textSchema,
       type: textSchema

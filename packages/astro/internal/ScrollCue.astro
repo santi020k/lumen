@@ -1,0 +1,14 @@
+---
+import { renderLumenIconSvg } from '@santi020k/lumen-core'
+
+interface Props {
+  label: string
+}
+
+const { label } = Astro.props
+---
+
+<div class="ui-scroll-cue" data-scroll-cue-message data-slot="scroll-cue" hidden>
+  <Fragment set:html={renderLumenIconSvg('move-horizontal')} />
+  <span>{label}</span>
+</div>

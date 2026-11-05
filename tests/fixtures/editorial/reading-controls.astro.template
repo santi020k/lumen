@@ -1,0 +1,45 @@
+---
+import '@santi020k/lumen-astro/styles.css'
+import { Anchor, CodeTabs, CopyButton, CoverImage, ScrollProgress } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+import cover from '../cover.jpg'
+
+const items = [
+  { value: 'short', label: 'Short', code: 'pnpm install' },
+  { value: 'long', label: 'Long', code: `pnpm add ${'example-package '.repeat(28).trim()}\n# end of command` }
+]
+---
+
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>Article controls</title></head>
+  <body>
+    <ScrollProgress targetId="reading" aria-label="Article progress" />
+    <ScrollProgress aria-label="Page progress" position="bottom" />
+    <Anchor aria-label="Contents">
+      <a href="#first">First section</a>
+      <a href="#second">Second section</a>
+    </Anchor>
+    <main id="reading">
+      <h1 id="first">First section</h1>
+      <CodeTabs ariaLabel="First code group" items={items} recoveryLabel="Select the complete command" scrollCue="Scroll to read more" storageKey="fixture-code" wrap={false} />
+      <CopyButton value="https://example.com/guide" recoveryLabel="Select the link" />
+      <h2 id="second">Second section</h2>
+      {Array.from({ length: 40 }, () => <pre><code>Long article example</code></pre>)}
+      <CodeTabs ariaLabel="Last code group" items={items} recoveryLabel="Select the complete command" scrollCue="Scroll to read more" storageKey="fixture-code" wrap={false} />
+    </main>
+    <footer>
+      <CoverImage alt="Example cover" fallbackFormat="webp" image={cover} />
+      <a href="https://santi020k.com">Santiago Molina</a>
+    </footer>
+    <UIPrimitives />
+  </body>
+</html>
+
+<style is:global>
+  html { scroll-padding-top: 2rem; }
+  body { margin: 0; }
+  main { margin: 85vh auto 0; width: min(90%, 36rem); }
+  h2 { scroll-margin-top: 1.25rem; }
+  footer { min-height: 110vh; }
+</style>

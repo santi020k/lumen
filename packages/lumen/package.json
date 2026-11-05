@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen",
-  "version": "4.3.0",
+  "version": "4.4.0",
   "publishConfig": {
     "access": "public"
   },
@@ -73,10 +73,11 @@
     "@types/react": "catalog:",
     "@types/semver": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "astro": "catalog:",
+    "jsdom": "catalog:",
     "react": "catalog:",
     "tailwindcss": "catalog:",
-    "vitest": "catalog:",
-    "jsdom": "catalog:"
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "react": ">=19"

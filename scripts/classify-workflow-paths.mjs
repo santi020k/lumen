@@ -21,6 +21,15 @@ const publicPackageNames = new Map([
 
 const matchesAny = (paths, patterns) => paths.some(path => patterns.some(pattern => pattern.test(path)))
 
+export const changedPaths = (base, head, cwd = process.cwd()) => {
+  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')))
+  const git = args => execFileSync('git', args, { cwd, env, encoding: 'utf8' })
+  const revision = ref => git(['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`]).trim()
+  const comparison = `${revision(base)}...${revision(head)}`
+
+  return git(['diff', '--no-renames', '--name-only', '-z', comparison]).split('\0').filter(Boolean)
+}
+
 export const classifyChangedNpmPackages = paths => {
   const packages = new Set()
 
@@ -82,7 +91,8 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^\.github\/actions\/setup-playwright\//u,
     /^apps\/(docs|figma-plugin|motion|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates)\//u,
-    /^tests\/(a11y|figma|motion|visual)\//u,
+    /^tests\/(a11y|editorial|figma|motion|visual)\//u,
+    /^tests\/fixtures\/editorial\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,
     /^\.github\/workflows\/ci\.yml$/u,
     sharedConfiguration
@@ -225,7 +235,8 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^\.github\/actions\/setup-playwright\//u,
     /^apps\/(docs|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates|tokens)\//u,
-    /^tests\/(a11y|motion|visual)\//u,
+    /^tests\/(a11y|editorial|motion|visual)\//u,
+    /^tests\/fixtures\/editorial\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,
     sharedConfiguration
   ])
@@ -302,9 +313,7 @@ const runCli = async () => {
   if (!manual) {
     assert.ok(base && head, '--base and --head are required for pull requests')
 
-    paths = execFileSync('git', ['diff', '--name-only', base, head], { encoding: 'utf8' })
-      .split('\n')
-      .filter(Boolean)
+    paths = changedPaths(base, head)
   }
 
   const classification = workflow === 'ci'

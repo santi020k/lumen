@@ -1,0 +1,130 @@
+---
+
+import { ButtonLink, Card, Icon, Typography } from '@santi020k/lumen-astro'
+
+interface Props {
+  category?: string
+  description: string
+  headingId: string
+  headingLevel?: 2 | 3 | 4
+  href: string
+  icon?: string
+  linkLabel: string
+  newTab?: boolean
+  title: string
+}
+
+const { category, description, headingId, headingLevel = 3, href, icon, linkLabel, newTab = false, title } = Astro.props
+const Heading = `h${headingLevel}` as const
+---
+
+<Card as="article" aria-labelledby={headingId} class="editorial-card" variant="unstyled">
+  <header class="editorial-card__heading">
+    {category && <p class="editorial-card__category">{icon && <Icon name={icon} size="sm" />}{category}</p>}
+    <Typography class="editorial-card__title"><Heading id={headingId}>{title}</Heading></Typography>
+  </header>
+  <p class="editorial-card__copy">{description}</p>
+  <div class="editorial-card__footer">
+    <ButtonLink class="editorial-card__action" href={href} {newTab} variant="unstyled">
+      <span>{linkLabel}</span><Icon name={newTab ? 'arrow-up-right' : 'arrow-right'} size="sm" />
+    </ButtonLink>
+  </div>
+</Card>
+
+<style>
+  .editorial-card[data-slot='card'] {
+    container: editorial-card / inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+    padding: 0;
+    border: 1px solid hsl(var(--line));
+    border-radius: 1.75rem 1.75rem 0.5rem 1.75rem;
+    background: hsl(var(--surface));
+    color: hsl(var(--ink));
+    overflow-wrap: anywhere;
+  }
+
+  .editorial-card__heading {
+    padding: 1.5rem 1.375rem 1.25rem;
+    border-radius: 1.6875rem 1.6875rem 0 0;
+    background: hsl(var(--brand-soft));
+  }
+
+  .editorial-card__category {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.375rem;
+    color: hsl(var(--brand));
+    font-size: 0.6875rem;
+    line-height: 1.125rem;
+    font-weight: 500;
+  }
+
+  .editorial-card__heading :global(:is(h2, h3, h4)) {
+    margin: 0;
+    color: hsl(var(--ink));
+    font-size: 1.5rem;
+    line-height: 1.25;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    overflow-wrap: anywhere;
+  }
+
+  .editorial-card__copy {
+    flex: 1;
+    margin: 0;
+    padding: 1.5rem 1.375rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.625rem;
+  }
+
+  .editorial-card__footer {
+    padding-inline: 1.375rem;
+    padding-block-end: 0.5rem;
+  }
+
+  .editorial-card__footer :global(.editorial-card__action) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.875rem;
+    width: 100%;
+    min-height: 4.5rem;
+    padding: 1rem 0;
+    border-block-start: 1px solid hsl(var(--line));
+    border-radius: 0;
+    color: hsl(var(--brand));
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    white-space: normal;
+    text-align: start;
+    text-decoration: none;
+  }
+
+  .editorial-card__footer :global(.editorial-card__action:is(:hover, :focus-visible)) {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .editorial-card__footer :global(.editorial-card__action:focus-visible) {
+    outline: 2px solid hsl(var(--brand));
+    outline-offset: 4px;
+  }
+
+  @container editorial-card (width < 14rem) {
+    .editorial-card__heading, .editorial-card__copy, .editorial-card__footer {
+      padding-inline: 1rem;
+    }
+    .editorial-card__heading :global(:is(h2, h3, h4)) {
+      font-size: 1.25rem;
+    }
+    .editorial-card__footer :global(.editorial-card__action), .editorial-card__category {
+      flex-wrap: wrap;
+    }
+  }
+</style>

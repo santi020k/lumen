@@ -20,6 +20,9 @@ on:
       - "docs/playgrounds.md"
       - "docs/web-consumer-validation.md"
       - "packages/**"
+      - "tests/editorial/**"
+      - "tests/fixtures/editorial/**"
+      - "playwright.editorial.config.ts"
       - "tests/motion/**"
       - "playwright.motion.config.ts"
       - "registry/native-api-baseline.json"
@@ -110,14 +113,8 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 1
+          fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Fetch comparison base
-        if: github.event_name == 'pull_request'
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: git fetch --no-tags --depth=1 origin "$BASE_SHA"
 
       - name: Classify changed paths
         id: paths
@@ -329,6 +326,9 @@ jobs:
       - name: Verify release-candidate accessibility
         if: needs.classify.outputs.browser == 'true'
         run: pnpm run test:a11y --shard=${{ matrix.shard }}/2 --max-failures=1
+      - name: Verify installed editorial recipes
+        if: needs.classify.outputs.browser == 'true'
+        run: pnpm run test:editorial --shard=${{ matrix.shard }}/2 --max-failures=1
       - name: Verify release-candidate framework behavior
         if: matrix.shard == 1
         env:

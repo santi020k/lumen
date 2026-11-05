@@ -2,6 +2,7 @@
 import type { ImageMetadata } from 'astro'
 import type { HTMLAttributes } from 'astro/types'
 
+import type { getImage } from 'astro:assets'
 import { Picture } from 'astro:assets'
 
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
@@ -11,6 +12,7 @@ interface Props extends HTMLAttributes<'div'> {
   ariaHidden?: boolean
   class?: string | null
   className?: string
+  fallbackFormat?: Parameters<typeof getImage>[0]['format']
   featured?: boolean
   featuredMinHeightClass?: string
   fetchpriority?: 'auto' | 'high' | 'low'
@@ -29,6 +31,7 @@ const {
   ariaHidden = false,
   class: classProp = '',
   className = '',
+  fallbackFormat,
   featured = false,
   featuredMinHeightClass = 'lg:min-h-88',
   fetchpriority = 'auto',
@@ -43,6 +46,7 @@ const {
   ...rest
 } = Astro.props
 
+const formats = (['avif', 'webp'] as const).filter(format => format !== fallbackFormat)
 const effectiveTransitionName = transitionName ?? `cover:${image.src}`
 const aspectRatio = image.width / image.height
 let orientation: 'landscape' | 'portrait' | 'square' = 'landscape'
@@ -162,7 +166,8 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
     aria-hidden={ariaHidden ? 'true' : undefined}
     class:list={imageClasses}
     fetchpriority={fetchpriority}
-    formats={['avif', 'webp']}
+    fallbackFormat={fallbackFormat}
+    formats={formats}
     height={targetHeight}
     loading={loading}
     sizes={sizes}

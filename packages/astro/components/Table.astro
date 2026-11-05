@@ -3,20 +3,30 @@ import type { HTMLAttributes } from 'astro/types'
 
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
+import ScrollCue from '../internal/ScrollCue.astro'
+
 interface Props extends HTMLAttributes<'div'> {
   class?: string | null
   className?: string
   glass?: boolean | 'subtle' | 'strong'
   layout?: 'records' | 'scroll'
+  scrollCue?: boolean | string
 }
 
 const {
+  'aria-label': ariaLabel,
+  role,
+  tabindex,
   class: classProp = '',
   className = '',
   glass = false,
   layout = 'scroll',
+  scrollCue = false,
   ...rest
 } = Astro.props
+
+const showCue = Boolean(scrollCue) && layout === 'scroll'
+const cueLabel = typeof scrollCue === 'string' ? scrollCue : 'Scroll horizontally to compare'
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-table-wrap',
@@ -27,10 +37,25 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
 ], classProp, className)
 ---
 
-<div
-  class:list={classList}
-  data-slot="table"
-  {...passthrough}
->
-  <slot />
-</div>
+{showCue ?
+(
+  <div class="ui-table-scroll" data-ui-scroll-cue>
+    <ScrollCue label={cueLabel} />
+    <div
+      class:list={classList}
+      data-scroll-cue-viewport
+      data-slot="table"
+      role={role ?? 'region'}
+      tabindex={tabindex ?? 0}
+      aria-label={ariaLabel ?? (Astro.props['aria-labelledby'] ? undefined : 'Table')}
+      {...passthrough}
+    >
+      <slot />
+    </div>
+  </div>
+) :
+(
+  <div aria-label={ariaLabel} role={role} tabindex={tabindex} class:list={classList} data-slot="table" {...passthrough}>
+    <slot />
+  </div>
+)}

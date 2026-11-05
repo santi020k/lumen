@@ -28,8 +28,8 @@ pnpm exec turbo run build --filter=@santi020k/lumen-template-showcase^...
 pnpm --filter @santi020k/lumen-template-showcase run dev
 ```
 
-The app starts on port **4322**. Open `/` for the gallery or `/<slug>` for one family, such as
-`/analytics-dashboard`, `/saas-admin`, `/commerce-dashboard`, `/project-workspace`, or `/auth-onboarding`.
+The app starts on port **4322**. Open `/templates` for the gallery or `/templates/<slug>` for one family, such as
+`/templates/editorial`, `/templates/analytics-dashboard`, or `/templates/auth-onboarding`.
 Use the port printed by Astro if the preferred port is occupied.
 
 ## Source and ownership
