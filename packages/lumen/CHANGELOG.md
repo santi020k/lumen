@@ -1,5 +1,31 @@
 # @santi020k/lumen
 
+## 4.4.0
+
+### Minor Changes
+
+- Add four Astro compositions to the editorial recipe family: a testimonial spotlight, a linked timeline, a site footer, and a video dialog with a transcript and direct file fallback.
+
+- Add an Astro editorial recipe family with five independent components adapted from the website
+  4.1.0: cover spread, introduction, content card, replacement notice, and contact panel. Install
+  with `lumen add editorial --target astro`; copied components use public Lumen primitives,
+  explicit content inputs, unique caller-owned heading IDs, and scoped semantic-token styles.
+
+  Add a shared-source gallery preview and usage guidance. Recipe discovery reports available
+  frameworks and rejects unsupported targets. Existing recipe install metadata remains compatible.
+
+- Add installable Astro recipes for article reading, site search, and image inspection. Article
+  reading composes scoped progress, heading navigation, and a mobile disclosure. Site search
+  accepts an app-owned search provider and handles keyboard navigation and retry states. Image
+  viewer opens optimized media in an accessible dialog with zoom, captions, and a direct-file link.
+
+  Astro also exports the shared `LumenMediaViewportLabels` type for localized viewer controls.
+
+### Patch Changes
+
+- Updated dependencies [`549994f`]:
+  - @santi020k/lumen-core@4.4.0
+
 ## 4.3.0
 
 ### Minor Changes

@@ -1,5 +1,42 @@
 # @santi020k/lumen-mcp
 
+## 4.4.0
+
+### Minor Changes
+
+- Add an Astro editorial recipe family with five independent components adapted from the website
+  4.1.0: cover spread, introduction, content card, replacement notice, and contact panel. Install
+  with `lumen add editorial --target astro`; copied components use public Lumen primitives,
+  explicit content inputs, unique caller-owned heading IDs, and scoped semantic-token styles.
+
+  Add a shared-source gallery preview and usage guidance. Recipe discovery reports available
+  frameworks and rejects unsupported targets. Existing recipe install metadata remains compatible.
+
+- Add installable Astro recipes for article reading, site search, and image inspection. Article
+  reading composes scoped progress, heading navigation, and a mobile disclosure. Site search
+  accepts an app-owned search provider and handles keyboard navigation and retry states. Image
+  viewer opens optimized media in an accessible dialog with zoom, captions, and a direct-file link.
+
+  Astro also exports the shared `LumenMediaViewportLabels` type for localized viewer controls.
+
+### Patch Changes
+
+- Add article-scoped progress, code tab overflow cues, manual clipboard recovery, and control over the optimized cover image fallback format. Synchronized Astro tab groups update without moving focus or scrolling the page.
+
+- Add four Astro compositions to the editorial recipe family: a testimonial spotlight, a linked timeline, a site footer, and a video dialog with a transcript and direct file fallback.
+
+- Refresh the release dependency graph to body-parser 2.4.0 and undici 8.12.3, fixing the compressed
+  request-body denial of service and three undici advisories. Raise the existing qs override to
+  6.16.1 to satisfy body-parser's declared dependency range. Existing local security patches and
+  the production audit gate remain enforced.
+
+- Add opt-in, localizable `scrollCue` guidance to Astro Code blocks and scrolling Tables.
+  One shared runtime shows the message and describes the native scroll region only when
+  content overflows. It follows resize, font loading, hidden panels, and Astro navigation,
+  preserving existing descriptions, keyboard scrolling, copy controls, and no-JavaScript content.
+
+  Expose the `scroll-cue` styling slot and document the Table runtime requirement when opted in.
+
 ## 4.3.0
 
 ### Patch Changes

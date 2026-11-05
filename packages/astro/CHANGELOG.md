@@ -1,5 +1,31 @@
 # @santi020k/lumen-astro
 
+## 4.4.0
+
+### Minor Changes
+
+- Add article-scoped progress, code tab overflow cues, manual clipboard recovery, and control over the optimized cover image fallback format. Synchronized Astro tab groups update without moving focus or scrolling the page.
+
+- Add installable Astro recipes for article reading, site search, and image inspection. Article
+  reading composes scoped progress, heading navigation, and a mobile disclosure. Site search
+  accepts an app-owned search provider and handles keyboard navigation and retry states. Image
+  viewer opens optimized media in an accessible dialog with zoom, captions, and a direct-file link.
+
+  Astro also exports the shared `LumenMediaViewportLabels` type for localized viewer controls.
+
+- Add opt-in, localizable `scrollCue` guidance to Astro Code blocks and scrolling Tables.
+  One shared runtime shows the message and describes the native scroll region only when
+  content overflows. It follows resize, font loading, hidden panels, and Astro navigation,
+  preserving existing descriptions, keyboard scrolling, copy controls, and no-JavaScript content.
+
+  Expose the `scroll-cue` styling slot and document the Table runtime requirement when opted in.
+
+### Patch Changes
+
+- Updated dependencies [`0c65fee`, `4f88948`, `2453735`, `549994f`]:
+  - @santi020k/lumen@4.4.0
+  - @santi020k/lumen-core@4.4.0
+
 ## 4.3.0
 
 ### Minor Changes
