@@ -31,8 +31,8 @@
       "import": "./dist/components/badge.js"
     },
     "./components/button": {
-      "types": "./dist/components/button.d.ts",
-      "import": "./dist/components/button.js"
+      "types": "./dist/entries/button.d.ts",
+      "import": "./dist/entries/button.js"
     },
     "./components/card": {
       "types": "./dist/components/card.d.ts",
@@ -82,44 +82,44 @@
     "./styles/foundation.css": "./styles/foundation.css",
     "./styles/components/*.css": "./styles/components/*.css",
     "./components/dialog": {
-      "types": "./dist/editorial-behaviors.d.ts",
-      "import": "./dist/editorial-behaviors.js"
+      "types": "./dist/entries/dialog.d.ts",
+      "import": "./dist/entries/dialog.js"
     },
     "./components/anchor": {
-      "types": "./dist/editorial-behaviors.d.ts",
-      "import": "./dist/editorial-behaviors.js"
+      "types": "./dist/entries/anchor.d.ts",
+      "import": "./dist/entries/anchor.js"
     },
     "./components/scroll-progress": {
-      "types": "./dist/editorial-behaviors.d.ts",
-      "import": "./dist/editorial-behaviors.js"
+      "types": "./dist/entries/scroll-progress.d.ts",
+      "import": "./dist/entries/scroll-progress.js"
     },
     "./components/search-field": {
-      "types": "./dist/editorial-behaviors.d.ts",
-      "import": "./dist/editorial-behaviors.js"
+      "types": "./dist/entries/search-field.d.ts",
+      "import": "./dist/entries/search-field.js"
     },
     "./components/collapsible": {
-      "types": "./dist/editorial-behaviors.d.ts",
-      "import": "./dist/editorial-behaviors.js"
+      "types": "./dist/entries/collapsible.d.ts",
+      "import": "./dist/entries/collapsible.js"
     },
     "./components/empty": {
-      "types": "./dist/editorial-behaviors.d.ts",
-      "import": "./dist/editorial-behaviors.js"
+      "types": "./dist/entries/empty.d.ts",
+      "import": "./dist/entries/empty.js"
     },
     "./components/kbd": {
-      "types": "./dist/editorial-behaviors.d.ts",
-      "import": "./dist/editorial-behaviors.js"
+      "types": "./dist/entries/kbd.d.ts",
+      "import": "./dist/entries/kbd.js"
     },
     "./components/link": {
-      "types": "./dist/editorial-behaviors.d.ts",
-      "import": "./dist/editorial-behaviors.js"
+      "types": "./dist/entries/link.d.ts",
+      "import": "./dist/entries/link.js"
     },
     "./components/skip-link": {
-      "types": "./dist/editorial-behaviors.d.ts",
-      "import": "./dist/editorial-behaviors.js"
+      "types": "./dist/entries/skip-link.d.ts",
+      "import": "./dist/entries/skip-link.js"
     },
     "./components/label": {
-      "types": "./dist/components/foundations.d.ts",
-      "import": "./dist/components/foundations.js"
+      "types": "./dist/entries/label.d.ts",
+      "import": "./dist/entries/label.js"
     },
     "./components/timeline": {
       "types": "./dist/components/timeline.d.ts",

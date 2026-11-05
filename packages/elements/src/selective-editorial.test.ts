@@ -1,18 +1,10 @@
 import { expect, test } from 'vitest'
 
+import { defineLumenAnchor, LumenAnchorElement } from './entries/anchor.js'
+import { defineLumenDialog, defineLumenDialogParts, LumenDialogBodyElement, LumenDialogElement } from './entries/dialog.js'
+import { defineLumenScrollProgress, LumenScrollProgressElement } from './entries/scroll-progress.js'
+import { defineLumenSearchField, LumenSearchFieldElement } from './entries/search-field.js'
 import { defineLumenElements, lumenElementDefinitions } from './define.js'
-import {
-  defineLumenAnchor,
-  defineLumenDialog,
-  defineLumenDialogParts,
-  defineLumenScrollProgress,
-  defineLumenSearchField,
-  LumenAnchorElement,
-  LumenDialogBodyElement,
-  LumenDialogElement,
-  LumenScrollProgressElement,
-  LumenSearchFieldElement
-} from './editorial-behaviors.js'
 
 test('selective and full registration use the same editorial constructors in either order', () => {
   const definitions = new Map<string, CustomElementConstructor>()

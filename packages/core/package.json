@@ -118,6 +118,10 @@
     "./anchor": {
       "types": "./dist/anchor.d.ts",
       "import": "./dist/anchor.js"
+    },
+    "./loading": {
+      "types": "./dist/loading.d.ts",
+      "import": "./dist/loading.js"
     }
   },
   "files": [

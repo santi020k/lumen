@@ -26,7 +26,69 @@ export interface ButtonChildProps extends HTMLAttributes<HTMLElement> {
   ref?: Ref<HTMLElement> | undefined
 }
 
-/* eslint-disable complexity -- The compatibility path resolves native, slotted, loading, size, and disabled states in one public component. */
+const blockSlottedClick = (event: ReactMouseEvent<HTMLElement>): void => {
+  event.preventDefault()
+
+  event.stopPropagation()
+}
+
+const blockSlottedKey = (event: KeyboardEvent<HTMLElement>): void => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+
+    event.stopPropagation()
+  }
+}
+
+const slottedBehavior = (disabled: boolean, props: ButtonProps, child: ButtonChildProps) => {
+  if (disabled) return { onClickCapture: blockSlottedClick, onKeyDownCapture: blockSlottedKey, tabIndex: -1 }
+
+  return {
+    onClickCapture: props.onClickCapture ?? child.onClickCapture,
+    onKeyDownCapture: props.onKeyDownCapture ?? child.onKeyDownCapture,
+    tabIndex: props.tabIndex ?? child.tabIndex
+  }
+}
+
+interface SlottedButtonProps {
+  children: ButtonProps['children']
+  className: string
+  disabled: boolean
+  loading: boolean
+  forwardedRef: ButtonProps['ref']
+  props: ButtonProps
+}
+
+const SlottedButton = ({ children, className, disabled, loading, forwardedRef, props }: SlottedButtonProps) => {
+  if (!isValidElement<ButtonChildProps>(children)) {
+    throw new TypeError('Button with asChild requires exactly one React element child.')
+  }
+
+  const ChildComponent = children.type
+
+  return (
+    <ChildComponent
+      {...children.props}
+      {...props}
+      {...slottedBehavior(disabled, props, children.props)}
+      aria-busy={loading ? true : undefined}
+      aria-disabled={disabled ? true : undefined}
+      className={composeClassName(className, children.props.className)}
+      data-slot="button"
+      ref={forwardedRef as Ref<HTMLElement>}
+    >
+      {loading && <span aria-hidden="true" className="ui-spinner" />}
+      <span className="ui-button__content">{children.props.children}</span>
+    </ChildComponent>
+  )
+}
+
+const buttonClassName = (
+  className: string | undefined, disabled: boolean, loading: boolean, size: ButtonSize, variant: ButtonVariant
+): string => composeClassName(
+  'ui-button', 'ui-button--' + variant, size === 'default' ? 'ui-button--default-size' : 'ui-button--' + size, disabled && 'ui-button--disabled', loading && 'ui-button--loading', className
+)
+
 export const Button = ({
   asChild = false,
   children,
@@ -40,59 +102,24 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const isDisabled = disabled === true || loading
+  const classes = buttonClassName(className, isDisabled, loading, size, variant)
 
-  const buttonClassName = composeClassName(
-    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, isDisabled && 'ui-button--disabled', loading && 'ui-button--loading', className
+  if (asChild) return (
+    <SlottedButton
+      className={classes}
+      disabled={isDisabled}
+      loading={loading}
+      forwardedRef={ref}
+      props={props}
+    >
+      {children}
+    </SlottedButton>
   )
-
-  if (asChild) {
-    const child = children
-
-    if (!isValidElement<ButtonChildProps>(child)) {
-      throw new TypeError(
-        'Button with asChild requires exactly one React element child.'
-      )
-    }
-
-    const ChildComponent = child.type
-
-    return (
-      <ChildComponent
-        {...child.props}
-        {...props}
-        aria-busy={loading ? true : undefined}
-        aria-disabled={isDisabled ? true : undefined}
-        className={composeClassName(buttonClassName, child.props.className)}
-        data-slot="button"
-        onClickCapture={isDisabled ?
-          (event: ReactMouseEvent<HTMLElement>) => {
-            event.preventDefault()
-
-            event.stopPropagation()
-          } :
-          props.onClickCapture ?? child.props.onClickCapture}
-        onKeyDownCapture={isDisabled ?
-          (event: KeyboardEvent<HTMLElement>) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault()
-
-              event.stopPropagation()
-            }
-          } :
-          props.onKeyDownCapture ?? child.props.onKeyDownCapture}
-        ref={ref as Ref<HTMLElement>}
-        tabIndex={isDisabled ? -1 : props.tabIndex ?? child.props.tabIndex}
-      >
-        {loading && <span aria-hidden="true" className="ui-spinner" />}
-        <span className="ui-button__content">{child.props.children}</span>
-      </ChildComponent>
-    )
-  }
 
   return (
     <button
       aria-busy={loading || undefined}
-      className={buttonClassName}
+      className={classes}
       data-slot="button"
       disabled={isDisabled}
       ref={ref}
@@ -104,8 +131,6 @@ export const Button = ({
     </button>
   )
 }
-
-/* eslint-enable complexity */
 
 export type CollapsibleProps = ComponentPropsWithoutRef<'details'>
 

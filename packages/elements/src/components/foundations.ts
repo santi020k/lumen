@@ -1,4 +1,4 @@
-import { resolveLumenLoadingSemantics, resolveLumenSkeletonSize } from '@santi020k/lumen-core'
+import { resolveLumenLoadingSemantics, resolveLumenSkeletonSize } from '@santi020k/lumen-core/loading'
 
 import {
   createLumenElementClass,
