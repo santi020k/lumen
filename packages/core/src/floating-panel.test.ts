@@ -7,6 +7,7 @@ let trigger: HTMLButtonElement
 let panel: HTMLDivElement
 let dialog: HTMLDialogElement
 let anchor: DOMRect
+let popoverStyles: HTMLStyleElement
 const nativeShow = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'showPopover')
 const nativeHide = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'hidePopover')
 
@@ -16,6 +17,10 @@ const restoreProperty = (name: 'hidePopover' | 'showPopover', descriptor: Proper
 }
 
 beforeEach(() => {
+  // jsdom has popover UA styles but no top-layer API; model the mock's visible state.
+  popoverStyles = document.createElement('style')
+  popoverStyles.textContent = '[popover][data-native-open="true"] { display: block !important; }'
+  document.head.append(popoverStyles)
   Object.defineProperty(HTMLElement.prototype, 'showPopover', { configurable: true,
     value: function (this: HTMLElement) {
       this.dataset.nativeOpen = 'true'
@@ -32,6 +37,7 @@ beforeEach(() => {
     return this === trigger ? anchor : new DOMRect(0, 0, 200, 120)
   })
   dialog = document.createElement('dialog')
+  dialog.open = true
   trigger = document.createElement('button')
   panel = document.createElement('div')
   panel.hidden = true
@@ -42,6 +48,7 @@ beforeEach(() => {
 
 afterEach(() => {
   dialog.remove()
+  popoverStyles.remove()
   vi.restoreAllMocks()
   restoreProperty('showPopover', nativeShow)
   restoreProperty('hidePopover', nativeHide)
@@ -194,6 +201,8 @@ test('a malformed initial focus selector in a same-origin iframe still lets the 
   if (!frameDocument) throw new Error('Expected a same-origin iframe document.')
 
   const frameDialog = frameDocument.createElement('dialog')
+
+  frameDialog.open = true
   const frameTrigger = frameDocument.createElement('button')
   const framePanel = frameDocument.createElement('div')
   const dismissals: string[] = []

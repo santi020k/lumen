@@ -285,6 +285,9 @@ follow-up upgrades AGP to 9.5.1 and Dokka to 2.3.0, plus the supported stable Ja
 Expo 58 / React Native 0.88 / React 19.3, Theme 3 and resolvers 7. Exact versions, official sources,
 peer constraints and release-age holds are in [dependency upgrades](lumen-5-dependencies.md).
 The playground now uses a fingerprint runtime and requires a native rebuild before delivery.
+The pre-push gate exposed an older automatically resolved root jsdom peer; the root now explicitly
+uses the same catalog version as package runners. Floating-panel fixtures use open dialogs and
+visible mocked popovers, preserving every focus assertion under jsdom 30.1.3.
 
 The refreshed catalog preserves every previous web export and Swift symbol through canonical
 aliases while adding 188 native graphics. Unlike the earlier preparation above, Swift compatibility

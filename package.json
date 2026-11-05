@@ -225,6 +225,7 @@
     "ajv": "catalog:",
     "cspell": "catalog:",
     "eslint": "catalog:",
+    "jsdom": "catalog:",
     "knip": "catalog:",
     "lint-staged": "catalog:",
     "oxlint": "catalog:",

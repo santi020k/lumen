@@ -92,7 +92,9 @@ EAS command pins and the playground CLI requirement advance to 27.4.1. Build and
 commands retain their existing platform, profile and environment arguments. CLI version probing
 does not build, upload or publish an application. The version probe succeeds; the external EAS
 CLI still reports upstream deprecated transitive packages and optional peer/build-script notices.
-The workspace peer check is clean. The playground uses Expo's fingerprint runtime policy to
+The workspace peer check is clean. Root and package test runners explicitly share jsdom 30.1.3;
+floating-panel fixtures open their dialogs and model visible mocked popovers so hidden-element
+focus rules match the newer DOM implementation. The playground uses Expo's fingerprint runtime policy to
 separate SDK 58 updates from older native builds; rebuild native applications before delivery.
 
 ## Compatibility holds
