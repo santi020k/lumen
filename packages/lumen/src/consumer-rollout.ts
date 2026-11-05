@@ -357,8 +357,8 @@ const lumenWorkspaceVersionPattern = new RegExp([
 ].join(''), 'gm')
 
 const mappedWorkspaceVersionPattern = new RegExp([
-  String.raw`^(\s*['"]?(${lumenPackageNamePattern})['"]?\s*:\s*['"]?)`,
-  String.raw`([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$`
+  String.raw`^([\t ]*['"]?(${lumenPackageNamePattern})['"]?[\t ]*:[\t ]*['"]?)`,
+  String.raw`([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?[\t ]*(?:#.*)?\r?)$`
 ].join(''), 'gm')
 
 export const updateLumenWorkspaceSource = (

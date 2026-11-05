@@ -10,10 +10,11 @@ install `@santi020k/lumen` separately as a development dependency through your e
 manager. The Astro, React and Elements packages no longer provide the command. Keep application
 runtime adapters in production dependencies.
 
-Use the [release manifest](../registry/release-manifest.json) for each package's version. The six linked
-web/tooling packages target 5.0.0; React Hook Form targets 4.0.2, brand icons 4.0.1, React Native 4.0.3,
+Use the [release manifest](../registry/release-manifest.json) for each package's version. In the initial
+v5 release, the six linked web/tooling packages target 5.0.0; React Hook Form targets 4.0.2, brand icons 4.0.1, React Native 4.0.3,
 and tokens remain 4.0.0. V5 dependency migration uses this map instead of assigning 5.0.0 to every
-package. Swift and Maven pins remain application-owned.
+package. `migrate v5` follows the bundled CLI's v5 release versions; explicit audit targets must match
+that bundled manifest. Swift and Maven pins remain application-owned.
 
 Astro's `LumenInitUiPrimitives(scope)` returns a promise. Await it before relying on enhancement of
 newly inserted markup. The runtime dispatches `ui:ready` after initialization and `ui:runtime-error`

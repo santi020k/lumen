@@ -1,4 +1,5 @@
 import type * as ChildProcess from 'node:child_process'
+import type * as FileSystem from 'node:fs/promises'
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -9,6 +10,20 @@ import { consumerPackageVersion, consumerReleaseVersions } from './consumer-rele
 import { inspectLumenConsumer, runConsumerRollout, updateLumenManifestSource, updateLumenWorkspaceSource } from './consumer-rollout.js'
 import { inspectLumenConsumerUpgrade } from './consumer-upgrade-audit.js'
 import { migrateLumenVersion } from './version-migration.js'
+
+const bundledManifest = vi.hoisted(() => ({ source: undefined as string | undefined }))
+
+vi.mock('node:fs/promises', async original => {
+  const actual = await original<typeof FileSystem>()
+
+  return { ...actual,
+    readFile: (...args: Parameters<typeof FileSystem.readFile>) => {
+      if (args[0] instanceof URL && args[0].pathname.endsWith('/lumen/release-manifest.json') &&
+        bundledManifest.source !== undefined) return Promise.resolve(bundledManifest.source)
+
+      return actual.readFile(...args)
+    } }
+})
 
 const execution = vi.hoisted(() => ({
   run: vi.fn<(
@@ -63,7 +78,10 @@ const fixture = async () => {
   return root
 }
 
-beforeEach(() => execution.run.mockReset().mockResolvedValue({ stdout: '', stderr: '' }))
+beforeEach(() => {
+  bundledManifest.source = undefined
+  execution.run.mockReset().mockResolvedValue({ stdout: '', stderr: '' })
+})
 afterEach(async () => {
   await Promise.all(roots.splice(0).map(root => rm(root, { recursive: true, force: true })))
 })
@@ -157,4 +175,57 @@ test('rejects wrong resolved companion versions even when declared ranges includ
   expect(failures[0]?.classification).toBe('compatibility-failure')
   expect((await inspectLumenConsumer(root, '5.0.0')).warnings).toContain('@santi020k/lumen-react-hook-form resolves 5.0.0 instead of only 4.0.2.')
   await expect(runConsumerRollout({ repositories: [root], targetVersion: '5.1.0', apply: true })).rejects.toThrow('does not describe')
+})
+
+test('mapped workspace updates stay line-bounded across adversarial blank lines', () => {
+  const blankLines = ' \t\n'.repeat(100_000)
+  const source = `${blankLines}catalog:\r\n  '@santi020k/lumen-astro': ^4.4.0\r\n${blankLines}`
+
+  expect(updateLumenWorkspaceSource(source, '5.0.0', expected)).toBe(
+    `${blankLines}catalog:\r\n  '@santi020k/lumen-astro': ^5.0.0\r\n${blankLines}`
+  )
+})
+
+test('future v5 CLI uses its bundled publication graph for source-only, dry-run and apply reports', async () => {
+  const future = { ...expected, '@santi020k/lumen': '5.0.1', '@santi020k/lumen-astro': '5.0.1' }
+
+  bundledManifest.source = JSON.stringify({ release: { npm: { packages: Object.fromEntries(
+    Object.entries(future).map(([name, version]) => [name, { version }])
+  ) } } })
+  execution.run.mockImplementation(async (executable, args, options) => {
+    if (executable === 'corepack' && args.includes('update')) {
+      await writeFile(join(options.cwd, 'pnpm-lock.yaml'), lock(future))
+    }
+
+    return { stdout: '', stderr: '' }
+  })
+
+  const results: { root: string, report: Awaited<ReturnType<typeof migrateLumenVersion>> }[] = []
+
+  for (const mode of [{}, { dependencies: true }, { dependencies: true, apply: true, allowDirty: true }]) {
+    const root = await fixture()
+    const report = await migrateLumenVersion({ cwd: root, version: 'v5', ...mode })
+
+    expect(report.dependencyVersion).toBe('5.0.1')
+    expect(report.packageVersions).toEqual(future)
+    expect(report.consumerAudit?.contract?.targetVersion).toBe('5.0.0')
+
+    results.push({ root, report })
+
+    await expect(inspectLumenConsumerUpgrade(root, '5.0.0')).rejects.toThrow('does not describe')
+    await expect(runConsumerRollout({ repositories: [root], targetVersion: '5.0.0' })).rejects.toThrow('does not describe')
+  }
+
+  const applied = results.at(-1)
+
+  if (!applied) throw new Error('Expected applied migration result.')
+
+  expect(applied.report.dependencies?.repositories[0]?.warnings).toEqual([])
+  expect(applied.report.consumerAudit?.findings.filter(finding => finding.classification === 'compatibility-failure')).toEqual([])
+  expect(await readFile(join(applied.root, 'package.json'), 'utf8')).toContain('"^5.0.1"')
+
+  expect(execution.run.mock.calls.filter(([command, args]) => command === 'corepack' && args.includes('update')))
+    .toHaveLength(1)
+  expect(execution.run.mock.calls.find(([command, args]) => command === 'corepack' && args.includes('update'))?.[1])
+    .toContain('@santi020k/lumen-astro@5.0.1')
 })

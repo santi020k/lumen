@@ -303,7 +303,10 @@ this audit, including recovery after partial publication and retries with no new
 The audit installs every expected version and verifies its signed provenance against the merged
 commit, or the immutable existing version tag during recovery. Missing packages, mismatched versions,
 and incorrect source provenance stop release creation. Version-preparation pull requests are not
-publication attempts; ordinary releases continue auditing their newly published packages.
+publication attempts; ordinary releases continue auditing their newly published packages. After an
+initial major release, prepare a new umbrella patch or minor version before publishing further companion
+updates. The initial publication set stays immutable; new release manifests and provenance must belong
+to the new release revision even when companion packages retain independent version numbers.
 
 Ordinary pull requests run affected builds, type checks, lint, and tests. Release pull requests run
 those four tasks for the full workspace. Both retain the platform and integration gates selected

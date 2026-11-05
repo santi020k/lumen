@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
 
-import { consumerReleaseVersions } from './consumer-release-versions.js'
+import { bundledV5ReleaseVersions, consumerPackageVersion } from './consumer-release-versions.js'
 import { formatConsumerRollout, inspectLumenConsumer } from './consumer-rollout.js'
 import { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
 import { discoverSourceFiles } from './v2-migration.js'
@@ -153,8 +153,11 @@ const migrateFile = async (
 const createReport = async (
   options: LumenVersionMigrationOptions, root: string, filesScanned: number
 ): Promise<LumenVersionMigrationReport> => {
-  const dependencyVersion = { v3: '3.0.1', v4: '4.0.0', v5: '5.0.0' }[options.version]
-  const packageVersions = await consumerReleaseVersions(dependencyVersion)
+  const packageVersions = options.version === 'v5' ? await bundledV5ReleaseVersions() : undefined
+
+  const dependencyVersion = options.version === 'v5' ?
+    consumerPackageVersion('@santi020k/lumen', '', packageVersions) :
+    { v3: '3.0.1', v4: '4.0.0' }[options.version]
 
   return {
     applied: options.apply === true,

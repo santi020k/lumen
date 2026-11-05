@@ -39,6 +39,17 @@ export const consumerPackageVersion = (
   return version
 }
 
+/** The bundled npm publication graph is authoritative for the current v5 CLI release. */
+export const bundledV5ReleaseVersions = async (): Promise<Readonly<Record<string, string>>> => {
+  const manifest: unknown = JSON.parse(await readFile(new URL('../release-manifest.json', import.meta.url), 'utf8'))
+  const versions = releaseVersions(npmPackages(manifest))
+  const umbrellaVersion = consumerPackageVersion('@santi020k/lumen', '', versions)
+
+  if (major(umbrellaVersion) !== 5) throw new Error('The bundled release manifest does not describe a v5 release.')
+
+  return versions
+}
+
 /** A release target identifies a release manifest, not a shared version for every npm package. */
 export const consumerReleaseVersions = async (
   targetVersion: string
@@ -47,8 +58,7 @@ export const consumerReleaseVersions = async (
 
   if (major(targetVersion) !== 5) return undefined
 
-  const manifest: unknown = JSON.parse(await readFile(new URL('../release-manifest.json', import.meta.url), 'utf8'))
-  const versions = releaseVersions(npmPackages(manifest))
+  const versions = await bundledV5ReleaseVersions()
 
   if (versions['@santi020k/lumen'] !== targetVersion) {
     throw new Error(`The bundled release manifest does not describe requested target ${targetVersion}.`)
