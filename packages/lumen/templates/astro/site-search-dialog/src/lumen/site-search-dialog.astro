@@ -1,0 +1,155 @@
+---
+import { Button, ButtonLink, Dialog, DialogBody, DialogClose, DialogHeader, DialogTitle, Empty, Kbd, Label, Link, SearchField } from '@santi020k/lumen-astro'
+
+interface Props {
+  id: string
+  fallbackHref: string
+  shortcut?: boolean
+  labels?: Partial<{
+    close: string
+    empty: string
+    failure: string
+    field: string
+    loading: string
+    open: string
+    results: string
+    retry: string
+    title: string
+  }>
+}
+
+const { id, fallbackHref, labels, shortcut = true } = Astro.props
+const dialogId = `${id}-dialog`
+const titleId = `${id}-title`
+const fieldId = `${id}-query`
+const openLabel = labels?.open ?? 'Search'
+---
+
+<lumen-recipe-site-search
+  id={id}
+  data-search-shortcut={shortcut || undefined}
+  data-loading={labels?.loading ?? 'Searching…'}
+  data-empty={labels?.empty ?? 'No results found.'}
+  data-failure={labels?.failure ?? 'Search could not be loaded.'}
+  data-results={labels?.results ?? 'Results found: {count}'}
+>
+  <ButtonLink class="search-fallback" href={fallbackHref} variant="secondary">{openLabel}</ButtonLink>
+  <Button class="search-trigger" data-search-trigger data-ui-dialog-trigger={dialogId} variant="outline">
+    <span class="search-trigger-label">
+      {openLabel}
+      {shortcut && <Kbd aria-hidden="true">Ctrl/⌘ K</Kbd>}
+    </span>
+  </Button>
+  <Dialog id={dialogId} class="search-dialog" aria-labelledby={titleId}>
+    <DialogHeader class="search-heading">
+      <DialogTitle id={titleId}>{labels?.title ?? 'Search this site'}</DialogTitle>
+      <DialogClose variant="outline">{labels?.close ?? 'Close'}</DialogClose>
+    </DialogHeader>
+    <DialogBody>
+      <Label for={fieldId}>{labels?.field ?? 'Search query'}</Label>
+      <SearchField id={fieldId} data-search-field autofocus autocomplete="off" />
+      <p class="search-status" data-search-status role="status"></p>
+      <Empty data-search-recovery hidden variant="compact">
+        <p data-search-message></p>
+        <Button data-search-retry hidden variant="outline">{labels?.retry ?? 'Retry search'}</Button>
+      </Empty>
+      <ol class="search-results" data-search-results></ol>
+    </DialogBody>
+  </Dialog>
+  <template data-search-result>
+    <li>
+      <Link class="search-result" href="#">
+        <span data-search-result-title></span>
+        <span data-search-result-description></span>
+      </Link>
+    </li>
+  </template>
+</lumen-recipe-site-search>
+
+<script>
+  import './site-search-provider'
+</script>
+
+<style>
+  lumen-recipe-site-search {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .search-trigger,
+  .search-fallback,
+  .search-heading :global(button),
+  [data-search-retry] {
+    max-inline-size: 100%;
+    min-block-size: 2.75rem;
+    block-size: auto;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .search-trigger-label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+  }
+
+  .search-dialog {
+    inline-size: min(38rem, calc(100% - 1.25rem));
+    max-inline-size: none;
+    overflow-wrap: anywhere;
+  }
+
+  .search-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .search-trigger,
+  [data-search-retry][hidden],
+  [data-search-recovery][hidden] {
+    display: none;
+  }
+
+  [data-search-ready]:has(.search-trigger[data-ui-bound='true']) .search-trigger {
+    display: inline-flex;
+  }
+
+  [data-search-ready]:has(.search-trigger[data-ui-bound='true']) .search-fallback {
+    display: none;
+  }
+
+  .search-status:empty,
+  .search-results:empty {
+    margin: 0;
+  }
+
+  .search-dialog:has([data-search-recovery]:not([hidden])) .search-status {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .search-results {
+    padding: 0;
+    list-style: none;
+  }
+
+  .search-result {
+    display: grid;
+    align-content: center;
+    min-block-size: 2.75rem;
+    padding: 0.5rem;
+  }
+
+  [data-search-result-description] {
+    color: hsl(var(--ink-soft));
+    font-size: 0.875em;
+  }
+</style>

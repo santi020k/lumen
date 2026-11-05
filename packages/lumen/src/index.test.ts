@@ -88,6 +88,9 @@ describe('@santi020k/lumen umbrella package', () => {
   test('exports registry recipes and components for product surfaces', () => {
     expect(lumenRegistry.items.map(item => item.name)).toEqual([
       'editorial',
+      'article-reading',
+      'site-search-dialog',
+      'image-viewer',
       'page-header',
       'section-header',
       'content-flow-header',

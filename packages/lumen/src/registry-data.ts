@@ -31,6 +31,58 @@ export const lumenRegistry = {
       ]
     },
     {
+      name: 'article-reading',
+      type: 'recipe',
+      components: [
+        'Anchor',
+        'Collapsible',
+        'ScrollProgress',
+        'SkipLink'
+      ],
+      files: [
+        'docs/interactive-editorial-recipes.md'
+      ]
+    },
+    {
+      name: 'site-search-dialog',
+      type: 'recipe',
+      components: [
+        'Button',
+        'ButtonLink',
+        'Dialog',
+        'DialogBody',
+        'DialogClose',
+        'DialogHeader',
+        'DialogTitle',
+        'Empty',
+        'Kbd',
+        'Label',
+        'Link',
+        'SearchField'
+      ],
+      files: [
+        'docs/interactive-editorial-recipes.md'
+      ]
+    },
+    {
+      name: 'image-viewer',
+      type: 'recipe',
+      components: [
+        'Button',
+        'ButtonLink',
+        'Dialog',
+        'DialogBody',
+        'DialogClose',
+        'DialogHeader',
+        'DialogTitle',
+        'Link',
+        'MediaViewport'
+      ],
+      files: [
+        'docs/interactive-editorial-recipes.md'
+      ]
+    },
+    {
       name: 'page-header',
       type: 'recipe',
       components: [

@@ -24,7 +24,15 @@ await copyFile(new URL('../../../tests/fixtures/editorial/reading-controls.astro
 
 await copyFile(new URL('../../../apps/docs/src/assets/cover-dummy.jpg', import.meta.url), new URL('src/cover.jpg', consumer))
 
-execFileSync(process.execPath, ['packages/lumen/bin/lumen.mjs', 'add', 'editorial', '--target', 'astro', '--cwd', cwd], { cwd: root, stdio: 'inherit' })
+await mkdir(new URL('src/assets/', consumer), { recursive: true })
+
+await copyFile(new URL('../../../tests/fixtures/editorial/inspection.svg', import.meta.url), new URL('src/assets/inspection.svg', consumer))
+
+await copyFile(new URL('../../../tests/fixtures/editorial/interactive.astro.template', import.meta.url), new URL('src/pages/interactive.astro', consumer))
+
+for (const recipe of ['editorial', 'article-reading', 'site-search-dialog', 'image-viewer']) {
+  execFileSync(process.execPath, ['packages/lumen/bin/lumen.mjs', 'add', recipe, '--target', 'astro', '--cwd', cwd], { cwd: root, stdio: 'inherit' })
+}
 
 for (const command of ['check', 'build']) {
   execFileSync(process.execPath, [fileURLToPath(new URL('../node_modules/astro/bin/astro.mjs', import.meta.url)), command], { cwd, stdio: 'inherit' })

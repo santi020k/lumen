@@ -650,6 +650,9 @@ attributes, and accessible markup.
   Reuse its cover spread, introduction, content card, replacement notice, and contact panel.
   Pass application copy, links, media, and unique heading IDs explicitly. See the
   [editorial recipe guide](editorial-recipes.md); React and Elements ports are not included.
+- For interactive Astro editorial pages, install `article-reading`, `site-search-dialog`, or
+  `image-viewer`. See the [interactive editorial recipe guide](interactive-editorial-recipes.md)
+  for heading IDs, search provider registration, and optimized media slots.
 - Use the `page-header` and `section-header` recipes for dashboard identity, optional breadcrumbs,
   status/count badges and independent actions. Keep headings in document order, pass translated
   navigation/action labels and unique heading ids, and connect buttons to application-owned handlers.

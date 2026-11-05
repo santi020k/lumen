@@ -314,6 +314,10 @@ Tailwind setup, website data, or private package. See the copied `EDITORIAL.md` 
 [editorial guide](https://github.com/santi020k/lumen/blob/main/docs/editorial-recipes.md) for props,
 slots, unique heading IDs, media ownership, and runtime setup. React and Elements ports are not included.
 
+For interactive pages, install `article-reading`, `site-search-dialog`, or `image-viewer`
+with `--target astro`. The [interactive editorial recipe guide](../../docs/interactive-editorial-recipes.md)
+covers search providers, chapter IDs, and media slots.
+
 ## Dashboard header recipes
 
 Install `page-header` and `section-header` with `lumen add <recipe> --target astro|react|elements`.

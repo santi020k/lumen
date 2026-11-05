@@ -12,7 +12,7 @@ export default defineConfig({
   ],
   reporter: 'list',
   testDir: './tests/editorial',
-  testMatch: ['editorial.spec.ts', 'reading-controls.spec.ts'],
+  testMatch: ['editorial.spec.ts', 'reading-controls.spec.ts', 'interactive.spec.ts'],
   use: { baseURL },
   workers: 2,
   webServer: {

@@ -524,6 +524,16 @@ describe('getRecipe', () => {
     expect(search({ query: 'editorial', kind: 'recipe', framework: 'astro' }).data.results.map(item => item.name)).toContain('editorial')
   })
 
+  test.each(['article-reading', 'site-search-dialog', 'image-viewer'])('advertises %s only for Astro', name => {
+    const result = getRecipe({ name, framework: 'astro' })
+
+    expect(result.data.recipe?.frameworks).toEqual(['astro'])
+    expect(result.text).toContain(`lumen add ${name} --target astro`)
+    for (const framework of ['react', 'elements'] as const) {
+      expect(getRecipe({ name, framework }).data.found).toBe(false)
+    }
+  })
+
   test('returns a structured domain error for unknown recipes', () => {
     const result = getRecipe({ name: 'missing-recipe' })
 

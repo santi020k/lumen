@@ -1,0 +1,74 @@
+---
+import '@santi020k/lumen-astro/styles.css'
+import { Image, Input, Link } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+
+import diagram from '../assets/inspection.svg'
+import ArticleReading from '../lumen/article-reading.astro'
+import ImageViewer from '../lumen/image-viewer.astro'
+import SiteSearchDialog from '../lumen/site-search-dialog.astro'
+
+const chapters = [
+  { id: 'setup', label: 'Set up the guide' },
+  { id: 'reference:settings', label: 'Settings reference' }
+]
+---
+
+<!doctype html>
+<html lang="en" data-theme="lumen-light">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>Interactive editorial verification</title></head>
+  <body>
+    <header>
+      <SiteSearchDialog id="guide-search" fallbackHref="#guide" />
+      <ImageViewer id="guide-viewer" title="Integration diagram" href={diagram.src} ratio={16 / 9}>
+        <Image src={diagram} alt="One circle in the center of a rectangle" fit="contain" />
+        <p slot="caption">A simple integration diagram.</p>
+      </ImageViewer>
+    </header>
+    <main>
+      <Input aria-label="Draft notes" />
+      <ArticleReading articleId="guide" chapters={chapters}>
+        <h1>Integration guide</h1>
+        <section>
+          <h2 id="setup">Set up the guide</h2>
+          <p>Add the adapter to your layout.</p>
+        </section>
+        <section>
+          <h2 id="reference:settings">Settings reference</h2>
+          <p>Set your defaults for the next page.</p>
+        </section>
+      </ArticleReading>
+    </main>
+    <footer><Link href="https://santi020k.com">Santiago Molina</Link></footer>
+    <UIPrimitives />
+  </body>
+</html>
+
+<script>
+  import { setSiteSearchProvider } from '../lumen/site-search-provider'
+
+  let attempts = 0
+  setSiteSearchProvider('guide-search', async query => {
+    if (query === 'slow') {
+      await new Promise(resolve => setTimeout(resolve, 200))
+      document.documentElement.dataset.searchSlowSettled = ''
+      return [{ title: 'Stale result', href: '#setup' }]
+    }
+    if (query === 'retry' && ++attempts === 1) throw new Error('Search unavailable')
+    if (query === 'nothing') return []
+    return [
+      { title: 'Set up the guide', href: '#setup', description: 'Prepare your layout.' },
+      { title: 'Settings reference', href: `#${encodeURIComponent('reference:settings')}` },
+      { title: 'Unsupported link', href: 'javascript:alert(1)' }
+    ]
+  })
+</script>
+
+<style is:global>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: system-ui, sans-serif; }
+  body > header, main, footer { width: min(100% - 2rem, 76rem); margin-inline: auto; padding-block: 1rem; }
+  body > header { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  article section { min-height: 75vh; }
+  footer { min-height: 100vh; }
+</style>
