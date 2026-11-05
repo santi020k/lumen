@@ -13,6 +13,11 @@ when interactive components are used; static components need no runtime. For Mar
 authored Lumen markup outside that component tree, explicitly import the foundation and every
 required component stylesheet, and mount the runtime for interactive Astro behavior.
 
+Generated filenames and Elements tag names use canonical acronym hyphenation: QRCode becomes
+qr-code. Existing copied wrappers remain consumer-owned. Review
+imports when replacing an older acronym wrapper; the installer preserves the old file rather than
+renaming or deleting it.
+
 React and Elements wrappers import the adapter foundation and selected component CSS. Bundlers
 can deduplicate these shared imports. Elements wrappers register only the selected constructor,
 preserving an existing registration on repeated evaluation. Compound child elements each need

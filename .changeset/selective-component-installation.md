@@ -11,3 +11,7 @@ Elements registration. Keep full styles.css as an explicit convenience option. S
 recognizes selective setup with installed or direct-range major-5 evidence and keeps legacy behavior
 when that evidence is absent. Existing consumers should run setup for their selected framework and
 review the selective installation guide before replacing their current stylesheet setup.
+
+Use canonical acronym hyphenation for generated wrapper filenames and Elements tags, such as
+QRCode to qr-code. Review existing local imports when replacing older
+acronym wrappers; their files are preserved.
