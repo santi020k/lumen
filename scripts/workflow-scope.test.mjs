@@ -256,13 +256,13 @@ test('release canaries keep manual full-matrix coverage and scope pull requests'
   assert.match(canary, /needs\.classify\.outputs\.native/u)
 })
 
+test('release canary classification checks out merge-base history', () => {
+  const checkout = canary.split('      - name: Classify changed paths')[0]
+
+  assert.match(checkout, /fetch-depth: 0/u)
+})
+
 test('manual release canaries classify every surface without a pull request base', async () => {
-  const fetchStep = /- name: Fetch comparison base\n([\s\S]*?)\n\s+- name:/u.exec(canary)
-
-  assert.ok(fetchStep, 'The canary must define its comparison fetch')
-
-  assert.match(fetchStep[1], /if: github\.event_name == 'pull_request'/u)
-
   const classifyStep = /- name: Classify changed paths[\s\S]*?\n\s+run: >-\n([\s\S]*?)\n\n/u.exec(canary)
 
   assert.ok(classifyStep, 'The canary must define executable path classification')
