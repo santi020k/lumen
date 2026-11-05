@@ -3,6 +3,7 @@ import { relative, resolve } from 'node:path'
 
 import { satisfies, valid } from 'semver'
 
+import { type ConsumerRelease, loadConsumerRelease } from './consumer-release.js'
 import { type ConsumerInventory, inspectLumenConsumer } from './consumer-rollout.js'
 import type { LumenDiagnosticFinding } from './integration-diagnostics.js'
 import { discoverSourceFiles } from './v2-migration.js'
@@ -10,29 +11,60 @@ import { discoverSourceFiles } from './v2-migration.js'
 export interface LumenConsumerUpgradeAudit {
   findings: LumenDiagnosticFinding[]
   repository: string
+  nativeTargets?: { composeVersion: string, swiftTag: string }
   targetVersion: string
 }
 
 const review = (file: string, rule: string, message: string, remediation: string): LumenDiagnosticFinding => ({ file, rule, message, remediation, severity: 'advisory' })
 
-const versionFindings = (inventory: ConsumerInventory, targetVersion: string): LumenDiagnosticFinding[] => {
-  const findings: LumenDiagnosticFinding[] = []
+const declarationFindings = (inventory: ConsumerInventory, targetVersion: string): LumenDiagnosticFinding[] => (
+  inventory.references.flatMap(({ file, packageName, source, version }) => {
+    if (source === 'lockfile' || /^(?:workspace:|catalog:)/u.test(version)) return []
 
-  for (const reference of inventory.references) {
-    if (reference.version.startsWith('workspace:') || reference.version.startsWith('catalog:')) continue
+    const target = inventory.packageTargets?.[packageName] ?? targetVersion
 
-    if (!satisfies(targetVersion, reference.version)) {
-      findings.push(review(reference.file, 'consumer-package-version', `${reference.packageName} ${reference.version} does not include target ${targetVersion}.`, 'Preview lumen migrate v4 --dependencies, align the adapter and companion packages, then validate the consumer.'))
-    }
-  }
+    return satisfies(target, version) ?
+      [] :
+      [review(
+        file, 'consumer-package-version', `${packageName} ${version} does not include target ${target}.`, 'Preview lumen rollout for the selected release, then validate the consumer.'
+      )]
+  })
+)
 
-  for (const [name, versions] of Object.entries(inventory.resolvedVersions)) {
-    if (versions.some(version => version !== targetVersion)) {
-      findings.push(review('pnpm-lock.yaml', 'consumer-resolved-version', `${name} resolves ${versions.join(', ')}; target is ${targetVersion}.`, 'Update through the repository package manager and inspect the resulting lockfile; a compatible manifest range does not prove installation.'))
-    }
-  }
+const resolutionFindings = (inventory: ConsumerInventory, targetVersion: string): LumenDiagnosticFinding[] => {
+  const missing = inventory.warnings.filter(item => item.includes('has no verified resolution')).map(message => review(
+    'pnpm-lock.yaml', 'consumer-resolution-unverified', message, 'Generate the lockfile with pnpm and rerun the audit.'
+  ))
 
-  return findings
+  const declarations = new Set(inventory.references.filter(item => item.source !== 'lockfile').map(item => item.packageName))
+
+  const mismatches = Object.entries(inventory.resolvedVersions).flatMap(([name, versions]) => {
+    const target = inventory.packageTargets?.[name] ?? targetVersion
+
+    if (versions.every(version => version === target)) return []
+
+    const remediation = name === '@santi020k/lumen' && !declarations.has(name) ?
+      `Refresh the transitive umbrella even if adapter versions stay unchanged. If compatible ranges keep the older resolution, use a pnpm override for ${name}@${target}, reinstall, and verify with a frozen install and this audit.` :
+      'Update through the repository package manager and verify the resulting lockfile with a frozen install and this audit.'
+
+    return [review('pnpm-lock.yaml', 'consumer-resolved-version', `${name} resolves ${versions.join(', ')}; target is ${target}.`, remediation)]
+  })
+
+  return [...missing, ...mismatches]
+}
+
+const versionFindings = async (
+  root: string,
+  targetVersion: string,
+  release: ConsumerRelease | undefined
+): Promise<LumenDiagnosticFinding[]> => {
+  const inventory = await inspectLumenConsumer(root, targetVersion, release)
+
+  return [
+    ...declarationFindings(inventory, targetVersion),
+    ...resolutionFindings(inventory, targetVersion),
+    ...inventory.integration.findings.filter(item => item.rule === 'framework-critical-style-coverage')
+  ]
 }
 
 const sourceFindings = (file: string, source: string): LumenDiagnosticFinding[] => {
@@ -53,24 +85,39 @@ const sourceFindings = (file: string, source: string): LumenDiagnosticFinding[] 
   return findings
 }
 
-/** Advisory inventory only: patches and product CSS are never deleted or rewritten. */
-export const inspectLumenConsumerUpgrade = async (
-  repository: string, targetVersion = '4.0.0'
-): Promise<LumenConsumerUpgradeAudit> => {
-  if (!valid(targetVersion)) throw new Error('Consumer audit requires an exact semantic target version.')
-
-  const root = resolve(repository)
-  const inventory = await inspectLumenConsumer(root)
-  const findings = versionFindings(inventory, targetVersion)
+export const inspectConsumerSource = async (root: string): Promise<LumenDiagnosticFinding[]> => {
+  const findings: LumenDiagnosticFinding[] = []
   const files = await discoverSourceFiles(root, new Set(['.css', '.patch', '.yaml', '.json']))
 
   for (const path of files) findings.push(...sourceFindings(relative(root, path), await readFile(path, 'utf8')))
 
-  return { findings, repository: root, targetVersion }
+  return findings
+}
+
+/** Advisory inventory only: patches and product CSS are never deleted or rewritten. */
+export const inspectLumenConsumerUpgrade = async (
+  repository: string, requestedVersion?: string, manifestPath?: string
+): Promise<LumenConsumerUpgradeAudit> => {
+  if (requestedVersion !== undefined && !valid(requestedVersion)) throw new Error('Consumer audit requires an exact semantic target version.')
+
+  const root = resolve(repository)
+  const release = await loadConsumerRelease(requestedVersion, manifestPath)
+  const targetVersion = release?.version ?? requestedVersion ?? '4.0.0'
+  const findings = await versionFindings(root, targetVersion, release)
+
+  findings.push(...await inspectConsumerSource(root))
+
+  return {
+    findings,
+    repository: root,
+    targetVersion,
+    ...(release ? { nativeTargets: { composeVersion: release.composeVersion, swiftTag: release.swiftTag } } : {})
+  }
 }
 
 export const formatLumenConsumerUpgradeAudit = (report: LumenConsumerUpgradeAudit): string => [
   `Consumer upgrade review for ${report.targetVersion}: ${report.repository}`,
+  ...(report.nativeTargets ? [`Native targets: Swift ${report.nativeTargets.swiftTag}, Compose ${report.nativeTargets.composeVersion}`] : []),
   ...report.findings.map(item => `${item.file} [${item.rule}] ${item.message}\n  ${item.remediation}`),
   report.findings.length ? 'These are review signals, not permission to remove consumer code.' : 'No package-version, patch or CSS review signals found.'
 ].join('\n')

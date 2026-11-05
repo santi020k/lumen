@@ -68,7 +68,7 @@ let conflict: 'error' | 'merge' | 'skip' = 'skip'
 
 const getRolloutArguments = (): { repositories: string[], targetVersion?: string } => {
   const values: string[] = []
-  const optionsWithValues = new Set(['--exclude', '--report'])
+  const optionsWithValues = new Set(['--exclude', '--manifest', '--report'])
 
   for (let index = 1; index < args.length; index += 1) {
     const value = args[index]
@@ -301,7 +301,12 @@ const run = async () => {
 
   switch (command) {
     case 'audit-consumer': {
-      const report = await inspectLumenConsumerUpgrade(cwd ?? name ?? process.cwd())
+      if (targetProvided && (!targetValue || targetValue.startsWith('--'))) throw new Error('Provide a version after --target.')
+
+      if (manifestIndex >= 0 && (!manifestPath || manifestPath.startsWith('--'))) throw new Error('Provide a path after --manifest.')
+
+      const repository = name?.startsWith('--') ? undefined : name
+      const report = await inspectLumenConsumerUpgrade(cwd ?? repository ?? process.cwd(), targetValue, manifestPath)
 
       output = json ? JSON.stringify(report, undefined, 2) : formatLumenConsumerUpgradeAudit(report)
 
@@ -418,12 +423,15 @@ const run = async () => {
     }
 
     case 'rollout': {
+      if (manifestIndex >= 0 && (!manifestPath || manifestPath.startsWith('--'))) throw new Error('Provide a path after --manifest.')
+
       const rollout = getRolloutArguments()
 
       const report = await runConsumerRollout({
         allowDirty,
         apply: applyRollout,
         exclude: excludeValues,
+        ...(manifestPath ? { manifestPath } : {}),
         ...(reportPath ? { report: reportPath } : {}),
         repositories: rollout.repositories,
         ...(rollout.targetVersion ? { targetVersion: rollout.targetVersion } : {}),

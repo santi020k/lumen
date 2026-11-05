@@ -229,11 +229,23 @@ After committing an intentional baseline in each consumer, apply the upgrade ser
 lumen rollout 0.2.0 ../site ../dashboard --apply --report ./lumen-rollout.json
 ```
 
-The command preserves `catalog:` indirection and pinned/caret range style, temporarily admits the
-new release through `minimumReleaseAgeExclude`, runs installs through Corepack from each consumer
-root, removes obsolete Lumen release-age exceptions, verifies the unified resolved version, and
-runs available framework checks, builds, and browser scripts. It refuses dirty repositories,
-missing exact pnpm declarations, and unsupported Node runtimes unless `--allow-dirty` is explicit.
+For a target matching the bundled release manifest, rollout uses each package's own target and
+reports Swift and Compose separately. Supply a manifest from another release to use its package
+map, for example:
+
+```bash
+git show v4.2.0:registry/release-manifest.json > /tmp/lumen-4.2-release.json
+lumen rollout 4.2.0 ../site --manifest /tmp/lumen-4.2-release.json --dry-run
+```
+
+Release-manifest rollout preserves compatible ranges, named catalog references, and the consumer's
+release-age policy. It refuses to downgrade a newer declared minimum or locked resolution. Apply
+runs pnpm through Corepack, verifies a frozen install and the requested graph, and runs available
+framework checks. Use `lumen doctor-native` to inspect consumer-native pins.
+
+An explicit target without a matching manifest uses the historical uniform-package rollout, which
+updates pinned/caret ranges and refreshes existing release-age exceptions. Both modes require an
+exact pnpm declaration and a supported Node runtime. `--allow-dirty` permits a dirty worktree.
 
 ## Consumer upgrade and theme audits
 
@@ -246,7 +258,10 @@ lumen add operational-records --target react
 
 The consumer audit reports declared and resolved versions, patch configuration and `ui-*` CSS
 review signals without rewriting files. Selectors are advisory customization review signals.
-Version migration previews include the same audit when the consumer has a manifest.
+It defaults to the bundled release. Use `--target <version> --manifest <path>` for a historical
+release map. A stale transitive umbrella can require a pnpm resolution update even when direct
+adapter versions already match. Version migration previews report source and customization review.
+Use `rollout` to review adoption of a specific release.
 
 The theme file maps scope names to complete semantic-token objects, such as
 `{ "light": { "canvas": "0 0% 100%", "ink": "0 0% 0%", ... } }`. Supply every semantic color

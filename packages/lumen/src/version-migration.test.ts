@@ -14,6 +14,25 @@ vi.mock('node:fs/promises', async original => {
 })
 
 describe('versioned source migrations', () => {
+  test('groups repeated behavioral reviews and separates source migration from release adoption', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-migration-review-'))
+
+    try {
+      await writeFile(join(root, 'package.json'), '{"dependencies":{"@santi020k/lumen-react":"4.1.0"}}')
+      await writeFile(join(root, 'Cards.tsx'), 'import { Card } from \'@santi020k/lumen-react\'\nconst view = <><Card /><Card /></>')
+      const report = await migrateLumenVersion({ cwd: root, version: 'v4' })
+      const formatted = formatLumenVersionMigration(report)
+
+      expect(report.changes).toEqual([])
+      expect(report.manualReview).toHaveLength(2)
+      expect(formatted.match(/card spacing and media overflow example/gu)).toHaveLength(1)
+      expect(formatted.match(/Cards.tsx:2:/gu)).toHaveLength(2)
+      expect(formatted).not.toContain('consumer-package-version')
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   test.each(['page.astro', 'page.html'])('preserves slash-star text while migrating %s markup', file => {
     const source = '<div>Path is /*/user/*.</div><lumen-stack gap="md"></lumen-stack>'
 
