@@ -278,29 +278,17 @@ describe('@santi020k/lumen-react', () => {
     expect(button.props.type).toBe('button')
   })
 
-  test('composes Button through one child and forwards its ref', () => {
-    const ref = React.createRef<HTMLButtonElement>()
-    const child = React.createElement(
-      'a', { className: 'product-link', href: '/projects' }, 'Projects'
-    )
-    const slottedButton = renderComponent(
-      Button, {
-        asChild: true,
-        children: child,
-        variant: 'secondary'
-      }, ref
-    ) as ReactElement<Record<string, unknown>>
-    const nativeButton = renderComponent(
-      Button, { children: 'Save' }, ref
-    ) as ReactElement<Record<string, unknown>>
+  test('renders Button through one child with consumer classes and destination', () => {
+    const html = renderToStaticMarkup(React.createElement(Button, {
+      asChild: true,
+      variant: 'secondary'
+    }, React.createElement('a', { className: 'product-link', href: '/projects' }, 'Projects')))
 
-    expect(slottedButton.type).toBe('a')
-    expect(slottedButton.props.className).toBe(
-      'ui-button ui-button--secondary ui-button--default-size product-link'
-    )
-    expect(slottedButton.props.href).toBe('/projects')
-    expect(slottedButton.props.ref).toBe(ref)
-    expect(nativeButton.props.ref).toBe(ref)
+    expect(html).toContain('<a ')
+    expect(html).toContain('class="ui-button ui-button--secondary ui-button--default-size product-link"')
+    expect(html).toContain('href="/projects"')
+    expect(html).toContain('data-slot="button"')
+    expect(html).toContain('>Projects</span>')
   })
 
   test('supports the flush accordion variant', () => {

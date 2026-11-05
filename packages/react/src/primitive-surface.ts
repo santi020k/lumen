@@ -2,7 +2,7 @@ import { composeClassName } from '@santi020k/lumen-core/tokens'
 
 export type LumenGlassProp = boolean | 'subtle' | 'strong'
 
-export const glassIntensityClass = (glass?: LumenGlassProp) => glass === 'subtle' ?
+const glassIntensityClass = (glass?: LumenGlassProp) => glass === 'subtle' ?
   'ui-glass-subtle' :
   glass === 'strong' && 'ui-glass-strong'
 

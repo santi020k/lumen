@@ -57,7 +57,7 @@ export interface LumenComponentSnapshot {
   }[]
 }
 
-export interface LumenMigrationContract {
+interface LumenMigrationContract {
   changes: {
     currentContract: string
     docs: string[]

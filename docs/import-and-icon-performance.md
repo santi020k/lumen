@@ -20,19 +20,19 @@ an explicit Card, Input, and Button set through the same minified browser bundle
 
 ## November 5, 2026 Astro route delivery
 
-The modular candidate is measured against published v4.4.0 (`fc264ae2`) using the same six cold
+The modular candidate (`66e62ce5`) is measured against published v4.4.0 (`fc264ae2`) using the same six cold
 Chromium routes, Node 22.23.4, pnpm 12.8.1, and Astro 7.3.5. Each row sums requested assets,
 compressed individually with gzip level 9. CSS inlining is disabled so the stylesheet totals include
 all styles. These are local fixture bytes, not production traffic or measured network transfer.
 
 | Route | v4 JS gzip | v5 JS gzip | v4 CSS gzip | v5 CSS gzip |
 | --- | ---: | ---: | ---: | ---: |
-| Static Card/Button, no runtime | 0 B | 0 B | 35,620 B | 6,973 B |
-| Static Card/Button, root runtime | 35,300 B | 4,910 B | 36,026 B | 7,420 B |
-| Dialog | 35,985 B | 5,595 B | 36,026 B | 8,647 B |
-| CodeTabs with scroll cues | 35,300 B | 9,785 B | 36,026 B | 8,035 B |
-| Form, Field, Input, Select | 35,300 B | 8,838 B | 36,026 B | 6,464 B |
-| Calendar | 35,300 B | 8,915 B | 36,026 B | 6,094 B |
+| Static Card/Button, no runtime | 0 B | 0 B | 35,620 B | 7,025 B |
+| Static Card/Button, root runtime | 35,300 B | 4,754 B | 36,026 B | 7,472 B |
+| Dialog | 35,985 B | 5,439 B | 36,026 B | 8,705 B |
+| CodeTabs with scroll cues | 35,300 B | 9,629 B | 36,026 B | 8,071 B |
+| Form, Field, Input, Select | 35,300 B | 8,682 B | 36,026 B | 6,501 B |
+| Calendar | 35,300 B | 8,759 B | 36,026 B | 6,132 B |
 
 No additional assets were requested during the measured first interaction. Simple routes contain no
 phone, map, rich-text, or scheduler controller. Dynamic toasts separately load their controller and
@@ -51,13 +51,44 @@ Archived source is selected through `LUMEN_DELIVERY_ASTRO_DIR`, with a separate 
 A v4 baseline needs its archived shared stylesheet as well as its Astro sources. Keep the same
 consumer markup, shared behavior builds, and toolchain when comparing revisions.
 
-The first runtime-only Astro installation comparison used packed candidate Core/Astro packages and
-published v4.4.0, with identical transitive runtime dependency versions. The runtime graph decreased
-from eight packages to five; the umbrella, TypeScript, and semver were absent from the candidate.
-This isolated library comparison disables automatic peer installation and scripts; it excludes the
-host Astro toolchain and is not a complete application-install claim. Generated CSS increases file
-count even while removal of CLI tooling reduces installed bytes. Recheck final candidate tarballs
-before publishing installation-size claims.
+Run delivery budgets with `--check` and the rendering comparison separately with `--render`.
+The latter adds composition routes, which changes shared chunk composition. All 35 rendering
+comparisons match the v4 baseline. Navigation checks include a dynamically created toast before
+and after an Astro page swap, retaining its stylesheet without another download.
+
+## November 5, 2026 production installation footprint
+
+Ten empty projects compared published Core/Astro/CLI 4.4.0 and React/Elements 4.3.0 with fresh packs
+from candidate `dba0dbfa`. Node 22.23.4, pnpm 12.8.1, external dependency versions, and security
+policies were identical. Production-only installs disabled scripts and automatic peer installation;
+host frameworks and optional peers are excluded, so this is not a complete application measurement.
+
+| Direct package | Production packages | Installed content MB | Compressed tarballs MB |
+| --- | ---: | ---: | ---: |
+| Core | 3 → 3 | 41.98 → 42.76 | 5.46 → 5.59 |
+| Astro | 8 → 5 | 68.30 → 43.63 | 10.39 → 5.78 |
+| React | 13 → 10 | 69.80 → 45.07 | 10.71 → 6.08 |
+| Elements | 7 → 4 | 68.09 → 43.38 | 10.35 → 5.72 |
+| CLI | 6 → 6 | 67.55 → 68.51 | 10.22 → 10.39 |
+
+MB means 1,000,000 bytes. Installed content is logical regular-file bytes, excluding links, store
+metadata, and allocated-disk overhead. Tarballs are distinct compressed package lengths; network
+traffic depends on caching. Each adapter removes the umbrella CLI, TypeScript, and semver, saving
+about 35% of installed content in this snapshot. Generated component CSS adds files and increases
+Core and CLI sizes. Later layer-order headers add small CSS costs; these exact installation figures
+belong to `dba0dbfa`, not every later candidate. Browser bytes are measured separately above.
+
+All ten installs and exact export-target checks passed. Intentionally omitted host peers produced
+the expected peer diagnostics. Installed-consumer behavior is covered by separate browser and
+server-boundary checks.
+
+## November 5, 2026 React Native import graph
+
+The navigation fixture previously traversed web icon metadata through Core's root entry. Focused
+public Core entries keep that metadata outside native imports. With the same Hermes toolchain,
+the root-navigation bundle changed from 6,639,170 to 4,412,414 bytes (about 33.5%). The unchanged
+6,291,456-byte budget and all three canonical native import fixtures pass. This measures that
+fixture's bundle, not application startup, memory, or every native consumer.
 
 The earlier barrel regression below no longer reproduces at v4.4.0: root and component imports each
 emit 684 bytes for Card/Button/Icon, or 287 bytes without Icon, across three builds. Prefer granular

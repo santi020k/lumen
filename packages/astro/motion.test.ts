@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { initMotionControllers } from './runtime/controllers/motion.js'
+import { cleanupMotionControllers, initMotionControllers } from './runtime/controllers/motion.js'
 
 afterEach(() => {
+  cleanupMotionControllers()
   vi.unstubAllGlobals()
   document.body.replaceChildren()
 })
@@ -14,7 +15,7 @@ test('uses the latest visibility change in an observer batch', () => {
   if (!root) throw new Error('Expected reveal fixture')
   const callbacks: IntersectionObserverCallback[] = []
   const observers: IntersectionObserver[] = []
-  vi.stubGlobal('matchMedia', () => ({ matches: false }))
+  vi.stubGlobal('matchMedia', () => Object.assign(new EventTarget(), { matches: false }))
   vi.stubGlobal('IntersectionObserver', class implements IntersectionObserver {
     root = null
     rootMargin = '0px'

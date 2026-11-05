@@ -606,7 +606,7 @@ export const inspectRenderedAudit = async (
   return report
 }
 
-export const formatRenderedAudit = (report: RenderedAuditReport): string => [
+const formatRenderedAudit = (report: RenderedAuditReport): string => [
   'Rendered audit: ' + report.status,
   ...report.diagnostics.map(diagnostic => diagnostic.code + ': ' + diagnostic.message),
   ...report.routes.flatMap(route => [

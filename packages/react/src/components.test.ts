@@ -164,26 +164,27 @@ describe('@santi020k/lumen-react components', () => {
   })
 
   test('supports router links through Button and ButtonLink asChild', () => {
-    const button = Button({
+    const button = renderToStaticMarkup(createElement(Button, {
       asChild: true,
-      children: Link({ children: 'Projects', className: 'router-link', href: '/projects' }),
       variant: 'secondary'
-    }) as ReactElement
-    const buttonLink = ButtonLink({
+    }, createElement(Link, { className: 'router-link', href: '/projects' }, 'Projects')))
+    const buttonLink = renderToStaticMarkup(createElement(ButtonLink, {
       asChild: true,
-      children: Link({ children: 'Docs', className: 'router-link', href: '/old' }),
       href: '/docs',
       variant: 'ghost'
-    }) as ReactElement
+    }, createElement(Link, { className: 'router-link', href: '/old' }, 'Docs')))
 
-    expect(button.type).toBe('a')
-    expect(propsOf(button).className).toContain('ui-button--secondary')
-    expect(propsOf(button)['data-slot']).toBe('button')
-    expect(buttonLink.type).toBe('a')
-    expect(propsOf(buttonLink).href).toBe('/docs')
-    expect(propsOf(buttonLink).className).toContain('ui-button--ghost')
-    expect(propsOf(buttonLink).className).toContain('router-link')
-    expect(propsOf(buttonLink)['data-slot']).toBe('button-link')
+    expect(button).toContain('<a ')
+    expect(button).toContain('href="/projects"')
+    expect(button).toContain('ui-button--secondary')
+    expect(button).toContain('router-link')
+    expect(button).toContain('data-slot="button"')
+    expect(buttonLink).toContain('<a ')
+    expect(buttonLink).toContain('href="/docs"')
+    expect(buttonLink).not.toContain('href="/old"')
+    expect(buttonLink).toContain('ui-button--ghost')
+    expect(buttonLink).toContain('router-link')
+    expect(buttonLink).toContain('data-slot="button-link"')
   })
 
   test('composes Card through stable public parts', () => {

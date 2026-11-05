@@ -74,6 +74,7 @@
   },
   "devDependencies": {
     "@playwright/test": "catalog:",
+    "@santi020k/lumen-elements": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/semver": "catalog:",
