@@ -359,8 +359,12 @@ behaviorTest(['Toast', 'ToastViewport'], 'Toast creates a live notification in t
   await expect(toast).toContainText('The latest version is now live.')
 })
 
-const invokeLumenInitUiPrimitives = (page: Page): Promise<void> => page.evaluate(() => {
-  (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives?.()
+const invokeLumenInitUiPrimitives = (page: Page): Promise<void> => page.evaluate(async () => {
+  const initialize = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
+
+  if (!initialize) throw new Error('Expected runtime initializer')
+
+  await initialize()
 })
 
 test('Toast binds static markup added after the initial runtime pass without duplicating per-toast dismissal', async ({ page }) => {

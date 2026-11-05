@@ -114,12 +114,12 @@ test('adopted mounted virtual list retains focused destination controls after in
     if (!destination) throw new Error('Missing destination document')
 
     destination.body.append(destination.adoptNode(element))
-    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => void }).LumenInitUiPrimitives
+    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => Promise<void> }).LumenInitUiPrimitives
 
     if (!initialize) throw new Error('Missing initializer')
 
-    initialize(destination)
-    initialize(destination)
+    await initialize(destination)
+    await initialize(destination)
     const row = element.querySelector<HTMLElement>(':scope > :not([data-ui-virtual-list-spacer])')
 
     if (!row) throw new Error('Missing mounted row')

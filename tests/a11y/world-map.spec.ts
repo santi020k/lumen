@@ -288,7 +288,7 @@ test('adopted maps keep zoom and use current-realm selection through interaction
   const map = page.locator('[data-ui-world-map]').first()
   await map.getByRole('button', { name: 'Zoom in', exact: true }).click()
   const result = await map.evaluate(async element => {
-    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
     const frame = document.createElement('iframe')
     document.body.append(frame)
     const destination = frame.contentDocument
@@ -307,22 +307,22 @@ test('adopted maps keep zoom and use current-realm selection through interaction
     }
     const ownedEvents: boolean[] = []
     element.addEventListener('ui:world-map-select', event => { ownedEvents.push(event instanceof view.CustomEvent) })
-    init(destination)
-    init(destination)
+    await init(destination)
+    await init(destination)
     await new Promise<void>(resolve => { setTimeout(resolve, 0) })
     select.value = 'JP'
     select.dispatchEvent(new view.Event('change', { bubbles: true }))
     path.dispatchEvent(new view.MouseEvent('click', { bubbles: true }))
     const clicked = select.value === 'CO'
     element.setAttribute('data-interactive', 'false')
-    init(destination)
+    await init(destination)
     await waitForDisabled(true)
     const disabled = select.disabled
     select.value = 'JP'
     select.dispatchEvent(new view.Event('change', { bubbles: true }))
     const heldEvents = ownedEvents.length
     element.setAttribute('data-interactive', 'true')
-    init(destination)
+    await init(destination)
     await waitForDisabled(false)
     select.dispatchEvent(new view.Event('change', { bubbles: true }))
     return { clicked, disabled, heldEvents, enabled: !select.disabled, selected: select.value, ownedEvents, zoom: viewport.style.getPropertyValue('--ui-world-map-zoom') }

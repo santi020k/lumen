@@ -77,7 +77,7 @@ test('nested disclosures consume Escape once from either the trigger or the pane
   await page.goto('/docs/components/combobox')
   const root = page.locator('.component-doc-preview [data-ui-combobox]')
 
-  await root.evaluate(element => {
+  await root.evaluate(async element => {
     const wrapper = document.createElement('div')
 
     wrapper.setAttribute('data-ui-popover', '')
@@ -89,9 +89,11 @@ test('nested disclosures consume Escape once from either the trigger or the pane
       </div>`
     element.before(wrapper)
     wrapper.querySelector('#inner-keyboard-panel')?.append(element)
-    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => void }).LumenInitUiPrimitives
+    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => Promise<void> }).LumenInitUiPrimitives
 
-    if (typeof initialize === 'function') initialize(document)
+    if (!initialize) throw new Error('Expected runtime initializer')
+
+    await initialize(document)
   })
   const outer = page.getByRole('button', { name: 'Outer popup', exact: true })
   const inner = page.getByRole('button', { name: 'Inner popup', exact: true })
@@ -203,7 +205,7 @@ test('Combobox respects disabled fieldset ancestors and the first legend excepti
 
 test('Combobox observes form resets and disabled ancestors inside shadow DOM', async ({ page }) => {
   await page.goto('/docs/components/combobox')
-  await page.locator('.component-doc-preview [data-ui-combobox]').evaluate(element => {
+  await page.locator('.component-doc-preview [data-ui-combobox]').evaluate(async element => {
     const host = document.createElement('div')
 
     host.id = 'shadow-combobox-fixture'
@@ -215,11 +217,11 @@ test('Combobox observes form resets and disabled ancestors inside shadow DOM', a
     fieldset.append(element.cloneNode(true))
     form.append(fieldset)
     shadow.append(form)
-    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => void }).LumenInitUiPrimitives
+    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => Promise<void> }).LumenInitUiPrimitives
 
     if (!initialize) throw new Error('Expected runtime initializer')
 
-    initialize(shadow)
+    await initialize(shadow)
   })
   const host = page.locator('#shadow-combobox-fixture')
   const input = host.locator('input[role="combobox"]')
