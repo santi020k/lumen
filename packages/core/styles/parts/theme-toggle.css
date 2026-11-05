@@ -107,10 +107,10 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 1.25rem;
-  width: 1.25rem;
-  margin-top: -0.625rem;
-  margin-left: -0.625rem;
+  height: var(--ui-theme-toggle-icon-size, 1.25rem);
+  width: var(--ui-theme-toggle-icon-size, 1.25rem);
+  margin-top: calc(var(--ui-theme-toggle-icon-size, 1.25rem) / -2);
+  margin-left: calc(var(--ui-theme-toggle-icon-size, 1.25rem) / -2);
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 }
@@ -120,10 +120,10 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 1.25rem;
-  width: 1.25rem;
-  margin-top: -0.625rem;
-  margin-left: -0.625rem;
+  height: var(--ui-theme-toggle-icon-size, 1.25rem);
+  width: var(--ui-theme-toggle-icon-size, 1.25rem);
+  margin-top: calc(var(--ui-theme-toggle-icon-size, 1.25rem) / -2);
+  margin-left: calc(var(--ui-theme-toggle-icon-size, 1.25rem) / -2);
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 }

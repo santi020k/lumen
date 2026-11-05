@@ -880,6 +880,11 @@ interface InternalSelectorContract {
 }
 
 const getInternalSelectorContract = (selector: string): InternalSelectorContract => {
+  const part = selector.replaceAll('__', '-')
+  const owner = lumenComponentNames.find(name => stylingContracts[name]?.parts.includes(part))
+
+  if (owner) return { component: owner, slot: part }
+
   const [componentClass = ''] = selector.split(/--|__/u, 1)
   const component = componentByClassName.get(componentClass)
 

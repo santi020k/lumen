@@ -33,6 +33,9 @@ test('renders explicit geometry with unique pattern ids and accessible country n
   expect(first.querySelector('[role="img"]')?.getAttribute('aria-label')).toBe('Destinations')
   expect(first.querySelector('.ui-world-map__highlights')?.textContent).toBe('Colombia')
   expect(first.querySelector('pattern')?.id).not.toBe(second.querySelector('pattern')?.id)
+  expect(first.dataset.slot).toBe('world-map')
+  expect(first.querySelector('[data-slot="world-map-frame"]')).not.toBeNull()
+  expect(first.querySelector('[data-slot="world-map-zoom-controls"]')).not.toBeNull()
 })
 
 test('country clicks and the keyboard chooser share the reflected selection event', () => {

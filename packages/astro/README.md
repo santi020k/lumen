@@ -180,6 +180,12 @@ contains `PhoneInput`; pages without the component do not evaluate or download t
 <PhoneInput countryValue="CO" locale="en-US" name="hospitalPhone" />
 ```
 
+## Public styling parts
+
+Use the [shared styling contract](https://github.com/santi020k/lumen/blob/main/docs/styling-contract.md)
+for Timeline item tail/dot/content, ThemeToggle sun/moon icons, and WorldMap frame/zoom controls.
+ThemeToggle supports `--ui-theme-toggle-icon-size` independently of its control size.
+
 ## Appearance presets
 
 Set `data-lumen-preset="studio"` and an optional `data-lumen-scheme="light|dark"` on the application root. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for Default, Studio, Glass and scoped customization.

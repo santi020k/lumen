@@ -594,7 +594,7 @@ describe('Lumen integration diagnostics', () => {
       )
       await writeFile(
         join(root, 'src', 'global.css'),
-        '.ui-badge {}\n.ui-card--glass {}\n.ui-card__header {}\n.ui-private {}\n'
+        '.ui-badge {}\n.ui-card--glass {}\n.ui-card__header {}\n.ui-private {}\n.ui-timeline-item__dot {}\n.ui-theme-toggle__sun {}\n.ui-world-map__zoom-controls {}\n'
       )
 
       const findings = (await inspectLumenIntegration(root)).findings
@@ -611,6 +611,13 @@ describe('Lumen integration diagnostics', () => {
       expect(cardPart?.remediation).toContain('[data-slot="card-header"]')
       expect(unknown?.message).not.toContain('most likely targets')
       expect(unknown?.remediation).not.toContain('[data-slot=')
+      for (const [selector, slot] of [
+        ['.ui-timeline-item__dot', 'timeline-item-dot'],
+        ['.ui-theme-toggle__sun', 'theme-toggle-sun'],
+        ['.ui-world-map__zoom-controls', 'world-map-zoom-controls']
+      ] as const) {
+        expect(findings.find(item => item.message.includes(selector))?.remediation).toContain(`[data-slot="${slot}"]`)
+      }
     } finally {
       await rm(root, { force: true, recursive: true })
     }

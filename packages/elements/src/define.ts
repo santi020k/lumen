@@ -160,6 +160,7 @@ import {
 } from './components/image-comparison.js'
 import { LumenMediaFilmstripElement as GranularLumenMediaFilmstripElement, lumenMediaFilmstripElementConfig, LumenMediaThumbnailElement as GranularLumenMediaThumbnailElement, lumenMediaThumbnailElementConfig } from './components/media-selection.js'
 import { LumenMediaViewportElement as GranularLumenMediaViewportElement, lumenMediaViewportElementConfig } from './components/media-viewport.js'
+import { LumenTimelineElement as GranularLumenTimelineElement, lumenTimelineElementConfig } from './components/timeline.js'
 import {
   LumenVirtualListElement as GranularLumenVirtualListElement,
   lumenVirtualListElementConfig
@@ -1224,7 +1225,7 @@ const elementConfigs = {
     tagName: 'lumen-note'
   },
   Rating: { baseClassName: 'ui-rating', tagName: 'lumen-rating' },
-  Timeline: { baseClassName: 'ui-timeline', tagName: 'lumen-timeline' },
+  Timeline: lumenTimelineElementConfig,
   AnimatedLogo: {
     baseClassName: 'ui-animated-logo',
     tagName: 'lumen-animated-logo'
@@ -10530,28 +10531,52 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
   override connectedCallback() {
     super.connectedCallback()
 
+    if (!this.hasChildNodes()) {
+      for (const name of ['sun', 'moon'] as const) {
+        const icon = this.ownerDocument.createElement('span')
+
+        icon.className = `ui-icon ui-theme-toggle__${name}`
+
+        icon.dataset.slot = `theme-toggle-${name}`
+
+        icon.setAttribute('aria-hidden', 'true')
+
+        icon.innerHTML = renderLumenIconSvg(name)
+
+        this.append(icon)
+      }
+
+      if (!this.hasAttribute('aria-label') && !this.hasAttribute('aria-labelledby')) this.setAttribute('aria-label', 'Toggle color theme')
+    }
+
     this.setAttribute('role', 'switch')
 
     this.setAttribute('aria-checked', String(this.#rootInDarkMode()))
 
-    this.addEventListener('click', () => {
-      if (this.#isAnimating) return
+    this.addEventListener('click', this.#handleClick)
+  }
 
-      const isDark = this.#rootInDarkMode()
-      const newTheme = isDark ? 'light' : 'dark'
+  override disconnectedCallback(): void {
+    this.removeEventListener('click', this.#handleClick)
+  }
 
-      const prefersReducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      ).matches
+  #handleClick = (): void => {
+    if (this.#isAnimating) return
 
-      if (prefersReducedMotion) {
-        this.#dispatchChange(newTheme)
+    const isDark = this.#rootInDarkMode()
+    const newTheme = isDark ? 'light' : 'dark'
 
-        return
-      }
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches
 
-      this.#circularReveal(isDark, newTheme)
-    })
+    if (prefersReducedMotion) {
+      this.#dispatchChange(newTheme)
+
+      return
+    }
+
+    this.#circularReveal(isDark, newTheme)
   }
 
   #rootInDarkMode() {
@@ -11254,6 +11279,7 @@ const granularElementClasses: Partial<
   DumbbellChart: LumenDumbbellChartElement,
   Button: GranularLumenButtonElement,
   Card: GranularLumenCardElement,
+  Timeline: GranularLumenTimelineElement,
   CardContent: GranularLumenCardContentElement,
   CardDescription: GranularLumenCardDescriptionElement,
   CardFooter: GranularLumenCardFooterElement,

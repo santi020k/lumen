@@ -841,16 +841,22 @@
   "KanbanBoard": {
     "stylesheet": "styles/components/kanban-board.css",
     "parts": [
-      "kanban"
+      "kanban",
+      "visually-hidden"
     ],
-    "dependencies": []
+    "dependencies": [
+      "VisuallyHidden"
+    ]
   },
   "KanbanColumn": {
     "stylesheet": "styles/components/kanban-column.css",
     "parts": [
-      "kanban"
+      "kanban",
+      "visually-hidden"
     ],
-    "dependencies": []
+    "dependencies": [
+      "VisuallyHidden"
+    ]
   },
   "Kbd": {
     "stylesheet": "styles/components/kbd.css",
@@ -1528,9 +1534,12 @@
   "Timeline": {
     "stylesheet": "styles/components/timeline.css",
     "parts": [
-      "timeline"
+      "timeline",
+      "timeline-item"
     ],
-    "dependencies": []
+    "dependencies": [
+      "TimelineItem"
+    ]
   },
   "TimelineItem": {
     "stylesheet": "styles/components/timeline-item.css",

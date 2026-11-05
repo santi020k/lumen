@@ -27,7 +27,10 @@ import {
 import { Button } from './components.js'
 
 const ZoomControls = ({ enabled, labels }: { enabled: boolean, labels: LumenWorldMapZoomLabels }) => enabled && (
-  <div className="ui-world-map__zoom-controls">
+  <div
+    data-slot="world-map-zoom-controls"
+    className="ui-world-map__zoom-controls"
+  >
     <Button aria-label={labels.zoomOut} data-ui-world-map-zoom="out" disabled size="icon" variant="outline">−</Button>
     <output aria-label={labels.level} aria-live="polite" data-ui-world-map-zoom-status>100%</output>
     <Button aria-label={labels.zoomIn} data-ui-world-map-zoom="in" disabled size="icon" variant="outline">+</Button>
@@ -311,6 +314,7 @@ export const WorldMap = ({
       {...props}
       ref={rootRef}
       className={composeClassName('ui-world-map', className)}
+      data-slot="world-map"
       data-initial-view={initialView}
       data-animated={animated}
       data-interactive={interactive}
@@ -318,7 +322,7 @@ export const WorldMap = ({
     >
       <MapHeading description={description} heading={heading} />
       <ZoomControls enabled={zoomable} labels={zoomText} />
-      <div className="ui-world-map__frame">
+      <div data-slot="world-map-frame" className="ui-world-map__frame">
         <MapViewport label={`${zoomText.viewport}: ${label}`} zoomable={zoomable}>
           <svg
             aria-label={label}

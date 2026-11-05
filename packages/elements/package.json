@@ -120,6 +120,10 @@
     "./components/label": {
       "types": "./dist/components/foundations.d.ts",
       "import": "./dist/components/foundations.js"
+    },
+    "./components/timeline": {
+      "types": "./dist/components/timeline.d.ts",
+      "import": "./dist/components/timeline.js"
     }
   },
   "files": [

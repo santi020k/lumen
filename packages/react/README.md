@@ -144,6 +144,12 @@ These entries use the same implementation and types as root imports. Interactive
 smaller final bundle: a bundler can already remove unused root exports. Run the repository's
 `pnpm run measure:selective-imports` benchmark for the measured comparison.
 
+## Public styling parts
+
+Use the [shared styling contract](https://github.com/santi020k/lumen/blob/main/docs/styling-contract.md)
+for Timeline item tail/dot/content, ThemeToggle sun/moon icons, and WorldMap frame/zoom controls.
+ThemeToggle supports `--ui-theme-toggle-icon-size` independently of its control size.
+
 ## Appearance presets
 
 Use a scoped `data-lumen-preset="studio"` container, or select a preset with `useThemeBuilder`. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for theme overrides and explicit glass surfaces.

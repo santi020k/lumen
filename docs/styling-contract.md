@@ -25,7 +25,7 @@ uses the same record when it audits consumer CSS.
 | Sidebar | `--ui-sidebar-gap`, `--ui-sidebar-padding`, `--ui-sidebar-width` |
 | Stat | `--ui-stat-gap`, `--ui-stat-padding` |
 | Table | `--ui-table-cell-padding` |
-| ThemeToggle | `--ui-theme-toggle-size` |
+| ThemeToggle | `--ui-theme-toggle-size`, `--ui-theme-toggle-icon-size` |
 
 `CopyButton` exposes stable `copy-idle`, `copy-copied`, and `copy-error` parts
 for visible state presentation. `Code` also exposes its documented color variables, including `--ui-code-bg`, `--ui-code-border`,
@@ -39,6 +39,17 @@ The foundational roots use `data-slot="button"`, `button-link`, `card`, `code`, 
 Card additionally exposes `card-header`, `card-title`, `card-description`, `card-content`, and
 `card-footer`. ContextNavigation exposes `context-navigation-context`. Stat exposes `stat-label`,
 `stat-value`, `stat-description`, `stat-icon`, and `stat-trend`.
+
+Timeline exposes `timeline`, `timeline-item`, `timeline-item-tail`, `timeline-item-dot`, and
+`timeline-item-content`. Astro and React expose item parts through `TimelineItem`; Elements decorates
+native `li` children of `lumen-timeline`, preserving their DOM nodes and an optional `slot="dot"`
+child. `defineLumenTimeline` from `@santi020k/lumen-elements/components/timeline` registers the
+same constructor as full registration. Import `styles/components/timeline.css` with the foundation.
+
+ThemeToggle's default icons expose `theme-toggle-sun` and `theme-toggle-moon`; Elements retains
+consumer-supplied content and supplies the icon pair when empty. WorldMap exposes `world-map`,
+`world-map-frame`, and `world-map-zoom-controls` (when zoom controls are enabled). These hooks let
+consumers adjust presentation without replacing interaction markup or targeting private classes.
 
 ```css
 [data-slot="card"] {

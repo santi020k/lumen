@@ -540,9 +540,21 @@ export const lumenStylingContracts = {
     stability: 'stable'
   },
   ThemeToggle: {
-    customProperties: ['--ui-theme-toggle-size'],
-    parts: [],
+    customProperties: ['--ui-theme-toggle-size', '--ui-theme-toggle-icon-size'],
+    parts: ['theme-toggle-sun', 'theme-toggle-moon'],
     rootSlot: 'theme-toggle',
+    stability: 'stable'
+  },
+  Timeline: {
+    customProperties: [],
+    parts: ['timeline-item', 'timeline-item-tail', 'timeline-item-dot', 'timeline-item-content'],
+    rootSlot: 'timeline',
+    stability: 'stable'
+  },
+  WorldMap: {
+    customProperties: [],
+    parts: ['world-map-frame', 'world-map-zoom-controls'],
+    rootSlot: 'world-map',
     stability: 'stable'
   }
 } as const satisfies Partial<Record<LumenComponentName, LumenStylingContract>>

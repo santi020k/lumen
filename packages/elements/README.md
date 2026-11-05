@@ -113,6 +113,15 @@ The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI",
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
 your preferred delivery path, or override `--ui-font` in application CSS.
 
+## Public styling parts
+
+Use the [shared styling contract](https://github.com/santi020k/lumen/blob/main/docs/styling-contract.md)
+for Timeline item tail/dot/content, ThemeToggle sun/moon icons, and WorldMap frame/zoom controls.
+ThemeToggle supports `--ui-theme-toggle-icon-size` independently of its control size.
+
+`defineLumenTimeline` from `components/timeline` decorates native `li` children, including a named
+`slot="dot"` child, and shares its constructor with complete registration.
+
 ## Appearance presets
 
 Wrap registered components in `data-lumen-preset="studio"`; ThemeBuilder preset buttons use `data-ui-theme-preset`. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md).

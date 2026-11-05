@@ -711,13 +711,17 @@
       "parts": [
         "kanban"
       ],
-      "dependencies": []
+      "dependencies": [
+        "VisuallyHidden"
+      ]
     },
     "KanbanColumn": {
       "parts": [
         "kanban"
       ],
-      "dependencies": []
+      "dependencies": [
+        "VisuallyHidden"
+      ]
     },
     "Kbd": {
       "parts": [
@@ -1273,7 +1277,9 @@
       "parts": [
         "timeline"
       ],
-      "dependencies": []
+      "dependencies": [
+        "TimelineItem"
+      ]
     },
     "TimelineItem": {
       "parts": [

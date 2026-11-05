@@ -11,6 +11,6 @@ export type Props = HTMLAttributes<'ol'>
 const { class: className, ...props } = Astro.props
 ---
 
-<ol class={composeClassName('ui-timeline', className)} {...props}>
+<ol data-slot="timeline" class={composeClassName('ui-timeline', className)} {...props}>
   <slot />
 </ol>

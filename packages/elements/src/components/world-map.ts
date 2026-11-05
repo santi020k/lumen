@@ -194,6 +194,8 @@ export class LumenWorldMapElement extends LumenElement {
 
     this.abortController = new AbortController()
 
+    this.dataset.slot = 'world-map'
+
     this.dataset.animated = String(this.getAttribute('animated') !== 'false')
 
     this.dataset.interactive = String(this.getAttribute('interactive') !== 'false')
@@ -209,6 +211,8 @@ export class LumenWorldMapElement extends LumenElement {
     const group = svgNode(this.ownerDocument, 'g', { 'aria-hidden': 'true', class: 'ui-world-map__countries' })
 
     frame.className = 'ui-world-map__frame'
+
+    frame.dataset.slot = 'world-map-frame'
 
     const viewport = this.ownerDocument.createElement('div')
 
@@ -267,6 +271,8 @@ export class LumenWorldMapElement extends LumenElement {
     const labels = this.zoomText
 
     controls.className = 'ui-world-map__zoom-controls'
+
+    controls.dataset.slot = 'world-map-zoom-controls'
 
     status.dataset.uiWorldMapZoomStatus = ''
 

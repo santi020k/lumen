@@ -6284,8 +6284,8 @@ export const ThemeToggle = ({
     {...props}
   >
     <span className="ui-sr-only">Toggle color theme</span>
-    <Icon className="ui-theme-toggle__sun" name="sun" />
-    <Icon className="ui-theme-toggle__moon" name="moon" />
+    <Icon data-slot="theme-toggle-sun" className="ui-theme-toggle__sun" name="sun" />
+    <Icon data-slot="theme-toggle-moon" className="ui-theme-toggle__moon" name="moon" />
   </button>
 )
 
@@ -6903,7 +6903,7 @@ export const Rating = ({
 
 export type TimelineProps = ComponentPropsWithoutRef<'ol'>
 export const Timeline = ({ className, ...props }: TimelineProps) => (
-  <ol className={composeClassName('ui-timeline', className)} {...props} />
+  <ol data-slot="timeline" className={composeClassName('ui-timeline', className)} {...props} />
 )
 
 export type TimelineItemProps = ComponentPropsWithoutRef<'li'> & {
@@ -6915,10 +6915,10 @@ export const TimelineItem = ({
   dot,
   ...props
 }: TimelineItemProps) => (
-  <li className={composeClassName('ui-timeline-item', className)} {...props}>
-    <div className="ui-timeline-item__tail" />
-    <div className="ui-timeline-item__dot">{dot}</div>
-    <div className="ui-timeline-item__content">{children}</div>
+  <li data-slot="timeline-item" className={composeClassName('ui-timeline-item', className)} {...props}>
+    <div data-slot="timeline-item-tail" className="ui-timeline-item__tail" />
+    <div data-slot="timeline-item-dot" className="ui-timeline-item__dot">{dot}</div>
+    <div data-slot="timeline-item-content" className="ui-timeline-item__content">{children}</div>
   </li>
 )
 
