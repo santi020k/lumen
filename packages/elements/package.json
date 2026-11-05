@@ -80,7 +80,47 @@
     },
     "./tailwind.css": "./tailwind.css",
     "./styles/foundation.css": "./styles/foundation.css",
-    "./styles/components/*.css": "./styles/components/*.css"
+    "./styles/components/*.css": "./styles/components/*.css",
+    "./components/dialog": {
+      "types": "./dist/editorial-behaviors.d.ts",
+      "import": "./dist/editorial-behaviors.js"
+    },
+    "./components/anchor": {
+      "types": "./dist/editorial-behaviors.d.ts",
+      "import": "./dist/editorial-behaviors.js"
+    },
+    "./components/scroll-progress": {
+      "types": "./dist/editorial-behaviors.d.ts",
+      "import": "./dist/editorial-behaviors.js"
+    },
+    "./components/search-field": {
+      "types": "./dist/editorial-behaviors.d.ts",
+      "import": "./dist/editorial-behaviors.js"
+    },
+    "./components/collapsible": {
+      "types": "./dist/editorial-behaviors.d.ts",
+      "import": "./dist/editorial-behaviors.js"
+    },
+    "./components/empty": {
+      "types": "./dist/editorial-behaviors.d.ts",
+      "import": "./dist/editorial-behaviors.js"
+    },
+    "./components/kbd": {
+      "types": "./dist/editorial-behaviors.d.ts",
+      "import": "./dist/editorial-behaviors.js"
+    },
+    "./components/link": {
+      "types": "./dist/editorial-behaviors.d.ts",
+      "import": "./dist/editorial-behaviors.js"
+    },
+    "./components/skip-link": {
+      "types": "./dist/editorial-behaviors.d.ts",
+      "import": "./dist/editorial-behaviors.js"
+    },
+    "./components/label": {
+      "types": "./dist/components/foundations.d.ts",
+      "import": "./dist/components/foundations.js"
+    }
   },
   "files": [
     "dist",

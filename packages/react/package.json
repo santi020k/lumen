@@ -113,7 +113,51 @@
     },
     "./tailwind.css": "./tailwind.css",
     "./styles/foundation.css": "./styles/foundation.css",
-    "./styles/components/*.css": "./styles/components/*.css"
+    "./styles/components/*.css": "./styles/components/*.css",
+    "./components/button": {
+      "types": "./dist/editorial-controls.d.ts",
+      "import": "./dist/editorial-controls.js"
+    },
+    "./components/collapsible": {
+      "types": "./dist/editorial-controls.d.ts",
+      "import": "./dist/editorial-controls.js"
+    },
+    "./components/empty": {
+      "types": "./dist/editorial-controls.d.ts",
+      "import": "./dist/editorial-controls.js"
+    },
+    "./components/kbd": {
+      "types": "./dist/editorial-controls.d.ts",
+      "import": "./dist/editorial-controls.js"
+    },
+    "./components/search-field": {
+      "types": "./dist/editorial-controls.d.ts",
+      "import": "./dist/editorial-controls.js"
+    },
+    "./components/link": {
+      "types": "./dist/editorial-controls.d.ts",
+      "import": "./dist/editorial-controls.js"
+    },
+    "./components/skip-link": {
+      "types": "./dist/editorial-controls.d.ts",
+      "import": "./dist/editorial-controls.js"
+    },
+    "./components/label": {
+      "types": "./dist/label.d.ts",
+      "import": "./dist/label.js"
+    },
+    "./components/dialog": {
+      "types": "./dist/dialog.d.ts",
+      "import": "./dist/dialog.js"
+    },
+    "./components/anchor": {
+      "types": "./dist/reading-navigation.d.ts",
+      "import": "./dist/reading-navigation.js"
+    },
+    "./components/scroll-progress": {
+      "types": "./dist/reading-navigation.d.ts",
+      "import": "./dist/reading-navigation.js"
+    }
   },
   "files": [
     "dist",

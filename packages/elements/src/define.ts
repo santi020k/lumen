@@ -23,12 +23,10 @@ import {
   createLumenScatterGeometry,
   createLumenWaterfallGeometry,
   createThemeBuilderTokens,
-  decodeLumenAnchorFragment,
   executeLumenRichTextCommand,
   exportThemeBuilderValue,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
-  getLumenActiveAnchorIndex,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
@@ -183,6 +181,7 @@ import { LumenDatumChartElement } from './chart-activation.js'
 import { chartAnnotationHtml, chartAxesHtml, chartCaptionHtml, chartDataTableHtml, chartHeaderHtml, chartInspectionHtml, chartLabelsFor, chartLegendHtml, chartNumberAttribute, escapeChartHtml, heatmapDataTableHtml, intervalChartHtml, parseChartAnnotations, parseHeatmapData, parseHistogramBins, parseRangeData, parseWaterfallData, rangeDataTableHtml, scatterDataTableHtml, scatterPlotHtml } from './chart-html.js'
 import { comparisonChartHtml, parseComparisonData } from './comparison-chart-html.js'
 import { LumenAmountFieldElement, MessageElement } from './consumer-behaviors.js'
+import { createId, getFocusable, getOwnedTarget, hasDocument, LumenAnchorBehaviorElement, LumenAnchorElement, lumenAnchorElementConfig, LumenCollapsibleElement, lumenCollapsibleElementConfig, LumenDialogBehaviorElement, LumenDialogBodyElement, lumenDialogBodyElementConfig, LumenDialogCloseElement, lumenDialogCloseElementConfig, LumenDialogElement, lumenDialogElementConfig, LumenDialogFooterElement, lumenDialogFooterElementConfig, LumenDialogHeaderElement, lumenDialogHeaderElementConfig, LumenDialogTitleElement, lumenDialogTitleElementConfig, LumenEmptyElement, lumenEmptyElementConfig, LumenKbdElement, lumenKbdElementConfig, LumenLinkElement, lumenLinkElementConfig, LumenScalarFormControlElement, LumenScrollProgressBehaviorElement, LumenScrollProgressElement, lumenScrollProgressElementConfig, LumenSearchFieldElement, lumenSearchFieldElementConfig, LumenSkipLinkElement, lumenSkipLinkElementConfig   } from './editorial-behaviors.js'
 import {
   createLumenElementClass as createStandaloneLumenElementClass,
   LumenElement,
@@ -190,6 +189,11 @@ import {
   type LumenElementConstructor
 } from './element-base.js'
 import { boxPlotHtml, calendarHeatmapHtml, funnelChartHtml, parseBoxPlotData, parseCalendarHeatmapData, parseFunnelData } from './expanded-chart-html.js'
+import { observedAttributeNames } from './observed-attributes.js'
+
+export { LumenDialogElement } from './editorial-behaviors.js'
+export {  } from './editorial-behaviors.js'
+export {  } from './observed-attributes.js'
 
 export { LumenAmountFieldElement }
 export { LumenElement } from './element-base.js'
@@ -238,15 +242,6 @@ export interface ToastApi {
   dismiss: (id?: string) => void
   update: (id: string, detail: ToastDetail) => void
 }
-
-const focusableSelector = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])'
-].join(',')
 
 // cspell:ignore activedescendant multiselectable spinbutton
 const fieldControlSelector = [
@@ -491,11 +486,7 @@ const elementConfigs = {
     },
     tagName: 'lumen-checkbox-group'
   },
-  Collapsible: {
-    baseClassName: 'ui-collapsible',
-    defaults: { 'data-ui-collapsible': '' },
-    tagName: 'lumen-collapsible'
-  },
+  Collapsible: lumenCollapsibleElementConfig,
   Code: {
     attributeClasses: {
       variant: {
@@ -599,44 +590,12 @@ const elementConfigs = {
     defaults: { 'data-ui-date-range-picker': '' },
     tagName: 'lumen-date-range-picker'
   },
-  DialogHeader: {
-    baseClassName: 'ui-dialog-header',
-    defaults: { 'data-slot': 'dialog-header' },
-    tagName: 'lumen-dialog-header'
-  },
-  DialogTitle: {
-    baseClassName: 'ui-dialog-title',
-    defaults: { 'data-slot': 'dialog-title' },
-    tagName: 'lumen-dialog-title'
-  },
-  DialogBody: {
-    baseClassName: 'ui-dialog-body',
-    defaults: { 'data-slot': 'dialog-body' },
-    tagName: 'lumen-dialog-body'
-  },
-  DialogFooter: {
-    baseClassName: 'ui-dialog-footer',
-    defaults: { 'data-slot': 'dialog-footer' },
-    tagName: 'lumen-dialog-footer'
-  },
-  DialogClose: {
-    baseClassName: 'ui-dialog-close',
-    defaults: { 'data-slot': 'dialog-close', 'data-ui-dialog-close': '' },
-    tagName: 'lumen-dialog-close'
-  },
-  Dialog: {
-    attributeClasses: {
-      glass: {
-        strong: 'ui-dialog--glass ui-glass-strong',
-        subtle: 'ui-dialog--glass ui-glass-subtle',
-        true: 'ui-dialog--glass'
-      },
-      layout: { fullscreen: 'ui-dialog--fullscreen' }
-    },
-    baseClassName: 'ui-dialog',
-    defaults: { 'data-ui-dialog': '', layout: 'centered' },
-    tagName: 'lumen-dialog'
-  },
+  DialogHeader: lumenDialogHeaderElementConfig,
+  DialogTitle: lumenDialogTitleElementConfig,
+  DialogBody: lumenDialogBodyElementConfig,
+  DialogFooter: lumenDialogFooterElementConfig,
+  DialogClose: lumenDialogCloseElementConfig,
+  Dialog: lumenDialogElementConfig,
   Direction: lumenDirectionElementConfig,
   Drawer: {
     attributeClasses: {
@@ -662,15 +621,7 @@ const elementConfigs = {
     defaults: { 'data-ui-dropdown-menu': '' },
     tagName: 'lumen-dropdown-menu'
   },
-  Empty: {
-    attributeClasses: {
-      ...glassAttributeClasses('ui-empty--glass'),
-      variant: { compact: 'ui-empty--compact' }
-    },
-    baseClassName: 'ui-empty',
-    defaults: { variant: 'default' },
-    tagName: 'lumen-empty'
-  },
+  Empty: lumenEmptyElementConfig,
   ErrorState: {
     attributeClasses: {
       kind: {
@@ -825,14 +776,9 @@ const elementConfigs = {
     baseClassName: 'ui-kanban__column',
     tagName: 'lumen-kanban-column'
   },
-  Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' },
+  Kbd: lumenKbdElementConfig,
   Label: lumenLabelElementConfig,
-  Link: {
-    attributeClasses: { variant: { inherit: 'ui-link--inherit' } },
-    baseClassName: 'ui-link',
-    defaults: { 'data-slot': 'link' },
-    tagName: 'lumen-link'
-  },
+  Link: lumenLinkElementConfig,
   LineChart: {
     attributeClasses: {
       ...glassAttributeClasses('ui-chart--glass'),
@@ -1003,33 +949,14 @@ const elementConfigs = {
     baseClassName: 'ui-scroll-area',
     tagName: 'lumen-scroll-area'
   },
-  ScrollProgress: {
-    attributeClasses: {
-      position: { bottom: 'ui-scroll-progress--bottom' }
-    },
-    baseClassName: 'ui-scroll-progress',
-    defaults: {
-      'aria-label': 'Reading progress',
-      'aria-valuemax': '100',
-      'aria-valuemin': '0',
-      'aria-valuenow': '0',
-      'data-ui-scroll-progress': '',
-      position: 'top',
-      role: 'progressbar'
-    },
-    tagName: 'lumen-scroll-progress'
-  },
+  ScrollProgress: lumenScrollProgressElementConfig,
   Schedule: {
     attributeClasses: glassAttributeClasses('ui-schedule--glass'),
     baseClassName: 'ui-schedule',
     defaults: { 'data-ui-schedule': '' },
     tagName: 'lumen-schedule'
   },
-  SearchField: {
-    baseClassName: 'ui-input ui-search-field',
-    defaults: { type: 'search' },
-    tagName: 'lumen-search-field'
-  },
+  SearchField: lumenSearchFieldElementConfig,
   Select: {
     attributeClasses: glassAttributeClasses('ui-select-field--glass'),
     observedAttributes: ['glass', 'size', 'visual-size'],
@@ -1063,7 +990,7 @@ const elementConfigs = {
     tagName: 'lumen-sidebar'
   },
   Skeleton: lumenSkeletonElementConfig,
-  SkipLink: { baseClassName: 'ui-skip-link', tagName: 'lumen-skip-link' },
+  SkipLink: lumenSkipLinkElementConfig,
   Slider: {
     baseClassName: 'ui-slider',
     defaults: { type: 'range' },
@@ -1409,16 +1336,7 @@ const elementConfigs = {
     defaults: { 'data-ui-tour': '' },
     tagName: 'lumen-tour'
   },
-  Anchor: {
-    baseClassName: 'ui-anchor',
-    defaults: {
-      'aria-label': 'On this page',
-      'activation-offset': '96',
-      'data-ui-anchor': '',
-      'data-ui-anchor-offset': '96'
-    },
-    tagName: 'lumen-anchor'
-  },
+  Anchor: lumenAnchorElementConfig,
   Segmented: {
     attributeClasses: {
       'visual-size': { lg: 'ui-segmented--lg', sm: 'ui-segmented--sm' }
@@ -1515,137 +1433,6 @@ const elementConfigs = {
   LumenElementConfig
 >
 
-const observedAttributeNames = [
-  'start-date',
-  'end-date',
-  'week-starts-on',
-  'weekday-labels',
-  'min-label',
-  'q1-label',
-  'median-label',
-  'q3-label',
-  'max-label',
-  'outliers-label',
-  'reference-label',
-  'target',
-  'ranges',
-  'target-label',
-  'activation-offset',
-  'animation',
-  'area',
-  'autocomplete',
-  'border-position',
-  'caption',
-  'x-scale',
-  'x-min',
-  'x-max',
-  'domain-min',
-  'domain-max',
-  'category-label',
-  'center-label',
-  'center-value',
-  'checked',
-  'column-label',
-  'columns',
-  'country',
-  'country-name',
-  'country-label',
-  'input-id',
-  'number-label',
-  'invalid-number-message',
-  'show-validation-error',
-  'error-message',
-  'decimals',
-  'data',
-  'default-value',
-  'delay',
-  'decorative',
-  'direction',
-  'disabled',
-  'duration',
-  'empty-label',
-  'from',
-  'form',
-  'gap',
-  'glass',
-  'heading',
-  'high-label',
-  'hover',
-  'intensity',
-  'label',
-  'label-template',
-  'legend-label',
-  'locale',
-  'locales',
-  'low-label',
-  'layout',
-  'markers',
-  'max',
-  'maxlength',
-  'min',
-  'minlength',
-  'multiple',
-  'name',
-  'not-available-label',
-  'orientation',
-  'pattern',
-  'position',
-  'placeholder',
-  'readonly',
-  'required',
-  'rows',
-  'row-label',
-  'prefix',
-  'pressed',
-  'reference-value',
-  'x-scale',
-  'domain-min',
-  'domain-max',
-  'x-min',
-  'x-max',
-  'interactive',
-  'sync-group',
-  'annotations',
-  'bins',
-  'frequency',
-  'color-scale',
-  'midpoint',
-  'count-label',
-  'density-label',
-  'start-label',
-  'end-label',
-  'invalid-data-label',
-  'series',
-  'series-label',
-  'shape',
-  'show-endpoint',
-  'show-legend',
-  'show-table',
-  'drilldown',
-  'explore-data-label',
-  'datum-action-prefix',
-  'size',
-  'size-label',
-  'surface',
-  'stagger',
-  'summary',
-  'step',
-  'storage-key',
-  'suffix',
-  'threshold',
-  'tone',
-  'type',
-  'value',
-  'value-label',
-  'values',
-  'variant',
-  'view-data-label',
-  'visual-size',
-  'x-label'
-]
-
-const hasDocument = (): boolean => typeof document !== 'undefined'
-
 const parseMotionDuration = (value: string): number => {
   const parsedDuration = Number.parseFloat(value)
 
@@ -1654,38 +1441,6 @@ const parseMotionDuration = (value: string): number => {
   return value.endsWith('ms') ? parsedDuration : parsedDuration * 1000
 }
 
-const createId = (prefix: string): string => {
-  if (
-    typeof crypto !== 'undefined' &&
-    typeof crypto.randomUUID === 'function'
-  ) {
-    return `${prefix}-${crypto.randomUUID()}`
-  }
-
-  return `${prefix}-${Math.random().toString(36).slice(2)}`
-}
-
-const isElementVisible = (element: HTMLElement): boolean => {
-  if (typeof element.checkVisibility === 'function') {
-    return element.checkVisibility({ visibilityProperty: true })
-  }
-
-  const visibility = getComputedStyle(element).visibility
-
-  if (visibility === 'hidden' || visibility === 'collapse') return false
-
-  return element.offsetParent !== null || element.getClientRects().length > 0
-}
-
-const getFocusable = (root: ParentNode | null): HTMLElement[] => {
-  if (!root) return []
-
-  return [...root.querySelectorAll<HTMLElement>(focusableSelector)].filter(
-    element => !element.matches(':disabled') && !element.closest('[hidden], [inert]') && isElementVisible(element)
-  )
-}
-
-const getOwnedTarget = (event: Event): Node | null => event.target instanceof Node ? event.target : null
 // Markup whose behavior another adapter owns, such as a React island, is never enhanced here.
 const isOwnedByAnotherAdapter = (root: Element): boolean => root.hasAttribute('data-ui-owner')
 const forwardedAttributes = ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-errormessage'] as const
@@ -5482,456 +5237,6 @@ const installToastController = (): void => {
   })
 }
 
-type LumenScalarNativeControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-
-const scalarControlAttributes = [
-  'accept',
-  'aria-describedby',
-  'aria-label',
-  'aria-labelledby',
-  'autocomplete',
-  'disabled',
-  'form',
-  'inputmode',
-  'max',
-  'maxlength',
-  'min',
-  'minlength',
-  'multiple',
-  'pattern',
-  'placeholder',
-  'readonly',
-  'required',
-  'rows',
-  'size',
-  'step'
-] as const
-
-const getValidityFlags = (validity: ValidityState): ValidityStateFlags => ({
-  badInput: validity.badInput,
-  customError: validity.customError,
-  patternMismatch: validity.patternMismatch,
-  rangeOverflow: validity.rangeOverflow,
-  rangeUnderflow: validity.rangeUnderflow,
-  stepMismatch: validity.stepMismatch,
-  tooLong: validity.tooLong,
-  tooShort: validity.tooShort,
-  typeMismatch: validity.typeMismatch,
-  valueMissing: validity.valueMissing
-})
-
-class LumenScalarFormControlElement extends LumenElement {
-  static formAssociated = true
-  static nativeTagName: 'input' | 'select' | 'textarea' = 'input'
-
-  private control: LumenScalarNativeControl | undefined
-  private defaultCheckedState = false
-  private defaultValueState = ''
-  private eventController: AbortController | undefined
-  private internals: ElementInternals | undefined
-  private formDisabledState = false
-
-  constructor() {
-    super()
-
-    if (typeof this.attachInternals === 'function') {
-      const internals = this.attachInternals()
-
-      if (
-        typeof internals.setFormValue === 'function' &&
-        typeof internals.setValidity === 'function'
-      ) {
-        this.internals = internals
-      }
-    }
-  }
-
-  get checked(): boolean {
-    return this.control instanceof HTMLInputElement && this.control.checked
-  }
-
-  set checked(checked: boolean) {
-    if (this.control instanceof HTMLInputElement) {
-      this.control.checked = checked
-
-      this.#syncFormState()
-
-      return
-    }
-
-    this.toggleAttribute('checked', checked)
-  }
-
-  get defaultChecked(): boolean {
-    return this.defaultCheckedState
-  }
-
-  set defaultChecked(checked: boolean) {
-    this.defaultCheckedState = checked
-
-    this.toggleAttribute('checked', checked)
-  }
-
-  get defaultValue(): string {
-    return this.defaultValueState
-  }
-
-  set defaultValue(value: string) {
-    this.defaultValueState = value
-
-    this.setAttribute('value', value)
-  }
-
-  get disabled(): boolean {
-    return this.hasAttribute('disabled')
-  }
-
-  set disabled(disabled: boolean) {
-    this.toggleAttribute('disabled', disabled)
-  }
-
-  get form(): HTMLFormElement | null {
-    return this.internals?.form ?? this.control?.form ?? null
-  }
-
-  get labels(): NodeList | null {
-    return this.internals?.labels ?? null
-  }
-
-  get name(): string {
-    return this.getAttribute('name') ?? ''
-  }
-
-  set name(name: string) {
-    this.setAttribute('name', name)
-  }
-
-  get type(): string {
-    if (this.control instanceof HTMLInputElement ||
-      this.control instanceof HTMLSelectElement) return this.control.type
-
-    return 'textarea'
-  }
-
-  set type(type: string) {
-    const Constructor = this.constructor as typeof LumenScalarFormControlElement
-
-    if (Constructor.nativeTagName === 'input') this.setAttribute('type', type)
-  }
-
-  get validationMessage(): string {
-    return (
-      this.internals?.validationMessage ?? this.control?.validationMessage ?? ''
-    )
-  }
-
-  get validity(): ValidityState {
-    return (
-      this.internals?.validity ??
-      this.control?.validity ??
-      this.ownerDocument.createElement('input').validity
-    )
-  }
-
-  get value(): string {
-    return this.control?.value ?? this.getAttribute('value') ?? ''
-  }
-
-  set value(value: string) {
-    if (this.control) {
-      this.control.value = value
-
-      this.#syncFormState()
-
-      return
-    }
-
-    this.setAttribute('value', value)
-  }
-
-  get willValidate(): boolean {
-    return this.internals?.willValidate ?? this.control?.willValidate ?? false
-  }
-
-  override connectedCallback() {
-    super.connectedCallback()
-
-    if (!hasDocument()) return
-
-    const Constructor = this
-      .constructor as typeof LumenScalarFormControlElement
-
-    if (!this.control) {
-      this.defaultValueState = this.getAttribute('value') ??
-        (Constructor.nativeTagName === 'textarea' ? this.textContent : '')
-
-      this.defaultCheckedState = this.hasAttribute('checked')
-    }
-
-    this.#ensureControl()
-
-    if (this.control instanceof HTMLSelectElement &&
-      !this.hasAttribute('value')) this.defaultValueState = this.control.value
-
-    this.#syncControlAttributes()
-
-    this.#bindControlEvents()
-
-    this.#syncFormState()
-  }
-
-  override disconnectedCallback() {
-    this.eventController?.abort()
-
-    this.eventController = undefined
-  }
-
-  override attributeChangedCallback(
-    name: string,
-    previousValue: string | null,
-    value: string | null
-  ) {
-    super.attributeChangedCallback()
-
-    if (previousValue === value || !this.control) return
-
-    this.#syncControlAttributes()
-
-    if (name === 'value') {
-      this.defaultValueState = value ?? ''
-
-      this.control.value = this.defaultValueState
-    }
-
-    if (name === 'checked' && this.control instanceof HTMLInputElement) {
-      this.defaultCheckedState = value !== null
-
-      this.control.defaultChecked = this.defaultCheckedState
-    }
-
-    this.#syncFormState()
-  }
-
-  checkValidity(): boolean {
-    const valid = this.control?.checkValidity() ?? true
-
-    this.#syncFormState()
-
-    return valid
-  }
-
-  override focus(options?: FocusOptions): void {
-    this.control?.focus(options)
-  }
-
-  formDisabledCallback(disabled: boolean): void {
-    this.formDisabledState = disabled
-
-    if (this.control) this.control.disabled = disabled || this.disabled
-
-    this.#syncFormState()
-  }
-
-  formResetCallback(): void {
-    if (!this.control) return
-
-    if (this.control instanceof HTMLSelectElement && !this.hasAttribute('value')) {
-      for (const option of this.control.options) option.selected = option.defaultSelected
-
-      if (!this.control.multiple && this.control.selectedIndex < 0) this.control.selectedIndex = 0
-    } else this.control.value = this.defaultValueState
-
-    if (this.control instanceof HTMLInputElement) {
-      this.control.checked = this.defaultCheckedState
-    }
-
-    this.#syncFormState()
-  }
-
-  formStateRestoreCallback(state: File | FormData | string | null): void {
-    if (typeof state === 'string') this.value = state
-    else if (state instanceof FormData && this.control instanceof HTMLSelectElement) {
-      const values = new Set(state.getAll(this.name))
-
-      for (const option of this.control.options) option.selected = values.has(option.value)
-
-      this.#syncFormState()
-    }
-  }
-
-  reportValidity(): boolean {
-    const valid = this.control?.reportValidity() ?? true
-
-    this.#syncFormState()
-
-    return valid
-  }
-
-  setCustomValidity(message: string): void {
-    this.control?.setCustomValidity(message)
-
-    this.#syncFormState()
-  }
-
-  #ensureControl(): void {
-    const existingControl = this.querySelector<LumenScalarNativeControl>(
-      '[data-ui-element-control]'
-    )
-
-    if (existingControl) {
-      this.control = existingControl
-
-      return
-    }
-
-    const Constructor = this
-      .constructor as typeof LumenScalarFormControlElement
-
-    const control = document.createElement(Constructor.nativeTagName)
-
-    control.dataset.uiElementControl = ''
-
-    control.className = this.className
-
-    if (control instanceof HTMLInputElement ||
-      control instanceof HTMLTextAreaElement) {
-      control.defaultValue = this.defaultValueState
-    }
-
-    if (control instanceof HTMLSelectElement) {
-      control.multiple = this.hasAttribute('multiple')
-
-      control.append(...[...this.children].filter(child => child instanceof HTMLOptionElement ||
-        child instanceof HTMLOptGroupElement))
-    }
-
-    if (this.defaultValueState) control.value = this.defaultValueState
-
-    if (control instanceof HTMLInputElement) {
-      control.defaultChecked = this.defaultCheckedState
-
-      control.checked = this.defaultCheckedState
-    }
-
-    this.style.display = 'contents'
-
-    this.replaceChildren(control)
-
-    this.control = control
-  }
-
-  #bindControlEvents(): void {
-    const control = this.control
-
-    if (!control) return
-
-    this.eventController?.abort()
-
-    this.eventController = new AbortController()
-
-    for (const eventName of ['change', 'input'] as const) {
-      control.addEventListener(
-        eventName, event => {
-          event.stopPropagation()
-
-          this.#syncFormState()
-
-          this.dispatchEvent(
-            new Event(eventName, { bubbles: true, composed: true })
-          )
-        }, { signal: this.eventController.signal }
-      )
-    }
-  }
-
-  #syncControlAttributes(): void {
-    const control = this.control
-
-    if (!control) return
-
-    control.className = this.className
-
-    for (const name of scalarControlAttributes) {
-      const value = this.getAttribute(name)
-
-      if (value === null || (name === 'form' && this.internals)) {
-        control.removeAttribute(name)
-      } else {
-        control.setAttribute(name, value)
-      }
-    }
-
-    if (control instanceof HTMLInputElement) {
-      control.type =
-        this.getAttribute('type') ?? this.config.defaults?.type ?? 'text'
-    }
-
-    control.disabled = this.disabled || this.formDisabledState
-
-    if (this.id) control.id = `${this.id}-control`
-
-    if (this.internals) {
-      control.removeAttribute('name')
-    } else if (this.name) {
-      control.name = this.name
-    } else {
-      control.removeAttribute('name')
-    }
-  }
-
-  #syncFormState(): void {
-    const control = this.control
-
-    if (!control) return
-
-    const submittedValue = this.#submittedValue(control)
-
-    if (this.internals) {
-      const state = control instanceof HTMLSelectElement && control.multiple ? submittedValue : control.value
-
-      this.internals.setFormValue(submittedValue, state)
-
-      if (control.validity.valid) {
-        this.internals.setValidity({})
-      } else {
-        this.internals.setValidity(
-          getValidityFlags(control.validity), control.validationMessage, control
-        )
-      }
-    }
-
-    if (control.validity.valid) {
-      this.removeAttribute('aria-invalid')
-    } else {
-      this.setAttribute('aria-invalid', 'true')
-    }
-  }
-
-  #submittedValue(
-    control: LumenScalarNativeControl
-  ): FormData | string | null {
-    if (control.disabled || (control instanceof HTMLInputElement && ['checkbox', 'radio'].includes(control.type) && !control.checked)) return null
-
-    if (control instanceof HTMLSelectElement && control.multiple) {
-      if (!this.name) return null
-
-      const values = new FormData()
-
-      for (const option of control.selectedOptions) {
-        const disabledGroup = option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled
-
-        if (!option.disabled && !disabledGroup) {
-          values.append(this.name, option.value)
-        }
-      }
-
-      return values
-    }
-
-    return control.value
-  }
-}
-
 class LumenTextareaFormControlElement extends LumenScalarFormControlElement {
   static override nativeTagName = 'textarea' as const
 }
@@ -7315,242 +6620,6 @@ class LumenIllustrationBehaviorElement extends LumenElement {
       this.removeAttribute('aria-label')
 
       this.removeAttribute('role')
-    }
-  }
-}
-
-class LumenDialogBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private lastTrigger: HTMLElement | undefined
-
-  override connectedCallback() {
-    super.connectedCallback()
-
-    if (!hasDocument()) return
-
-    this.abortController?.abort()
-
-    this.abortController = new AbortController()
-
-    this.#setupDialog(this.abortController.signal)
-  }
-
-  override disconnectedCallback() {
-    this.abortController?.abort()
-
-    this.abortController = undefined
-  }
-
-  show(trigger?: HTMLElement): void {
-    this.#openDialog(trigger)
-  }
-
-  close(): void {
-    this.#closeDialog()
-  }
-
-  get #isAlertDialog(): boolean {
-    return (
-      this.hasAttribute('data-ui-alert-dialog') ||
-      this.tagName.toLowerCase() === 'lumen-alert-dialog'
-    )
-  }
-
-  get #nativeDialog(): HTMLDialogElement | null {
-    const dialog = this.querySelector('dialog')
-
-    return dialog instanceof HTMLDialogElement ? dialog : null
-  }
-
-  get #dialogRoot(): HTMLElement {
-    return this.#nativeDialog ?? this
-  }
-
-  #setupDialog(signal: AbortSignal): void {
-    const dialog = this.#dialogRoot
-
-    const initiallyOpen =
-      this.hasAttribute('open') || this.#nativeDialog?.open === true
-
-    dialog.setAttribute('aria-modal', 'true')
-
-    dialog.setAttribute('role', this.#isAlertDialog ? 'alertdialog' : 'dialog')
-
-    if (!this.#nativeDialog) {
-      this.hidden = !initiallyOpen
-
-      this.dataset.state = initiallyOpen ? 'open' : 'closed'
-    }
-
-    this.#nativeDialog?.addEventListener(
-      'click', event => {
-        if (event.target === this.#nativeDialog && !this.#isAlertDialog) {
-          this.#closeDialog()
-        }
-      }, { signal }
-    )
-
-    this.#nativeDialog?.addEventListener(
-      'close', () => {
-        this.#returnFocus()
-      }, { signal }
-    )
-
-    this.addEventListener(
-      'click', event => {
-        const target = getOwnedTarget(event)
-
-        const closeButton =
-          target instanceof Element ?
-            target.closest(
-              '[data-ui-dialog-close], [data-ui-alert-dialog-close]'
-            ) :
-            null
-
-        const nativeButton = target instanceof Element ? target.closest('button') : null
-        const owner = closeButton?.closest('lumen-dialog, lumen-alert-dialog, lumen-drawer, lumen-sheet')
-
-        if (closeButton && owner === this && !event.defaultPrevented &&
-          !nativeButton?.disabled && closeButton.getAttribute('aria-disabled') !== 'true') {
-          this.#closeDialog()
-        }
-      }, { signal }
-    )
-
-    this.addEventListener(
-      'keydown', event => {
-        if (event.defaultPrevented || event.isComposing) return
-
-        if (event.key === 'Escape') {
-          event.preventDefault()
-
-          this.#closeDialog()
-
-          return
-        }
-
-        if (event.key !== 'Tab') return
-
-        this.#trapFocus(event)
-      }, { signal }
-    )
-
-    document.addEventListener(
-      'click', event => {
-        const target = getOwnedTarget(event)
-
-        const trigger =
-          target instanceof Element ?
-            target.closest<HTMLElement>(
-              '[data-ui-dialog-trigger], [data-ui-alert-dialog-trigger]'
-            ) :
-            null
-
-        const targetId =
-          trigger?.dataset.uiDialogTrigger ??
-          trigger?.dataset.uiAlertDialogTrigger
-
-        if (!trigger || targetId !== this.id) return
-
-        this.#openDialog(trigger)
-      }, { signal }
-    )
-
-    document.addEventListener(
-      'pointerdown', event => {
-        if (!this.#isOpen() || this.#isAlertDialog) return
-
-        const target = getOwnedTarget(event)
-
-        if (!target || this.contains(target)) return
-
-        this.#closeDialog()
-      }, { signal }
-    )
-  }
-
-  #isOpen(): boolean {
-    return (
-      this.#nativeDialog?.open === true ||
-      this.hasAttribute('open') ||
-      this.dataset.state === 'open'
-    )
-  }
-
-  #openDialog(trigger?: HTMLElement): void {
-    if (trigger) {
-      if (!trigger.id) {
-        trigger.id = createId('ui-trigger')
-      }
-
-      this.lastTrigger = trigger
-    }
-
-    const dialog = this.#nativeDialog
-
-    if (dialog) {
-      if (typeof dialog.showModal === 'function' && !dialog.open) {
-        dialog.showModal()
-      } else {
-        dialog.setAttribute('open', '')
-      }
-    } else {
-      this.hidden = false
-
-      this.setAttribute('open', '')
-
-      this.dataset.state = 'open'
-    }
-
-    getFocusable(this.#dialogRoot)[0]?.focus({ preventScroll: true })
-  }
-
-  #closeDialog(): void {
-    const dialog = this.#nativeDialog
-
-    if (dialog?.open) {
-      dialog.close()
-
-      return
-    }
-
-    if (!dialog) {
-      this.hidden = true
-
-      this.removeAttribute('open')
-
-      this.dataset.state = 'closed'
-
-      this.#returnFocus()
-    }
-  }
-
-  #returnFocus(): void {
-    this.lastTrigger?.focus({ preventScroll: true })
-  }
-
-  #trapFocus(event: KeyboardEvent): void {
-    const focusable = getFocusable(this.#dialogRoot)
-
-    if (!focusable.length) return
-
-    const first = focusable[0]
-    const last = focusable.at(-1)
-
-    if (!first || !last) return
-
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault()
-
-      last.focus()
-
-      return
-    }
-
-    if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault()
-
-      first.focus()
     }
   }
 }
@@ -10030,178 +9099,6 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
   }
 }
 
-class LumenAnchorBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private frame = 0
-
-  override connectedCallback() {
-    super.connectedCallback()
-
-    this.abortController?.abort()
-
-    this.abortController = new AbortController()
-
-    const links = [...this.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
-    const targets: { link: HTMLAnchorElement, target: HTMLElement }[] = []
-
-    for (const link of links) {
-      const id = decodeLumenAnchorFragment(link.getAttribute('href')?.slice(1) ?? '')
-      const target = id ? document.getElementById(id) : null
-
-      if (target) {
-        targets.push({ link, target })
-      }
-    }
-
-    if (!targets.length) return
-
-    const headings = targets.map(({ target }) => target)
-
-    const setActive = (active: HTMLAnchorElement) => {
-      for (const link of links) {
-        const isActive = link === active
-
-        link.dataset.active = String(isActive)
-
-        if (isActive) {
-          link.setAttribute('aria-current', 'location')
-        } else {
-          link.removeAttribute('aria-current')
-        }
-      }
-    }
-
-    const update = () => {
-      this.frame = 0
-
-      const offset = Number(
-        this.getAttribute('activation-offset') ?? this.dataset.uiAnchorOffset
-      )
-
-      const index = getLumenActiveAnchorIndex(headings, offset)
-      const active = targets[index]?.link
-
-      if (active) setActive(active)
-    }
-
-    const requestUpdate = () => {
-      if (this.frame) return
-
-      this.frame = requestAnimationFrame(update)
-    }
-
-    for (const { link } of targets) {
-      link.addEventListener('click', () => {
-        setActive(link)
-      }, {
-        signal: this.abortController.signal
-      })
-    }
-
-    window.addEventListener('resize', requestUpdate, {
-      passive: true,
-      signal: this.abortController.signal
-    })
-
-    window.addEventListener('scroll', requestUpdate, {
-      passive: true,
-      signal: this.abortController.signal
-    })
-
-    update()
-  }
-
-  override disconnectedCallback() {
-    this.abortController?.abort()
-
-    this.abortController = undefined
-
-    if (this.frame) cancelAnimationFrame(this.frame)
-
-    this.frame = 0
-  }
-}
-
-class LumenScrollProgressBehaviorElement extends LumenElement {
-  private abortController: AbortController | undefined
-  private frame = 0
-
-  private update = () => {
-    this.frame = 0
-
-    const scrollingElement =
-      document.scrollingElement ?? document.documentElement
-
-    const maximum =
-      scrollingElement.scrollHeight - scrollingElement.clientHeight
-
-    const percentage =
-      maximum > 0 ?
-        Math.min(
-          100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)
-        ) :
-        0
-
-    let bar = this.querySelector<HTMLElement>('.ui-scroll-progress__bar')
-
-    if (!bar) {
-      bar = document.createElement('span')
-
-      bar.className = 'ui-scroll-progress__bar'
-
-      this.append(bar)
-    }
-
-    this.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
-
-    bar.style.transform = `scaleX(${percentage / 100})`
-  }
-
-  private scheduleUpdate = () => {
-    if (this.frame) return
-
-    if (typeof requestAnimationFrame === 'undefined') {
-      this.update()
-
-      return
-    }
-
-    this.frame = requestAnimationFrame(this.update)
-  }
-
-  override connectedCallback() {
-    super.connectedCallback()
-
-    this.abortController?.abort()
-
-    this.abortController = new AbortController()
-
-    window.addEventListener('resize', this.scheduleUpdate, {
-      passive: true,
-      signal: this.abortController.signal
-    })
-
-    window.addEventListener('scroll', this.scheduleUpdate, {
-      passive: true,
-      signal: this.abortController.signal
-    })
-
-    this.update()
-  }
-
-  override disconnectedCallback() {
-    this.abortController?.abort()
-
-    this.abortController = undefined
-
-    if (this.frame && typeof cancelAnimationFrame !== 'undefined') {
-      cancelAnimationFrame(this.frame)
-    }
-
-    this.frame = 0
-  }
-}
-
 class LumenTourBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private opener: HTMLElement | null = null
@@ -12342,10 +11239,6 @@ const behaviorElementClasses: Partial<
   Tooltip: LumenTooltipBehaviorElement
 }
 
-export class LumenDialogElement extends LumenDialogBehaviorElement {
-  static override config = withObservedAttributes(elementConfigs.Dialog)
-}
-
 const granularElementClasses: Partial<
   Record<LumenComponentName, LumenElementConstructor>
 > = {
@@ -12368,6 +11261,19 @@ const granularElementClasses: Partial<
   CardTitle: GranularLumenCardTitleElement,
   Combobox: GranularLumenComboboxElement,
   Dialog: LumenDialogElement,
+  DialogBody: LumenDialogBodyElement,
+  DialogHeader: LumenDialogHeaderElement,
+  DialogFooter: LumenDialogFooterElement,
+  DialogTitle: LumenDialogTitleElement,
+  DialogClose: LumenDialogCloseElement,
+  Anchor: LumenAnchorElement,
+  ScrollProgress: LumenScrollProgressElement,
+  SearchField: LumenSearchFieldElement,
+  Collapsible: LumenCollapsibleElement,
+  Empty: LumenEmptyElement,
+  Kbd: LumenKbdElement,
+  Link: LumenLinkElement,
+  SkipLink: LumenSkipLinkElement,
   Container: GranularLumenContainerElement,
   Direction: GranularLumenDirectionElement,
   Grid: GranularLumenGridElement,
@@ -12555,7 +11461,7 @@ export const LumenCardTitleElement = elementClasses.CardTitle
 export const LumenCarouselElement = elementClasses.Carousel
 export const LumenChartElement = elementClasses.Chart
 export const LumenCheckboxElement = elementClasses.Checkbox
-export const LumenCollapsibleElement = elementClasses.Collapsible
+export { LumenCollapsibleElement } from './editorial-behaviors.js'
 export const LumenComboChartElement = elementClasses.ComboChart
 export const LumenCodeElement = elementClasses.Code
 export const LumenCodeTabsElement = elementClasses.CodeTabs
@@ -12567,15 +11473,15 @@ export const LumenContextMenuElement = elementClasses.ContextMenu
 export const LumenDataTableElement = elementClasses.DataTable
 export const LumenDatePickerElement = elementClasses.DatePicker
 export const LumenDateRangePickerElement = elementClasses.DateRangePicker
-export const LumenDialogHeaderElement = elementClasses.DialogHeader
-export const LumenDialogTitleElement = elementClasses.DialogTitle
-export const LumenDialogBodyElement = elementClasses.DialogBody
-export const LumenDialogFooterElement = elementClasses.DialogFooter
-export const LumenDialogCloseElement = elementClasses.DialogClose
+export { LumenDialogHeaderElement } from './editorial-behaviors.js'
+export { LumenDialogTitleElement } from './editorial-behaviors.js'
+export { LumenDialogBodyElement } from './editorial-behaviors.js'
+export { LumenDialogFooterElement } from './editorial-behaviors.js'
+export { LumenDialogCloseElement } from './editorial-behaviors.js'
 export const LumenDirectionElement = elementClasses.Direction
 export const LumenDrawerElement = elementClasses.Drawer
 export const LumenDropdownMenuElement = elementClasses.DropdownMenu
-export const LumenEmptyElement = elementClasses.Empty
+export { LumenEmptyElement } from './editorial-behaviors.js'
 export const LumenErrorStateElement = elementClasses.ErrorState
 export const LumenFieldElement = elementClasses.Field
 export const LumenHoverCardElement = elementClasses.HoverCard
@@ -12590,7 +11496,7 @@ export const LumenNumberFieldElement = elementClasses.NumberField
 export const LumenItemElement = elementClasses.Item
 export const LumenKanbanBoardElement = elementClasses.KanbanBoard
 export const LumenKanbanColumnElement = elementClasses.KanbanColumn
-export const LumenKbdElement = elementClasses.Kbd
+export { LumenKbdElement } from './editorial-behaviors.js'
 export const LumenLabelElement = elementClasses.Label
 export const LumenLineChartElement = elementClasses.LineChart
 export const LumenMarkerElement = elementClasses.Marker
@@ -12609,10 +11515,10 @@ export const LumenRadioGroupElement = elementClasses.RadioGroup
 export const LumenResizableElement = elementClasses.Resizable
 export const LumenRichTextEditorElement = elementClasses.RichTextEditor
 export const LumenScrollAreaElement = elementClasses.ScrollArea
-export const LumenScrollProgressElement = elementClasses.ScrollProgress
+export { LumenScrollProgressElement } from './editorial-behaviors.js'
 export const LumenScatterChartElement = LumenScatterChartRegisteredElement
 export const LumenScheduleElement = elementClasses.Schedule
-export const LumenSearchFieldElement = elementClasses.SearchField
+export { LumenSearchFieldElement } from './editorial-behaviors.js'
 export const LumenSelectElement = elementClasses.Select
 export const LumenSeparatorElement = elementClasses.Separator
 export const LumenSheetElement = elementClasses.Sheet
@@ -12678,15 +11584,15 @@ export const LumenFloatingBadgeElement = elementClasses.FloatingBadge
 export const LumenFormattedDateElement = elementClasses.FormattedDate
 export const LumenImageElement = elementClasses.Image
 export const LumenImageComparisonElement = elementClasses.ImageComparison
-export const LumenLinkElement = elementClasses.Link
+export { LumenLinkElement } from './editorial-behaviors.js'
 export const LumenPillElement = elementClasses.Pill
 export const LumenProseElement = elementClasses.Prose
-export const LumenSkipLinkElement = elementClasses.SkipLink
+export { LumenSkipLinkElement } from './editorial-behaviors.js'
 export const LumenThemeToggleElement = elementClasses.ThemeToggle
 export const LumenStepperElement = elementClasses.Stepper
 export const LumenFileUploadElement = elementClasses.FileUpload
 export const LumenTourElement = elementClasses.Tour
-export const LumenAnchorElement = elementClasses.Anchor
+export { LumenAnchorElement } from './editorial-behaviors.js'
 export const LumenSegmentedElement = elementClasses.Segmented
 export const LumenToolbarElement = elementClasses.Toolbar
 export const LumenDescriptionsElement = elementClasses.Descriptions

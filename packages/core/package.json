@@ -114,7 +114,11 @@
     "./styles/motion.css": "./styles/motion.css",
     "./styles/world-map.css": "./styles/world-map.css",
     "./layers.css": "./styles/layers.css",
-    "./tailwind.css": "./styles/tailwind.css"
+    "./tailwind.css": "./styles/tailwind.css",
+    "./anchor": {
+      "types": "./dist/anchor.d.ts",
+      "import": "./dist/anchor.js"
+    }
   },
   "files": [
     "dist",

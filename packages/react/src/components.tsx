@@ -8,7 +8,6 @@ import type {
   ElementType,
   HTMLAttributes,
   KeyboardEvent,
-  MouseEvent as ReactMouseEvent,
   ReactNode,
   Ref,
   RefObject
@@ -46,11 +45,9 @@ import {
   createLumenRangeGeometry,
   createLumenScatterGeometry,
   createLumenScatterReferences,
-  decodeLumenAnchorFragment,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
   formatLumenPhoneNumber,
-  getLumenActiveAnchorIndex,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
@@ -110,6 +107,7 @@ import { ChartInspection } from './chart-inspection.js'
 import { ChartInteraction, type ChartInteractionProps } from './chart-interaction.js'
 import { getChartPlotLabel } from './chart-label.js'
 import { createReactChartDatumAction, formatReactChartTableValue, type ReactChartDatumAction, readReactChartDatumActivation } from './chart-recipes.js'
+import { Button, type ButtonChildProps, type ButtonProps, type LumenGlassProp } from './editorial-controls.js'
 import { useFloatingPanel } from './floating-panel.js'
 import {
   type DialogOptions,
@@ -142,6 +140,7 @@ import {
   resolveReactPhoneInputCountry,
   resolveReactPhoneInputValue
 } from './phone-recipes.js'
+import { composeHandlers, glassClass, glassSurfaceClass, resolveSurface, type SurfaceProps } from './primitive-surface.js'
 import {
   Input,
   type InputProps,
@@ -149,6 +148,9 @@ import {
 } from './server-components.js'
 import { useCopyFeedback } from './use-copy-feedback.js'
 
+export { Dialog, DialogBody, type DialogBodyProps, DialogClose, type DialogCloseProps, DialogFooter, type DialogFooterProps, DialogHeader, type DialogHeaderProps, type DialogProps, DialogTitle, type DialogTitleProps } from './dialog.js'
+export { Button, type ButtonProps, Collapsible, type CollapsibleProps, Empty, type EmptyProps, Kbd, type KbdProps, Link, type LinkProps, type LumenGlassProp, SearchField, type SearchFieldProps, SkipLink, type SkipLinkProps } from './editorial-controls.js'
+export { Anchor, type AnchorLink, type AnchorProps, ScrollProgress, type ScrollProgressProps } from './reading-navigation.js'
 export {
   Badge,
   type BadgeProps,
@@ -196,11 +198,6 @@ type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
 type AccordionVariant = 'default' | 'flush'
 
-type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
-
-type ButtonVariant =
-  'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
-
 type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 
 type CodeVariant = 'block' | 'inline'
@@ -215,10 +212,6 @@ type MarkerVariant = 'danger' | 'default' | 'success' | 'warning'
 
 type Orientation = 'horizontal' | 'vertical'
 
-type SurfaceVariant = 'default' | 'glass'
-
-type EventHandler<Event> = (event: Event) => void
-
 const setRefValue = <Value,>(
   ref: Ref<Value> | undefined,
   value: Value | null
@@ -228,13 +221,6 @@ const setRefValue = <Value,>(
   } else if (ref) {
     ref.current = value
   }
-}
-
-export type LumenGlassProp = boolean | 'subtle' | 'strong'
-
-interface SurfaceProps {
-  'data-surface'?: SurfaceVariant
-  glass?: LumenGlassProp
 }
 
 export interface Option {
@@ -272,21 +258,6 @@ const renderLucideIcon = (name: string, className: string) => {
   return icon ? renderIconSvg(icon, className) : null
 }
 
-const resolveSurface = (glass?: LumenGlassProp): SurfaceVariant => glass ? 'glass' : 'default'
-
-const glassIntensityClass = (glass?: LumenGlassProp) => glass === 'subtle' ?
-  'ui-glass-subtle' :
-  glass === 'strong' && 'ui-glass-strong'
-
-const glassSurfaceClass = (
-  base: string,
-  glass?: LumenGlassProp
-) => resolveSurface(glass) === 'glass' &&
-  composeClassName(`${base}--glass`, glassIntensityClass(glass))
-
-const glassClass = (base: string, glass?: LumenGlassProp) => Boolean(glass) &&
-  composeClassName(`${base}--glass`, glassIntensityClass(glass))
-
 const normalizeOption = (option: SelectOption): Option => typeof option === 'string' ? { label: option, value: option } : option
 
 const toInputValue = (
@@ -296,16 +267,6 @@ const toInputValue = (
 
   return String(value)
 }
-
-const composeHandlers =
-  <Event,>(
-    userHandler: EventHandler<Event> | undefined,
-    lumenHandler: EventHandler<Event> | undefined
-  ) => (event: Event) => {
-    userHandler?.(event)
-
-    lumenHandler?.(event)
-  }
 
 type PrimitiveProps = ComponentPropsWithoutRef<'div'> & {
   [key: string]: unknown
@@ -548,98 +509,6 @@ export const Bubble = ({
     {...props}
   />
 )
-
-export interface ButtonProps extends ComponentPropsWithRef<'button'> {
-  asChild?: boolean
-  loading?: boolean
-  size?: ButtonSize
-  variant?: ButtonVariant
-}
-
-interface ButtonChildProps extends HTMLAttributes<HTMLElement> {
-  'data-slot'?: string
-  ref?: Ref<HTMLElement> | undefined
-}
-
-/* eslint-disable complexity -- The compatibility path resolves native, slotted, loading, size, and disabled states in one public component. */
-export const Button = ({
-  asChild = false,
-  children,
-  className,
-  disabled,
-  loading = false,
-  ref,
-  size = 'default',
-  type = 'button',
-  variant = 'default',
-  ...props
-}: ButtonProps) => {
-  const isDisabled = disabled === true || loading
-
-  const buttonClassName = composeClassName(
-    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, isDisabled && 'ui-button--disabled', loading && 'ui-button--loading', className
-  )
-
-  if (asChild) {
-    const child = children
-
-    if (!isValidElement<ButtonChildProps>(child)) {
-      throw new TypeError(
-        'Button with asChild requires exactly one React element child.'
-      )
-    }
-
-    const ChildComponent = child.type
-
-    return (
-      <ChildComponent
-        {...child.props}
-        {...props}
-        aria-busy={loading ? true : undefined}
-        aria-disabled={isDisabled ? true : undefined}
-        className={composeClassName(buttonClassName, child.props.className)}
-        data-slot="button"
-        onClickCapture={isDisabled ?
-          (event: ReactMouseEvent<HTMLElement>) => {
-            event.preventDefault()
-
-            event.stopPropagation()
-          } :
-          props.onClickCapture ?? child.props.onClickCapture}
-        onKeyDownCapture={isDisabled ?
-          (event: KeyboardEvent<HTMLElement>) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault()
-
-              event.stopPropagation()
-            }
-          } :
-          props.onKeyDownCapture ?? child.props.onKeyDownCapture}
-        ref={ref as Ref<HTMLElement>}
-        tabIndex={isDisabled ? -1 : props.tabIndex ?? child.props.tabIndex}
-      >
-        {loading && <span aria-hidden="true" className="ui-spinner" />}
-        <span className="ui-button__content">{child.props.children}</span>
-      </ChildComponent>
-    )
-  }
-
-  return (
-    <button
-      aria-busy={loading || undefined}
-      className={buttonClassName}
-      data-slot="button"
-      disabled={isDisabled}
-      ref={ref}
-      type={type}
-      {...props}
-    >
-      {loading && <span aria-hidden="true" className="ui-spinner" />}
-      <span className="ui-button__content">{children}</span>
-    </button>
-  )
-}
-/* eslint-enable complexity */
 
 export type ButtonGroupProps = ComponentPropsWithoutRef<'div'>
 export const ButtonGroup = ({ className, ...props }: ButtonGroupProps) => (
@@ -2292,15 +2161,6 @@ export const CheckboxGroup = ({
   </fieldset>
 )
 
-export type CollapsibleProps = ComponentPropsWithoutRef<'details'>
-export const Collapsible = ({ className, ...props }: CollapsibleProps) => (
-  <details
-    className={composeClassName('ui-collapsible', className)}
-    data-ui-collapsible
-    {...props}
-  />
-)
-
 export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
   codeLabel?: string
   copyLabel?: string
@@ -3114,92 +2974,6 @@ export const DateRangePicker = ({
   )
 }
 
-export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &
-  SurfaceProps &
-  Omit<DialogOptions, 'id'> & {
-    layout?: 'centered' | 'fullscreen'
-  }
-
-const DialogCloseContext = createContext<(() => void) | null>(null)
-
-export type DialogHeaderProps = ComponentPropsWithRef<'header'>
-export const DialogHeader = ({ className, ...props }: DialogHeaderProps) => (
-  <header {...props} className={composeClassName('ui-dialog-header', className)} data-slot="dialog-header" />
-)
-
-export type DialogTitleProps = ComponentPropsWithRef<'h2'> & { as?: 'h2' | 'h3' | 'h4' }
-export const DialogTitle = ({ as: Tag = 'h2', className, ...props }: DialogTitleProps) => (
-  <Tag {...props} className={composeClassName('ui-dialog-title', className)} data-slot="dialog-title" />
-)
-
-export type DialogBodyProps = ComponentPropsWithRef<'div'>
-export const DialogBody = ({ className, ...props }: DialogBodyProps) => (
-  <div {...props} className={composeClassName('ui-dialog-body', className)} data-slot="dialog-body" />
-)
-
-export type DialogFooterProps = ComponentPropsWithRef<'footer'>
-export const DialogFooter = ({ className, ...props }: DialogFooterProps) => (
-  <footer {...props} className={composeClassName('ui-dialog-footer', className)} data-slot="dialog-footer" />
-)
-
-export type DialogCloseProps = ButtonProps
-export const DialogClose = ({ className, onClick, ...props }: DialogCloseProps) => {
-  const close = use(DialogCloseContext)
-
-  return (
-    <Button
-      {...props}
-      className={composeClassName('ui-dialog-close', className)}
-      data-slot="dialog-close"
-      onClick={event => {
-        onClick?.(event)
-
-        if (event.defaultPrevented) return
-
-        if (close) close()
-        else event.currentTarget.closest('dialog')?.close()
-      }}
-    />
-  )
-}
-
-export const Dialog = ({
-  children,
-  className,
-  defaultOpen,
-  dismissOnEscape,
-  dismissOnOutsidePress,
-  glass = false,
-  layout = 'centered',
-  onCancel,
-  onClick,
-  onClose,
-  onOpenChange,
-  onPointerDown,
-  open,
-  ...props
-}: DialogProps) => {
-  const dialog = useDialog({ defaultOpen, dismissOnEscape, dismissOnOutsidePress, onOpenChange, open })
-
-  return (
-    <dialog
-      {...dialog.dialogProps}
-      {...props}
-      className={composeClassName(
-        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', glass), className
-      )}
-      data-layout={layout}
-      data-surface={resolveSurface(glass)}
-      onCancel={composeHandlers(onCancel, dialog.dialogProps.onCancel)}
-      onPointerDown={composeHandlers(onPointerDown, dialog.dialogProps.onPointerDown)}
-      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
-      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
-    >
-      <DialogCloseContext value={dialog.close}>{children}</DialogCloseContext>
-    </dialog>
-  )
-}
-
 export interface DrawerProps
   extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
 
@@ -3340,28 +3114,6 @@ export const DropdownMenuSeparator = ({
   <div
     className={composeClassName('ui-menu__separator', className)}
     role={props.role ?? 'separator'}
-    {...props}
-  />
-)
-
-export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: LumenGlassProp
-  variant?: 'compact' | 'default'
-}
-export const Empty = ({
-  className,
-  glass = false,
-  variant = 'default',
-  ...props
-}: EmptyProps) => (
-  <section
-    className={composeClassName(
-      'ui-empty',
-      variant === 'compact' && 'ui-empty--compact',
-      glassClass('ui-empty', glass),
-      className
-    )}
-    data-variant={variant}
     {...props}
   />
 )
@@ -4098,11 +3850,6 @@ export const Item = ({ as = 'div', className, glass = false, ...props }: ItemPro
   'data-slot': 'item',
   ...props
 })
-
-export type KbdProps = ComponentPropsWithoutRef<'kbd'>
-export const Kbd = ({ className, ...props }: KbdProps) => (
-  <kbd className={composeClassName('ui-kbd', className)} {...props} />
-)
 
 export interface MarkerProps extends ComponentPropsWithoutRef<'span'> {
   variant?: MarkerVariant
@@ -5033,88 +4780,6 @@ export const ScrollArea = ({
   />
 )
 
-export interface ScrollProgressProps extends ComponentPropsWithoutRef<'div'> {
-  position?: 'bottom' | 'top'
-}
-export const ScrollProgress = ({
-  'aria-label': ariaLabel = 'Reading progress',
-  className,
-  position = 'top',
-  ...props
-}: ScrollProgressProps) => {
-  const rootRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const root = rootRef.current
-
-    if (!root) return
-
-    let frame = 0
-
-    const update = () => {
-      frame = 0
-
-      const scrollingElement =
-        document.scrollingElement ?? document.documentElement
-
-      const maximum =
-        scrollingElement.scrollHeight - scrollingElement.clientHeight
-
-      const percentage =
-        maximum > 0 ?
-          Math.min(
-            100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)
-          ) :
-          0
-
-      const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
-
-      root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
-
-      if (bar) bar.style.transform = `scaleX(${percentage / 100})`
-    }
-
-    const scheduleUpdate = () => {
-      if (frame) return
-
-      frame = window.requestAnimationFrame(update)
-    }
-
-    scheduleUpdate()
-
-    window.addEventListener('resize', scheduleUpdate, { passive: true })
-
-    window.addEventListener('scroll', scheduleUpdate, { passive: true })
-
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame)
-
-      window.removeEventListener('resize', scheduleUpdate)
-
-      window.removeEventListener('scroll', scheduleUpdate)
-    }
-  }, [])
-
-  return (
-    <div
-      aria-label={ariaLabel}
-      aria-valuemax={100}
-      aria-valuemin={0}
-      aria-valuenow={0}
-      className={composeClassName(
-        'ui-scroll-progress', position === 'bottom' && 'ui-scroll-progress--bottom', className
-      )}
-      data-position={position}
-      data-ui-scroll-progress
-      ref={rootRef}
-      role="progressbar"
-      {...props}
-    >
-      <span className="ui-scroll-progress__bar" />
-    </div>
-  )
-}
-
 export interface ScheduleProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
 }
@@ -5128,21 +4793,6 @@ export const Schedule = ({
       'ui-schedule', glassClass('ui-schedule', glass), className
     )}
     data-ui-schedule
-    {...props}
-  />
-)
-
-export type SearchFieldProps = ComponentPropsWithRef<'input'>
-export const SearchField = ({
-  className,
-  ref,
-  type = 'search',
-  ...props
-}: SearchFieldProps) => (
-  <input
-    className={composeClassName('ui-input ui-search-field', className)}
-    ref={ref}
-    type={type}
     {...props}
   />
 )
@@ -6570,38 +6220,6 @@ export const Image = <T extends ElementType = 'img'>({
   })
 }
 
-export type LinkProps = ComponentPropsWithRef<'a'> & {
-  newTab?: boolean
-  variant?: 'default' | 'inherit'
-}
-export const Link = ({
-  className,
-  newTab = false,
-  ref,
-  rel,
-  target,
-  variant = 'default',
-  ...props
-}: LinkProps) => (
-  <a
-    className={composeClassName(
-      'ui-link', variant === 'inherit' && 'ui-link--inherit', className
-    )}
-    data-slot="link"
-    data-variant={variant}
-    ref={ref}
-    rel={
-      newTab ?
-        [
-          ...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))
-        ].join(' ') :
-        rel
-    }
-    target={newTab ? '_blank' : target}
-    {...props}
-  />
-)
-
 export type PillProps = ComponentPropsWithoutRef<'span'> & {
   count?: number | string
   href?: string
@@ -6651,11 +6269,6 @@ export const Pill = ({
 export type ProseProps = ComponentPropsWithoutRef<'div'>
 export const Prose = ({ className, ...props }: ProseProps) => (
   <div className={composeClassName('ui-prose', className)} {...props} />
-)
-
-export type SkipLinkProps = ComponentPropsWithoutRef<'a'>
-export const SkipLink = ({ className, ...props }: SkipLinkProps) => (
-  <a className={composeClassName('ui-skip-link', className)} {...props} />
 )
 
 export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>
@@ -7748,150 +7361,6 @@ export const Tour = ({
     </div>
   </div>
 )
-
-export interface AnchorLink {
-  description?: ReactNode
-  depth?: 1 | 2 | 3 | 4 | 5 | 6
-  href: string
-  index?: ReactNode
-  label: ReactNode
-}
-export interface AnchorProps extends ComponentPropsWithoutRef<'nav'> {
-  activationOffset?: number
-  items?: AnchorLink[]
-}
-
-const emptyAnchorLinks: AnchorLink[] = []
-
-const createAnchorRef = () => {
-  let cleanup: (() => void) | undefined
-
-  return (root: HTMLElement | null) => {
-    cleanup?.()
-
-    cleanup = undefined
-
-    if (!root) return
-
-    const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
-
-    const targets = links.flatMap(link => {
-      const id = decodeLumenAnchorFragment(link.getAttribute('href')?.slice(1) ?? '')
-      const target = id ? document.getElementById(id) : null
-
-      return target ? [{ link, target }] : []
-    })
-
-    if (!targets.length) return
-
-    const headings = targets.map(({ target }) => target)
-    const abortController = new AbortController()
-    let frame = 0
-
-    const setActive = (active: HTMLAnchorElement) => {
-      for (const link of links) {
-        const isActive = link === active
-
-        link.dataset.active = String(isActive)
-
-        if (isActive) {
-          link.setAttribute('aria-current', 'location')
-        } else {
-          link.removeAttribute('aria-current')
-        }
-      }
-    }
-
-    const update = () => {
-      frame = 0
-
-      const index = getLumenActiveAnchorIndex(headings, Number(root.dataset.uiAnchorOffset))
-      const active = targets[index]?.link
-
-      if (active) setActive(active)
-    }
-
-    const requestUpdate = () => {
-      if (frame) return
-
-      frame = requestAnimationFrame(update)
-    }
-
-    for (const { link } of targets) {
-      link.addEventListener('click', () => {
-        setActive(link)
-      }, {
-        signal: abortController.signal
-      })
-    }
-
-    window.addEventListener('resize', requestUpdate, {
-      passive: true,
-      signal: abortController.signal
-    })
-
-    window.addEventListener('scroll', requestUpdate, {
-      passive: true,
-      signal: abortController.signal
-    })
-
-    update()
-
-    cleanup = () => {
-      abortController.abort()
-
-      if (frame) cancelAnimationFrame(frame)
-    }
-  }
-}
-
-export const Anchor = ({
-  'aria-label': ariaLabel = 'On this page',
-  activationOffset = 96,
-  children,
-  className,
-  items = emptyAnchorLinks,
-  ...props
-}: AnchorProps) => {
-  const anchorRef = createAnchorRef()
-
-  return (
-    <nav
-      aria-label={ariaLabel}
-      className={composeClassName('ui-anchor', className)}
-      data-ui-anchor
-      data-ui-anchor-offset={Math.max(0, activationOffset)}
-      ref={anchorRef}
-      {...props}
-    >
-      {items.length > 0 && (
-        <ol>
-          {items.map((item, index) => (
-            <li key={item.href}>
-              <a
-                aria-current={index === 0 ? 'location' : undefined}
-                data-active={index === 0 ? 'true' : 'false'}
-                data-depth={item.depth}
-                href={item.href}
-              >
-                {item.index !== undefined && (
-                  <span className="ui-anchor__index">{item.index}</span>
-                )}
-                <span className="ui-anchor__content">
-                  <span className="ui-anchor__label">{item.label}</span>
-                  {item.description && (
-                    <span className="ui-anchor__description">{item.description}</span>
-                  )}
-                </span>
-              </a>
-            </li>
-          ))}
-        </ol>
-      )}
-      {children}
-    </nav>
-  )
-}
 
 export interface SegmentedProps extends Omit<
   ComponentPropsWithoutRef<'div'>,

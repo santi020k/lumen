@@ -92,3 +92,24 @@ export const getLumenActiveAnchorIndex = (
 
   return active
 }
+
+/** Returns document or content-scoped reading progress as a ratio between zero and one. */
+export const getLumenScrollProgress = (scroller: Element, target: HTMLElement | null = null): number => {
+  const clamp = (ratio: number) => Math.min(1, Math.max(0, ratio))
+  const height = scroller.clientHeight
+
+  if (!target) return clamp(scroller.scrollTop / Math.max(1, scroller.scrollHeight - height))
+
+  const rect = target.getBoundingClientRect()
+
+  if (!rect.height) return 0
+
+  if (rect.bottom <= height) return 1
+
+  const padding = scroller.ownerDocument.defaultView?.getComputedStyle(scroller).scrollPaddingTop ?? ''
+  let start = Number.parseFloat(padding) || 0
+
+  if (padding.endsWith('%')) start *= height / 100
+
+  return clamp((start - rect.top) / Math.max(1, rect.height - height + start))
+}

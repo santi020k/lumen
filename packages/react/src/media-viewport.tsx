@@ -18,7 +18,7 @@ import {
 } from '@santi020k/lumen-core/media-workspace'
 import { composeClassName } from '@santi020k/lumen-core/tokens'
 
-import { Button } from './components.js'
+import { Button } from './editorial-controls.js'
 
 export interface MediaViewportProps extends Omit<ComponentPropsWithoutRef<'figure'>, 'defaultValue'> {
   defaultValue?: Partial<LumenMediaViewportValue>

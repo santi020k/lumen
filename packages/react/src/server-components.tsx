@@ -19,6 +19,8 @@ import {
   resolveLumenSkeletonSize
 } from '@santi020k/lumen-core'
 
+export { Label, type LabelProps } from './label.js'
+
 export type LumenGlassProp = boolean | 'strong' | 'subtle'
 
 export type LumenPrimitiveProps<T extends ElementType = 'div'> = {
@@ -260,12 +262,6 @@ export const Input = ({
     type={type}
     {...props}
   />
-)
-
-export type LabelProps = ComponentPropsWithRef<'label'>
-
-export const Label = ({ className, ...props }: LabelProps) => (
-  <label className={composeClassName('ui-label', className)} {...props} />
 )
 
 type Orientation = 'horizontal' | 'vertical'

@@ -406,3 +406,7 @@ export const defineLumenFoundations = (
     defineLumenElement(definition.config, definition.element, registry)
   }
 }
+
+export const defineLumenLabel = (registry?: LumenCustomElementRegistry): void => {
+  defineLumenElement(label.config, label.element, registry)
+}
