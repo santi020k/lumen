@@ -1126,8 +1126,10 @@ behaviorTest(['ScrollReveal'], 'ScrollReveal becomes visible when reduced motion
 
   const reveal = page.locator('.component-doc-preview [data-ui-scroll-reveal]')
 
-  await expect(reveal).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
+  await expect(reveal).not.toHaveAttribute('data-ui-scroll-reveal-bound')
   await expect(reveal).toHaveClass(/is-revealed/)
+  await expect(reveal).toBeVisible()
+  await expect(reveal).toHaveCSS('opacity', '1')
 })
 
 behaviorTest(['Toolbar'], 'Toolbar provides roving keyboard focus to its controls', async ({ page }) => {
@@ -1274,7 +1276,10 @@ behaviorTest(['RevealGroup'], 'RevealGroup reveals all children immediately with
   const group = page.locator('.component-doc-preview [data-ui-reveal-group]')
 
   await expect(group).toHaveJSProperty('tagName', 'UL')
-  await expect(group).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
+  await expect(group).not.toHaveAttribute('data-ui-scroll-reveal-bound')
+  await expect(group).toBeVisible()
+  await expect(group.locator(':scope > *').nth(2)).toBeVisible()
+  await expect(group.locator(':scope > *').nth(2)).toHaveCSS('opacity', '1')
   await expect(group).toHaveClass(/is-revealed/)
   await expect(group.locator(':scope > *').nth(2)).toHaveCSS('--ui-reveal-index', '2')
 })
@@ -1472,8 +1477,8 @@ test('enhanced forms retain validation when adopted and reinitialized in another
   await page.goto('/internal/interaction-regressions')
   await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
   await page.getByRole('button', { name: 'Submit external field' }).click()
-  const result = await page.evaluate(() => {
-    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+  const result = await page.evaluate(async () => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
     const form = document.querySelector<HTMLFormElement>('#external-form')
     const control = document.querySelector<HTMLInputElement>('#external-field')
     const field = control?.closest<HTMLElement>('[data-ui-field], .ui-field')
@@ -1488,8 +1493,8 @@ test('enhanced forms retain validation when adopted and reinitialized in another
     const destination = frame.contentDocument
     if (!destination) throw new Error('Missing adoption document')
     destination.body.append(destination.adoptNode(form), destination.adoptNode(field))
-    init(destination)
-    init(destination)
+    await init(destination)
+    await init(destination)
     control.value = 'Corrected'
     control.focus()
     control.blur()
@@ -1499,7 +1504,7 @@ test('enhanced forms retain validation when adopted and reinitialized in another
     control.blur()
     const rejected = control.getAttribute('aria-invalid') === 'true' && !error.hidden
     document.body.append(document.adoptNode(form), document.adoptNode(field))
-    init(document)
+    await init(document)
     control.value = 'Returned'
     control.focus()
     control.blur()
@@ -1512,8 +1517,8 @@ test('enhanced forms retain validation when adopted and reinitialized in another
 test('iframe-origin enhanced forms validate after adoption into the host document', async ({ page }) => {
   await page.goto('/internal/interaction-regressions')
   await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
-  const result = await page.evaluate(() => {
-    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+  const result = await page.evaluate(async () => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
     const createFixture = () => {
       const sourceForm = document.querySelector<HTMLFormElement>('#external-form')
       const sourceField = document.querySelector<HTMLInputElement>('#external-field')?.closest<HTMLElement>('[data-ui-field], .ui-field')
@@ -1535,10 +1540,10 @@ test('iframe-origin enhanced forms validate after adoption into the host documen
     const { source, form, control, field, error } = createFixture()
     if (!init) throw new Error('Missing form initializer')
     delete form.dataset.uiFormBound
-    init(source)
+    await init(source)
     document.body.append(document.adoptNode(form), document.adoptNode(field))
-    init(document)
-    init(document)
+    await init(document)
+    await init(document)
     let invalid = 0
     let valid = 0
     form.addEventListener('ui:invalid', () => { invalid += 1 })
