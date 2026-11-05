@@ -72,6 +72,7 @@
     "typescript": "catalog:"
   },
   "devDependencies": {
+    "@playwright/test": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/semver": "catalog:",

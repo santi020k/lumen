@@ -332,6 +332,9 @@ jobs:
       - name: Check product workflow recipes
         if: needs.classify.outputs.browser == 'true'
         run: pnpm run test:product-workflows --shard=${{ matrix.shard }}/2 --max-failures=1
+      - name: Verify explicit rendered audits
+        if: needs.classify.outputs.browser == 'true'
+        run: pnpm run test:rendered-audit --shard=${{ matrix.shard }}/2 --max-failures=1
       - name: Verify release-candidate framework behavior
         if: matrix.shard == 1
         env:

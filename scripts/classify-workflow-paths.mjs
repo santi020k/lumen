@@ -91,7 +91,7 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^\.github\/actions\/setup-playwright\//u,
     /^apps\/(docs|figma-plugin|motion|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates)\//u,
-    /^tests\/(a11y|editorial|product-workflows|figma|motion|visual)\//u,
+    /^tests\/(a11y|editorial|product-workflows|rendered-audit|figma|motion|visual)\//u,
     /^tests\/fixtures\/(editorial|product-workflows)\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,
     /^\.github\/workflows\/ci\.yml$/u,
@@ -235,7 +235,7 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^\.github\/actions\/setup-playwright\//u,
     /^apps\/(docs|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates|tokens)\//u,
-    /^tests\/(a11y|editorial|product-workflows|motion|visual)\//u,
+    /^tests\/(a11y|editorial|product-workflows|rendered-audit|motion|visual)\//u,
     /^tests\/fixtures\/(editorial|product-workflows)\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,
     sharedConfiguration

@@ -262,6 +262,7 @@ const help = [
   '  lumen install          Print install commands',
   '  lumen audit-tokens     Report incompatible semantic color custom properties',
   '  lumen audit-theme <json>  Check named semantic palettes and text contrast',
+  '  lumen audit-rendered <url>  Audit an explicit local route with the project Playwright tool',
   '  lumen audit-consumer   Review versions, local patches and Lumen CSS overrides',
   '  lumen doctor           Inspect styles, adapters, runtime mounts, and selector usage',
   '  lumen doctor-native    Inspect native versions, package pins, and theme placement',
@@ -293,6 +294,17 @@ const help = [
 
 // eslint-disable-next-line complexity -- Command dispatch keeps CLI exit behavior and output in one place.
 const run = async () => {
+  if (command === 'audit-rendered') {
+    const { runRenderedAuditCommand } = await import('./rendered-audit.js')
+    const result = await runRenderedAuditCommand(args.slice(1), cwd ?? process.cwd())
+
+    process.exitCode = result.exitCode
+
+    process.stdout.write(result.output + '\n')
+
+    return
+  }
+
   let output = help
 
   const registry = registrySource ?

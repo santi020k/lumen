@@ -305,6 +305,13 @@ SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction do
 separate documented JSX/Astro spacing migration. The JSON report includes installed package
 versions and explicit SDK dependency-review findings.
 
+## Rendered route audit
+
+Use `lumen audit-rendered <local-url> --cwd <project> --json` for explicit loopback layout,
+console, and asset-request inspection through the target project's existing Playwright tool.
+Supply exact asset expectations to classify known Lumen files. See the
+[rendered audit guide](../../docs/rendered-audit.md) for setup, redirect policy, and exit codes.
+
 ## Product workflow recipes
 
 Install the CLI separately from the Astro runtime adapter, then use

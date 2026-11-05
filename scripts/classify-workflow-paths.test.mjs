@@ -140,6 +140,18 @@ test('product workflow consumer regressions select browser coverage', () => {
   }
 })
 
+test('rendered audit regressions select browser coverage without native jobs', () => {
+  for (const path of ['tests/rendered-audit/audit.spec.ts', 'playwright.rendered-audit.config.ts']) {
+    assert.equal(classifyCiPaths([path]).playwright, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).browser, true, path)
+
+    assert.equal(classifyCiPaths([path]).apple, false, path)
+
+    assert.equal(classifyCiPaths([path]).android, false, path)
+  }
+})
+
 test('a web package change skips every native platform job', () => {
   const classification = classifyCiPaths(['packages/react/src/Button.tsx'])
 

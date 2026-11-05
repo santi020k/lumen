@@ -160,6 +160,7 @@
     "pre-commit": "lint-staged",
     "pre-push": "pnpm run check:affected",
     "commit": "commitprompt",
+    "test:rendered-audit": "pnpm --filter @santi020k/lumen... run build && playwright test -c playwright.rendered-audit.config.ts",
     "test:product-workflows": "pnpm --filter @santi020k/lumen-astro... --filter @santi020k/lumen... run build && node packages/lumen/scripts/prepare-product-workflow-consumer.mjs && playwright test -c playwright.product-workflows.config.ts",
     "test:editorial": "pnpm --filter @santi020k/lumen --filter @santi020k/lumen-astro... run build && node packages/lumen/scripts/prepare-editorial-consumer.mjs && playwright test -c playwright.editorial.config.ts",
     "test:a11y": "playwright test -c playwright.a11y.config.ts",
