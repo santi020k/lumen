@@ -187,6 +187,14 @@ export class LumenWorldMapElement extends LumenElement {
     }
   }
 
+  private createPart<K extends keyof HTMLElementTagNameMap>(tag: K, name: string): HTMLElementTagNameMap[K] {
+    const node = this.ownerDocument.createElement(tag)
+
+    node.className = `ui-world-map__${name}`
+
+    return node
+  }
+
   private render(): void {
     if (!this.isConnected) return
 
@@ -196,13 +204,13 @@ export class LumenWorldMapElement extends LumenElement {
 
     this.dataset.slot = 'world-map'
 
-    this.dataset.animated = String(this.getAttribute('animated') !== 'false')
-
-    this.dataset.interactive = String(this.getAttribute('interactive') !== 'false')
+    ;['animated', 'interactive'].forEach(name => {
+      this.dataset[name] = String(this.getAttribute(name) !== 'false')
+    })
 
     this.dataset.variant = this.getAttribute('variant') === 'solid' ? 'solid' : 'dotted'
 
-    const frame = this.ownerDocument.createElement('div')
+    const frame = this.createPart('div', 'frame')
 
     const plot = svgNode(this.ownerDocument, 'svg', {
       'aria-label': this.getAttribute('label') || 'World map', class: 'ui-world-map__plot', role: 'img', viewBox: '0 0 1000 400'
@@ -210,13 +218,9 @@ export class LumenWorldMapElement extends LumenElement {
 
     const group = svgNode(this.ownerDocument, 'g', { 'aria-hidden': 'true', class: 'ui-world-map__countries' })
 
-    frame.className = 'ui-world-map__frame'
-
     frame.dataset.slot = 'world-map-frame'
 
-    const viewport = this.ownerDocument.createElement('div')
-
-    viewport.className = 'ui-world-map__viewport'
+    const viewport = this.createPart('div', 'viewport')
 
     viewport.dataset.uiWorldMapViewport = ''
 
@@ -236,9 +240,7 @@ export class LumenWorldMapElement extends LumenElement {
 
     plot.append(svgNode(this.ownerDocument, 'path', { 'aria-hidden': 'true', class: 'ui-world-map__selection', d: '' }))
 
-    const inspection = this.ownerDocument.createElement('span')
-
-    inspection.className = 'ui-world-map__inspection'
+    const inspection = this.createPart('span', 'inspection')
 
     viewport.append(plot)
 
@@ -266,11 +268,9 @@ export class LumenWorldMapElement extends LumenElement {
 
     if (this.getAttribute('zoomable') === 'false') return
 
-    const controls = this.ownerDocument.createElement('div')
+    const controls = this.createPart('div', 'zoom-controls')
     const status = this.ownerDocument.createElement('output')
     const labels = this.zoomText
-
-    controls.className = 'ui-world-map__zoom-controls'
 
     controls.dataset.slot = 'world-map-zoom-controls'
 
@@ -326,9 +326,7 @@ export class LumenWorldMapElement extends LumenElement {
   }
 
   private highlightList(): HTMLUListElement {
-    const list = this.ownerDocument.createElement('ul')
-
-    list.className = 'ui-world-map__highlights'
+    const list = this.createPart('ul', 'highlights')
 
     list.ariaLabel = 'Highlighted countries'
 
