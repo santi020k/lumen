@@ -30,7 +30,6 @@ export const lumenRegistry = {
         'Link',
         'ThemeToggle',
         'Timeline',
-        'TimelineItem',
         'Typography'
       ],
       files: [
