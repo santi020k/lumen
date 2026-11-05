@@ -82,6 +82,10 @@ The CLI is not an Astro application, so its Astro application-discovery plugin i
 existing TypeScript/CSS analysis scope is unchanged. Installed Astro and React recipes are checked
 through their consumer fixtures, while the Elements recipe entry scripts use a development-only
 adapter dependency for analysis. Template dependencies remain consumer-owned at runtime.
+The three Elements recipe sources allow that declared consumer adapter in the unpublished-import
+rule. All other imports remain checked. Keep this exception aligned with registry dependency
+metadata and `pnpm run test:portable-editorial`; adding an adapter to the CLI's production graph
+would incorrectly make every CLI installation install that adapter.
 
 The shared ESLint composer supplies the TypeScript parser for Astro files. Keep parser ownership
 in `@santi020k/eslint-config-astro` instead of duplicating the parser in the root configuration.
