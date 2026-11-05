@@ -382,7 +382,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(anchor).toContain('data-depth={item.depth}')
     expect(scrollProgress).toContain('data-ui-scroll-progress')
     expect(scrollProgress).toContain('role="progressbar"')
-    expect(documentNavigationController).toContain('initScrollProgress(scope)')
+    expect(scrollProgress).toContain('data-ui-scroll-progress-target={targetId}')
     expect(documentNavigationController).toContain('root.setAttribute(\'aria-valuenow\'')
     expect(css).toContain('.ui-scroll-progress')
     expect(css).toContain('.ui-scroll-progress--bottom')
