@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises'
+
 import { expect, test } from '@playwright/test'
 
 test.describe('fixed accessibility primitives under host CSS', () => {
@@ -39,6 +41,31 @@ test.describe('fixed accessibility primitives under host CSS', () => {
       )
       await skipLink.press('Enter')
       await expect(page.locator('#skip-link-demo-target')).toBeFocused()
+    })
+  }
+})
+
+
+test.describe('compound components after late primitive CSS', () => {
+  for (const width of [390, 1280]) {
+    test(`ThemeBuilder keeps readable code output at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ height: 800, width })
+      await page.goto('/docs/components/theme-builder')
+      await page.addStyleTag({ content: await readFile(new URL('../../packages/core/styles/parts/textarea.css', import.meta.url), 'utf8') })
+
+      const output = page.locator('[data-ui-theme-output]').first()
+
+      await expect(output).toHaveCSS('font-family', /monospace/u)
+      await expect(output).toHaveCSS('font-size', '13px')
+      await expect(output).toHaveCSS('min-height', '128px')
+    })
+
+    test(`PromptComposer keeps related-control spacing at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ height: 800, width })
+      await page.goto('/docs/components/prompt-composer')
+      await page.addStyleTag({ content: await readFile(new URL('../../packages/core/styles/parts/form.css', import.meta.url), 'utf8') })
+
+      await expect(page.locator('[data-ui-prompt-composer]').first()).toHaveCSS('gap', '12px')
     })
   }
 })

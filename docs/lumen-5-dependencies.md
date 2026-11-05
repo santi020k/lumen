@@ -119,7 +119,9 @@ of exactly 188 reviewed enum additions. Frozen install, peers and Expo dependenc
 Rendered guide checks passed in all four themes; 88 interaction cases and route-delivery budgets
 also passed. The clean packed React Native Android application built successfully. See the
 [release plan record](lumen-5-plan.md#dependency-and-native-toolchain-audit-2026-11-05) for scope and
-limitations. GitHub CI must still validate the pushed revision.
+limitations. The CI follow-up also fixes compound CSS import ordering and canonical Swift classification ordering.
+All 459 visual tests retain their original baselines; a fast native-export test now guards Swift
+identifier ordering. GitHub CI must validate each pushed revision.
 
 For recovery, restore dependency manifests, lockfile, patches, generated assets and API baselines
 together from the prior reviewed revision. Never move or replace a published tag.

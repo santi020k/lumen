@@ -4,6 +4,9 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 
+import swiftBaseline from '../registry/swift-api-baseline.json' with { type: 'json' }
+import widgetBaseline from '../registry/swift-widget-api-baseline.json' with { type: 'json' }
+
 import { collectTypeScriptExports, validateIconMembers } from './lib/native-api-exports.mjs'
 
 test('classifies explicit named, aliased and type exports', () => {
@@ -72,5 +75,24 @@ test('checks every icon member against the reviewed index and package targets', 
     await assert.rejects(validateIconMembers(root, contract, source, ['SearchGraphic']), /export pattern/u)
   } finally {
     await rm(root, { recursive: true, force: true })
+  }
+})
+
+
+test('Swift classifications preserve canonical precise-identifier ordering before native builds', () => {
+  for (const baseline of [swiftBaseline, widgetBaseline]) {
+    for (const [platform, classifications] of Object.entries(baseline.platforms)) {
+      for (const [classification, symbols] of Object.entries({
+        supported: classifications.supported,
+        experimental: classifications.experimental,
+        deprecated: classifications.deprecated,
+        unclassified: classifications.unclassified
+      })) {
+        const identifiers = symbols.map(symbol => symbol.precise)
+
+        assert.deepEqual(identifiers, [...identifiers].sort((left, right) => left.localeCompare(right)),
+          `${baseline.module}.${platform}.${classification} must retain canonical identifier ordering`)
+      }
+    }
   }
 })

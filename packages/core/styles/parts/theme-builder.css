@@ -40,7 +40,7 @@
 }
 
 @layer lumen.components {
-.ui-theme-builder :where([data-ui-theme-output]) {
+.ui-theme-builder [data-ui-theme-output] {
   width: 100%;
   min-height: 8rem;
   border: var(--ui-border-width, 1px) solid hsl(var(--line));

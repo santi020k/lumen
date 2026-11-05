@@ -5637,7 +5637,7 @@ lumen-dialog-close {
   background: var(--ui-swatch, hsl(var(--brand)));
 }
 
-.ui-theme-builder :where([data-ui-theme-output]) {
+.ui-theme-builder [data-ui-theme-output] {
   width: 100%;
   min-height: 8rem;
   border: var(--ui-border-width, 1px) solid hsl(var(--line));
@@ -8704,7 +8704,7 @@ a.ui-pill:focus-visible {
   [data-ui-visual-effect="border"] { border: var(--ui-border-width) solid hsl(var(--line)); }
   [data-ui-visual-effect="border"]::before { padding: 1px; border-radius: inherit; background: conic-gradient(from 45deg, hsl(var(--brand)), hsl(var(--accent)), hsl(var(--brand))); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; }
   [data-ui-visual-effect="draw"][data-ui-effect-animated="true"] :where(path, line, polyline)[pathLength="1"] { stroke-dasharray: 1; animation: ui-path-draw var(--ui-duration-slow, 240ms) var(--ui-ease, ease-out) both; }
-  .ui-prompt-composer { display: grid; gap: var(--ui-space-md); min-width: 0; }
+  .ui-prompt-composer, .ui-form.ui-prompt-composer { display: grid; gap: var(--ui-space-md); min-width: 0; }
   .ui-prompt-composer__actions, .ui-stream-message__actions, .ui-approval-card__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ui-space-sm); }
   .ui-stream-message { display: grid; gap: var(--ui-space-md); }
   .ui-chart-motion, .ui-tool-activity { display: block; }

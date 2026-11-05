@@ -12,3 +12,15 @@
     cursor: progress;
   }
 }
+
+@layer lumen.components {
+.ui-prompt-composer { display: grid; gap: var(--ui-space-md); min-width: 0; }
+}
+
+@layer lumen.components {
+.ui-form.ui-prompt-composer { display: grid; gap: var(--ui-space-md); min-width: 0; }
+}
+
+@layer lumen.components {
+.ui-prompt-composer__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ui-space-sm); }
+}

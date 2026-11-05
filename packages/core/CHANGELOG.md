@@ -4,6 +4,8 @@
 
 ### Minor Changes
 
+- Preserve ThemeBuilder code typography and PromptComposer spacing when primitive styles load after compound styles.
+
 - Improve success badge text contrast in both themes and branded code-token contrast while retaining semantic colors.
 
 - Refresh the Lucide catalog while preserving legacy static web exports through canonical aliases. Upgrade compatible stable runtime dependencies and regenerate phone metadata.

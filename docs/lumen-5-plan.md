@@ -316,3 +316,27 @@ verified patch; the canonical security gate passes. Gradle still reports an upst
 notice for future Gradle 10 compatibility. No check, peer rule, security patch or release-age policy
 was weakened. GitHub CI must verify the pushed revision before the Compose CI blocker is declared
 cleared remotely. Publication remains unauthorized and the v5 contract remains draft.
+
+
+## CI stabilization follow-up (2026-11-05)
+
+GitHub main CI and release canaries passed on `bcb698a6`, including Compose instrumentation,
+Android gallery comparisons, Node 22/24, packed consumers, browser contracts, coverage and release
+accessibility. Apple native capture comparisons also passed. Two Apple checks exposed remaining
+issues: six web screenshot mismatches and incorrect Swift API classification ordering.
+
+The screenshot diffs revealed generic Textarea/Form rules overriding compound styles after CSS
+chunk reordering. ThemeBuilder now preserves its code-output typography and PromptComposer its
+related-control spacing regardless of primitive stylesheet order. All 459 local visual tests pass
+against the existing baselines. Six host-CSS browser checks pass, including four new late-loading
+regressions at 390px and 1280px. Mobile and desktop screenshots show the restored layout without
+horizontal overflow. The independent review found no further actionable regression.
+
+The canonical generator rebuilt all five LumenUI platform baselines. WidgetKit's unchanged three
+platforms passed regeneration on retry after clearing a full local build cache. Every symbol record
+and classification matches the preceding revision; only ordering changed. A new test in the existing
+native-export suite catches this ordering error before native builds, and all five tests pass.
+The 188 reviewed icon-case additions and all migration requirements remain unchanged.
+
+The final local gate includes the CSS and metadata follow-up. The next pushed revision must rerun
+GitHub checks; the release remains a draft and publication still needs explicit approval.

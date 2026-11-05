@@ -1151,8 +1151,7 @@
       "spinner",
       "textarea",
       "label",
-      "form",
-      "prompt-composer"
+      "form"
     ],
     "dependencies": [
       "Button",
