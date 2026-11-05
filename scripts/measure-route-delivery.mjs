@@ -9,7 +9,7 @@ import { gzipSync } from 'node:zlib'
 import { chromium } from '@playwright/test'
 
 import { captureStyleMatrix, compareStyleMatrix } from './check-component-css-rendering.mjs'
-import { checkColdInteractions, checkDynamicToast, checkFailedChunkRecovery, checkNavigation } from './check-route-runtime.mjs'
+import { checkColdInteractions, checkDialogViewport, checkDynamicToast, checkFailedChunkRecovery, checkNavigation } from './check-route-runtime.mjs'
 
 const repo = fileURLToPath(new URL('../', import.meta.url))
 const astroDirectory = await realpath(resolve(process.env.LUMEN_DELIVERY_ASTRO_DIR ?? join(repo, 'packages/astro')))
@@ -239,6 +239,8 @@ try {
     await checkFailedChunkRecovery(browser, origin, graph)
 
     await checkDynamicToast(browser, origin)
+
+    await checkDialogViewport(browser, origin)
   }
 } finally {
   await browser.close()

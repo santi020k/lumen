@@ -1,6 +1,34 @@
 import assert from 'node:assert/strict'
 
 /** @param {import('@playwright/test').Browser} browser @param {string} origin */
+export const checkDialogViewport = async (browser, origin) => {
+  for (const width of [390, 1280]) {
+    const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' })
+
+    await page.goto(`${origin}/dialog/?theme=lumen-dark&direction=rtl&text=200%`)
+
+    await page.getByRole('button', { name: 'Open dialog' }).click()
+
+    const dialog = page.getByRole('dialog')
+
+    await dialog.waitFor({ state: 'visible' })
+
+    const bounds = await dialog.boundingBox()
+    const close = await dialog.getByRole('button', { name: 'Close', exact: true }).boundingBox()
+
+    assert(bounds && bounds.x >= 0 && bounds.x + bounds.width <= width, 'Enlarged RTL dialog stays inside the viewport.')
+
+    assert(close && close.x >= 0 && close.x + close.width <= width, 'Dialog recovery control stays reachable.')
+
+    await dialog.getByRole('button', { name: 'Close', exact: true }).click()
+
+    await dialog.waitFor({ state: 'hidden' })
+
+    await page.close()
+  }
+}
+
+/** @param {import('@playwright/test').Browser} browser @param {string} origin */
 export const checkDynamicToast = async (browser, origin) => {
   const page = await browser.newPage()
   const styles = []
