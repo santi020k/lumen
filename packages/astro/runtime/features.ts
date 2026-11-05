@@ -70,11 +70,11 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     cleanup: m.clearComboboxes,
     outside: { selector: '[data-ui-combobox]', close: m.closeCombobox } })) },
   { name: 'select',
-    selector: '[data-ui-select]',
+    selector: '[data-ui-select]:not([data-ui-owner])',
     load: () => import('./features/select.js').then(m => ({ init: scope => {
       m.initSelects(scope)
     },
-    outside: { selector: '[data-ui-select]', close: m.closeSelect } })) },
+    outside: { selector: '[data-ui-select]:not([data-ui-owner])', close: m.closeSelect } })) },
   { name: 'resizable',
     selector: '[data-ui-resizable]',
     load: () => import('./features/resizable.js').then(m => ({ init: scope => {

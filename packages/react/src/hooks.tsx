@@ -1343,6 +1343,7 @@ export const useSelect = ({
   const rootProps: LumenProps<'div'> = {
     'data-placeholder': hasSelection ? 'false' : 'true',
     'data-ui-select': true,
+    'data-ui-owner': 'react',
     onBlur: event => {
       const next = event.relatedTarget
       const NodeType = event.currentTarget.ownerDocument.defaultView?.Node
