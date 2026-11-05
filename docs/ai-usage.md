@@ -239,7 +239,9 @@ local repository, and programmatic examples.
 In v5, Astro components import their own CSS and shared foundation automatically. React and Elements
 import `styles/foundation.css` once, then `styles/components/<kebab-name>.css` with each component.
 Include styles for conditional content and application-generated markup. The full stylesheet remains
-a supported convenience option in all web adapters, as shown below.
+a supported convenience option in all web adapters, as shown below. Each independent Lumen CSS entry
+establishes the same public layer order, so an automatically loaded component chunk can precede
+Tailwind without putting its base reset above Lumen controls.
 
 This section applies to web targets. Native adapters use their provider or theme APIs instead of a
 stylesheet.

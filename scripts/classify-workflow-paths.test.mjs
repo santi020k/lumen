@@ -415,3 +415,26 @@ test('bundle policy helpers and regression tests select builds and size checks',
     assert.equal(classification.compatibility, true, path)
   }
 })
+
+
+test('v5 delivery and portable fixtures select browser coverage', () => {
+  for (const path of [
+    'tests/fixtures/portable-editorial/react-app.tsx.template',
+    'tests/fixtures/delivery/dialog.astro.template',
+    'scripts/measure-route-delivery.mjs',
+    'scripts/check-route-runtime.mjs',
+    'scripts/check-component-css-rendering.mjs'
+  ]) {
+    assert.equal(classifyCiPaths([path]).playwright, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).browser, true, path)
+  }
+})
+
+test('v5 contract sources select contract and MCP checks', () => {
+  for (const path of ['registry/lumen-5-contract.json', 'scripts/generate-v5-migration.mjs']) {
+    assert.equal(classifyCiPaths([path]).mcp, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).web, true, path)
+  }
+})

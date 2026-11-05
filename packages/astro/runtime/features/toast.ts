@@ -1,3 +1,6 @@
+import toastStyles from '../../styles/runtime/toast.css?url'
+import { loadRuntimeStylesheet } from '../styles.js'
+
 import { nextRuntimeId } from './shared.js'
 
 const getToastVariantClass = (variant: string | undefined): string => {
@@ -469,3 +472,5 @@ export const initToasts = (scope: ParentNode): void => {
     })
   }
 }
+
+export const loadToastStyles = (): Promise<void> => loadRuntimeStylesheet(document, toastStyles)

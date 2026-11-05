@@ -1,6 +1,3 @@
-import toastStyles from '../styles/runtime/toast.css?url'
-
-import { loadRuntimeStylesheet } from './styles.js'
 import type { LumenRuntimeFeature } from './types.js'
 
 export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
@@ -291,7 +288,11 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     }  })) },
   { name: 'toast',
     selector: '[data-ui-toast-viewport], [data-ui-toast], .ui-toast',
-    load: () => Promise.all([loadRuntimeStylesheet(document, toastStyles), import('./features/toast.js')]).then(([, m]) => ({ init: scope => {
-      m.initToasts(scope)
-    }  })) }
+    load: async () => {
+      const module = await import('./features/toast.js')
+
+      await module.loadToastStyles()
+
+      return { init: module.initToasts }
+    } }
 ]

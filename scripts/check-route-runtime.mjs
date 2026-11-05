@@ -129,10 +129,25 @@ export const checkNavigation = async (browser, origin) => {
 
   const documentStartedAt = await page.evaluate(() => performance.timeOrigin)
 
+  await page.evaluate(() => { window.LumenToast.create({ title: 'Before navigation', duration: 0 }) })
+
+  await page.locator('.ui-toast').waitFor({ state: 'visible' })
+
   for (let index = 0; index < 2; index += 1) {
     await page.getByRole('link', { name: 'Next fixture' }).click()
 
     await page.waitForURL('**/navigation-calendar/')
+
+    await page.evaluate(() => { window.LumenToast.create({ title: 'After navigation', duration: 0 }) })
+
+    const toast = page.locator('.ui-toast')
+
+    await toast.waitFor({ state: 'visible' })
+
+    assert.equal(await toast.evaluate(element => getComputedStyle(element).display), 'grid',
+      'Cached toast controllers must retain their dynamically loaded stylesheet after a head swap.')
+
+    assert.equal(await page.locator('link[rel="stylesheet"][href*="toast"]').count(), 1)
 
     await page.locator('[data-ui-calendar-next]').click()
 

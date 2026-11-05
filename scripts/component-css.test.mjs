@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import test from 'node:test'
+import { pathToFileURL } from 'node:url'
 
 import { normalizeCssFamily, partitionComponentCss, selectorFamilies } from './lib/component-css.mjs'
 import { readCssNodes, splitCssSelectors } from './lib/css-source.mjs'
@@ -107,4 +108,31 @@ test('generated SVGs include icon defaults without overriding component state ac
   const code = await read('packages/core/styles/components/code.css')
 
   assert(code.indexOf('parts/icon.css') < code.indexOf('parts/code.css'))
+})
+
+test('every independent CSS chunk establishes the complete public order before Tailwind can create base', async () => {
+  const canonical = readCssNodes(await read('packages/lumen/layers.css'))[0].header
+
+  assert.equal(canonical, '@layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities')
+
+  const roots = [
+    'packages/core/styles', 'packages/astro/styles/parts', 'packages/astro/styles/runtime',
+    ...['lumen', 'astro', 'react', 'elements'].map(adapter => `packages/${adapter}/styles/components`)
+  ]
+
+  for (const root of roots) {
+    for (const entry of await readdir(new URL(`../${root}`, import.meta.url), { recursive: true, withFileTypes: true })) {
+      if (!entry.isFile() || !entry.name.endsWith('.css')) continue
+
+      const path = pathToFileURL(`${entry.parentPath}/${entry.name}`)
+      const first = readCssNodes(await readFile(path, 'utf8'))[0]
+
+      assert.equal(first?.header, canonical, `${root}/${entry.name} may load before a consumer's Tailwind stylesheet.`)
+    }
+  }
+
+  for (const path of ['packages/lumen/styles.css', 'packages/lumen/styles/world-map.css', 'packages/lumen/styles/motion.css',
+    ...['lumen', 'astro', 'react', 'elements'].map(adapter => `packages/${adapter}/styles/foundation.css`)]) {
+    assert.equal(readCssNodes(await read(path))[0]?.header, canonical, path)
+  }
 })
