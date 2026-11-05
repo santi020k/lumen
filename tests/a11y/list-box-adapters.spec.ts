@@ -152,10 +152,13 @@ test('a reinserted bound Astro ListBox resynchronizes external labels after Lume
   await addLabel('detached-reviewers-label', 'Detached reviewers')
   await rootHandle.evaluate(element => { document.querySelector('#unnamed-lists')?.prepend(element) })
   await expect(list).not.toHaveAttribute('aria-labelledby', /detached-reviewers-label/)
-  await page.evaluate(() => {
-    const init: unknown = Reflect.get(window, 'LumenInitUiPrimitives')
-    if (typeof init !== 'function') throw new Error('Expected the Lumen runtime entry point')
-    Reflect.apply(init, window, [document.querySelector('#unnamed-lists')])
+  await page.evaluate(async () => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
+    const scope = document.querySelector('#unnamed-lists')
+
+    if (!init || !scope) throw new Error('Expected the Lumen runtime entry point and list scope')
+
+    await init(scope)
   })
   await expect(root).toHaveAttribute('data-ui-list-box-bound', 'true')
   await expect(list).toHaveAttribute('aria-labelledby', /(^| )detached-reviewers-label( |$)/)

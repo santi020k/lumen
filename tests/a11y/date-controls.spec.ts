@@ -292,11 +292,11 @@ test('ImageComparison follows reassigned and adopted form resets without canceli
     if (!destination) throw new Error('Missing destination document')
 
     destination.body.append(destination.adoptNode(form))
-    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => void }).LumenInitUiPrimitives
+    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => Promise<void> }).LumenInitUiPrimitives
 
     if (!initialize) throw new Error('Missing initializer')
 
-    initialize(destination)
+    await initialize(destination)
     await new Promise(resolve => setTimeout(resolve, 0))
     return { reset, canceled }
   })

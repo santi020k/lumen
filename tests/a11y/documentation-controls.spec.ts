@@ -26,6 +26,13 @@ const openRuntimeFixture = async (page: Page, markup: string) => {
   }))
   await page.goto('/__documentation-controls-test__')
   await page.waitForFunction(() => 'LumenInitUiPrimitives' in window && typeof window.LumenInitUiPrimitives === 'function')
+  await page.evaluate(async () => {
+    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
+
+    if (!initialize) throw new Error('Expected runtime initializer')
+
+    await initialize(document)
+  })
 }
 
 test('controlled theme initialization preserves the host theme despite stale storage', async ({ page }) => {

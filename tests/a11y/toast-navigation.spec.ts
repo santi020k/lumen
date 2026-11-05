@@ -4,8 +4,12 @@ const dispatchToastEvent = (page: Page, type: string, detail: Record<string, unk
   document.dispatchEvent(new CustomEvent(type, { detail }))
 }, { type, detail })
 
-const invokeLumenInitUiPrimitives = (page: Page): Promise<void> => page.evaluate(() => {
-  (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives?.()
+const invokeLumenInitUiPrimitives = (page: Page): Promise<void> => page.evaluate(async () => {
+  const initialize = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
+
+  if (!initialize) throw new Error('Expected runtime initializer')
+
+  await initialize()
 })
 
 const navigateViaHeader = async (page: Page, label: string, urlPattern: RegExp): Promise<void> => {
