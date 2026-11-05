@@ -744,6 +744,7 @@ test('real generated MCP catalog hash ignores only approval metadata', async () 
     components: reviewed.components,
     docs: reviewed.docs,
     migration: reviewed.migration,
+    migrationV5: reviewed.migrationV5,
     nativeComponents: reviewed.nativeComponents,
     nativeSources: reviewed.nativeSources,
     recipes: reviewed.recipes,
@@ -767,6 +768,12 @@ test('real generated MCP catalog hash ignores only approval metadata', async () 
   approved.migration.changes[0].migration += ' altered migration';
 
   assert.notEqual(createCatalogHash(approved), draftHash);
+
+  const changedV5 = structuredClone(payload);
+
+  changedV5.migrationV5.changes[0].migration += ' altered v5 migration';
+
+  assert.notEqual(createCatalogHash(changedV5), draftHash);
 
   const changed = structuredClone(payload);
 
