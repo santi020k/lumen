@@ -38,7 +38,7 @@ export const classifyChangedNpmPackages = paths => {
     /^package\.json$/u,
     /^pnpm-workspace\.yaml$/u,
     /^turbo\.json$/u,
-    /^scripts\/(check-bundle-size(?:\.test)?|smoke-consumer-packages)\.mjs$/u,
+    /^scripts\/(check-bundle-size(?:\.test)?|smoke-consumer-packages|react-hook-form-legacy-consumer)\.mjs$/u,
     /^scripts\/lib\/bundle-size\.mjs$/u,
     /^scripts\/(check-publish-dry-run|sync-registry|validate-registry)\.mjs$/u,
     /^\.github\/workflows\/ci\.yml$/u
@@ -62,7 +62,7 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^packages\/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|templates|tokens)\//u,
     /^registry\//u,
     /^scripts\/lib\/bundle-size\.mjs$/u,
-    /^scripts\/(check-bundle-size(?:\.test)?|check-framework-contracts|check-publish-dry-run|smoke-consumer-packages|sync-registry|validate-registry)\.mjs$/u,
+    /^scripts\/(check-bundle-size(?:\.test)?|check-framework-contracts|check-publish-dry-run|smoke-consumer-packages|react-hook-form-legacy-consumer|sync-registry|validate-registry)\.mjs$/u,
     /^eslint\.config\.js$/u,
     /^tsconfig[^/]*\.json$/u,
     /^vitest\.config\.ts$/u,

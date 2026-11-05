@@ -339,11 +339,12 @@ Each app has its own setup, source map, and verification guidance:
 | [Motion studio](apps/motion/README.md) | Reusable product films and local video exports |
 | [Store artwork](apps/store-assets/README.md) | Canonical SVG sources for the playground app icons |
 
-## Lumen 5 candidate
+## Lumen 5
 
-The [v5 plan](docs/lumen-5-plan.md) prepares modular delivery in the existing packages, runtime-only
+The [v5 plan](docs/lumen-5-plan.md) describes modular delivery in the existing packages, runtime-only
 web adapters, and editable product recipes. Follow the [v4 → v5 guide](docs/migrating-v4-to-v5.md)
-for required contract reviews and optional adoption. This work remains an unpublished candidate.
+for required contract reviews and optional adoption. The [release manifest](registry/release-manifest.json)
+lists the independently versioned packages; verify availability in your configured registry before upgrading.
 
 ## Lumen 4
 

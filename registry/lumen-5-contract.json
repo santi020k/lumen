@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "status": "implementation",
+  "status": "draft",
   "targetVersion": "5.0.0",
-  "publication": "unpublished",
+  "publication": "unverified",
   "policy": {
     "compatibility": "The v5 plan permits deliberate web contract changes. Full CSS and root entries remain supported; source-only signals are review prompts, not proof of broken behavior. Consumer data and application ownership remain protected.",
-    "versioning": "This contract describes a local next-major candidate, not release approval or registry availability. Publication requires the normal approved GitHub workflow."
+    "versioning": "This contract describes Lumen 5 migration behavior. Bundled evidence does not query the registry or establish availability. Publication requires the normal approved GitHub workflow."
   },
   "changes": [
     {
@@ -302,5 +302,17 @@
         ".css"
       ]
     }
-  ]
+  ],
+  "swiftApiBaseline": "v4.4.0",
+  "npmPublicationVersions": {
+    "@santi020k/lumen": "5.0.0",
+    "@santi020k/lumen-astro": "5.0.0",
+    "@santi020k/lumen-core": "5.0.0",
+    "@santi020k/lumen-elements": "5.0.0",
+    "@santi020k/lumen-icons-brand": "4.0.1",
+    "@santi020k/lumen-mcp": "5.0.0",
+    "@santi020k/lumen-react": "5.0.0",
+    "@santi020k/lumen-react-hook-form": "4.0.2",
+    "@santi020k/lumen-react-native": "4.0.3"
+  }
 }

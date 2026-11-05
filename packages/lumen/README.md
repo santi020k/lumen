@@ -178,6 +178,12 @@ Installs run before source rewrites; a failed dependency command stops source ap
 consumer's completion gate after both phases. Source-only migration works without a package manifest
 or package-manager requirement. Native Swift/Maven pins remain application-owned.
 
+Run `lumen migrate v5` to review the v4-to-v5 contract without automatic source rewrites. With
+`--dependencies`, the bundled release manifest supplies each npm package's own target version;
+companion packages and tokens can retain their v4 versions. Catalogs, package-manager update
+arguments, release-age exceptions, lockfile verification, and the consumer audit use that same map.
+An explicit v5 target must match the bundled manifest; native Swift/Maven pins remain application-owned.
+
 V4 apply records output fingerprints in `.lumen/migrations-v4.json`. Commit that ledger with the
 source changes: repeated applies skip migrated files, and later edits to them require manual review.
 The pure `migrateLumenVersionSource` API assumes v3 input and does not maintain that filesystem ledger.

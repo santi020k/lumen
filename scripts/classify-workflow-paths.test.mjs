@@ -333,6 +333,7 @@ test('publish dry runs target only changed packages unless shared tooling change
     'scripts/check-bundle-size.test.mjs',
     'scripts/lib/bundle-size.mjs',
     'scripts/smoke-consumer-packages.mjs',
+    'scripts/react-hook-form-legacy-consumer.mjs',
     'scripts/classify-workflow-paths.mjs'
   ]) {
     assert.equal(classifyChangedNpmPackages([path]).length, 10, path)

@@ -58,6 +58,10 @@ test('selects the reviewed baseline and exact diagnostics for each release major
     targetVersion: '4.0.0', swiftApiBaseline: 'v3.0.1', changes: [{ swiftApiBreakages: ['initializer replacement'] }, { id: 'web-change' }]
   }), { baseline: 'v3.0.1', breakages: ['initializer replacement'] })
 
+  assert.deepEqual(resolveSwiftCompatibilityExpectation(5, {
+    targetVersion: '5.0.0', swiftApiBaseline: 'v4.4.0', changes: [{ id: 'web-change' }]
+  }), { baseline: 'v4.4.0', breakages: [] })
+
   assert.throws(() => resolveSwiftCompatibilityExpectation(4, {
     targetVersion: '3.0.0', changes: []
   }), /match the release major/)

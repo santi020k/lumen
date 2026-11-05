@@ -4,6 +4,8 @@ import { access, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:f
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
+import { checkLegacyHookFormConsumer } from './react-hook-form-legacy-consumer.mjs'
+
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const temporaryRoot = await mkdtemp(join(tmpdir(), 'lumen-consumer-packages-'))
 const archiveDirectory = join(temporaryRoot, 'archives')
@@ -458,6 +460,8 @@ export default function Page() {
   assert.match(astroHtml, /Missing heatmap fallback/)
 
   assert.doesNotMatch(astroHtml, /data-ui-chart-datum=/)
+
+  await checkLegacyHookFormConsumer({ archives, temporaryRoot, run })
 
   process.stdout.write(
     'Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js, and brand-icon packages passed clean-consumer smoke tests\n'

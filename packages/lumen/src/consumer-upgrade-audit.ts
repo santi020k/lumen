@@ -3,6 +3,7 @@ import { extname, relative, resolve } from 'node:path'
 
 import { major, satisfies, valid } from 'semver'
 
+import { consumerPackageVersion, consumerReleaseVersions } from './consumer-release-versions.js'
 import { type ConsumerInventory, inspectLumenConsumer } from './consumer-rollout.js'
 import type { LumenDiagnosticFinding } from './integration-diagnostics.js'
 import { discoverSourceFiles } from './v2-migration.js'
@@ -24,23 +25,29 @@ const review = (
   classification: LumenConsumerUpgradeFinding['classification'] = 'compatibility-review'
 ): LumenConsumerUpgradeFinding => ({ file, rule, message, remediation, severity: 'advisory', classification })
 
-const versionFindings = (inventory: ConsumerInventory, targetVersion: string): LumenConsumerUpgradeFinding[] => {
+const versionFindings = (
+  inventory: ConsumerInventory, targetVersion: string, packageVersions?: Readonly<Record<string, string>>
+): LumenConsumerUpgradeFinding[] => {
   const findings: LumenConsumerUpgradeFinding[] = []
 
   for (const reference of inventory.references) {
     if (reference.version.startsWith('workspace:') || reference.version.startsWith('catalog:')) continue
 
-    if (!satisfies(targetVersion, reference.version)) {
+    const expectedVersion = consumerPackageVersion(reference.packageName, targetVersion, packageVersions)
+
+    if (!satisfies(expectedVersion, reference.version)) {
       const version = major(targetVersion)
       const migration = [3, 4, 5].includes(version) ? `lumen migrate v${version} --dependencies` : 'the package-manager upgrade'
 
-      findings.push(review(reference.file, 'consumer-package-version', `${reference.packageName} ${reference.version} does not include target ${targetVersion}.`, `Preview ${migration}, align the adapter and companion packages, then validate the consumer.`, 'compatibility-failure'))
+      findings.push(review(reference.file, 'consumer-package-version', `${reference.packageName} ${reference.version} does not include target ${expectedVersion}.`, `Preview ${migration}, align the adapter and companion packages, then validate the consumer.`, 'compatibility-failure'))
     }
   }
 
   for (const [name, versions] of Object.entries(inventory.resolvedVersions)) {
-    if (versions.some(version => version !== targetVersion)) {
-      findings.push(review('pnpm-lock.yaml', 'consumer-resolved-version', `${name} resolves ${versions.join(', ')}; target is ${targetVersion}.`, 'Update through the repository package manager and inspect the resulting lockfile; a compatible manifest range does not prove installation.', 'compatibility-failure'))
+    const expectedVersion = consumerPackageVersion(name, targetVersion, packageVersions)
+
+    if (versions.some(version => version !== expectedVersion)) {
+      findings.push(review('pnpm-lock.yaml', 'consumer-resolved-version', `${name} resolves ${versions.join(', ')}; target is ${expectedVersion}.`, 'Update through the repository package manager and inspect the resulting lockfile; a compatible manifest range does not prove installation.', 'compatibility-failure'))
     }
   }
 
@@ -85,7 +92,7 @@ export const inspectLumenConsumerUpgrade = async (
 
   const root = resolve(repository)
   const inventory = await inspectLumenConsumer(root)
-  const findings = versionFindings(inventory, targetVersion)
+  const findings = versionFindings(inventory, targetVersion, await consumerReleaseVersions(targetVersion))
   const contract = major(targetVersion) === 5 ? await loadLumenV5Contract() : undefined
 
   const files = await discoverSourceFiles(root, new Set([

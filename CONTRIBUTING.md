@@ -260,8 +260,9 @@ without downloading the extended subset for Latin-only pages. Keep `OFL.txt` alo
 
 Prepare every non-initial release in `release/v<semver>` and open its pull request into `main`.
 
-For the initial v4 publication, approval identifies the exact reviewed draft revision. After recording
-approval, run `pnpm run generate:v4-migration` and `pnpm --filter @santi020k/lumen-mcp run generate`.
+For the initial v4 or v5 publication, approval identifies the exact reviewed draft revision. After
+recording approval, run the matching `generate:v4-migration` or `generate:v5-migration` command and
+`pnpm --filter @santi020k/lumen-mcp run generate`.
 The revision gate permits only contract status/approval metadata and those two generated migration
 mirrors to change. Both mirrors must match the approved contract; all migration rules and the rest
 of the MCP snapshot must remain identical to the reviewed revision. Commit the approval and mirrors
@@ -295,7 +296,9 @@ its automatic branch does not replace the reviewed release pull request. Never p
 release directly from a developer machine.
 
 Initial coordinated npm releases at 2.0.0, 3.0.0, and 4.0.0 verify the complete release-manifest
-family from the registry before creating the repository release. Every publication attempt includes
+family from the registry before creating the repository release. The mixed-version 5.0.0 release
+verifies its immutable `npmPublicationVersions` set from `registry/lumen-5-contract.json` against
+the release manifest and registry, including updated companions and excluding unchanged packages. Every publication attempt includes
 this audit, including recovery after partial publication and retries with no newly published packages.
 The audit installs every expected version and verifies its signed provenance against the merged
 commit, or the immutable existing version tag during recovery. Missing packages, mismatched versions,

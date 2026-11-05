@@ -72,7 +72,7 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
-| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `4.4.0`  | `LumenUI`                                    | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `5.0.0`  | `LumenUI`                                    | Not applicable                         |
 | Android / Compose          | Maven Central `com.santi020k:lumen-compose:4.0.1`                       | `com.santi020k.lumen`                        | Not applicable                         |
 | Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:4.0.1`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
@@ -773,7 +773,7 @@ Choose `default`, `studio` or `glass` at the theme boundary. See [appearance pre
 The portable skills are `lumen-ui` for implementation, `lumen-review` for a read-only audit, and
 `lumen-migrate` for an explicitly requested upgrade. Their canonical sources live under `skills/`;
 `pnpm run generate:plugin-package` produces the client snapshots. Both client manifests use plugin
-1.1.0 and pin the v4 catalog. This candidate is not proof of publication or directory approval.
+1.1.0 and pin the v5 catalog. The source manifests do not establish registry availability or directory approval.
 
 Before applying MCP contracts, call `lumen_check_compatibility` with resolved versions from installed
 metadata or native lock files. A manifest range is not an installed version. When versions differ,

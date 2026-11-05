@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { expect, test } from 'vitest'
 
 import { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade } from './consumer-upgrade-audit.js'
+import { loadLumenV5Contract } from './v5-contract.js'
 import { formatLumenVersionMigration, migrateLumenVersion, migrateLumenVersionSource } from './version-migration.js'
 
 test.each(['View.tsx', 'Page.astro', 'styles.css', 'Screen.swift'])('v5 never replays v4 source transforms in %s', file => {
@@ -41,7 +42,8 @@ test('v5 apply preserves source, CSS, patches and v4 ledgers while reporting exp
     expect(applied.dependencies).toBeUndefined()
     expect(applied.dependencyVersion).toBe('5.0.0')
     expect(applied.consumerAudit).toEqual(preview.consumerAudit)
-    expect(applied.consumerAudit?.contract).toEqual({ targetVersion: '5.0.0', status: 'implementation', publication: 'unpublished' })
+    const contract = await loadLumenV5Contract()
+    expect(applied.consumerAudit?.contract).toEqual({ targetVersion: '5.0.0', status: contract.status, publication: contract.publication })
     const findings = applied.consumerAudit?.findings ?? []
 
     expect(findings).toContainEqual(expect.objectContaining({ rule: 'consumer-package-version', classification: 'compatibility-failure' }))

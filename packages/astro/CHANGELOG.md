@@ -1,5 +1,63 @@
 # @santi020k/lumen-astro
 
+## 5.0.0
+
+### Major Changes
+
+- Load Astro controllers by the features present on each page instead of shipping the interactive
+  catalog with every runtime mount. Preserve delayed first clicks, keyboard navigation, native
+  fallbacks, synchronized code tabs, and Astro navigation cleanup.
+
+  Enhancement now returns a promise. Await `window.LumenInitUiPrimitives(scope)` or listen for
+  `ui:ready` before inspecting enhanced DOM. The first programmatic toast operation may render
+  asynchronously while returning its stable ID immediately. Failed automatic loads dispatch
+  `ui:runtime-error`; available controllers still initialize.
+
+- Deliver shared foundation and component CSS through the existing packages. Astro components now
+  import their own styles automatically; React and Elements can import `styles/foundation.css` once
+  and `styles/components/<kebab-name>.css` where needed. Full and critical styles remain supported.
+  Icon defaults use low specificity so component state and sizes survive shared CSS chunk ordering.
+  Generated style dependencies include manual-copy recovery and dynamically created toasts.
+
+  Web adapters no longer install the umbrella CLI or expose its binary. Install `@santi020k/lumen`
+  as a development dependency to continue using `lumen add`, discovery, and diagnostics. Runtime styles
+  resolve through Core, so adapters no longer require the umbrella package or its TypeScript tooling.
+
+### Minor Changes
+
+- Expose matching stable Timeline item, ThemeToggle icon, and WorldMap frame/control parts across web
+  adapters. ThemeToggle accepts `--ui-theme-toggle-icon-size`. Elements Timeline decorates native list
+  items without replacing their content or listeners and provides a selective registration entry.
+  Empty Elements ThemeToggle controls receive accessible default icons and reconnect without duplicate
+  click handlers. Doctor guidance recognizes the same shared styling contract.
+  Elements SkipLink reveals its host when the native child receives focus and preserves link contrast.
+
+### Patch Changes
+
+- Preserve the public layer order when component styles load before Tailwind. Keep enhanced native controls hidden and component colors and borders above Tailwind base styles regardless of stylesheet chunk order.
+
+- Preserve React Select ownership when the Astro runtime initializes or observes the same page.
+  Expose the existing adapter ownership marker through useSelect root props and exclude those roots
+  from Astro Select initialization and outside dismissal. Keep native Astro Select enhancement intact.
+
+- Honor explicit reveal thresholds across web adapters. Keep tall or clipped content visible when its
+  threshold cannot be reached, and bypass decorative hiding for keyboard focus and reduced motion.
+  Clean up reveal observers on navigation, disconnection, and unmount.
+
+- Clear the native dialog's opposing horizontal inset when centering dialogs and alert dialogs.
+  RTL layouts with enlarged text now keep dialog content and close controls inside the viewport.
+
+- Retain lazily requested toast CSS across Astro client navigation and keep its loader outside the
+  initial runtime bundle. Deduplicate WorldMap element creation to keep new styling parts within the
+  existing bundle budget.
+
+- Keep synchronized code tabs from moving the document while overflow cues settle. Measure initial
+  cues together, refresh selected panels synchronously, avoid scrolling an already visible tab, and
+  preserve keyboard focus without a second native scroll. Share font-completion observation per
+  document and release listeners during navigation.
+- Updated dependencies [`1487f80`, `94d13ff`, `73a4b13`, `8ba0ca5`, `3e1d507`, `23d5ef6`, `94cf634`, `d4cb325`]:
+  - @santi020k/lumen-core@5.0.0
+
 ## 4.4.0
 
 ### Minor Changes

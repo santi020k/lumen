@@ -5,6 +5,7 @@ import { promisify } from 'node:util'
 
 import { satisfies, valid } from 'semver'
 
+import { consumerPackageVersion, consumerReleaseVersions } from './consumer-release-versions.js'
 import { inspectLumenIntegration, type LumenDiagnosticReport } from './integration-diagnostics.js'
 
 /* eslint-disable complexity -- Consumer inventory, semver checks, mutation, and verification intentionally evaluate full repository contracts. */
@@ -221,6 +222,7 @@ const getResolvedVersions = (references: ConsumerReference[]): Record<string, st
 }
 
 export const inspectLumenConsumer = async (repository: string, targetVersion?: string): Promise<ConsumerInventory> => {
+  const packageVersions = targetVersion ? await consumerReleaseVersions(targetVersion) : undefined
   const root = resolve(repository)
   const rootManifestPath = join(root, 'package.json')
 
@@ -281,22 +283,25 @@ export const inspectLumenConsumer = async (repository: string, targetVersion?: s
 
   if (targetVersion) {
     for (const reference of references.filter(item => item.source !== 'lockfile')) {
+      const expectedVersion = consumerPackageVersion(reference.packageName, targetVersion, packageVersions)
       const declaredVersion = reference.version.replace(/^[~^]/, '')
 
       if (
-        reference.version !== 'catalog:' &&
+        !reference.version.startsWith('catalog:') &&
         !reference.version.startsWith('workspace:') &&
-        declaredVersion !== targetVersion
+        !(packageVersions ? satisfies(expectedVersion, reference.version) : declaredVersion === expectedVersion)
       ) {
         warnings.push(
-          `${reference.packageName} declares ${reference.version} in ${reference.file} instead of ${targetVersion}.`
+          `${reference.packageName} declares ${reference.version} in ${reference.file} instead of ${expectedVersion}.`
         )
       }
     }
 
     for (const [packageName, versions] of Object.entries(resolvedVersions)) {
-      if (versions.some(version => version !== targetVersion)) {
-        warnings.push(`${packageName} resolves ${versions.join(', ')} instead of only ${targetVersion}.`)
+      const expectedVersion = consumerPackageVersion(packageName, targetVersion, packageVersions)
+
+      if (versions.some(version => version !== expectedVersion)) {
+        warnings.push(`${packageName} resolves ${versions.join(', ')} instead of only ${expectedVersion}.`)
       }
     }
   }
@@ -320,21 +325,25 @@ export const inspectLumenConsumer = async (repository: string, targetVersion?: s
 }
 
 const replaceRange = (range: string, targetVersion: string): string => {
-  if (range === 'catalog:' || range.startsWith('workspace:') || range.startsWith('file:')) return range
+  if (range.startsWith('catalog:') || range.startsWith('workspace:') || range.startsWith('file:')) return range
 
   const prefix = range.startsWith('^') || range.startsWith('~') ? (range.at(0) ?? '') : ''
 
   return `${prefix}${targetVersion}`
 }
 
-export const updateLumenManifestSource = (source: string, targetVersion: string): string => {
+export const updateLumenManifestSource = (
+  source: string, targetVersion: string, packageVersions?: Readonly<Record<string, string>>
+): string => {
   const manifest = JSON.parse(source) as PackageManifest
 
   for (const field of dependencyFields) {
     const dependencies = manifest[field]
 
     for (const [name, range] of Object.entries(dependencies ?? {})) {
-      if (isLumenPackage(name) && dependencies) dependencies[name] = replaceRange(range, targetVersion)
+      if (isLumenPackage(name) && dependencies) {
+        dependencies[name] = replaceRange(range, consumerPackageVersion(name, targetVersion, packageVersions))
+      }
     }
   }
 
@@ -347,15 +356,24 @@ const lumenWorkspaceVersionPattern = new RegExp([
   String.raw`([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$`
 ].join(''), 'gm')
 
-export const updateLumenWorkspaceSource = (source: string, targetVersion: string): string => source.replaceAll(
-  lumenWorkspaceVersionPattern, (
-    _match,
-    before: string,
-    prefix: string,
-    _version: string,
-    after: string
-  ) => `${before}${prefix}${targetVersion}${after}`
-)
+const mappedWorkspaceVersionPattern = new RegExp([
+  String.raw`^(\s*['"]?(${lumenPackageNamePattern})['"]?\s*:\s*['"]?)`,
+  String.raw`([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$`
+].join(''), 'gm')
+
+export const updateLumenWorkspaceSource = (
+  source: string, targetVersion: string, packageVersions?: Readonly<Record<string, string>>
+): string => {
+  if (packageVersions) {
+    return source.replaceAll(mappedWorkspaceVersionPattern, (
+      match: string, before: string, name: string, prefix: string, _version: string, after: string
+    ) => packageVersions[name] ? `${before}${prefix}${packageVersions[name]}${after}` : match)
+  }
+
+  return source.replaceAll(lumenWorkspaceVersionPattern, (
+    _match: string, before: string, prefix: string, _version: string, after: string
+  ) => `${before}${prefix}${targetVersion}${after}`)
+}
 
 const getVerificationScripts = (manifest: PackageManifest, frameworks: LumenFramework[]): string[] => {
   const scripts = manifest.scripts ?? {}
@@ -477,9 +495,19 @@ export const addReleaseAgeTarget = (source: string, packages: string[], version:
   return lines.join('\n')
 }
 
-const removeObsoleteReleaseAgeEntries = (source: string, targetVersion: string): string => source
+const removeObsoleteReleaseAgeEntries = (
+  source: string, targetVersion: string, packageVersions?: Readonly<Record<string, string>>
+): string => source
   .split(/\r?\n/)
   .filter(line => {
+    if (packageVersions) {
+      const mapped = new RegExp(`^\\s*-\\s*['"]?(${lumenPackageNamePattern})@([^'"]+)['"]?\\s*$`).exec(line)
+      const name = mapped?.[1]
+      const expected = name ? packageVersions[name] : undefined
+
+      return !expected || mapped?.[2] === expected
+    }
+
     const match = /^\s*-\s*['"]?(@santi020k\/lumen(?:-(?:astro|core|elements|mcp|react))?)@([^'"]+)['"]?\s*$/.exec(
       line
     )
@@ -508,12 +536,13 @@ const upgradeConsumer = async (
     )
   }
 
+  const packageVersions = await consumerReleaseVersions(targetVersion)
   const manifestPaths = await findPackageManifests(inventory.repository)
   const desiredManifests = new Map<string, string>()
 
   for (const path of manifestPaths) {
     const source = await readFile(path, 'utf8')
-    const updated = updateLumenManifestSource(source, targetVersion)
+    const updated = updateLumenManifestSource(source, targetVersion, packageVersions)
 
     desiredManifests.set(path, updated)
 
@@ -525,7 +554,11 @@ const upgradeConsumer = async (
   if (await pathExists(workspacePath)) {
     const source = await readFile(workspacePath, 'utf8')
     const packages = [...new Set(inventory.references.map(item => item.packageName))]
-    const updated = addReleaseAgeTarget(updateLumenWorkspaceSource(source, targetVersion), packages, targetVersion)
+    let updated = updateLumenWorkspaceSource(source, targetVersion, packageVersions)
+
+    for (const name of packages) {
+      updated = addReleaseAgeTarget(updated, [name], consumerPackageVersion(name, targetVersion, packageVersions))
+    }
 
     if (updated !== source) await writeFile(workspacePath, updated)
   }
@@ -537,7 +570,7 @@ const upgradeConsumer = async (
       'pnpm',
       'update',
       '--recursive',
-      ...packageNames.map(packageName => `${packageName}@${targetVersion}`)
+      ...packageNames.map(packageName => `${packageName}@${consumerPackageVersion(packageName, targetVersion, packageVersions)}`)
     ])
   ]
 
@@ -553,7 +586,7 @@ const upgradeConsumer = async (
 
   if (await pathExists(workspacePath)) {
     const source = await readFile(workspacePath, 'utf8')
-    const updated = removeObsoleteReleaseAgeEntries(source, targetVersion)
+    const updated = removeObsoleteReleaseAgeEntries(source, targetVersion, packageVersions)
 
     if (updated !== source) {
       await writeFile(workspacePath, updated)

@@ -19,7 +19,7 @@ describe('v4 migration inventory', () => {
 
     expect(result.data.targetVersion).toBe('5.0.0')
     expect(result.data.contractSource).toBe('registry/lumen-5-contract.json')
-    expect(result.data.publication).toBe('unpublished')
+    expect(result.data.publication).toBe('unverified')
     expect(result.data.changes).toContainEqual(expect.objectContaining({
       id: 'async-astro-runtime', classification: 'compatibility-review'
     }))

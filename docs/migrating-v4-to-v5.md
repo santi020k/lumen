@@ -1,7 +1,7 @@
 # Migrating from Lumen 4 to 5
 
-Lumen 5 is being prepared locally. This guide and the [versioned contract](../registry/lumen-5-contract.json)
-describe the candidate; they do not assert registry availability or publication approval.
+This guide and the [versioned contract](../registry/lumen-5-contract.json) describe Lumen 5 migration
+behavior. Bundled guidance does not query the registry or establish publication availability.
 
 ## Required contract review
 
@@ -9,6 +9,11 @@ Web adapters now install runtime dependencies only. If your scripts or contribut
 install `@santi020k/lumen` separately as a development dependency through your existing package
 manager. The Astro, React and Elements packages no longer provide the command. Keep application
 runtime adapters in production dependencies.
+
+Use the [release manifest](../registry/release-manifest.json) for each package's version. The six linked
+web/tooling packages target 5.0.0; React Hook Form targets 4.0.2, brand icons 4.0.1, React Native 4.0.3,
+and tokens remain 4.0.0. V5 dependency migration uses this map instead of assigning 5.0.0 to every
+package. Swift and Maven pins remain application-owned.
 
 Astro's `LumenInitUiPrimitives(scope)` returns a promise. Await it before relying on enhancement of
 newly inserted markup. The runtime dispatches `ui:ready` after initialization and `ui:runtime-error`
@@ -44,7 +49,7 @@ requests and routing. Installing a new library version does not overwrite recipe
 
 ## Review, apply and verify
 
-Run the separately installed candidate CLI in the consumer:
+Run the separately installed v5 CLI in the consumer:
 
 ```sh
 pnpm exec lumen migrate v5 --dry-run --json
@@ -54,7 +59,7 @@ pnpm exec lumen audit-consumer --version 5.0.0 --json
 The v5 migration performs no automatic source rewrites. It does not replay v4 gap, size or MCP SDK
 code transformations. Reports separate incompatible version evidence, compatibility review signals, and optional
 adoption opportunities. Source matches are advisory and can include examples or comments. The target
-is explicit; an audit cannot establish that a candidate is published or a route is correctly rendered.
+is explicit; an audit cannot establish registry availability or prove a route is correctly rendered.
 
 Dependency changes remain opt-in with `--dependencies --apply` and the existing package-manager and
 dirty-worktree safeguards. Use them only once your intended version is available from the configured

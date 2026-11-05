@@ -8,7 +8,10 @@ import test from "node:test";
 
 import { createCatalogHash } from '../packages/mcp/scripts/catalog-hash.mjs';
 
+import { validateLumen5Contract } from './generate-v5-migration.mjs';
+
 const repositoryRoot = resolve(import.meta.dirname, "..");
+const lumen5Contract = JSON.parse(await readFile(resolve(repositoryRoot, "registry/lumen-5-contract.json"), "utf8"));
 const lumen4Contract = JSON.parse(await readFile(resolve(repositoryRoot, "registry/lumen-4-contract.json"), "utf8"));
 
 const checkerPath = resolve(
@@ -68,17 +71,17 @@ const createCandidate = async (major = 2) => {
     0,
   );
 
-  const draft = major === 4 ? structuredClone(lumen4Contract) : {
+  const draft = structuredClone({ 4: lumen4Contract, 5: lumen5Contract }[major] ?? {
     schemaVersion: 1,
     status: "draft",
     targetVersion: `${major}.0.0`,
-  };
+  });
 
   draft.status = "draft";
 
   delete draft.approval;
 
-  if (major === 4) {
+  if ([4, 5].includes(major)) {
     for (const path of new Set(draft.changes.flatMap(change => [...change.evidence, ...change.docs]))) {
       const target = resolve(directory, path);
 
@@ -93,14 +96,14 @@ const createCandidate = async (major = 2) => {
     writeFile(resolve(directory, "source.txt"), "reviewed source\n"),
   ]);
 
-  if (major === 4) {
+  if ([4, 5].includes(major)) {
     await mkdir(resolve(directory, 'packages/lumen'), { recursive: true });
 
     await mkdir(resolve(directory, 'packages/mcp/data'), { recursive: true });
 
-    await writeFile(resolve(directory, 'packages/lumen/v4-migration.json'), JSON.stringify(draft));
+    await writeFile(resolve(directory, `packages/lumen/v${major}-migration.json`), JSON.stringify(draft));
 
-    await writeFile(resolve(directory, 'packages/mcp/data/lumen-data.json'), JSON.stringify({ migration: draft, components: ['reviewed component'] }));
+    await writeFile(resolve(directory, 'packages/mcp/data/lumen-data.json'), JSON.stringify({ [major === 5 ? 'migrationV5' : 'migration']: draft, components: ['reviewed component'] }));
   }
 
   const reviewedRevision = commit(
@@ -134,17 +137,17 @@ const approveCandidate = async (directory, reviewedRevision, major = 2, syncMirr
     status: "approved",
   }, major);
 
-  if (major === 4 && syncMirrors) {
-    const contract = JSON.parse(await readFile(resolve(directory, 'registry/lumen-4-contract.json'), 'utf8'));
+  if ([4, 5].includes(major) && syncMirrors) {
+    const contract = JSON.parse(await readFile(resolve(directory, `registry/lumen-${major}-contract.json`), 'utf8'));
 
-    for (const path of ['packages/lumen/v4-migration.json', 'packages/mcp/data/lumen-data.json']) {
+    for (const path of [`packages/lumen/v${major}-migration.json`, 'packages/mcp/data/lumen-data.json']) {
       const target = resolve(directory, path);
 
       if (!existsSync(target)) continue;
 
       const data = JSON.parse(await readFile(target, 'utf8'));
 
-      if (path.includes('/mcp/')) data.migration = contract;
+      if (path.includes('/mcp/')) data[major === 5 ? 'migrationV5' : 'migration'] = contract;
 
       await writeFile(target, JSON.stringify(path.includes('/mcp/') ? data : contract));
     }
@@ -298,21 +301,22 @@ for (const major of [4, 5]) {
   });
 }
 
-test('the direct v4 publication guard rejects status and revision without attributable approval evidence', async () => {
-  const { directory, reviewedRevision } = await createCandidate(4);
+for (const major of [4, 5]) {
+test(`the direct v${major} publication guard rejects status and revision without attributable approval evidence`, async () => {
+  const { directory, reviewedRevision } = await createCandidate(major);
 
   try {
-    const draft = JSON.parse(await readFile(resolve(directory, 'registry/lumen-4-contract.json'), 'utf8'));
+    const draft = JSON.parse(await readFile(resolve(directory, `registry/lumen-${major}-contract.json`), 'utf8'));
 
     await writeContract(directory, {
       ...draft,
       status: 'approved',
       approval: { reviewedRevision },
-    }, 4);
+    }, major);
 
     commit(directory, 'test: write incomplete release approval');
 
-    const result = runChecker(directory, [], 4);
+    const result = runChecker(directory, [], major);
 
     assert.notEqual(result.status, 0);
 
@@ -325,6 +329,8 @@ test('the direct v4 publication guard rejects status and revision without attrib
     await rm(directory, { force: true, recursive: true });
   }
 });
+}
+
 
 test('the direct v4 publication guard checks evidence in its target repository', async () => {
   const { directory, reviewedRevision } = await createCandidate(4);
@@ -771,6 +777,12 @@ test('real generated MCP catalog hash ignores only approval metadata', async () 
 
   const changedV5 = structuredClone(payload);
 
+  changedV5.migrationV5.status = 'approved';
+
+  changedV5.migrationV5.approval = { approver: 'Test release owner', reviewedRevision: 'b'.repeat(40) };
+
+  assert.equal(createCatalogHash(changedV5), draftHash);
+
   changedV5.migrationV5.changes[0].migration += ' altered v5 migration';
 
   assert.notEqual(createCatalogHash(changedV5), draftHash);
@@ -805,3 +817,115 @@ test('v4 approval validates the complete production MCP snapshot', async () => {
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+for (const mirrorPath of ['packages/lumen/v5-migration.json', 'packages/mcp/data/lumen-data.json']) {
+  test(`v5 approval rejects stale or changed migration mirror ${mirrorPath}`, async () => {
+    const { directory, reviewedRevision } = await createCandidate(5);
+
+    try {
+      await approveCandidate(directory, reviewedRevision, 5, false);
+
+      const stale = runChecker(directory, [], 5);
+
+      assert.notEqual(stale.status, 0);
+
+      assert.match(stale.stderr, /Candidate migration mirrors must match/);
+
+      await approveCandidate(directory, reviewedRevision, 5);
+
+      const approved = runChecker(directory, [], 5);
+
+      assert.equal(approved.status, 0, approved.stderr);
+
+      const target = resolve(directory, mirrorPath);
+      const data = JSON.parse(await readFile(target, 'utf8'));
+      const migration = mirrorPath.includes('/mcp/') ? data.migrationV5 : data;
+
+      migration.changes[0].migration += ' unreviewed change';
+
+      await writeFile(target, JSON.stringify(data));
+
+      commit(directory, 'test: alter v5 mirrored rule');
+
+      const changed = runChecker(directory, [], 5);
+
+      assert.notEqual(changed.status, 0);
+
+      assert.match(changed.stderr, /Candidate migration mirrors must match/);
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+
+  test(`v5 approval requires reviewed mirror ${mirrorPath}`, async () => {
+    const { directory } = await createCandidate(5);
+
+    try {
+      await rm(resolve(directory, mirrorPath));
+
+      const reviewedRevision = commit(directory, 'test: omit v5 migration mirror');
+
+      await approveCandidate(directory, reviewedRevision, 5);
+
+      const result = runChecker(directory, [], 5);
+
+      assert.notEqual(result.status, 0);
+
+      assert.match(result.stderr, /Required migration mirror is missing/);
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
+  });
+}
+
+test('v5 approval validates the complete production snapshot and preserves other contracts', async () => {
+  const { directory } = await createCandidate(5);
+
+  try {
+    const path = resolve(directory, 'packages/mcp/data/lumen-data.json');
+    const snapshot = JSON.parse(await readFile(resolve(repositoryRoot, 'packages/mcp/data/lumen-data.json'), 'utf8'));
+
+    snapshot.migrationV5.status = 'draft';
+
+    delete snapshot.migrationV5.approval;
+
+    await writeFile(path, JSON.stringify(snapshot));
+
+    const reviewedRevision = commit(directory, 'test: review complete v5 snapshot');
+
+    await approveCandidate(directory, reviewedRevision, 5);
+
+    const approved = runChecker(directory, [], 5);
+
+    assert.equal(approved.status, 0, approved.stderr);
+
+    const changed = JSON.parse(await readFile(path, 'utf8'));
+
+    changed.migration.policy.compatibility += ' unreviewed v4 change';
+
+    await writeFile(path, JSON.stringify(changed));
+
+    commit(directory, 'test: alter other contract after v5 approval');
+
+    const rejected = runChecker(directory, [], 5);
+
+    assert.notEqual(rejected.status, 0);
+
+    assert.match(rejected.stderr, /Only approval metadata may change in generated migration mirrors/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+for (const [field, value, diagnostic] of [
+  ['status', 'implementation', /status must be draft or approved/],
+  ['publication', 'unpublished', /cannot establish registry availability/],
+  ['swiftApiBaseline', 'main', /Swift baseline must be v4.4.0/],
+  ['npmPublicationVersions', {}, /5.0.0/]
+]) {
+  test(`v5 metadata rejects invalid ${field} before generation or approval`, async () => {
+    const contract = { ...lumen5Contract, [field]: value };
+
+    await assert.rejects(validateLumen5Contract(contract, repositoryRoot), diagnostic);
+  });
+}

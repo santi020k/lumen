@@ -1,5 +1,78 @@
 # @santi020k/lumen
 
+## 5.0.0
+
+### Major Changes
+
+- Generate selective public component imports and required CSS in editable wrappers. Register only the
+  selected Elements constructor, preserve idempotence, and identify catalog fallbacks explicitly.
+  Astro wrappers rely on the Lumen 5 automatic component CSS contract.
+
+  Change setup output to the Lumen 5 selective foundation guidance instead of full catalog CSS and
+  Elements registration. Keep full styles.css as an explicit convenience option. Source-only doctor
+  recognizes selective setup with installed or direct-range major-5 evidence and keeps legacy behavior
+  when that evidence is absent. Existing consumers should run setup for their selected framework and
+  review the selective installation guide before replacing their current stylesheet setup.
+
+  Use canonical acronym hyphenation for generated wrapper filenames and Elements tags, such as
+  QRCode to qr-code. Review existing local imports when replacing older
+  acronym wrappers; their files are preserved.
+
+- Add an explicit v5 migration contract and target-version audit evidence. `lumen migrate v5` keeps
+  source unchanged and separates compatibility reviews from optional modular delivery and recipe
+  adoption. Dependency changes remain opt-in. MCP migration guidance accepts a v5 target while
+  preserving the v4 contract. Candidate status is separate from publication approval and availability.
+
+### Minor Changes
+
+- Deliver shared foundation and component CSS through the existing packages. Astro components now
+  import their own styles automatically; React and Elements can import `styles/foundation.css` once
+  and `styles/components/<kebab-name>.css` where needed. Full and critical styles remain supported.
+  Icon defaults use low specificity so component state and sizes survive shared CSS chunk ordering.
+  Generated style dependencies include manual-copy recovery and dynamically created toasts.
+
+  Web adapters no longer install the umbrella CLI or expose its binary. Install `@santi020k/lumen`
+  as a development dependency to continue using `lumen add`, discovery, and diagnostics. Runtime styles
+  resolve through Core, so adapters no longer require the umbrella package or its TypeScript tooling.
+
+- Add editable React and Elements article-reading, site-search-dialog, and image-viewer recipes using selective controls and component styles. Preserve native recovery links, discard stale search results, cancel requests on cleanup, and reconnect Elements controllers on remount.
+
+- Expose matching stable Timeline item, ThemeToggle icon, and WorldMap frame/control parts across web
+  adapters. ThemeToggle accepts `--ui-theme-toggle-icon-size`. Elements Timeline decorates native list
+  items without replacing their content or listeners and provides a selective registration entry.
+  Empty Elements ThemeToggle controls receive accessible default icons and reconnect without duplicate
+  click handlers. Doctor guidance recognizes the same shared styling contract.
+  Elements SkipLink reveals its host when the native child receives focus and preserves link contrast.
+
+- Add the explicit audit-rendered CLI command for a caller-provided loopback URL. Report per-viewport
+  layout overflow, console/page errors, browser request outcomes, and explicit Lumen asset inventories.
+  Keep unknown assets unclassified. Guard external requests and redirects, preserve JSON exit behavior,
+  and report missing optional project tooling/browser executables.
+
+  Resolve Playwright from the target project as optional development tooling. Preserve ordinary
+  source-only doctor behavior and keep browser tooling out of runtime adapter dependencies.
+
+- Add editable Astro code-example and share recipes using selective primitives. Preserve full-source
+  copy, highlighted Markdown slots, native disclosure fallbacks, native-share cancellation and focus,
+  and stale-result protection. Publish dependency and setup metadata through registry and MCP discovery.
+
+  Enhance the editorial product video recipe with deferred captions, one transcript disclosure,
+  navigation pause, loading feedback, and explicit media retry. Keep the close control above a long
+  transcript and move focus to the native player after retrying.
+
+### Patch Changes
+
+- Resolve v5 dependency migrations and audits through the release manifest so independently versioned companions retain their actual versions. Native Swift and Maven pins remain application-owned.
+
+- Keep compact PhoneInput sizing when shared Input styles load later in another component chunk.
+
+- Preserve the public layer order when component styles load before Tailwind. Keep enhanced native controls hidden and component colors and borders above Tailwind base styles regardless of stylesheet chunk order.
+
+- Clear the native dialog's opposing horizontal inset when centering dialogs and alert dialogs.
+  RTL layouts with enlarged text now keep dialog content and close controls inside the viewport.
+- Updated dependencies [`1487f80`, `94d13ff`, `73a4b13`, `8ba0ca5`, `3e1d507`, `23d5ef6`, `94cf634`, `d4cb325`]:
+  - @santi020k/lumen-core@5.0.0
+
 ## 4.4.0
 
 ### Minor Changes

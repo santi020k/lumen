@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
 
+import { consumerReleaseVersions } from './consumer-release-versions.js'
 import { formatConsumerRollout, inspectLumenConsumer } from './consumer-rollout.js'
 import { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
 import { discoverSourceFiles } from './v2-migration.js'
@@ -149,18 +150,24 @@ const migrateFile = async (
   await writeMigratedSource(absoluteFile, source, migration.source, { report, ledger, ledgerPath, file })
 }
 
-const createReport = (
+const createReport = async (
   options: LumenVersionMigrationOptions, root: string, filesScanned: number
-): LumenVersionMigrationReport => ({
-  applied: options.apply === true,
-  changedFiles: [],
-  changes: [],
-  filesScanned,
-  manualReview: [],
-  root,
-  version: options.version,
-  dependencyVersion: { v3: '3.0.1', v4: '4.0.0', v5: '5.0.0' }[options.version]
-})
+): Promise<LumenVersionMigrationReport> => {
+  const dependencyVersion = { v3: '3.0.1', v4: '4.0.0', v5: '5.0.0' }[options.version]
+  const packageVersions = await consumerReleaseVersions(dependencyVersion)
+
+  return {
+    applied: options.apply === true,
+    changedFiles: [],
+    changes: [],
+    filesScanned,
+    manualReview: [],
+    root,
+    version: options.version,
+    dependencyVersion,
+    ...(packageVersions ? { packageVersions: { ...packageVersions } } : {})
+  }
+}
 
 const refreshDependencyReport = async (report: LumenVersionMigrationReport): Promise<void> => {
   if (report.dependencies && report.applied) {
@@ -201,7 +208,7 @@ export const migrateLumenVersion = async (
   if (options.version === 'v4') await checkLedgerLocation(root)
 
   const ledger = options.version === 'v4' ? await readLedger(ledgerPath) : {}
-  const report = createReport(options, root, files.length)
+  const report = await createReport(options, root, files.length)
 
   if (options.dependencies) {
     report.dependencies = await applyLumenVersionMigrationDependencies(root, report.dependencyVersion, options)
@@ -247,6 +254,8 @@ export const formatLumenVersionMigration = (report: LumenVersionMigrationReport)
     v4: 'Review product CSS, pending dialogs, chart identity, native initializers, exhaustive Swift icon switches and embedded MCP SDK v2 integrations. Source changes do not qualify the application for release.',
     v5: 'V5 performs no automatic source rewrites. Review async Astro readiness and separately installed CLI; delivery and recipes are optional adoption. The candidate contract does not establish publication availability.'
   }[report.version],
-  `Use --dependencies to inventory or upgrade the coordinated npm family to ${report.dependencyVersion} through the existing pnpm rollout. Native Swift/Maven pins remain application-owned.`,
+  report.version === 'v5' ?
+    'Use --dependencies to inventory or upgrade npm packages to their individual bundled release-manifest versions through the existing pnpm rollout. Native Swift/Maven pins remain application-owned.' :
+    `Use --dependencies to inventory or upgrade the coordinated npm family to ${report.dependencyVersion} through the existing pnpm rollout. Native Swift/Maven pins remain application-owned.`,
   ...(!report.applied && report.changes.length ? [`Run lumen migrate ${report.version} --apply to write the source changes.`] : [])
 ].join('\n')

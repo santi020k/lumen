@@ -14,46 +14,46 @@
           "peerDependencies": {
             "astro": ">=5"
           },
-          "version": "4.4.0"
+          "version": "5.0.0"
         },
         "@santi020k/lumen-core": {
           "peerDependencies": {
             "@rive-app/canvas": "^2.44.0"
           },
-          "version": "4.4.0"
+          "version": "5.0.0"
         },
         "@santi020k/lumen-elements": {
           "peerDependencies": {},
-          "version": "4.3.0"
+          "version": "5.0.0"
         },
         "@santi020k/lumen-icons-brand": {
           "peerDependencies": {},
-          "version": "4.0.0"
+          "version": "4.0.1"
         },
         "@santi020k/lumen": {
           "peerDependencies": {
             "react": ">=19"
           },
-          "version": "4.4.0"
+          "version": "5.0.0"
         },
         "@santi020k/lumen-mcp": {
           "peerDependencies": {},
-          "version": "4.4.0"
+          "version": "5.0.0"
         },
         "@santi020k/lumen-react": {
           "peerDependencies": {
             "react": ">=19",
             "motion": "^14.0.0"
           },
-          "version": "4.3.0"
+          "version": "5.0.0"
         },
         "@santi020k/lumen-react-hook-form": {
           "peerDependencies": {
-            "@santi020k/lumen-react": "^4.0.0",
+            "@santi020k/lumen-react": "^4.0.0 || ^5.0.0",
             "react": ">=19",
             "react-hook-form": ">=7.76.0 <8"
           },
-          "version": "4.0.1"
+          "version": "4.0.2"
         },
         "@santi020k/lumen-react-native": {
           "peerDependencies": {
@@ -62,7 +62,7 @@
             "react-native": ">=0.86.2",
             "react-native-svg": ">=12 <16"
           },
-          "version": "4.0.2"
+          "version": "4.0.3"
         },
         "@santi020k/lumen-tokens": {
           "peerDependencies": {},
@@ -73,9 +73,9 @@
     "swift": {
       "package": "https://github.com/santi020k/lumen.git",
       "revision": null,
-      "tag": "v4.4.0"
+      "tag": "v5.0.0"
     },
-    "version": "4.4.0"
+    "version": "5.0.0"
   },
   "migration": {
     "codemod": null,

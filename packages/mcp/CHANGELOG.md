@@ -1,5 +1,26 @@
 # @santi020k/lumen-mcp
 
+## 5.0.0
+
+### Minor Changes
+
+- Add an explicit v5 migration contract and target-version audit evidence. `lumen migrate v5` keeps
+  source unchanged and separates compatibility reviews from optional modular delivery and recipe
+  adoption. Dependency changes remain opt-in. MCP migration guidance accepts a v5 target while
+  preserving the v4 contract. Candidate status is separate from publication approval and availability.
+
+- Add editable Astro code-example and share recipes using selective primitives. Preserve full-source
+  copy, highlighted Markdown slots, native disclosure fallbacks, native-share cancellation and focus,
+  and stale-result protection. Publish dependency and setup metadata through registry and MCP discovery.
+
+  Enhance the editorial product video recipe with deferred captions, one transcript disclosure,
+  navigation pause, loading feedback, and explicit media retry. Keep the close control above a long
+  transcript and move focus to the native player after retrying.
+
+### Patch Changes
+
+- Add editable React and Elements article-reading, site-search-dialog, and image-viewer recipes using selective controls and component styles. Preserve native recovery links, discard stale search results, cancel requests on cleanup, and reconnect Elements controllers on remount.
+
 ## 4.4.0
 
 ### Minor Changes
