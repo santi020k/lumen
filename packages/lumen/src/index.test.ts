@@ -206,7 +206,7 @@ describe('@santi020k/lumen umbrella package', () => {
       const source = await readFile(join(cwd, 'src/lumen/data-table.astro'), 'utf8')
 
       expect(result.added).toEqual(['src/lumen/data-table.astro'])
-      expect(source).toContain('import { DataTable as LumenDataTable } from \'@santi020k/lumen-astro\'')
+      expect(source).toContain('import LumenDataTable from \'@santi020k/lumen-astro/components/DataTable.astro\'')
       expect(source).toContain('<LumenDataTable {...props}>')
 
       await writeFile(join(cwd, 'src/lumen/data-table.astro'), 'custom', 'utf8')
@@ -231,12 +231,12 @@ describe('@santi020k/lumen umbrella package', () => {
       const elementsSource = await readFile(join(cwd, 'src/lumen/button.ts'), 'utf8')
 
       expect(react.added).toEqual(['src/lumen/button.tsx'])
-      expect(reactSource).toContain('import { Button as LumenButton } from \'@santi020k/lumen-react\'')
+      expect(reactSource).toContain('import { Button as LumenButton } from \'@santi020k/lumen-react/components/button\'')
       expect(reactSource).toContain('export type ButtonProps = ComponentPropsWithoutRef<typeof LumenButton>')
       expect(reactSource).toContain('export const Button = (props: ButtonProps) => <LumenButton {...props} />')
 
       expect(elements.added).toEqual(['src/lumen/button.ts'])
-      expect(elementsSource).toContain('import {\n  defineLumenElements,\n  LumenButtonElement\n} from \'@santi020k/lumen-elements\'')
+      expect(elementsSource).toContain('import { LumenButtonElement } from \'@santi020k/lumen-elements/components/button\'')
       expect(elementsSource).toContain('export const buttonTagName = \'lumen-button\' as const')
       expect(elementsSource).toContain('\'lumen-button\': InstanceType<typeof LumenButtonElement>')
     } finally {

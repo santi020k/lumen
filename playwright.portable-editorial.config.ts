@@ -11,7 +11,7 @@ export default defineConfig({
   ],
   reporter: 'list',
   testDir: './tests/editorial',
-  testMatch: 'portable.spec.ts',
+  testMatch: ['portable.spec.ts', 'selective-installer.spec.ts'],
   workers: 2,
   use: { reducedMotion: 'reduce', baseURL: `http://127.0.0.1:${port}` },
   webServer: {

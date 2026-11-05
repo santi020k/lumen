@@ -59,7 +59,7 @@ await linkDependency('@lucide/icons', join(root, 'packages/core/node_modules/@lu
 for (const target of ['react', 'elements']) {
   const installed = join(consumer, `${target}-source`)
 
-  for (const recipe of ['article-reading', 'site-search-dialog', 'image-viewer']) {
+  for (const recipe of ['article-reading', 'site-search-dialog', 'image-viewer', 'Button', 'DialogBody', 'Alert', 'QRCode', 'VirtualList']) {
     execFileSync(process.execPath, [join(consumer, 'node_modules/@santi020k/lumen/bin/lumen.mjs'), 'add', recipe, '--target', target, '--cwd', installed], { cwd: consumer, stdio: 'inherit' })
   }
 
@@ -71,6 +71,13 @@ for (const file of ['react-app.tsx', 'react-main.tsx', 'elements-main.ts']) {
 }
 
 await copyFile(join(root, 'tests/fixtures/portable-editorial/fixture.css'), join(consumer, 'src/fixture.css'))
+
+await writeFile(join(consumer, 'src/installer-elements.ts'), 'import \'./elements/button\'\n')
+
+await writeFile(join(consumer, 'src/installer-react.tsx'),
+  'import { createRoot } from \'react-dom/client\'\nimport { Button } from \'./react/button\'\n' +
+  'const root = document.querySelector(\'[data-installer-root]\')\n' +
+  'if (root) createRoot(root).render(<Button>Installed React button</Button>)\n')
 
 await writeFile(join(consumer, 'src/styles.d.ts'), 'declare module \'*.css\' {}\n')
 
@@ -118,4 +125,8 @@ const content = fragments[0] + fragments[1].replaceAll('/illustration.svg', '/pr
 
 await writeFile(join(consumer, 'elements.html'), page(`<header><h1>Portable editorial consumer</h1><lumen-button data-remount>Remount recipes</lumen-button><output data-aborts>0</output></header><main>${content}</main><template data-recipe-template>${content}</template><footer><a href="https://santi020k.com">Santiago Molina</a></footer>`, 'elements-main.ts'))
 
-await build({ root: consumer, configFile: false, esbuild: { jsx: 'automatic' }, build: { rollupOptions: { input: { react: join(consumer, 'react.html'), elements: join(consumer, 'elements.html') } } } })
+await writeFile(join(consumer, 'installer-elements.html'), page('<h1>Installed Elements wrapper</h1><lumen-button>Installed Elements button</lumen-button><footer><a href="https://santi020k.com">Santiago Molina</a></footer>', 'installer-elements.ts'))
+
+await writeFile(join(consumer, 'installer-react.html'), page('<h1>Installed React wrapper</h1><div data-installer-root></div><footer><a href="https://santi020k.com">Santiago Molina</a></footer>', 'installer-react.tsx'))
+
+await build({ root: consumer, configFile: false, esbuild: { jsx: 'automatic' }, build: { rollupOptions: { input: { react: join(consumer, 'react.html'), elements: join(consumer, 'elements.html'), installerElements: join(consumer, 'installer-elements.html'), installerReact: join(consumer, 'installer-react.html') } } } })

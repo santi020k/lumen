@@ -12,6 +12,10 @@ import {
 } from '@santi020k/lumen-core'
 import { createSourceFile, forEachChild, type ImportDeclaration, type ImportSpecifier, isForOfStatement, isImportDeclaration, isNamedImports, isStringLiteral, type Node, ScriptKind, ScriptTarget, type Statement, SyntaxKind } from 'typescript'
 
+import { componentCssName } from './component-delivery.js'
+import { importedComponents } from './component-imports.js'
+import { type DeliveryVersion, getDeliveryVersion } from './delivery-version.js'
+import { hasComponentCss } from './style-coverage.js'
 import { findMarkupTagEnd, getMarkupStart } from './v2-migration.js'
 
 export type LumenDiagnosticSeverity = 'advisory' | 'error'
@@ -135,6 +139,7 @@ interface SourceEntry {
 
 interface ApplicationBoundary {
   dependencies: readonly string[]
+  deliveryVersions: Readonly<Record<LumenFramework, DeliveryVersion>>
   kind: 'application' | 'library' | 'workspace'
   packageName?: string
   root: string
@@ -189,8 +194,7 @@ const packageFramework = (packageName: string): LumenFramework | undefined => {
 
 const getFrameworks = (sources: SourceEntry[]): LumenFramework[] => [
   ...new Set(sources.flatMap(item => getPackageReferences(item.source))
-    .filter(packageName => !packageName.endsWith('/styles.css') &&
-      !packageName.endsWith('/layers.css'))
+    .filter(packageName => !packageName.endsWith('.css'))
     .flatMap(packageName => {
       const framework = packageFramework(packageName)
 
@@ -291,6 +295,11 @@ const createBoundaries = async (
 
     return {
       dependencies,
+      deliveryVersions: {
+        astro: await getDeliveryVersion(boundaryRoot, '@santi020k/lumen-astro'),
+        elements: await getDeliveryVersion(boundaryRoot, '@santi020k/lumen-elements'),
+        react: await getDeliveryVersion(boundaryRoot, '@santi020k/lumen-react')
+      },
       kind: classifyBoundary(root, boundaryRoot, manifest, boundarySources, packageRoots.length),
       ...(manifest?.name ? { packageName: manifest.name } : {}),
       root: boundaryRoot,
@@ -550,12 +559,12 @@ const componentNeedsAstroRuntime = (
 }
 
 const getRuntimeImports = (sources: SourceEntry[]): { file: string, name: string }[] => {
-  const imports = sources.flatMap(item => importedNames(item.source, '@santi020k/lumen-astro')
+  const imports = sources.flatMap(item => importedComponents(item.source, 'astro')
     .map(name => ({ file: item.file, name })))
 
   return imports.filter(item => componentNeedsAstroRuntime(
     item.name,
-    sources.filter(source => importedNames(source.source, '@santi020k/lumen-astro').includes(item.name))
+    sources.filter(source => importedComponents(source.source, 'astro').includes(item.name))
   ))
 }
 
@@ -953,7 +962,12 @@ const collectCssFindings = (
   return boundary.sources.filter(item => item.file.endsWith('.css')).flatMap(item => {
     const layerIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["'][^"']*\/layers\.css["']/mu)
     const tailwindIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["']tailwindcss["']/mu)
-    const styleIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["'][^"']*\/styles\.css["']/mu)
+
+    const styleIndexes = getPackageReferences(item.source)
+      .filter(path => path.includes('/styles/') || path.endsWith('/styles.css'))
+      .map(path => item.source.indexOf(path))
+
+    const styleIndex = styleIndexes.reduce((earliest, index) => earliest < 0 ? index : Math.min(earliest, index), -1)
     const findings: LumenDiagnosticFinding[] = []
 
     if (
@@ -962,7 +976,7 @@ const collectCssFindings = (
       (layerIndex < 0 || !(layerIndex < tailwindIndex && tailwindIndex < styleIndex))
     ) {
       findings.push(finding(
-        relative(root, item.file), 'tailwind-layer-order', 'Tailwind and Lumen imports do not use the verified cascade order.', 'Import Lumen layers.css, then tailwindcss, then the matching Lumen styles.css.'
+        relative(root, item.file), 'tailwind-layer-order', 'Tailwind and Lumen imports do not use the verified cascade order.', 'Import Lumen layers.css, then tailwindcss, then the matching Lumen foundation/component CSS or full styles.css.'
       ))
     }
 
@@ -978,13 +992,47 @@ const collectCssFindings = (
   })
 })
 
+const collectSelectiveStyleFindings = (
+  root: string, boundary: ApplicationBoundary, framework: LumenFramework
+): LumenDiagnosticFinding[] => {
+  const adapter = `@santi020k/lumen-${framework}`
+  const components = [...new Set(boundary.sources.flatMap(item => importedComponents(item.source, framework)))]
+
+  if (framework === 'astro' && components.length > 0) return []
+
+  const references = new Set(boundary.sources.flatMap(item => getPackageReferences(item.source)))
+
+  const foundation = [adapter, '@santi020k/lumen', '@santi020k/lumen-core']
+    .some(packageName => references.has(`${packageName}/styles/foundation.css`))
+
+  const required = [
+    ...(!foundation ? [`${adapter}/styles/foundation.css`] : []),
+    ...components.filter(name => !hasComponentCss(name, references, framework))
+      .map(name => `${adapter}/styles/components/${componentCssName(name)}.css`)
+  ]
+
+  return required.map(path => finding(
+    relative(root, boundary.root) || '.',
+    'framework-style-missing',
+    `The v5 selective setup is missing ${path}.`,
+    framework === 'astro' ?
+      'Framework components import CSS automatically. For manual markup, import the foundation and matching component CSS.' :
+      'Import the foundation and required component CSS, use an installed lumen add wrapper, or choose full styles.css.'
+  ))
+}
+
 const collectFrameworkStyleFindings = (
   repositoryRoot: string,
   boundary: ApplicationBoundary,
-  frameworks: LumenFramework[]
+  frameworks: LumenFramework[],
+  selectiveSources: SourceEntry[] = boundary.sources
 ): LumenDiagnosticFinding[] => frameworks.flatMap(framework => {
   const styleImport = styleImportByFramework[framework]
   const references = boundary.sources.filter(item => item.source.includes(styleImport))
+
+  if (references.length === 0 && boundary.deliveryVersions[framework] === 'v5') {
+    return collectSelectiveStyleFindings(repositoryRoot, { ...boundary, sources: selectiveSources }, framework)
+  }
 
   if (references.length === 0) {
     return [finding(
@@ -1023,7 +1071,7 @@ const collectAdapterMismatchFindings = (
   frameworks: LumenFramework[]
 ): LumenDiagnosticFinding[] => {
   const adapters = (Object.entries(styleImportByFramework) as [LumenFramework, string][])
-    .flatMap(([framework, styleImport]) => boundary.sources.some(item => item.source.includes(styleImport)) ?
+    .flatMap(([framework, styleImport]) => boundary.sources.some(item => getPackageReferences(item.source).some(path => path.startsWith(styleImport.slice(0, -'styles.css'.length)) && path.endsWith('.css'))) ?
       [framework] :
       [])
 
@@ -1102,7 +1150,7 @@ export const inspectLumenIntegration = async (repository: string): Promise<Lumen
     findings.push(
       ...collectDuplicatedBehaviorFindings(root, effectiveBoundary.sources),
       ...runtime.findings,
-      ...collectFrameworkStyleFindings(root, boundary, boundaryFrameworks),
+      ...collectFrameworkStyleFindings(root, boundary, boundaryFrameworks, effectiveBoundary.sources),
       ...collectAdapterMismatchFindings(root, boundary, boundaryFrameworks)
     )
   }
@@ -1134,44 +1182,37 @@ export const formatLumenDiagnostics = (report: LumenDiagnosticReport): string =>
 }
 
 export const createLumenSetup = (framework: 'astro' | 'elements' | 'react', tailwind = false): string => {
-  const setupByFramework = {
-    astro: {
-      styles: '@import "@santi020k/lumen-astro/styles.css";',
-      tailwind:
-        '@import "@santi020k/lumen-astro/layers.css";\n' +
-        '@import "tailwindcss";\n' +
-        '@import "@santi020k/lumen-astro/styles.css";\n' +
-        '@import "@santi020k/lumen-astro/tailwind.css";'
-    },
-    elements: {
-      styles: '@import "@santi020k/lumen-elements/styles.css";',
-      tailwind:
-        '@import "@santi020k/lumen-elements/layers.css";\n' +
-        '@import "tailwindcss";\n' +
-        '@import "@santi020k/lumen-elements/styles.css";\n' +
-        '@import "@santi020k/lumen-elements/tailwind.css";'
-    },
-    react: {
-      styles: '@import "@santi020k/lumen-react/styles.css";',
-      tailwind:
-        '@import "@santi020k/lumen-react/layers.css";\n' +
-        '@import "tailwindcss";\n' +
-        '@import "@santi020k/lumen-react/styles.css";\n' +
-        '@import "@santi020k/lumen-react/tailwind.css";'
-    }
-  } as const
+  const adapter = `@santi020k/lumen-${framework}`
+  const foundation = `@import "${adapter}/styles/foundation.css";`
 
-  const styles = tailwind ? setupByFramework[framework].tailwind : setupByFramework[framework].styles
+  const styles = tailwind ?
+    [
+      '@import "' + adapter + '/layers.css";',
+      '@import "tailwindcss";',
+      foundation,
+      '@import "' + adapter + '/tailwind.css";'
+    ].join('\n') :
+    foundation
 
   if (framework === 'astro') {
-    return `${styles}\n\n---\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<UIPrimitives />`
+    const tailwindGuidance = tailwind ? `/* Global stylesheet, before importing the layout: */\n${styles}\n\n` : ''
+
+    return `${tailwindGuidance}---
+// Lumen v5 components import their foundation and component CSS automatically.
+// Static components need no runtime. Mount once for interactive components.
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+
+<UIPrimitives />
+<slot />
+
+<!-- For manually authored Lumen markup outside components, explicitly import foundation and its component CSS. -->`
   }
 
-  if (framework === 'elements') {
-    return `${styles}\n\n` +
-      'import { defineLumenElements } from \'@santi020k/lumen-elements/define\'\n\n' +
-      'defineLumenElements()'
-  }
+  return `${styles}
 
-  return styles
+/* Lumen v5: component wrappers installed by lumen add include their component CSS.
+   Elements wrappers register only their selected constructor.
+   If importing primitives directly, also import each required styles/components/<name>.css.
+   Full styles.css remains an explicit convenience alternative. */`
 }

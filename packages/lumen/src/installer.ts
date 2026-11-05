@@ -2,6 +2,9 @@ import { access, lstat, mkdir, readdir, readFile, writeFile } from 'node:fs/prom
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { lumenComponentNames } from '@santi020k/lumen-core'
+
+import { componentCssName, getComponentEntry } from './component-delivery.js'
 import {
   getLumenRegistryItem,
   type LumenRegistry,
@@ -100,7 +103,7 @@ const loadRecipeTemplateFiles = async (
   return files.length > 0 ? files : undefined
 }
 
-const toKebabCase = (name: string) => name.replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+const toKebabCase = componentCssName
 
 const toCamelCase = (value: string): string => (
   value.replaceAll(/-([a-z])/g, (_match, character: string) => character.toUpperCase())
@@ -109,7 +112,9 @@ const toCamelCase = (value: string): string => (
 const createAstroComponentFile = (name: string): LumenRecipeFile => ({
   path: `src/lumen/${toKebabCase(name)}.astro`,
   source: `---
-import { ${name} as Lumen${name} } from '@santi020k/lumen-astro'
+${lumenComponentNames.some(component => component === name) ?
+    `import Lumen${name} from '@santi020k/lumen-astro/components/${name}.astro'` :
+    `import { ${name} as Lumen${name} } from '@santi020k/lumen-astro'`}
 
 const props = Astro.props
 ---
@@ -120,30 +125,46 @@ const props = Astro.props
 `
 })
 
-const createReactComponentFile = (name: string): LumenRecipeFile => ({
-  path: `src/lumen/${toKebabCase(name)}.tsx`,
-  source: `import type { ComponentPropsWithoutRef } from 'react'
+const componentStyleImports = (name: string, target: 'elements' | 'react'): string => (
+  lumenComponentNames.some(component => component === name) ?
+    `import '@santi020k/lumen-${target}/styles/foundation.css'\n` +
+    `import '@santi020k/lumen-${target}/styles/components/${componentCssName(name)}.css'\n\n` :
+    ''
+)
 
-import { ${name} as Lumen${name} } from '@santi020k/lumen-react'
+const catalogComment = (name: string, selective: string | undefined): string => selective ?
+  '' :
+  `// Catalog fallback: ${name} has no published selective entry. This import traverses the catalog.\n`
+
+const createReactComponentFile = (name: string): LumenRecipeFile => {
+  const selective = getComponentEntry(name, 'react')
+
+  return {
+    path: `src/lumen/${toKebabCase(name)}.tsx`,
+    source: `import type { ComponentPropsWithoutRef } from 'react'
+
+${componentStyleImports(name, 'react')}${catalogComment(name, selective)}import { ${name} as Lumen${name} } from '${selective ?? '@santi020k/lumen-react'}'
 
 export type ${name}Props = ComponentPropsWithoutRef<typeof Lumen${name}>
 
 export const ${name} = (props: ${name}Props) => <Lumen${name} {...props} />
 `
-})
+  }
+}
 
 const createElementsComponentFile = (name: string): LumenRecipeFile => {
   const tagName = `lumen-${toKebabCase(name)}`
   const variableName = `${toCamelCase(toKebabCase(name))}TagName`
+  const selective = getComponentEntry(name, 'elements')
 
   return {
     path: `src/lumen/${toKebabCase(name)}.ts`,
-    source: `import {
-  defineLumenElements,
-  Lumen${name}Element
-} from '@santi020k/lumen-elements'
+    source: `${componentStyleImports(name, 'elements')}${catalogComment(name, selective)}import { Lumen${name}Element } from '${selective ?? '@santi020k/lumen-elements'}'
 
-defineLumenElements()
+// Register this constructor only; repeated imports preserve existing registry definitions.
+if (typeof customElements !== 'undefined' && !customElements.get('${tagName}')) {
+  customElements.define('${tagName}', Lumen${name}Element)
+}
 
 export { Lumen${name}Element }
 

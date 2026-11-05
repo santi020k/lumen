@@ -732,6 +732,7 @@ describe('Lumen integration diagnostics', () => {
   test('prints deterministic framework and Tailwind setup', () => {
     expect(createLumenSetup('react', true)).toContain('@import "tailwindcss";')
     expect(createLumenSetup('astro')).toContain('<UIPrimitives />')
-    expect(createLumenSetup('elements')).toContain('defineLumenElements()')
+    expect(createLumenSetup('elements')).toContain('/styles/foundation.css')
+    expect(createLumenSetup('elements')).not.toContain('defineLumenElements()')
   })
 })

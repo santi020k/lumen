@@ -1,0 +1,50 @@
+# Selective installation in Lumen 5
+
+Install the CLI separately from the runtime adapter, then copy an editable wrapper:
+
+    pnpm add -D @santi020k/lumen
+    pnpm exec lumen add Button --target astro
+    pnpm exec lumen add Button --target react
+    pnpm exec lumen add Button --target elements
+
+Astro wrappers import the public component file directly. Lumen 5 Astro components import their
+foundation and component styles automatically. Mount UIPrimitives once in an application layout
+when interactive components are used; static components need no runtime. For Markdown or manually
+authored Lumen markup outside that component tree, explicitly import the foundation and every
+required component stylesheet, and mount the runtime for interactive Astro behavior.
+
+React and Elements wrappers import the adapter foundation and selected component CSS. Bundlers
+can deduplicate these shared imports. Elements wrappers register only the selected constructor,
+preserving an existing registration on repeated evaluation. Compound child elements each need
+their own registration. Install their wrappers or follow the compound component's documented setup.
+
+The installer uses a verified public selective export when one exists. Other React and Elements
+components retain a catalog import with an explicit “Catalog fallback” source comment. Such wrappers
+register only their chosen element but still traverse the catalog dependency graph. They do not
+promise selective JavaScript delivery. Recipes keep their documented composition and setup files.
+
+The component CSS entries include their declared dependencies. Full styles.css remains a convenience
+alternative to individually selected CSS. Do not combine full CSS with selective imports to claim
+smaller route delivery; measure the emitted and requested assets in the actual application.
+
+## Source diagnostics
+
+The source-only doctor accepts Astro automatic styles and React/Elements selective CSS only with
+Lumen 5 version evidence. It first reads the nearest installed adapter manifest, then falls back to
+a direct dependency range wholly within major 5. Unknown tags, workspace wildcards, mixed-major
+ranges, and future majors do not imply the Lumen 5 contract. An installed older adapter takes
+precedence over a requested major-5 range.
+
+The doctor recognizes default Astro component imports and named selective React/Elements imports.
+It checks for the foundation and the component CSS associated with those source imports. Shared
+workspace component CSS contributes to the application using that package. Existing full stylesheet
+checks and legacy guidance remain available. Source imports describe setup intent; use the
+[opt-in rendered audit](rendered-audit.md) to inspect actual local route requests and layout.
+
+    pnpm exec lumen init --framework astro
+    pnpm exec lumen init --framework react --tailwind
+    pnpm exec lumen doctor --json
+
+Setup prints the Lumen 5 foundation guidance. It does not install dependencies or register a complete
+Elements catalog. Keep dry runs and conflict policies when adopting generated wrappers in an existing
+project; rerunning add preserves edited files unless an explicit overwrite or merge policy is chosen.
