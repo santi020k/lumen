@@ -310,6 +310,11 @@ the document without requiring a separate hook. The activation line uses the gre
 one CSS pixel rounding tolerance. Live styles keep enlarged text and responsive headers aligned
 with native fragment navigation. A page that cannot scroll keeps its first visible section current.
 
+For article reading, `ScrollProgress targetId="article-id"` measures the selected content element.
+Omitting the prop or referencing a missing element retains document progress. Measurements refresh
+on scrolling, resize, and content reflow. The selective export is
+`@santi020k/lumen-react/components/scroll-progress`.
+
 ```tsx
 import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
 

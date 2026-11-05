@@ -518,6 +518,10 @@ host does not name the internal input. Use the public `lumen-label` for visible 
 Do not type a custom host as `HTMLInputElement` or `HTMLButtonElement`; use its exported element
 class and runtime narrowing when accessing element-specific methods.
 
+For article reading, `lumen-scroll-progress target-id="article-id"` measures only that content
+element. Omit the attribute for document progress. Missing targets retain document progress, and
+resize or content reflow refreshes the measurement.
+
 Use `lumen-dialog` as the behavior owner. Its public methods are `show(trigger?)` and `close()`,
 not `showModal()` on the custom host. A native `dialog` child is its documented modal contract:
 

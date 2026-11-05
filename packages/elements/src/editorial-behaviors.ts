@@ -577,6 +577,8 @@ export class LumenDialogBehaviorElement extends LumenElement {
 
     this.#nativeDialog?.addEventListener(
       'close', () => {
+        if (this.#nativeDialog?.open) return
+
         this.#returnFocus()
       }, { signal }
     )
@@ -976,6 +978,7 @@ export const defineLumenAnchor = (registry: LumenCustomElementRegistry = customE
 }
 
 export const lumenScrollProgressElementConfig = {
+  observedAttributes: ['position', 'target-id'],
   attributeClasses: {
     position: { bottom: 'ui-scroll-progress--bottom' }
   },

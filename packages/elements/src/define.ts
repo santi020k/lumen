@@ -193,8 +193,6 @@ import { boxPlotHtml, calendarHeatmapHtml, funnelChartHtml, parseBoxPlotData, pa
 import { observedAttributeNames } from './observed-attributes.js'
 
 export { LumenDialogElement } from './editorial-behaviors.js'
-export {  } from './editorial-behaviors.js'
-export {  } from './observed-attributes.js'
 
 export { LumenAmountFieldElement }
 export { LumenElement } from './element-base.js'
