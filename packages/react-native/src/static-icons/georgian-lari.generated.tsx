@@ -24,10 +24,10 @@ const LumenGeorgianLariIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M11.5 21a7.5 7.5 0 1 1 7.35-9" />
-      <Path d="M13 12V3" />
-      <Path d="M4 21h16" />
-      <Path d="M9 12V3" />
+      <Path d="M10 10V3" />
+      <Path d="M14 10V3" />
+      <Path d="M19 13a7 7 0 10-7 7" />
+      <Path d="M5 20h14" />
   </Svg>
 )
 

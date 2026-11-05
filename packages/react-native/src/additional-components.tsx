@@ -243,7 +243,7 @@ export const LumenChip = ({
   ...props
 }: LumenChipProps): ReactElement => {
   const theme = useLumenTheme()
-  const isDisabled = disabled === true
+  const isDisabled = disabled
 
   const content = (
     <>

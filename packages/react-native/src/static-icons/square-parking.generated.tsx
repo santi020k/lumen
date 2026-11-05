@@ -24,8 +24,8 @@ const LumenSquareParkingIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
+      <Path d="M9 12h4a2 2 0 0 0 0-4H9.5a.5.5 0 0 0-.5.5V16" />
       <Rect width="18" height="18" x="3" y="3" rx="2" />
-      <Path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
   </Svg>
 )
 

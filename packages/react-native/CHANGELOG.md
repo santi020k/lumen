@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Support the Expo 58 / React Native 0.88 / React 19.3 toolchain with correctly typed component refs. Add 188 icon graphics while preserving all previous icon names and exports.
+
 - Expose focused locale and native-input helpers and complete the chart helper entrypoint. Keep React Native imports on these entrypoints to avoid loading the unrelated web icon lookup catalog in native bundles.
 - Updated dependencies [`1487f80`, `94d13ff`, `73a4b13`, `8ba0ca5`, `3e1d507`, `23d5ef6`, `94cf634`, `d4cb325`]:
   - @santi020k/lumen-core@5.0.0

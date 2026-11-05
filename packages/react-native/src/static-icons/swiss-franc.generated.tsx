@@ -24,9 +24,9 @@ const LumenSwissFrancIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M10 21V3h8" />
+      <Path d="M10 10h7" />
+      <Path d="M10 20V5a1 1 0 011-1h7" />
       <Path d="M6 16h9" />
-      <Path d="M10 9.5h7" />
   </Svg>
 )
 

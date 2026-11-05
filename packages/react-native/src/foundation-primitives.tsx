@@ -137,7 +137,7 @@ export const LumenButton = ({
   const theme = useLumenTheme()
   const colors = resolveLumenButtonColors(theme.colors, intent)
   const dimensions = resolveLumenButtonSize(theme, size)
-  const isDisabled = disabled === true || loading
+  const isDisabled = disabled || loading
 
   return (
     <Pressable

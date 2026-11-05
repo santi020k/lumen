@@ -24,9 +24,9 @@ const LumenHeadingIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M6 12h12" />
-      <Path d="M6 20V4" />
       <Path d="M18 20V4" />
+      <Path d="M6 12H18" />
+      <Path d="M6 20V4" />
   </Svg>
 )
 

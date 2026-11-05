@@ -24,8 +24,8 @@ const LumenCopyrightIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
+      <Path d="M15 9.354a4 4 0 1 0 0 5.292" />
       <Circle cx="12" cy="12" r="10" />
-      <Path d="M14.83 14.83a4 4 0 1 1 0-5.66" />
   </Svg>
 )
 

@@ -69,7 +69,7 @@ try {
       join(coreArchiveDirectory, coreArchives[0]),
       join(packageArchiveDirectory, packageArchives[0]),
       '@types/react@19.2.18',
-      'react@19.2.3',
+      'react@19.3.0',
       'react-native@0.86.2',
       'react-native-svg@15.15.4',
       'typescript@6.0.3'

@@ -60,12 +60,12 @@ store distribution profiles.
 
 ## Native host configuration
 
-The SDK 57 configuration enables iOS scene support through `expo-build-properties` so native
-builds made with Xcode 27 launch on iOS and iPadOS 27. Keep this opt-in until the Expo SDK upgrade;
-Expo SDK 58 adopts scenes by default. Regenerate the native host after changing the plugin settings.
+Expo SDK 58 enables iOS scene support by default, so the previous scene opt-in is removed.
+Regenerate the native host after upgrading the SDK or changing plugin settings.
+The source-build settings retain the font-scale renderer correction described below.
 See Expo's [scene lifecycle migration](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md).
 
-The local Android splash plugin runs after Expo's resource generation. Expo SDK 57's splash plugin
+The local Android splash plugin runs after Expo's resource generation. Expo SDK 58's splash plugin
 places `android:windowSplashScreenBehavior` in the base style even though that attribute requires
 API 33. Lumen moves it to a complete `values-v33` splash style while preserving the common items
 for older Android versions. Keep the Android minimum SDK unchanged and regenerate the native host
@@ -85,9 +85,9 @@ latest update on the `expo-go` branch:
 exp://u.expo.dev/669035f0-04c0-41cd-9ca6-73d99bdb7dce/branch/01a03c76-64c5-7c07-ba75-43f815735357
 ```
 
-The current app targets Expo SDK 57 and therefore requires an Expo Go client that supports SDK 57.
+The current app targets Expo SDK 58 and therefore requires an Expo Go client that supports SDK 58.
 Check the installed Expo Go client's supported SDK before opening the link. If it does not
-support SDK 57, use the local native development build described in the playground guide.
+support SDK 58, use the local native development build described in the playground guide.
 The browser preview remains available without an Expo Go installation.
 
 Publish a new version from an authenticated Expo session with:
@@ -171,7 +171,7 @@ for browser regression checks and reproducible preview links.
 
 ## Live iOS text resizing
 
-The workspace applies `patches/react-native@0.86.3.patch` through pnpm's exact-version
+The workspace applies `patches/react-native@0.88.1.patch` through pnpm's exact-version
 `patchedDependencies`. The Expo build-properties configuration builds React Native from source
 and disables precompiled modules, so the corrected Fabric/Yoga layout code reaches iOS builds.
 Installing a JavaScript update alone cannot update the native renderer. Regenerate native projects
@@ -184,7 +184,7 @@ regression fixture. On an already mounted screen, edit the draft, grow system Te
 standard setting to its maximum, scroll to the paragraph's final sentence, and restore the standard
 setting. Both plain React Native and Lumen text must wrap and the edited draft must survive.
 
-This correction is specific to React Native 0.86.3. Reevaluate it against upstream changes before
+This correction is specific to React Native 0.88.1. Reevaluate it against upstream changes before
 upgrading. Native iOS source compilation takes longer than using the prebuilt renderer. The patch
 is local application configuration, not a fix automatically installed by the published Lumen
 package. Downstream apps affected by this version must apply the patch and rebuild their native

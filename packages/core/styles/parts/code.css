@@ -76,7 +76,7 @@
   --ui-code-token-accent: hsl(264 95% 45%);
   --ui-code-token-comment: hsl(268 8% 46%);
   --ui-code-token-keyword: hsl(264 92% 42%);
-  --ui-code-token-string: hsl(134 61% 34%);
+  --ui-code-token-string: hsl(134 61% 30%);
   --ui-code-token-symbol: hsl(35 85% 36%);
   --ui-code-token-type: hsl(264 76% 36%);
 }
@@ -95,7 +95,7 @@
   --ui-code-token-accent: hsl(264 95% 45%);
   --ui-code-token-comment: hsl(268 8% 46%);
   --ui-code-token-keyword: hsl(264 92% 42%);
-  --ui-code-token-string: hsl(134 61% 34%);
+  --ui-code-token-string: hsl(134 61% 30%);
   --ui-code-token-symbol: hsl(35 85% 36%);
   --ui-code-token-type: hsl(264 76% 36%);
 }
@@ -113,7 +113,7 @@
   --ui-code-muted: hsl(260 7% 62%);
   --ui-code-token-accent: hsl(264 90% 72%);
   --ui-code-token-comment: hsl(260 8% 58%);
-  --ui-code-token-keyword: hsl(264 90% 68%);
+  --ui-code-token-keyword: hsl(264 90% 72%);
   --ui-code-token-string: hsl(169 34% 64%);
   --ui-code-token-symbol: hsl(40 88% 68%);
   --ui-code-token-type: hsl(264 95% 78%);
@@ -132,7 +132,7 @@
   --ui-code-muted: hsl(260 7% 62%);
   --ui-code-token-accent: hsl(264 90% 72%);
   --ui-code-token-comment: hsl(260 8% 58%);
-  --ui-code-token-keyword: hsl(264 90% 68%);
+  --ui-code-token-keyword: hsl(264 90% 72%);
   --ui-code-token-string: hsl(169 34% 64%);
   --ui-code-token-symbol: hsl(40 88% 68%);
   --ui-code-token-type: hsl(264 95% 78%);
@@ -151,7 +151,7 @@
   --ui-code-muted: hsl(260 7% 62%);
   --ui-code-token-accent: hsl(264 90% 72%);
   --ui-code-token-comment: hsl(260 8% 58%);
-  --ui-code-token-keyword: hsl(264 90% 68%);
+  --ui-code-token-keyword: hsl(264 90% 72%);
   --ui-code-token-string: hsl(169 34% 64%);
   --ui-code-token-symbol: hsl(40 88% 68%);
   --ui-code-token-type: hsl(264 95% 78%);
@@ -170,7 +170,7 @@
   --ui-code-muted: hsl(260 7% 62%);
   --ui-code-token-accent: hsl(264 90% 72%);
   --ui-code-token-comment: hsl(260 8% 58%);
-  --ui-code-token-keyword: hsl(264 90% 68%);
+  --ui-code-token-keyword: hsl(264 90% 72%);
   --ui-code-token-string: hsl(169 34% 64%);
   --ui-code-token-symbol: hsl(40 88% 68%);
   --ui-code-token-type: hsl(264 95% 78%);

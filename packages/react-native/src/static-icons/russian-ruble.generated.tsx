@@ -24,8 +24,8 @@ const LumenRussianRubleIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M6 11h8a4 4 0 0 0 0-8H9v18" />
-      <Path d="M6 15h8" />
+      <Path d="M4 16h6" />
+      <Path d="M7 20V5a1 1 0 011-1h6a4 4 0 010 8H4" />
   </Svg>
 )
 

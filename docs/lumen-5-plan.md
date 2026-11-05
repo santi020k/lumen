@@ -276,3 +276,40 @@ GitHub CI on the preceding `dffee321` revision passed web validation but failed 
 `packages/compose/build.gradle.kts:10` reports Dokka 2.3.0 newer than 2.2.0. These Android tooling
 updates require separate validation before release. Local documentation validation does not clear
 that CI gate. Publication remains unauthorized and the v5 contract remains draft.
+
+
+## Dependency and native-toolchain audit (2026-11-05)
+
+The maintainer approved coordinated platform/API migrations for this release. The dependency
+follow-up upgrades AGP to 9.5.1 and Dokka to 2.3.0, plus the supported stable JavaScript graph,
+Expo 58 / React Native 0.88 / React 19.3, Theme 3 and resolvers 7. Exact versions, official sources,
+peer constraints and release-age holds are in [dependency upgrades](lumen-5-dependencies.md).
+The playground now uses a fingerprint runtime and requires a native rebuild before delivery.
+
+The refreshed catalog preserves every previous web export and Swift symbol through canonical
+aliases while adding 188 native graphics. Unlike the earlier preparation above, Swift compatibility
+now reports 188 reviewed enum-case additions against v4.4.0. The canonical v5 migration contract,
+CLI/MCP mirrors, platform baselines and migration guide record that exhaustive switches need review.
+Independent reviews found missing legacy web exports and incomplete migration notes; both were
+fixed. The bounded final reviews found no further actionable regressions.
+
+| Dependency follow-up check | Result |
+| --- | --- |
+| `pnpm run validate` on the final implementation tree | Passed, including 3,176 tests across 306 files, strict types, zero-warning lint, spelling, contracts, security, builds and packed consumers |
+| Frozen install, workspace peer check and Expo dependency check | Passed; intentional TypeScript, Oxlint and SDK version holds remain documented |
+| Compose `test lint apiCheck assembleDebugAndroidTest verifyMavenPublication` | Passed, 223 tasks; phone and Wear Dokka artifacts included |
+| Compose candidate-artifact playground consumer and isolation assertion | Passed, 107 tasks |
+| `swift test` | 148 tests passed |
+| Swift platform API generation and source compatibility | Five LumenUI and three WidgetKit baselines generated; 188 precisely reviewed enum-case additions accepted |
+| Clean packed React Native Android application | Passed; this does not establish physical iOS font-scale behavior |
+| Chromium, WebKit and mobile interaction subset | 88 passed |
+| Rendered guide accessibility | All four Lumen/Santi020k light/dark themes passed; code and badge contrast, region names and pagination labels corrected |
+| Route-delivery budgets | Passed |
+| Expo runtime configuration | SDK 58 and fingerprint policy resolve locally; Android runtime differs from the old app-version runtime |
+
+Before/after screenshots at 390px and 1440px and temporary validation logs remain untracked.
+The full raw dependency audit retains the existing Zod advisory, covered by the repository's
+verified patch; the canonical security gate passes. Gradle still reports an upstream deprecation
+notice for future Gradle 10 compatibility. No check, peer rule, security patch or release-age policy
+was weakened. GitHub CI must verify the pushed revision before the Compose CI blocker is declared
+cleared remotely. Publication remains unauthorized and the v5 contract remains draft.

@@ -24,9 +24,9 @@ const LumenPhilippinePesoIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M20 11H4" />
-      <Path d="M20 7H4" />
-      <Path d="M7 21V4a1 1 0 0 1 1-1h4a1 1 0 0 1 0 12H7" />
+      <Path d="M4 12h16" />
+      <Path d="M4 8h16" />
+      <Path d="M6 20V5a1 1 0 011-1h5a6 6 0 010 12H6" />
   </Svg>
 )
 

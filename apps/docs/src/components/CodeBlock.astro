@@ -9,17 +9,18 @@ import { cachedLumenThemes, cachedSanti020kThemes } from '../lib/lumen-shiki-the
 
 interface Props {
   code: string
+  codeLabel?: string
   lang?: CodeLanguage
   title?: string
 }
 
-const { code, lang = 'plaintext', title } = Astro.props
+const { code, codeLabel, lang = 'plaintext', title } = Astro.props
 const language = typeof lang === 'string' ? lang : lang.name
 ---
 
 <Code
   class="docs-code-block"
-  codeLabel={title ? `${title} code example` : `${language} code example`}
+  codeLabel={codeLabel ?? (title ? `${title} code example` : `${language} code example`)}
   copy
   highlighted
   label={title ?? ''}

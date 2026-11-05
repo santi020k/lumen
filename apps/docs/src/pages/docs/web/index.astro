@@ -118,7 +118,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
             </div>
           ))}
         </div>
-        <div class="docs-token-strip" aria-label="Theme token examples">
+        <div class="docs-token-strip" aria-label="Theme token examples" role="group">
           <span style="--swatch: hsl(var(--brand));"></span>
           <span style="--swatch: hsl(var(--accent));"></span>
           <span style="--swatch: hsl(var(--success));"></span>
@@ -213,7 +213,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
             <p class="text-sm/6 text-ink-soft">{setup.description}</p>
           </div>
           <div class="docs-code-compact">
-            <CodeBlock code={setup.code} lang={setup.lang} />
+            <CodeBlock code={setup.code} codeLabel={`${setup.label} setup example`} lang={setup.lang} />
           </div>
         </Card>
       ))}
@@ -262,7 +262,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
             <p class="text-sm/6 text-ink-soft">{setup.description}</p>
           </div>
           <div class="docs-code-compact">
-            <CodeBlock code={setup.code} lang={setup.lang} />
+            <CodeBlock code={setup.code} codeLabel={`${setup.label} setup example`} lang={setup.lang} />
           </div>
         </Card>
       ))}
@@ -272,7 +272,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         <div class="docs-theme-feature__intro">
           <h3 class="text-base font-bold text-ink">{customThemeSetup.label}</h3>
           <p class="text-sm/6 text-ink-soft">{customThemeSetup.description}</p>
-          <div class="docs-token-strip docs-token-strip--flush" aria-label="Theme token examples">
+          <div class="docs-token-strip docs-token-strip--flush" aria-label="Theme token examples" role="group">
             <span style="--swatch: hsl(var(--brand));"></span>
             <span style="--swatch: hsl(var(--accent));"></span>
             <span style="--swatch: hsl(var(--success));"></span>
@@ -281,7 +281,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
           </div>
         </div>
         <div class="docs-code-compact">
-          <CodeBlock code={customThemeSetup.code} lang={customThemeSetup.lang} />
+          <CodeBlock code={customThemeSetup.code} codeLabel="Custom theme setup example" lang={customThemeSetup.lang} />
         </div>
       </Card>
     )}
@@ -329,7 +329,7 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
             <p class="text-sm/6 text-ink-soft">{example.description}</p>
           </div>
           <div class="docs-code-compact">
-            <CodeBlock code={example.code} lang={example.lang} />
+            <CodeBlock code={example.code} codeLabel={`${example.label} glass surface example`} lang={example.lang} />
           </div>
         </Card>
       ))}

@@ -158,10 +158,9 @@ latest update on the `expo-go` branch:
 exp://u.expo.dev/669035f0-04c0-41cd-9ca6-73d99bdb7dce/branch/01a03c76-64c5-7c07-ba75-43f815735357
 ```
 
-The playground currently targets Expo SDK 57. Expo Go must support the same SDK to load it. As of
-August 2026, the public Expo Go store client targets SDK 54, so this link is not yet a reliable
-general-public installation path. Wait for SDK 57 support or create and validate a deliberately
-separate SDK 54 compatibility app before promoting it broadly.
+The playground targets Expo SDK 58. Expo Go must support the same SDK to load it. Verify the
+installed client supports SDK 58 before using or promoting this link; no public-client compatibility
+is established by this dependency upgrade. Native development and store builds must be rebuilt.
 
 After validating a new playground version, publish it from an authenticated Expo session:
 
@@ -171,6 +170,9 @@ pnpm --filter @santi020k/lumen-playground-react-native run publish:expo-go -- --
 
 The project is owned by the `santi020k` Expo account. Keep `runtimeVersion`, `updates.url`, and the
 EAS project identifier in `app.json`; the Expo Go launch link depends on that project and branch.
+Native builds and updates use the `fingerprint` runtime policy so SDK or native dependency changes
+receive a different runtime. Do not send the SDK 58 bundle to an older native build. See
+[Expo runtime version guidance](https://docs.expo.dev/eas-update/runtime-versions/).
 Run the app's `generate:assets` script whenever the shared Lumen playground icon artwork changes.
 
 ### Create an APK or store build
@@ -180,8 +182,8 @@ CLI version without installing it into the Expo app. Authenticate and connect th
 
 ```bash
 cd apps/playground-react-native
-pnpm dlx eas-cli@24.8.0 login
-pnpm dlx eas-cli@24.8.0 init
+pnpm dlx eas-cli@27.4.1 login
+pnpm dlx eas-cli@27.4.1 init
 ```
 
 After `eas init`, keep the generated EAS project identifier in `app.json`. Build a directly

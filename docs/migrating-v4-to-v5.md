@@ -16,7 +16,7 @@ Use the [release manifest](../registry/release-manifest.json) for each package's
 v5 release, the six linked web/tooling packages target 5.0.0; React Hook Form targets 4.0.2, brand icons 4.0.1, React Native 4.0.3,
 and tokens remain 4.0.0. V5 dependency migration uses this map instead of assigning 5.0.0 to every
 package. `migrate v5` follows the bundled CLI's v5 release versions; explicit audit targets must match
-that bundled manifest. Swift and Maven pins remain application-owned.
+that bundled manifest. Swift and Maven pins remain application-owned. The refreshed Lucide catalog retains all previous names through aliases and adds new Swift enum cases. Review exhaustive `LumenIconName` switches when updating the Swift package. The repository playground now uses Expo SDK 58 with React Native 0.88 and React 19.3; regenerate and rebuild native applications when adopting that toolchain. See [dependency upgrades](lumen-5-dependencies.md) for exact versions and compatibility holds.
 
 Astro's `LumenInitUiPrimitives(scope)` returns a promise. Await it before relying on enhancement of
 newly inserted markup. The runtime dispatches `ui:ready` after initialization and `ui:runtime-error`

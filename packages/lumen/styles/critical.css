@@ -734,7 +734,7 @@
 .ui-badge--success {
   background: hsl(var(--success) / 0.1);
   border-color: hsl(var(--success) / 0.32);
-  color: hsl(var(--success));
+  color: color-mix(in srgb, hsl(var(--success)) 65%, hsl(var(--ink)));
 }
 
 .ui-badge--warning {

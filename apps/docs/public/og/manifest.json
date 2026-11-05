@@ -7976,15 +7976,15 @@
     },
     "/docs/icons": {
       "alt": "Lucide icon library for web and native — Documentation social preview from Lumen UI",
-      "description": "Browse the 1858 Lucide icons available through the Lumen Icon component across web, React Native, SwiftUI, and Compose.",
+      "description": "Browse the 2020 Lucide icons available through the Lumen Icon component across web, React Native, SwiftUI, and Compose.",
       "images": [
         {
           "format": "webp",
           "height": 630,
           "output": "docs--icons.webp",
           "primary": true,
-          "url": "/og/pages/docs--icons.webp?v=1e1c42d5ba32",
-          "version": "1e1c42d5ba32",
+          "url": "/og/pages/docs--icons.webp?v=9491db57904d",
+          "version": "9491db57904d",
           "width": 1200
         }
       ],

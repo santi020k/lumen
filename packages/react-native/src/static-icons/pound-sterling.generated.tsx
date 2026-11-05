@@ -24,10 +24,8 @@ const LumenPoundSterlingIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M18 7c0-5.333-8-5.333-8 0" />
-      <Path d="M10 7v14" />
-      <Path d="M6 21h12" />
-      <Path d="M6 13h10" />
+      <Path d="M17 18a2 2 0 01-2 2H5a3 3 0 003-3V8a4 4 0 018 0" />
+      <Path d="M6 12h7" />
   </Svg>
 )
 

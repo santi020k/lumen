@@ -4,6 +4,10 @@
 
 ### Minor Changes
 
+- Improve success badge text contrast in both themes and branded code-token contrast while retaining semantic colors.
+
+- Refresh the Lucide catalog while preserving legacy static web exports through canonical aliases. Upgrade compatible stable runtime dependencies and regenerate phone metadata.
+
 - Deliver shared foundation and component CSS through the existing packages. Astro components now
   import their own styles automatically; React and Elements can import `styles/foundation.css` once
   and `styles/components/<kebab-name>.css` where needed. Full and critical styles remain supported.
