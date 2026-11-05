@@ -255,7 +255,7 @@ jobs:
         run: pnpm --filter @santi020k/lumen-motion build && pnpm --filter @santi020k/lumen-motion test
 
       - name: Verify primitive motion and reduced-motion behavior
-        run: pnpm run test:motion
+        run: pnpm run test:motion && pnpm run check:route-delivery
 
       - name: Enforce web unit coverage
         run: pnpm run test:web-coverage
@@ -435,6 +435,7 @@ jobs:
           pnpm run test:a11y
           pnpm run test:editorial --project=chromium
           pnpm run test:product-workflows --project=chromium
+          pnpm run test:portable-editorial --project=chromium
           pnpm run test:rendered-audit --project=chromium
 
       - name: Repository checks

@@ -22,6 +22,17 @@ on:
       - "packages/**"
       - "tests/editorial/**"
       - "tests/fixtures/editorial/**"
+      - "tests/fixtures/portable-editorial/**"
+      - "tests/fixtures/product-workflows/**"
+      - "tests/fixtures/delivery/**"
+      - "tests/product-workflows/**"
+      - "tests/rendered-audit/**"
+      - "playwright.portable-editorial.config.ts"
+      - "playwright.product-workflows.config.ts"
+      - "playwright.rendered-audit.config.ts"
+      - "scripts/measure-route-delivery.mjs"
+      - "scripts/check-route-runtime.mjs"
+      - "scripts/check-component-css-rendering.mjs"
       - "playwright.editorial.config.ts"
       - "tests/motion/**"
       - "playwright.motion.config.ts"
@@ -30,6 +41,8 @@ on:
       - "registry/lumen-2-contract.json"
       - "registry/lumen-3-contract.json"
       - "registry/lumen-4-contract.json"
+      - "registry/lumen-5-contract.json"
+      - "scripts/generate-v5-migration.mjs"
       - "registry/web-api-baseline.json"
       - "registry/web-consumer-evidence.json"
       - "registry/swift-api-baseline.json"
@@ -144,7 +157,7 @@ jobs:
         run: pnpm run ci:preflight
       - run: pnpm run check:release-manifest
       - run: node --test scripts/generate-release-manifest.test.mjs
-      - run: pnpm run check:web-api-baseline && pnpm run test:web-api-baseline
+      - run: pnpm run check:web-api-baseline && pnpm run test:web-api-baseline && pnpm run check:v5-migration
         if: needs.classify.outputs.web-contracts == 'true'
       - run: pnpm run check:web-consumer-evidence && pnpm run test:web-consumer-evidence
         if: needs.classify.outputs.web-contracts == 'true'
@@ -332,6 +345,9 @@ jobs:
       - name: Check product workflow recipes
         if: needs.classify.outputs.browser == 'true'
         run: pnpm run test:product-workflows --shard=${{ matrix.shard }}/2 --max-failures=1
+      - name: Verify portable recipes and selective wrappers
+        if: needs.classify.outputs.browser == 'true'
+        run: pnpm run test:portable-editorial --shard=${{ matrix.shard }}/2 --max-failures=1
       - name: Verify explicit rendered audits
         if: needs.classify.outputs.browser == 'true'
         run: pnpm run test:rendered-audit --shard=${{ matrix.shard }}/2 --max-failures=1
@@ -342,7 +358,7 @@ jobs:
         run: pnpm run test:framework-conformance
       - name: Verify release-candidate primitive motion
         if: matrix.shard == 1
-        run: pnpm run test:motion
+        run: pnpm run test:motion && pnpm run check:route-delivery
       - name: Preserve browser failure diagnostics
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

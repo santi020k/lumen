@@ -74,10 +74,10 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^\.github\/workflows\/deploy-mcp\.yml$/u,
     /^scripts\/check-hosted-mcp(?:\.test)?\.mjs$/u,
     /^(skills|plugins|\.claude-plugin)\//u,
-    /^scripts\/(?:generate-plugin-package|check-plugin-package|plugin-contract\.test|evaluate-ai-agents|generate-v4-migration)\.mjs$/u,
+    /^scripts\/(?:generate-plugin-package|check-plugin-package|plugin-contract\.test|evaluate-ai-agents|generate-v[45]-migration)\.mjs$/u,
     /^scripts\/(?:lib\/plugin-contract\.mjs|schemas\/agent-[^/]+\.json)$/u,
     /^docs\/(?:ai-usage|claude-code-plugin|lumen-4-ai)\.md$/u,
-    /^registry\/lumen-4-contract\.json$/u,
+    /^registry\/lumen-[45]-contract\.json$/u,
     /^packages\/(astro|core|elements|lumen|mcp|react|tokens)\//u,
     /^tokens\//u,
     /^registry\/lumen\.registry\.json$/u,
@@ -92,8 +92,9 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
     /^apps\/(docs|figma-plugin|motion|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates)\//u,
     /^tests\/(a11y|editorial|product-workflows|rendered-audit|figma|motion|visual)\//u,
-    /^tests\/fixtures\/(editorial|product-workflows)\//u,
+    /^tests\/fixtures\/(editorial|product-workflows|portable-editorial|delivery)\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,
+    /^scripts\/(measure-route-delivery|check-route-runtime|check-component-css-rendering)\.mjs$/u,
     /^\.github\/workflows\/ci\.yml$/u,
     sharedConfiguration
   ])
@@ -199,9 +200,10 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^packages\/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)\//u,
     /^apps\/(docs|next-smoke|playground-react-native|templates)\//u,
     /^docs\/(native-compatibility|native-device-validation|playgrounds|web-consumer-validation)\.md$/u,
-    /^registry\/(compose-api-classification|lumen-[234]-contract|native-api-baseline|release-manifest|swift-api-baseline|swift-widget-api-baseline|wear-api-classification|web-api-baseline|web-consumer-evidence)\.json$/u,
+    /^registry\/(compose-api-classification|lumen-[2345]-contract|native-api-baseline|release-manifest|swift-api-baseline|swift-widget-api-baseline|wear-api-classification|web-api-baseline|web-consumer-evidence)\.json$/u,
     /^scripts\/(check-approved-release-revision(?:\.test)?|check-coordinated-release-revision(?:\.test)?|check-graduated-release-revision(?:\.test)?|check-lumen-[234]-contract(?:\.test)?|check-maven-(pom-metadata|release-artifacts)(?:\.test)?|maven-pom-metadata|check-npm-release-provenance(?:\.test)?|check-published-package-family(?:\.test)?|check-playground-eas-version(?:\.test)?|check-react-native-peer-docs(?:\.test)?|check-v2-release-workflows\.test|check-web-api-baseline(?:\.test)?|check-web-consumer-evidence(?:\.test)?|generate-release-manifest(?:\.test)?|smoke-consumer-packages|smoke-react-native-native-package|sync-coordinated-v2-versions(?:\.test)?)\.mjs$/u,
     /^scripts\/prepare-packed-react-native-canary\.mjs$/u,
+    /^scripts\/generate-v5-migration\.mjs$/u,
     /^\.github\/workflows\/(publish-compose|release|release-canary|verify-native-release)\.yml$/u,
     sharedConfiguration
   ])
@@ -236,8 +238,9 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     /^apps\/(docs|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates|tokens)\//u,
     /^tests\/(a11y|editorial|product-workflows|rendered-audit|motion|visual)\//u,
-    /^tests\/fixtures\/(editorial|product-workflows)\//u,
+    /^tests\/fixtures\/(editorial|product-workflows|portable-editorial|delivery)\//u,
     /^playwright(?:\.[^/]*)?\.config\.ts$/u,
+    /^scripts\/(measure-route-delivery|check-route-runtime|check-component-css-rendering)\.mjs$/u,
     sharedConfiguration
   ])
 
