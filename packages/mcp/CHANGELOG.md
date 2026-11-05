@@ -28,7 +28,9 @@
 - Refresh the release dependency graph to body-parser 2.4.0 and undici 8.12.3, fixing the compressed
   request-body denial of service and three undici advisories. Raise the existing qs override to
   6.16.1 to satisfy body-parser's declared dependency range. Existing local security patches and
-  the production audit gate remain enforced.
+  the production audit gate remain enforced. These versions describe Lumen’s workspace lockfile.
+  For existing MCP installations, refresh the consumer lockfile and verify Express resolves
+  body-parser 2.4.0 or later. Updating Lumen MCP alone does not enforce that resolution.
 
 - Add opt-in, localizable `scrollCue` guidance to Astro Code blocks and scrolling Tables.
   One shared runtime shows the message and describes the native scroll region only when
