@@ -104,7 +104,10 @@ pnpm add @santi020k/lumen-core
 ```
 
 Core provides data and helpers; it does not register elements, render components, or load CSS.
-Use documented subpath exports such as `/charts`, `/phone`, and `/icon-data` for focused imports.
+Use documented subpath exports such as `/charts`, `/phone`, `/language`, `/native-input`, and
+`/icon-data` for focused imports. The chart entrypoint includes the shared bullet, comparison,
+heatmap, histogram, and waterfall helpers. `/native-input` provides decimal, numeric OTP, and time
+selection helpers without loading the root catalog.
 Image-comparison helpers use `/image-comparison`; DOM windowing uses
 `/virtual-list`, and data-renderer window calculations use `/virtual-window`.
 
@@ -157,8 +160,8 @@ Use `createThemePreset('studio', { scheme: 'dark', overrides: { 'ui-radius': '0.
 
 ## Language Helpers
 
-The root entry exports the shared locale contract used by the Astro, React, and Elements language
-controls. `normalizeLumenLocales` trims labels and values, removes duplicate or invalid values, and
+The root entry and `/language` subpath export the shared locale contract used by the Astro, React,
+and Elements language controls. `normalizeLumenLocales` trims labels and values, removes duplicate or invalid values, and
 falls back to `lumenDefaultLocales`. `getLumenLocalePair` resolves the current locale and the next
 cyclic option, while `formatLumenLanguageLabel` fills the `{current}` and `{next}` placeholders in
 an accessible-label template.

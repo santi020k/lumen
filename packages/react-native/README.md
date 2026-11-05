@@ -497,6 +497,9 @@ import { LumenButton, LumenProvider } from '@santi020k/lumen-react-native/founda
 <LumenProvider><LumenButton>Continue</LumenButton></LumenProvider>
 ```
 
+Native adapters consume focused core entrypoints so the root native catalog does not also load the
+web icon lookup catalog. Named native icons remain available with the same API.
+
 Run `pnpm run measure:react-native-imports` from the repository to compare production Hermes
 bytecode for a platform baseline, root button, root icon, foundation button, and matching
 four-icon navigation fixtures using root or static graphics imports. Both static graphics

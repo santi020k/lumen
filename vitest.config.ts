@@ -7,6 +7,10 @@ const root = fileURLToPath(new URL('.', import.meta.url))
 
 const alias = {
   '@santi020k/lumen-core/reveal': fileURLToPath(new URL('./packages/core/src/reveal.ts', import.meta.url)),
+  '@santi020k/lumen-core/charts': fileURLToPath(new URL('./packages/core/src/charts.ts', import.meta.url)),
+  '@santi020k/lumen-core/phone': fileURLToPath(new URL('./packages/core/src/phone.ts', import.meta.url)),
+  '@santi020k/lumen-core/language': fileURLToPath(new URL('./packages/core/src/language.ts', import.meta.url)),
+  '@santi020k/lumen-core/native-input': fileURLToPath(new URL('./packages/core/src/native-input.ts', import.meta.url)),
   '@santi020k/lumen-core/loading': fileURLToPath(new URL('./packages/core/src/loading.ts', import.meta.url)),
   '@santi020k/lumen-core/anchor': fileURLToPath(new URL('./packages/core/src/anchor.ts', import.meta.url)),
   '@santi020k/lumen-core/media-workspace': fileURLToPath(new URL('./packages/core/src/media-workspace.ts', import.meta.url)),

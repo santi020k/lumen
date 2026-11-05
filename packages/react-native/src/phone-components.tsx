@@ -21,7 +21,7 @@ import {
   type LumenPhoneCountry,
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber
-} from '@santi020k/lumen-core'
+} from '@santi020k/lumen-core/phone'
 
 import { LumenFieldGroup } from './additional-components.js'
 import { LumenSearchField } from './form-components.js'

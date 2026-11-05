@@ -356,8 +356,9 @@ export {
   LumenSlider,
   type LumenSliderProps
 } from './value-components.js'
-export type { LumenComparisonDatum } from '@santi020k/lumen-core'
-export type { LumenBoxPlotDatum, LumenCalendarHeatmapDatum, LumenFunnelDatum } from '@santi020k/lumen-core'
+export type { LumenComparisonDatum } from '@santi020k/lumen-core/charts'
+export type { LumenBoxPlotDatum, LumenCalendarHeatmapDatum, LumenFunnelDatum } from '@santi020k/lumen-core/charts'
+export { type LumenMediaViewportValue } from '@santi020k/lumen-core/media-workspace'
 export {
   createEmptyLumenPhoneNumber,
   getLumenPhoneCountries,
@@ -366,5 +367,4 @@ export {
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber,
   resolveLumenPhoneNumber
-} from '@santi020k/lumen-core'
-export { type LumenMediaViewportValue } from '@santi020k/lumen-core/media-workspace'
+} from '@santi020k/lumen-core/phone'

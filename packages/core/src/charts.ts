@@ -2100,4 +2100,7 @@ export const createLumenRangeGeometry = (
   }
 }
 
+export { createLumenBulletGeometry, type LumenBulletOptions, type LumenBulletRange } from './bullet-chart.js'
+export { createLumenHeatmapModel, createLumenHistogramGeometry, createLumenWaterfallGeometry, getLumenHeatmapColorMix, type LumenHeatmapOptions, type LumenHistogramBin, type LumenWaterfallDatum } from './chart-models.js'
+export { createLumenComparisonGeometry, type LumenComparisonDatum, type LumenComparisonOptions } from './comparison-chart.js'
 export * from './extended-charts.js'

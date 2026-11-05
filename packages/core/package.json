@@ -126,6 +126,14 @@
     "./reveal": {
       "types": "./dist/reveal.d.ts",
       "import": "./dist/reveal.js"
+    },
+    "./language": {
+      "types": "./dist/language.d.ts",
+      "import": "./dist/language.js"
+    },
+    "./native-input": {
+      "types": "./dist/native-input.d.ts",
+      "import": "./dist/native-input.js"
     }
   },
   "files": [
