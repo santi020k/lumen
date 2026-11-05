@@ -1,5 +1,18 @@
 # Lumen v4 dependency refresh — 2026-10-03
 
+## v4.4 transitive security refresh — 2026-11-04
+
+The workspace resolves affected Glob paths to 14.0.3 and affected Minimatch paths to 11.0.4.
+These releases address the [Glob cancellation advisory](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4)
+and the [Minimatch amplification advisory](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+The import lint rule now uses Minimatch's matcher API through an exact-version compatibility
+patch for `eslint-plugin-import-x` 4.17.1. The patch covers both module formats and can be
+removed when the plugin supports Minimatch 11.
+
+Expo tooling now resolves Forge 1.4.3. The [upstream Forge fixes](https://github.com/digitalbazaar/forge/blob/v1.4.3/CHANGELOG.md)
+replace the local 1.4.0 backport and its audit exception. The installed Forge signature
+regression remains part of the security gate.
+
 ## v4.4 security refresh — 2026-10-25
 
 The release graph now resolves `body-parser` 2.4.0 through the MCP server's Express dependency,

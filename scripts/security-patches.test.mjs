@@ -212,13 +212,13 @@ test('network errors, malformed reports, missing findings and inconsistent count
   assert.throws(() => evaluateAudit(report, 1, policies), /count mismatch/u)
 })
 
-test('installed patch regressions preserve signatures, globs and bounded collection validation', async () => {
+test('installed patches preserve bounded glob and collection validation', async () => {
   const inventory = spawnSync('pnpm', ['list', '--recursive', ...policies.map(policy => policy.name), '--depth', 'Infinity', '--json'], { cwd: root, encoding: 'utf8' })
 
   assert.equal(inventory.status, 0)
 
   const instances = await collectPatchedInstances(root, JSON.parse(inventory.stdout), policies)
-  const checks = { braces: verifyBracesBehavior, 'node-forge': verifyForgeBehavior, zod: verifyZodBehavior }
+  const checks = { braces: verifyBracesBehavior, zod: verifyZodBehavior }
 
   for (const policy of policies) {
     const installed = instances.get(policy.name)
@@ -236,5 +236,23 @@ test('installed patch regressions preserve signatures, globs and bounded collect
         await checks[policy.name](await import(pathToFileURL(resolve(directory, entry)).href))
       }
     }
+  }
+})
+
+
+test('published Forge preserves signature verification and rejects malformed signatures', async () => {
+  const forge = { name: 'node-forge', version: '1.4.3' }
+  const inventory = spawnSync('pnpm', ['list', '--recursive', forge.name, '--depth', 'Infinity', '--json'], { cwd: root, encoding: 'utf8' })
+
+  assert.equal(inventory.status, 0)
+
+  const installed = (await collectPatchedInstances(root, JSON.parse(inventory.stdout), [forge])).get(forge.name)
+
+  assert.ok(installed.size > 0)
+
+  for (const directory of installed.keys()) {
+    const require = createRequire(resolve(directory, 'package.json'))
+
+    verifyForgeBehavior(require(directory))
   }
 })
