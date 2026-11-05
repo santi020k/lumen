@@ -305,6 +305,14 @@ SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction do
 separate documented JSX/Astro spacing migration. The JSON report includes installed package
 versions and explicit SDK dependency-review findings.
 
+## Product workflow recipes
+
+Install the CLI separately from the Astro runtime adapter, then use
+`lumen add code-example --target astro`, `lumen add share --target astro`, or
+`lumen add editorial --target astro`. The [workflow guide](../../docs/product-workflow-recipes.md)
+covers video, captions, long highlighted examples, and sharing. Recipe registry entries expose
+dependencies and per-framework setup instructions, including the runtime module where needed.
+
 ## Editorial recipes
 
 Run `pnpm exec lumen add editorial --target astro` to copy nine independent content components and

@@ -23,6 +23,7 @@ export const lumenRegistry = {
         'ButtonLink',
         'Callout',
         'Card',
+        'Collapsible',
         'Dialog',
         'DialogBody',
         'DialogTitle',
@@ -34,6 +35,73 @@ export const lumenRegistry = {
       ],
       files: [
         'docs/editorial-recipes.md'
+      ],
+      dependencies: [
+        '@santi020k/lumen-astro'
+      ],
+      setup: {
+        astro: {
+          runtime: '@santi020k/lumen-astro/runtime',
+          instructions: [
+            'Install @santi020k/lumen-astro in the application and @santi020k/lumen separately for the CLI.',
+            'Keep selective component imports. Mount the runtime once in the root layout.'
+          ]
+        }
+      }
+    },
+    {
+      name: 'share',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Collapsible',
+        'CopyButton',
+        'Dialog',
+        'DialogBody',
+        'DialogClose',
+        'DialogHeader',
+        'DialogTitle',
+        'Input',
+        'Link'
+      ],
+      dependencies: [
+        '@santi020k/lumen-astro'
+      ],
+      setup: {
+        astro: {
+          runtime: '@santi020k/lumen-astro/runtime',
+          instructions: [
+            'Install @santi020k/lumen-astro in the application and @santi020k/lumen separately for the CLI.',
+            'Keep selective component imports. Mount the runtime once in the root layout.'
+          ]
+        }
+      },
+      files: [
+        'docs/product-workflow-recipes.md'
+      ]
+    },
+    {
+      name: 'code-example',
+      type: 'recipe',
+      components: [
+        'Code',
+        'Collapsible',
+        'CopyButton'
+      ],
+      dependencies: [
+        '@santi020k/lumen-astro'
+      ],
+      setup: {
+        astro: {
+          runtime: '@santi020k/lumen-astro/runtime',
+          instructions: [
+            'Install @santi020k/lumen-astro in the application and @santi020k/lumen separately for the CLI.',
+            'Keep selective component imports. Mount the runtime once in the root layout.'
+          ]
+        }
+      },
+      files: [
+        'docs/product-workflow-recipes.md'
       ]
     },
     {
@@ -47,7 +115,39 @@ export const lumenRegistry = {
       ],
       files: [
         'docs/interactive-editorial-recipes.md'
-      ]
+      ],
+      setup: {
+        astro: {
+          dependencies: [
+            '@santi020k/lumen-astro'
+          ],
+          runtime: '@santi020k/lumen-astro/runtime',
+          instructions: [
+            'Install the Astro adapter in the application and the Lumen CLI separately for installation.',
+            'Use the installed Astro recipe and mount the runtime once in the root layout.'
+          ]
+        },
+        react: {
+          dependencies: [
+            '@santi020k/lumen-react',
+            'react',
+            'react-dom'
+          ],
+          instructions: [
+            'Import the React foundation stylesheet once, then import the installed TSX recipe with its selective component and local CSS.',
+            'Keep requests, routing, content, and persistence in the application.'
+          ]
+        },
+        elements: {
+          dependencies: [
+            '@santi020k/lumen-elements'
+          ],
+          instructions: [
+            'Import the Elements foundation stylesheet once. Insert the installed HTML and import the installed TypeScript module, which registers only required primitives and imports their CSS.',
+            'Keep requests, routing, content, and persistence in the application.'
+          ]
+        }
+      }
     },
     {
       name: 'site-search-dialog',
@@ -68,7 +168,39 @@ export const lumenRegistry = {
       ],
       files: [
         'docs/interactive-editorial-recipes.md'
-      ]
+      ],
+      setup: {
+        astro: {
+          dependencies: [
+            '@santi020k/lumen-astro'
+          ],
+          runtime: '@santi020k/lumen-astro/runtime',
+          instructions: [
+            'Install the Astro adapter in the application and the Lumen CLI separately for installation.',
+            'Use the installed Astro recipe and mount the runtime once in the root layout.'
+          ]
+        },
+        react: {
+          dependencies: [
+            '@santi020k/lumen-react',
+            'react',
+            'react-dom'
+          ],
+          instructions: [
+            'Import the React foundation stylesheet once, then import the installed TSX recipe with its selective component and local CSS.',
+            'Keep requests, routing, content, and persistence in the application.'
+          ]
+        },
+        elements: {
+          dependencies: [
+            '@santi020k/lumen-elements'
+          ],
+          instructions: [
+            'Import the Elements foundation stylesheet once. Insert the installed HTML and import the installed TypeScript module, which registers only required primitives and imports their CSS.',
+            'Keep requests, routing, content, and persistence in the application.'
+          ]
+        }
+      }
     },
     {
       name: 'image-viewer',
@@ -86,7 +218,39 @@ export const lumenRegistry = {
       ],
       files: [
         'docs/interactive-editorial-recipes.md'
-      ]
+      ],
+      setup: {
+        astro: {
+          dependencies: [
+            '@santi020k/lumen-astro'
+          ],
+          runtime: '@santi020k/lumen-astro/runtime',
+          instructions: [
+            'Install the Astro adapter in the application and the Lumen CLI separately for installation.',
+            'Use the installed Astro recipe and mount the runtime once in the root layout.'
+          ]
+        },
+        react: {
+          dependencies: [
+            '@santi020k/lumen-react',
+            'react',
+            'react-dom'
+          ],
+          instructions: [
+            'Import the React foundation stylesheet once, then import the installed TSX recipe with its selective component and local CSS.',
+            'Keep requests, routing, content, and persistence in the application.'
+          ]
+        },
+        elements: {
+          dependencies: [
+            '@santi020k/lumen-elements'
+          ],
+          instructions: [
+            'Import the Elements foundation stylesheet once. Insert the installed HTML and import the installed TypeScript module, which registers only required primitives and imports their CSS.',
+            'Keep requests, routing, content, and persistence in the application.'
+          ]
+        }
+      }
     },
     {
       name: 'page-header',

@@ -17,7 +17,7 @@
       "BarChart": "e3b3bb816a396b71bdac18ce80ba06c8c23b8a28dc41e9ed67c36037391a9787",
       "Breadcrumb": "863f537445faecdb134879ea3b81522ab90e76a2bf06d7ce42a67956e566a884",
       "Bubble": "3f8acfce05736c2f434c7e76b5e05e17103b76d0ce80742e8b9112928c7d483e",
-      "Button": "8fe36df22d620ae7ff336bf42a0939b65cb67a1b3ca9e52824fbd18f0b515f35",
+      "Button": "fe1172988ee5d7ae66c62591ffef5e0f79d5abd43a64d6171f12c0c1c8b4914a",
       "ButtonGroup": "2cf8bb2c54134025a399dfd6a9154f4fd605aed44dd3bf1c85482404120482c5",
       "Calendar": "217904a9be45cb6bfc538d3af8b5486e7dbe547b6b26ab6e156fde3770c4fb0e",
       "Callout": "472d86da10f70441e76d34d0b6ce172750166a23b30ff1e246cc75e9c1bce58a",
@@ -31,12 +31,12 @@
       "Chart": "04ea9dd0180cf036274e1d483d530f5e407627a5a33fdec712300e0f2a96d1ca",
       "Checkbox": "85aa94fb65ddbde0a0d2e296ff580f0dec7fc209306eb5e6c61787e7feb10d6f",
       "CheckboxGroup": "264088d3c2a0b9f9a35eefe918128aa34f5175719aed2354d4ff55f66c116dec",
-      "Collapsible": "8fc89544f19266ce38f1911a10214b19c89ae9b607a8418660e72986655ad038",
-      "Code": "772448a9d86086ba981c9f992bde3c68d30489d2b88fe2c9ba4d5d7b8cce16d2",
+      "Collapsible": "36c876a7ba43bac905ab14b46e95c5cac3d947b73a26580a36a38bff9db10417",
+      "Code": "f63562a34b2f5c65c6c180572cb025527014c32ea40d34f500ef4ebd726afadf",
       "CodeTabs": "98d6a470e449d4a531b7fc4de993cd58c8fd32d5b29887fe57fa6d86b09441f0",
       "Combobox": "e9bd1977e87d85b45d1bf3cf534b414940a5efde90fa8d10ded83a39ca4a82e1",
       "Container": "3e33bd259c012bb3b6e88e792ff1e74e0f92f1d8e2a356157a0ede73186ad790",
-      "CopyButton": "c00eb7e9a7ea3220d725a8081d95b1e2860c78ad090488a5c0caac58e1a49350",
+      "CopyButton": "21c58ba90efe52c12b9c91d706effd28f4d083b0cf2ef1537438b4fac2b07f00",
       "Command": "adf6cb756b184a456711c94ac8f07f129b60e64220566b8d7203e5b94a4d872d",
       "ContextNavigation": "aa23d2792b8581acde7ab34a36defeb939f9908e15019a6fb3ca2dca9f0c99d8",
       "ContextMenu": "f2a3b1961e97ee4f3fa43d11286c76da6214e8428ca21c343bc00b0e2d86378a",
@@ -44,16 +44,16 @@
       "DataTable": "9908d48a8a9140d0b989371fe49ad21a93242bc05570cd2e004095826138d950",
       "DatePicker": "d7e07526c027256bd286d62039f62844826dd138892603a9893fe36f61bc05c0",
       "DateRangePicker": "2df2360d4b8e6bb8d88a87407d637c64e891584511f984d4be414bd8f41164ab",
-      "Dialog": "da2fa3644ba78dd3b43702cd596efa8d891a502703edff0cbcd374f042ad2d28",
-      "DialogHeader": "f84e8ded2fb1de71fa9ff6fdb9cec8a778297e885f72ceb9ebd620317485a7e6",
-      "DialogTitle": "e5735999be3e455545d41a0afb38f47e27c5c7a17f2c77170881a761dc1a5373",
-      "DialogBody": "8117f29baa73e403c72853fae0dc4a3f68763fdea63261feee286e7eedd2f0c4",
-      "DialogFooter": "b8b33174311e9576b5dcecafa45cce4435cc8462260ab4c8162e1b6a52210f31",
-      "DialogClose": "77432e75ea47038d934eea6b938b1c72ef33af13edc3333454f4e4974ae8ea9b",
+      "Dialog": "fce4a7ea20016b9e6794c9089e9998420047ef487d5c3f01b30e4dbea27a593c",
+      "DialogHeader": "09cbc2757afb20be809f518e73a2e23a7c78fa655727b259f72b2dbebf045446",
+      "DialogTitle": "7b226b3351063d8789b5313754427d0e2c5ddb2073e0ecd7d2f5e46be2c2f5fe",
+      "DialogBody": "8298e778cbd2cf81c8d3b416a9ba00e41839670c0016ef7b2e2f38f00aa352d7",
+      "DialogFooter": "25eb887fe3ee40022db1927d7265b5caa46c5a41b90e3419a9518e61d7d4e4db",
+      "DialogClose": "e14eec66d3d47460de5d95ef67eb53f4508aea12ebd3cb5d08938e9ba5864c6e",
       "Direction": "739273fc3f0b743f3d0a427b74cdfef7951d43d34de53d46c302df02e56e3e5f",
       "Drawer": "7d752a45932493c7a6ed0423914a235a55ad14d108417f3f820f32f29227fa8e",
       "DropdownMenu": "0ead926c85f7aa00c9f992a13db79cbd133d20897ecd1412cfbfcdeccef89fdb",
-      "Empty": "51cfcfea66b5837257bba75d88af25d8818b946b6ce348d03386ed376b95fac2",
+      "Empty": "f9a00582efc0aae5cd01c3e67d53c203a86465bba837135aba0b7dc8b1bc643e",
       "ErrorState": "9a147b87bf33b5ebc27c5adb6593dd9cc979b842ef031f8858829e42b2ffbe9e",
       "ErrorSummary": "5d6534d86bd7b00abf2a6327c26e7bdb5e7f3f24ce9ff155ce190530837d530c",
       "Eyebrow": "84e8c718b47713897829beac2eaaae5a135618e0d3b294b58829e03aa5fa5f52",
@@ -72,15 +72,15 @@
       "MediaThumbnail": "0c6a20580e47c803a5b39e58d177b4d7833eb291c6b8c6e6acf1fd2bf4cdfdf8",
       "MediaFilmstrip": "42a894ddbf62015cab55d4ff585e445699f0fdb9276cd6c42a02975b037ef3dd",
       "Illustration": "20331928ada188bf433d295bc12489cfe584da5afe4194d9c71040d10b96abd5",
-      "Input": "2754504f5c56f5ae19f57f0051f34b229c59aadd3befe9578a4416d4370e1e39",
+      "Input": "283a2db9cf87e30b6eb627b870321460128e84de0594e92e7742ce254be8d170",
       "InputGroup": "9acb1f446ac4ecda65bd6aec88343991355740d117554a0d10f23d72b026c325",
       "InputOTP": "4215cce9c7c3128f64ac660d950c509643faea3cf66a1a84e39587fca52c9168",
       "Item": "fd448e9decf1ddf8726c1c7ff843097813a6279466f9b5f1b545ccacc617474c",
       "KanbanBoard": "362a4def0f75267a114cfa88ec3ebd414d71e20e8af92e722de603b4dfa80a64",
       "KanbanColumn": "769376f352077962e7da4ac2117d9c2ee9092711d996cbde673f15905d8f3f67",
-      "Kbd": "1d4066917bd7e9f6af56575f62eb3f6ee815a7aa499fadda14698b55bee35bae",
-      "Label": "8e967ecea48e90906d43558920419b8ea50c99bdd0f0f047a681354eb4f1a00d",
-      "Link": "456f57427a5154dedad449b6d4437a91ace9cb703cfe43cfadd7761d7751680b",
+      "Kbd": "a8fc3ca84e0d056b5bcc0b6bec0699a06b728edf23df6abcb3c5361eaa2ce00b",
+      "Label": "530935d0f1f7d6770b87c4f44bfa2a74ba5b0669929d9034dc68fe3baeb40c56",
+      "Link": "c64cdef9431994709b4facafb6def7a8d87eb6a3a5cafb6ecb747890b9f5510a",
       "LineChart": "8d81487bad2d54e5eb1e75b1d76ae16a370f48a968dafeae4b3cda63b0a82ba7",
       "ListBox": "7203c0956f522ac6791ee09d620dd34c06bda742b79a8c14d1b2186ff843773c",
       "Marker": "654b8fc3f357ef852ac5c7317c268b62c13b3132f1f9deff7790bf452943c985",
@@ -103,15 +103,15 @@
       "Resizable": "ef0024d7e05d5f734d433e84f3706a0dbd58a0340cdfc7bc2dabf680684cbd4a",
       "RichTextEditor": "6a9182e04193066af282a1136a137cd2b9fdcb6673e19b82b00552d5aa76f185",
       "ScrollArea": "234f3d085fe300bcf24473131931f654cd03e277e7a90e8de3086cf35696e05e",
-      "ScrollProgress": "5cdee5075ff134ce913ee3e1e5320c913b54ba7cf8f9baaa53ef9922ac06a5a7",
+      "ScrollProgress": "f46525803c8d1f467c27c946d2bd5f20047f31e878a230af8c42525878cf1dd5",
       "Schedule": "019f4e8d3059a9f6ea9c75498bfaf24c0cf9216b39f6ec92d25ac56dcdca9189",
-      "SearchField": "2e00b2223f06e75145265d75ea05a74dad096b7976e1bbc53d29fdd5b09d77ca",
+      "SearchField": "b268fafd0ea191a4188f91d1a03a577e41a19020c5973849ca8035106ac9719a",
       "Select": "33eb44ae7e9f4edc59416d36f182bb5035eb6a537fad335d08259daa773d4e8d",
       "Separator": "f29759dd83b00c58569117b8e2538aa1fbbdcc2c444303cccb701867b2f211db",
       "Sheet": "c0175a4839040dc15254f698eaa043c8065a6f62d6f9058001b510faf10e9f72",
       "Sidebar": "a37a3cbd6622d4106e89b90d4cedd7acea07bf4068d46b4dfcdde27d61b0c545",
       "Skeleton": "c18e6caa7cb94fdf5f7ab44f87082e5d444287000333604a78715b2cc84e706e",
-      "SkipLink": "f6b3b5e835ca00738d78880833bdbc1eb30cd85e336387c8ee11db47519b7d22",
+      "SkipLink": "ce42e9131ec71316b85fff5aa0990430510045e6a17f0c6cdc1b60e2a29168cd",
       "Slider": "0e5fee7836ce61a539f12b28bf29f66f5780d8ddf306631e97808c3992301684",
       "Sparkline": "5ffeed9f98f26de427f5d3288f48ac9bfd99874168221d68d13564dde46779f2",
       "Spinner": "76ba2165e33f320d03eb3defdaf68600289b61047897626d351ac62d6d225e31",
@@ -156,7 +156,7 @@
       "Stepper": "7530c386fccdc3a9c94b5f18bd3d92a82fb3e5168ad6462a158226eddcc13efe",
       "FileUpload": "0f22abc1cf51c932a2cbc92447d7e637281078c4d1a4978943b79010a7ee387f",
       "Tour": "b7b4c5775758a32433f4470b34b3cebc097b26eff3a27eb01a54475064c1da4c",
-      "Anchor": "4d112d63d3ef03a39c34ea17a9afd4d48ba95aec3e785fa4751ea301c87652d3",
+      "Anchor": "936780e7348dd84e77ad921be07db38130e19843f5e3ad3021151d7148492ef9",
       "Segmented": "b55b9e699a8f2a6ffbb1067308a35aaf5c7ef3738874c8a0a653f66b0d4a9add",
       "Toolbar": "9c2fc3a692fd7de5599518696dbab6d77631d1158e0af02e13718bb38d6a589f",
       "Descriptions": "1a6f3099b72e7adc41dd649c52780ed1345aa74009d9603b5097a242f35ccaf1",
@@ -326,10 +326,12 @@
       "Cascader": "f5a0667116111a10dcd08bab4514063a6587a3807d30633932ec79d3c0d23920"
     },
     "recipes": {
-      "editorial": "1202de525bb4ae288699cf9f2516156eb42e99f1c180f3a04cc04fb9b81bcd5e",
-      "article-reading": "402fbf80c76f7f65398fadb6bc6c782a2759c54a1b90dc648ace7acdfc85f625",
-      "site-search-dialog": "ef60634d890d278f3f54fde3adbd6de22cfc0dedb61049abb3f006cc5ba99970",
-      "image-viewer": "3c545d1f72cc410822b7d2ff9d9ec9993acf6e03ba100e7892ffd7db2f47b65b",
+      "editorial": "9b31e0fc3f698a54082a00cf679fe1b1e14ec47f951c201b21c67bc95a2437bf",
+      "share": "72e23ebbd99d60f5ebaff221a37c82b81c847f95f832aa328b3fd54084257eb2",
+      "code-example": "950a9128dbc96103a051ae4697664788ee269781124fedc643f2f9a81f9422d9",
+      "article-reading": "bd1bf5e97a23e5e62174ff81ae231899e453113ad1362bffa2fe5e86c5ff8c41",
+      "site-search-dialog": "5dc7d67df92793a4c28da4cc7352dbe29ef4d1ce6dacf49787b6069cf9e22494",
+      "image-viewer": "dd0622cec203c737cee45e4f76dfae7784aa86a8e05a2da72184f3427a8aa66e",
       "page-header": "cafa5a674275a6bc37db78c37b2f3809f324248a431849e5623ecb64de7ff4f2",
       "section-header": "859a34bced19cd0064194f64b58bd0a5d6d69289a44f5a521a9104ca5647d77e",
       "content-flow-header": "eb8d2ed99b487055031ae21704c023e2159741ea6dce3e99c69e695a541a5685",
@@ -3947,42 +3949,21 @@
           "tagName": "lumen-button"
         },
         "react": {
-          "available": true,
+          "available": false,
           "example": "<Button variant=\"default\">Save changes</Button><Button variant=\"secondary\">Cancel</Button>",
           "importStatement": "import { Button } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [
-            {
-              "name": "asChild",
-              "optional": true,
-              "type": "boolean"
-            },
-            {
-              "name": "loading",
-              "optional": true,
-              "type": "boolean"
-            },
-            {
-              "name": "size",
-              "optional": true,
-              "type": "ButtonSize"
-            },
-            {
-              "name": "variant",
-              "optional": true,
-              "type": "ButtonVariant"
-            }
-          ],
-          "propsExtends": "ComponentPropsWithRef<'button'>",
-          "source": "export interface ButtonProps extends ComponentPropsWithRef<'button'> {\n  asChild?: boolean\n  loading?: boolean\n  size?: ButtonSize\n  variant?: ButtonVariant\n}\n\nexport const Button = ({\n  asChild = false,\n  children,\n  className,\n  disabled,\n  loading = false,\n  ref,\n  size = 'default',\n  type = 'button',\n  variant = 'default',\n  ...props\n}: ButtonProps) => {\n  const isDisabled = disabled === true || loading\n\n  const buttonClassName = composeClassName(\n    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, isDisabled && 'ui-button--disabled', loading && 'ui-button--loading', className\n  )\n\n  if (asChild) {\n    const child = children\n\n    if (!isValidElement<ButtonChildProps>(child)) {\n      throw new TypeError(\n        'Button with asChild requires exactly one React element child.'\n      )\n    }\n\n    const ChildComponent = child.type\n\n    return (\n      <ChildComponent\n        {...child.props}\n        {...props}\n        aria-busy={loading ? true : undefined}\n        aria-disabled={isDisabled ? true : undefined}\n        className={composeClassName(buttonClassName, child.props.className)}\n        data-slot=\"button\"\n        onClickCapture={isDisabled ?\n          (event: ReactMouseEvent<HTMLElement>) => {\n            event.preventDefault()\n\n            event.stopPropagation()\n          } :\n          props.onClickCapture ?? child.props.onClickCapture}\n        onKeyDownCapture={isDisabled ?\n          (event: KeyboardEvent<HTMLElement>) => {\n            if (event.key === 'Enter' || event.key === ' ') {\n              event.preventDefault()\n\n              event.stopPropagation()\n            }\n          } :\n          props.onKeyDownCapture ?? child.props.onKeyDownCapture}\n        ref={ref as Ref<HTMLElement>}\n        tabIndex={isDisabled ? -1 : props.tabIndex ?? child.props.tabIndex}\n      >\n        {loading && <span aria-hidden=\"true\" className=\"ui-spinner\" />}\n        <span className=\"ui-button__content\">{child.props.children}</span>\n      </ChildComponent>\n    )\n  }\n\n  return (\n    <button\n      aria-busy={loading || undefined}\n      className={buttonClassName}\n      data-slot=\"button\"\n      disabled={isDisabled}\n      ref={ref}\n      type={type}\n      {...props}\n    >\n      {loading && <span aria-hidden=\"true\" className=\"ui-spinner\" />}\n      <span className=\"ui-button__content\">{children}</span>\n    </button>\n  )\n}",
+          "props": [],
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
         "elements": true,
-        "react": true
+        "react": false
       },
       "guidance": null,
       "kebab": "button",
@@ -4037,6 +4018,10 @@
       "recipes": [
         {
           "name": "editorial",
+          "type": "recipe"
+        },
+        {
+          "name": "share",
           "type": "recipe"
         },
         {
@@ -6845,13 +6830,12 @@
         },
         "elements": {
           "attributes": [
-            "data-ui-collapsible",
             "open",
             "children",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -6863,26 +6847,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Collapsible: {\n    baseClassName: 'ui-collapsible',\n    defaults: { 'data-ui-collapsible': '' },\n    tagName: 'lumen-collapsible'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-collapsible"
         },
         "react": {
-          "available": true,
+          "available": false,
           "example": "<Collapsible><summary>Advanced filters</summary><p>Filter controls</p></Collapsible>",
           "importStatement": "import { Collapsible } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": "ComponentPropsWithoutRef<'details'>",
-          "source": "export type CollapsibleProps = ComponentPropsWithoutRef<'details'>\n\nexport const Collapsible = ({ className, ...props }: CollapsibleProps) => (\n  <details\n    className={composeClassName('ui-collapsible', className)}\n    data-ui-collapsible\n    {...props}\n  />\n)",
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": {
         "when": "Use for one optional region such as advanced settings, details, or filters.",
@@ -6937,6 +6921,18 @@
       ],
       "propsExtends": "HTMLAttributes<'details'>",
       "recipes": [
+        {
+          "name": "editorial",
+          "type": "recipe"
+        },
+        {
+          "name": "share",
+          "type": "recipe"
+        },
+        {
+          "name": "code-example",
+          "type": "recipe"
+        },
         {
           "name": "article-reading",
           "type": "recipe"
@@ -7338,6 +7334,10 @@
       ],
       "propsExtends": "HTMLAttributes<'code'>",
       "recipes": [
+        {
+          "name": "code-example",
+          "type": "recipe"
+        },
         {
           "name": "docs-shell",
           "type": "recipe"
@@ -8598,7 +8598,16 @@
         }
       ],
       "propsExtends": "HTMLAttributes<'button'>",
-      "recipes": [],
+      "recipes": [
+        {
+          "name": "share",
+          "type": "recipe"
+        },
+        {
+          "name": "code-example",
+          "type": "recipe"
+        }
+      ],
       "runtimeEvents": [
         {
           "detail": "{ value: string }",
@@ -10462,7 +10471,6 @@
         },
         "elements": {
           "attributes": [
-            "data-ui-dialog",
             "glass",
             "layout",
             "id",
@@ -10471,7 +10479,7 @@
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
@@ -10483,12 +10491,12 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Dialog: {\n    attributeClasses: {\n      glass: {\n        strong: 'ui-dialog--glass ui-glass-strong',\n        subtle: 'ui-dialog--glass ui-glass-subtle',\n        true: 'ui-dialog--glass'\n      },\n      layout: { fullscreen: 'ui-dialog--fullscreen' }\n    },\n    baseClassName: 'ui-dialog',\n    defaults: { 'data-ui-dialog': '', layout: 'centered' },\n    tagName: 'lumen-dialog'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog"
         },
         "react": {
-          "available": true,
+          "available": false,
           "behavior": {
             "controller": [
               {
@@ -10581,22 +10589,16 @@
           "importStatement": "import { Button, Dialog, Card } from '@santi020k/lumen-react'\nimport { useDialog } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [
-            {
-              "name": "layout",
-              "optional": true,
-              "type": "'centered' | 'fullscreen'"
-            }
-          ],
-          "propsExtends": "Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> & SurfaceProps & Omit<DialogOptions, 'id'>",
-          "source": "export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &\n  SurfaceProps &\n  Omit<DialogOptions, 'id'> & {\n    layout?: 'centered' | 'fullscreen'\n  }\n\nexport const Dialog = ({\n  children,\n  className,\n  defaultOpen,\n  dismissOnEscape,\n  dismissOnOutsidePress,\n  glass = false,\n  layout = 'centered',\n  onCancel,\n  onClick,\n  onClose,\n  onOpenChange,\n  onPointerDown,\n  open,\n  ...props\n}: DialogProps) => {\n  const dialog = useDialog({ defaultOpen, dismissOnEscape, dismissOnOutsidePress, onOpenChange, open })\n\n  return (\n    <dialog\n      {...dialog.dialogProps}\n      {...props}\n      className={composeClassName(\n        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', glass), className\n      )}\n      data-layout={layout}\n      data-surface={resolveSurface(glass)}\n      onCancel={composeHandlers(onCancel, dialog.dialogProps.onCancel)}\n      onPointerDown={composeHandlers(onPointerDown, dialog.dialogProps.onPointerDown)}\n      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}\n      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}\n    >\n      <DialogCloseContext value={dialog.close}>{children}</DialogCloseContext>\n    </dialog>\n  )\n}",
+          "props": [],
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": {
         "when": "Use for a focused task or decision that temporarily interrupts the page.",
@@ -10670,6 +10672,10 @@
       "recipes": [
         {
           "name": "editorial",
+          "type": "recipe"
+        },
+        {
+          "name": "share",
           "type": "recipe"
         },
         {
@@ -10752,12 +10758,11 @@
         },
         "elements": {
           "attributes": [
-            "data-slot",
             "children",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -10769,7 +10774,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "DialogHeader: {\n    baseClassName: 'ui-dialog-header',\n    defaults: { 'data-slot': 'dialog-header' },\n    tagName: 'lumen-dialog-header'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-header"
         },
@@ -10787,7 +10792,7 @@
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
+        "elements": false,
         "react": true
       },
       "guidance": null,
@@ -10829,6 +10834,10 @@
       ],
       "propsExtends": "HTMLAttributes<'header'>",
       "recipes": [
+        {
+          "name": "share",
+          "type": "recipe"
+        },
         {
           "name": "site-search-dialog",
           "type": "recipe"
@@ -10916,13 +10925,12 @@
         },
         "elements": {
           "attributes": [
-            "data-slot",
             "as",
             "id",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -10934,7 +10942,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "DialogTitle: {\n    baseClassName: 'ui-dialog-title',\n    defaults: { 'data-slot': 'dialog-title' },\n    tagName: 'lumen-dialog-title'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-title"
         },
@@ -10958,7 +10966,7 @@
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
+        "elements": false,
         "react": true
       },
       "guidance": null,
@@ -11009,6 +11017,10 @@
       "recipes": [
         {
           "name": "editorial",
+          "type": "recipe"
+        },
+        {
+          "name": "share",
           "type": "recipe"
         },
         {
@@ -11087,12 +11099,11 @@
         },
         "elements": {
           "attributes": [
-            "data-slot",
             "children",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -11104,7 +11115,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "DialogBody: {\n    baseClassName: 'ui-dialog-body',\n    defaults: { 'data-slot': 'dialog-body' },\n    tagName: 'lumen-dialog-body'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-body"
         },
@@ -11122,7 +11133,7 @@
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
+        "elements": false,
         "react": true
       },
       "guidance": null,
@@ -11169,6 +11180,10 @@
       "recipes": [
         {
           "name": "editorial",
+          "type": "recipe"
+        },
+        {
+          "name": "share",
           "type": "recipe"
         },
         {
@@ -11247,12 +11262,11 @@
         },
         "elements": {
           "attributes": [
-            "data-slot",
             "children",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -11264,7 +11278,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "DialogFooter: {\n    baseClassName: 'ui-dialog-footer',\n    defaults: { 'data-slot': 'dialog-footer' },\n    tagName: 'lumen-dialog-footer'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-footer"
         },
@@ -11282,7 +11296,7 @@
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
+        "elements": false,
         "react": true
       },
       "guidance": null,
@@ -11431,14 +11445,12 @@
         },
         "elements": {
           "attributes": [
-            "data-slot",
-            "data-ui-dialog-close",
             "children",
             "disabled / loading",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
@@ -11450,12 +11462,12 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "DialogClose: {\n    baseClassName: 'ui-dialog-close',\n    defaults: { 'data-slot': 'dialog-close', 'data-ui-dialog-close': '' },\n    tagName: 'lumen-dialog-close'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-dialog-close"
         },
         "react": {
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "adapter",
             "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
@@ -11465,15 +11477,15 @@
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": "ButtonProps",
-          "source": "export type DialogCloseProps = ButtonProps\n\nexport const DialogClose = ({ className, onClick, ...props }: DialogCloseProps) => {\n  const close = use(DialogCloseContext)\n\n  return (\n    <Button\n      {...props}\n      className={composeClassName('ui-dialog-close', className)}\n      data-slot=\"dialog-close\"\n      onClick={event => {\n        onClick?.(event)\n\n        if (event.defaultPrevented) return\n\n        if (close) close()\n        else event.currentTarget.closest('dialog')?.close()\n      }}\n    />\n  )\n}",
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": null,
       "kebab": "dialog-close",
@@ -11531,6 +11543,10 @@
       ],
       "propsExtends": "HTMLAttributes<'button'>",
       "recipes": [
+        {
+          "name": "share",
+          "type": "recipe"
+        },
         {
           "name": "site-search-dialog",
           "type": "recipe"
@@ -12323,13 +12339,13 @@
         },
         "elements": {
           "attributes": [
-            "variant",
             "glass",
             "children",
+            "variant",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -12341,37 +12357,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Empty: {\n    attributeClasses: {\n      ...glassAttributeClasses('ui-empty--glass'),\n      variant: { compact: 'ui-empty--compact' }\n    },\n    baseClassName: 'ui-empty',\n    defaults: { variant: 'default' },\n    tagName: 'lumen-empty'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-empty"
         },
         "react": {
-          "available": true,
+          "available": false,
           "example": "<Empty><h2>No projects yet</h2><p>Create your first workspace.</p></Empty>",
           "importStatement": "import { Empty } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [
-            {
-              "name": "glass",
-              "optional": true,
-              "type": "LumenGlassProp"
-            },
-            {
-              "name": "variant",
-              "optional": true,
-              "type": "'compact' | 'default'"
-            }
-          ],
-          "propsExtends": "ComponentPropsWithoutRef<'section'>",
-          "source": "export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {\n  glass?: LumenGlassProp\n  variant?: 'compact' | 'default'\n}\n\nexport const Empty = ({\n  className,\n  glass = false,\n  variant = 'default',\n  ...props\n}: EmptyProps) => (\n  <section\n    className={composeClassName(\n      'ui-empty',\n      variant === 'compact' && 'ui-empty--compact',\n      glassClass('ui-empty', glass),\n      className\n    )}\n    data-variant={variant}\n    {...props}\n  />\n)",
+          "props": [],
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": null,
       "kebab": "empty",
@@ -16938,6 +16943,10 @@
       "propsExtends": "Omit<HTMLAttributes<'input'>, 'size'>",
       "recipes": [
         {
+          "name": "share",
+          "type": "recipe"
+        },
+        {
           "name": "content-flow-settings",
           "type": "recipe"
         },
@@ -17995,7 +18004,7 @@
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -18007,26 +18016,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Kbd: { baseClassName: 'ui-kbd', tagName: 'lumen-kbd' }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-kbd"
         },
         "react": {
-          "available": true,
+          "available": false,
           "example": "<p>Open the command menu with <Kbd>Cmd K</Kbd>.</p>",
           "importStatement": "import { Kbd } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": "ComponentPropsWithoutRef<'kbd'>",
-          "source": "export type KbdProps = ComponentPropsWithoutRef<'kbd'>\n\nexport const Kbd = ({ className, ...props }: KbdProps) => (\n  <kbd className={composeClassName('ui-kbd', className)} {...props} />\n)",
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": null,
       "kebab": "kbd",
@@ -18147,21 +18156,21 @@
           "tagName": "lumen-label"
         },
         "react": {
-          "available": true,
+          "available": false,
           "example": "<Label htmlFor=\"workspace\">Workspace name</Label><Input id=\"workspace\" />",
           "importStatement": "import { Label, Input } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": "ComponentPropsWithRef<'label'>",
-          "source": "export type LabelProps = ComponentPropsWithRef<'label'>\n\nexport const Label = ({ className, ...props }: LabelProps) => (\n  <label className={composeClassName('ui-label', className)} {...props} />\n)",
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
         "elements": true,
-        "react": true
+        "react": false
       },
       "guidance": null,
       "kebab": "label",
@@ -18309,15 +18318,14 @@
         },
         "elements": {
           "attributes": [
-            "data-slot",
-            "variant",
             "href",
             "newTab",
+            "variant",
             "target, rel",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -18329,37 +18337,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Link: {\n    attributeClasses: { variant: { inherit: 'ui-link--inherit' } },\n    baseClassName: 'ui-link',\n    defaults: { 'data-slot': 'link' },\n    tagName: 'lumen-link'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-link"
         },
         "react": {
-          "available": true,
+          "available": false,
           "example": "<Link href=\"/docs\">Read the documentation</Link>",
           "importStatement": "import { Link } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [
-            {
-              "name": "newTab",
-              "optional": true,
-              "type": "boolean"
-            },
-            {
-              "name": "variant",
-              "optional": true,
-              "type": "'default' | 'inherit'"
-            }
-          ],
-          "propsExtends": "ComponentPropsWithRef<'a'>",
-          "source": "export type LinkProps = ComponentPropsWithRef<'a'> & {\n  newTab?: boolean\n  variant?: 'default' | 'inherit'\n}\n\nexport const Link = ({\n  className,\n  newTab = false,\n  ref,\n  rel,\n  target,\n  variant = 'default',\n  ...props\n}: LinkProps) => (\n  <a\n    className={composeClassName(\n      'ui-link', variant === 'inherit' && 'ui-link--inherit', className\n    )}\n    data-slot=\"link\"\n    data-variant={variant}\n    ref={ref}\n    rel={\n      newTab ?\n        [\n          ...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\\s+/))\n        ].join(' ') :\n        rel\n    }\n    target={newTab ? '_blank' : target}\n    {...props}\n  />\n)",
+          "props": [],
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": null,
       "kebab": "link",
@@ -18403,6 +18400,10 @@
       "recipes": [
         {
           "name": "editorial",
+          "type": "recipe"
+        },
+        {
+          "name": "share",
           "type": "recipe"
         },
         {
@@ -24309,17 +24310,12 @@
         },
         "elements": {
           "attributes": [
-            "aria-label",
-            "aria-valuemax",
-            "aria-valuemin",
-            "aria-valuenow",
-            "data-ui-scroll-progress",
             "position",
-            "role",
+            "aria-label",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
@@ -24331,36 +24327,30 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "ScrollProgress: {\n    attributeClasses: {\n      position: { bottom: 'ui-scroll-progress--bottom' }\n    },\n    baseClassName: 'ui-scroll-progress',\n    defaults: {\n      'aria-label': 'Reading progress',\n      'aria-valuemax': '100',\n      'aria-valuemin': '0',\n      'aria-valuenow': '0',\n      'data-ui-scroll-progress': '',\n      position: 'top',\n      role: 'progressbar'\n    },\n    tagName: 'lumen-scroll-progress'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-scroll-progress"
         },
         "react": {
-          "available": true,
+          "available": false,
           "behavior": {
-            "mode": "built-in",
-            "setup": "Interactive behavior is implemented by the React component; do not mount Astro UIPrimitives."
+            "mode": "adapter",
+            "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
           },
           "example": "<ScrollProgress aria-label=\"Article reading progress\" />",
           "importStatement": "import { ScrollProgress } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [
-            {
-              "name": "position",
-              "optional": true,
-              "type": "'bottom' | 'top'"
-            }
-          ],
-          "propsExtends": "ComponentPropsWithoutRef<'div'>",
-          "source": "export interface ScrollProgressProps extends ComponentPropsWithoutRef<'div'> {\n  position?: 'bottom' | 'top'\n}\n\nexport const ScrollProgress = ({\n  'aria-label': ariaLabel = 'Reading progress',\n  className,\n  position = 'top',\n  ...props\n}: ScrollProgressProps) => {\n  const rootRef = useRef<HTMLDivElement>(null)\n\n  useEffect(() => {\n    const root = rootRef.current\n\n    if (!root) return\n\n    let frame = 0\n\n    const update = () => {\n      frame = 0\n\n      const scrollingElement =\n        document.scrollingElement ?? document.documentElement\n\n      const maximum =\n        scrollingElement.scrollHeight - scrollingElement.clientHeight\n\n      const percentage =\n        maximum > 0 ?\n          Math.min(\n            100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)\n          ) :\n          0\n\n      const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')\n\n      root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)\n\n      if (bar) bar.style.transform = `scaleX(${percentage / 100})`\n    }\n\n    const scheduleUpdate = () => {\n      if (frame) return\n\n      frame = window.requestAnimationFrame(update)\n    }\n\n    scheduleUpdate()\n\n    window.addEventListener('resize', scheduleUpdate, { passive: true })\n\n    window.addEventListener('scroll', scheduleUpdate, { passive: true })\n\n    return () => {\n      if (frame) window.cancelAnimationFrame(frame)\n\n      window.removeEventListener('resize', scheduleUpdate)\n\n      window.removeEventListener('scroll', scheduleUpdate)\n    }\n  }, [])\n\n  return (\n    <div\n      aria-label={ariaLabel}\n      aria-valuemax={100}\n      aria-valuemin={0}\n      aria-valuenow={0}\n      className={composeClassName(\n        'ui-scroll-progress', position === 'bottom' && 'ui-scroll-progress--bottom', className\n      )}\n      data-position={position}\n      data-ui-scroll-progress\n      ref={rootRef}\n      role=\"progressbar\"\n      {...props}\n    >\n      <span className=\"ui-scroll-progress__bar\" />\n    </div>\n  )\n}",
+          "props": [],
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": {
         "when": "Use on long reading surfaces when readers benefit from knowing how far they have moved through the current document.",
@@ -24776,7 +24766,7 @@
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -24788,26 +24778,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "SearchField: {\n    baseClassName: 'ui-input ui-search-field',\n    defaults: { type: 'search' },\n    tagName: 'lumen-search-field'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-search-field"
         },
         "react": {
-          "available": true,
+          "available": false,
           "example": "<SearchField name=\"q\" placeholder=\"Search docs\" />",
           "importStatement": "import { SearchField } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": "ComponentPropsWithRef<'input'>",
-          "source": "export type SearchFieldProps = ComponentPropsWithRef<'input'>\n\nexport const SearchField = ({\n  className,\n  ref,\n  type = 'search',\n  ...props\n}: SearchFieldProps) => (\n  <input\n    className={composeClassName('ui-input ui-search-field', className)}\n    ref={ref}\n    type={type}\n    {...props}\n  />\n)",
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": null,
       "kebab": "search-field",
@@ -26246,7 +26236,7 @@
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
@@ -26258,26 +26248,26 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "SkipLink: { baseClassName: 'ui-skip-link', tagName: 'lumen-skip-link' }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-skip-link"
         },
         "react": {
-          "available": true,
+          "available": false,
           "example": "<SkipLink href=\"#main\">Skip to main content</SkipLink>",
           "importStatement": "import { SkipLink } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
           "props": [],
-          "propsExtends": "ComponentPropsWithoutRef<'a'>",
-          "source": "export type SkipLinkProps = ComponentPropsWithoutRef<'a'>\n\nexport const SkipLink = ({ className, ...props }: SkipLinkProps) => (\n  <a className={composeClassName('ui-skip-link', className)} {...props} />\n)",
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": {
         "when": "Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until a keyboard user focuses it.",
@@ -36008,16 +35998,12 @@
         },
         "elements": {
           "attributes": [
-            "activation-offset",
-            "aria-label",
-            "data-ui-anchor",
-            "data-ui-anchor-offset",
             "items",
             "activationOffset",
             "class, className",
             "...native attributes"
           ],
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "registration",
             "setup": "Call defineLumenElements() once before rendering Lumen custom elements. Registration includes this component’s interactive behavior."
@@ -36029,12 +36015,12 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Anchor: {\n    baseClassName: 'ui-anchor',\n    defaults: {\n      'aria-label': 'On this page',\n      'activation-offset': '96',\n      'data-ui-anchor': '',\n      'data-ui-anchor-offset': '96'\n    },\n    tagName: 'lumen-anchor'\n  }",
+          "source": "",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-anchor"
         },
         "react": {
-          "available": true,
+          "available": false,
           "behavior": {
             "mode": "adapter",
             "setup": "The React component exposes the documented data attributes; app-level state must implement the documented interactive and event behavior. Do not mount Astro UIPrimitives."
@@ -36043,27 +36029,16 @@
           "importStatement": "import { Anchor } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [
-            {
-              "name": "activationOffset",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "name": "items",
-              "optional": true,
-              "type": "AnchorLink[]"
-            }
-          ],
-          "propsExtends": "ComponentPropsWithoutRef<'nav'>",
-          "source": "export interface AnchorProps extends ComponentPropsWithoutRef<'nav'> {\n  activationOffset?: number\n  items?: AnchorLink[]\n}\n\nexport const Anchor = ({\n  'aria-label': ariaLabel = 'On this page',\n  activationOffset = 96,\n  children,\n  className,\n  items = emptyAnchorLinks,\n  ...props\n}: AnchorProps) => {\n  const anchorRef = createAnchorRef()\n\n  return (\n    <nav\n      aria-label={ariaLabel}\n      className={composeClassName('ui-anchor', className)}\n      data-ui-anchor\n      data-ui-anchor-offset={Math.max(0, activationOffset)}\n      ref={anchorRef}\n      {...props}\n    >\n      {items.length > 0 && (\n        <ol>\n          {items.map((item, index) => (\n            <li key={item.href}>\n              <a\n                aria-current={index === 0 ? 'location' : undefined}\n                data-active={index === 0 ? 'true' : 'false'}\n                data-depth={item.depth}\n                href={item.href}\n              >\n                {item.index !== undefined && (\n                  <span className=\"ui-anchor__index\">{item.index}</span>\n                )}\n                <span className=\"ui-anchor__content\">\n                  <span className=\"ui-anchor__label\">{item.label}</span>\n                  {item.description && (\n                    <span className=\"ui-anchor__description\">{item.description}</span>\n                  )}\n                </span>\n              </a>\n            </li>\n          ))}\n        </ol>\n      )}\n      {children}\n    </nav>\n  )\n}",
+          "props": [],
+          "propsExtends": null,
+          "source": "",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
       "frameworks": {
         "astro": true,
-        "elements": true,
-        "react": true
+        "elements": false,
+        "react": false
       },
       "guidance": null,
       "kebab": "anchor",
@@ -46349,7 +46324,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <picture>\n      <source media=\"(prefers-color-scheme: dark)\" srcset=\"./docs/assets/readme/hero-dark.svg\">\n      <img src=\"./docs/assets/readme/hero-light.svg\" alt=\"Lumen UI — A shared language. Every interface.\" width=\"1200\" height=\"340\">\n    </picture>\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  <strong>Accessible primitives. Native authoring. Shared foundations.</strong><br>\n  An open-source UI system for Astro, React, Web Components, React Native, SwiftUI, and Jetpack Compose.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">Documentation</a> ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a> ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Playgrounds</a> ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a> ·\n  <a href=\"https://lumen.santi020k.com/support\">Support</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/ci.yml\"><img alt=\"CI status on main\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&amp;style=flat-square&amp;label=CI\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL status\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"Published Astro package version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&amp;label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-036b8c?style=flat-square\"></a>\n</p>\n\nLumen gives your product a consistent visual language while preserving each framework's native\nway of building. Compose accessible controls, forms, charts, and complete product layouts from\nshared tokens and explicit component contracts.\n\n**Explore:** [Quick start](#web-quick-start) · [Native apps](#native-playgrounds) · [Templates](#dashboards-and-templates) · [AI and Figma](#ai-and-design-workflows) · [Packages](#packages) · [Repository apps](#repository-apps) · [Contributing](#contributing)\n\n> **Lumen 4:** See the [upcoming v4.3 Tailwind complement](docs/lumen-4.3.md), the [v4.2 highlights](docs/lumen-4.2.md) for SwiftUI appearance and agent guidance,\n> and [v4.1 highlights](docs/lumen-4.1.md) for loading and forms. Follow the [migration guide](docs/migrating-v3-to-v4.md) when\n> upgrading from v3. Package versions and store builds follow their own release schedules.\n\n## See Lumen in action\n\n<p>\n  <a href=\"https://lumen.santi020k.com/docs/web/playground\">\n    <img src=\"./apps/docs/src/assets/platforms/web.webp\" alt=\"A Lumen web workspace with navigation, metric cards, an interactive chart, and a task form\" width=\"1184\" height=\"802\">\n  </a>\n</p>\n\n*Real Lumen components with illustrative data. [Open the web playground →](https://lumen.santi020k.com/docs/web/playground)*\n\n| Built for | What you get |\n| --- | --- |\n| **Web products** | Astro, React, and custom elements with standalone CSS and optional Tailwind integration. |\n| **Native interfaces** | React Native, SwiftUI, Compose, WidgetKit, and Wear OS foundations with platform conventions. |\n| **Accessible interaction** | Semantic structure, keyboard paths, focus management, and reduced-motion support. |\n| **Design and AI workflows** | Figma resources, a portable agent skill, MCP discovery, and machine-readable contracts. |\n\n## Web quick start\n\nChoose one adapter. Astro requires Astro 5+, React requires React 19+, and the web packages\nrequire Node.js 22.12+ for their tooling. Install in your existing application:\n\n```bash\n# Astro\npnpm add @santi020k/lumen-astro\n\n# React\npnpm add @santi020k/lumen-react\n\n# Web Components\npnpm add @santi020k/lumen-elements\n```\n\nThe optional CLI is a separate development dependency in v5: `pnpm add -D @santi020k/lumen`.\nUse it for editable recipes, discovery, and diagnostics.\n\n### Astro\n\nIn v5, Astro components load their own CSS and shared foundations. Mount `UIPrimitives` once in\nyour root layout; it loads only the controllers used by the page. The full stylesheet remains available\nfor legacy setup and application-generated markup.\n\n```astro\n---\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<html lang=\"en\">\n  <body>\n    <slot />\n    <UIPrimitives />\n  </body>\n</html>\n```\n\n```astro\n---\nimport { Button, Card, Input, Label } from '@santi020k/lumen-astro'\n---\n\n<Card>\n  <Label for=\"email\">Email</Label>\n  <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n  <Button>Subscribe</Button>\n</Card>\n```\n\n### React\n\nLoad the stylesheet once from your app entry or global CSS:\n\n```tsx\nimport '@santi020k/lumen-react/styles.css'\nimport { Button, Card, Input, Label } from '@santi020k/lumen-react'\n\nexport function SubscribeForm() {\n  return (\n    <Card>\n      <Label htmlFor=\"email\">Email</Label>\n      <Input id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button>Subscribe</Button>\n    </Card>\n  )\n}\n```\n\n### Web Components\n\nImport the styles and register the elements once:\n\n```html\n<style>\n  @import \"@santi020k/lumen-elements/styles.css\";\n</style>\n\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n\n  defineLumenElements()\n</script>\n\n<lumen-card>\n  <lumen-label id=\"email-label\">Email</lumen-label>\n  <lumen-input aria-labelledby=\"email-label\" id=\"email\" name=\"email\" type=\"email\" placeholder=\"you@example.com\"></lumen-input>\n  <lumen-button>Subscribe</lumen-button>\n</lumen-card>\n```\n\nSee the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,\ncomponent examples, and API details.\n\nBrowse the [package directory](https://lumen.santi020k.com/docs/packages) for framework adapters,\nshared foundations, and optional integrations, with links to focused examples and usage guides.\n\nFor failure states, use the [error-handling guide](./docs/error-handling.md) to choose between field\nfeedback, summaries, persistent alerts, transient toasts, and the `ErrorState` recovery surface.\nLumen owns presentation and accessibility; applications retain logging, retry, and exception policy.\n\nFor native applications, choose the [React Native](https://lumen.santi020k.com/docs/react-native),\n[Apple / SwiftUI](https://lumen.santi020k.com/docs/apple), or\n[Android / Compose](https://lumen.santi020k.com/docs/android) guide. The\n[shared foundations](https://lumen.santi020k.com/docs/foundations) explain the cross-platform token\nand component contract; repository contributors can also use the\n[cross-platform architecture](./docs/cross-platform.md) and\n[native component reference](./docs/native-components.md).\n\n> **Native qualification:** Check the [compatibility matrix](docs/native-compatibility.md) and\n> [device evidence](docs/native-device-validation.md) for your target. Local builds, published\n> artifacts, and physical-device accessibility are distinct verification steps.\n\n## Tailwind CSS\n\nUse Tailwind CSS v4 as an optional complement for responsive layouts and component customization.\nThe `tailwind.css` bridge (Lumen 4.3+) exposes Lumen semantic colors such as `bg-surface`,\n`text-ink`, and `border-line`, including nested themes. See the\n[Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind) for framework examples and troubleshooting.\n\nKeep the layer prelude, Tailwind import, and Lumen stylesheet in the same shared CSS entry. Replace\n`lumen-astro` with the package for your framework.\n\n```css\n@import \"@santi020k/lumen-astro/layers.css\";\n@import \"tailwindcss\";\n@import \"@santi020k/lumen-astro/styles.css\";\n@import \"@santi020k/lumen-astro/tailwind.css\";\n```\n\nThis order places Tailwind base styles before Lumen components and Tailwind utilities above Lumen\ncomponent defaults.\n\n## Native playgrounds\n\n<table>\n  <tr>\n    <th>SwiftUI</th>\n    <th>Jetpack Compose</th>\n    <th>React Native</th>\n  </tr>\n  <tr>\n    <td><a href=\"https://lumen.santi020k.com/docs/apple/playground\"><img src=\"./apps/docs/src/assets/platforms/apple.webp\" alt=\"Native SwiftUI release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/android/playground\"><img src=\"./apps/docs/src/assets/platforms/android.webp\" alt=\"Native Compose release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/react-native/playground\"><img src=\"./apps/docs/src/assets/platforms/react-native.webp\" alt=\"Expo browser preview of the contributor profile example\" width=\"220\"></a></td>\n  </tr>\n  <tr>\n    <td>Native app capture</td>\n    <td>Native app capture</td>\n    <td>Expo browser preview</td>\n  </tr>\n</table>\n\nSee [capture provenance](apps/docs/src/assets/platforms/README.md) for sources and verification scope.\n\nTry Lumen before adding it to your project. The [playground section](https://lumen.santi020k.com/#playgrounds)\nbrings together the browser demos and native apps. Explore component states and themes, then use\nthe open-source apps as implementation references. Start with the\n[web playground](https://lumen.santi020k.com/docs/web/playground) for Astro, React, and Web Components,\nor choose a native gallery:\n\n- [`apps/playground-react-native`](./apps/playground-react-native) runs through Expo on the web,\n  iOS, and Android. [Try the browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n  or use the local setup guide for native evaluation. EAS profiles cover TestFlight, Android App\n  Bundles, and APKs; this gallery has no separate public store listing.\n- [`apps/playground-apple`](./apps/playground-apple) is available on the\n  [App Store](https://apps.apple.com/app/id6805250815) for iPhone, iPad, and Mac. It also builds as\n  an iOS Xcode app or macOS Swift Package executable for local exploration.\n- [`apps/playground-android`](./apps/playground-android) builds a native Compose application and a\n  directly installable debug APK. It is also available on\n  [Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose)\n  for Android phones and tablets.\n\nSee the [playground workflow](./docs/playgrounds.md) for a platform chooser, reference-app source,\nand run, capture, and distribution commands. Store builds follow their own release schedule and\nmay differ from the current repository version.\n\n## Appearance presets\n\nChoose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.\n\n## Dashboards and templates\n\nExplore the [template gallery](https://lumen.santi020k.com/templates) for complete analytics,\nSaaS admin, commerce, project workspace, and authentication/onboarding experiences. Each family\nuses public Lumen primitives and semantic tokens, includes responsive and accessibility coverage,\nand ships through the CLI for all three framework targets:\n\n```bash\nlumen add analytics-dashboard\nlumen add commerce-dashboard --target react\nlumen add auth-onboarding --target elements\n```\n\n## AI and design workflows\n\nInstall the portable Lumen skill in Codex, Claude Code, Cursor, Windsurf, and other compatible\ncoding agents:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\nThe skill teaches agents how to select, compose, theme, and verify Lumen primitives. Pair it with\n[`@santi020k/lumen-mcp`](./packages/mcp) when an agent needs to search the live catalog or retrieve\ncurrent source, props, tokens, and usage rules.\n\nFor ChatGPT and Codex, install the published\n[Lumen UI plugin](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\nfrom the Plugins Directory. Select **Install plugin**, then mention **@Lumen UI** in a request such\nas “Find the right Lumen components for an accessible React settings screen.” The plugin bundles\nthe skill with the hosted, read-only catalog; no separate Lumen account or local MCP setup is needed.\n\nLumen is designed to reduce repetitive UI code and unnecessary agent context. Actual token usage\ndepends on the model, task, and corrections; see the [measurement method](docs/ai-efficiency.md).\n\n<details>\n<summary>Guides, registries, and integration references</summary>\n\nAdditional machine-readable surfaces include:\n\n- [`llms.txt`](./llms.txt) for a concise project map.\n- [`docs/ai-usage.md`](./docs/ai-usage.md) for downstream generation examples.\n- [`docs/styling-contract.md`](./docs/styling-contract.md) for stable parts and component variables.\n- [`docs/import-and-icon-performance.md`](./docs/import-and-icon-performance.md) for repeatable import and icon evidence.\n- [`docs/graphics.md`](./docs/graphics.md) for portable decorative artwork across web and native platforms.\n- [`docs/consumer-regression-fixtures.md`](./docs/consumer-regression-fixtures.md) for production-shaped local coverage.\n- [`docs/project-adoption.md`](./docs/project-adoption.md) for the sibling-project audit and staged\n  web and native migration strategy.\n- [`registry/lumen.registry.json`](./registry/lumen.registry.json) for recipes and installable file\n  groups.\n- [`docs/figma.md`](./docs/figma.md) for Figma variables and Code Connect workflows.\n- [`apps/figma-plugin/README.md`](./apps/figma-plugin/README.md) for the **beta** Figma plugin,\n  Astro starters, and AI handoff.\n- [`plugins/lumen-ui`](./plugins/lumen-ui) for the packaged Codex and ChatGPT plugin, with its\n  [submission and review record](./docs/openai-plugin-submission.md).\n- [`.claude-plugin/marketplace.json`](./.claude-plugin/marketplace.json) for the Claude Code\n  marketplace, with its [installation and submission guide](./docs/claude-code-plugin.md).\n- [`docs/cross-platform.md`](./docs/cross-platform.md) for the native architecture, support tiers,\n  and component-parity policy.\n- [`docs/native-patterns.md`](./docs/native-patterns.md) for developed native compositions and the\n  boundary between Lumen presentation and platform-owned application structure.\n\n</details>\n\n## Packages\n\n| Package | Purpose |\n| --- | --- |\n| [`@santi020k/lumen-astro`](./packages/astro) | Reference implementation, Astro components, and progressive-enhancement runtime |\n| [`@santi020k/lumen-react`](./packages/react) | React components and behavior hooks |\n| [`@santi020k/lumen-react-hook-form`](./packages/react-hook-form) | Optional React Hook Form adapters for composite controls |\n| [`@santi020k/lumen-elements`](./packages/elements) | Standards-based Web Components |\n| [`@santi020k/lumen-core`](./packages/core) | Shared tokens, metadata, class helpers, and behavior contracts |\n| [`@santi020k/lumen-tokens`](./packages/tokens) | Canonical platform-neutral design token source |\n| [`@santi020k/lumen-react-native`](./packages/react-native) | React Native foundations and native primitives |\n| [`LumenUI`](./packages/swift) | Swift Package for iOS, iPadOS, macOS, tvOS, visionOS, and watchOS foundations and native primitives |\n| [`LumenWidgetUI`](./packages/swift-widget) | Focused WidgetKit-safe semantic text, icon, badge, and compact-stat foundations |\n| [`lumen-compose`](./packages/compose) | Android library for Jetpack Compose foundations and native primitives |\n| [`lumen-compose-wear`](./packages/compose/wear) | Focused Wear OS primitives for at-a-glance round-screen actions, progress, status, metrics, and rows |\n| [`@santi020k/lumen-icons-brand`](./packages/icons-brand) | Optional namespaced brand icons for web `Icon` adapters  |\n| [`@santi020k/lumen`](./packages/lumen) | Umbrella package, CLI, registry metadata, and public package map |\n| [`@santi020k/lumen-mcp`](./packages/mcp) | MCP server for component discovery and source retrieval |\n\nThe private [`@santi020k/lumen-templates`](packages/templates/README.md) workspace supplies the\ngallery and preview renderer. Consumer recipes are installed through the public Lumen CLI.\n\n## Repository apps\n\nEach app has its own setup, source map, and verification guidance:\n\n| App | Purpose |\n| --- | --- |\n| [Documentation](apps/docs/README.md) | Public documentation, live examples, search, and native previews |\n| [Template showcase](apps/templates/README.md) | Standalone gallery of five product-template families |\n| [Next.js smoke app](apps/next-smoke/README.md) | Server/client boundaries and rendered consumer regression fixtures |\n| [Apple playground](apps/playground-apple/README.md) | iPhone, iPad, Mac, watchOS, and WidgetKit reference hosts |\n| [Android playground](apps/playground-android/README.md) | Compose phone/tablet app and separate Wear OS host |\n| [React Native playground](apps/playground-react-native/README.md) | Expo reference app and embedded browser gallery |\n| [Figma plugin](apps/figma-plugin/README.md) | Development beta for Astro starters and structured agent handoff |\n| [Motion studio](apps/motion/README.md) | Reusable product films and local video exports |\n| [Store artwork](apps/store-assets/README.md) | Canonical SVG sources for the playground app icons |\n\n## Lumen 4\n\nLumen 4 brings consumer-driven date selection, chart readability, clipboard feedback,\nloading states, native layout improvements and a new ImageComparison primitive. Start with the\n[v3 → v4 migration guide](docs/migrating-v3-to-v4.md), [consumer audit](docs/lumen-4-consumer-audit.md),\nand [v4.2 release highlights](docs/lumen-4.2.md). The community gallery includes published consumer\nscreenshots; it does not imply those applications already run the current release.\n\nFor existing applications, start with [v1 → v2](docs/migrating-v1-to-v2.md) when needed, then\n[v2 → v3](docs/migrating-v2-to-v3.md) before\n[v3 → v4](docs/migrating-v3-to-v4.md). For initial adoption, use\n[Migrating to Lumen](docs/migrating-to-lumen.md).\n\n## Contributing\n\nLumen is a pnpm workspace. Astro is the reference implementation; shared contracts belong in\n`packages/core`, while framework-specific behavior stays in its adapter package.\n\nUse Node.js 22.22.2+, 24.15.0+, or 26+ and pnpm 12.8.1, as declared in the root manifest.\n\n```bash\npnpm install --frozen-lockfile\npnpm run dev\npnpm run validate\n```\n\nRead [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a pull request. User-visible package\nchanges require a changeset.\n\n## Community\n\nCreate reusable product animations and social videos locally with the\n[Lumen motion studio](./apps/motion/README.md). Its first pilot previews one interface in four\nappearances and exports portrait, square, and landscape MP4s through HyperFrames.\n\n[Feedback & support](https://lumen.santi020k.com/support) connects ideas, questions, bug reports,\nand the [public roadmap](https://lumen.santi020k.com/support#roadmap). Discuss improvements on GitHub\nand follow accepted work through implementation and release.\n\nLumen is free and MIT licensed while the project focuses on adoption, public examples, and\nreal-world feedback.\n\n- Explore task-oriented [guides](https://lumen.santi020k.com/guides).\n- Share a public project in the [community showcase](https://lumen.santi020k.com/community).\n- Evaluate the system with the open [team adoption path](https://lumen.santi020k.com/teams).\n- Tell us what would improve your next build through the\n  [adoption survey](https://github.com/santi020k/lumen/issues/new?template=adoption-feedback.yml).\n\nMaintainers can use the [exposure playbook](./docs/exposure-playbook.md) for publishing cadence,\ncampaign measurement, video scripts, and launch copy, and the\n[marketing package](./docs/marketing/README.md) for execution-ready copy, channel decisions, a\nfour-week calendar, asset briefs, an approval queue, and a community-response library.\n\n## Find your next step\n\n| Resource | Use it for |\n| --- | --- |\n| [Cross-platform architecture](docs/cross-platform.md) | Shared foundations and adapter responsibilities. |\n| [Native compatibility](docs/native-compatibility.md) | Supported toolchains and platform baselines. |\n| [Native release runbook](docs/native-release-runbook.md) | Artifact qualification and distribution gates. |\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n\nCreated and maintained by [Santiago Molina](https://santi020k.com).\n"
   },
   "meta": {
-    "catalogHash": "0e5c0b6e8ff2fd50aabad46df4dd4f77bf1a124626fda5784622fe1eb771f67d",
+    "catalogHash": "723952f4c060542a3623f135a3a1b809a923c58f421e596b3427faac7f384e83",
     "componentCount": 196,
     "nativeComponentCount": 125,
     "packages": [
@@ -60878,6 +60853,7 @@
         "ButtonLink",
         "Callout",
         "Card",
+        "Collapsible",
         "Dialog",
         "DialogBody",
         "DialogTitle",
@@ -60890,6 +60866,18 @@
       "files": [
         "docs/editorial-recipes.md"
       ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install @santi020k/lumen-astro in the application and @santi020k/lumen separately for the CLI.",
+            "Keep selective component imports. Mount the runtime once in the root layout."
+          ]
+        }
+      },
       "categories": [
         "Actions",
         "Data display",
@@ -60904,11 +60892,102 @@
       "frameworks": [
         "astro"
       ],
-      "description": "An editorial composition using Avatar, Button, ButtonLink, Callout, Card, Dialog, DialogBody, DialogTitle, Icon, Link, ThemeToggle, Timeline, Typography.",
+      "description": "An editorial composition using Avatar, Button, ButtonLink, Callout, Card, Collapsible, Dialog, DialogBody, DialogTitle, Icon, Link, ThemeToggle, Timeline, Typography.",
       "install": {
         "astro": "lumen add editorial --target astro",
         "elements": "lumen add editorial --target elements",
         "react": "lumen add editorial --target react"
+      }
+    },
+    {
+      "name": "share",
+      "type": "recipe",
+      "components": [
+        "Button",
+        "Collapsible",
+        "CopyButton",
+        "Dialog",
+        "DialogBody",
+        "DialogClose",
+        "DialogHeader",
+        "DialogTitle",
+        "Input",
+        "Link"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install @santi020k/lumen-astro in the application and @santi020k/lumen separately for the CLI.",
+            "Keep selective component imports. Mount the runtime once in the root layout."
+          ]
+        }
+      },
+      "files": [
+        "docs/product-workflow-recipes.md"
+      ],
+      "categories": [
+        "Actions",
+        "Forms",
+        "Layout",
+        "Navigation",
+        "Overlays"
+      ],
+      "examples": {
+        "astro": "---\nimport Button from '@santi020k/lumen-astro/components/Button'\nimport Collapsible from '@santi020k/lumen-astro/components/Collapsible'\nimport CopyButton from '@santi020k/lumen-astro/components/CopyButton'\nimport Dialog from '@santi020k/lumen-astro/components/Dialog'\nimport DialogBody from '@santi020k/lumen-astro/components/DialogBody'\nimport DialogClose from '@santi020k/lumen-astro/components/DialogClose'\nimport DialogHeader from '@santi020k/lumen-astro/components/DialogHeader'\nimport DialogTitle from '@santi020k/lumen-astro/components/DialogTitle'\nimport Input from '@santi020k/lumen-astro/components/Input'\nimport Link from '@santi020k/lumen-astro/components/Link'\n\ninterface Props {\n  id: string\n  url: string\n  title: string\n  text?: string\n  destinations?: readonly { label: string, href: string, newTab?: boolean }[]\n  labels?: Partial<{\n    open: string\n    close: string\n    native: string\n    canceled: string\n    failure: string\n    url: string\n    copy: string\n    copied: string\n    copyFailure: string\n    recovery: string\n  }>\n}\n\nconst { id, url, title, text, destinations = [], labels } = Astro.props\nconst openLabel = labels?.open ?? 'Share this page'\nconst urlLabel = labels?.url ?? 'Link to share'\n---\n\n<lumen-recipe-share data-url={url} data-title={title} data-text={text} data-canceled={labels?.canceled ?? 'Sharing canceled.'} data-failure={labels?.failure ?? 'Sharing could not complete. Choose a destination or copy the link.'}>\n  <Collapsible class=\"share-fallback\">\n    <summary>{openLabel}</summary>\n    <Input aria-label={urlLabel} value={url} readonly />\n    <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>\n  </Collapsible>\n  <Button class=\"share-trigger\" data-ui-dialog-trigger={id} variant=\"outline\">{openLabel}</Button>\n  <Dialog id={id} aria-labelledby={id + '-title'}>\n    <DialogHeader class=\"share-header\">\n      <DialogTitle id={id + '-title'}>{openLabel}</DialogTitle>\n      <DialogClose variant=\"outline\">{labels?.close ?? 'Close'}</DialogClose>\n    </DialogHeader>\n    <DialogBody>\n      <Button data-native-share hidden variant=\"outline\">{labels?.native ?? 'Share using this device'}</Button>\n      <p data-share-status role=\"status\"></p>\n      <Input aria-label={urlLabel} value={url} readonly />\n      <CopyButton\n        value={url}\n        label={labels?.copy ?? 'Copy link'}\n        copiedLabel={labels?.copied ?? 'Link copied'}\n        errorLabel={labels?.copyFailure ?? 'Could not copy the link.'}\n        recoveryLabel={labels?.recovery ?? 'Link for manual copying'}\n      >{labels?.copy ?? 'Copy link'}</CopyButton>\n      <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>\n    </DialogBody>\n  </Dialog>\n</lumen-recipe-share>\n\n<script>\n  const isCanceled = (error: unknown): boolean => (\n    error instanceof Error && error.name === 'AbortError'\n  )\n\n  class LumenRecipeShare extends HTMLElement {\n    #listeners?: AbortController\n\n    connectedCallback() {\n      const button = this.querySelector<HTMLButtonElement>('[data-native-share]')\n      const dialog = this.querySelector('dialog')\n      const status = this.querySelector<HTMLElement>('[data-share-status]')\n\n      if (!button || !dialog || !status || typeof navigator.share !== 'function') return\n\n      this.#listeners?.abort()\n\n      this.#listeners = new AbortController()\n\n      const { signal } = this.#listeners\n      let operation = 0\n      const isCurrent = (ticket: number) => ticket === operation && !signal.aborted && this.isConnected\n\n      const invalidate = () => {\n        operation += 1\n\n        button.disabled = false\n\n        button.removeAttribute('aria-busy')\n      }\n\n      dialog.addEventListener('close', invalidate, { signal })\n\n      window.addEventListener('pagehide', invalidate, { signal })\n\n      document.addEventListener('astro:before-swap', invalidate, { signal })\n\n      const message = (canceled: boolean) => (canceled ? this.dataset.canceled : this.dataset.failure) ?? ''\n\n      button.hidden = false\n\n      button.addEventListener('click', async () => {\n        const ticket = ++operation\n\n        button.disabled = true\n\n        button.setAttribute('aria-busy', 'true')\n\n        status.textContent = ''\n\n        try {\n          await navigator.share({ url: this.dataset.url, title: this.dataset.title, text: this.dataset.text })\n\n          if (isCurrent(ticket)) dialog.close()\n        } catch (error: unknown) {\n          if (isCurrent(ticket)) status.textContent = message(isCanceled(error))\n        } finally {\n          if (isCurrent(ticket)) {\n            button.disabled = false\n\n            button.removeAttribute('aria-busy')\n\n            if (dialog.open) button.focus({ preventScroll: true })\n          }\n        }\n      }, { signal })\n    }\n\n    disconnectedCallback() {\n      this.#listeners?.abort()\n    }\n  }\n\n  if (!customElements.get('lumen-recipe-share')) {\n    customElements.define('lumen-recipe-share', LumenRecipeShare)\n  }\n</script>\n\n<style>\n  lumen-recipe-share { display: block; min-inline-size: 0; overflow-wrap: anywhere; }\n  .share-trigger, [data-native-share][hidden] { display: none; }\n  .share-trigger[data-ui-bound='true'] { display: inline-flex; }\n  lumen-recipe-share:has(.share-trigger[data-ui-bound='true']) > .share-fallback { display: none; }\n  .share-header { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }\n  :global(lumen-recipe-share button) { max-inline-size: 100%; block-size: auto; white-space: normal; }\n  [data-share-status]:empty { margin: 0; }\n  li { margin-block: 0.5rem; }\n</style>\n"
+      },
+      "frameworks": [
+        "astro"
+      ],
+      "description": "A share composition using Button, Collapsible, CopyButton, Dialog, DialogBody, DialogClose, DialogHeader, DialogTitle, Input, Link.",
+      "install": {
+        "astro": "lumen add share --target astro",
+        "elements": "lumen add share --target elements",
+        "react": "lumen add share --target react"
+      }
+    },
+    {
+      "name": "code-example",
+      "type": "recipe",
+      "components": [
+        "Code",
+        "Collapsible",
+        "CopyButton"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install @santi020k/lumen-astro in the application and @santi020k/lumen separately for the CLI.",
+            "Keep selective component imports. Mount the runtime once in the root layout."
+          ]
+        }
+      },
+      "files": [
+        "docs/product-workflow-recipes.md"
+      ],
+      "categories": [
+        "Actions",
+        "Data display",
+        "Layout"
+      ],
+      "examples": {
+        "astro": "---\nimport Code from '@santi020k/lumen-astro/components/Code'\nimport Collapsible from '@santi020k/lumen-astro/components/Collapsible'\nimport CopyButton from '@santi020k/lumen-astro/components/CopyButton'\n\ninterface Props {\n  id: string\n  source: string\n  language?: string\n  title: string\n  open?: boolean\n  highlighted?: boolean\n  labels?: Partial<{\n    copy: string\n    copied: string\n    error: string\n    recovery: string\n    disclosure: string\n    scroll: string\n  }>\n}\n\nconst { id, source, language, title, labels, highlighted = false, open = false } = Astro.props\n---\n\n<section class=\"code-example\" aria-labelledby={id + '-title'}>\n  <header>\n    <p id={id + '-title'}>{title}</p>\n    <CopyButton\n      class=\"code-example-copy\"\n      value={source}\n      label={labels?.copy ?? 'Copy complete example'}\n      copiedLabel={labels?.copied ?? 'Complete example copied'}\n      errorLabel={labels?.error ?? 'Copy failed. Select the complete source below.'}\n      recoveryLabel={labels?.recovery ?? 'Complete source for manual copying'}\n    >{labels?.copy ?? 'Copy complete example'}</CopyButton>\n  </header>\n  <Collapsible id={id} open={open}>\n    <summary>{labels?.disclosure ?? 'Read complete example'}</summary>\n    <Code id={id + '-source'} code={source} language={language} codeLabel={title} highlighted={highlighted} variant=\"block\" scrollCue={labels?.scroll ?? true}>\n      <slot />\n    </Code>\n  </Collapsible>\n</section>\n\n<style>\n  .code-example { min-inline-size: 0; overflow-wrap: anywhere; }\n  header { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }\n  header > p { flex: 1 1 12rem; font-weight: 600; }\n  summary { min-block-size: 2.75rem; padding-block: 0.65rem; cursor: pointer; }\n  .code-example-copy { display: none; max-inline-size: 100%; block-size: auto; white-space: normal; }\n  .code-example-copy[data-ui-copy-button-bound='true'] { display: inline-flex; }\n</style>\n"
+      },
+      "frameworks": [
+        "astro"
+      ],
+      "description": "A code example composition using Code, Collapsible, CopyButton.",
+      "install": {
+        "astro": "lumen add code-example --target astro",
+        "elements": "lumen add code-example --target elements",
+        "react": "lumen add code-example --target react"
       }
     },
     {
@@ -60923,6 +61002,38 @@
       "files": [
         "docs/interactive-editorial-recipes.md"
       ],
+      "setup": {
+        "astro": {
+          "dependencies": [
+            "@santi020k/lumen-astro"
+          ],
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install the Astro adapter in the application and the Lumen CLI separately for installation.",
+            "Use the installed Astro recipe and mount the runtime once in the root layout."
+          ]
+        },
+        "react": {
+          "dependencies": [
+            "@santi020k/lumen-react",
+            "react",
+            "react-dom"
+          ],
+          "instructions": [
+            "Import the React foundation stylesheet once, then import the installed TSX recipe with its selective component and local CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        },
+        "elements": {
+          "dependencies": [
+            "@santi020k/lumen-elements"
+          ],
+          "instructions": [
+            "Import the Elements foundation stylesheet once. Insert the installed HTML and import the installed TypeScript module, which registers only required primitives and imports their CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        }
+      },
       "categories": [
         "Feedback",
         "Layout",
@@ -60961,6 +61072,38 @@
       "files": [
         "docs/interactive-editorial-recipes.md"
       ],
+      "setup": {
+        "astro": {
+          "dependencies": [
+            "@santi020k/lumen-astro"
+          ],
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install the Astro adapter in the application and the Lumen CLI separately for installation.",
+            "Use the installed Astro recipe and mount the runtime once in the root layout."
+          ]
+        },
+        "react": {
+          "dependencies": [
+            "@santi020k/lumen-react",
+            "react",
+            "react-dom"
+          ],
+          "instructions": [
+            "Import the React foundation stylesheet once, then import the installed TSX recipe with its selective component and local CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        },
+        "elements": {
+          "dependencies": [
+            "@santi020k/lumen-elements"
+          ],
+          "instructions": [
+            "Import the Elements foundation stylesheet once. Insert the installed HTML and import the installed TypeScript module, which registers only required primitives and imports their CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        }
+      },
       "categories": [
         "Actions",
         "Data display",
@@ -60999,6 +61142,38 @@
       "files": [
         "docs/interactive-editorial-recipes.md"
       ],
+      "setup": {
+        "astro": {
+          "dependencies": [
+            "@santi020k/lumen-astro"
+          ],
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install the Astro adapter in the application and the Lumen CLI separately for installation.",
+            "Use the installed Astro recipe and mount the runtime once in the root layout."
+          ]
+        },
+        "react": {
+          "dependencies": [
+            "@santi020k/lumen-react",
+            "react",
+            "react-dom"
+          ],
+          "instructions": [
+            "Import the React foundation stylesheet once, then import the installed TSX recipe with its selective component and local CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        },
+        "elements": {
+          "dependencies": [
+            "@santi020k/lumen-elements"
+          ],
+          "instructions": [
+            "Import the Elements foundation stylesheet once. Insert the installed HTML and import the installed TypeScript module, which registers only required primitives and imports their CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        }
+      },
       "categories": [
         "Actions",
         "Data display",

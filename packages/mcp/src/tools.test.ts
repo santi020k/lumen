@@ -534,6 +534,18 @@ describe('getRecipe', () => {
     }
   })
 
+  test.each(['code-example', 'share'])('exposes %s setup and dependency metadata', name => {
+    const result = getRecipe({ name, framework: 'astro' })
+
+    expect(result.data.recipe?.frameworks).toEqual(['astro'])
+    expect(getRecipe({ name, framework: 'react' }).data.found).toBe(false)
+    expect(getRecipe({ name, framework: 'elements' }).data.found).toBe(false)
+    expect(result.data.recipe?.dependencies).toEqual(['@santi020k/lumen-astro'])
+    expect(result.data.recipe?.setup?.astro?.runtime).toBe('@santi020k/lumen-astro/runtime')
+    expect(result.text).toContain('## Setup')
+    expect(result.text).toContain('Install @santi020k/lumen-astro')
+  })
+
   test('returns a structured domain error for unknown recipes', () => {
     const result = getRecipe({ name: 'missing-recipe' })
 

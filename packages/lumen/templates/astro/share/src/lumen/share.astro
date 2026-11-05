@@ -1,0 +1,153 @@
+---
+import Button from '@santi020k/lumen-astro/components/Button'
+import Collapsible from '@santi020k/lumen-astro/components/Collapsible'
+import CopyButton from '@santi020k/lumen-astro/components/CopyButton'
+import Dialog from '@santi020k/lumen-astro/components/Dialog'
+import DialogBody from '@santi020k/lumen-astro/components/DialogBody'
+import DialogClose from '@santi020k/lumen-astro/components/DialogClose'
+import DialogHeader from '@santi020k/lumen-astro/components/DialogHeader'
+import DialogTitle from '@santi020k/lumen-astro/components/DialogTitle'
+import Input from '@santi020k/lumen-astro/components/Input'
+import Link from '@santi020k/lumen-astro/components/Link'
+
+interface Props {
+  id: string
+  url: string
+  title: string
+  text?: string
+  destinations?: readonly { label: string, href: string, newTab?: boolean }[]
+  labels?: Partial<{
+    open: string
+    close: string
+    native: string
+    canceled: string
+    failure: string
+    url: string
+    copy: string
+    copied: string
+    copyFailure: string
+    recovery: string
+  }>
+}
+
+const { id, url, title, text, destinations = [], labels } = Astro.props
+const openLabel = labels?.open ?? 'Share this page'
+const urlLabel = labels?.url ?? 'Link to share'
+---
+
+<lumen-recipe-share data-url={url} data-title={title} data-text={text} data-canceled={labels?.canceled ?? 'Sharing canceled.'} data-failure={labels?.failure ?? 'Sharing could not complete. Choose a destination or copy the link.'}>
+  <Collapsible class="share-fallback">
+    <summary>{openLabel}</summary>
+    <Input aria-label={urlLabel} value={url} readonly />
+    <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>
+  </Collapsible>
+  <Button class="share-trigger" data-ui-dialog-trigger={id} variant="outline">{openLabel}</Button>
+  <Dialog id={id} aria-labelledby={id + '-title'}>
+    <DialogHeader class="share-header">
+      <DialogTitle id={id + '-title'}>{openLabel}</DialogTitle>
+      <DialogClose variant="outline">{labels?.close ?? 'Close'}</DialogClose>
+    </DialogHeader>
+    <DialogBody>
+      <Button data-native-share hidden variant="outline">{labels?.native ?? 'Share using this device'}</Button>
+      <p data-share-status role="status"></p>
+      <Input aria-label={urlLabel} value={url} readonly />
+      <CopyButton
+        value={url}
+        label={labels?.copy ?? 'Copy link'}
+        copiedLabel={labels?.copied ?? 'Link copied'}
+        errorLabel={labels?.copyFailure ?? 'Could not copy the link.'}
+        recoveryLabel={labels?.recovery ?? 'Link for manual copying'}
+      >{labels?.copy ?? 'Copy link'}</CopyButton>
+      <ul>{destinations.map(destination => <li><Link href={destination.href} newTab={destination.newTab}>{destination.label}</Link></li>)}</ul>
+    </DialogBody>
+  </Dialog>
+</lumen-recipe-share>
+
+<script>
+  const isCanceled = (error: unknown): boolean => (
+    error instanceof Error && error.name === 'AbortError'
+  )
+
+  class LumenRecipeShare extends HTMLElement {
+    #listeners?: AbortController
+
+    connectedCallback() {
+      const button = this.querySelector<HTMLButtonElement>('[data-native-share]')
+      const dialog = this.querySelector('dialog')
+      const status = this.querySelector<HTMLElement>('[data-share-status]')
+
+      if (!button || !dialog || !status || typeof navigator.share !== 'function') return
+
+      this.#listeners?.abort()
+
+      this.#listeners = new AbortController()
+
+      const { signal } = this.#listeners
+      let operation = 0
+      const isCurrent = (ticket: number) => ticket === operation && !signal.aborted && this.isConnected
+
+      const invalidate = () => {
+        operation += 1
+
+        button.disabled = false
+
+        button.removeAttribute('aria-busy')
+      }
+
+      dialog.addEventListener('close', invalidate, { signal })
+
+      window.addEventListener('pagehide', invalidate, { signal })
+
+      document.addEventListener('astro:before-swap', invalidate, { signal })
+
+      const message = (canceled: boolean) => (canceled ? this.dataset.canceled : this.dataset.failure) ?? ''
+
+      button.hidden = false
+
+      button.addEventListener('click', async () => {
+        const ticket = ++operation
+
+        button.disabled = true
+
+        button.setAttribute('aria-busy', 'true')
+
+        status.textContent = ''
+
+        try {
+          await navigator.share({ url: this.dataset.url, title: this.dataset.title, text: this.dataset.text })
+
+          if (isCurrent(ticket)) dialog.close()
+        } catch (error: unknown) {
+          if (isCurrent(ticket)) status.textContent = message(isCanceled(error))
+        } finally {
+          if (isCurrent(ticket)) {
+            button.disabled = false
+
+            button.removeAttribute('aria-busy')
+
+            if (dialog.open) button.focus({ preventScroll: true })
+          }
+        }
+      }, { signal })
+    }
+
+    disconnectedCallback() {
+      this.#listeners?.abort()
+    }
+  }
+
+  if (!customElements.get('lumen-recipe-share')) {
+    customElements.define('lumen-recipe-share', LumenRecipeShare)
+  }
+</script>
+
+<style>
+  lumen-recipe-share { display: block; min-inline-size: 0; overflow-wrap: anywhere; }
+  .share-trigger, [data-native-share][hidden] { display: none; }
+  .share-trigger[data-ui-bound='true'] { display: inline-flex; }
+  lumen-recipe-share:has(.share-trigger[data-ui-bound='true']) > .share-fallback { display: none; }
+  .share-header { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
+  :global(lumen-recipe-share button) { max-inline-size: 100%; block-size: auto; white-space: normal; }
+  [data-share-status]:empty { margin: 0; }
+  li { margin-block: 0.5rem; }
+</style>

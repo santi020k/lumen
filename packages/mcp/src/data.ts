@@ -208,6 +208,9 @@ export interface LumenFrameworkSnapshot {
 }
 
 export interface LumenRecipeSnapshot {
+  dependencies?: string[]
+  setup?: Partial<Record<'astro' | 'react' | 'elements', { dependencies?: string[], runtime?: string, instructions: string[] }>>
+
   categories: string[]
   components?: string[]
   description: string

@@ -82,7 +82,41 @@ const isRegistryFile = (value: unknown): value is LumenRegistryFile | string => 
 const isString = (entry: unknown): entry is string => typeof entry === 'string'
 const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(isString)
 const isRegistryFileArray = (value: unknown): boolean => Array.isArray(value) && value.every(isRegistryFile)
+
+const isRecipeDependencies = (value: unknown): boolean => (
+  isStringArray(value) && value.every(dependency => dependency.length > 0)
+)
+
+const isRecipeSetupValue = (value: unknown): boolean => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+
+  const setup = value as { dependencies?: unknown, runtime?: unknown, instructions?: unknown }
+
+  return Object.keys(value).every(key => ['dependencies', 'runtime', 'instructions'].includes(key)) &&
+    isRecipeDependencies(setup.instructions) &&
+    (setup.dependencies === undefined || isRecipeDependencies(setup.dependencies)) &&
+    (setup.runtime === undefined || (typeof setup.runtime === 'string' && setup.runtime.length > 0))
+}
+
+const isRecipeSetup = (value: unknown): boolean => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+
+  const candidate = value as Record<string, unknown>
+
+  return Object.entries(candidate).every(([framework, setup]) => ['astro', 'react', 'elements'].includes(framework) && isRecipeSetupValue(setup))
+}
+
+const isRecipeMetadata = (item: Partial<LumenRegistryItem>): boolean => (
+  (item.dependencies === undefined || isRecipeDependencies(item.dependencies)) &&
+  (item.setup === undefined || isRecipeSetup(item.setup))
+)
+
 const registryItemTypes = new Set(['component-set', 'documentation', 'recipe'])
+
+const isRegistryItemIdentity = (item: Partial<LumenRegistryItem>): boolean => (
+  typeof item.name === 'string' && item.name.trim().length > 0 &&
+  typeof item.type === 'string' && registryItemTypes.has(item.type)
+)
 
 const isRegistryItem = (value: unknown): value is LumenRegistryItem => {
   if (!value || typeof value !== 'object') return false
@@ -90,9 +124,8 @@ const isRegistryItem = (value: unknown): value is LumenRegistryItem => {
   const item = value as Partial<LumenRegistryItem>
 
   return (
-    typeof item.name === 'string' && item.name.trim().length > 0 &&
-    typeof item.type === 'string' &&
-    registryItemTypes.has(item.type) &&
+    isRegistryItemIdentity(item) &&
+    isRecipeMetadata(item) &&
     (item.components === undefined || isStringArray(item.components)) &&
     (item.files === undefined || isRegistryFileArray(item.files))
   )

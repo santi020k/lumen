@@ -982,6 +982,20 @@ const recipeExamples = (recipe: LumenRecipeSnapshot, framework: FrameworkFilter)
   })
 }
 
+const recipeSetupLines = (recipe: LumenRecipeSnapshot, framework: LumenFramework): string[] => {
+  const setup = recipe.setup?.[framework]
+
+  if (!setup) return []
+
+  return [
+    '',
+    '## Setup',
+    'Dependencies: ' + (setup.dependencies ?? recipe.dependencies ?? []).join(', '),
+    ...(setup.runtime ? ['Runtime: ' + setup.runtime] : []),
+    ...setup.instructions.map(instruction => '- ' + instruction)
+  ]
+}
+
 export const getRecipe = (
   args: { framework?: FrameworkFilter | undefined, name: string },
   data: LumenData = loadLumenData()
@@ -1029,6 +1043,7 @@ export const getRecipe = (
       '',
       '## Components',
       ...componentLines,
+      ...recipeSetupLines(recipe, framework),
       ...recipeExamples(recipe, framework)
     ].join('\n')
   }
