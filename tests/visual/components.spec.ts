@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { themeStorageKey } from '../../apps/docs/src/data/site-themes.js'
 import {
   componentNameToSlug,
   componentPageNames
@@ -34,15 +35,16 @@ const templateSlugs = [
 ] as const
 
 const preparePage = async (page: Page, path: string, theme: Theme): Promise<void> => {
-  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
+  await page.addInitScript(({ key, preference }) => {
+    localStorage.setItem(key, preference)
+  }, { key: themeStorageKey, preference: `lumen-${theme}` })
 
   await page.goto(path)
 
   await page.evaluate(() => document.fonts.ready)
 
-  await page.evaluate(themeName => {
-    document.documentElement.dataset.theme = themeName
-  }, theme)
+  await expect(page.locator('html')).toHaveAttribute('data-theme', `lumen-${theme}`)
 
   await expect(page.locator('main')).toBeVisible()
   await expect(page.getByText('An error occurred.', { exact: true })).toHaveCount(0)
