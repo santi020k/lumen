@@ -38,7 +38,7 @@ export interface LumenDiagnosticReport {
   runtimeComponents: string[]
 }
 
-const sourceExtensions = new Set(['.astro', '.css', '.js', '.jsx', '.mjs', '.ts', '.tsx'])
+const sourceExtensions = new Set(['.astro', '.html', '.htm', '.css', '.js', '.jsx', '.mjs', '.ts', '.tsx'])
 
 const ignoredDirectories = new Set([
   '.astro',
@@ -144,7 +144,7 @@ interface PackageManifest {
   scripts?: Readonly<Record<string, string>>
 }
 
-const packageNamePattern = String.raw`@santi020k\/lumen-(?:astro|elements|react)(?:\/[^'"]*)?`
+const packageNamePattern = String.raw`@santi020k\/lumen(?:-(?:astro|elements|react|core))?(?:\/[^'"]*)?`
 
 const packageReferencePattern = new RegExp(
   String.raw`(?:^|\n)\s*(?:export|import)\s+(?:type\s+)?(?:[^'"\n]*?\s+from\s+)?['"]` +
@@ -164,11 +164,67 @@ const cssPackageReferencePattern = new RegExp(
 
 const layoutFilePattern = /(?:^|\/)(?:layouts?\/[^/]+|[^/]*layout[^/]*)\.astro$/iu
 
-const getPackageReferences = (source: string): string[] => [
-  ...source.matchAll(packageReferencePattern),
-  ...source.matchAll(dynamicPackageReferencePattern),
-  ...source.matchAll(cssPackageReferencePattern)
-].flatMap(match => match[1] ? [match[1]] : [])
+const commentEnding = (source: string, index: number): string | undefined => {
+  if (source.startsWith('/*', index)) return '*/'
+
+  if (source.startsWith('<!--', index)) return '-->'
+
+  if (source.startsWith('//', index)) return '\n'
+
+  return undefined
+}
+
+const withoutComments = (source: string): string => {
+  let result = ''
+  let quote = ''
+
+  for (let index = 0; index < source.length; index += 1) {
+    const char = source[index] ?? ''
+
+    if (quote) {
+      result += char
+
+      if (char === '\\') {
+        index += 1
+
+        result += source[index] ?? ''
+      } else if (char === quote) quote = ''
+
+      continue
+    }
+
+    if (['\'', '"', '`'].includes(char)) {
+      quote = char
+
+      result += char
+
+      continue
+    }
+
+    const close = commentEnding(source, index)
+
+    if (close) {
+      const end = source.indexOf(close, index + 2)
+      const finish = end < 0 ? source.length : end + close.length
+
+      result += source.slice(index, finish).replaceAll(/[^\n]/gu, ' ')
+
+      index = finish - 1
+    } else result += char
+  }
+
+  return result
+}
+
+const getPackageReferences = (input: string): string[] => {
+  const source = withoutComments(input)
+
+  return [
+    ...source.matchAll(packageReferencePattern),
+    ...source.matchAll(dynamicPackageReferencePattern),
+    ...source.matchAll(cssPackageReferencePattern)
+  ].flatMap(match => match[1] ? [match[1]] : [])
+}
 
 const packageFramework = (packageName: string): LumenFramework | undefined => {
   const framework = /^@santi020k\/lumen-(astro|elements|react)(?:\/|$)/u.exec(packageName)?.[1]
@@ -990,17 +1046,29 @@ const collectSelectiveStyleFindings = (
 ): LumenDiagnosticFinding[] => {
   const adapter = `@santi020k/lumen-${framework}`
   const components = [...new Set(boundary.sources.flatMap(item => item.imports[framework].components))]
-
-  if (framework === 'astro' && components.length > 0) return []
-
   const references = new Set(boundary.sources.flatMap(item => getPackageReferences(item.source)))
 
   const foundation = [adapter, '@santi020k/lumen', '@santi020k/lumen-core']
     .some(packageName => references.has(`${packageName}/styles/foundation.css`))
 
+  const appearances = ['paper', 'field', 'studio', 'santi020k', 'glass'].filter(name => boundary.sources.some(item => {
+    if (name === 'glass') return /\bglass(?:\s*=|[ >])/u.test(item.source)
+
+    if (name === 'santi020k') return /santi020k-(?:light|dark)/u.test(item.source)
+
+    return item.source.includes(`data-lumen-preset="${name}"`)
+  }))
+
+  const appearancePaths = appearances.map(name => `styles/${name === 'glass' ? 'effects' : 'themes'}/${name}.css`)
+    .filter(path => ![adapter, '@santi020k/lumen', '@santi020k/lumen-core'].some(pkg => references.has(`${pkg}/${path}`)))
+    .map(path => `${adapter}/${path}`)
+
+  const automatic = framework === 'astro' && components.length > 0
+
   const required = [
-    ...(!foundation ? [`${adapter}/styles/foundation.css`] : []),
-    ...components.filter(name => !hasComponentCss(name, references, framework))
+    ...appearancePaths,
+    ...(!automatic && !foundation ? [`${adapter}/styles/foundation.css`] : []),
+    ...components.filter(name => !automatic && !hasComponentCss(name, references, framework))
       .map(name => `${adapter}/styles/components/${componentCssName(name)}.css`)
   ]
 
@@ -1021,7 +1089,7 @@ const collectFrameworkStyleFindings = (
   selectiveSources: SourceEntry[] = boundary.sources
 ): LumenDiagnosticFinding[] => frameworks.flatMap(framework => {
   const styleImport = styleImportByFramework[framework]
-  const references = boundary.sources.filter(item => item.source.includes(styleImport))
+  const references = boundary.sources.filter(item => getPackageReferences(item.source).includes(styleImport))
 
   if (references.length === 0 && boundary.deliveryVersions[framework] === 'v5') {
     return collectSelectiveStyleFindings(repositoryRoot, { ...boundary, sources: selectiveSources }, framework)

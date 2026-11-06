@@ -80,3 +80,17 @@ test('adoption is target-specific and never inferred from domain component names
     await rm(root, { force: true, recursive: true })
   }
 })
+
+test('v5 audits Swift icon switches and refreshed palette usage', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'lumen-native-review-'))
+
+  try {
+    await writeFile(join(root, 'package.json'), '{}')
+    await writeFile(join(root, 'Screen.swift'), 'import LumenUI\nlet icon: LumenIconName = .arrowLeft')
+    const report = await inspectLumenConsumerUpgrade(root, '5.0.0')
+    expect(report.findings.map(item => item.rule)).toContain('expanded-swift-icon-catalog')
+    expect(report.findings.map(item => item.rule)).toContain('default-palette-refresh')
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})

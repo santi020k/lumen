@@ -69,8 +69,10 @@ Only `--force` replaces the local copy.
 ## Consumer form measurement
 
 The packed subscribe-form benchmark also renders Field, FieldError and Checkbox in its React fixture.
-On November 6, 2026, the local v5 candidate traversed 2,359 modules with catalog imports and 35 with
-selective imports. Both requested two assets. Requested gzip totals were 66,474 and 66,475 bytes,
+On November 6, 2026, the local v5 candidate traversed 2,364 modules with catalog imports and 35 with
+selective imports. Both requested two assets. Requested gzip totals were 66,564 and 66,564 bytes,
 respectively. This fixture demonstrates a smaller build graph with equivalent browser transfer size.
 Run `pnpm run measure:subscribe-form` to reproduce with freshly packed packages. Application routes,
 bundler versions and shared chunks can produce different results.
+
+Doctor recognizes shared Core and umbrella CSS exports, Elements registration helpers and HTML script entries. It checks explicit built-in preset and glass usage for optional appearance CSS. These source checks cannot prove route coverage or dynamic theme choices.

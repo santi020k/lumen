@@ -2456,26 +2456,63 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 }
 
 @layer lumen.tokens {
-[data-lumen-preset="default"],
-[data-lumen-preset="default"][data-lumen-scheme="light"] {
-  color-scheme: light;
-  --canvas: 45 24% 95%;
-  --surface: 48 40% 99%;
-  --surface-muted: 42 17% 91%;
-  --surface-strong: 40 13% 85%;
-  --line: 39 11% 76%;
-  --ink: 190 22% 12%;
-  --ink-soft: 190 11% 29%;
-  --ink-muted: 189 8% 36%;
-  --brand: 193 79% 26%;
-  --brand-solid: 192 72% 24%;
-  --brand-soft: 179 28% 88%;
-  --on-brand: 0 0% 100%;
-  --accent: 160 48% 26%;
-  --success: 142 76% 36%;
-  --warning: 38 92% 50%;
-  --danger: 0 84% 60%;
-  --on-danger: 0 0% 0%;
+:where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"]) {
+  --_ld-scheme: light;
+  --_ld-c0: 45 24% 95%;
+  --_ld-c1: 48 40% 99%;
+  --_ld-c2: 42 17% 91%;
+  --_ld-c3: 40 13% 85%;
+  --_ld-c4: 39 11% 76%;
+  --_ld-c5: 190 22% 12%;
+  --_ld-c6: 190 11% 29%;
+  --_ld-c7: 189 8% 36%;
+  --_ld-c8: 193 79% 26%;
+  --_ld-c9: 192 72% 24%;
+  --_ld-c10: 179 28% 88%;
+  --_ld-c11: 0 0% 100%;
+  --_ld-c12: 160 48% 26%;
+  --_ld-c13: 142 76% 36%;
+  --_ld-c14: 38 92% 50%;
+  --_ld-c15: 0 84% 60%;
+  --_ld-c16: 0 0% 0%;
+  --_ld-ui-shadow-sm: 0 1px 2px hsl(190 22% 12% / 0.05);
+  --_ld-ui-shadow-md: 0 4px 12px -3px hsl(190 22% 12% / 0.14);
+  --_ld-ui-shadow-lg: 0 16px 40px -10px hsl(190 22% 12% / 0.2);
+  --_ld-glass-bg: 0 0% 100% / 0.55;
+  --_ld-glass-bg-subtle: 0 0% 100% / 0.38;
+  --_ld-glass-bg-strong: 0 0% 100% / 0.72;
+  --_ld-glass-border: 220 30% 100% / 0.55;
+  --_ld-glass-highlight: 0 0% 100% / 0.85;
+  --_ld-glass-blur: 22px;
+  --_ld-glass-saturate: 1.7;
+  --_ld-glass-brightness: 1.05;
+  --_ld-glass-edge: 0 0% 100% / 0.9;
+  --_ld-glass-edge-soft: 0 0% 100% / 0.34;
+  --_ld-glass-shade: 222 47% 11% / 0.07;
+  --_ld-glass-refraction: 201 96% 32% / 0.08;
+  --_ld-glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
+    0 12px 32px hsl(222 47% 11% / 0.12),
+    0 32px 80px hsl(222 47% 11% / 0.14);
+}
+[data-lumen-preset="default"] {
+  color-scheme: var(--_ld-scheme);
+  --canvas: var(--_ld-c0);
+  --surface: var(--_ld-c1);
+  --surface-muted: var(--_ld-c2);
+  --surface-strong: var(--_ld-c3);
+  --line: var(--_ld-c4);
+  --ink: var(--_ld-c5);
+  --ink-soft: var(--_ld-c6);
+  --ink-muted: var(--_ld-c7);
+  --brand: var(--_ld-c8);
+  --brand-solid: var(--_ld-c9);
+  --brand-soft: var(--_ld-c10);
+  --on-brand: var(--_ld-c11);
+  --accent: var(--_ld-c12);
+  --success: var(--_ld-c13);
+  --warning: var(--_ld-c14);
+  --danger: var(--_ld-c15);
+  --on-danger: var(--_ld-c16);
   --ui-space-zero: 0rem;
   --ui-space-xs: 0.25rem;
   --ui-space-sm: 0.5rem;
@@ -2489,99 +2526,118 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
   --ui-radius-lg: 0.75rem;
   --ui-border-width: 1px;
   --ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
-  --ui-shadow-sm: 0 1px 2px hsl(190 22% 12% / 0.05);
-  --ui-shadow-md: 0 4px 12px -3px hsl(190 22% 12% / 0.14);
-  --ui-shadow-lg: 0 16px 40px -10px hsl(190 22% 12% / 0.2);
-  --glass-bg: 0 0% 100% / 0.55;
-  --glass-bg-subtle: 0 0% 100% / 0.38;
-  --glass-bg-strong: 0 0% 100% / 0.72;
-  --glass-border: 220 30% 100% / 0.55;
-  --glass-highlight: 0 0% 100% / 0.85;
-  --glass-blur: 22px;
-  --glass-saturate: 1.7;
-  --glass-brightness: 1.05;
-  --glass-edge: 0 0% 100% / 0.9;
-  --glass-edge-soft: 0 0% 100% / 0.34;
-  --glass-shade: 222 47% 11% / 0.07;
-  --glass-refraction: 201 96% 32% / 0.08;
-  --glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
-    0 12px 32px hsl(222 47% 11% / 0.12),
-    0 32px 80px hsl(222 47% 11% / 0.14);
+  --ui-shadow-sm: var(--_ld-ui-shadow-sm);
+  --ui-shadow-md: var(--_ld-ui-shadow-md);
+  --ui-shadow-lg: var(--_ld-ui-shadow-lg);
+  --glass-bg: var(--_ld-glass-bg);
+  --glass-bg-subtle: var(--_ld-glass-bg-subtle);
+  --glass-bg-strong: var(--_ld-glass-bg-strong);
+  --glass-border: var(--_ld-glass-border);
+  --glass-highlight: var(--_ld-glass-highlight);
+  --glass-blur: var(--_ld-glass-blur);
+  --glass-saturate: var(--_ld-glass-saturate);
+  --glass-brightness: var(--_ld-glass-brightness);
+  --glass-edge: var(--_ld-glass-edge);
+  --glass-edge-soft: var(--_ld-glass-edge-soft);
+  --glass-shade: var(--_ld-glass-shade);
+  --glass-refraction: var(--_ld-glass-refraction);
+  --glass-shadow: var(--_ld-glass-shadow);
 }
 
-:where([data-theme="dark"], [data-theme="lumen-dark"]) [data-lumen-preset="default"]:not([data-lumen-scheme="light"], [data-theme="light"], [data-theme="lumen-light"]),
-[data-lumen-preset="default"][data-lumen-scheme="dark"],
-[data-lumen-preset="default"][data-theme="dark"]:not([data-lumen-scheme="light"]),
-[data-lumen-preset="default"][data-theme="lumen-dark"]:not([data-lumen-scheme="light"]) {
-  color-scheme: dark;
-  --canvas: 190 14% 8%;
-  --surface: 188 11% 12%;
-  --surface-muted: 185 9% 16%;
-  --surface-strong: 182 8% 22%;
-  --line: 182 7% 32%;
-  --ink: 45 18% 94%;
-  --ink-soft: 160 8% 79%;
-  --ink-muted: 166 7% 68%;
-  --brand: 185 56% 72%;
-  --brand-solid: 189 66% 30%;
-  --brand-soft: 185 30% 17%;
-  --on-brand: 0 0% 100%;
-  --accent: 153 44% 68%;
-  --success: 142 69% 45%;
-  --warning: 38 92% 55%;
-  --danger: 0 84% 65%;
-  --on-danger: 190 14% 8%;
-  --ui-space-zero: 0rem;
-  --ui-space-xs: 0.25rem;
-  --ui-space-sm: 0.5rem;
-  --ui-space-md: 0.75rem;
-  --ui-space-lg: 1rem;
-  --ui-space-xl: 1.5rem;
-  --ui-space-2xl: 2rem;
-  --ui-space-3xl: 3rem;
-  --ui-radius-sm: 0.375rem;
-  --ui-radius: 0.625rem;
-  --ui-radius-lg: 0.75rem;
-  --ui-border-width: 1px;
-  --ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
-  --ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
-  --ui-shadow-md: 0 4px 14px -3px hsl(0 0% 0% / 0.36);
-  --ui-shadow-lg: 0 18px 44px -10px hsl(0 0% 0% / 0.48);
-  --glass-bg: 224 20% 13% / 0.78;
-  --glass-bg-subtle: 224 20% 13% / 0.64;
-  --glass-bg-strong: 224 20% 13% / 0.9;
-  --glass-border: 210 30% 92% / 0.24;
-  --glass-highlight: 210 30% 96% / 0.1;
-  --glass-brightness: 1;
-  --glass-edge: 210 40% 98% / 0.24;
-  --glass-edge-soft: 210 40% 98% / 0.08;
-  --glass-shade: 240 40% 3% / 0.3;
-  --glass-refraction: 199 91% 56% / 0.1;
-  --glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
+:where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"]) {
+  --_ld-scheme: dark;
+  --_ld-c0: 190 14% 8%;
+  --_ld-c1: 188 11% 12%;
+  --_ld-c2: 185 9% 16%;
+  --_ld-c3: 182 8% 22%;
+  --_ld-c4: 182 7% 32%;
+  --_ld-c5: 45 18% 94%;
+  --_ld-c6: 160 8% 79%;
+  --_ld-c7: 166 7% 68%;
+  --_ld-c8: 185 56% 72%;
+  --_ld-c9: 189 66% 30%;
+  --_ld-c10: 185 30% 17%;
+  --_ld-c11: 0 0% 100%;
+  --_ld-c12: 153 44% 68%;
+  --_ld-c13: 142 69% 45%;
+  --_ld-c14: 38 92% 55%;
+  --_ld-c15: 0 84% 65%;
+  --_ld-c16: 190 14% 8%;
+  --_ld-ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
+  --_ld-ui-shadow-md: 0 4px 14px -3px hsl(0 0% 0% / 0.36);
+  --_ld-ui-shadow-lg: 0 18px 44px -10px hsl(0 0% 0% / 0.48);
+  --_ld-glass-bg: 224 20% 13% / 0.78;
+  --_ld-glass-bg-subtle: 224 20% 13% / 0.64;
+  --_ld-glass-bg-strong: 224 20% 13% / 0.9;
+  --_ld-glass-border: 210 30% 92% / 0.24;
+  --_ld-glass-highlight: 210 30% 96% / 0.1;
+  --_ld-glass-brightness: 1;
+  --_ld-glass-edge: 210 40% 98% / 0.24;
+  --_ld-glass-edge-soft: 210 40% 98% / 0.08;
+  --_ld-glass-shade: 240 40% 3% / 0.3;
+  --_ld-glass-refraction: 199 91% 56% / 0.1;
+  --_ld-glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
     0 16px 40px hsl(0 0% 0% / 0.34),
     0 40px 96px hsl(0 0% 0% / 0.38);
 }
 
-[data-lumen-preset="studio"],
-[data-lumen-preset="studio"][data-lumen-scheme="light"] {
-  color-scheme: light;
-  --canvas: 0 0% 100%;
-  --surface: 0 0% 100%;
-  --surface-muted: 0 0% 96%;
-  --surface-strong: 0 0% 91%;
-  --line: 0 0% 90%;
-  --ink: 0 0% 9%;
-  --ink-soft: 0 0% 32%;
-  --ink-muted: 0 0% 45%;
-  --brand: 0 0% 9%;
-  --brand-solid: 0 0% 9%;
-  --brand-soft: 0 0% 92%;
-  --on-brand: 0 0% 100%;
-  --accent: 0 0% 9%;
-  --success: 142 76% 36%;
-  --warning: 38 92% 50%;
-  --danger: 0 84% 60%;
-  --on-danger: 0 0% 0%;
+:where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"]) {
+  --_ls-scheme: light;
+  --_ls-c0: 0 0% 100%;
+  --_ls-c1: 0 0% 100%;
+  --_ls-c2: 0 0% 96%;
+  --_ls-c3: 0 0% 91%;
+  --_ls-c4: 0 0% 90%;
+  --_ls-c5: 0 0% 9%;
+  --_ls-c6: 0 0% 32%;
+  --_ls-c7: 0 0% 45%;
+  --_ls-c8: 0 0% 9%;
+  --_ls-c9: 0 0% 9%;
+  --_ls-c10: 0 0% 92%;
+  --_ls-c11: 0 0% 100%;
+  --_ls-c12: 0 0% 9%;
+  --_ls-c13: 142 76% 36%;
+  --_ls-c14: 38 92% 50%;
+  --_ls-c15: 0 84% 60%;
+  --_ls-c16: 0 0% 0%;
+  --_ls-ui-shadow-sm: none;
+  --_ls-ui-shadow-md: none;
+  --_ls-ui-shadow-lg: none;
+  --_ls-glass-bg: 0 0% 100% / 0.55;
+  --_ls-glass-bg-subtle: 0 0% 100% / 0.38;
+  --_ls-glass-bg-strong: 0 0% 100% / 0.72;
+  --_ls-glass-border: 220 30% 100% / 0.55;
+  --_ls-glass-highlight: 0 0% 100% / 0.85;
+  --_ls-glass-blur: 22px;
+  --_ls-glass-saturate: 1.7;
+  --_ls-glass-brightness: 1.05;
+  --_ls-glass-edge: 0 0% 100% / 0.9;
+  --_ls-glass-edge-soft: 0 0% 100% / 0.34;
+  --_ls-glass-shade: 222 47% 11% / 0.07;
+  --_ls-glass-refraction: 0 0% 50% / 0.04;
+  --_ls-glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
+    0 12px 32px hsl(222 47% 11% / 0.12),
+    0 32px 80px hsl(222 47% 11% / 0.14);
+}
+[data-lumen-preset="studio"] {
+  color-scheme: var(--_ls-scheme);
+  --canvas: var(--_ls-c0);
+  --surface: var(--_ls-c1);
+  --surface-muted: var(--_ls-c2);
+  --surface-strong: var(--_ls-c3);
+  --line: var(--_ls-c4);
+  --ink: var(--_ls-c5);
+  --ink-soft: var(--_ls-c6);
+  --ink-muted: var(--_ls-c7);
+  --brand: var(--_ls-c8);
+  --brand-solid: var(--_ls-c9);
+  --brand-soft: var(--_ls-c10);
+  --on-brand: var(--_ls-c11);
+  --accent: var(--_ls-c12);
+  --success: var(--_ls-c13);
+  --warning: var(--_ls-c14);
+  --danger: var(--_ls-c15);
+  --on-danger: var(--_ls-c16);
   --ui-space-zero: 0rem;
   --ui-space-xs: 0.25rem;
   --ui-space-sm: 0.5rem;
@@ -2595,154 +2651,118 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
   --ui-radius-lg: 0.44999999999999996rem;
   --ui-border-width: 1px;
   --ui-font: system-ui, "-apple-system", "BlinkMacSystemFont", "Segoe UI", sans-serif;
-  --ui-shadow-sm: none;
-  --ui-shadow-md: none;
-  --ui-shadow-lg: none;
-  --glass-bg: 0 0% 100% / 0.55;
-  --glass-bg-subtle: 0 0% 100% / 0.38;
-  --glass-bg-strong: 0 0% 100% / 0.72;
-  --glass-border: 220 30% 100% / 0.55;
-  --glass-highlight: 0 0% 100% / 0.85;
-  --glass-blur: 22px;
-  --glass-saturate: 1.7;
-  --glass-brightness: 1.05;
-  --glass-edge: 0 0% 100% / 0.9;
-  --glass-edge-soft: 0 0% 100% / 0.34;
-  --glass-shade: 222 47% 11% / 0.07;
-  --glass-refraction: 0 0% 50% / 0.04;
-  --glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
-    0 12px 32px hsl(222 47% 11% / 0.12),
-    0 32px 80px hsl(222 47% 11% / 0.14);
+  --ui-shadow-sm: var(--_ls-ui-shadow-sm);
+  --ui-shadow-md: var(--_ls-ui-shadow-md);
+  --ui-shadow-lg: var(--_ls-ui-shadow-lg);
+  --glass-bg: var(--_ls-glass-bg);
+  --glass-bg-subtle: var(--_ls-glass-bg-subtle);
+  --glass-bg-strong: var(--_ls-glass-bg-strong);
+  --glass-border: var(--_ls-glass-border);
+  --glass-highlight: var(--_ls-glass-highlight);
+  --glass-blur: var(--_ls-glass-blur);
+  --glass-saturate: var(--_ls-glass-saturate);
+  --glass-brightness: var(--_ls-glass-brightness);
+  --glass-edge: var(--_ls-glass-edge);
+  --glass-edge-soft: var(--_ls-glass-edge-soft);
+  --glass-shade: var(--_ls-glass-shade);
+  --glass-refraction: var(--_ls-glass-refraction);
+  --glass-shadow: var(--_ls-glass-shadow);
 }
 
-:where([data-theme="dark"], [data-theme="lumen-dark"]) [data-lumen-preset="studio"]:not([data-lumen-scheme="light"], [data-theme="light"], [data-theme="lumen-light"]),
-[data-lumen-preset="studio"][data-lumen-scheme="dark"],
-[data-lumen-preset="studio"][data-theme="dark"]:not([data-lumen-scheme="light"]),
-[data-lumen-preset="studio"][data-theme="lumen-dark"]:not([data-lumen-scheme="light"]) {
-  color-scheme: dark;
-  --canvas: 0 0% 7%;
-  --surface: 0 0% 7%;
-  --surface-muted: 0 0% 11%;
-  --surface-strong: 0 0% 19%;
-  --line: 0 0% 22%;
-  --ink: 0 0% 96%;
-  --ink-soft: 0 0% 80%;
-  --ink-muted: 0 0% 64%;
-  --brand: 0 0% 96%;
-  --brand-solid: 0 0% 96%;
-  --brand-soft: 0 0% 14%;
-  --on-brand: 0 0% 7%;
-  --accent: 0 0% 96%;
-  --success: 142 69% 45%;
-  --warning: 38 92% 55%;
-  --danger: 0 84% 65%;
-  --on-danger: 190 14% 8%;
-  --ui-space-zero: 0rem;
-  --ui-space-xs: 0.25rem;
-  --ui-space-sm: 0.5rem;
-  --ui-space-md: 0.75rem;
-  --ui-space-lg: 1rem;
-  --ui-space-xl: 1.5rem;
-  --ui-space-2xl: 2rem;
-  --ui-space-3xl: 3rem;
-  --ui-radius-sm: 0.22499999999999998rem;
-  --ui-radius: 0.375rem;
-  --ui-radius-lg: 0.44999999999999996rem;
-  --ui-border-width: 1px;
-  --ui-font: system-ui, "-apple-system", "BlinkMacSystemFont", "Segoe UI", sans-serif;
-  --ui-shadow-sm: none;
-  --ui-shadow-md: none;
-  --ui-shadow-lg: none;
-  --glass-bg: 224 20% 13% / 0.78;
-  --glass-bg-subtle: 224 20% 13% / 0.64;
-  --glass-bg-strong: 224 20% 13% / 0.9;
-  --glass-border: 210 30% 92% / 0.24;
-  --glass-highlight: 210 30% 96% / 0.1;
-  --glass-brightness: 1;
-  --glass-edge: 210 40% 98% / 0.24;
-  --glass-edge-soft: 210 40% 98% / 0.08;
-  --glass-shade: 240 40% 3% / 0.3;
-  --glass-refraction: 0 0% 50% / 0.04;
-  --glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
+:where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"]) {
+  --_ls-scheme: dark;
+  --_ls-c0: 0 0% 7%;
+  --_ls-c1: 0 0% 7%;
+  --_ls-c2: 0 0% 11%;
+  --_ls-c3: 0 0% 19%;
+  --_ls-c4: 0 0% 22%;
+  --_ls-c5: 0 0% 96%;
+  --_ls-c6: 0 0% 80%;
+  --_ls-c7: 0 0% 64%;
+  --_ls-c8: 0 0% 96%;
+  --_ls-c9: 0 0% 96%;
+  --_ls-c10: 0 0% 14%;
+  --_ls-c11: 0 0% 7%;
+  --_ls-c12: 0 0% 96%;
+  --_ls-c13: 142 69% 45%;
+  --_ls-c14: 38 92% 55%;
+  --_ls-c15: 0 84% 65%;
+  --_ls-c16: 190 14% 8%;
+  --_ls-ui-shadow-sm: none;
+  --_ls-ui-shadow-md: none;
+  --_ls-ui-shadow-lg: none;
+  --_ls-glass-bg: 224 20% 13% / 0.78;
+  --_ls-glass-bg-subtle: 224 20% 13% / 0.64;
+  --_ls-glass-bg-strong: 224 20% 13% / 0.9;
+  --_ls-glass-border: 210 30% 92% / 0.24;
+  --_ls-glass-highlight: 210 30% 96% / 0.1;
+  --_ls-glass-brightness: 1;
+  --_ls-glass-edge: 210 40% 98% / 0.24;
+  --_ls-glass-edge-soft: 210 40% 98% / 0.08;
+  --_ls-glass-shade: 240 40% 3% / 0.3;
+  --_ls-glass-refraction: 0 0% 50% / 0.04;
+  --_ls-glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
     0 16px 40px hsl(0 0% 0% / 0.34),
     0 40px 96px hsl(0 0% 0% / 0.38);
 }
 
-[data-lumen-preset="glass"],
-[data-lumen-preset="glass"][data-lumen-scheme="light"] {
-  color-scheme: light;
-  --canvas: 45 24% 95%;
-  --surface: 48 40% 99%;
-  --surface-muted: 42 17% 91%;
-  --surface-strong: 40 13% 85%;
-  --line: 39 11% 76%;
-  --ink: 190 22% 12%;
-  --ink-soft: 190 11% 29%;
-  --ink-muted: 189 8% 36%;
-  --brand: 193 79% 26%;
-  --brand-solid: 192 72% 24%;
-  --brand-soft: 179 28% 88%;
-  --on-brand: 0 0% 100%;
-  --accent: 160 48% 26%;
-  --success: 142 76% 36%;
-  --warning: 38 92% 50%;
-  --danger: 0 84% 60%;
-  --on-danger: 0 0% 0%;
-  --ui-space-zero: 0rem;
-  --ui-space-xs: 0.25rem;
-  --ui-space-sm: 0.5rem;
-  --ui-space-md: 0.75rem;
-  --ui-space-lg: 1rem;
-  --ui-space-xl: 1.5rem;
-  --ui-space-2xl: 2rem;
-  --ui-space-3xl: 3rem;
-  --ui-radius-sm: 0.5249999999999999rem;
-  --ui-radius: 0.875rem;
-  --ui-radius-lg: 1.0499999999999998rem;
-  --ui-border-width: 1px;
-  --ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
-  --ui-shadow-sm: 0 1px 2px hsl(222 47% 11% / 0.06);
-  --ui-shadow-md: 0 8px 24px hsl(222 47% 11% / 0.08);
-  --ui-shadow-lg: 0 24px 64px hsl(222 47% 11% / 0.14);
-  --glass-bg: 0 0% 100% / 0.55;
-  --glass-bg-subtle: 0 0% 100% / 0.38;
-  --glass-bg-strong: 0 0% 100% / 0.72;
-  --glass-border: 220 30% 100% / 0.55;
-  --glass-highlight: 0 0% 100% / 0.85;
-  --glass-blur: 22px;
-  --glass-saturate: 1.7;
-  --glass-brightness: 1.05;
-  --glass-edge: 0 0% 100% / 0.9;
-  --glass-edge-soft: 0 0% 100% / 0.34;
-  --glass-shade: 222 47% 11% / 0.07;
-  --glass-refraction: 201 96% 32% / 0.08;
-  --glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
+:where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"]) {
+  --_lg-scheme: light;
+  --_lg-c0: 45 24% 95%;
+  --_lg-c1: 48 40% 99%;
+  --_lg-c2: 42 17% 91%;
+  --_lg-c3: 40 13% 85%;
+  --_lg-c4: 39 11% 76%;
+  --_lg-c5: 190 22% 12%;
+  --_lg-c6: 190 11% 29%;
+  --_lg-c7: 189 8% 36%;
+  --_lg-c8: 193 79% 26%;
+  --_lg-c9: 192 72% 24%;
+  --_lg-c10: 179 28% 88%;
+  --_lg-c11: 0 0% 100%;
+  --_lg-c12: 160 48% 26%;
+  --_lg-c13: 142 76% 36%;
+  --_lg-c14: 38 92% 50%;
+  --_lg-c15: 0 84% 60%;
+  --_lg-c16: 0 0% 0%;
+  --_lg-ui-shadow-sm: 0 1px 2px hsl(222 47% 11% / 0.06);
+  --_lg-ui-shadow-md: 0 8px 24px hsl(222 47% 11% / 0.08);
+  --_lg-ui-shadow-lg: 0 24px 64px hsl(222 47% 11% / 0.14);
+  --_lg-glass-bg: 0 0% 100% / 0.55;
+  --_lg-glass-bg-subtle: 0 0% 100% / 0.38;
+  --_lg-glass-bg-strong: 0 0% 100% / 0.72;
+  --_lg-glass-border: 220 30% 100% / 0.55;
+  --_lg-glass-highlight: 0 0% 100% / 0.85;
+  --_lg-glass-blur: 22px;
+  --_lg-glass-saturate: 1.7;
+  --_lg-glass-brightness: 1.05;
+  --_lg-glass-edge: 0 0% 100% / 0.9;
+  --_lg-glass-edge-soft: 0 0% 100% / 0.34;
+  --_lg-glass-shade: 222 47% 11% / 0.07;
+  --_lg-glass-refraction: 201 96% 32% / 0.08;
+  --_lg-glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
     0 12px 32px hsl(222 47% 11% / 0.12),
     0 32px 80px hsl(222 47% 11% / 0.14);
 }
-
-:where([data-theme="dark"], [data-theme="lumen-dark"]) [data-lumen-preset="glass"]:not([data-lumen-scheme="light"], [data-theme="light"], [data-theme="lumen-light"]),
-[data-lumen-preset="glass"][data-lumen-scheme="dark"],
-[data-lumen-preset="glass"][data-theme="dark"]:not([data-lumen-scheme="light"]),
-[data-lumen-preset="glass"][data-theme="lumen-dark"]:not([data-lumen-scheme="light"]) {
-  color-scheme: dark;
-  --canvas: 190 14% 8%;
-  --surface: 188 11% 12%;
-  --surface-muted: 185 9% 16%;
-  --surface-strong: 182 8% 22%;
-  --line: 182 7% 32%;
-  --ink: 45 18% 94%;
-  --ink-soft: 160 8% 79%;
-  --ink-muted: 166 7% 68%;
-  --brand: 185 56% 72%;
-  --brand-solid: 189 66% 30%;
-  --brand-soft: 185 30% 17%;
-  --on-brand: 0 0% 100%;
-  --accent: 153 44% 68%;
-  --success: 142 69% 45%;
-  --warning: 38 92% 55%;
-  --danger: 0 84% 65%;
-  --on-danger: 190 14% 8%;
+[data-lumen-preset="glass"] {
+  color-scheme: var(--_lg-scheme);
+  --canvas: var(--_lg-c0);
+  --surface: var(--_lg-c1);
+  --surface-muted: var(--_lg-c2);
+  --surface-strong: var(--_lg-c3);
+  --line: var(--_lg-c4);
+  --ink: var(--_lg-c5);
+  --ink-soft: var(--_lg-c6);
+  --ink-muted: var(--_lg-c7);
+  --brand: var(--_lg-c8);
+  --brand-solid: var(--_lg-c9);
+  --brand-soft: var(--_lg-c10);
+  --on-brand: var(--_lg-c11);
+  --accent: var(--_lg-c12);
+  --success: var(--_lg-c13);
+  --warning: var(--_lg-c14);
+  --danger: var(--_lg-c15);
+  --on-danger: var(--_lg-c16);
   --ui-space-zero: 0rem;
   --ui-space-xs: 0.25rem;
   --ui-space-sm: 0.5rem;
@@ -2756,20 +2776,57 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
   --ui-radius-lg: 1.0499999999999998rem;
   --ui-border-width: 1px;
   --ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
-  --ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.18);
-  --ui-shadow-md: 0 12px 32px hsl(0 0% 0% / 0.24);
-  --ui-shadow-lg: 0 28px 80px hsl(0 0% 0% / 0.36);
-  --glass-bg: 224 20% 13% / 0.78;
-  --glass-bg-subtle: 224 20% 13% / 0.64;
-  --glass-bg-strong: 224 20% 13% / 0.9;
-  --glass-border: 210 30% 92% / 0.24;
-  --glass-highlight: 210 30% 96% / 0.1;
-  --glass-brightness: 1;
-  --glass-edge: 210 40% 98% / 0.24;
-  --glass-edge-soft: 210 40% 98% / 0.08;
-  --glass-shade: 240 40% 3% / 0.3;
-  --glass-refraction: 199 91% 56% / 0.1;
-  --glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
+  --ui-shadow-sm: var(--_lg-ui-shadow-sm);
+  --ui-shadow-md: var(--_lg-ui-shadow-md);
+  --ui-shadow-lg: var(--_lg-ui-shadow-lg);
+  --glass-bg: var(--_lg-glass-bg);
+  --glass-bg-subtle: var(--_lg-glass-bg-subtle);
+  --glass-bg-strong: var(--_lg-glass-bg-strong);
+  --glass-border: var(--_lg-glass-border);
+  --glass-highlight: var(--_lg-glass-highlight);
+  --glass-blur: var(--_lg-glass-blur);
+  --glass-saturate: var(--_lg-glass-saturate);
+  --glass-brightness: var(--_lg-glass-brightness);
+  --glass-edge: var(--_lg-glass-edge);
+  --glass-edge-soft: var(--_lg-glass-edge-soft);
+  --glass-shade: var(--_lg-glass-shade);
+  --glass-refraction: var(--_lg-glass-refraction);
+  --glass-shadow: var(--_lg-glass-shadow);
+}
+
+:where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"]) {
+  --_lg-scheme: dark;
+  --_lg-c0: 190 14% 8%;
+  --_lg-c1: 188 11% 12%;
+  --_lg-c2: 185 9% 16%;
+  --_lg-c3: 182 8% 22%;
+  --_lg-c4: 182 7% 32%;
+  --_lg-c5: 45 18% 94%;
+  --_lg-c6: 160 8% 79%;
+  --_lg-c7: 166 7% 68%;
+  --_lg-c8: 185 56% 72%;
+  --_lg-c9: 189 66% 30%;
+  --_lg-c10: 185 30% 17%;
+  --_lg-c11: 0 0% 100%;
+  --_lg-c12: 153 44% 68%;
+  --_lg-c13: 142 69% 45%;
+  --_lg-c14: 38 92% 55%;
+  --_lg-c15: 0 84% 65%;
+  --_lg-c16: 190 14% 8%;
+  --_lg-ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.18);
+  --_lg-ui-shadow-md: 0 12px 32px hsl(0 0% 0% / 0.24);
+  --_lg-ui-shadow-lg: 0 28px 80px hsl(0 0% 0% / 0.36);
+  --_lg-glass-bg: 224 20% 13% / 0.78;
+  --_lg-glass-bg-subtle: 224 20% 13% / 0.64;
+  --_lg-glass-bg-strong: 224 20% 13% / 0.9;
+  --_lg-glass-border: 210 30% 92% / 0.24;
+  --_lg-glass-highlight: 210 30% 96% / 0.1;
+  --_lg-glass-brightness: 1;
+  --_lg-glass-edge: 210 40% 98% / 0.24;
+  --_lg-glass-edge-soft: 210 40% 98% / 0.08;
+  --_lg-glass-shade: 240 40% 3% / 0.3;
+  --_lg-glass-refraction: 199 91% 56% / 0.1;
+  --_lg-glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
     0 16px 40px hsl(0 0% 0% / 0.34),
     0 40px 96px hsl(0 0% 0% / 0.38);
 }

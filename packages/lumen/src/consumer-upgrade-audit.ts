@@ -123,7 +123,7 @@ export const inspectLumenConsumerUpgrade = async (
     '.patch',
     '.yaml',
     '.json',
-    ...(contract ? ['.astro', '.html', '.htm', '.ts', '.tsx', '.js', '.jsx', '.mjs', '.yml', '.sh'] : [])
+    ...(contract ? contract.changes.flatMap(change => change.extensions) : [])
   ]))
 
   for (const path of files) {

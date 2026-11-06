@@ -39,7 +39,11 @@ if (JSON.stringify(componentFiles) !== JSON.stringify(Object.keys(metadata.compo
   throw new Error('registry/web-css.json must cover the complete public Astro component catalog.')
 }
 
-outputs.set('packages/core/styles/foundation.css', banner + layerOrder + shared.foundation + '\n')
+// The writer supplies the prelude once; canonical inputs may repeat the same declaration.
+const foundation = readCssNodes(shared.foundation)
+  .filter(node => node.text.trim() !== layerOrder.trim()).map(node => node.text).join('\n\n')
+
+outputs.set('packages/core/styles/foundation.css', banner + layerOrder + foundation + '\n')
 
 for (const [entry, rules] of Object.entries(shared.appearances)) {
   const path = `styles/${entry}.css`

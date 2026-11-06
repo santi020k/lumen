@@ -186,3 +186,11 @@ test('every independent CSS chunk establishes the complete public order before T
     assert.equal(readCssNodes(await read(path))[0]?.header, canonical, path)
   }
 })
+
+test('map animation keyframes travel with the map instead of the foundation', () => {
+  const result = partitionComponentCss(['.ui-world-map { animation: ui-map-enter 1s; } @keyframes ui-map-enter { from { opacity: 0; } }'])
+
+  assert.doesNotMatch(result.foundation, /ui-map-enter/u)
+
+  assert.match(result.parts.get('world-map'), /@keyframes ui-map-enter/u)
+})

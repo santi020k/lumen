@@ -519,6 +519,52 @@
         "enumelement LumenIconName.wifiLock has been added as a new enum case",
         "enumelement LumenIconName.windArrowUp has been added as a new enum case"
       ]
+    },
+    {
+      "id": "default-palette-refresh",
+      "kind": "breaking",
+      "currentContract": "Consumers use the previous default light and dark palettes.",
+      "replacement": "Default palettes and brand-derived charts use the refreshed shared foundations.",
+      "migration": "Review visual baselines, chart colors and application colors paired with Lumen backgrounds. Use brand on brand-soft and on-brand on brand-solid. Keep application palettes at the theme boundary.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-react-native",
+        "@santi020k/lumen-tokens",
+        "LumenUI",
+        "lumen-compose",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements",
+        "@santi020k/lumen"
+      ],
+      "signals": [
+        "brand-soft",
+        "brand-solid",
+        "LumenTheme",
+        "import LumenUI",
+        "createLumenTheme"
+      ],
+      "extensions": [
+        ".astro",
+        ".tsx",
+        ".ts",
+        ".jsx",
+        ".js",
+        ".css",
+        ".swift",
+        ".kt",
+        ".json"
+      ],
+      "evidence": [
+        "tokens/lumen.tokens.json"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run check:platform-tokens",
+        "pnpm run check:route-delivery"
+      ]
     }
   ],
   "swiftApiBaseline": "v4.4.0",

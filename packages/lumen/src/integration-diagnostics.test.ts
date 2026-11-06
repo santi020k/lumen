@@ -755,3 +755,21 @@ describe('Lumen integration diagnostics', () => {
     expect(createLumenSetup('elements')).not.toContain('defineLumenElements()')
   })
 })
+
+test.each([
+  ['core', 'import { Button } from \'@santi020k/lumen-react/components/button\'\nimport \'@santi020k/lumen-core/styles/foundation.css\'\nimport \'@santi020k/lumen-core/styles/components/button.css\'', true],
+  ['comment', '// import \'@santi020k/lumen-react/styles.css\'\nimport { Button } from \'@santi020k/lumen-react/components/button\'', false],
+  ['helper', 'import { defineLumenButton } from \'@santi020k/lumen-elements/components/button\'\nimport \'@santi020k/lumen-elements/styles/foundation.css\'\ndefineLumenButton()', false],
+  ['appearance', 'import { Card } from \'@santi020k/lumen-react/components/card\'\nimport \'@santi020k/lumen-react/styles/foundation.css\'\nimport \'@santi020k/lumen-react/styles/components/card.css\'\nconst View = () => <section data-lumen-preset="studio"><Card glass>Preview</Card></section>', false],
+  ['html', '<script type="module">\nimport {defineLumenButton} from "@santi020k/lumen-elements/components/button"\n</script><lumen-button>Continue</lumen-button>', false]
+])('selective diagnostics validate %s consumer setup', async (kind, source, healthy) => {
+  const root = await mkdtemp(join(tmpdir(), 'lumen-style-review-'))
+
+  try {
+    await writeFile(join(root, 'package.json'), JSON.stringify({ dependencies: { '@santi020k/lumen-react': '5.0.0', '@santi020k/lumen-elements': '5.0.0' } }))
+    await writeFile(join(root, kind === 'html' ? 'index.html' : 'view.tsx'), source)
+    expect((await inspectLumenIntegration(root)).healthy).toBe(healthy)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})

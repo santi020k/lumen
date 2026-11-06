@@ -40,6 +40,20 @@ export const checkAppearanceDelivery = async (browser, repo) => {
 
   const page = await browser.newPage({ reducedMotion: 'reduce' })
 
+  for (const styles of [full, base + studio + glass + branded]) {
+    for (const [theme, boundary, scheme] of [
+      ['lumen-dark', 'data-theme="lumen-light"', 'light'],
+      ['santi020k-dark', '', 'dark'],
+      ['lumen-light', 'data-lumen-scheme="dark"', 'dark']
+    ]) {
+      for (const preset of ['default', 'studio', 'glass']) {
+        await page.setContent(`<html data-theme="${theme}"><style>${styles}</style><section ${boundary}><div data-lumen-preset="${preset}"></div></section></html>`)
+
+        assert.equal(await page.locator('[data-lumen-preset]').evaluate(element => getComputedStyle(element).colorScheme), scheme)
+      }
+    }
+  }
+
   try {
     const read = async (styles, theme, preset) => {
       await page.setContent(`<!doctype html><html data-theme="${theme}" data-lumen-preset="${preset}"><head>

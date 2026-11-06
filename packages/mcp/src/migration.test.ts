@@ -74,3 +74,9 @@ describe('v4 migration inventory', () => {
     expect(result.data.changes.every(change => !change.id.startsWith('web-'))).toBe(true)
   })
 })
+
+test.each(['astro', 'react', 'elements'])('v5 palette guidance reaches %s consumers', adapter => {
+  const result = getMigration({ targetVersion: '5.0.0', packageName: `@santi020k/lumen-${adapter}` })
+
+  expect(result.data.changes.map(change => change.id)).toContain('default-palette-refresh')
+})

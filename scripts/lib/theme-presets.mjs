@@ -99,18 +99,42 @@ export const generatePresetCss = (source, presets) => {
   const blocks = Object.entries(presets).flatMap(([name, preset]) => ['light', 'dark'].map(scheme => {
     const selector = `[data-lumen-preset="${name}"]`
 
-    const selectors = scheme === 'dark'
-      ? [`:where([data-theme="dark"], [data-theme="lumen-dark"]) ${selector}:not([data-lumen-scheme="light"], [data-theme="light"], [data-theme="lumen-light"])`, `${selector}[data-lumen-scheme="dark"]`, `${selector}[data-theme="dark"]:not([data-lumen-scheme="light"])`, `${selector}[data-theme="lumen-dark"]:not([data-lumen-scheme="light"])`]
-      : [selector, `${selector}[data-lumen-scheme="light"]`]
-
     const colors = Object.entries(source.color[scheme])
       .filter(([role]) => !role.startsWith('$'))
       .map(([role, token]) => `  --${role}: ${preset.colors[scheme][role]?.css ?? token.$extensions[extensionName].cssValue};`)
 
     const spacing = Object.entries(source.space).filter(([name]) => !name.startsWith('$')).map(([name, token]) => `  --ui-space-${name}: ${token.$value.value / 16 * preset.spacingScale}rem;`)
     const font = preset.fontFamily.map(family => ['system-ui', 'sans-serif'].includes(family) ? family : JSON.stringify(family)).join(', ')
+    const declarations = `  color-scheme: ${scheme};\n${colors.join('\n')}\n${spacing.join('\n')}\n  --ui-radius-sm: ${source.radius.sm.$value.value / 16 * preset.radiusScale}rem;\n  --ui-radius: ${source.radius.md.$value.value / 16 * preset.radiusScale}rem;\n  --ui-radius-lg: ${source.radius.lg.$value.value / 16 * preset.radiusScale}rem;\n  --ui-border-width: ${preset.borderWidth}px;\n  --ui-font: ${font};\n${Object.entries(preset.effects[scheme]).map(([key, value]) => `  --${key}: ${value};`).join('\n')}`
+    const colorNames = Object.keys(source.color[scheme]).filter(role => !role.startsWith('$'))
 
-    return `${selectors.join(',\n')} {\n  color-scheme: ${scheme};\n${colors.join('\n')}\n${spacing.join('\n')}\n  --ui-radius-sm: ${source.radius.sm.$value.value / 16 * preset.radiusScale}rem;\n  --ui-radius: ${source.radius.md.$value.value / 16 * preset.radiusScale}rem;\n  --ui-radius-lg: ${source.radius.lg.$value.value / 16 * preset.radiusScale}rem;\n  --ui-border-width: ${preset.borderWidth}px;\n  --ui-font: ${font};\n${Object.entries(preset.effects[scheme]).map(([key, value]) => `  --${key}: ${value};`).join('\n')}\n}`
+    const privateName = key => {
+      const color = colorNames.indexOf(key)
+      const shortKey = color >= 0 ? `c${color}` : key
+
+      return `--_l${name[0]}-${shortKey}`
+    }
+
+    const values = declarations.split(';').filter(value => value.trim()).map(value => {
+      const colon = value.indexOf(':')
+      const key = value.slice(0, colon).trim()
+      const token = key === 'color-scheme' ? 'scheme' : key.slice(2)
+
+      return [key, token, value.slice(colon + 1).trim()]
+    })
+
+    const boundary = scheme === 'light'
+      ? ':where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"])'
+      : ':where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"])'
+
+    const fixed = key => key.startsWith('ui-space-') || key.startsWith('ui-radius') ||
+      ['ui-border-width', 'ui-font'].includes(key)
+
+    const inherited = values.filter(([, key]) => !fixed(key))
+    const variables = inherited.map(([, key, value]) => `  ${privateName(key)}: ${value};`).join('\n')
+    const mapping = values.map(([key, token, value]) => `  ${key}: ${fixed(token) ? value : `var(${privateName(token)})`};`).join('\n')
+
+    return `${boundary} {\n${variables}\n}${scheme === 'light' ? `\n${selector} {\n${mapping}\n}` : ''}`
   }))
 
   return `/* BEGIN:generated-theme-presets */\n@layer lumen.tokens {\n${blocks.join('\n\n')}\n}\n/* END:generated-theme-presets */`

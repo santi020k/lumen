@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Refresh the bundled v5 migration contract and documentation with default-palette review and current theme guidance.
+
 - Default migration discovery to the bundled release manifest while retaining explicit v4 targets.
 
 - Refresh default light and dark tokens in the bundled catalog.
