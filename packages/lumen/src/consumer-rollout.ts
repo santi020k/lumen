@@ -418,7 +418,7 @@ const runCommand = async (
 const parseFlowSequence = (source: string): string[] | undefined => {
   const match = /^\[([\s\S]*)\]\s*(?:#.*)?$/.exec(source.trim())
 
-  if (!match) return undefined
+  if (!match || /[\\{}&*!#]|''/u.test(match[1] ?? '')) return undefined
 
   const values: string[] = []
   let current = ''
@@ -457,64 +457,103 @@ const parseFlowSequence = (source: string): string[] | undefined => {
     .filter(Boolean)
 }
 
-export const addReleaseAgeTarget = (source: string, packages: string[], version: string): string => {
-  if (!/^\s*minimumReleaseAgeExclude\s*:/m.test(source)) return source
+// Read only the top-level exclusion list. Other pnpm settings can also contain package lists.
+const releaseAgeSection = (source: string) => {
+  const newline = source.includes('\r\n') ? '\r\n' : '\n'
+  const lines = source.split(newline)
+  const firstKey = lines.find(line => /^ *[^#\s-][^:]*:/u.test(line))
+  const rootIndent = firstKey?.match(/^ */u)?.[0] ?? ''
+  const start = lines.findIndex(line => (
+    line.startsWith(rootIndent) && /^minimumReleaseAgeExclude *:/u.test(line.slice(rootIndent.length))
+  ))
 
-  const lines = source.split(/\r?\n/)
-  const index = lines.findIndex(line => /^\s*minimumReleaseAgeExclude\s*:/.test(line))
-  const declaration = lines[index] ?? ''
-  const rootIndent = /^\s*/.exec(declaration)?.[0] ?? ''
-  const indent = `${rootIndent}  `
-  const declarationValue = declaration.slice(declaration.indexOf(':') + 1)
-  const inlineValues = parseFlowSequence(declarationValue)
+  if (start < 0) return undefined
 
-  if (declarationValue.trim() && !inlineValues) return source
+  const declaration = lines[start] ?? ''
+  const value = declaration.slice(declaration.indexOf(':') + 1).trim()
+  const inlineValues = parseFlowSequence(value)
+  const block = !value || value.startsWith('#')
 
-  const existing = new Set([
-    ...(inlineValues ?? []),
-    ...lines.flatMap(line => {
-      const value = /^\s*-\s*['"]?([^'"]+)['"]?\s*$/.exec(line)?.[1]
+  if (!block && !inlineValues) return undefined
 
-      return value ? [value] : []
-    })
-  ])
+  let end = start + 1
+  let itemIndent: string | undefined
 
-  const additions = packages
-    .map(packageName => `${packageName}@${version}`)
-    .filter(value => !existing.has(value))
-    .map(value => `${indent}- "${value}"`)
+  while (block && end < lines.length) {
+    const line = lines[end] ?? ''
+    const trimmed = line.trim()
 
-  if (declaration.slice(declaration.indexOf(':') + 1).trim()) {
-    lines[index] = `${rootIndent}minimumReleaseAgeExclude:`
+    if (trimmed && !trimmed.startsWith('#')) {
+      const item = /^( *)-\s+/u.exec(line)
 
-    additions.unshift(...(inlineValues ?? []).map(value => `${indent}- "${value}"`))
+      if (!item || (item[1]?.length ?? 0) < rootIndent.length) break
+
+      itemIndent ??= item[1]
+    }
+
+    end++
   }
 
-  lines.splice(index + 1, 0, ...additions)
+  return { end, indent: itemIndent ?? rootIndent + '  ', inlineValues, lines, newline, start }
+}
 
-  return lines.join('\n')
+export const addReleaseAgeTarget = (source: string, packages: string[], version: string): string => {
+  const section = releaseAgeSection(source)
+
+  if (!section) return source
+
+  const { end, indent, inlineValues, lines, newline, start } = section
+  const existing = new Set(inlineValues ?? [])
+
+  for (const line of lines.slice(start + 1, end)) {
+    const match = /^\s*-\s*['"]?([^'"\s#]+)['"]?\s*(?:#.*)?$/u.exec(line)
+
+    if (match?.[1]) existing.add(match[1])
+  }
+
+  const additions = [...new Set(packages.map(name => `${name}@${version}`))]
+    .filter(value => !existing.has(value))
+    .map(value => `${indent}- ${JSON.stringify(value)}`)
+
+  if (!additions.length && !inlineValues) return source
+
+  if (inlineValues) {
+    const declaration = lines[start] ?? ''
+
+    lines[start] = declaration.slice(0, declaration.indexOf(':') + 1)
+
+    additions.unshift(...inlineValues.map(value => `${indent}- ${JSON.stringify(value)}`))
+  }
+
+  lines.splice(start + 1, 0, ...additions)
+
+  return lines.join(newline)
 }
 
 const removeObsoleteReleaseAgeEntries = (
   source: string, targetVersion: string, packageVersions?: Readonly<Record<string, string>>
-): string => source
-  .split(/\r?\n/)
-  .filter(line => {
-    if (packageVersions) {
-      const mapped = new RegExp(`^\\s*-\\s*['"]?(${lumenPackageNamePattern})@([^'"]+)['"]?\\s*$`).exec(line)
-      const name = mapped?.[1]
-      const expected = name ? packageVersions[name] : undefined
+): string => {
+  const section = releaseAgeSection(source)
 
-      return !expected || mapped?.[2] === expected
-    }
+  if (!section || section.inlineValues) return source
 
-    const match = /^\s*-\s*['"]?(@santi020k\/lumen(?:-(?:astro|core|elements|mcp|react))?)@([^'"]+)['"]?\s*$/.exec(
-      line
-    )
+  const { end, lines, newline, start } = section
+  const pattern = packageVersions ? lumenPackageNamePattern : '@santi020k/lumen(?:-(?:astro|core|elements|mcp|react))?'
+  const entry = new RegExp(`^\\s*-\\s*['"]?(${pattern})@([^'"\\s]+)['"]?\\s*$`, 'u')
 
-    return !match || match[2] === targetVersion
+  const retained = lines.slice(start + 1, end).filter(line => {
+    const match = entry.exec(line)
+    const name = match?.[1]
+
+    if (!name) return true
+
+    const expected = packageVersions ? packageVersions[name] : targetVersion
+
+    return !expected || match[2] === expected
   })
-  .join('\n')
+
+  return [...lines.slice(0, start + 1), ...retained, ...lines.slice(end)].join(newline)
+}
 
 const upgradeConsumer = async (
   inventory: ConsumerInventory,

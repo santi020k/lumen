@@ -130,3 +130,21 @@ test('upload reset follows reassigned form owner without refreshing for other fo
   expect(summary.textContent).toBe('')
   expect(upload.getAttribute('data-state')).toBe('idle')
 })
+
+test('dropping text preserves selected files and restores the selection state', () => {
+  const { input, select, summary, upload } = mount()
+  select(['selected.txt'])
+  let changes = 0
+  input.addEventListener('change', () => {
+    changes++
+  })
+  const drop = new Event('drop', { bubbles: true, cancelable: true })
+  Object.defineProperty(drop, 'dataTransfer', { value: { types: ['text/plain'], files: [] } })
+  upload.dispatchEvent(new Event('dragover', { bubbles: true, cancelable: true }))
+  upload.dispatchEvent(drop)
+
+  expect(input.files?.[0]?.name).toBe('selected.txt')
+  expect(summary.textContent).toBe('selected.txt')
+  expect(upload.getAttribute('data-state')).toBe('selected')
+  expect(changes).toBe(0)
+})

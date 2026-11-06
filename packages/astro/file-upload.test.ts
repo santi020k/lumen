@@ -186,3 +186,23 @@ test('adopted uploads rebind reset delegation without duplicating change listene
   frame.remove()
   changes.mockRestore()
 })
+
+test('dropping text preserves selected files and restores the selection state', () => {
+  const { files: summary, input, root: upload } = fixture()
+  initFileUploadControllers(document)
+  Object.defineProperty(input, 'files', { configurable: true, writable: true, value: [new File(['test'], 'selected.txt')] })
+  input.dispatchEvent(new Event('change'))
+  let changes = 0
+  input.addEventListener('change', () => {
+    changes++
+  })
+  const drop = new Event('drop', { bubbles: true, cancelable: true })
+  Object.defineProperty(drop, 'dataTransfer', { value: { types: ['text/plain'], files: [] } })
+  upload.dispatchEvent(new Event('dragover', { bubbles: true, cancelable: true }))
+  upload.dispatchEvent(drop)
+
+  expect(input.files?.[0]?.name).toBe('selected.txt')
+  expect(summary.textContent).toBe('selected.txt')
+  expect(upload.getAttribute('data-state')).toBe('selected')
+  expect(changes).toBe(0)
+})

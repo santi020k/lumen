@@ -36,6 +36,8 @@
 
 ### Patch Changes
 
+- Keep the selected upload and its filename when a drag-and-drop operation contains no files.
+
 - Preserve the public layer order when component styles load before Tailwind. Keep enhanced native controls hidden and component colors and borders above Tailwind base styles regardless of stylesheet chunk order.
 
 - Preserve React Select ownership when the Astro runtime initializes or observes the same page.
