@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-react-native",
-  "version": "4.0.3",
+  "version": "4.1.0",
   "publishConfig": {
     "access": "public"
   },
@@ -35,6 +35,18 @@
     "./icons/*": {
       "types": "./dist/static-icons/*.generated.d.ts",
       "import": "./dist/static-icons/*.generated.js"
+    },
+    "./themes/santi020k": {
+      "types": "./dist/themes/santi020k.d.ts",
+      "import": "./dist/themes/santi020k.js"
+    },
+    "./themes/paper": {
+      "types": "./dist/themes/paper.d.ts",
+      "import": "./dist/themes/paper.js"
+    },
+    "./themes/field": {
+      "types": "./dist/themes/field.d.ts",
+      "import": "./dist/themes/field.js"
     }
   },
   "files": [

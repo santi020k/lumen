@@ -107,6 +107,32 @@ private func observeAppearance<Content: View>(
 @Suite(.serialized)
 struct ThemeAppearanceTests {
     @MainActor @Test
+    func scopesFollowTheSystemOrNearestThemeAndMayPinOnlyTheirSubtree() async throws {
+        let custom = LumenNamedTheme(light: LumenColors.light, dark: LumenColors.dark)
+        let system = AppearanceObservation()
+        try await observeAppearance(AppearanceProbe(observation: system).lumenThemeScope(custom),
+                                    observation: system, expected: .dark, hostScheme: .dark,
+                                    fixture: "named-root-system")
+        #expect(system.themeScheme == .dark)
+
+        let inherited = AppearanceObservation()
+        let locked = AppearanceObservation()
+        let sibling = AppearanceObservation()
+        let views = VStack {
+            AppearanceProbe(observation: inherited).lumenThemeScope(custom)
+            AppearanceProbe(observation: locked).lumenThemeScope(custom, scheme: .light)
+            AppearanceProbe(observation: sibling)
+        }.lumenTheme(.dark, enforceColorScheme: false)
+        try await observeAppearance(views, observation: inherited, expected: .dark,
+                                    hostScheme: .light, fixture: "named-nested-scopes")
+        #expect(inherited.themeScheme == .dark)
+        #expect(locked.colorScheme == .light)
+        #expect(locked.themeScheme == .light)
+        #expect(sibling.colorScheme == .light)
+        #expect(sibling.themeScheme == .dark)
+    }
+
+    @MainActor @Test
     func enforcingThemeRetainsOutermostPreferencePrecedence() async throws {
         for applyTint in [true, false] {
             for callerFirst in [true, false] {

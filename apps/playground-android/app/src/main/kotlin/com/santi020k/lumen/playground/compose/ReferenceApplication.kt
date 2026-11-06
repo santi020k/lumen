@@ -68,6 +68,11 @@ import com.santi020k.lumen.LumenProgress
 import com.santi020k.lumen.LumenSectionHeader
 import com.santi020k.lumen.LumenSegmentedControl
 import com.santi020k.lumen.LumenSelectionOption
+import com.santi020k.lumen.LocalLumenTheme
+import com.santi020k.lumen.LumenColors
+import com.santi020k.lumen.LumenNamedThemes
+import com.santi020k.lumen.LumenSheet
+import com.santi020k.lumen.LumenThemeScope
 import com.santi020k.lumen.LumenSettingsRow
 import com.santi020k.lumen.LumenSkeleton
 import com.santi020k.lumen.LumenSkeletonShape
@@ -109,7 +114,8 @@ internal fun LumenReferenceApplication(
     darkTheme: Boolean,
     themePreset: PlaygroundThemePreset,
     onThemePresetChange: (PlaygroundThemePreset) -> Unit,
-    onToggleTheme: () -> Unit,
+    scheme: PlaygroundScheme,
+    onSchemeChange: (PlaygroundScheme) -> Unit,
     catalog: List<CatalogCategorySummary>,
     components: @Composable () -> Unit
 ) {
@@ -140,7 +146,8 @@ internal fun LumenReferenceApplication(
                 darkTheme,
                 themePreset,
                 onThemePresetChange,
-                onToggleTheme
+                scheme,
+                onSchemeChange
             )
         }
     }
@@ -696,7 +703,8 @@ private fun SettingsScreen(
     darkTheme: Boolean,
     themePreset: PlaygroundThemePreset,
     onThemePresetChange: (PlaygroundThemePreset) -> Unit,
-    onToggleTheme: () -> Unit
+    scheme: PlaygroundScheme,
+    onSchemeChange: (PlaygroundScheme) -> Unit
 ) {
     var reduceMotion by remember { mutableStateOf(false) }
     var showHints by remember { mutableStateOf(true) }
@@ -715,7 +723,8 @@ private fun SettingsScreen(
                             themePreset,
                             reduceMotion,
                             onThemePresetChange,
-                            onToggleTheme,
+                            scheme,
+                            onSchemeChange,
                             onMotionChange = {
                                 reduceMotion = it
                                 status = if (it) "Decorative motion reduced" else "Standard motion restored"
@@ -737,7 +746,8 @@ private fun SettingsScreen(
                         themePreset,
                         reduceMotion,
                         onThemePresetChange,
-                        onToggleTheme,
+                        scheme,
+                        onSchemeChange,
                         onMotionChange = {
                             reduceMotion = it
                             status = if (it) "Decorative motion reduced" else "Standard motion restored"
@@ -772,7 +782,8 @@ private fun ThemePreview(
     darkTheme: Boolean,
     themePreset: PlaygroundThemePreset,
     onThemePresetChange: (PlaygroundThemePreset) -> Unit,
-    onToggleTheme: () -> Unit,
+    scheme: PlaygroundScheme,
+    onSchemeChange: (PlaygroundScheme) -> Unit,
     onStatus: (String) -> Unit
 ) {
     LumenSurface(
@@ -821,19 +832,49 @@ private fun ThemePreview(
                     }
                 }
             )
-            LumenText(
-                "Normal keeps the classic Lumen look. Studio uses neutral surfaces. Glass uses rounded surfaces with an opaque material fallback on Android.",
-                variant = LumenTextVariant.Caption,
-                tone = LumenTextTone.Muted
+            LumenPicker(
+                label = "Color scheme",
+                value = scheme,
+                options = PlaygroundScheme.entries.map { LumenPickerOption(it, it.name) },
+                onValueChange = onSchemeChange
             )
-            LumenToggle(
-                label = "Dark theme",
-                checked = darkTheme,
-                onCheckedChange = {
-                    onToggleTheme()
-                    onStatus(if (darkTheme) "Light theme applied" else "Dark theme applied")
-                }
-            )
+            HarborPreview(scheme, onSchemeChange)
+        }
+    }
+}
+
+private val harborTheme = LumenNamedThemes.Field.copy(
+    light = LumenNamedThemes.Field.light.copy(accent = LumenColors.Light.brand),
+    dark = LumenNamedThemes.Field.dark.copy(accent = LumenColors.Dark.brand)
+)
+
+@Composable
+private fun HarborPreview(scheme: PlaygroundScheme, onSchemeChange: (PlaygroundScheme) -> Unit) {
+    var followPlayground by rememberSaveable { mutableStateOf(true) }
+    var showSheet by rememberSaveable { mutableStateOf(false) }
+    var draft by rememberSaveable { mutableStateOf("") }
+
+    LumenToggle(
+        label = "Match note to app appearance", checked = followPlayground,
+        onCheckedChange = { followPlayground = it }
+    )
+    LumenThemeScope(harborTheme, darkTheme = if (followPlayground) null else false) {
+        LumenButton(onClick = { showSheet = true }) { LumenText("Open Harbor note") }
+        LumenSheet(
+            visible = showSheet,
+            onDismiss = { showSheet = false },
+            title = "Harbor note",
+            actions = { LumenButton(onClick = { showSheet = false }) { LumenText("Done") } }
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                LumenBadge(if (LocalLumenTheme.current.isDark) "Harbor Dark" else "Harbor Light", tone = LumenBadgeTone.Accent)
+                LumenTextField(draft, { draft = it }, label = "Draft")
+                LumenPicker(
+                    label = "App appearance", value = scheme,
+                    options = PlaygroundScheme.entries.map { LumenPickerOption(it, it.name) },
+                    onValueChange = onSchemeChange
+                )
+            }
         }
     }
 }
@@ -844,12 +885,13 @@ private fun AppearanceSettings(
     themePreset: PlaygroundThemePreset,
     reduceMotion: Boolean,
     onThemePresetChange: (PlaygroundThemePreset) -> Unit,
-    onToggleTheme: () -> Unit,
+    scheme: PlaygroundScheme,
+    onSchemeChange: (PlaygroundScheme) -> Unit,
     onMotionChange: (Boolean) -> Unit,
     onStatus: (String) -> Unit
 ) {
     SettingsGroup("Appearance", "Motion and platform preferences") {
-        ThemePreview(darkTheme, themePreset, onThemePresetChange, onToggleTheme, onStatus)
+        ThemePreview(darkTheme, themePreset, onThemePresetChange, scheme, onSchemeChange, onStatus)
         LumenDivider()
         LumenSettingsRow(title = "Reduce decorative motion", description = "Keep transitions quiet and functional") {
             LumenToggle(

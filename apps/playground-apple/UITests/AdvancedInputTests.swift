@@ -3,6 +3,32 @@ import XCTest
 
 final class AdvancedInputTests: XCTestCase {
     @MainActor
+    func testPinnedHarborSheetRetainsDraftWhenAppAppearanceChanges() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--destination", "settings", "--theme", "field", "--dark"]
+        app.launch()
+        let open = app.buttons["Open Harbor note"]
+        for _ in 0..<6 where !open.isHittable { app.swipeUp() }
+        XCTAssertTrue(open.isHittable)
+        open.tap()
+        let note = app.textFields["Note"]
+        XCTAssertTrue(note.waitForExistence(timeout: 8))
+        XCTAssertTrue(app.staticTexts["Harbor Light"].exists)
+        note.tap()
+        note.typeText("Keep my note")
+        app.buttons["Light"].firstMatch.tap()
+        XCTAssertEqual(note.value as? String, "Keep my note")
+        XCTAssertTrue(app.staticTexts["Harbor Light"].exists)
+        capture("Named Harbor sheet with preserved draft", app: app)
+        app.buttons["Done"].firstMatch.tap()
+        let draft = app.textFields["Note draft"]
+        XCTAssertTrue(draft.waitForExistence(timeout: 8))
+        XCTAssertEqual(draft.value as? String, "Keep my note")
+        app.typeText("!")
+        XCTAssertEqual(draft.value as? String, "Keep my note!")
+    }
+
+    @MainActor
     func testMultiSelectRetainsFilteredValuesAndAppliesImmediately() {
         let app = open("Multi select")
         let choose = app.buttons["Choose cities · 2 selected"]

@@ -3,6 +3,96 @@
   "$extensions": {
     "com.santi020k.lumen": {
       "schemaVersion": 1,
+      "readingThemes": {
+        "paper": {
+          "light": {
+            "canvas": "41 45% 92%",
+            "surface": "44 63% 97%",
+            "surface-muted": "39 32% 89%",
+            "surface-strong": "36 25% 81%",
+            "line": "32 15% 48%",
+            "ink": "23 26% 15%",
+            "ink-soft": "25 16% 33%",
+            "ink-muted": "25 13% 39%",
+            "brand-solid": "354 43% 34%",
+            "brand-soft": "354 29% 90%",
+            "on-brand": "0 0% 100%",
+            "accent": "25 65% 33%",
+            "danger": "3 75% 36%",
+            "on-danger": "0 0% 100%",
+            "success": "175 57% 25%",
+            "warning": "32 82% 30%"
+          },
+          "dark": {
+            "canvas": "24 15% 10%",
+            "surface": "25 17% 14%",
+            "surface-muted": "25 14% 20%",
+            "surface-strong": "25 13% 26%",
+            "line": "30 15% 52%",
+            "ink": "41 45% 91%",
+            "ink-soft": "34 22% 72%",
+            "ink-muted": "33 18% 65%",
+            "brand-solid": "8 58% 74%",
+            "brand-soft": "355 26% 23%",
+            "on-brand": "356 33% 14%",
+            "accent": "32 63% 70%",
+            "danger": "5 89% 75%",
+            "on-danger": "355 35% 12%",
+            "success": "172 44% 68%",
+            "warning": "39 80% 70%"
+          },
+          "radii": {
+            "sm": 3.2,
+            "md": 3.52,
+            "lg": 3.52
+          },
+          "serifHeadings": true
+        },
+        "field": {
+          "light": {
+            "canvas": "104 18% 90%",
+            "surface": "92 30% 97%",
+            "surface-muted": "102 17% 87%",
+            "surface-strong": "110 15% 80%",
+            "line": "125 9% 45%",
+            "ink": "144 23% 15%",
+            "ink-soft": "134 15% 33%",
+            "ink-muted": "134 12% 37%",
+            "brand-solid": "148 38% 27%",
+            "brand-soft": "128 22% 87%",
+            "on-brand": "0 0% 100%",
+            "accent": "26 58% 36%",
+            "danger": "3 75% 36%",
+            "on-danger": "0 0% 100%",
+            "success": "175 57% 25%",
+            "warning": "32 82% 30%"
+          },
+          "dark": {
+            "canvas": "152 18% 9%",
+            "surface": "147 20% 13%",
+            "surface-muted": "147 14% 19%",
+            "surface-strong": "145 13% 25%",
+            "line": "130 13% 50%",
+            "ink": "89 22% 91%",
+            "ink-soft": "102 18% 72%",
+            "ink-muted": "109 14% 65%",
+            "brand-solid": "132 34% 72%",
+            "brand-soft": "146 25% 23%",
+            "on-brand": "147 29% 13%",
+            "accent": "32 66% 72%",
+            "danger": "5 89% 75%",
+            "on-danger": "355 35% 12%",
+            "success": "172 44% 68%",
+            "warning": "39 80% 70%"
+          },
+          "radii": {
+            "sm": 10.4,
+            "md": 13.6,
+            "lg": 16.8
+          },
+          "serifHeadings": false
+        }
+      },
       "themePresets": {
         "default": {
           "radiusScale": 1,

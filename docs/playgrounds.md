@@ -31,9 +31,10 @@ privacy declarations, signed release candidates, staged testing, and production 
 ## Appearance comparison
 
 In the Apple, Compose and React Native phone playgrounds, open **Settings → Appearance**
-and choose **Normal**, **Studio** or **Glass**. The existing **santi020k** brand theme remains
-available. The selection updates the whole gallery without resetting navigation or example inputs;
-light and dark appearance stay independent. Preferences remain local to the current app session.
+and select **Normal**, **Studio**, **Glass**, **santi020k**, **Paper** or **Field**. Change the
+appearance separately to compare the same screen in light and dark. Try Paper's serif headings
+and small corners, Field's rounded controls, and the ink-colored action in santi020k.
+Open the scoped preview, enter a draft, then dismiss and reopen the sheet to check the draft.
 
 Studio uses PostLens-inspired neutral surfaces, monochrome actions and compact corners. Glass
 uses the shared rounded appearance. Apple Settings includes an explicit supporting material preview
@@ -41,7 +42,7 @@ with Reduce Transparency and increased-contrast fallbacks; Compose and React Nat
 material fallbacks. Dense content and status surfaces remain legible. See
 [appearance presets](appearance-presets.md) for the public theme APIs and customization options.
 
-The React Native web preview also accepts `?destination=settings&theme=studio` or `theme=glass`
+The React Native web preview also accepts `?destination=settings&theme=studio` or `theme=paper`, `theme=field` and `theme=glass`
 for reproducible appearance review. Existing `theme=lumen` and `theme=santi020k` links still work.
 With the React Native web preview running, verify keyboard selection, retained input and responsive
 layouts with `pnpm --filter @santi020k/lumen-playground-react-native test:appearance:web`.
@@ -321,7 +322,7 @@ link the platform package differently:
 - React Native installs `@santi020k/lumen-react-native` from npm and mounts one `LumenProvider`.
 - Apple applications add `https://github.com/santi020k/lumen` through Swift Package Manager and
   select the `LumenUI` product.
-- Android applications install `com.santi020k:lumen-compose:4.0.2` from Maven Central. The repository
+- Android applications install `com.santi020k:lumen-compose:4.1.0` from Maven Central. The repository
   playground intentionally references the local module so it can exercise unreleased changes.
 
 See the corresponding React Native, Apple, or Android documentation page for complete application

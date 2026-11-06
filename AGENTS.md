@@ -30,7 +30,9 @@ and visual guidance.
   details belong in the matching framework package.
 - Treat `tokens/lumen.tokens.json` as the canonical native foundation source. Run
   `pnpm run generate:platform-tokens` after changing it and commit the generated adapter sources.
-- The santi020k web palette comes from the pinned `@santi020k/theme/site.css`. After a palette
+- Paper and Field share colors and radii in the canonical token document’s `readingThemes` extension.
+  Regenerate platform tokens before component CSS when changing these themes.
+- The santi020k web and mobile palettes come from the pinned `@santi020k/theme/site.css`. After a palette
   update, run `generate:platform-tokens`, `generate:critical-web-css`, and `generate:component-css`
   and review the two santi020k modes in `registry/figma-theme-tokens.json`.
 - Treat `icons/lumen.icons.json` as the canonical shared native icon catalog and

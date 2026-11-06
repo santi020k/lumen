@@ -18,17 +18,18 @@ import type { LumenTheme } from './theme.js'
 
 export const resolveLumenTextColor = (
   colors: LumenTheme['colors'],
-  tone: LumenTextTone
+  tone: LumenTextTone,
+  statusText?: string
 ): string => {
-  if (tone === 'danger') return colors.danger
+  if (tone === 'danger') return statusText ?? colors.danger
 
   if (tone === 'muted') return colors.inkMuted
 
   if (tone === 'soft') return colors.inkSoft
 
-  if (tone === 'success') return colors.success
+  if (tone === 'success') return statusText ?? colors.success
 
-  if (tone === 'warning') return colors.warning
+  if (tone === 'warning') return statusText ?? colors.warning
 
   return colors.ink
 }
@@ -73,7 +74,8 @@ export const resolveLumenSurfaceColor = (
 
 export const resolveLumenButtonColors = (
   colors: LumenTheme['colors'],
-  intent: LumenButtonIntent
+  intent: LumenButtonIntent,
+  appearance?: LumenTheme['appearance']
 ) => {
   if (intent === 'danger') {
     return { backgroundColor: colors.danger, borderColor: colors.danger, color: colors.onDanger }
@@ -88,8 +90,14 @@ export const resolveLumenButtonColors = (
   }
 
   if (intent === 'success') {
-    return { backgroundColor: colors.success, borderColor: colors.success, color: colors.onBrand }
+    return {
+      backgroundColor: colors.success,
+      borderColor: colors.success,
+      color: appearance?.onSuccess ?? colors.onBrand
+    }
   }
+
+  if (appearance?.inkActions) return { backgroundColor: colors.ink, borderColor: colors.ink, color: colors.surface }
 
   return { backgroundColor: colors.brandSolid, borderColor: colors.brandSolid, color: colors.onBrand }
 }

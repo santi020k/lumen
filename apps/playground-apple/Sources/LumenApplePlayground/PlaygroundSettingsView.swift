@@ -60,6 +60,10 @@ struct PlaygroundSettingsView: View {
     @State private var releaseNote = ""
     @State private var releaseNoteWasValidated = false
     @State private var showThemeFeedback = false
+    @FocusState private var noteFocused: Bool
+    @State private var showNote = false
+    @State private var note = ""
+    @State private var followApp = false
 
     var body: some View {
         PlaygroundPage(
@@ -149,7 +153,9 @@ struct PlaygroundSettingsView: View {
         case .lumen: "Normal · The classic Lumen palette, with crisp surfaces and expressive accents."
         case .studio: "Studio · Neutral surfaces for focused photo and creative workspaces."
         case .glass: "Glass · Rounded supporting surfaces, with accessible material fallbacks."
-        case .santi020k: "santi020k · The maintainer’s palette, built on the same semantic roles."
+        case .santi020k: "santi020k · Ink actions and violet accents."
+        case .paper: "Paper · Ivory surfaces, burgundy actions and serif titles."
+        case .field: "Field · Sage surfaces, pine actions and rounded controls."
         }
     }
 
@@ -158,7 +164,7 @@ struct PlaygroundSettingsView: View {
             VStack(alignment: .leading, spacing: LumenSpacing.md) {
                 HStack {
                     VStack(alignment: .leading, spacing: LumenSpacing.xs) {
-                        LumenText("Theme preview", variant: .label)
+                        LumenText("Theme preview", variant: .title)
                         LumenText(
                             "\(themePreset.title) semantic roles preserve hierarchy in \(themePreference.title.lowercased()) appearance.",
                             variant: .caption,
@@ -178,8 +184,24 @@ struct PlaygroundSettingsView: View {
                     LumenBadge("Review", tone: .warning)
                     LumenBadge("Blocked", tone: .danger)
                 }
+                LumenTextField("Note draft", text: $note)
+                    .focused($noteFocused)
+                LumenToggle("Match note to app appearance", isOn: $followApp)
+                LumenButton(action: { showNote = true }) { Text("Open Harbor note") }
+                    .lumenSheet(isPresented: $showNote, title: "Harbor note",
+                                onDismiss: { noteFocused = true }, actions: {
+                        LumenButton(action: { showNote = false }) { Text("Done") }
+                    }) {
+                        PlaygroundNoteEditor(note: $note, preference: $themePreference)
+                    }
+                    .lumenThemeScope(Self.harbor, scheme: followApp ? nil : .light)
             }
         }
+    }
+
+    // An application can own a theme without adding it to Lumen's built-in catalog.
+    private static let harbor = LumenNamedTheme.field.overridingColors { palette, scheme in
+        palette.overriding(accent: scheme == .dark ? LumenColors.dark.brand : LumenColors.light.brand)
     }
 
     private func previewSurface(_ label: LocalizedStringKey, tone: LumenSurfaceTone) -> some View {
@@ -385,5 +407,22 @@ struct PlaygroundSettingsView: View {
 
     private func safeURL(_ value: String) -> URL {
         URL(string: value) ?? URL(fileURLWithPath: "/")
+    }
+}
+
+
+private struct PlaygroundNoteEditor: View {
+    @Environment(\.colorScheme) private var scheme
+    @Binding var note: String
+    @Binding var preference: PlaygroundThemePreference
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: LumenSpacing.md) {
+            LumenBadge(scheme == .light ? "Harbor Light" : "Harbor Dark", tone: .accent)
+            LumenTextField("Note", text: $note)
+            LumenPicker("App appearance", selection: $preference, style: .segmented) {
+                ForEach(PlaygroundThemePreference.allCases) { Text($0.title).tag($0) }
+            }
+        }
     }
 }

@@ -4,56 +4,10 @@ export const lumenThemePresetDefinitions = {
   "default": {
     "radiusScale": 1,
     "spacingScale": 1,
-    "borderWidth": 1,
     "elevationScale": 1,
-    "fontFamily": [
-      "Montserrat",
-      "Avenir Next",
-      "Segoe UI",
-      "sans-serif"
-    ],
+    "borderWidth": 1,
     "material": "solid",
     "colors": {
-      "light": {},
-      "dark": {}
-    },
-    "effects": {
-      "light": {
-        "ui-shadow-sm": "0 1px 2px hsl(190 22% 12% / 0.05)",
-        "ui-shadow-md": "0 4px 12px -3px hsl(190 22% 12% / 0.14)",
-        "ui-shadow-lg": "0 16px 40px -10px hsl(190 22% 12% / 0.2)",
-        "glass-bg": "0 0% 100% / 0.55",
-        "glass-bg-subtle": "0 0% 100% / 0.38",
-        "glass-bg-strong": "0 0% 100% / 0.72",
-        "glass-border": "220 30% 100% / 0.55",
-        "glass-highlight": "0 0% 100% / 0.85",
-        "glass-blur": "22px",
-        "glass-saturate": "1.7",
-        "glass-brightness": "1.05",
-        "glass-edge": "0 0% 100% / 0.9",
-        "glass-edge-soft": "0 0% 100% / 0.34",
-        "glass-shade": "222 47% 11% / 0.07",
-        "glass-refraction": "201 96% 32% / 0.08",
-        "glass-shadow": "0 1px 2px hsl(222 47% 11% / 0.08),\n    0 12px 32px hsl(222 47% 11% / 0.12),\n    0 32px 80px hsl(222 47% 11% / 0.14)"
-      },
-      "dark": {
-        "ui-shadow-sm": "0 1px 2px hsl(0 0% 0% / 0.24)",
-        "ui-shadow-md": "0 4px 14px -3px hsl(0 0% 0% / 0.36)",
-        "ui-shadow-lg": "0 18px 44px -10px hsl(0 0% 0% / 0.48)",
-        "glass-bg": "224 20% 13% / 0.78",
-        "glass-bg-subtle": "224 20% 13% / 0.64",
-        "glass-bg-strong": "224 20% 13% / 0.9",
-        "glass-border": "210 30% 92% / 0.24",
-        "glass-highlight": "210 30% 96% / 0.1",
-        "glass-brightness": "1",
-        "glass-edge": "210 40% 98% / 0.24",
-        "glass-edge-soft": "210 40% 98% / 0.08",
-        "glass-shade": "240 40% 3% / 0.3",
-        "glass-refraction": "199 91% 56% / 0.1",
-        "glass-shadow": "0 1px 2px hsl(0 0% 0% / 0.3),\n    0 16px 40px hsl(0 0% 0% / 0.34),\n    0 40px 96px hsl(0 0% 0% / 0.38)"
-      }
-    },
-    "cssColors": {
       "light": {},
       "dark": {}
     }
@@ -61,15 +15,8 @@ export const lumenThemePresetDefinitions = {
   "studio": {
     "radiusScale": 0.6,
     "spacingScale": 1,
-    "borderWidth": 1,
     "elevationScale": 0,
-    "fontFamily": [
-      "system-ui",
-      "-apple-system",
-      "BlinkMacSystemFont",
-      "Segoe UI",
-      "sans-serif"
-    ],
+    "borderWidth": 1,
     "material": "solid",
     "colors": {
       "light": {
@@ -102,129 +49,15 @@ export const lumenThemePresetDefinitions = {
         "onBrand": "#111111",
         "accent": "#F5F5F5"
       }
-    },
-    "effects": {
-      "light": {
-        "ui-shadow-sm": "none",
-        "ui-shadow-md": "none",
-        "ui-shadow-lg": "none",
-        "glass-bg": "0 0% 100% / 0.55",
-        "glass-bg-subtle": "0 0% 100% / 0.38",
-        "glass-bg-strong": "0 0% 100% / 0.72",
-        "glass-border": "220 30% 100% / 0.55",
-        "glass-highlight": "0 0% 100% / 0.85",
-        "glass-blur": "22px",
-        "glass-saturate": "1.7",
-        "glass-brightness": "1.05",
-        "glass-edge": "0 0% 100% / 0.9",
-        "glass-edge-soft": "0 0% 100% / 0.34",
-        "glass-shade": "222 47% 11% / 0.07",
-        "glass-refraction": "0 0% 50% / 0.04",
-        "glass-shadow": "0 1px 2px hsl(222 47% 11% / 0.08),\n    0 12px 32px hsl(222 47% 11% / 0.12),\n    0 32px 80px hsl(222 47% 11% / 0.14)"
-      },
-      "dark": {
-        "ui-shadow-sm": "none",
-        "ui-shadow-md": "none",
-        "ui-shadow-lg": "none",
-        "glass-bg": "224 20% 13% / 0.78",
-        "glass-bg-subtle": "224 20% 13% / 0.64",
-        "glass-bg-strong": "224 20% 13% / 0.9",
-        "glass-border": "210 30% 92% / 0.24",
-        "glass-highlight": "210 30% 96% / 0.1",
-        "glass-brightness": "1",
-        "glass-edge": "210 40% 98% / 0.24",
-        "glass-edge-soft": "210 40% 98% / 0.08",
-        "glass-shade": "240 40% 3% / 0.3",
-        "glass-refraction": "0 0% 50% / 0.04",
-        "glass-shadow": "0 1px 2px hsl(0 0% 0% / 0.3),\n    0 16px 40px hsl(0 0% 0% / 0.34),\n    0 40px 96px hsl(0 0% 0% / 0.38)"
-      }
-    },
-    "cssColors": {
-      "light": {
-        "canvas": "0 0% 100%",
-        "surface": "0 0% 100%",
-        "surface-muted": "0 0% 96%",
-        "surface-strong": "0 0% 91%",
-        "line": "0 0% 90%",
-        "ink": "0 0% 9%",
-        "ink-soft": "0 0% 32%",
-        "ink-muted": "0 0% 45%",
-        "brand": "0 0% 9%",
-        "brand-solid": "0 0% 9%",
-        "brand-soft": "0 0% 92%",
-        "on-brand": "0 0% 100%",
-        "accent": "0 0% 9%"
-      },
-      "dark": {
-        "canvas": "0 0% 7%",
-        "surface": "0 0% 7%",
-        "surface-muted": "0 0% 11%",
-        "surface-strong": "0 0% 19%",
-        "line": "0 0% 22%",
-        "ink": "0 0% 96%",
-        "ink-soft": "0 0% 80%",
-        "ink-muted": "0 0% 64%",
-        "brand": "0 0% 96%",
-        "brand-solid": "0 0% 96%",
-        "brand-soft": "0 0% 14%",
-        "on-brand": "0 0% 7%",
-        "accent": "0 0% 96%"
-      }
     }
   },
   "glass": {
     "radiusScale": 1.4,
     "spacingScale": 1,
-    "borderWidth": 1,
     "elevationScale": 1,
-    "fontFamily": [
-      "Montserrat",
-      "Avenir Next",
-      "Segoe UI",
-      "sans-serif"
-    ],
+    "borderWidth": 1,
     "material": "glass",
     "colors": {
-      "light": {},
-      "dark": {}
-    },
-    "effects": {
-      "light": {
-        "ui-shadow-sm": "0 1px 2px hsl(222 47% 11% / 0.06)",
-        "ui-shadow-md": "0 8px 24px hsl(222 47% 11% / 0.08)",
-        "ui-shadow-lg": "0 24px 64px hsl(222 47% 11% / 0.14)",
-        "glass-bg": "0 0% 100% / 0.55",
-        "glass-bg-subtle": "0 0% 100% / 0.38",
-        "glass-bg-strong": "0 0% 100% / 0.72",
-        "glass-border": "220 30% 100% / 0.55",
-        "glass-highlight": "0 0% 100% / 0.85",
-        "glass-blur": "22px",
-        "glass-saturate": "1.7",
-        "glass-brightness": "1.05",
-        "glass-edge": "0 0% 100% / 0.9",
-        "glass-edge-soft": "0 0% 100% / 0.34",
-        "glass-shade": "222 47% 11% / 0.07",
-        "glass-refraction": "201 96% 32% / 0.08",
-        "glass-shadow": "0 1px 2px hsl(222 47% 11% / 0.08),\n    0 12px 32px hsl(222 47% 11% / 0.12),\n    0 32px 80px hsl(222 47% 11% / 0.14)"
-      },
-      "dark": {
-        "ui-shadow-sm": "0 1px 2px hsl(0 0% 0% / 0.18)",
-        "ui-shadow-md": "0 12px 32px hsl(0 0% 0% / 0.24)",
-        "ui-shadow-lg": "0 28px 80px hsl(0 0% 0% / 0.36)",
-        "glass-bg": "224 20% 13% / 0.78",
-        "glass-bg-subtle": "224 20% 13% / 0.64",
-        "glass-bg-strong": "224 20% 13% / 0.9",
-        "glass-border": "210 30% 92% / 0.24",
-        "glass-highlight": "210 30% 96% / 0.1",
-        "glass-brightness": "1",
-        "glass-edge": "210 40% 98% / 0.24",
-        "glass-edge-soft": "210 40% 98% / 0.08",
-        "glass-shade": "240 40% 3% / 0.3",
-        "glass-refraction": "199 91% 56% / 0.1",
-        "glass-shadow": "0 1px 2px hsl(0 0% 0% / 0.3),\n    0 16px 40px hsl(0 0% 0% / 0.34),\n    0 40px 96px hsl(0 0% 0% / 0.38)"
-      }
-    },
-    "cssColors": {
       "light": {},
       "dark": {}
     }

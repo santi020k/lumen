@@ -1,6 +1,10 @@
 # @santi020k/lumen-react-native
 
-## 4.0.3
+## 4.1.0
+
+### Minor Changes
+
+- Import Paper, Field or santi020k from the individual theme entries. Apply a named or custom definition at the root or use a local scope that follows its parent scheme. The santi020k filled action uses ink while emphasis and charts retain their brand colors.
 
 - Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
 

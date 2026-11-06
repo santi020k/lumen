@@ -143,7 +143,7 @@ export const LumenAlert = ({
   ...props
 }: LumenAlertProps): ReactElement => {
   const theme = useLumenTheme()
-  const colors = resolveLumenAlertColors(theme.colors, variant)
+  const colors = resolveLumenAlertColors(theme.colors, variant, theme.appearance?.statusText)
 
   return (
     <View

@@ -307,8 +307,11 @@
         "LumenTextarea",
         "LumenTextareaProps",
         "LumenTheme",
+        "LumenThemeDefinition",
         "LumenThemeOptions",
         "LumenThemePreset",
+        "LumenThemeScope",
+        "LumenThemeScopeProps",
         "LumenThemeToggleController",
         "LumenThemeToggleOptions",
         "LumenTimeline",
@@ -491,8 +494,11 @@
             "LumenTextTone",
             "LumenTextVariant",
             "LumenTheme",
+            "LumenThemeDefinition",
             "LumenThemeOptions",
             "LumenThemePreset",
+            "LumenThemeScope",
+            "LumenThemeScopeProps",
             "createLumenTheme",
             "lumenDarkTheme",
             "lumenLightTheme",
@@ -513,6 +519,8 @@
             "LumenIconProps",
             "LumenProvider",
             "LumenProviderProps",
+            "LumenThemeScope",
+            "LumenThemeScopeProps",
             "useLumenTheme"
           ],
           "experimental": [],
@@ -3148,6 +3156,33 @@
             "LumenZodiacVirgoIconGraphic",
             "LumenZoomInIconGraphic",
             "LumenZoomOutIconGraphic"
+          ],
+          "experimental": [],
+          "deprecated": []
+        },
+        "./themes/field": {
+          "maturity": "stable",
+          "entrypoint": "packages/react-native/src/themes/field.ts",
+          "supported": [
+            "fieldTheme"
+          ],
+          "experimental": [],
+          "deprecated": []
+        },
+        "./themes/paper": {
+          "maturity": "stable",
+          "entrypoint": "packages/react-native/src/themes/paper.ts",
+          "supported": [
+            "paperTheme"
+          ],
+          "experimental": [],
+          "deprecated": []
+        },
+        "./themes/santi020k": {
+          "maturity": "stable",
+          "entrypoint": "packages/react-native/src/themes/santi020k.ts",
+          "supported": [
+            "santi020kTheme"
           ],
           "experimental": [],
           "deprecated": []

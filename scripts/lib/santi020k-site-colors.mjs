@@ -34,6 +34,14 @@ export const readSanti020kSiteColors = async () => {
   }))
 }
 
+// Lumen uses brand and muted ink for small text on cards as well as on the canvas.
+export const mapSanti020kSiteColors = (colors, scheme) => ({
+  ...colors,
+  brand: scheme === 'dark' ? colors.accent : colors.brand,
+  'ink-muted': scheme === 'light' ? colors['ink-soft'] : colors['ink-muted'],
+  'ui-website-brand': colors.brand
+})
+
 export const syncSanti020kSiteColors = async styles => {
   const startMarker = '/* BEGIN:generated-santi020k-site-colors */'
   const endMarker = '/* END:generated-santi020k-site-colors */'
@@ -45,14 +53,7 @@ export const syncSanti020kSiteColors = async styles => {
   const palette = await readSanti020kSiteColors()
 
   const blocks = Object.entries(palette).map(([scheme, colors]) => {
-    // Lumen uses brand and muted ink for small text on cards as well as on the canvas.
-    const roles = {
-      ...colors,
-      brand: scheme === 'dark' ? colors.accent : colors.brand,
-      'ink-muted': scheme === 'light' ? colors['ink-soft'] : colors['ink-muted'],
-      'ui-website-brand': colors.brand
-    }
-
+    const roles = mapSanti020kSiteColors(colors, scheme)
     const declarations = Object.entries(roles).map(([name, value]) => `  --${name}: ${value};`)
 
     return `:root[data-theme="santi020k-${scheme}"] {\n${declarations.join('\n')}\n}`

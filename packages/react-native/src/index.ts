@@ -231,7 +231,7 @@ export {
   type LumenTextTone,
   type LumenTextVariant
 } from './primitives.js'
-export { LumenProvider, type LumenProviderProps } from './provider.js'
+export { LumenProvider, type LumenProviderProps, LumenThemeScope, type LumenThemeScopeProps } from './provider.js'
 export { LumenQRCode, type LumenQRCodeProps } from './qrcode-components.js'
 export { encodeLumenQRCode, type LumenQRCodeCorrection, lumenQRCodePath, type LumenQRCodeResult } from './qrcode-recipes.js'
 export { LumenRating, type LumenRatingProps } from './rating-components.js'
@@ -308,7 +308,7 @@ export {
   lumenLightTheme,
   type LumenSurfaceMaterial,
   type LumenTheme,
-  type LumenThemeOptions,
+  type LumenThemeDefinition, type LumenThemeOptions,
   type LumenThemePreset } from './theme.js'
 export { useLumenTheme } from './theme-context.js'
 export { LumenTimeline, LumenTimelineItem, type LumenTimelineItemProps, type LumenTimelineProps } from './timeline-components.js'

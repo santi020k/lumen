@@ -178,7 +178,7 @@ fun LumenSearchField(
         label = { Text(prompt) },
         leadingIcon = graphic,
         trailingIcon = trailingIcon,
-        shape = RoundedCornerShape(LumenRadius.Sm),
+        shape = RoundedCornerShape(LumenSurfaceRadius.Sm.scoped()),
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = colors.surface,
             unfocusedContainerColor = colors.surface,
@@ -264,7 +264,7 @@ private fun LumenDateFieldLayout(
                     if (errorMessage != null) error(errorMessage)
                 },
             enabled = enabled,
-            shape = RoundedCornerShape(LumenRadius.Sm)
+            shape = RoundedCornerShape(LumenSurfaceRadius.Sm.scoped())
         ) {
             Text(value, modifier = Modifier.fillMaxWidth(), color = colors.ink)
         }
@@ -273,7 +273,7 @@ private fun LumenDateFieldLayout(
         if (supportingText != null) {
             Text(
                 text = supportingText,
-                color = if (errorMessage == null) colors.inkMuted else colors.danger,
+                color = if (errorMessage == null) colors.inkMuted else lumenStatusTextColor(colors.danger),
                 style = MaterialTheme.typography.bodySmall
             )
         }

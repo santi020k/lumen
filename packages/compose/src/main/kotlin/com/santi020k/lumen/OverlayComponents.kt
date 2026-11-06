@@ -187,7 +187,7 @@ fun LumenMenu(
                 text = {
                     Text(
                         item.label,
-                        color = if (item.destructive) colors.danger else colors.ink
+                        color = if (item.destructive) lumenStatusTextColor(colors.danger) else colors.ink
                     )
                 },
                 onClick = {

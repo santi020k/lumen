@@ -358,3 +358,10 @@ navigation recipes, and a SwiftUI permission-screen composition. The packed subs
 now exercises the new React form entries. Consumer callback setup and lifecycle are documented in
 consumer-ui-recipes.md. The existing product-workflow consumer checks installation, typing, mobile
 and desktop interaction, stale-load protection, focus recovery and navigation remounting.
+
+## Mobile themes
+
+The named Paper, Field and santi020k themes add public mobile APIs. The v5 candidate therefore
+targets 4.1.0 for React Native, tokens and the two Compose artifacts. SwiftUI follows the v5
+repository tag. The [appearance guide](appearance-presets.md#named-themes-on-mobile) describes
+local scopes and the Playground examples.

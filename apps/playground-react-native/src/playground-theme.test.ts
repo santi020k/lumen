@@ -1,3 +1,4 @@
+import { santi020kTheme } from '@santi020k/lumen-react-native/themes/santi020k'
 import { describe, expect, test, vi } from 'vitest'
 
 import { createPlaygroundTheme, isThemePreset, themePresetOptions } from './playground-theme'
@@ -11,7 +12,7 @@ vi.mock('@santi020k/lumen-react-native', async () => {
 
 describe('playground appearance', () => {
   test('offers all shared appearances and preserves the brand theme', () => {
-    expect(themePresetOptions.map(option => option.label)).toEqual(['Normal', 'Studio', 'Glass', 'santi020k'])
+    expect(themePresetOptions.map(option => option.label)).toEqual(['Normal', 'Studio', 'Glass', 'santi020k', 'Paper', 'Field'])
     for (const option of themePresetOptions) expect(isThemePreset(option.value)).toBe(true)
     expect(isThemePreset('unknown')).toBe(false)
     expect(isThemePreset(undefined)).toBe(false)
@@ -30,6 +31,8 @@ describe('playground appearance', () => {
     expect(glass.appearance?.material).toBe('glass')
     expect(studio.colors.danger).toBe(normal.colors.danger)
     expect(glass.colors.danger).toBe(normal.colors.danger)
-    expect(createPlaygroundTheme('santi020k', scheme).colors.brandSolid).toBe(scheme === 'light' ? '#5709CE' : '#6F16F3')
+    expect(createPlaygroundTheme('santi020k', scheme).colors).toEqual(santi020kTheme[scheme])
+    expect(createPlaygroundTheme('paper', scheme).appearance?.serifHeadings).toBe(true)
+    expect(createPlaygroundTheme('field', scheme).radii.md).toBeGreaterThan(normal.radii.md)
   })
 })

@@ -335,10 +335,10 @@ public struct LumenSearchField: View {
         .padding(.horizontal, LumenSpacing.md)
         .background(theme.colors.surface)
         .overlay {
-            RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
+            RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous)
                 .stroke(theme.colors.line, lineWidth: 1)
         }
-        .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous))
         .opacity(isEnabled ? 1 : 0.52)
     }
 }

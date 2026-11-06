@@ -1,66 +1,36 @@
-import { createLumenTheme, type LumenTheme } from '@santi020k/lumen-react-native'
+import { createLumenTheme, type LumenTheme, type LumenThemeDefinition } from '@santi020k/lumen-react-native'
+import { fieldTheme } from '@santi020k/lumen-react-native/themes/field'
+import { paperTheme } from '@santi020k/lumen-react-native/themes/paper'
+import { santi020kTheme } from '@santi020k/lumen-react-native/themes/santi020k'
 
-export type ThemePreset = 'glass' | 'lumen' | 'santi020k' | 'studio'
+export type ThemePreset = typeof themePresetOptions[number]['value']
 
 export const themePresetOptions = [
   { label: 'Normal', value: 'lumen' },
   { label: 'Studio', value: 'studio' },
   { label: 'Glass', value: 'glass' },
-  { label: 'santi020k', value: 'santi020k' }
+  { label: 'santi020k', value: 'santi020k' },
+  { label: 'Paper', value: 'paper' },
+  { label: 'Field', value: 'field' }
 ] as const
 
 export const isThemePreset = (value: string | undefined): value is ThemePreset => (
   themePresetOptions.some(option => option.value === value)
 )
 
-const santi020kColorPalettes: Record<'dark' | 'light', LumenTheme['colors']> = {
-  light: {
-    canvas: '#FAF9FB',
-    surface: '#FFFFFF',
-    surfaceMuted: '#F5F3F7',
-    surfaceStrong: '#E5E2E9',
-    line: '#D6D0DC',
-    ink: '#332E38',
-    inkSoft: '#5B5463',
-    inkMuted: '#47434C',
-    brand: '#620AE6',
-    brandSolid: '#5709CE',
-    brandSoft: '#EEE7F9',
-    onBrand: '#FFFFFF',
-    accent: '#7D29FA',
-    success: '#16A249',
-    warning: '#F59F0A',
-    danger: '#EF4343',
-    onDanger: '#000000'
-  },
-  dark: {
-    canvas: '#110C1D',
-    surface: '#1C1528',
-    surfaceMuted: '#231D30',
-    surfaceStrong: '#322B40',
-    line: '#494158',
-    ink: '#DFDDE3',
-    inkSoft: '#B6B2BD',
-    inkMuted: '#8D8896',
-    brand: '#A56EF7',
-    brandSolid: '#6F16F3',
-    brandSoft: '#2A1943',
-    onBrand: '#FFFFFF',
-    accent: '#9F64F7',
-    success: '#21C45D',
-    warning: '#F6A823',
-    danger: '#F15B5B',
-    onDanger: '#110C1D'
-  }
-}
+const namedThemes = { field: fieldTheme, paper: paperTheme, santi020k: santi020kTheme }
 
 export const createPlaygroundTheme = (preset: ThemePreset, scheme: 'dark' | 'light'): LumenTheme => {
-  const theme = createLumenTheme(scheme, { preset: preset === 'lumen' || preset === 'santi020k' ? 'default' : preset })
+  if (preset === 'lumen') return createLumenTheme(scheme)
 
-  if (preset !== 'santi020k') return theme
+  if (preset === 'studio' || preset === 'glass') return createLumenTheme(scheme, { preset })
 
-  return {
-    ...theme,
-    colors: santi020kColorPalettes[scheme]
-  }
+  return createLumenTheme(scheme, { definition: namedThemes[preset] })
 }
+
+// A local example of a theme that shares the application's foundation and owns its actions.
+export const harborTheme = {
+  light: { brand: '#0D6769', brandSolid: '#0D6769', brandSoft: '#D7EFEE', onBrand: '#FFFFFF' },
+  dark: { brand: '#80DBD3', brandSolid: '#80DBD3', brandSoft: '#204646', onBrand: '#0D2326' },
+  radii: { sm: 6, md: 12, lg: 16 }
+} satisfies LumenThemeDefinition

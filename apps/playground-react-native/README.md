@@ -31,8 +31,7 @@ Examples provides Release, Health, Profile, and Workspace patterns with switchab
 success states. The Motion pattern demonstrates expandable content, simulated save feedback, and
 a native sheet. Demo effects respect the system motion preference and a local reduction toggle;
 sheet presentation follows the operating system. Components combines
-search, product-intent categories, and focused component detail views. Settings includes Lumen and
-santi020k theme presets, system/light/dark appearance, live accessibility context, runtime
+search, product-intent categories, and focused component detail views. Settings includes six themes, a locally themed Harbor sheet, system/light/dark appearance, live accessibility context, runtime
 localization, app details, privacy, and resources.
 
 > **Local candidate:** This checkout uses the Lumen 4 adapter. Search accepts component IDs and
@@ -136,7 +135,7 @@ http://localhost:8081/?destination=examples&pattern=profile
 http://localhost:8081/?destination=components&category=forms
 ```
 
-The existing `embed=true`, `scheme=light|dark|system`, and `theme=lumen|santi020k` parameters remain
+The existing `embed=true`, `scheme=light|dark|system`, and `theme=lumen|studio|glass|santi020k|paper|field` parameters remain
 available for documentation previews. Embedded component captures continue to match component names
 exactly and omit the application shell.
 
@@ -164,8 +163,8 @@ or Android because browser support is environment-dependent.
 
 ## Appearance comparison
 
-Open Settings to switch between Normal, Studio, Glass and santi020k without resetting example
-inputs. Light, dark and system appearance remain independent. Glass keeps the adapter's opaque
+Open Settings to switch between Normal, Studio, Glass, santi020k, Paper and Field while editing a note.
+The Harbor preview demonstrates an app-owned theme. Choose **Follow playground** or **Always light**, then open the sheet, edit its note, and reopen it to see the draft. Light, dark and system appearance remain independent. Glass keeps the adapter's opaque
 material fallback. See [the playground guide](../../docs/playgrounds.md#appearance-comparison)
 for browser regression checks and reproducible preview links.
 

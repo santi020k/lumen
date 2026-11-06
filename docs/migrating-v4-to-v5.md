@@ -13,8 +13,7 @@ manager. The Astro, React and Elements packages no longer provide the command. K
 runtime adapters in production dependencies.
 
 Use the [release manifest](../registry/release-manifest.json) for each package's version. In the initial
-v5 release, the six linked web/tooling packages target 5.0.0; React Hook Form targets 4.0.2, brand icons 4.0.1, React Native 4.0.3,
-and tokens 4.0.1. V5 dependency migration uses this map instead of assigning 5.0.0 to every
+v5 release, the six linked web/tooling packages target 5.0.0; React Hook Form targets 4.0.2, brand icons 4.0.1, React Native and tokens 4.1.0. Compose and Wear also target 4.1.0. V5 dependency migration uses this map instead of assigning 5.0.0 to every
 package. `migrate v5` follows the bundled CLI's v5 release versions; explicit audit targets must match
 that bundled manifest. Swift and Maven pins remain application-owned. The refreshed Lucide catalog retains all previous names through aliases and adds new Swift enum cases. Review exhaustive `LumenIconName` switches when updating the Swift package. The repository playground now uses Expo SDK 58 with React Native 0.88 and React 19.3; regenerate and rebuild native applications when adopting that toolchain. See [dependency upgrades](lumen-5-dependencies.md) for exact versions and compatibility holds.
 
@@ -61,6 +60,13 @@ follow the brand. Review visual baselines and product colors paired with Lumen b
 names and control dimensions stay the same. Use `brand` for text on `brand-soft` and `on-brand`
 for text on `brand-solid`. Applications can keep their own palette at the theme boundary. The
 optional santi020k and Studio palettes retain their own brand colors.
+
+On mobile, adopt Paper, Field or santi020k one screen at a time with the named theme APIs in
+[Appearance presets](appearance-presets.md#named-themes-on-mobile). Move playground-style copies of
+the website palette to the supplied santi020k definition. Filled primary actions now use ink while
+links and charts keep the branded palette. Store appearance preference separately from the theme
+identifier. Existing Default, Studio and Glass calls continue to work.
+
 
 ## Optional delivery and composition improvements
 
