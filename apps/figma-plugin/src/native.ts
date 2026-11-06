@@ -18,8 +18,8 @@ export const analyzeNative = (selection: DesignNode, { platform, version }: Nati
 
   review.auditTokens(selection)
 
-  const { root, fields, checks } = nativeDesign(selection, platform, review)
-  const code = root ? renderNative(platform, root, fields, checks) : ''
+  const { root, ...state } = nativeDesign(selection, platform, review)
+  const code = root ? renderNative(platform, root, state) : ''
   const layout = nativeSetup[platform]
   const { findings } = review
 

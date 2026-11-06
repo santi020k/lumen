@@ -1,6 +1,8 @@
 import type { ComponentName } from './contracts.js'
 import { identifyComponent, isComponentBoundary, isLayoutLayer, namedLayoutNote, withPresentationContent } from './contracts.js'
 import type { DesignNode } from './model.js'
+import type { NativeChoice } from './native-choices.js'
+import { drawnChoiceGroup } from './native-choices.js'
 import type { NativeControl } from './native-controls.js'
 import { drawnProgress, emailAlert, labelText, matchesControl, percentValue } from './native-controls.js'
 import type { createReview } from './review.js'
@@ -29,6 +31,7 @@ export type NativeNode =
   { kind: 'button', label: string, intent: typeof intents[keyof typeof intents], size: Size, disabled: boolean, loading: boolean } |
   { kind: 'badge', label: string, tone: typeof badges[keyof typeof badges] } |
   { kind: 'text', content: string, variant: 'title' | 'body' | 'label', tone: typeof tones[keyof typeof tones] } |
+  { kind: 'radioGroup', index: number, label: string, options: NativeChoice[] } |
   { kind: 'checkbox', index: number, label: string } |
   { kind: 'progress', label: string, value: number } |
   { kind: 'input', index: number, size: Size, label: string, placeholder: string, helper: string, visibleLabel: boolean, emailError: string | undefined }
@@ -53,6 +56,7 @@ type Reader = (node: DesignNode) => NativeNode | null
 export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { issue, text, choice }: Review) => {
   let fields = 0
   const checks: boolean[] = []
+  const choices: string[] = []
 
   const sizeFor = (node: DesignNode): Size => {
     const value = choice(node, 'Size', ['sm', 'default', 'lg'], 'default')
@@ -271,6 +275,22 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
     return renderers[component](node)
   }
 
+  const layoutNode = (node: DesignNode, recurse: Reader): NativeNode | null => {
+    const group = drawnChoiceGroup(node)
+
+    if (group) {
+      issue(node, 'Inferred a radio group from its legend and highlighted option. Native radio indicators replace the artwork.', 'inferred')
+
+      return { kind: 'radioGroup', index: choices.push(group.initial), label: group.label, options: group.options }
+    }
+
+    const note = namedLayoutNote(node)
+
+    if (note) issue(node, note, 'inferred')
+
+    return stack(node, false, recurse)
+  }
+
   const read: Reader = node => {
     const component = identifyComponent(node)
 
@@ -294,13 +314,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
 
     if (node.type === 'TEXT') return nativeText(node, 'body')
 
-    if (isLayoutLayer(node)) {
-      const note = namedLayoutNote(node)
-
-      if (note) issue(node, note, 'inferred')
-
-      return stack(node, false, read)
-    }
+    if (isLayoutLayer(node)) return layoutNode(node, read)
 
     issue(node, 'Custom layer omitted. Review the original design context.', 'unsupported')
 
@@ -309,5 +323,5 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
 
   const root = read(selection)
 
-  return { root, fields, checks }
+  return { root, fields, checks, choices }
 }

@@ -23,6 +23,7 @@ import { lumenTemplates } from './templates'
       <div class="template-gallery__hero-actions">
         <ButtonLink href="#template-collection" showArrow>Explore templates</ButtonLink>
         <ButtonLink href="/docs" variant="secondary">Read the documentation</ButtonLink>
+        <slot name="actions" />
       </div>
       <dl class="template-gallery__summary">
         <div><dd>{lumenTemplates.length}</dd><dt>complete recipes</dt></div>

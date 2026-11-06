@@ -21,6 +21,7 @@ import {
 
 import CommunityFeedback from '../../../components/CommunityFeedback.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
+import FigmaCommunityLink from '../../../components/FigmaCommunityLink.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
 const playgrounds = [
@@ -70,6 +71,7 @@ const playgrounds = [
     <Fragment slot="actions">
       <ButtonLink href="#live-preview" showArrow>Try the live demo</ButtonLink>
       <ButtonLink href="/docs/components" variant="secondary">Explore components</ButtonLink>
+      <FigmaCommunityLink file="playgrounds" />
     </Fragment>
     <div class="playground-hero-visual" slot="visual" aria-hidden="true">
       <div class="playground-hero-visual__label"><Icon decorative name="box" /> One design language. Your stack.</div>
