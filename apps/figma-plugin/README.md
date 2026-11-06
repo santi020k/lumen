@@ -42,8 +42,10 @@ In Figma desktop, open **Plugins → Development → Import plugin from manifest
 Open a design using the [Lumen library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9),
 select one frame or component instance, and run **Lumen for Figma**.
 
+The panel follows the Figma editor’s light or dark theme. **Project appearance** applies to the exported starter.
+
 1. Choose the **Export target**. For web, choose the **Target version** and **Project appearance**. For native, check the supported adapter version, then **Inspect selection**.
-2. Review verified components and unresolved items.
+2. In **Design review**, check the verified count and the layers that need attention. **Project handoff** contains the generated files.
 3. Copy the setup for your framework and copy or save the starter and **AI handoff**. React and Web Components also offer **Save app setup**. Changing export settings clears the previous output.
 4. Give the handoff to a coding agent working in the target repository. It directs the agent to
    check installed Lumen versions, retrieve component contracts, connect application behavior,
@@ -73,7 +75,11 @@ rows use their adjacent caption and keep independent state initialized from the 
 group of choice cards with a legend and exactly one highlighted option exports as a radio group.
 It preserves the option titles, descriptions and initial selection. A drawn
 progress track with a visible caption and percentage exports a labeled progress indicator. Review
-the inferred mapping and connect progress to the application. App actions are left for you to connect.
+the inferred mapping and connect progress to the application. Selecting the complete Onboarding form wires Continue to Preferences (step 3 of 4, 75%) once the
+workspace name and email are valid. Continue on Preferences opens Invite (step 4 of 4, 100%).
+Back retraces those steps and preserves the workspace name, email, workspace choice and latest
+product-updates setting. Back is disabled on the initial Workspace step (50%).
+Connect other button actions in the receiving application.
 
 Nested layouts preserve child order, row/column direction, matching native spacing tokens and
 directional padding. Only React Native emits wrapping. Review notes identify approximations,

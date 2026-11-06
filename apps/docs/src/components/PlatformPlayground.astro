@@ -5,7 +5,7 @@ import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
 import CommunityFeedback from './CommunityFeedback.astro'
-import FigmaCommunityLink from './FigmaCommunityLink.astro'
+import FigmaCommunityCover from './FigmaCommunityCover.astro'
 import NativeLivePreview from './NativeLivePreview.astro'
 import PlatformShipping from './PlatformShipping.astro'
 import PlatformStoreAvailability from './PlatformStoreAvailability.astro'
@@ -37,7 +37,6 @@ const commands = guide.playgroundCommands ?? []
         {guide.id === 'react-native' && <ButtonLink href="#preview" showArrow>Try in browser</ButtonLink>}
         <ButtonLink href="#run" showArrow variant={guide.id === 'react-native' ? 'secondary' : 'primary'}>Run the playground</ButtonLink>
         <ButtonLink href={`${guide.href}/components`} variant="secondary">Browse components</ButtonLink>
-        <FigmaCommunityLink file="playgrounds" />
       </div>
     </div>
     <Card class="docs-hero__surface docs-hero__surface--summary" glass="strong">
@@ -48,6 +47,8 @@ const commands = guide.playgroundCommands ?? []
       </p>
     </Card>
   </section>
+
+  <FigmaCommunityCover file="playgrounds" />
 
   {guide.storeAvailability && (
     <PlatformStoreAvailability availability={guide.storeAvailability} />

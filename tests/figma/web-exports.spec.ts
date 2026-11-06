@@ -84,7 +84,7 @@ test('switches framework, downloads the selected starter and clears stale output
     const download = page.waitForEvent('download')
     await page.getByRole('button', { name: `Save ${label} starter` }).click()
     expect((await download).suggestedFilename()).toBe(`LumenSelection.${extension}`)
-    await page.getByRole('tab', { name: `${label} setup` }).click()
+    await page.getByRole('tab', { name: 'Setup' }).click()
     await expect(page.getByRole('tabpanel')).toContainText(`@santi020k/lumen-${pkg}/styles.css`)
     const setup = page.waitForEvent('download')
     await page.getByRole('button', { name: 'Save app setup' }).click()

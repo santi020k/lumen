@@ -28,7 +28,7 @@ const hasKey = <T extends string>(record: Record<T, unknown>, key: string): key 
 export type NativeNode =
   | { kind: 'stack', row: boolean, wrap: boolean, gap: Gap, padding: { side: Side, gap: Gap }[], children: NativeNode[] } |
   { kind: 'card', variant: 'muted' | 'default', title: string, body: string } |
-  { kind: 'button', label: string, intent: typeof intents[keyof typeof intents], size: Size, disabled: boolean, loading: boolean } |
+  { kind: 'button', label: string, intent: typeof intents[keyof typeof intents], size: Size, disabled: boolean, loading: boolean, destinationStep?: 2 | 3 | 4, requiresWorkspace?: boolean } |
   { kind: 'badge', label: string, tone: typeof badges[keyof typeof badges] } |
   { kind: 'text', content: string, variant: 'title' | 'body' | 'label', tone: typeof tones[keyof typeof tones] } |
   { kind: 'radioGroup', index: number, label: string, options: NativeChoice[] } |
@@ -107,7 +107,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
 
     if (node.properties.Icon || String(node.properties.Size).toLowerCase() === 'icon') issue(node, 'Icon swaps and icon-only sizes need a native icon and accessible name. The starter uses the label.')
 
-    issue(node, 'Connect the button action in your application.')
+    issue(node, 'Review the button action in the receiving application.')
 
     return { kind: 'button', intent: hasKey(intents, variant) ? intents[variant] : 'secondary', label: text(node, 'Label', 'Action'), size: sizeFor(node), loading: node.properties.Loading === true, disabled: node.properties.Disabled === true }
   }

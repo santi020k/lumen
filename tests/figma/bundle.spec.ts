@@ -44,14 +44,14 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
   await panel.getByRole('button', { name: 'Copy code to clipboard' }).click()
   await expect(panel.getByRole('button', { name: 'Code copied to clipboard' })).toBeVisible()
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(source)
-  await panel.getByRole('tab', { name: 'Astro layout' }).click()
+  await panel.getByRole('tab', { name: 'Layout' }).click()
   await expect(panel.getByRole('tabpanel')).toContainText('@santi020k/lumen-astro/styles.css')
   for (const [name, pkg] of [['React', 'react'], ['Web Components', 'elements']] as const) {
     await panel.getByRole('combobox', { name: 'Export target' }).click()
     await panel.getByRole('option', { name, exact: true }).click()
     await expect(panel.getByRole('tablist', { name: 'Conversion output' })).toHaveCount(0)
     await panel.getByRole('button', { name: 'Inspect selection' }).click()
-    await panel.getByRole('tab', { name: `${name} setup` }).click()
+    await panel.getByRole('tab', { name: 'Setup' }).click()
     await expect(panel.getByRole('tabpanel')).toContainText(`@santi020k/lumen-${pkg}/styles.css`)
   }
   for (const [label, extension, version] of [
@@ -104,4 +104,35 @@ test('receives selection from the Figma editor above the desktop sandbox', async
   await expect(panel.getByText('Host check complete')).toBeVisible()
   await expect(panel.getByRole('heading', { name: 'Nothing selected' })).toBeVisible()
   await expect(panel.getByRole('button', { name: 'Inspect selection' })).toBeDisabled()
+})
+
+test('the offline inspector follows the editor theme and fits long selections', async ({ page }) => {
+  const ui = await readFile(new URL('../../apps/figma-plugin/dist/ui.html', import.meta.url), 'utf8')
+  await page.setViewportSize({ width: 480, height: 720 })
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' })
+  await page.setContent(ui)
+  const root = page.locator('html')
+  await expect(root).toHaveCSS('color-scheme', 'dark')
+  await root.evaluate(element => { element.classList.add('figma-light'); })
+  await expect(root).toHaveCSS('color-scheme', 'light')
+  const inspect = page.getByRole('button', { name: 'Inspect selection' })
+  await expect(inspect).toBeDisabled()
+  await expect(inspect).toBeInViewport({ ratio: 1 })
+
+  const name = 'Component'.repeat(20)
+  await page.evaluate(selection => {
+    window.postMessage({ pluginMessage: { type: 'selection', name: selection } }, '*')
+  }, name)
+  await expect(page.getByRole('heading', { name })).toBeVisible()
+  await expect(inspect).toBeEnabled()
+  await page.getByRole('combobox', { name: 'Export target' }).click()
+  await page.getByRole('option', { name: 'Android · Jetpack Compose' }).click()
+  await root.evaluate(element => element.classList.replace('figma-light', 'figma-dark'))
+  await expect(root).toHaveCSS('color-scheme', 'dark')
+  await expect(page.getByRole('combobox', { name: 'Export target' })).toHaveText('Android · Jetpack Compose')
+
+  await page.setViewportSize({ width: 320, height: 720 })
+  expect(await root.evaluate(element => element.scrollWidth <= innerWidth)).toBe(true)
+  await page.evaluate(() => { window.postMessage({ pluginMessage: { type: 'error', message: 'Try a smaller frame.' } }, '*'); })
+  await expect(page.getByRole('status')).toHaveText('Try a smaller frame.')
 })
