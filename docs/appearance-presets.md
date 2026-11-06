@@ -14,6 +14,8 @@ preset. A preset does not reproduce PostLens's editor layout or bring photo work
 
 ## Web
 
+To design a palette for your product, combine several themes on one site or release your own stylesheet, follow [Create and share a Lumen web theme](community-web-themes.md).
+
 The selective web foundation provides Lumen light and dark. Import the optional CSS you use from
 your web adapter, Core, or the umbrella package. Each entry works independently.
 

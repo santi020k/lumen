@@ -15,6 +15,14 @@ Accepted ideas link to implementation issues on the [public roadmap](https://lum
 Follow the [community feedback workflow](docs/community-feedback.md) when reviewing feedback, linking work,
 and recording the release that ships an improvement. Votes inform priorities without promising delivery.
 
+## Community themes
+
+Start with the [web theme authoring guide](docs/community-web-themes.md). A community theme can ship independently of Lumen. Authors own the stylesheet, compatibility notes, license and release cadence.
+
+1. **Support authors today.** Keep the downloadable starter and the playground linked. A new author should be able to rename the theme, use it alongside a built-in preset and hand it to a second project without editing a Lumen package.
+2. **Simplify export if authors get stuck.** The playground currently exports one scheme at a time. If assembling the two exports is a recurring problem, add a named, two-scheme CSS export there. Qualify it by installing the output in a clean consumer and running the same light, dark and nested checks as the starter.
+3. **Grow discovery with submissions.** Begin with the existing opt-in showcase. Consider a searchable directory once there are enough independently maintained themes to browse. Entries should point to a version, license, tested adapters and preview, with a way for the author to update or withdraw the listing.
+
 ## Local Setup
 
 Use Node.js 22.22.2+, 24.15.0+, or 26+ and the pnpm version pinned in `package.json` (currently 12.8.1).

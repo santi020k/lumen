@@ -254,6 +254,7 @@ may differ from the current repository version.
 ## Appearance presets
 
 Start with Lumen light or dark. Add the PostLens-inspired Studio palette, the santi020k palette, or glass surfaces independently using the [appearance guide](docs/appearance-presets.md).
+To create your own, follow [Create and share a Lumen web theme](docs/community-web-themes.md) and copy the [Harbor starter stylesheet](apps/docs/public/examples/themes/harbor.css).
 
 ## Dashboards and templates
 

@@ -246,6 +246,14 @@ const recipeItems: DocsSearchItem[] = [
   },
   {
     category: 'Themes',
+    description: 'Create a scoped stylesheet, use several themes on a website, and share a versioned theme.',
+    href: '/docs/web/themes',
+    keywords: normalizeKeywords('custom community theme author download share publish CSS package nested light dark preset Harbor'),
+    title: 'Create and share a web theme',
+    type: 'Recipe'
+  },
+  {
+    category: 'Themes',
     description:
       'Generate theme tokens from a hue, preview Lumen components, and copy CSS.',
     href: '/docs/theme-playground',
