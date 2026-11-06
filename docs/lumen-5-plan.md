@@ -347,3 +347,12 @@ The selective subscribe-form entries, packed delivery benchmark, Vite build repo
 import explanations and versioned skill refresh guidance are included in 5.0.0. The former local
 v5.1 development branch is integrated into release/v5.0.0. Its Changeset is folded into the
 prepared 5.0.0 changelogs so this work does not schedule a subsequent minor release.
+
+## November 6 consumer follow-up
+
+The prepared 5.0.0 scope also includes bundled-release audit defaults, requested CSS provenance,
+selective React Field/FieldError/Checkbox entries, editable Astro feedback-board and responsive
+navigation recipes, and a SwiftUI permission-screen composition. The packed subscribe-form fixture
+now exercises the new React form entries. Consumer callback setup and lifecycle are documented in
+consumer-ui-recipes.md. The existing product-workflow consumer checks installation, typing, mobile
+and desktop interaction, stale-load protection, focus recovery and navigation remounting.

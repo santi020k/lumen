@@ -1204,3 +1204,11 @@ Content stays readable without JavaScript; navigation, unmount, and disconnectio
 
 The subscribe-form components have individual entries under `/components/button`, `/components/card`,
 `/components/input` and `/components/label`. See the [web quick start](../../README.md#react).
+
+### Selective form primitives
+
+`components/field` exports Field and FieldError with their prop types; `components/checkbox` exports
+Checkbox and CheckboxProps. These entries share the catalog implementations and preserve native
+form values, refs, error visibility and glass styling. Import the foundation and matching `field.css`,
+`field-error.css`, and `checkbox.css` component styles used by the form. They support server rendering
+without pulling the interactive catalog into the module graph.

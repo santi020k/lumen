@@ -28,7 +28,7 @@ await copyFile(new URL('../../../apps/docs/public/launch/prompt-to-verified-ui.m
 
 await copyFile(new URL('../../../tests/fixtures/product-workflows/captions.vtt', import.meta.url), new URL('public/captions.vtt', consumer))
 
-for (const recipe of ['editorial', 'code-example', 'share']) {
+for (const recipe of ['editorial', 'code-example', 'share', 'feedback-board', 'responsive-navigation']) {
   execFileSync(process.execPath, ['packages/lumen/bin/lumen.mjs', 'add', recipe, '--target', 'astro', '--cwd', cwd], { cwd: root, stdio: 'inherit' })
 }
 

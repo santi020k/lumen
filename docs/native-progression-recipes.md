@@ -61,3 +61,17 @@ empty recovery. Re-run affected checks on the chosen candidate. Compiler/model a
 simulator or emulator evidence are distinct from physical-device and production evidence.
 The [current release policy](native-release-runbook.md#current-release-policy) governs release
 requirements; historical qualification statements in older parity records do not add launch gates.
+
+## Permission rationale and recovery
+
+Copy [permission-screen.swift](recipes/permission-screen.swift) into a SwiftUI consumer. Supply its
+localized title, rationale, action label and callbacks. For an undetermined permission, `request`
+invokes the application's OS permission request. For denied access, supply an Open Settings label
+and callback. Pass `alternativeLabel` when the application offers a limited workflow, such as
+choosing a single photo. The `recheck` callback runs whenever the scene becomes active again.
+Keep the actual authorization state and request policy in the application.
+
+The scrolling, bounded card uses Dynamic Type and vertically arranged actions. Verify long localized
+labels, accessibility text sizes, keyboard navigation on macOS, and returning from System Settings
+in the consuming application. Workscene's Accessibility request and PostLens's photo access are the
+reference scenarios.

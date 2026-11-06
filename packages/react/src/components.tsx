@@ -110,6 +110,7 @@ import { getChartPlotLabel } from './chart-label.js'
 import { createReactChartDatumAction, formatReactChartTableValue, type ReactChartDatumAction, readReactChartDatumActivation } from './chart-recipes.js'
 import { Button, type ButtonChildProps, type ButtonProps, type LumenGlassProp } from './editorial-controls.js'
 import { useFloatingPanel } from './floating-panel.js'
+import { Field, FieldError } from './form-primitives.js'
 import {
   type DialogOptions,
   type DropdownMenuController,
@@ -2123,16 +2124,6 @@ export const ComboChart = ({
 }
 /* eslint-enable complexity */
 
-export type CheckboxProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
-export const Checkbox = ({ className, ref, ...props }: CheckboxProps) => (
-  <input
-    className={composeClassName('ui-checkbox', className)}
-    ref={ref}
-    type="checkbox"
-    {...props}
-  />
-)
-
 export interface CheckboxGroupProps extends ComponentPropsWithRef<'fieldset'> {
   invalid?: boolean
   legend?: ReactNode
@@ -3449,64 +3440,6 @@ export const ErrorSummary = ({
         ))}
       </ul>
     </section>
-  )
-}
-
-export interface FieldProps extends ComponentPropsWithoutRef<'div'> {
-  controlId?: string
-  describedBy?: string
-  glass?: LumenGlassProp
-  invalid?: boolean
-}
-export const Field = ({
-  'aria-describedby': ariaDescribedby,
-  className,
-  controlId,
-  describedBy,
-  glass = false,
-  invalid = false,
-  ...props
-}: FieldProps) => {
-  const fieldDescribedBy =
-    [ariaDescribedby, describedBy].filter(Boolean).join(' ') || undefined
-
-  return (
-    <div
-      aria-describedby={ariaDescribedby}
-      className={composeClassName(
-        'ui-field', glassClass('ui-field', glass), className
-      )}
-      data-invalid={invalid ? 'true' : undefined}
-      data-ui-field
-      data-ui-field-control={controlId}
-      data-ui-field-describedby={fieldDescribedBy}
-      {...props}
-    />
-  )
-}
-
-export interface FieldErrorProps extends ComponentPropsWithoutRef<'p'> {
-  message?: ReactNode
-}
-
-export const FieldError = ({
-  children,
-  className,
-  hidden,
-  message,
-  ...props
-}: FieldErrorProps) => {
-  const content = message ?? children
-
-  return (
-    <p
-      className={composeClassName('ui-field-error', className)}
-      data-ui-field-error
-      hidden={hidden ?? !content}
-      {...props}
-    >
-      {content}
-    </p>
   )
 }
 
@@ -8326,3 +8259,5 @@ export type DescriptionDetailProps = ComponentPropsWithRef<'dd'>
 export const DescriptionDetail = ({ className, ...props }: DescriptionDetailProps) => (
   <dd {...props} className={composeClassName('ui-description-detail', 'ui-descriptions__detail', className)} data-slot="description-detail" />
 )
+
+export { Checkbox, type CheckboxProps, Field, FieldError, type FieldErrorProps, type FieldProps } from './form-primitives.js'

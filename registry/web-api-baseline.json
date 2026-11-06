@@ -3024,6 +3024,10 @@
           "import": "./dist/entries/card.js",
           "types": "./dist/entries/card.d.ts"
         },
+        "./components/checkbox": {
+          "import": "./dist/entries/checkbox.js",
+          "types": "./dist/entries/checkbox.d.ts"
+        },
         "./components/collapsible": {
           "import": "./dist/entries/collapsible.js",
           "types": "./dist/entries/collapsible.d.ts"
@@ -3067,6 +3071,10 @@
         "./components/expanded-charts": {
           "import": "./dist/expanded-charts.js",
           "types": "./dist/expanded-charts.d.ts"
+        },
+        "./components/field": {
+          "import": "./dist/entries/field.js",
+          "types": "./dist/entries/field.d.ts"
         },
         "./components/image-comparison": {
           "import": "./dist/image-comparison.js",

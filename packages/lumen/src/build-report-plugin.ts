@@ -21,6 +21,34 @@ const moduleLabel = (id: string, root: string): string => {
 
 const isLumenModule = (label: string) => /^@santi020k\/lumen(?:-[\w-]+)?\//u.test(label)
 
+const traceImports = (entries: string[], importsFor: (id: string) => readonly string[]): Map<string, string | null> => {
+  const parents = new Map<string, string | null>(entries.map(id => [id, null]))
+
+  for (const id of entries) {
+    for (const imported of importsFor(id)) {
+      if (parents.has(imported)) continue
+
+      parents.set(imported, id)
+
+      entries.push(imported)
+    }
+  }
+
+  return parents
+}
+
+const cssPaths = (chunk: unknown): string[] => {
+  if (!chunk || typeof chunk !== 'object') return []
+
+  const metadata: unknown = Reflect.get(chunk, 'viteMetadata')
+
+  if (!metadata || typeof metadata !== 'object') return []
+
+  const imports: unknown = Reflect.get(metadata, 'importedCss')
+
+  return imports instanceof Set ? Array.from<unknown>(imports).filter((path): path is string => typeof path === 'string') : []
+}
+
 export const lumenBuildReport = (filename = '.cache/lumen/build-report.json'): Plugin => {
   let root = ''
   let base = '/'
@@ -42,22 +70,13 @@ export const lumenBuildReport = (filename = '.cache/lumen/build-report.json'): P
 
       const chunks = Object.values(bundle).filter(output => output.type === 'chunk')
       const entries = chunks.flatMap(chunk => chunk.isEntry && chunk.facadeModuleId ? [chunk.facadeModuleId] : [])
-      const parents = new Map<string, string | null>(entries.map(id => [id, null]))
 
-      // One shortest build-time import path per module, including dynamic imports. Cycles visit once.
-      for (const id of entries) {
+      // Keep one shortest import path, including dynamic imports, while visiting cycles once.
+      const parents = traceImports(entries, id => {
         const info = this.getModuleInfo(id)
 
-        if (!info) continue
-
-        for (const imported of [...info.importedIds, ...info.dynamicallyImportedIds]) {
-          if (!parents.has(imported)) {
-            parents.set(imported, id)
-
-            entries.push(imported)
-          }
-        }
-      }
+        return info ? [...info.importedIds, ...info.dynamicallyImportedIds] : []
+      })
 
       const chainFor = (id: string): string[] => {
         const chain: string[] = []
@@ -79,6 +98,29 @@ export const lumenBuildReport = (filename = '.cache/lumen/build-report.json'): P
 
         return imports.length ? [{ path: posix.join(base, chunk.fileName), imports }] : []
       })
+
+      const stylesForChunk = (chunk: (typeof chunks)[number]) => {
+        const modules = traceImports(Object.keys(chunk.modules), id => this.getModuleInfo(id)?.importedIds ?? [])
+
+        const imports = [...modules.keys()].filter(id => {
+          const label = moduleLabel(id, root)
+
+          return isLumenModule(label) && label.endsWith('.css')
+        }).sort().map(chainFor)
+
+        if (!imports.length) return []
+
+        return cssPaths(chunk).filter(path => bundle[path]?.type === 'asset')
+          .map(path => ({ path: posix.join(base, path), imports }))
+      }
+
+      const cssAssets = new Map<string, string[][]>()
+
+      for (const asset of chunks.flatMap(stylesForChunk)) {
+        cssAssets.set(asset.path, [...(cssAssets.get(asset.path) ?? []), ...asset.imports])
+      }
+
+      assets.push(...[...cssAssets].map(([path, imports]) => ({ path, imports })))
 
       const target = resolve(root, filename)
 

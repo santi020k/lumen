@@ -66,3 +66,9 @@ export const consumerReleaseVersions = async (
 
   return versions
 }
+
+export const bundledReleaseTarget = async (): Promise<string> => {
+  const manifest: unknown = JSON.parse(await readFile(new URL('../release-manifest.json', import.meta.url), 'utf8'))
+
+  return consumerPackageVersion('@santi020k/lumen', '', releaseVersions(npmPackages(manifest)))
+}

@@ -29,12 +29,12 @@ describe('v4 migration inventory', () => {
     expect(result.data.changes.some(change => webChanges.includes(change.id))).toBe(false)
     expect(result.text).toContain('migrate v5 --dry-run --json')
     expect(result.text).toContain('does not establish registry availability')
-    expect(getMigration().data.targetVersion).toBe('4.0.0')
+    expect(getMigration().data.targetVersion).toBe('5.0.0')
   })
 
   test('returns the complete breaking web inventory for each adapter', () => {
     for (const packageName of ['@santi020k/lumen-astro', '@santi020k/lumen-react', '@santi020k/lumen-elements']) {
-      const result = getMigration({ packageName })
+      const result = getMigration({ packageName, targetVersion: '4.0.0' })
 
       expect(result.data.changes.map(change => change.id)).toEqual(expect.arrayContaining(webChanges))
       expect(result.data.status).toBe(loadLumenData().migration.status)
@@ -45,7 +45,7 @@ describe('v4 migration inventory', () => {
   test.each(['draft', 'approved'])('preserves the %s publication status without changing inventory', status => {
     const data = loadLumenData()
     const fixture = { ...data, migration: { ...data.migration, status } }
-    const result = getMigration({}, fixture)
+    const result = getMigration({ targetVersion: '4.0.0' }, fixture)
 
     expect(result.data.status).toBe(status)
     expect(result.text).toContain(`migration (${status})`)
