@@ -1,0 +1,36 @@
+---
+import './editable-ticket.css'
+
+import Button from '@santi020k/lumen-astro/components/Button'
+import Card from '@santi020k/lumen-astro/components/Card'
+import Input from '@santi020k/lumen-astro/components/Input'
+import Label from '@santi020k/lumen-astro/components/Label'
+
+interface Props { id: string, name: string, venue: string, dateLabel: string, dateTime: string }
+
+const { id, name, venue, dateLabel, dateTime } = Astro.props
+---
+<lumen-editable-ticket>
+  <Card as="article" class="editable-ticket" aria-label="Event ticket">
+    <div class="ticket-face"><p>Event ticket</p><h2 data-name>{name}</h2><p data-venue>{venue}</p>
+    <div class="ticket-actions">
+      <Button variant="outline" type="button" data-edit="name" hidden>Edit event name</Button>
+      <Button variant="outline" type="button" data-edit="venue" hidden>Edit venue</Button>
+    </div>
+    </div>
+    <div class="ticket-stub"><p>Admit one</p><time datetime={dateTime}>{dateLabel}</time></div>
+    <form data-editor hidden>
+      <div data-field="name"><Label for={id + '-name'}>Event name</Label><Input id={id + '-name'} name="name" value={name} required maxlength={120} /></div>
+      <div data-field="venue"><Label for={id + '-venue'}>Venue</Label><Input id={id + '-venue'} name="venue" value={venue} required maxlength={120} /></div>
+      <div class="ticket-actions"><Button type="submit">Save</Button><Button variant="outline" type="button" data-cancel>Cancel</Button></div>
+    </form>
+  </Card>
+  <section class="ticket-listing" aria-label="Event listing"><p>Event listing</p><h3 data-name>{name}</h3><p><span data-venue>{venue}</span> · <time datetime={dateTime}>{dateLabel}</time></p></section>
+  <Button type="button" variant="outline" data-undo hidden disabled>Undo edit</Button>
+  <p role="status" aria-live="polite" data-status></p>
+</lumen-editable-ticket>
+<script>
+  import { registerEditableTickets } from './editable-ticket-controller'
+
+  registerEditableTickets()
+</script>
