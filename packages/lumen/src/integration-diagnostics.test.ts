@@ -49,6 +49,9 @@ describe('Lumen integration diagnostics', () => {
 
       await writeFile(file, prefix + 'import { type UIPrimitives } from \'@santi020k/lumen-astro\'\n---\n<!-- import { UIPrimitives } from \'@santi020k/lumen-astro\' -->')
       expect((await inspectLumenIntegration(root)).findings.map(item => item.rule)).not.toContain('removed-root-export')
+
+      await writeFile(file, '<!-- import { UIPrimitives } from \'@santi020k/lumen-astro\' -->')
+      expect((await inspectLumenIntegration(root)).findings.map(item => item.rule)).not.toContain('removed-root-export')
     } finally {
       await rm(root, { force: true, recursive: true })
     }

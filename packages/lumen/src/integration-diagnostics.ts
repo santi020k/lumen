@@ -1109,7 +1109,7 @@ export const inspectLumenIntegration = async (repository: string): Promise<Lumen
   const sources = await Promise.all(discovered.sourceFiles.map(async file => {
     const source = await readFile(file, 'utf8')
 
-    return { file, imports: readComponentImports(source), source }
+    return { file, imports: readComponentImports(source, file), source }
   }))
 
   const boundaries = await createBoundaries(root, discovered.packageRoots, sources)

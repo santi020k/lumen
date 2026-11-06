@@ -73,14 +73,28 @@ const parseConsumer = (body: string): SourceFile | undefined => {
   }
 }
 
-export const readComponentImports = (source: string) => {
+const scriptImports = (body: string, leadingOnly: boolean): ValueImport[] => {
+  if (!body.includes('import')) return []
+
+  const parsed = parseConsumer(body)
+  const entries: ValueImport[] = []
+
+  for (const statement of parsed?.statements ?? []) {
+    if (isImportDeclaration(statement)) entries.push(...valueImport(statement))
+    else if (leadingOnly) break
+  }
+
+  return entries
+}
+
+export const readComponentImports = (source: string, file = '') => {
   const trimmed = source.trimStart()
   const opening = /^---[ \t]*\r?(?:\n|$)/u.exec(trimmed)
   const script = opening ? trimmed.slice(opening[0].length) : source
   const end = opening ? /^---[ \t]*\r?$/mu.exec(script)?.index : undefined
   const body = script.slice(0, end)
-  const statements = body.includes('import') ? parseConsumer(body)?.statements.filter(isImportDeclaration) : undefined
-  const entries = statements?.flatMap(valueImport) ?? []
+  // Loose Astro snippets can begin with imports. Markup and HTML comments cannot declare components.
+  const entries = scriptImports(body, !opening && file.endsWith('.astro'))
 
   return {
     astro: adapterImports(entries, 'astro'),
