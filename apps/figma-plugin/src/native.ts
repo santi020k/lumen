@@ -22,7 +22,7 @@ export const analyzeNative = (selection: DesignNode, { platform, version }: Nati
   const { root, ...state } = nativeDesign(selection, platform, review)
   const flow = bindOnboarding(selection, root)
 
-  if (flow) review.issue(selection, 'Inferred local Workspace and Preferences steps from the Onboarding template. Back preserves the form draft.', 'inferred')
+  if (flow) review.issue(selection, 'Inferred local Workspace, Preferences and Invite steps from the Onboarding template. Back preserves the form draft.', 'inferred')
 
   const code = root ? renderNative(platform, root, state, flow) : ''
   const layout = nativeSetup[platform]

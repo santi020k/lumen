@@ -74,8 +74,9 @@ group of choice cards with a legend and exactly one highlighted option exports a
 It preserves the option titles, descriptions and initial selection. A drawn
 progress track with a visible caption and percentage exports a labeled progress indicator. Review
 the inferred mapping and connect progress to the application. Selecting the complete Onboarding form wires Continue to Preferences (step 3 of 4, 75%) once the
-workspace name and email are valid. Back returns to Workspace (50%) with the same field values, workspace
-choice, and product-updates preference. Back is disabled at the start of this local two-step export.
+workspace name and email are valid. Continue on Preferences opens Invite (step 4 of 4, 100%).
+Back retraces those steps and preserves the workspace name, email, workspace choice and latest
+product-updates setting. Back is disabled on the initial Workspace step (50%).
 Connect other button actions in the receiving application.
 
 Nested layouts preserve child order, row/column direction, matching native spacing tokens and
