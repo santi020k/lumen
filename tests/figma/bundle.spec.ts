@@ -33,6 +33,7 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
   await panel.getByRole('combobox', { name: 'Target version' }).click()
   await panel.getByRole('option', { name: 'Lumen Astro 4.4.0' }).click()
   await panel.getByRole('button', { name: 'Inspect selection' }).click()
+  await panel.getByRole('button', { name: 'Open handoff' }).click()
   await expect(panel.getByRole('tabpanel')).toContainText('Hello Lumen')
   await page.context().grantPermissions(['clipboard-read'], { origin: new URL(page.url()).origin })
   const starterDownload = page.waitForEvent('download')
@@ -47,10 +48,13 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
   await panel.getByRole('tab', { name: 'Layout' }).click()
   await expect(panel.getByRole('tabpanel')).toContainText('@santi020k/lumen-astro/styles.css')
   for (const [name, pkg] of [['React', 'react'], ['Web Components', 'elements']] as const) {
+    await panel.getByRole('button', { name: 'Back to review' }).click()
+    await panel.getByRole('button', { name: 'Back to setup' }).click()
     await panel.getByRole('combobox', { name: 'Export target' }).click()
     await panel.getByRole('option', { name, exact: true }).click()
     await expect(panel.getByRole('tablist', { name: 'Conversion output' })).toHaveCount(0)
     await panel.getByRole('button', { name: 'Inspect selection' }).click()
+    await panel.getByRole('button', { name: 'Open handoff' }).click()
     await panel.getByRole('tab', { name: 'Setup' }).click()
     await expect(panel.getByRole('tabpanel')).toContainText(`@santi020k/lumen-${pkg}/styles.css`)
   }
@@ -58,12 +62,15 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
     ['React Native', 'tsx', '4.1.0'], ['Android · Jetpack Compose', 'kt', '4.1.0'],
     ['iPhone · SwiftUI', 'swift', '5.0.0'], ['Mac · SwiftUI', 'swift', '5.0.0']
   ] as const) {
+    await panel.getByRole('button', { name: 'Back to review' }).click()
+    await panel.getByRole('button', { name: 'Back to setup' }).click()
     await panel.getByRole('combobox', { name: 'Export target' }).click()
     await panel.getByRole('option', { name: label, exact: true }).click()
     await expect(panel.getByRole('tablist')).toHaveCount(0)
     await expect(panel.getByText(version + ' ·', { exact: false })).toBeVisible()
     await expect(panel.getByRole('combobox', { name: 'Project appearance' })).toHaveCount(0)
     await panel.getByRole('button', { name: 'Inspect selection' }).click()
+    await panel.getByRole('button', { name: 'Open handoff' }).click()
     await expect(panel.getByRole('tabpanel')).toContainText('Hello Lumen')
     const download = page.waitForEvent('download')
     await panel.getByRole('button', { name: 'Save ' + label + ' starter' }).click()
@@ -135,4 +142,30 @@ test('the offline inspector follows the editor theme and fits long selections', 
   expect(await root.evaluate(element => element.scrollWidth <= innerWidth)).toBe(true)
   await page.evaluate(() => { window.postMessage({ pluginMessage: { type: 'error', message: 'Try a smaller frame.' } }, '*'); })
   await expect(page.getByRole('status')).toHaveText('Try a smaller frame.')
+})
+
+test('keeps the handoff available for an unsupported design and resets on a new selection', async ({ page }) => {
+  const ui = await readFile(new URL('../../apps/figma-plugin/dist/ui.html', import.meta.url), 'utf8')
+  await page.setViewportSize({ width: 480, height: 720 })
+  await page.setContent(ui)
+  await expect(page.getByRole('heading', { name: 'Nothing selected' })).toBeVisible()
+  await page.evaluate(() => { window.postMessage({ pluginMessage: { type: 'selection', name: 'Artwork' } }, '*'); })
+  await page.getByRole('button', { name: 'Inspect selection' }).click()
+  await expect(page.getByRole('combobox', { name: 'Export target' })).toBeDisabled()
+  await page.evaluate(() => {
+    window.postMessage({ pluginMessage: { type: 'result', result: {
+      target: 'astro', lumenVersion: '5.0.0', selectionName: 'Artwork', code: '', layout: 'Setup',
+      findings: [{ nodeId: 'shape', name: 'Shape', status: 'unsupported', message: 'Review the original design.' }],
+      handoff: 'Review the drawing.'
+    } } }, '*')
+  })
+  await expect(page.getByText('No starter is available', { exact: false })).toBeVisible()
+  await page.getByRole('button', { name: 'Open handoff' }).click()
+  await expect(page.getByRole('tab', { name: 'AI handoff' })).toHaveAttribute('aria-selected', 'true')
+  await expect(page.getByRole('tab', { name: 'Starter' })).toHaveCount(0)
+  await page.evaluate(() => { window.postMessage({ pluginMessage: { type: 'selection', name: 'New frame' } }, '*'); })
+  await expect(page.getByRole('heading', { name: 'Export settings' })).toBeFocused()
+  await expect(page.getByRole('heading', { name: 'New frame' })).toBeVisible()
+  await expect(page.getByRole('tablist', { name: 'Conversion output' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Inspect selection' })).toBeEnabled()
 })

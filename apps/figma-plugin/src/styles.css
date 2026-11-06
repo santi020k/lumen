@@ -12,11 +12,11 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
 .plugin-panel {
   display: flex;
   flex-direction: column;
-  gap: var(--ui-space-lg);
+  gap: var(--ui-space-md);
   max-width: 36rem;
   min-height: 100vh;
   margin: auto;
-  padding: var(--ui-space-lg) var(--ui-space-xl);
+  padding: var(--ui-space-md) var(--ui-space-lg);
 }
 
 .plugin-header, .footer-row, .section-heading, .finding-title {
@@ -56,12 +56,12 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
 
 .selection-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(5.25rem, 27vw, 8.5rem);
+  grid-template-columns: minmax(0, 1fr) clamp(4rem, 16vw, 5rem);
   align-items: center;
   gap: var(--ui-space-sm);
-  min-height: 10.5rem;
+  min-height: 6.25rem;
   overflow: hidden;
-  padding: var(--ui-space-xl);
+  padding: var(--ui-space-md) var(--ui-space-lg);
   border-color: hsl(var(--brand) / 0.32);
   background:
     radial-gradient(ellipse at 100% 100%, hsl(var(--accent) / 0.14), transparent 60%),
@@ -77,8 +77,8 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
   letter-spacing: 0.12em;
 }
 .selection-copy h2 {
-  margin: var(--ui-space-sm) 0;
-  font-size: clamp(1.35rem, 6.2vw, 1.9rem);
+  margin: var(--ui-space-xs) 0;
+  font-size: clamp(1.15rem, 4.5vw, 1.4rem);
   font-weight: 650;
   line-height: 1.13;
   letter-spacing: -0.045em;
@@ -101,8 +101,8 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
 .selection-handles { fill: hsl(var(--warning)); stroke: hsl(var(--surface)); }
 
 .settings-card, .result-card {
-  gap: var(--ui-space-lg);
-  padding: var(--ui-space-xl);
+  gap: var(--ui-space-md);
+  padding: var(--ui-space-lg);
 }
 .settings-card h2, .result-card h2 {
   display: flex;
@@ -120,7 +120,7 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
 .settings-fields {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--ui-space-lg) var(--ui-space-md);
+  gap: var(--ui-space-md);
 }
 .settings-fields .ui-field { min-width: 0; gap: 0.35rem; }
 .platform-field, .native-version { grid-column: 1 / -1; }
@@ -152,6 +152,19 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
 .status .ui-icon { flex-shrink: 0; align-self: flex-start; margin-top: 0.16rem; color: hsl(var(--accent)); }
 .status[data-error="true"], .status[data-error="true"] .ui-icon { color: color-mix(in srgb, hsl(var(--danger)) 62%, hsl(var(--ink))); }
 
+.result-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--ui-space-sm);
+  padding: var(--ui-space-sm) var(--ui-space-md);
+  border-inline-start: 2px solid hsl(var(--brand));
+  background: hsl(var(--surface));
+  font-size: 0.84rem;
+  overflow-wrap: anywhere;
+}
+.result-context .ui-icon { align-self: center; color: hsl(var(--brand)); }
+.result-context span:last-child { margin-inline-start: auto; color: hsl(var(--ink-soft)); }
 .section-heading, .finding-title, .footer-row { justify-content: space-between; flex-wrap: wrap; }
 .review-intro, .findings li > span { font-size: 0.82rem; line-height: 1.55; color: hsl(var(--ink-soft)); }
 .findings {
@@ -183,7 +196,7 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
   font: 0.7rem/1.5 ui-monospace, monospace;
   text-transform: capitalize;
 }
-.export-result, .conversion-code { min-width: 0; }
+.conversion-code { min-width: 0; }
 .conversion-code [role="tablist"] { align-items: stretch; }
 .conversion-code [role="tab"] {
   flex: 1 1 0;
@@ -193,7 +206,7 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
   padding-inline: var(--ui-space-sm);
   line-height: 1.35;
 }
-.conversion-code [role="tabpanel"] { max-height: 19rem; overflow: auto; }
+.conversion-code [role="tabpanel"] { max-height: clamp(7rem, calc(100vh - 32rem), 19rem); overflow: auto; }
 .conversion-code pre { font-size: 0.76rem; }
 .plugin-footer {
   margin-top: auto;
@@ -206,6 +219,44 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
 .preview-note { margin-bottom: var(--ui-space-sm); }
 .plugin-footer a { display: inline-flex; align-items: center; min-height: 24px; gap: 0.15rem; }
 
+/* Keep the progress indicator compact at the editor's narrow panel width. */
+.plugin-panel .flow-steps {
+  --ui-stepper-marker-size: 1.5rem;
+  flex-direction: row;
+}
+.plugin-panel .flow-steps .ui-stepper__step {
+  align-items: center;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0;
+}
+.plugin-panel .flow-steps .ui-stepper__step:last-child { flex: 0 0 auto; }
+.plugin-panel .flow-steps .ui-stepper__step:not(:last-child)::after {
+  position: static;
+  flex: 1;
+  width: auto;
+  min-width: 0.3rem;
+  height: 1px;
+  margin: 0 var(--ui-space-sm);
+}
+.flow-steps .ui-stepper__title { font-size: 0.8rem; }
+.flow-steps .ui-stepper__content { padding-block: 0; }
+.flow-steps [data-state="complete"] .ui-stepper__marker { color: hsl(var(--on-brand)); }
+.starting-mode {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: var(--ui-space-lg);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.starting-mode legend { float: left; margin-inline-end: auto; padding: 0; font-size: 0.78rem; }
+.starting-mode label { min-height: 2rem; cursor: pointer; }
+.starting-mode input { margin: 0; }
+.step-actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--ui-space-sm); }
+
 @media (min-width: 440px) {
   .settings-fields[data-platform="astro"] { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
 }
@@ -213,6 +264,11 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
 @media (max-width: 439px) {
   .plugin-panel { padding: var(--ui-space-lg); }
   .selection-card, .settings-card, .result-card { padding: var(--ui-space-lg); }
+}
+
+@media (max-width: 359px) {
+  .plugin-panel { gap: var(--ui-space-sm); }
+  .conversion-code [role="tabpanel"] { max-height: clamp(7rem, calc(100vh - 39rem), 16rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
