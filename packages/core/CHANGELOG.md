@@ -53,6 +53,12 @@
 
 ### Patch Changes
 
+- Keep one owner for media borders and corners across AspectRatio, CoverImage, DeviceFrame, ImageComparison, MediaViewport, and MediaThumbnail, including selective Image style imports. Preserve component-owned figures, captions, media, and link focus geometry inside Prose. Keep avatar, flag, attachment, and QRCode images from inheriting article corner rounding.
+
+  Give custom-element media frames and reading surfaces block layout, and replace the AspectRatio docs' clipped Cards with actual media examples. Card retains visible interactive overflow.
+
+  Image wrappers pass radius and fit to native image children, and AspectRatio keeps picture media sized to its frame even when Image styles load later. Explicit Image fitting remains available.
+
 - Use the theme’s foreground color on solid web badges so the label stays readable on light brand fills in dark mode.
 
 - Add an opt-in editorial Code appearance with a code icon and visible localized copy feedback. Make block headers wrap at narrow widths and keep copy targets at least 44px without scaling on press. Improve code printing and adopt compact, expandable examples with exact-source copying and overflow hints in the documentation.

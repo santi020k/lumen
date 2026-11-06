@@ -53,6 +53,12 @@ Expose selective Card and Input entries, with packed subscribe-form delivery bud
 
 ### Patch Changes
 
+- Keep one owner for media borders and corners across AspectRatio, CoverImage, DeviceFrame, ImageComparison, MediaViewport, and MediaThumbnail, including selective Image style imports. Preserve component-owned figures, captions, media, and link focus geometry inside Prose. Keep avatar, flag, attachment, and QRCode images from inheriting article corner rounding.
+
+  Give custom-element media frames and reading surfaces block layout, and replace the AspectRatio docs' clipped Cards with actual media examples. Card retains visible interactive overflow.
+
+  Image wrappers pass radius and fit to native image children, and AspectRatio keeps picture media sized to its frame even when Image styles load later. Explicit Image fitting remains available.
+
 - Copy buttons can write the active code sample to the clipboard from embedded editors such as Figma Desktop.
 
 - Restore the outlines and diagonal strokes of the empty, success, error, and offline illustrations across the web adapters.

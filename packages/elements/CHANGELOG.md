@@ -51,6 +51,12 @@ Expose a standalone Input entry sharing its constructor and form behavior with t
 
 ### Patch Changes
 
+- Keep one owner for media borders and corners across AspectRatio, CoverImage, DeviceFrame, ImageComparison, MediaViewport, and MediaThumbnail, including selective Image style imports. Preserve component-owned figures, captions, media, and link focus geometry inside Prose. Keep avatar, flag, attachment, and QRCode images from inheriting article corner rounding.
+
+  Give custom-element media frames and reading surfaces block layout, and replace the AspectRatio docs' clipped Cards with actual media examples. Card retains visible interactive overflow.
+
+  Image wrappers pass radius and fit to native image children, and AspectRatio keeps picture media sized to its frame even when Image styles load later. Explicit Image fitting remains available.
+
 - Preserve public Image radius props inside default and editorial Prose. Generic article image rounding no longer overrides `radius="none"` or other explicit Image radii, so a figure can own its outer border and corner clipping without rounded gaps between the image and its caption.
 
 - Keep the selected upload and its filename when a drag-and-drop operation contains no files.
