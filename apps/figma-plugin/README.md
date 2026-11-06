@@ -42,8 +42,10 @@ In Figma desktop, open **Plugins → Development → Import plugin from manifest
 Open a design using the [Lumen library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9),
 select one frame or component instance, and run **Lumen for Figma**.
 
+The panel follows the Figma editor’s light or dark theme. **Project appearance** applies to the exported starter.
+
 1. Choose the **Export target**. For web, choose the **Target version** and **Project appearance**. For native, check the supported adapter version, then **Inspect selection**.
-2. Review verified components and unresolved items.
+2. In **Design review**, check the verified count and the layers that need attention. **Project handoff** contains the generated files.
 3. Copy the setup for your framework and copy or save the starter and **AI handoff**. React and Web Components also offer **Save app setup**. Changing export settings clears the previous output.
 4. Give the handoff to a coding agent working in the target repository. It directs the agent to
    check installed Lumen versions, retrieve component contracts, connect application behavior,

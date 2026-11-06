@@ -23,6 +23,8 @@ const ui = await build({
   entryPoints: ['src/ui.tsx'],
   format: 'iife',
   jsx: 'automatic',
+  // Inline the brand mark so the installed plugin never fetches an asset.
+  loader: { '.png': 'dataurl' }, // cspell:word dataurl
   minify: true,
   outfile: 'ui.js',
   target: 'es2020',
