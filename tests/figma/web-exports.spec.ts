@@ -26,14 +26,23 @@ for (const platform of ['react', 'elements'] as const) {
       await trigger.click()
       const dialog = page.getByRole('dialog', { name: 'Archive workspace' })
       await expect(dialog).toBeVisible()
+      const nativeDialog = page.locator('dialog')
+      // The browser restores focus synchronously and dispatches close in a later rendering step.
+      // Both adapters finish their own focus handling in that event.
+      await nativeDialog.evaluate(element => {
+        let closed = 0
+        element.addEventListener('close', () => { element.setAttribute('data-test-close-count', String(++closed)); })
+      })
       const cancel = dialog.getByRole('button', { name: 'Cancel' })
       await expect(cancel).toBeFocused()
       await cancel.click()
+      await expect(nativeDialog).toHaveAttribute('data-test-close-count', '1')
       await expect(dialog).not.toBeVisible()
       await expect(trigger).toBeFocused()
       await trigger.press('Enter')
       await expect(dialog).toBeVisible()
       await page.keyboard.press('Escape')
+      await expect(nativeDialog).toHaveAttribute('data-test-close-count', '2')
       await expect(dialog).not.toBeVisible()
       await expect(trigger).toBeFocused()
       const html = page.locator('html')
