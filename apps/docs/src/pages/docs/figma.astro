@@ -6,30 +6,29 @@ import templatesCover from '../../assets/figma-community/templates/cover.png'
 import libraryCover from '../../assets/figma-community/ui-library/cover.png'
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
+import { figmaCommunityFiles } from '../../data/community'
 import DocsLayout from '../../layouts/DocsLayout.astro'
-
-const figmaCommunityUrl = 'https://www.figma.com/community/file/1662337342676541513'
 
 const communityFiles = [
   {
-    title: 'Lumen UI Library',
+    title: 'Lumen UI Library v5',
     id: 'file-title',
     cover: libraryCover,
-    href: figmaCommunityUrl,
+    href: figmaCommunityFiles.library,
     description: 'Design with shared components, variables, and six themes in light and dark modes.'
   },
   {
     title: 'Lumen Templates',
     id: 'templates-title',
     cover: templatesCover,
-    href: 'https://www.figma.com/community/file/1700607667944072280',
+    href: figmaCommunityFiles.templates,
     description: 'Adapt six desktop and mobile layouts, including dashboards, onboarding, and editorial pages.'
   },
   {
     title: 'Lumen Playgrounds',
     id: 'playgrounds-title',
     cover: playgroundsCover,
-    href: 'https://www.figma.com/community/file/1700608473577262170',
+    href: figmaCommunityFiles.playgrounds,
     description: 'Compare web examples with screens for React Native, SwiftUI, and Jetpack Compose.'
   }
 ]
@@ -88,11 +87,11 @@ const workflow = [
         >Explore the plugin
         </DocsActionLink>
         <DocsActionLink
-          href={figmaCommunityUrl}
+          href={figmaCommunityFiles.library}
           target="_blank"
           rel="noopener noreferrer"
         >
-          Get the Figma library
+          Open the v5 library in Figma
           <Icon decorative name="arrow-up-right" size="sm" />
         </DocsActionLink>
         <DocsActionLink

@@ -8,6 +8,12 @@ const issues = (query: string): string => {
   return url.href
 }
 
+export const figmaCommunityFiles = {
+  library: 'https://www.figma.com/community/file/1662337342676541513/lumen-ui-library-v5',
+  playgrounds: 'https://www.figma.com/community/file/1700608473577262170/lumen-playgrounds',
+  templates: 'https://www.figma.com/community/file/1700607667944072280/lumen-templates'
+} as const
+
 export const communityLinks = {
   announcements: `${repository}/discussions/categories/announcements`,
   bugs: `${repository}/issues/new?template=bug-report.yml`,

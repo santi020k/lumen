@@ -28,6 +28,7 @@ import {
 
 import androidPlaygroundPreview from '../../../playground-android/Store/Screenshots/phone-04-components-dark.png'
 import applePlaygroundPreview from '../../../playground-apple/Store/Screenshots/iphone-02-examples-light.png'
+import FigmaCommunityLink from '../components/FigmaCommunityLink.astro'
 import HomePlatformShowcase from '../components/HomePlatformShowcase.astro'
 import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
@@ -279,6 +280,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
               Launch web playground
             </ButtonLink>
             <ButtonLink href="#playground-apps" variant="inline">Get the native apps</ButtonLink>
+            <FigmaCommunityLink file="playgrounds" />
           </div>
           <p class="home-playgrounds__assurance">
             <Icon decorative name="circle-check" size="sm" />
