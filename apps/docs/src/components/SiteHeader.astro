@@ -14,6 +14,7 @@ import {
   getActiveSiteNavigationIndex,
   siteNavigationItems
 } from '../data/site-navigation'
+import { defaultThemeFamily, siteThemeFamilies } from '../data/site-themes'
 
 import DocsContextNavigation from './DocsContextNavigation.astro'
 import GitHubIcon from './GitHubIcon.astro'
@@ -70,12 +71,9 @@ const componentCount = documentedComponentCount
             class="docs-theme-select"
             data-theme-select
             aria-label="Theme family"
-            size="sm"
-            value="lumen"
-            options={[
-              { label: 'Lumen', value: 'lumen' },
-              { label: 'Santi020k', value: 'santi020k' }
-            ]}
+            visualSize="sm"
+            value={defaultThemeFamily.value}
+            options={[...siteThemeFamilies]}
           />
         </div>
         <ThemeToggle

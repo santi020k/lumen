@@ -4,6 +4,8 @@ A Lumen web theme can be one CSS file. Give it an ID, import it once, and put th
 
 ## Try Harbor in your project
 
+Choose **Harbor** in the docs header to preview the example across the site. Use the adjacent light/dark toggle to see both palettes.
+
 1. Save the [Harbor example stylesheet](../apps/docs/public/examples/themes/harbor.css) as `src/styles/harbor.css`.
 2. Keep your adapter's usual component and foundation styles. Import Harbor from your layout or application entry. Astro components already load the foundation. Selective React and Elements setups import the foundation once and the styles for each component they use.
 3. Set `data-lumen-preset="example-harbor"` on a container. For a site-wide theme, put it on `<html>`. For a preview, put it on the section containing the preview.
