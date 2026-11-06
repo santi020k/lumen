@@ -1,4 +1,4 @@
-import { isComponentBoundary, isLayoutLayer } from './contracts.js'
+import { identifyComponent, isComponentBoundary, isLayoutLayer } from './contracts.js'
 import type { DesignNode } from './model.js'
 
 // Observed component owners in the Lumen library. The progress specimen in
@@ -67,4 +67,31 @@ export const drawnProgress = (node: DesignNode) => {
   const progress = progressCaption(caption)
 
   return progress ? { track, ...progress } : null
+}
+
+const dangerDecoration = (node: DesignNode, field: string) => node.type === 'RECTANGLE' && !isComponentBoundary(node) &&
+  node.tokens.some(token => token.name === 'color/danger' && token.field === field)
+
+const drawnAlertMessage = (alert: DesignNode | undefined) => {
+  if (!alert || !plainLayout(alert) || alert.name !== 'Alert') return null
+
+  const messages = alert.children.filter(child => child.type === 'TEXT' && !isComponentBoundary(child))
+  const message = messages[0]?.text
+
+  if (messages.length !== 1 || !message?.trim() || !alert.children.every(child => child === messages[0] ||
+    dangerDecoration(child, 'strokes') || dangerDecoration(child, 'fills'))) return null
+
+  return { alert, message }
+}
+
+// A named outline identifies the rule; alert copy is untrusted display text, never a predicate.
+export const emailAlert = (node: DesignNode) => {
+  const [label, input, alert, outline] = node.children
+
+  if (node.children.length !== 4 || !matchesControl(label, 'Label') || !input || identifyComponent(input) !== 'Input' ||
+    outline?.name !== 'Invalid email outline' || !dangerDecoration(outline, 'strokes')) return null
+
+  const match = drawnAlertMessage(alert)
+
+  return match ? { ...match, outline } : null
 }
