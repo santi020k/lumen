@@ -1,5 +1,11 @@
 ---
-import { Badge, Button, Card, Input, Label, Select, Textarea } from '@santi020k/lumen-astro'
+import Badge from '@santi020k/lumen-astro/components/Badge'
+import Button from '@santi020k/lumen-astro/components/Button'
+import Card from '@santi020k/lumen-astro/components/Card'
+import Input from '@santi020k/lumen-astro/components/Input'
+import Label from '@santi020k/lumen-astro/components/Label'
+import Select from '@santi020k/lumen-astro/components/Select'
+import Textarea from '@santi020k/lumen-astro/components/Textarea'
 
 interface Props {
   id: string
@@ -25,22 +31,23 @@ const { id, labels } = Astro.props
   <noscript><slot name="fallback"><p>{labels.failure}</p></slot></noscript>
   <form method="post">
     <fieldset disabled data-feedback-fields aria-label={labels.submit}>
-    <Label for={`${id}-title`}>{labels.title}</Label>
-    <Input id={`${id}-title`} name="title" required maxlength={160} />
-    <Label for={`${id}-message`}>{labels.message}</Label>
-    <Textarea id={`${id}-message`} name="message" required maxlength={4000} />
-    <Button type="submit">{labels.submit}</Button>
+      <Label for={`${id}-title`}>{labels.title}</Label>
+      <Input id={`${id}-title`} name="title" required maxlength={160} />
+      <Label for={`${id}-message`}>{labels.message}</Label>
+      <Textarea id={`${id}-message`} name="message" required maxlength={4000} />
+      <Button type="submit">{labels.submit}</Button>
     </fieldset>
   </form>
+  <p role="status" tabindex="-1" data-feedback-action-status hidden></p>
   <Label for={`${id}-sort`}>{labels.sort}</Label>
   <Select
-id={`${id}-sort`}
-data-feedback-sort
-value="newest"
-options={[
-    { value: 'newest', label: labels.newest },
-    { value: 'popular', label: labels.popular }
-  ]}
+    id={`${id}-sort`}
+    data-feedback-sort
+    value="newest"
+    options={[
+      { value: 'newest', label: labels.newest },
+      { value: 'popular', label: labels.popular }
+    ]}
   />
   <p role="status" tabindex="-1" data-feedback-status></p>
   <Button data-feedback-retry hidden>{labels.retry}</Button>
@@ -57,7 +64,19 @@ options={[
   </template>
 </section>
 <style>
-  section, form, fieldset { display: grid; gap: 1rem; }
-  ol { display: grid; gap: 1rem; padding-inline-start: 1.5rem; }
-  fieldset { border: 0; padding: 0; margin: 0; min-inline-size: 0; }
+  section, form, fieldset {
+    display: grid;
+    gap: 1rem;
+  }
+  ol {
+    display: grid;
+    gap: 1rem;
+    padding-inline-start: 1.5rem;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-inline-size: 0;
+  }
 </style>

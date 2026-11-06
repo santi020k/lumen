@@ -1,5 +1,11 @@
 ---
-import { Button, Dialog, DialogClose, DialogHeader, DialogTitle, Link, NavigationMenu } from '@santi020k/lumen-astro'
+import Button from '@santi020k/lumen-astro/components/Button'
+import Dialog from '@santi020k/lumen-astro/components/Dialog'
+import DialogClose from '@santi020k/lumen-astro/components/DialogClose'
+import DialogHeader from '@santi020k/lumen-astro/components/DialogHeader'
+import DialogTitle from '@santi020k/lumen-astro/components/DialogTitle'
+import Link from '@santi020k/lumen-astro/components/Link'
+import NavigationMenu from '@santi020k/lumen-astro/components/NavigationMenu'
 
 interface Props {
   id: string
@@ -20,7 +26,7 @@ const { id, home, links, labels, presentation = 'dialog' } = Astro.props
     {presentation === 'dialog' ?
 (
 <>
-      <Button class="mobile-opener" data-ui-dialog-trigger={`${id}-menu`} aria-controls={`${id}-menu`} aria-haspopup="dialog">{labels.open}</Button>
+      <Button hidden class="mobile-opener" data-ui-dialog-trigger={`${id}-menu`} aria-controls={`${id}-menu`} aria-haspopup="dialog">{labels.open}</Button>
       <Dialog id={`${id}-menu`} aria-labelledby={`${id}-title`}>
         <DialogHeader>
           <DialogTitle id={`${id}-title`}>{labels.navigation}</DialogTitle>
@@ -30,6 +36,9 @@ const { id, home, links, labels, presentation = 'dialog' } = Astro.props
           {links.map(link => <Link href={link.href} aria-current={link.current ? 'page' : undefined}>{link.label}</Link>)}
         </NavigationMenu>
       </Dialog>
+      <NavigationMenu class="mobile-fallback" aria-label={labels.navigation}>
+        {links.map(link => <Link href={link.href} aria-current={link.current ? 'page' : undefined}>{link.label}</Link>)}
+      </NavigationMenu>
     </>
 ) :
 (
@@ -51,6 +60,10 @@ const { id, home, links, labels, presentation = 'dialog' } = Astro.props
 
       this.dispose = () => lifetime.abort()
 
+      this.querySelector('.mobile-opener')?.removeAttribute('hidden')
+
+      this.querySelector('.mobile-fallback')?.setAttribute('hidden', '')
+
       const desktop = matchMedia('(min-width: 48rem)')
       const dialog = this.querySelector('dialog')
       const disclosure = this.querySelector('details')
@@ -69,8 +82,8 @@ const { id, home, links, labels, presentation = 'dialog' } = Astro.props
       }
 
       desktop.addEventListener('change', () => {
- if (desktop.matches) close(true)
-}, { signal: lifetime.signal })
+        if (desktop.matches) close(true)
+      }, { signal: lifetime.signal })
 
       this.addEventListener('click', event => {
         if (event.target instanceof Element && event.target.closest('a')) close(false)
@@ -87,19 +100,39 @@ const { id, home, links, labels, presentation = 'dialog' } = Astro.props
 
     private dispose?: () => void
     disconnectedCallback() {
- this.dispose?.()
-}
+      this.dispose?.()
+    }
   }
 
   if (!customElements.get('lumen-recipe-navigation')) customElements.define('lumen-recipe-navigation', ResponsiveNavigation)
 </script>
 <style>
-  header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  .desktop-links { display: none; }
-  summary { cursor: pointer; min-block-size: 2.75rem; display: flex; align-items: center; }
-  summary:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .desktop-links {
+    display: none;
+  }
+  summary {
+    cursor: pointer;
+    min-block-size: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+  summary:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
   @media (min-width: 48rem) {
-    .desktop-links { display: flex; }
-    .mobile-opener, .mobile-disclosure { display: none; }
+    .desktop-links {
+      display: flex;
+    }
+    .mobile-opener, .mobile-disclosure, .mobile-fallback {
+      display: none;
+    }
   }
 </style>

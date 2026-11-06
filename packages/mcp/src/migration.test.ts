@@ -32,6 +32,21 @@ describe('v4 migration inventory', () => {
     expect(getMigration().data.targetVersion).toBe('5.0.0')
   })
 
+  test('keeps bundled v5 minor and patch releases on the v5 migration contract', () => {
+    const data = loadLumenData()
+    const fixture = {
+      ...data,
+      releaseManifest: {
+        ...data.releaseManifest,
+        release: { ...data.releaseManifest.release, version: '5.2.1' }
+      }
+    }
+    const result = getMigration({}, fixture)
+
+    expect(result.data.contractSource).toBe('registry/lumen-5-contract.json')
+    expect(result.text).toContain('migrate v5 --dry-run --json')
+  })
+
   test('returns the complete breaking web inventory for each adapter', () => {
     for (const packageName of ['@santi020k/lumen-astro', '@santi020k/lumen-react', '@santi020k/lumen-elements']) {
       const result = getMigration({ packageName, targetVersion: '4.0.0' })

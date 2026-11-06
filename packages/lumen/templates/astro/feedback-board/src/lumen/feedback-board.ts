@@ -79,16 +79,23 @@ export const initializeFeedbackBoard = (root: HTMLElement, actions: FeedbackActi
   const list = required('[data-feedback-list]', HTMLOListElement)
   const template = required('template', HTMLTemplateElement)
   const status = required('[data-feedback-status]', HTMLElement)
+  const actionStatus = required('[data-feedback-action-status]', HTMLElement)
   const retry = required('[data-feedback-retry]', HTMLButtonElement)
   const submit = required('[type="submit"]', HTMLButtonElement)
   const fields = required('[data-feedback-fields]', HTMLFieldSetElement)
 
   fields.disabled = false
 
-  const announce = (message: string, focus = false) => {
+  const announce = (message: string) => {
     status.textContent = message
+  }
 
-    if (focus) status.focus()
+  const announceAction = (message: string) => {
+    actionStatus.hidden = false
+
+    actionStatus.textContent = message
+
+    actionStatus.focus()
   }
 
   const load = async () => {
@@ -97,7 +104,7 @@ export const initializeFeedbackBoard = (root: HTMLElement, actions: FeedbackActi
     request = new AbortController()
 
     const current = ++revision
-    const signal = AbortSignal.any([request.signal, lifetime.signal])
+    const signal = request.signal
 
     list.setAttribute('aria-busy', 'true')
 
@@ -123,8 +130,6 @@ export const initializeFeedbackBoard = (root: HTMLElement, actions: FeedbackActi
       list.replaceChildren(fragment)
 
       announce(items.length ? '' : messages.empty)
-
-      return true
     } catch {
       if (!isCurrentLoad(signal, current)) return
 
@@ -143,24 +148,28 @@ export const initializeFeedbackBoard = (root: HTMLElement, actions: FeedbackActi
 
     control.disabled = true
 
+    control.setAttribute('aria-busy', 'true')
+
+    actionStatus.hidden = true
+
     try {
       await operation()
 
-      lifetime.signal.throwIfAborted()
+      if (!isActive()) return
 
-      const refreshed = await load()
+      announceAction(messages.success)
 
-      if (!refreshed) return
-
-      lifetime.signal.throwIfAborted()
-
-      announce(messages.success, true)
+      await load()
     } catch {
-      if (isActive()) announce(messages.failure, true)
+      if (isActive()) announceAction(messages.failure)
     } finally {
       pending = false
 
-      if (isActive()) control.disabled = false
+      if (isActive()) {
+        control.disabled = false
+
+        control.removeAttribute('aria-busy')
+      }
     }
   }
 
