@@ -24,11 +24,12 @@ Select a frame or component instance, inspect the design, and export web or nati
 handoff for your coding agent. The plugin recognizes verified instances from the canonical Lumen
 Figma library and highlights items that need your review.
 
-Astro export recognizes 21 canonical components, including Button, Input, Field, Card, Tabs, Dialog, CodeTabs, Prose, Timeline and ThemeToggle.
+Web export recognizes 21 canonical components, including Button, Input, Field, Card, Tabs, Dialog, CodeTabs, Prose, Timeline and ThemeToggle.
 
 **What you get:**
 
-- An Astro, React Native, Android Compose, or SwiftUI starter for iPhone or Mac. Native targets map nine canonical components and nested layouts.
+- An Astro component, a React TSX component or an HTML fragment using registered Lumen Web Components, plus setup for your project.
+- A React Native, Android Compose, or SwiftUI starter for iPhone or Mac. Native targets map nine canonical components and nested layouts.
 - An AI handoff containing the selected design's structure, visible text, component properties,
   starter code, and checks for your coding agent.
 - Review notes for unsupported layers, detached instances, and properties requiring attention.
@@ -43,7 +44,7 @@ Astro export recognizes 21 canonical components, including Button, Input, Field,
 **Conversion limits:** Output is a starting point, not a complete application or a promise of visual
 equivalence. Review layout, responsive behavior, accessibility, custom overrides, and action logic.
 Detached components, copied libraries, and unsupported layers require manual implementation. Exports
-target Lumen Astro 5.0.0 or 4.4.0, React Native and Compose 4.1.0, or SwiftUI v5.0.0.
+target Lumen 5.0.0 or 4.4.0. The 4.4.0 release uses Astro 4.4.0 and React and Elements 4.3.0. Native targets use React Native and Compose 4.1.0 or SwiftUI v5.0.0.
 
 The plugin runs locally without network access, model API keys, a separate plugin account, or
 telemetry. It does not call an AI model. You decide whether to share an exported handoff with your

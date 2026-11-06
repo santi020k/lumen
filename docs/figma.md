@@ -12,8 +12,9 @@ AI agents maintaining the library itself should follow the reusable
 
 ## Figma plugin
 
-Lumen for Figma 1.1.0 matches canonical component keys and exports code for the selected adapter.
-Astro supports 21 components with version-specific setup for 5.0.0 and 4.4.0. React Native
+Lumen for Figma 1.1.0 exports an Astro component, React TSX component or Web Components HTML fragment with its app setup and structured handoff. Select Lumen **5.0.0** for selective styles and optional appearances or **4.4.0** for full adapter CSS. The 4.4.0 release uses Astro 4.4.0 and the published React and Elements 4.3.0 adapters. The plugin matches 21 components by library key, including controls, editorial content, timelines and reveal groups. Review detached instances, custom layers, responsive behavior and application actions before integration.
+
+React Native
 and Android Compose use the 4.1.0 adapters. Choose iPhone or Mac for the v5.0.0 Swift package.
 Native exports support nine keyed components, text and nested layouts. Unmapped components and
 custom layers stay in the handoff with review findings.

@@ -27,6 +27,21 @@ describe('canonical v5 Figma presentations', () => {
     expect(output).toContain('A renamed instance')
   })
 
+  test.each(['react', 'elements'] as const)('exports presentation overrides in %s for both web releases', platform => {
+    const card = outer('Card', { Variant: 'Glass', Density: 'Compact' })
+    for (const version of ['5.0.0', '4.4.0'] as const) {
+      const result = analyzeSelection(card, { platform, version, appearance: 'project' })
+      expect(result.code).toContain('Customer override')
+      expect(result.code).toContain(platform === 'react' ? '<Card glass density="compact"' : '<lumen-card glass="true" density="compact"')
+      expect(result.layout).toContain(version === '5.0.0' ? 'styles/effects/glass.css' : '/styles.css')
+    }
+  })
+
+  test('preserves the nested card text when switching a presentation to a supported native target', () => {
+    const result = analyzeSelection(outer('Card', { Variant: 'Glass' }), { platform: 'compose', version: '4.1.0', appearance: 'project' })
+    expect(result.code).toContain('Customer override')
+  })
+
   test('maps fullscreen dialog properties while rejecting substituted content', () => {
     const result = analyzeSelection(outer('Dialog', { Layout: 'Fullscreen', Surface: 'Strong' }))
     expect(result.code).toContain('layout="fullscreen" glass="strong"')

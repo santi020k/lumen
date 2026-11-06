@@ -69,7 +69,7 @@ const thumbnail = createSatoriRenderer({
         </div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #d8d4de;padding-top:28px;font-size:21px;color:${palette.muted};">
-        <span>Astro · React Native · Compose · SwiftUI · No network access</span>
+        <span>Astro · React · Web Components · React Native · Compose · SwiftUI · No network access</span>
         <span>lumen.santi020k.com</span>
       </div>
     </div>`

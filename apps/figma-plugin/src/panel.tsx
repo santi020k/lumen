@@ -15,11 +15,22 @@ import { Badge, Button, Card, CodeTabs, Label, Select, Stack } from '@santi020k/
 import { componentKeys } from './contracts.js'
 import type { PluginBridge, PluginResult } from './model.js'
 import { nativeComponents } from './native-design.js'
-import type { ExportTarget } from './targets.js'
-import { appearancesFor, defaultFor, defaultTarget, isNativeTarget, isPlatform, isVersion, nativeBaseline, platforms, supportsAppearance, versions } from './targets.js'
+import type { ExportTarget, WebPlatform } from './targets.js'
+import { adapterVersion, appearancesFor, defaultFor, defaultTarget, isNativeTarget, isPlatform, isVersion, isWebPlatform, nativeBaseline, platforms, supportsAppearance, versions } from './targets.js'
 
 const platformOptions = Object.entries(platforms).map(([value, { label }]) => ({ value, label }))
-const versionOptions = versions.map(value => ({ value, label: `Lumen Astro ${value}` }))
+
+const versionOptions = (platform: WebPlatform) => versions.map(value => ({
+  value, label: platform === 'astro' ? `Lumen Astro ${value}` : `Lumen ${value} · ${platforms[platform].label} ${adapterVersion(platform, value)}`
+}))
+
+const setupTab = (result: PluginResult) => {
+  const webModule = result.target === 'react' || result.target === 'elements'
+
+  if (webModule) return { value: 'layout', label: platforms[result.target].label + ' setup', code: result.layout, language: 'javascript' }
+
+  return { value: 'layout', label: result.target === 'astro' ? 'Astro layout' : 'Platform setup', code: result.layout, language: result.target === 'astro' ? 'html' : 'text' }
+}
 
 const download = (contents: string, name: string) => {
   const url = URL.createObjectURL(new Blob([contents], { type: 'text/plain;charset=utf-8' }))
@@ -82,7 +93,7 @@ const ExportResult = ({ result }: { result: PluginResult }) => {
           items={[
             ...(result.code ? [{ value: 'starter', label: output.label + ' starter', code: result.code, language: output.language }] : []),
             { value: 'handoff', label: 'AI handoff', code: result.handoff, language: 'text' },
-            { value: 'layout', label: result.target === 'astro' ? 'Astro layout' : 'Platform setup', code: result.layout, language: result.target === 'astro' ? 'html' : 'text' }
+            setupTab(result)
           ]}
         />
         <Stack className="download-actions" direction="horizontal" gap="sm" wrap>
@@ -107,6 +118,17 @@ const ExportResult = ({ result }: { result: PluginResult }) => {
               {output.label}
               {' '}
               starter
+            </Button>
+          )}
+          {isWebPlatform(result.target) && result.target !== 'astro' && (
+            <Button
+              onClick={() => {
+                download(result.layout, 'lumen-setup.js')
+              }}
+              size="sm"
+              variant="outline"
+            >
+              Save app setup
             </Button>
           )}
         </Stack>
@@ -168,7 +190,7 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
         <p className="eyebrow">Selected design</p>
         <h2>{selection ?? 'Nothing selected'}</h2>
         <p className="selection-meta">
-          {platform === 'astro' ? Object.keys(componentKeys).length : nativeComponents.length}
+          {isWebPlatform(platform) ? Object.keys(componentKeys).length : nativeComponents.length}
           {' '}
           supported components
         </p>
@@ -179,7 +201,13 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
             disabled={busy}
             id="lumen-platform"
             onValueChange={value => {
-              if (isPlatform(value)) changeTarget(defaultFor(value))
+              if (!isPlatform(value)) return
+
+              const next = isWebPlatform(value) && !isNativeTarget(target) ?
+                { ...target, platform: value } :
+                defaultFor(value)
+
+              changeTarget(next)
             }}
             options={platformOptions}
             value={platform}
@@ -206,9 +234,9 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
                   disabled={busy}
                   id="lumen-version"
                   onValueChange={version => {
-                    if (isVersion(version)) changeTarget({ version, appearance: supportsAppearance(version, target.appearance) ? target.appearance : 'project' })
+                    if (isVersion(version)) changeTarget({ ...target, version, appearance: supportsAppearance(version, target.appearance) ? target.appearance : 'project' })
                   }}
-                  options={versionOptions}
+                  options={versionOptions(target.platform ?? 'astro')}
                   value={target.version}
                 />
               </div>
@@ -219,7 +247,7 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
                   disabled={busy}
                   id="lumen-appearance"
                   onValueChange={appearance => {
-                    if (supportsAppearance(target.version, appearance)) changeTarget({ platform: 'astro', version: target.version, appearance })
+                    if (supportsAppearance(target.version, appearance)) changeTarget({ ...target, appearance })
                   }}
                   options={appearancesFor(target.version)}
                   value={target.appearance}

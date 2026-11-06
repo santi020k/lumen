@@ -7,6 +7,7 @@ on:
       - "apps/figma-plugin/**"
       - "packages/core/**"
       - "packages/react/**"
+      - "packages/elements/**"
       - "packages/astro/**"
       - "packages/react-native/**"
       - "packages/swift/**"
@@ -27,6 +28,7 @@ on:
       - "apps/figma-plugin/**"
       - "packages/core/**"
       - "packages/react/**"
+      - "packages/elements/**"
       - "packages/astro/**"
       - "packages/react-native/**"
       - "packages/swift/**"
@@ -116,7 +118,7 @@ jobs:
       - name: Install browser
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Verify exports against each supported Astro version
+      - name: Verify exports against all supported web adapters
         run: pnpm run test:figma-plugin
 
       - name: Package candidate with revision and checksums

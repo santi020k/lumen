@@ -353,6 +353,12 @@ catalogs:
     lumen-astro-v4:
       specifier: npm:@santi020k/lumen-astro@4.4.0
       version: 4.4.0
+    lumen-elements-v4:
+      specifier: npm:@santi020k/lumen-elements@4.3.0
+      version: 4.3.0
+    lumen-react-v4:
+      specifier: npm:@santi020k/lumen-react@4.3.0
+      version: 4.3.0
     motion:
       specifier: 14.9.1
       version: 14.9.1
@@ -672,6 +678,9 @@ importers:
       '@santi020k/lumen-astro':
         specifier: workspace:^
         version: link:../../packages/astro
+      '@santi020k/lumen-elements':
+        specifier: workspace:^
+        version: link:../../packages/elements
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -684,6 +693,12 @@ importers:
       lumen-astro-v4:
         specifier: 'catalog:'
         version: '@santi020k/lumen-astro@4.4.0(@rive-app/canvas@2.49.3)(astro@7.4.5(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.8.3))(react@19.3.0)'
+      lumen-elements-v4:
+        specifier: 'catalog:'
+        version: '@santi020k/lumen-elements@4.3.0(@rive-app/canvas@2.49.3)(react@19.3.0)'
+      lumen-react-v4:
+        specifier: 'catalog:'
+        version: '@santi020k/lumen-react@4.3.0(@rive-app/canvas@2.49.3)(motion@14.9.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)'
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -4518,6 +4533,22 @@ packages:
       '@rive-app/canvas': ^2.44.0
     peerDependenciesMeta:
       '@rive-app/canvas':
+        optional: true
+
+  '@santi020k/lumen-elements@4.3.0':
+    resolution: {integrity: sha512-XqP+oTb9K+P0wydMcRnTkS3rQtRPYoaGRU89115QWJ3OtKlyVGWofEsLByVF5GLWOaxRZM9l5YFa7RHJU8s08g==}
+    engines: {node: '>=22.12.0'}
+    hasBin: true
+
+  '@santi020k/lumen-react@4.3.0':
+    resolution: {integrity: sha512-SZlyzYQe1w727eAP1xru0kPgOpJm+4nTbZUte9q2k9hZpQA9jOmFjuEZ1fPHmHMMqvMSIujN7jdVeXoTO1oQ7Q==}
+    engines: {node: '>=22.12.0'}
+    hasBin: true
+    peerDependencies:
+      motion: ^14.0.0
+      react: 19.3.0
+    peerDependenciesMeta:
+      motion:
         optional: true
 
   '@santi020k/lumen@4.4.0':
@@ -14033,6 +14064,27 @@ snapshots:
       libphonenumber-js: 1.13.15
     optionalDependencies:
       '@rive-app/canvas': 2.49.3
+
+  '@santi020k/lumen-elements@4.3.0(@rive-app/canvas@2.49.3)(react@19.3.0)':
+    dependencies:
+      '@santi020k/lumen': 4.4.0(@rive-app/canvas@2.49.3)(react@19.3.0)
+      '@santi020k/lumen-core': 4.4.0(@rive-app/canvas@2.49.3)
+    transitivePeerDependencies:
+      - '@rive-app/canvas'
+      - react
+
+  '@santi020k/lumen-react@4.3.0(@rive-app/canvas@2.49.3)(motion@14.9.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+    dependencies:
+      '@santi020k/lumen': 4.4.0(@rive-app/canvas@2.49.3)(react@19.3.0)
+      '@santi020k/lumen-core': 4.4.0(@rive-app/canvas@2.49.3)
+      '@tanstack/react-table': 9.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react: 19.3.0
+      uqr: 0.1.3
+    optionalDependencies:
+      motion: 14.9.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+    transitivePeerDependencies:
+      - '@rive-app/canvas'
+      - react-dom
 
   '@santi020k/lumen@4.4.0(@rive-app/canvas@2.49.3)(react@19.3.0)':
     dependencies:

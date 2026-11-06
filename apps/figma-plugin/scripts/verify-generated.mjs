@@ -5,6 +5,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 import { build } from 'esbuild'
 
+import { verifyWebConsumers } from './verify-web-consumers.mjs'
+
 const root = fileURLToPath(new URL('../', import.meta.url))
 const verification = join(root, '.verification')
 const docsModules = fileURLToPath(new URL('../../docs/node_modules/', import.meta.url))
@@ -21,13 +23,14 @@ await build({
   outfile: generator,
   stdin: {
     contents: `export { analyzeSelection } from './src/convert.ts'
-export { settingsFixture, editorialFixture } from './src/fixtures.ts'
+export { settingsFixture, editorialFixture, componentNode, designNode } from './src/fixtures.ts'
 export { versions } from './src/targets.ts'`,
     resolveDir: root
   }
 })
 
-const { analyzeSelection, settingsFixture, editorialFixture, versions } = await import(pathToFileURL(generator).href)
+const generatedModule = await import(pathToFileURL(generator).href)
+const { analyzeSelection, settingsFixture, editorialFixture, componentNode, designNode, versions } = generatedModule
 
 const linkDependency = async (modules, name, source) => {
   const destination = join(modules, name)
@@ -91,4 +94,19 @@ import Layout from '../Layout.astro'
 
     if (result.status !== 0) process.exit(result.status ?? 1)
   }
+
+  await verifyWebConsumers({ version,
+    root,
+    fixture,
+    analyzeSelection,
+    linkDependency,
+    selection: { ...settingsFixture,
+      children: [...settingsFixture.children,
+        editorialFixture,
+        componentNode('Code', { Variant: 'Block', Wrap: 'Off', Appearance: 'Editorial', Language: 'TypeScript', 'Show copy': true, 'Copy label': 'Copy release sample', 'Show scroll cue': true }, [
+          designNode({ type: 'TEXT', name: 'Line', text: '</code><script>throw Error("injected")</script>' }),
+          designNode({ type: 'TEXT', name: 'Line', text: '{expression} & "quoted"' })
+        ]),
+        componentNode('Input', { Size: 'Sm', Placeholder: '" autofocus onfocus="throw Error(1)' })
+      ] } })
 }
