@@ -38,7 +38,7 @@
 .ui-rich-text-editor [data-ui-editor-command][aria-pressed="true"] {
   border-color: hsl(var(--brand) / 0.4);
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 }
 

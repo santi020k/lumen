@@ -50,13 +50,13 @@ describe('Lumen React Native foundations', () => {
     expect(Object.keys(lumenColorTokens.light)).toEqual(
       Object.keys(lumenColorTokens.dark)
     )
-    expect(lumenLightTheme.colors.brand).toBe('#0369A0')
-    expect(lumenDarkTheme.colors.brand).toBe('#29B4F5')
+    expect(lumenLightTheme.colors.brand).toBe('#0E6077')
+    expect(lumenDarkTheme.colors.brand).toBe('#90D9E0')
     expect(Object.keys(lumenChartColorTokens.light)).toEqual(
       Object.keys(lumenChartColorTokens.dark)
     )
-    expect(lumenLightTheme.chartColors.series1).toBe('#0369A0')
-    expect(lumenDarkTheme.chartColors.series1).toBe('#29B4F5')
+    expect(lumenLightTheme.chartColors.series1).toBe('#0E6077')
+    expect(lumenDarkTheme.chartColors.series1).toBe('#90D9E0')
   })
 
   test('creates a complete theme for the requested scheme', () => {

@@ -49,7 +49,7 @@
 
 @layer lumen.components {
 .ui-date-range-picker[data-range-state="selecting-end"]::before {
-    color: hsl(var(--brand-solid));
+    color: hsl(var(--brand));
   }
 }
 

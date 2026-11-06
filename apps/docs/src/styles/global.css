@@ -38,7 +38,6 @@
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --theme-bg: var(--canvas);
-  --ink-muted: 215 14% 35%;
   --glow: 38 92% 50%;
 }
 
@@ -47,8 +46,7 @@
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --theme-bg: var(--canvas);
-  --ink-muted: 216 10% 72%;
-  --glow: 199 91% 56%;
+  --glow: var(--brand);
 }
 
 @theme {

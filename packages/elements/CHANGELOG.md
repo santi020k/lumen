@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
+
 Expose a standalone Input entry sharing its constructor and form behavior with the full catalog.
 
 ### Major Changes

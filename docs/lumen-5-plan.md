@@ -216,11 +216,13 @@ the real website patch or claim published-package adoption from local candidate 
 Release preparation is integrated locally on `release/v5.0.0` in `1a183174`, followed by the CLI
 stabilization in `b15052a5`. Changesets are consumed into package versions and changelogs: the six linked
 web/tooling packages are 5.0.0; React Native is 4.0.3, React Hook Form 4.0.2, and brand icons 4.0.1.
-Tokens stay at 4.0.0 and Compose/Wear at 4.0.1. Swift sources are unchanged and follow the v5.0.0 tag.
+That revision retained tokens 4.0.0 and Compose/Wear 4.0.1. The subsequent base theme refresh
+adds tokens 4.0.1 to the npm publication set, updates the Compose/Wear target to 4.0.2, and
+regenerates Swift colors for the v5.0.0 tag. See the [appearance migration](migrating-v4-to-v5.md#default-appearance).
 
 Independent pre-push review and its bounded final review produced four findings, all addressed:
 
-- Initial publication, partial recovery, and no-op retries audit the complete reviewed nine-package
+- Initial publication, partial recovery, and no-op retries audit the complete reviewed
   version set and provenance. The manifest must match the immutable set in the v5 contract.
 - Migration, catalogs, update commands, lockfile verification, and audits use individual package
   versions. Explicit audit targets remain strict. Native Swift/Maven pins stay application-owned.

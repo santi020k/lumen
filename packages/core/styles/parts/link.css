@@ -14,7 +14,7 @@
 
 @layer lumen.components {
 .ui-link:hover {
-  color: hsl(var(--brand-solid));
+  text-decoration-thickness: 2px;
 }
 }
 

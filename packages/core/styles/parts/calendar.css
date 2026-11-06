@@ -56,7 +56,7 @@
 .ui-calendar__nav:hover:not(:disabled) {
   border-color: hsl(var(--brand) / 0.42);
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 }
 
@@ -106,7 +106,7 @@
 @layer lumen.components {
 .ui-calendar td:hover:not([aria-disabled="true"]) {
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 }
 

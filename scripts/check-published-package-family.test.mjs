@@ -265,10 +265,9 @@ const v5Packages = Object.entries(v5Contract.npmPublicationVersions)
 
 const withV5Manifest = callback => withReleaseManifest(async manifestPath => {
   await writeFile(manifestPath, JSON.stringify({
-    release: { version: '5.0.0', npm: { packages: Object.fromEntries([
-      ...v5Packages.map(({ name, version }) => [name, { version }]),
-      ['@santi020k/lumen-tokens', { version: '4.0.0' }]
-    ]) } }
+    release: { version: '5.0.0', npm: { packages: Object.fromEntries(
+      v5Packages.map(({ name, version }) => [name, { version }])
+    ) } }
   }));
 
   return callback(manifestPath);
@@ -283,9 +282,9 @@ for (const count of [0, 1, v5Packages.length]) {
 
       assert.deepEqual(JSON.parse(selected.stdout), v5Packages);
 
-      assert.equal(v5Packages.length, 9);
+      assert.equal(v5Packages.length, 10);
 
-      assert.equal(v5Packages.some(entry => entry.name === '@santi020k/lumen-tokens'), false);
+      assert.equal(v5Packages.find(entry => entry.name === '@santi020k/lumen-tokens')?.version, '4.0.1');
 
       const lockfilePath = resolve(manifestPath, '..', 'package-lock.json');
 
