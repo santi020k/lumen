@@ -27,7 +27,7 @@ for (const width of [390, 1440]) {
     await page.getByRole('button', { name: 'Inspect selection' }).click()
     await expect(page.getByText(/Lumen 4\.4\.0 ·/u)).toBeVisible()
     const tabs = page.getByRole('tablist', { name: 'Conversion output' })
-    await tabs.getByRole('tab', { name: 'Astro starter' }).focus()
+    await tabs.getByRole('tab', { name: 'Starter' }).focus()
     await page.keyboard.press('ArrowRight')
     await expect(tabs.getByRole('tab', { name: 'AI handoff' })).toHaveAttribute('aria-selected', 'true')
     const download = page.waitForEvent('download')

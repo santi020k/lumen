@@ -44,14 +44,14 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
   await panel.getByRole('button', { name: 'Copy code to clipboard' }).click()
   await expect(panel.getByRole('button', { name: 'Code copied to clipboard' })).toBeVisible()
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(source)
-  await panel.getByRole('tab', { name: 'Astro layout' }).click()
+  await panel.getByRole('tab', { name: 'Layout' }).click()
   await expect(panel.getByRole('tabpanel')).toContainText('@santi020k/lumen-astro/styles.css')
   for (const [name, pkg] of [['React', 'react'], ['Web Components', 'elements']] as const) {
     await panel.getByRole('combobox', { name: 'Export target' }).click()
     await panel.getByRole('option', { name, exact: true }).click()
     await expect(panel.getByRole('tablist', { name: 'Conversion output' })).toHaveCount(0)
     await panel.getByRole('button', { name: 'Inspect selection' }).click()
-    await panel.getByRole('tab', { name: `${name} setup` }).click()
+    await panel.getByRole('tab', { name: 'Setup' }).click()
     await expect(panel.getByRole('tabpanel')).toContainText(`@santi020k/lumen-${pkg}/styles.css`)
   }
   for (const [label, extension, version] of [

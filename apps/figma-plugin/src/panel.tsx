@@ -83,6 +83,7 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
         <Image alt="" height={36} loading="eager" radius="none" src={pluginIcon} width={36} />
         <h1>
           Lumen
+          {' '}
           <span>for Figma</span>
         </h1>
         <span className="offline-label">Runs locally</span>

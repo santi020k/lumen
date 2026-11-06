@@ -9,9 +9,9 @@ import { isWebPlatform, platforms } from './targets.js'
 const setupTab = (result: PluginResult) => {
   const webModule = result.target === 'react' || result.target === 'elements'
 
-  if (webModule) return { value: 'layout', label: platforms[result.target].label + ' setup', code: result.layout, language: 'javascript' }
+  if (webModule) return { value: 'layout', label: 'Setup', code: result.layout, language: 'javascript' }
 
-  return { value: 'layout', label: result.target === 'astro' ? 'Astro layout' : 'Platform setup', code: result.layout, language: result.target === 'astro' ? 'html' : 'text' }
+  return { value: 'layout', label: result.target === 'astro' ? 'Layout' : 'Setup', code: result.layout, language: result.target === 'astro' ? 'html' : 'text' }
 }
 
 const download = (contents: string, name: string) => {
@@ -93,12 +93,17 @@ export const ExportResult = ({ result }: { result: PluginResult }) => {
           <Icon icon={CodeXml} />
           Project handoff
         </h2>
-        <p className="review-intro">Copy the output or save a file. The AI handoff includes design context and checks for your coding agent.</p>
+        <p className="review-intro">
+          Copy or save files for
+          {' '}
+          {output.label}
+          . The AI handoff includes design context and checks for your coding agent.
+        </p>
         <CodeTabs
           ariaLabel="Conversion output"
           className="conversion-code"
           items={[
-            ...(result.code ? [{ value: 'starter', label: output.label + ' starter', code: result.code, language: output.language }] : []),
+            ...(result.code ? [{ value: 'starter', label: 'Starter', code: result.code, language: output.language }] : []),
             { value: 'handoff', label: 'AI handoff', code: result.handoff, language: 'text' },
             setupTab(result)
           ]}

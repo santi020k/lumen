@@ -184,6 +184,15 @@ a:focus-visible, h2:focus-visible { outline: 2px solid hsl(var(--brand)); outlin
   text-transform: capitalize;
 }
 .export-result, .conversion-code { min-width: 0; }
+.conversion-code [role="tablist"] { align-items: stretch; }
+.conversion-code [role="tab"] {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  padding-inline: var(--ui-space-sm);
+  line-height: 1.35;
+}
 .conversion-code [role="tabpanel"] { max-height: 19rem; overflow: auto; }
 .conversion-code pre { font-size: 0.76rem; }
 .plugin-footer {
