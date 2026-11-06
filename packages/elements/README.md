@@ -952,7 +952,7 @@ Content stays readable without JavaScript; navigation, unmount, and disconnectio
 Use `defineLumenInput` from `@santi020k/lumen-elements/components/input` for a standalone
 form input. It shares its constructor with the full catalog. See the [web quick start](../../README.md#web-components).
 
-### Editorial code blocks
+## Editorial code blocks
 
 Use `appearance="editorial"` on a block `Code` (or `<lumen-code>`) for a theme-aware
 code icon, wrapping header metadata, and visible copy feedback. The default appearance retains

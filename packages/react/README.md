@@ -1213,7 +1213,7 @@ form values, refs, error visibility and glass styling. Import the foundation and
 `field-error.css`, and `checkbox.css` component styles used by the form. They support server rendering
 without pulling the interactive catalog into the module graph.
 
-### Editorial code blocks
+## Editorial code blocks
 
 Use `appearance="editorial"` on a block `Code` (or `<lumen-code>`) for a theme-aware
 code icon, wrapping header metadata, and visible copy feedback. The default appearance retains
