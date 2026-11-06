@@ -27,3 +27,10 @@ test('does not infer component setup from adversarially nested or long commented
   expect(readComponentImports('/*' + 'import Card'.repeat(50000) + '*/').astro.components).toEqual([])
   expect(readComponentImports('('.repeat(20000) + '0' + ')'.repeat(20000)).astro.components).toEqual([])
 })
+
+test.each(['\uFEFF', '\n', ' \r\n'])('isolates Astro imports after leading whitespace %j', prefix => {
+  const imports = readComponentImports(prefix + '---\r\nimport { Dialog } from \'@santi020k/lumen-astro\'\r\n---\r\n' +
+    '<!-- import { Card } from \'@santi020k/lumen-astro\' -->')
+
+  expect(imports.astro).toEqual({ components: ['Dialog'], rootNames: ['Dialog'] })
+})

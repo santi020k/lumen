@@ -74,8 +74,11 @@ const parseConsumer = (body: string): SourceFile | undefined => {
 }
 
 export const readComponentImports = (source: string) => {
-  const end = source.indexOf('\n---', 3)
-  const body = source.startsWith('---') ? source.slice(3, end < 0 ? undefined : end) : source
+  const trimmed = source.trimStart()
+  const opening = /^---[ \t]*\r?(?:\n|$)/u.exec(trimmed)
+  const script = opening ? trimmed.slice(opening[0].length) : source
+  const end = opening ? /^---[ \t]*\r?$/mu.exec(script)?.index : undefined
+  const body = script.slice(0, end)
   const statements = body.includes('import') ? parseConsumer(body)?.statements.filter(isImportDeclaration) : undefined
   const entries = statements?.flatMap(valueImport) ?? []
 
