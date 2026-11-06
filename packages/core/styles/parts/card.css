@@ -104,28 +104,6 @@
 }
 }
 
-@layer lumen.components {
-.ui-card--glass.ui-card--interactive:hover {
-  border-color: hsl(var(--glass-edge));
-  background:
-    radial-gradient(140% 100% at 12% -8%, hsl(var(--glass-highlight)) 0%, transparent 48%),
-    radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 50%),
-    hsl(var(--glass-bg-strong));
-  transform: translateY(-2px);
-}
-}
-
-@layer lumen.components {
-.ui-card--glass.card-interactive:hover {
-  border-color: hsl(var(--glass-edge));
-  background:
-    radial-gradient(140% 100% at 12% -8%, hsl(var(--glass-highlight)) 0%, transparent 48%),
-    radial-gradient(120% 90% at 88% 110%, hsl(var(--glass-refraction)) 0%, transparent 50%),
-    hsl(var(--glass-bg-strong));
-  transform: translateY(-2px);
-}
-}
-
 @media (prefers-reduced-motion: reduce) {
 .ui-card--interactive:hover {
     transform: none;

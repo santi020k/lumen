@@ -7,13 +7,6 @@
   letter-spacing: -0.025em;
 }
 
-.ui-stat--glass .ui-stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-}
-
 .ui-stat--accent .ui-stat-value {
   color: hsl(var(--brand));
 }

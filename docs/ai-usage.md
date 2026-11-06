@@ -768,7 +768,7 @@ focus on option buttons. The DOM adapters match both option labels and values.
 
 ## Appearance presets
 
-Choose `default`, `studio` or `glass` at the theme boundary. See [appearance presets](appearance-presets.md) for exact framework APIs. Studio follows the neutral PostLens look. Glass remains explicit per supporting surface; React Native and Compose retain solid fallbacks without adding blur dependencies. Customize semantic colors, typography and surface dimensions through public theme APIs.
+The selective foundation ships Lumen light and dark. Add only the appearances you use from your adapter: `styles/themes/studio.css`, `styles/themes/santi020k.css`, or `styles/effects/glass.css`. Full `styles.css` includes all three. Choose `default`, `studio` or `glass` at the theme boundary. See [appearance presets](appearance-presets.md) for exact framework APIs. Studio follows the neutral PostLens look. Glass remains explicit per supporting surface; React Native and Compose retain solid fallbacks without adding blur dependencies. Customize semantic colors, typography and surface dimensions through public theme APIs.
 
 ## Version-aware build, review, and migration
 

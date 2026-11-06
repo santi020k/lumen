@@ -20,13 +20,6 @@
   border-radius: var(--ui-radius-lg);
 }
 
-.ui-stat--glass {
-  --ui-stat-gap: 0.5rem;
-  --ui-stat-padding: 1.25rem;
-
-  border-radius: var(--ui-radius-lg);
-}
-
 .ui-stat--bare {
   --ui-stat-padding: 0;
 

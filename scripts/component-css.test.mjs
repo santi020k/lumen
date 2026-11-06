@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { readdir, readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import test from 'node:test'
 import { pathToFileURL } from 'node:url'
 
@@ -61,6 +62,24 @@ test('splitting grouped selectors keeps each component cascade in canonical orde
   assert(button.indexOf('color:red') < button.indexOf('color:blue'))
 })
 
+test('optional glass variables keep URL delimiters and media conditions', () => {
+  const { appearances, foundation } = partitionComponentCss([
+    '@layer lumen.tokens { @media print { :root { --glass-bg: url(data:image/svg+xml;base64,abc); --brand: blue } } }'
+  ])
+
+  const glass = appearances['effects/glass'].join('\n')
+
+  assert.match(glass, /@media print/)
+
+  assert.match(glass, /url\(data:image\/svg\+xml;base64,abc\)/)
+
+  assert.doesNotMatch(glass, /--brand/)
+
+  assert.match(foundation, /--brand: blue/)
+
+  assert.doesNotMatch(foundation, /--glass-bg/)
+})
+
 test('selective entries contain their declared parts without repeating the shared foundation', async () => {
   const manifest = JSON.parse(await read('packages/core/styles/manifest.json'))
 
@@ -80,6 +99,22 @@ test('selective entries contain their declared parts without repeating the share
   const calendar = await read('packages/core/styles/parts/calendar.css')
 
   assert.match(calendar, /prefers-reduced-motion|ui-calendar/)
+})
+
+test('all web packages resolve the three public appearance styles', async () => {
+  for (const adapter of ['core', 'astro', 'react', 'elements', 'lumen']) {
+    const manifest = new URL(`../packages/${adapter}/package.json`, import.meta.url)
+    const { name } = JSON.parse(await readFile(manifest, 'utf8'))
+    const resolve = createRequire(manifest).resolve
+
+    for (const entry of ['themes/studio', 'effects/glass', 'themes/santi020k']) {
+      const path = resolve(`${name}/styles/${entry}.css`)
+      const css = await readFile(path, 'utf8')
+
+      if (adapter === 'core') assert.match(css, /@layer lumen\.(?:tokens|glass) \{/u)
+      else assert(css.includes(`@import "@santi020k/lumen-core/styles/${entry}.css"`))
+    }
+  }
 })
 
 test('Astro mounts the foundation separately so shared CSS is deduplicated across component chunks', async () => {

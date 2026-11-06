@@ -75,9 +75,47 @@ export const selectorFamilies = selector => {
 
 const wrapRule = (text, ancestors) => ancestors.reduceRight((body, header) => `${header} {\n${body}\n}`, text)
 
-/** Partition canonical styles, retaining whole tokens/base/glass layers and opaque at-rules. */
+// Only appearance selectors belong to opt-ins. DeviceFrame's __glass is physical hardware.
+const appearanceEntry = selector => {
+  if (selector.includes('[data-lumen-preset="studio"]')) return 'themes/studio'
+
+  if (selector.includes('[data-lumen-preset="glass"]') || /\.ui-[\w-]+--glass\b/u.test(selector)) return 'effects/glass'
+
+  if (selector.includes('[data-theme="santi020k-') || selector.includes('[data-code-theme="santi020k"]')) return 'themes/santi020k'
+
+  return undefined
+}
+
+const partitionTokens = (source, foundation, appearances, ancestors) => {
+  for (const rule of readCssNodes(source)) {
+    if (rule.header.startsWith('@')) {
+      if (rule.body === null) throw new Error(`Unexpected token layer statement: ${rule.header}`)
+
+      partitionTokens(rule.body, foundation, appearances, [...ancestors, rule.header])
+
+      continue
+    }
+
+    const entry = appearanceEntry(rule.header)
+    // Keep optional palettes above base defaults even if a bundler reverses the imports.
+    // Base and scoped default resets use the same selectors for their glass variables.
+    const layer = entry ? '@layer lumen.tokens' : '@layer lumen.tokens.foundation'
+    const palette = entry ? appearances[entry] : foundation
+    const declarations = readCssNodes(rule.body.trimEnd() + ';').filter(node => node.header)
+
+    const groups = Map.groupBy(declarations, node =>
+      !entry && node.header.startsWith('--glass-') ? appearances['effects/glass'] : palette)
+
+    for (const [target, values] of groups) {
+      target.push(wrapRule(values.map(node => node.text).join('\n'), [...ancestors, layer, rule.header]))
+    }
+  }
+}
+
+/** Partition the full stylesheet into the shared foundation, appearances and component parts. */
 export const partitionComponentCss = sources => {
   const foundation = []
+  const appearances = { 'themes/studio': [], 'themes/santi020k': [], 'effects/glass': [] }
   const rules = []
   const parents = new Map()
 
@@ -96,7 +134,21 @@ export const partitionComponentCss = sources => {
   }
 
   const addSelectors = (header, body, ancestors) => {
+    const optionalSelectors = new Map()
+
     for (const selector of splitCssSelectors(header)) {
+      const entry = appearanceEntry(selector)
+
+      if (entry) {
+        const selectors = optionalSelectors.get(entry) ?? []
+
+        selectors.push(selector)
+
+        optionalSelectors.set(entry, selectors)
+
+        continue
+      }
+
       const families = selectorFamilies(selector)
 
       if (!families.length) {
@@ -111,6 +163,10 @@ export const partitionComponentCss = sources => {
 
       rules.push({ families, text: wrapRule(`${selector} {${body}}`, ancestors) })
     }
+
+    for (const [entry, selectors] of optionalSelectors) {
+      appearances[entry].push(wrapRule(`${selectors.join(',\n')} {${body}}`, ancestors))
+    }
   }
 
   const visit = (source, ancestors = []) => {
@@ -123,7 +179,11 @@ export const partitionComponentCss = sources => {
         continue
       }
 
-      if (['@layer lumen.tokens', '@layer lumen.base', '@layer lumen.glass'].includes(header)) {
+      if (header === '@layer lumen.tokens') {
+        partitionTokens(body, foundation, appearances, ancestors)
+      } else if (header === '@layer lumen.glass') {
+        appearances['effects/glass'].push(wrapRule(text, ancestors))
+      } else if (header === '@layer lumen.base') {
         foundation.push(wrapRule(text, ancestors))
       } else if (/^@(layer|media|supports|container)\b/u.test(header)) {
         visit(body, [...ancestors, header])
@@ -149,6 +209,7 @@ export const partitionComponentCss = sources => {
   }
 
   return {
+    appearances,
     foundation: foundation.join('\n\n'),
     parts: new Map([...parts].map(([name, values]) => [name, values.join('\n\n')])),
     families: new Map([...parents.keys()].map(family => [family, representative(family)]))

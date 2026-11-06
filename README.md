@@ -246,7 +246,7 @@ may differ from the current repository version.
 
 ## Appearance presets
 
-Choose an appearance preset or customize the existing themes with the [appearance guide](docs/appearance-presets.md). The Studio preset uses PostLens as its visual reference.
+Start with Lumen light or dark. Add the PostLens-inspired Studio palette, the santi020k palette, or glass surfaces independently using the [appearance guide](docs/appearance-presets.md).
 
 ## Dashboards and templates
 

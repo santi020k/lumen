@@ -41,6 +41,16 @@ if (JSON.stringify(componentFiles) !== JSON.stringify(Object.keys(metadata.compo
 
 outputs.set('packages/core/styles/foundation.css', banner + layerOrder + shared.foundation + '\n')
 
+for (const [entry, rules] of Object.entries(shared.appearances)) {
+  const path = `styles/${entry}.css`
+
+  outputs.set(`packages/core/${path}`, banner + layerOrder + rules.join('\n\n') + '\n')
+
+  for (const adapter of ['lumen', 'astro', 'react', 'elements']) {
+    outputs.set(`packages/${adapter}/${path}`, `${banner}${layerOrder}@import "@santi020k/lumen-core/${path}";\n`)
+  }
+}
+
 outputs.set('packages/core/styles/lumen.css', banner + canonical.replace('@import "./styles/world-map.css";', '@import "./world-map.css";'))
 
 outputs.set('packages/core/styles/world-map.css', banner + worldMap)

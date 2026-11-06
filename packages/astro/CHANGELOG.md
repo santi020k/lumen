@@ -4,6 +4,8 @@
 
 ### Major Changes
 
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.
+
 - Load Astro controllers by the features present on each page instead of shipping the interactive
   catalog with every runtime mount. Preserve delayed first clicks, keyboard navigation, native
   fallbacks, synchronized code tabs, and Astro navigation cleanup.

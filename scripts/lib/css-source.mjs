@@ -19,6 +19,41 @@ const findCommentEnd = (source, start) => {
   return commentEnd + 1
 }
 
+/** Skip quoted strings, escaped characters, and comments without interpreting their contents. */
+export const skipCssLiteral = (source, index) => {
+  if (source[index] === '\\') return index + 1
+
+  if (source[index] === '"' || source[index] === "'") return findStringEnd(source, index, source.length)
+
+  if (source[index] === '/' && source[index + 1] === '*') return findCommentEnd(source, index)
+
+  return index
+}
+
+export const findCssGroupEnd = (source, start) => {
+  const opening = source[start]
+  const closing = opening === '(' ? ')' : ']'
+  let depth = 1
+
+  for (let index = start + 1; index < source.length; index += 1) {
+    const literalEnd = skipCssLiteral(source, index)
+
+    if (literalEnd !== index) {
+      index = literalEnd
+
+      continue
+    }
+
+    if (source[index] === opening) depth += 1
+
+    if (source[index] === closing) depth -= 1
+
+    if (depth === 0) return index
+  }
+
+  throw new Error('Unterminated CSS selector group.')
+}
+
 const findOpeningBrace = (source, start, end) => {
   for (let index = start; index < end; index += 1) {
     const character = source[index]
@@ -28,6 +63,12 @@ const findOpeningBrace = (source, start, end) => {
 
     if (character === '/' && next === '*') {
       index = findCommentEnd(source, index)
+    }
+
+    if (character === '(' || character === '[') {
+      index = findCssGroupEnd(source, index)
+
+      continue
     }
 
     if (character === ';') return { index, statement: true }
@@ -115,39 +156,6 @@ export const readCssNodes = source => {
   }
 
   return nodes
-}
-
-/** Skip quoted strings, escaped characters, and comments without interpreting their contents. */
-export const skipCssLiteral = (source, index) => {
-  if (source[index] === '\\') return index + 1
-
-  if (source[index] === '"' || source[index] === "'") return findStringEnd(source, index, source.length)
-
-  if (source[index] === '/' && source[index + 1] === '*') return findCommentEnd(source, index)
-
-  return index
-}
-
-export const findCssGroupEnd = (source, start) => {
-  const opening = source[start]
-  const closing = opening === '(' ? ')' : ']'
-  let depth = 1
-
-  for (let index = start + 1; index < source.length; index += 1) {
-    const literalEnd = skipCssLiteral(source, index)
-
-    if (literalEnd !== index) { index = literalEnd;
-
- continue }
-
-    if (source[index] === opening) depth += 1
-
-    if (source[index] === closing) depth -= 1
-
-    if (depth === 0) return index
-  }
-
-  throw new Error('Unterminated CSS selector group.')
 }
 
 /** Split only top-level commas; commas inside selectors and quoted attribute values stay intact. */

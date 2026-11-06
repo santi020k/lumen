@@ -45,7 +45,8 @@ import UIPrimitives from '@santi020k/lumen-astro/runtime'
 
 Install the optional @santi020k/lumen CLI separately as a development dependency in v5. React and
 Elements import styles/foundation.css once plus styles/components/<component>.css. Full styles.css
-remains supported. Use only public selective JavaScript exports; catalog fallbacks may traverse more
+includes all appearances. For selective styles, import styles/themes/studio.css, styles/themes/santi020k.css,
+or styles/effects/glass.css from the web adapter when using that appearance. Use only public selective JavaScript exports; catalog fallbacks may traverse more
 modules. Include styles and registration for conditional content, compound children and runtime markup.
 
 Rules for agents:

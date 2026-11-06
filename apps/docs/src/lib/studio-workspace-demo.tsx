@@ -1,7 +1,7 @@
 // cspell:words edición fotografías Colección ilustrativa seleccionables imagen seleccionada posición Compensación exposición fotografía Intensidad colores
 import { useEffect, useRef, useState } from 'react'
 
-import '../../../../packages/lumen/templates/shared/media-workspace/src/lumen/media-workspace.css'
+import '../../../../packages/lumen/templates/shared/media-workspace/src/lumen/media-workspace-layout.css'
 
 import type { LumenImageComparisonMode, LumenMediaViewportValue } from '@santi020k/lumen-core'
 import { Button, Image, ImageComparison, MediaViewport, Stack } from '@santi020k/lumen-react'
