@@ -29,7 +29,7 @@ Open a Community listing to get your own copy, or use the working file to inspec
 
 | Community resource | What you can do | Working file |
 | --- | --- | --- |
-| [Lumen UI Library](https://www.figma.com/community/file/1662337342676541513) | Explore reusable components, variables and [theme specimens](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9?node-id=600-3). | [Library source](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) |
+| [Lumen UI Library v5](https://www.figma.com/community/file/1662337342676541513/lumen-ui-library-v5) | Explore reusable components, variables and [theme specimens](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9?node-id=600-3). | [Library source](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) |
 | [Lumen Templates](https://www.figma.com/community/file/1700607667944072280) | Adapt one of six desktop and mobile layouts from the [template gallery](https://lumen.santi020k.com/templates). | [Templates source](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3) |
 | [Lumen Playgrounds](https://www.figma.com/community/file/1700608473577262170) | Compare web and native screens with the [running playgrounds](playgrounds.md). | [Playgrounds source](https://www.figma.com/design/G0NjJ4eAci1013PaLmseXI) |
 

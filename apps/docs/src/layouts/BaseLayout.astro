@@ -20,6 +20,7 @@ import { defineSite } from '@santi020k/og/site'
 import ExposureMetrics from '../components/ExposureMetrics.astro'
 import SiteFooter from '../components/SiteFooter.astro'
 import SiteHeader from '../components/SiteHeader.astro'
+import { figmaCommunityFiles } from '../data/community'
 import { siteThemePreferences, themeStorageKey } from '../data/site-themes'
 import { latinFontUrl } from '../data/web-font'
 import { getSocialImageUrl } from '../lib/social-image'
@@ -87,7 +88,7 @@ const getCanonicalItemUrl = (href: string): URL => new URL(href, Astro.site)
 const organization = organizationSchema({ id: organizationId.href, name: 'Lumen UI', url: siteUrl }, {
   sameAs: [
     'https://github.com/santi020k/lumen',
-    'https://www.figma.com/community/file/1662337342676541513'
+    figmaCommunityFiles.library
   ]
 })
 
