@@ -16,6 +16,37 @@ interface CopyFeedbackOptions {
 
 const normalizedResetAfter = (value: number): number => Number.isFinite(value) ? Math.max(0, value) : 2000
 
+// Embedded editors such as Figma can permit a user-initiated copy event while
+// withholding the async Clipboard API. Supply plain text without moving focus.
+const copyInFrame = (doc: Document, value: string): boolean => {
+  const view = doc.defaultView
+  const commands: { execCommand?: (command: 'copy') => boolean } = doc
+
+  if (!view || view === view.parent || !commands.execCommand) return false
+
+  let handled = false
+
+  const supplyText = (event: ClipboardEvent) => {
+    if (!event.clipboardData) return
+
+    event.clipboardData.setData('text/plain', value)
+
+    event.preventDefault()
+
+    handled = true
+  }
+
+  doc.addEventListener('copy', supplyText)
+
+  try {
+    return commands.execCommand('copy') && handled
+  } catch {
+    return false
+  } finally {
+    doc.removeEventListener('copy', supplyText)
+  }
+}
+
 const publishCopyToast = (
   button: HTMLButtonElement, api: ToastApi | null, copied: boolean, copiedLabel: string, errorLabel: string
 ): void => {
@@ -69,7 +100,7 @@ export const useCopyFeedback = ({
 
       if (value === undefined) throw new Error(errorLabel)
 
-      await navigator.clipboard.writeText(value)
+      if (!copyInFrame(button.ownerDocument, value)) await navigator.clipboard.writeText(value)
 
       if (operationRef.current !== currentOperation) return
 

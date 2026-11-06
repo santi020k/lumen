@@ -10,7 +10,9 @@ import { readTarget } from './targets.js'
 
 figma.showUI(__html__, { width: 480, height: 720, themeColors: true })
 
-if ('id' in manifest && typeof manifest.id === 'string' && manifest.id === figma.pluginId) {
+const registration: { id?: string, name: string } = manifest
+
+if (registration.id && registration.id === figma.pluginId) {
   figma.root.setRelaunchData({ inspect: 'Inspect Lumen components and export a web or native starter.' })
 }
 

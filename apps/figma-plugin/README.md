@@ -37,8 +37,7 @@ pnpm exec turbo run build --filter=@santi020k/lumen-figma-plugin
 ```
 
 In Figma desktop, open **Plugins → Development → Import plugin from manifest** and choose
-`apps/figma-plugin/dist/manifest.json`. The manifest deliberately has no invented published plugin
-ID. This is a local development build, not a Figma Community listing.
+`apps/figma-plugin/dist/manifest.json`. The source manifest uses the ID assigned by Figma Desktop. Development builds can be tested locally before Community review.
 
 Open a design using the [Lumen library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9),
 select one frame or component instance, and run **Lumen for Figma**.
@@ -64,10 +63,13 @@ relaunch shortcut. Use the Development menu to reopen a local build. Selection o
 | iPhone · SwiftUI | `LumenUI`, Swift package v5.0.0 | Swift tools 6.0, iOS 16+. Present the generated View in your iPhone scene. |
 | Mac · SwiftUI | `LumenUI`, Swift package v5.0.0 | Swift tools 6.0, macOS 13+. Use the same shared primitives in a Mac window. |
 
-The native targets support **Button, Input, Field, Card, Badge, Stack, CardTitle, CardDescription and Eyebrow**.
+The native targets support **Button, Input, Label, Field, Checkbox, Progress, Card, Badge, Stack, CardTitle, CardDescription and Eyebrow**.
 React Native uses the foundations subpath where possible. Each input has independent local editing
 state. A Field requires exactly one identified Input. Compose uses a field label and reports a separate
-placeholder when it cannot represent it. App actions are left for you to connect.
+placeholder when it cannot represent it. A linked Label immediately before a linked Input supplies its visible and accessible label. Checkbox
+rows use their adjacent caption and keep independent state initialized from the design. A drawn
+progress track with a visible caption and percentage exports a labeled progress indicator. Review
+the inferred mapping and connect progress to the application. App actions are left for you to connect.
 
 Nested layouts preserve child order, row/column direction, matching native spacing tokens and
 directional padding. Only React Native emits wrapping. Review notes identify approximations,
@@ -183,7 +185,7 @@ produces a development candidate, never a claim of Community readiness.
 
 Plugin 1.1.0 is a local build. Figma Community submission, approval and public installation each require separate evidence. The Community design-library link opens the library file.
 
-1. Verify availability of each target package, Maven artifact or Swift tag and its public setup documentation. Register the plugin with the intended publisher in Figma desktop and commit the assigned ID through the normal reviewed release workflow.
+1. Verify availability of each target package, Maven artifact or Swift tag and its public setup documentation. Keep the registered ID from the source manifest and select the Lumen team as publisher in Figma desktop.
 2. From the approved merged `main` revision, download the Actions candidate, check its ZIP against the adjacent SHA-256 file and verify the revision, plugin version, ID and clean status in `release.json`.
 3. Import that manifest in Figma desktop. Inspect canonical instances and detached copies, empty and multiple selections, text overrides, all six web target and release combinations, an appearance change and all four native targets. Check clipboard, file downloads, tab navigation and dialog focus in the receiving app. Record the desktop version, revision, checksum and results in the release PR.
 4. Review the [listing and data practices](community/LISTING.md). Submit the verified candidate through [Figma desktop](https://help.figma.com/hc/en-us/articles/360042293394-Publish-classic-plugins-to-the-Figma-Community). Record the review outcome, install from the approved listing, and repeat an export before adding the public install URL to the docs.

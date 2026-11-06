@@ -6,6 +6,8 @@ import { Script } from 'node:vm'
 import { build } from 'esbuild'
 import { beforeAll, describe, expect, test } from 'vitest'
 
+import manifest from '../manifest.json'
+
 import { componentKeys } from './contracts.js'
 import type { PluginMessage } from './model.js'
 import { isPluginMessage } from './model.js'
@@ -103,9 +105,10 @@ const host = (selection: MockNode[], pluginId?: string) => {
 }
 
 describe('Figma host lifecycle', () => {
-  test('starts an unregistered build even when the host provides a local extension identifier', () => {
+  test('only sets the relaunch shortcut for the registered plugin identity', () => {
     expect(host([]).relaunchCommands).toEqual([])
     expect(host([], 'local-extension').relaunchCommands).toEqual([])
+    expect(host([], manifest.id).relaunchCommands).toEqual(['inspect'])
   })
 
   test('waits for the UI handshake and rejects empty or multiple selections', async () => {

@@ -16,7 +16,7 @@ Lumen for Figma 1.1.0 exports an Astro component, React TSX component or Web Com
 
 React Native
 and Android Compose use the 4.1.0 adapters. Choose iPhone or Mac for the v5.0.0 Swift package.
-Native exports support nine keyed components, text and nested layouts. Unmapped components and
+Native exports support linked components including labels and checkboxes, text and nested layouts. Unmapped components and
 custom layers stay in the handoff with review findings.
 
 Select one frame or instance, choose the version installed in the receiving project, then choose **Inspect selection**. Review the findings and the selected text before sharing an export. The plugin runs offline. See [setup, component coverage and version compatibility](../apps/figma-plugin/README.md).

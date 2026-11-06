@@ -22,7 +22,7 @@ Select a frame in a design that uses the [Lumen UI library](https://www.figma.co
 
 **For the web:** Export Astro, React TSX, or HTML with Lumen Web Components. Choose Lumen 5.0.0 or 4.4.0 and the appearance used by your project. The plugin recognizes 21 components. Lumen 4.4 uses Astro 4.4.0 and React or Elements 4.3.0.
 
-**For native apps:** Export React Native, Jetpack Compose for Android, or SwiftUI for iPhone and Mac. Native starters map nine components and nested layouts. React Native and Compose target adapter 4.1.0; SwiftUI targets v5.0.0.
+**For native apps:** Export React Native, Jetpack Compose for Android, or SwiftUI for iPhone and Mac. Native starters include labeled fields, editable checkboxes, and nested layouts. They flag inferred progress indicators for review. React Native and Compose target adapter 4.1.0; SwiftUI targets v5.0.0.
 
 Choose your target, click **Inspect selection**, then copy or save the starter and setup instructions where offered. The optional AI handoff includes visible design text, component properties, and items to review. You connect actions, implement unsupported layers, and check accessibility in your app.
 
