@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, Paper, Field, and glass independently with optional style imports. Paper and Field support light and dark reading surfaces and forms. The full stylesheet includes every appearance.
 
 - Preserve ThemeBuilder code typography and PromptComposer spacing when primitive styles load after compound styles.
 
