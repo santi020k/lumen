@@ -211,13 +211,19 @@ test('blocks socket connections before they leave the browser', async ({ browser
 })
 
 
-test('reports clipped controls at enlarged text without requiring page overflow', async ({ browserName }) => {
+test('controls fit at the baseline text size', async ({ browserName }) => {
   const baseline = await command([...auditArguments('/text-clipping', browserName), '--viewport', '320x568'])
   expect(baseline.code, baseline.stdout).toBe(0)
+})
+
+test('reports clipped controls at enlarged text without requiring page overflow', async ({ browserName }) => {
   const enlarged = await command([...auditArguments('/text-clipping', browserName), '--viewport', '320x568', '--text-scale', '200'])
   expect(enlarged.code, enlarged.stdout).toBe(1)
   const report: unknown = JSON.parse(enlarged.stdout)
   expect(report).toMatchObject({ status: 'issues', routes: [{ textScale: 200, layout: { horizontalOverflowPixels: 0 }, clippedControls: [{ id: 'clipped', tag: 'button' }] }] })
+})
+
+test('healthy controls fit at enlarged text size', async ({ browserName }) => {
   const healthy = await command([...auditArguments('/healthy', browserName), '--viewport', '320x568', '--text-scale', '200'])
   expect(healthy.code, healthy.stdout).toBe(0)
 })
@@ -228,4 +234,26 @@ test('ignores decorative overflow when control text fits', async ({ browserName 
   expect(result.code, result.stdout).toBe(0)
   const report: unknown = JSON.parse(result.stdout)
   expect(report).toMatchObject({ routes: [{ clippedControls: [] }] })
+})
+
+test('attributes requested full CSS to its importing application layout', async ({ browserName }) => {
+  const directory = await mkdtemp(join(tmpdir(), 'lumen-css-provenance-'))
+  try {
+    const graph = join(directory, 'report.json')
+    await writeFile(graph, JSON.stringify({ schemaVersion: 1, assets: [{
+      path: '/assets/ui.abc123.css',
+      imports: [['./src/layouts/AppLayout.astro', '@santi020k/lumen-astro/styles.css']]
+    }] }))
+    const result = await command([...auditArguments('/healthy', browserName), '--build-report', graph])
+    expect(result.code, result.stdout).toBe(0)
+    const report: unknown = JSON.parse(result.stdout)
+    expect(report).toMatchObject({ routes: expect.arrayContaining([expect.objectContaining({
+      assets: expect.arrayContaining([expect.objectContaining({
+        resourceType: 'stylesheet', fullStylesheet: true,
+        importChains: [['./src/layouts/AppLayout.astro', '@santi020k/lumen-astro/styles.css']]
+      })])
+    })]) })
+  } finally {
+    await rm(directory, { recursive: true, force: true })
+  }
 })

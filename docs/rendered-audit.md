@@ -122,3 +122,16 @@ Chromium and WebKit reports, overflow, console/page errors, explicit asset inven
 blocked external requests, and JSON exit behavior. Separate unit tests cover URL/options validation
 and missing tooling/browser diagnostics. The source-only doctor regression installs a sentinel
 browser module and verifies that doctor never imports it.
+
+## Stylesheet provenance
+
+The build plugin also records CSS import chains associated with emitted client chunks through Vite's
+CSS metadata. A requested stylesheet can carry `importChains` and `fullStylesheet: true` when one
+chain includes the adapter's complete `styles.css`. Inspect the application modules in that chain
+to locate the importing layout. Associations describe build provenance for shared CSS assets and
+can include several contributing import paths. CSS loaded by server-only or external pipelines
+requires separate evidence. An absent association leaves ownership unknown.
+
+Compare the same route and viewport before and after adopting selective imports. Preserve explicit
+styles for Markdown, manually produced markup, themes and runtime-created content. Use cold loads
+and client navigation to verify requested assets. Full CSS remains a supported delivery choice.

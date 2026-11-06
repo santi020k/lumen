@@ -46,7 +46,7 @@ fi
         timeout: 30_000
       })
 
-      assert.equal(result.status, 0, result.stderr)
+      assert.equal(result.status, 0, result.stderr || result.error?.message)
 
       return (await readFile(log, 'utf8')).trim().split('\n').map(line => {
         const component = JSON.parse(line)

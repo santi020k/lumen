@@ -119,7 +119,11 @@ try {
 
     const migration = await client.callTool({ arguments: { packageName: '@santi020k/lumen-mcp' }, name: 'lumen_get_migration' })
 
-    assert.equal(migration.structuredContent?.targetVersion, '4.0.0')
+    assert.equal(migration.structuredContent?.targetVersion, data.releaseManifest.release.version)
+
+    const historicalMigration = await client.callTool({ arguments: { targetVersion: '4.0.0' }, name: 'lumen_get_migration' })
+
+    assert.equal(historicalMigration.structuredContent?.targetVersion, '4.0.0')
 
     const diagnostics = await client.callTool({
       arguments: {},

@@ -6,6 +6,8 @@ import Link from '@santi020k/lumen-astro/components/Link'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
 
 import CodeExample from '../lumen/code-example.astro'
+import FeedbackBoard from '../lumen/feedback-board.astro'
+import ResponsiveNavigation from '../lumen/responsive-navigation.astro'
 import Share from '../lumen/share.astro'
 import VideoDialog from '../lumen/editorial-video-dialog.astro'
 
@@ -18,8 +20,11 @@ const highlighted = await processor.render('~~~ts\n' + source + '\n~~~')
 <html lang="en" data-theme="lumen-light">
   <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>Product workflows</title><ClientRouter /></head>
   <body>
+    <ResponsiveNavigation id="dialog-nav" home={{ label: 'Dialog home', href: '/' }} links={[{ label: 'Other page', href: '/other/' }]} labels={{ navigation: 'Primary', open: 'Open menu', close: 'Close menu' }} />
+    <ResponsiveNavigation id="disclosure-nav" presentation="disclosure" home={{ label: 'Disclosure home', href: '/' }} links={[{ label: 'Other page', href: '/other/' }]} labels={{ navigation: 'Secondary', open: 'Browse pages', close: 'Close' }} />
     <main>
       <h1>Product workflows</h1>
+      <FeedbackBoard id="feedback" labels={{ title: 'Idea title', message: 'Message', submit: 'Send idea', sort: 'Sort ideas', newest: 'Newest', popular: 'Popular', vote: 'Support', loading: 'Loading ideas', empty: 'No ideas yet', failure: 'Unable to complete request', success: 'Saved', retry: 'Retry' }} />
       <VideoDialog id="workflow-film" title="Product film" src="/film.mp4" playLabel="Watch film" closeLabel="Close film" fileLabel="Open film file" errorLabel="Film unavailable." transcriptLabel="Read transcript" captions={[{ src: '/captions.vtt', language: 'en', label: 'English', default: true }]}>
         <p slot="transcript" id="film-transcript">A complete transcript of the product film.</p>
       </VideoDialog>
@@ -46,3 +51,22 @@ const highlighted = await processor.render('~~~ts\n' + source + '\n~~~')
   main, footer { inline-size: min(100% - 2rem, 64rem); margin-inline: auto; padding-block: 1rem; }
   main { display: grid; gap: 1.25rem; }
 </style>
+
+<script>
+  import { initializeFeedbackBoard } from '../lumen/feedback-board'
+  const initialize = () => {
+    const root = document.querySelector<HTMLElement>('#feedback')
+    if (!root) return
+    const dispose = initializeFeedbackBoard(root, {
+      load: async (sort, signal) => {
+        const response = await fetch('/ideas?sort=' + sort, { signal })
+        if (!response.ok) throw new Error('Unable to load')
+        return [{ id: 'one', title: sort === 'popular' ? 'Popular idea' : 'Newest idea', description: 'A public idea', status: 'Planned', votes: '3', voted: false }]
+      },
+      submit: async (_values, signal) => { const response = await fetch('/submit', { signal }); if (!response.ok) throw new Error('Unable to submit') },
+      vote: async (_id, signal) => { const response = await fetch('/vote', { signal }); if (!response.ok) throw new Error('Unable to vote') }
+    })
+    document.addEventListener('astro:before-swap', dispose, { once: true })
+  }
+  document.addEventListener('astro:page-load', initialize)
+</script>

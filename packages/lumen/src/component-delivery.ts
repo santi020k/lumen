@@ -1,6 +1,9 @@
 // Public selective entrypoints supported by the adapters. Tests verify the published export paths.
 // Components without a matching entry deliberately retain a labeled catalog fallback.
 const reactEntries: Readonly<Record<string, string>> = {
+  Field: 'field',
+  FieldError: 'field',
+  Checkbox: 'checkbox',
   Anchor: 'anchor',
   AttachmentList: 'attachments',
   AttachmentPreview: 'attachments',

@@ -42,6 +42,14 @@ const writeFixture = async (root, adapter, catalog) => {
 
   let source = example('React', 'tsx')
 
+  source = "import '@santi020k/lumen-react/styles/components/field.css'\n" +
+    "import '@santi020k/lumen-react/styles/components/field-error.css'\n" +
+    "import '@santi020k/lumen-react/styles/components/checkbox.css'\n" +
+    (catalog ? "import { Field, FieldError, Checkbox } from '@santi020k/lumen-react'\n" :
+      "import { Field, FieldError } from '@santi020k/lumen-react/components/field'\nimport { Checkbox } from '@santi020k/lumen-react/components/checkbox'\n") + source
+
+  source = source.replace('<Button>Subscribe</Button>', '<Field controlId="consent" describedBy="consent-error"><Label htmlFor="consent">Accept updates</Label><Checkbox id="consent" name="consent" /><FieldError id="consent-error" /></Field><Button>Subscribe</Button>')
+
   if (catalog) {
     source = reactCatalog + '\n' + source.split('\n').filter(line => !line.includes(" } from '@santi020k/lumen-react/components/")).join('\n')
   }

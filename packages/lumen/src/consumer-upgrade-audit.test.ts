@@ -26,6 +26,11 @@ describe('consumer upgrade review signals', () => {
 
       const report = await inspectLumenConsumerUpgrade(root)
 
+      expect(report.findings.filter(item => item.rule === 'migration-history-review').map(item => item.remediation)).toEqual([
+        'https://github.com/santi020k/lumen/blob/main/docs/migrating-v2-to-v3.md',
+        'https://github.com/santi020k/lumen/blob/main/docs/migrating-v3-to-v4.md',
+        'https://github.com/santi020k/lumen/blob/main/docs/migrating-v4-to-v5.md'
+      ])
       expect(report.findings.map(item => item.rule)).toContain('consumer-package-version')
       expect(report.findings.map(item => item.rule)).toContain('consumer-resolved-version')
       expect(report.findings.map(item => item.rule)).toContain('consumer-patch-configuration')
@@ -43,7 +48,8 @@ describe('consumer upgrade review signals', () => {
     try {
       await writeFile(join(root, 'package.json'), JSON.stringify({ dependencies: { '@santi020k/lumen-react': '^4.0.0' } }))
 
-      expect((await inspectLumenConsumerUpgrade(root)).findings).toEqual([])
+      expect((await inspectLumenConsumerUpgrade(root, '4.0.0')).findings).toEqual([])
+      expect((await inspectLumenConsumerUpgrade(root)).targetVersion).toBe('5.0.0')
 
       await expect(inspectLumenConsumerUpgrade(root, 'latest')).rejects.toThrow('exact semantic')
     } finally {

@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Add selective Field, FieldError and Checkbox entries sharing the catalog implementations.
+
 Expose selective Card and Input entries, with packed subscribe-form delivery budgets.
 
 ### Major Changes

@@ -268,6 +268,9 @@ lumen add validated-form --target react
 lumen add operational-records --target react
 ```
 
+The audit defaults to the bundled release manifest. Pass `--version 4.0.0` for an explicit historical
+review. MCP migration discovery follows the same default and accepts an explicit target.
+
 The consumer audit reports declared and resolved versions, patch configuration and `ui-*` CSS
 review signals without rewriting files. Selectors are advisory customization review signals.
 Version migration previews include the same audit when the consumer has a manifest.

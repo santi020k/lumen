@@ -3,6 +3,7 @@ import { resolve } from 'node:path'
 
 import { auditLumenTheme } from '@santi020k/lumen-core'
 
+import { bundledReleaseTarget } from './consumer-release-versions.js'
 import {
   consumerRolloutSucceeded,
   formatConsumerRollout,
@@ -288,7 +289,7 @@ const help = [
   '  --framework <name>     Select astro, react, or elements for lumen init',
   '  --tailwind             Include the verified Tailwind cascade setup in lumen init',
   '  --json                 Print lumen doctor output as JSON',
-  '  --version <semver>    Explicit target for audit-consumer (default 4.0.0)',
+  '  --version <semver>    Explicit target for audit-consumer (default bundled release)',
   '  --manifest <path>      Use a specific cross-platform release manifest',
   '  --apply                Apply a rollout or supported migration (migrations default to dry-run)',
   '  --allow-dirty          Allow rollout after recording an uncommitted baseline',
@@ -320,7 +321,7 @@ const run = async () => {
   switch (command) {
     case 'audit-consumer': {
       const versionIndex = args.indexOf('--version')
-      const auditVersion = versionIndex >= 0 ? args[versionIndex + 1] : '4.0.0'
+      const auditVersion = versionIndex >= 0 ? args[versionIndex + 1] : await bundledReleaseTarget()
 
       if (!auditVersion || auditVersion.startsWith('--')) throw new Error('audit-consumer --version requires an exact semantic version.')
 
