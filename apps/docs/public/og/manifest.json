@@ -10388,6 +10388,23 @@
       "pathname": "/docs/web/tailwind",
       "title": "Tailwind CSS with Lumen - Lumen UI"
     },
+    "/docs/web/themes": {
+      "alt": "Create and share a web theme — Documentation social preview from Lumen UI",
+      "description": "Customize a downloadable stylesheet, mix themes on one page, and share a tested theme with other Lumen projects.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--web--themes.webp",
+          "primary": true,
+          "url": "/og/pages/docs--web--themes.webp?v=99f25ca0ff6a",
+          "version": "99f25ca0ff6a",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/web/themes",
+      "title": "Create and share a web theme - Lumen UI"
+    },
     "/docs/web/world-map/destinations": {
       "alt": "WorldMap destination examples — Documentation social preview from Lumen UI",
       "description": "Copy regional WorldMap examples for Astro, React, and Web Components, and customize country highlights, labels, and colors.",
