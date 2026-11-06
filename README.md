@@ -253,7 +253,7 @@ may differ from the current repository version.
 
 ## Appearance presets
 
-Start with Lumen light or dark. Add the PostLens-inspired Studio palette, the santi020k palette, or glass surfaces independently using the [appearance guide](docs/appearance-presets.md).
+Start with Lumen light or dark. Choose the warm Paper, green Field, PostLens-inspired Studio, or santi020k palette, and add glass surfaces independently using the [appearance guide](docs/appearance-presets.md).
 
 ## Dashboards and templates
 

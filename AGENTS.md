@@ -76,7 +76,8 @@ before release-oriented work or broad cross-package changes.
   `on-brand`, `accent`, `success`, `warning`, `danger`, and `on-danger`.
 - Standalone component CSS lives in `packages/astro/styles/lumen.css`. The docs app can layer its
   own theme tokens in `apps/docs/src/styles/global.css`.
-- Canonical shared CSS remains in `packages/lumen/styles.css`; `registry/web-css.json` declares
+- Canonical shared CSS lives in `packages/lumen/styles.css` and the Paper and Field stylesheets it
+  imports from `packages/lumen/styles/themes/`; `registry/web-css.json` declares
   component style dependencies, including dynamically inserted markup. Run
   `pnpm run generate:component-css` after changing either source. Do not edit generated core or
   adapter component styles. Astro imports them automatically; React and Elements import the shared

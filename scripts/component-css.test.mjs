@@ -101,17 +101,17 @@ test('selective entries contain their declared parts without repeating the share
   assert.match(calendar, /prefers-reduced-motion|ui-calendar/)
 })
 
-test('all web packages resolve the three public appearance styles', async () => {
+test('all web packages resolve the public appearance styles', async () => {
   for (const adapter of ['core', 'astro', 'react', 'elements', 'lumen']) {
     const manifest = new URL(`../packages/${adapter}/package.json`, import.meta.url)
     const { name } = JSON.parse(await readFile(manifest, 'utf8'))
     const resolve = createRequire(manifest).resolve
 
-    for (const entry of ['themes/studio', 'effects/glass', 'themes/santi020k']) {
+    for (const entry of ['themes/studio', 'effects/glass', 'themes/santi020k', 'themes/paper', 'themes/field']) {
       const path = resolve(`${name}/styles/${entry}.css`)
       const css = await readFile(path, 'utf8')
 
-      if (adapter === 'core') assert.match(css, /@layer lumen\.(?:tokens|glass) \{/u)
+      if (adapter === 'core' || (adapter === 'lumen' && ['themes/field', 'themes/paper'].includes(entry))) assert.match(css, /@layer lumen\.(?:tokens|glass) \{/u)
       else assert(css.includes(`@import "@santi020k/lumen-core/styles/${entry}.css"`))
     }
   }

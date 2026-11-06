@@ -20,12 +20,14 @@ your web adapter, Core, or the umbrella package. Each entry works independently.
 | Optional import | How to use it |
 | --- | --- |
 | `styles/themes/studio.css` | Set `data-lumen-preset="studio"` on the root or a section for the PostLens palette. |
+| `styles/themes/paper.css` | Use `data-lumen-preset="paper"` for warm ivory surfaces, burgundy actions, and serif headings in Prose and Typography. Dark mode pairs espresso surfaces with a rose action. |
+| `styles/themes/field.css` | Use `data-lumen-preset="field"` for sage surfaces, pine actions, and rounded controls. Dark mode uses deep green surfaces and a pale green action. |
 | `styles/effects/glass.css` | Set the component's `glass` prop for a translucent surface with any palette. This entry also supplies the `glass` appearance preset and glass variables. |
 | `styles/themes/santi020k.css` | Set `data-theme="santi020k-light"` or `data-theme="santi020k-dark"` on the document root for the docs palette. This entry also styles `Code` with `theme="santi020k"`. |
 
 Astro components load the foundation automatically. For React and Elements, import
 `styles/foundation.css` once and the CSS for each component. The full `styles.css` includes
-all three appearances. A scoped preset follows an ancestor's `data-theme="dark"` or
+every web appearance. A scoped preset follows an ancestor's `data-theme="dark"` or
 `data-theme="lumen-dark"`. Set `data-lumen-scheme` when the section owns its scheme.
 
 ```astro
@@ -43,6 +45,13 @@ import '@santi020k/lumen-astro/styles/effects/glass.css'
   <Card glass="subtle">Supporting controls</Card>
 </section>
 ```
+
+Paper and Field are web CSS themes. Import either from the adapter already in the app.
+For example, import `@santi020k/lumen-react/styles/themes/paper.css` and set
+`data-lumen-preset="paper"` on the article or application root. Switch the surrounding
+`data-theme` between `lumen-light` and `lumen-dark`, or set `data-lumen-scheme="dark"`
+on the preset itself. The same markup works for a form. Both use system fonts and solid
+surfaces. The Core preset builder and native adapters use the presets in the table above.
 
 The same attributes work on a React container and around registered Web Components. `glass`,
 `glass="subtle"` and `glass="strong"` retain their existing component contracts. Dense content and
