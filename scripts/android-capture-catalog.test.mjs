@@ -12,16 +12,15 @@ const catalogPath = join(repositoryRoot, 'apps/playground-android/scripts/compon
 test('Android default captures cover the generated catalog and focused arguments override it', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'lumen-capture-catalog-'))
   const sdk = join(directory, 'sdk')
-  const bin = join(directory, 'bin')
+  const shellSetup = join(directory, 'capture-fixture.bash')
   const log = join(directory, 'components.log')
   const output = join(directory, 'screenshots')
 
   try {
     await mkdir(join(sdk, 'platform-tools'), { recursive: true })
 
-    await mkdir(bin)
-
-    await writeFile(join(bin, 'sleep'), '#!/bin/sh\nexit 0\n', { mode: 0o755 })
+    // Avoid spawning a new shell for each simulated device delay across the full catalog.
+    await writeFile(shellSetup, 'sleep() { :; }\n')
 
     await writeFile(join(sdk, 'platform-tools/adb'), `#!/bin/sh
 if [ "$1" = "devices" ]; then
@@ -43,7 +42,7 @@ fi
 
       const result = spawnSync('bash', [scriptPath, output, ...components], {
         encoding: 'utf8',
-        env: { ...process.env, ANDROID_SDK_ROOT: sdk, LUMEN_CAPTURE_TEST_LOG: log, PATH: `${bin}:${process.env.PATH}` },
+        env: { ...process.env, ANDROID_SDK_ROOT: sdk, LUMEN_CAPTURE_TEST_LOG: log, BASH_ENV: shellSetup },
         timeout: 30_000
       })
 

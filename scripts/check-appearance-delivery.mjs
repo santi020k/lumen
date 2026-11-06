@@ -16,14 +16,22 @@ export const checkAppearanceDelivery = async (browser, repo) => {
   }
 
   const base = await css(['styles/foundation', 'styles/components/card', 'styles/components/button', 'styles/components/stack', 'styles/components/code', 'styles/components/stat'])
+  const paper = await css(['styles/themes/paper'])
+  const field = await css(['styles/themes/field'])
   const studio = await css(['styles/themes/studio'])
   const glass = await css(['styles/effects/glass'])
   const branded = await css(['styles/themes/santi020k'])
   const full = await css(['styles'])
 
-  assert.doesNotMatch(base, /data-lumen-preset="(?:studio|glass)"|santi020k-dark|ui-card--glass|--glass-bg:/u)
+  assert.doesNotMatch(base, /data-lumen-preset="(?:studio|glass|paper|field)"|santi020k-dark|ui-card--glass|--glass-bg:/u)
 
-  assert.doesNotMatch(studio + branded, /backdrop-filter\s*:/u)
+  assert.doesNotMatch(base + studio + branded + glass, /--_(?:paper|field)-/u)
+
+  assert.doesNotMatch(paper, /--_field-|data-lumen-preset="field"/u)
+
+  assert.doesNotMatch(field, /--_paper-|data-lumen-preset="paper"/u)
+
+  assert.doesNotMatch(paper + field + studio + branded, /backdrop-filter\s*:/u)
 
   assert.doesNotMatch(glass, /data-lumen-preset="studio"|santi020k-(?:light|dark)/u)
 
@@ -93,7 +101,8 @@ export const checkAppearanceDelivery = async (browser, repo) => {
       assert.deepEqual(await read(branded + base, theme, ''), plain)
 
       for (const [activeTheme, preset, extra] of [
-        [theme, '', ''], [theme, 'studio', studio], [theme, 'glass', ''], [brandTheme, '', branded]
+        [theme, '', ''], [theme, 'paper', paper], [theme, 'field', field], [theme, 'studio', studio], [theme, 'glass', ''], [brandTheme, '', branded],
+        [brandTheme, 'paper', branded + paper], [brandTheme, 'field', branded + field]
       ]) {
         const reference = await read(full, activeTheme, preset)
 

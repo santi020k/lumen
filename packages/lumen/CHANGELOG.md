@@ -2,7 +2,9 @@
 
 ## 5.0.0
 
-- Default upgrade audits to the bundled release, attribute requested full CSS through client build reports, and add editable feedback-board and responsive-navigation recipes.
+- Add the optional Astro editable-ticket recipe with synchronized views, keyboard editing, cancel and undo.
+
+- Default upgrade audits to the bundled release, attribute requested full CSS through Vite and Astro build reports (with an optional PostCSS import collector), and add editable feedback-board and responsive-navigation recipes.
 
 - Preserve customized wrappers and show the local-to-incoming diff when `lumen add --merge` encounters edits.
 
@@ -14,7 +16,7 @@ Expose a Vite client build report for rendered audits and generate selective sub
 
 ### Major Changes
 
-- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions and increased-contrast colors.
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, Paper, Field, and glass independently with optional style imports. Paper and Field support light and dark reading surfaces and forms. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions and increased-contrast colors.
 
 - Generate selective public component imports and required CSS in editable wrappers. Register only the
   selected Elements constructor, preserve idempotence, and identify catalog fallbacks explicitly.
@@ -73,6 +75,17 @@ Expose a Vite client build report for rendered audits and generate selective sub
   transcript and move focus to the native player after retrying.
 
 ### Patch Changes
+
+- Parse each consumer file once when discovering component imports in `lumen doctor`. Unrelated
+  imports can no longer mask a removed Astro root export, and type-only imports and source examples
+  no longer count as runtime imports.
+
+- Keep external recipe names separate from filesystem paths. Honor inline recipes, reject conflicting
+  file and directory destinations before installation, protect linked files during updates, and enforce
+  the local registry byte limit while reading. Reject destination collisions across case and Unicode
+  normalization forms. The CLI also recognizes canonical component names such as `qr-code`.
+
+- Preserve list indentation and unrelated pnpm settings when updating release-age exclusions during a rollout.
 
 - Resolve v5 dependency migrations and audits through the release manifest so independently versioned companions retain their actual versions. Native Swift and Maven pins remain application-owned.
 

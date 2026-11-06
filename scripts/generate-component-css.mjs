@@ -51,7 +51,18 @@ for (const [entry, rules] of Object.entries(shared.appearances)) {
   }
 }
 
-outputs.set('packages/core/styles/lumen.css', banner + canonical.replace('@import "./styles/world-map.css";', '@import "./world-map.css";'))
+// Full CSS uses relative imports so it also works outside a package-aware bundler.
+outputs.set('packages/core/styles/lumen.css', banner + canonical.replaceAll('@import "./styles/', '@import "./'))
+
+for (const theme of ['paper', 'field']) {
+  const path = `styles/themes/${theme}.css`
+
+  outputs.set(`packages/core/${path}`, banner + await read(`packages/lumen/${path}`))
+
+  for (const adapter of ['astro', 'react', 'elements']) {
+    outputs.set(`packages/${adapter}/${path}`, `${banner}${layerOrder}@import "@santi020k/lumen-core/${path}";\n`)
+  }
+}
 
 outputs.set('packages/core/styles/world-map.css', banner + worldMap)
 

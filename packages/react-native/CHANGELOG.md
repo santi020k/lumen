@@ -4,6 +4,8 @@
 
 ### Patch Changes
 
+- Stop tree traversal if a caller changes node IDs or parent links after validation and creates a cycle.
+
 - Support the Expo 58 / React Native 0.88 / React 19.3 toolchain with correctly typed component refs. Add 188 icon graphics while preserving all previous icon names and exports.
 
 - Expose focused locale and native-input helpers and complete the chart helper entrypoint. Keep React Native imports on these entrypoints to avoid loading the unrelated web icon lookup catalog in native bundles.

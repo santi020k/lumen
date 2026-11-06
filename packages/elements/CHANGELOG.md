@@ -6,7 +6,7 @@ Expose a standalone Input entry sharing its constructor and form behavior with t
 
 ### Major Changes
 
-- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions and increased-contrast colors.
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, Paper, Field, and glass independently with optional style imports. Paper and Field support light and dark reading surfaces and forms. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions and increased-contrast colors.
 
 - Deliver shared foundation and component CSS through the existing packages. Astro components now
   import their own styles automatically; React and Elements can import `styles/foundation.css` once
@@ -34,6 +34,9 @@ Expose a standalone Input entry sharing its constructor and form behavior with t
   Elements SkipLink reveals its host when the native child receives focus and preserves link contrast.
 
 ### Patch Changes
+
+- Keep the selected upload and its filename when a drag-and-drop operation contains no files.
+  Reopening a toast by ID cancels its pending removal.
 
 - Preserve the public layer order when component styles load before Tailwind. Keep enhanced native controls hidden and component colors and borders above Tailwind base styles regardless of stylesheet chunk order.
 

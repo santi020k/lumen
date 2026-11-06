@@ -112,7 +112,7 @@ import "@santi020k/lumen-react/styles/components/button.css";
 import "@santi020k/lumen-react/styles/components/dialog.css";
 ```
 
-The selective foundation ships Lumen light and dark. Add only the appearances you use from your adapter: `styles/themes/studio.css`, `styles/themes/santi020k.css`, or `styles/effects/glass.css`. Full `styles.css` includes all three.
+The selective foundation ships Lumen light and dark. Add only the appearances you use from your adapter: `styles/themes/paper.css`, `styles/themes/field.css`, `styles/themes/studio.css`, `styles/themes/santi020k.css`, or `styles/effects/glass.css`. Full `styles.css` includes every appearance.
 
 The full stylesheet remains available as a convenient alternative:
 

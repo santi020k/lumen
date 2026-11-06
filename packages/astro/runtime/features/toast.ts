@@ -52,9 +52,6 @@ let toastDocumentApiDocument: Document | null = null
 
 const toastTimers = new WeakMap<HTMLElement, {
   cleanup: () => void
-  duration: number
-  remaining: number
-  startedAt: number
   timer: number
 }>()
 
@@ -163,13 +160,19 @@ const clearToastTimer = (toast: HTMLElement): void => {
 }
 
 const dismissToast = (toast: HTMLElement): void => {
+  if (toast.dataset.state === 'closed' && toastTimers.has(toast)) return
+
   clearToastTimer(toast)
 
   toast.dataset.state = 'closed'
 
-  window.setTimeout(() => {
+  const timer = window.setTimeout(() => {
+    toastTimers.delete(toast)
+
     toast.remove()
   }, 240)
+
+  toastTimers.set(toast, { cleanup: noop, timer })
 }
 
 const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
@@ -401,7 +404,7 @@ const bindToastDocumentApi = (): void => {
 
     setToastContent(toast, { ...detail, id })
 
-    if (detail.duration !== undefined) {
+    if (detail.duration !== undefined && toast.dataset.state !== 'closed') {
       scheduleToastDismiss(toast, detail.duration)
     }
   }

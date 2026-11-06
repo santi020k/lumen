@@ -242,7 +242,7 @@ test('attributes requested full CSS to its importing application layout', async 
     const graph = join(directory, 'report.json')
     await writeFile(graph, JSON.stringify({ schemaVersion: 1, assets: [{
       path: '/assets/ui.abc123.css',
-      imports: [['./src/layouts/AppLayout.astro', '@santi020k/lumen-astro/styles.css']]
+      imports: [['./src/layouts/AppLayout.astro', '@santi020k/lumen-astro/styles/lumen.css']]
     }] }))
     const result = await command([...auditArguments('/healthy', browserName), '--build-report', graph])
     expect(result.code, result.stdout).toBe(0)
@@ -250,9 +250,32 @@ test('attributes requested full CSS to its importing application layout', async 
     expect(report).toMatchObject({ routes: expect.arrayContaining([expect.objectContaining({
       assets: expect.arrayContaining([expect.objectContaining({
         resourceType: 'stylesheet', fullStylesheet: true,
-        importChains: [['./src/layouts/AppLayout.astro', '@santi020k/lumen-astro/styles.css']]
+        importChains: [['./src/layouts/AppLayout.astro', '@santi020k/lumen-astro/styles/lumen.css']]
       })])
     })]) })
+  } finally {
+    await rm(directory, { recursive: true, force: true })
+  }
+})
+
+test('keeps full stylesheet delivery unknown for a selective CSS chain', async ({ browserName }) => {
+  const directory = await mkdtemp(join(tmpdir(), 'lumen-selective-css-provenance-'))
+  try {
+    const graph = join(directory, 'report.json')
+    await writeFile(graph, JSON.stringify({ schemaVersion: 1, assets: [{
+      path: '/assets/ui.abc123.css',
+      imports: [['./src/layouts/AppLayout.astro', '@santi020k/lumen-astro/styles/components/button.css']]
+    }] }))
+    const result = await command([...auditArguments('/healthy', browserName), '--build-report', graph])
+    expect(result.code, result.stdout).toBe(0)
+    const report: unknown = JSON.parse(result.stdout)
+    expect(report).toMatchObject({ routes: expect.arrayContaining([expect.objectContaining({
+      assets: expect.arrayContaining([expect.objectContaining({
+        resourceType: 'stylesheet',
+        importChains: [['./src/layouts/AppLayout.astro', '@santi020k/lumen-astro/styles/components/button.css']]
+      })])
+    })]) })
+    expect(JSON.stringify(report)).not.toContain('fullStylesheet')
   } finally {
     await rm(directory, { recursive: true, force: true })
   }

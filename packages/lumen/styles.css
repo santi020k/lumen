@@ -7,6 +7,8 @@
  * Layer order also guarantees glass variants beat component base styles. */
 @layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities;
 @import "./styles/world-map.css";
+@import "./styles/themes/paper.css";
+@import "./styles/themes/field.css";
 
 @layer lumen.tokens {
 :root,

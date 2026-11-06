@@ -13,9 +13,10 @@ export const getMigration = (
   targetVersion: string
 }> => {
   const targetVersion = args.targetVersion ?? data.releaseManifest.release.version
-  const commandVersion = targetVersion === '5.0.0' ? 'v5' : 'v4'
-  const contract = targetVersion === '5.0.0' ? data.migrationV5 : data.migration
-  const contractSource = targetVersion === '5.0.0' ? 'registry/lumen-5-contract.json' : 'registry/lumen-4-contract.json'
+  const v5 = targetVersion.startsWith('5.')
+  const commandVersion = v5 ? 'v5' : 'v4'
+  const contract = v5 ? data.migrationV5 : data.migration
+  const contractSource = v5 ? 'registry/lumen-5-contract.json' : 'registry/lumen-4-contract.json'
 
   const changes = contract.changes
     .filter(change => !args.packageName || change.packages.includes(args.packageName))

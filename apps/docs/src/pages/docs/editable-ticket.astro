@@ -1,0 +1,13 @@
+---
+import Stack from '@santi020k/lumen-astro/components/Stack'
+
+import EditableTicket from '../../../../../packages/lumen/templates/astro/editable-ticket/src/lumen/editable-ticket.astro'
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+---
+<DocsLayout title="Editable ticket - Lumen UI" description="Edit an event on its ticket with synchronized listing, keyboard support and undo.">
+  <Stack gap="section">
+    <DocsPageHero eyebrow="Optional Astro recipe" title="Edit the event where you see it" description="Edit the event name or venue. Both views preview your draft. Save commits, Escape cancels, and Undo restores the previous event." />
+    <EditableTicket id="design-session" name="Type After Dark" venue="North Hall" dateTime="2026-11-14T19:30:00-05:00" dateLabel="14 Nov · 19:30" />
+  </Stack>
+</DocsLayout>

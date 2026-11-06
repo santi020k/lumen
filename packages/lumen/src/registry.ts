@@ -1,5 +1,7 @@
-import { readFile, stat } from 'node:fs/promises'
+import { constants } from 'node:fs'
+import { open } from 'node:fs/promises'
 
+import { componentCssName } from './component-delivery.js'
 import { isSafeRegistryComponentName } from './registry-component-name.js'
 import { lumenRegistry } from './registry-data.js'
 import { isSafeRegistryFilePath } from './registry-path.js'
@@ -61,7 +63,8 @@ export const getLumenRegistryItem = (
 
   return (
     entries.find(item => item.name === name) ??
-    entries.find(item => normalizeRegistryEntryName(item.name) === normalizedName)
+    entries.find(item => normalizeRegistryEntryName(item.name) === normalizedName) ??
+    entries.find(item => item.type === 'component' && componentCssName(item.name) === normalizedName)
   )
 }
 
@@ -253,13 +256,36 @@ const fetchRegistrySource = async (
 }
 
 const readRegistrySource = async (source: string | URL, maxBytes: number): Promise<string> => {
-  const details = await stat(source)
+  const handle = await open(source, constants.O_RDONLY | constants.O_NONBLOCK)
 
-  if (details.size > maxBytes) {
-    throw new Error(`Lumen registry exceeds the ${maxBytes} byte limit.`)
+  try {
+    const details = await handle.stat()
+
+    if (!details.isFile()) throw new Error('Expected a regular file for the local Lumen registry.')
+
+    const limitError = () => new Error(`Lumen registry exceeds the ${maxBytes} byte limit.`)
+
+    if (details.size > maxBytes) throw limitError()
+
+    // The file can grow after stat, and some virtual files report a zero size.
+    const chunks: Buffer[] = []
+    let total = 0
+
+    for (;;) {
+      const buffer = Buffer.allocUnsafe(Math.min(65536, maxBytes - total + 1))
+      const { bytesRead } = await handle.read(buffer)
+
+      if (bytesRead === 0) return Buffer.concat(chunks, total).toString('utf8')
+
+      total += bytesRead
+
+      if (total > maxBytes) throw limitError()
+
+      chunks.push(buffer.subarray(0, bytesRead))
+    }
+  } finally {
+    await handle.close()
   }
-
-  return readFile(source, 'utf8')
 }
 
 export const loadLumenRegistry = async (

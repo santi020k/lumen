@@ -7481,6 +7481,23 @@
       "pathname": "/docs/components/world-map",
       "title": "WorldMap - Lumen UI"
     },
+    "/docs/editable-ticket": {
+      "alt": "Editable ticket — Documentation social preview from Lumen UI",
+      "description": "Edit an event on its ticket with synchronized listing, keyboard support and undo.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "docs--editable-ticket.webp",
+          "primary": true,
+          "url": "/og/pages/docs--editable-ticket.webp?v=88a7ee343498",
+          "version": "88a7ee343498",
+          "width": 1200
+        }
+      ],
+      "pathname": "/docs/editable-ticket",
+      "title": "Editable ticket - Lumen UI"
+    },
     "/docs/figma": {
       "alt": "Figma library — Documentation social preview from Lumen UI",
       "description": "Open the Lumen Figma library and learn how variables, pages, and component variants map back to code.",

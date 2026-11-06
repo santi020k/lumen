@@ -30,3 +30,17 @@ test('keeps overlapping hover and focus pauses until both end without losing dur
   vi.advanceTimersByTime(1)
   expect(toast.dataset.state).toBe('closed')
 })
+
+test('reopening a toast by ID cancels its pending removal', () => {
+  const create = () => LumenToast.create({ id: 'retry-toast', title: 'Saving', duration: 0 })
+
+  create()
+  LumenToast.dismiss('retry-toast')
+  vi.advanceTimersByTime(100)
+  create()
+  vi.advanceTimersByTime(200)
+  expect(document.getElementById('retry-toast')?.dataset.state).toBe('open')
+  LumenToast.dismiss('retry-toast')
+  vi.advanceTimersByTime(240)
+  expect(document.getElementById('retry-toast')).toBeNull()
+})

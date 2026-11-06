@@ -36,7 +36,7 @@ The component CSS entries include their declared dependencies. Full styles.css r
 alternative to individually selected CSS. Do not combine full CSS with selective imports to claim
 smaller route delivery; measure the emitted and requested assets in the actual application.
 
-Select Studio, santi020k or glass using the [optional appearance imports](appearance-presets.md#web).
+Select Paper, Field, Studio, santi020k or glass using the [optional appearance imports](appearance-presets.md#web).
 The base includes Lumen light and dark.
 
 ## Source diagnostics
@@ -47,7 +47,9 @@ a direct dependency range wholly within major 5. Unknown tags, workspace wildcar
 ranges, and future majors do not imply the Lumen 5 contract. An installed older adapter takes
 precedence over a requested major-5 range.
 
-The doctor recognizes default Astro component imports and named selective React/Elements imports.
+The doctor reads value imports from each source file, including aliases. It ignores type-only imports
+and import examples in comments. It recognizes default Astro component imports and named selective
+React/Elements imports.
 It checks for the foundation and the component CSS associated with those source imports. Shared
 workspace component CSS contributes to the application using that package. Existing full stylesheet
 checks and legacy guidance remain available. Source imports describe setup intent; use the

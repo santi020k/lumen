@@ -91,7 +91,7 @@
       "kind": "adoption",
       "currentContract": "The full stylesheet loads the catalog on each page that imports it.",
       "replacement": "Astro components import their own styles; React and Elements expose shared foundation and component CSS. Full styles.css remains supported.",
-      "migration": "Use foundation.css once and documented component CSS for React/Elements; Astro component styles are automatic. Add styles/themes/studio.css, styles/themes/santi020k.css, or styles/effects/glass.css when using that appearance. Remove full CSS only after checking runtime-created and Markdown markup, navigation, themes and all routes. No source-only audit proves route delivery.",
+      "migration": "Use foundation.css once and documented component CSS for React/Elements; Astro component styles are automatic. Add styles/themes/paper.css, styles/themes/field.css, styles/themes/studio.css, styles/themes/santi020k.css, or styles/effects/glass.css when using that appearance. Remove full CSS only after checking runtime-created and Markdown markup, navigation, themes and all routes. No source-only audit proves route delivery.",
       "packages": [
         "@santi020k/lumen-astro",
         "@santi020k/lumen-react",

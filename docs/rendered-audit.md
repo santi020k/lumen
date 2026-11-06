@@ -61,8 +61,8 @@ request establishes which chunks loaded; the chain describes a possible build de
 An entry with only a module name means the bundler supplied no path from a client entry.
 
 The report is local to the build and uses origin-relative Vite bases, including subdirectories.
-Use a distinct filename for each client build. It recognizes installed packages under
-`node_modules/@santi020k/lumen*`. CSS, externalized modules and workspace aliases that bypass the
+Use a distinct filename for each application build. It recognizes installed packages under
+`node_modules/@santi020k/lumen*`. Externalized modules and workspace aliases that bypass the
 installed packages require separate evidence. Use an explicit inventory to enforce a route policy.
 
 ## Enlarged text
@@ -125,13 +125,34 @@ browser module and verifies that doctor never imports it.
 
 ## Stylesheet provenance
 
-The build plugin also records CSS import chains associated with emitted client chunks through Vite's
-CSS metadata. A requested stylesheet can carry `importChains` and `fullStylesheet: true` when one
-chain includes the adapter's complete `styles.css`. Inspect the application modules in that chain
-to locate the importing layout. Associations describe build provenance for shared CSS assets and
-can include several contributing import paths. CSS loaded by server-only or external pipelines
-requires separate evidence. An absent association leaves ownership unknown.
+The build plugin records CSS import chains from Vite's chunk metadata and emitted asset ownership,
+including Astro pages that emit CSS without client JavaScript. A requested stylesheet can carry
+`importChains` and `fullStylesheet: true` when a chain includes the adapter's complete stylesheet.
+This recognizes both public `styles.css` paths and Astro's resolved `styles/lumen.css`. Inspect the
+application modules in the chain to locate the importing layout.
 
+Vite's PostCSS pipeline can inline CSS `@import` statements before building the module graph. To
+retain those dependency messages, append the report's optional collector to the application's
+existing PostCSS plugin list:
+
+```js
+const report = lumenBuildReport()
+
+export default defineConfig({
+  plugins: [report],
+  css: { postcss: { plugins: [report.api.postcss] } }
+})
+```
+
+In Astro, place both `plugins` and `css` under `vite`. Preserve all existing PostCSS options and
+plugins. When using an external `postcss.config` file, append `report.api.postcss` there using the
+same report instance rather than replacing that configuration with an inline object. The collector
+observes the existing compiler; it does not run a second CSS compilation.
+
+Associations describe build provenance for shared assets and can include several contributing
+paths. They do not measure which CSS rules the route uses. CSS produced by external pipelines or
+preprocessors that do not emit supported import messages requires separate evidence. An absent
+association or `fullStylesheet` flag leaves ownership unknown.
 Compare the same route and viewport before and after adopting selective imports. Preserve explicit
 styles for Markdown, manually produced markup, themes and runtime-created content. Use cold loads
 and client navigation to verify requested assets. Full CSS remains a supported delivery choice.
