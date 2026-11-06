@@ -127,6 +127,8 @@ describe('Figma host lifecycle', () => {
       await app.send({ type: 'analyze', version, appearance })
       expect(app.messages.at(-1)?.type).toBe('error')
     }
+    await app.send({ type: 'analyze', platform: '__proto__', version: '5.0.0', appearance: 'project' })
+    expect(app.messages.at(-1)?.type).toBe('error')
     await app.send({ type: 'analyze', version: '4.4.0', appearance: 'studio' })
     const message = app.messages.at(-1)
     if (message?.type !== 'result') throw new Error('Expected the requested v4 export.')

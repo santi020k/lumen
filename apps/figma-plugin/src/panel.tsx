@@ -15,9 +15,9 @@ import { Badge, Button, Card, CodeTabs, Label, Select, Stack } from '@santi020k/
 import { componentKeys } from './contracts.js'
 import type { PluginBridge, PluginResult } from './model.js'
 import type { ExportTarget } from './targets.js'
-import { appearancesFor, defaultTarget, isVersion, supportsAppearance, versions } from './targets.js'
+import { adapterVersion, appearancesFor, defaultTarget, isPlatform, isVersion, platforms, supportsAppearance, versions } from './targets.js'
 
-const versionOptions = versions.map(value => ({ value, label: `Lumen Astro ${value}` }))
+const platformOptions = Object.entries(platforms).map(([value, { label }]) => ({ value, label }))
 
 const download = (contents: string, name: string) => {
   const url = URL.createObjectURL(new Blob([contents], { type: 'text/plain;charset=utf-8' }))
@@ -30,6 +30,56 @@ const download = (contents: string, name: string) => {
   anchor.click()
 
   URL.revokeObjectURL(url)
+}
+
+const ExportFiles = ({ result }: { result: PluginResult }) => {
+  const output = platforms[result.target]
+
+  return (
+    <section aria-labelledby="handoff-title">
+      <h2 id="handoff-title">Take it into your project</h2>
+      <p className="review-intro">Give the AI handoff to your coding agent. It contains the design context, starter, and checks to run.</p>
+      <CodeTabs
+        ariaLabel="Conversion output"
+        className="conversion-code"
+        items={[
+          { value: 'starter', label: `${output.label} starter`, code: result.code, language: output.language },
+          { value: 'handoff', label: 'AI handoff', code: result.handoff, language: 'text' },
+          { value: 'layout', label: result.target === 'astro' ? 'Astro layout' : `${output.label} setup`, code: result.layout, language: result.target === 'astro' ? 'html' : 'javascript' }
+        ]}
+      />
+      <Stack className="download-actions" direction="horizontal" gap="sm" wrap>
+        <Button
+          onClick={() => {
+            download(result.handoff, 'lumen-figma-handoff.md')
+          }}
+          size="sm"
+        >
+          Save AI handoff
+        </Button>
+        <Button
+          onClick={() => {
+            download(result.code, `LumenSelection.${output.extension}`)
+          }}
+          size="sm"
+          variant="outline"
+        >
+          {`Save ${output.label} starter`}
+        </Button>
+        {result.target !== 'astro' && (
+          <Button
+            onClick={() => {
+              download(result.layout, 'lumen-setup.js')
+            }}
+            size="sm"
+            variant="outline"
+          >
+            Save app setup
+          </Button>
+        )}
+      </Stack>
+    </section>
+  )
 }
 
 export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: boolean }) => {
@@ -72,6 +122,8 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
     setStatus(selection ? 'Inspect the selection to export with these settings.' : 'Select one frame or component in Figma.')
   }
 
+  const platform = target.platform ?? 'astro'
+  const versionOptions = versions.map(value => ({ value, label: platform === 'astro' ? `Lumen Astro ${value}` : `Lumen ${value} · ${platforms[platform].label} ${adapterVersion(platform, value)}` }))
   const findings = result ? result.findings : []
   const verified = findings.filter(finding => finding.status === 'verified').length
   const review = findings.filter(finding => finding.status !== 'verified')
@@ -80,7 +132,7 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
     <main className="plugin-panel">
       <header className="plugin-header">
         <h1>Lumen for Figma</h1>
-        <p>Export the selected design as an Astro component and a handoff for your coding agent.</p>
+        <p>Export the selected design to your framework with setup instructions and a handoff for your coding agent.</p>
       </header>
       {preview && <p className="preview-note">Local preview · Synthetic settings screen. No Figma file is connected.</p>}
       <Card className="selection-card">
@@ -92,13 +144,26 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
           supported components
         </p>
         <div className="target-field">
+          <Label htmlFor="lumen-platform" id="platform-label">Framework</Label>
+          <Select
+            aria-labelledby="platform-label"
+            disabled={busy}
+            id="lumen-platform"
+            onValueChange={next => {
+              if (isPlatform(next)) changeTarget({ ...target, platform: next })
+            }}
+            options={platformOptions}
+            value={platform}
+          />
+        </div>
+        <div className="target-field">
           <Label htmlFor="lumen-version" id="version-label">Target version</Label>
           <Select
             aria-labelledby="version-label"
             disabled={busy}
             id="lumen-version"
             onValueChange={version => {
-              if (isVersion(version)) changeTarget({ version, appearance: supportsAppearance(version, target.appearance) ? target.appearance : 'project' })
+              if (isVersion(version)) changeTarget({ ...target, version, appearance: supportsAppearance(version, target.appearance) ? target.appearance : 'project' })
             }}
             options={versionOptions}
             value={target.version}
@@ -169,38 +234,7 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
               </ul>
             )}
           </section>
-          <section aria-labelledby="handoff-title">
-            <h2 id="handoff-title">Take it into your project</h2>
-            <p className="review-intro">Give the AI handoff to your coding agent. It contains the design context, starter, and checks to run.</p>
-            <CodeTabs
-              ariaLabel="Conversion output"
-              className="conversion-code"
-              items={[
-                { value: 'astro', label: 'Astro starter', code: result.code, language: 'html' },
-                { value: 'handoff', label: 'AI handoff', code: result.handoff, language: 'text' },
-                { value: 'layout', label: 'Astro layout', code: result.layout, language: 'html' }
-              ]}
-            />
-            <Stack className="download-actions" direction="horizontal" gap="sm" wrap>
-              <Button
-                onClick={() => {
-                  download(result.handoff, 'lumen-figma-handoff.md')
-                }}
-                size="sm"
-              >
-                Save AI handoff
-              </Button>
-              <Button
-                onClick={() => {
-                  download(result.code, 'LumenSelection.astro')
-                }}
-                size="sm"
-                variant="outline"
-              >
-                Save Astro starter
-              </Button>
-            </Stack>
-          </section>
+          <ExportFiles result={result} />
         </Stack>
       )}
       <footer className="plugin-footer">

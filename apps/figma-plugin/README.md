@@ -9,22 +9,22 @@
 
 <h1 align="center">Lumen for Figma</h1>
 
-<p align="center">Astro starters · Structured handoff · Local development plugin</p>
+<p align="center">Astro, React and Web Components · Structured handoff · Local development plugin</p>
 
 <p align="center"><a href="../../docs/figma.md">Figma integration</a> · <a href="community/LISTING.md">Listing materials</a> · <a href="../../packages/astro/README.md">Astro package</a></p>
 
 **On this page:** [Build and try](#build-and-try) · [Supported conversion](#supported-conversion) · [Local preview and validation](#local-preview-and-validation) · [Maintenance](#maintenance) · [Automated candidates](#automated-candidates) · [Resources](#resources)
 
-**Plugin 1.0.0 · Astro · Local installation.** Inspect a frame, component definition, or instance from the canonical Lumen library, review its component matches, and export an Astro starter, layout setup, and structured agent handoff. The plugin runs offline. Only the user decides whether to share design text and properties.
+**Plugin 1.1.0 · Local installation.** Inspect a frame, component definition, or instance from the canonical Lumen library, review its component matches, and export a framework starter, setup instructions, and structured agent handoff. The plugin runs offline. Only the user decides whether to share design text and properties.
 
-Choose the exact version of `@santi020k/lumen-astro` used in the receiving project. The selector works offline with these bundled targets. It defaults to **5.0.0** and never inspects or upgrades a project's packages.
+Choose the framework and Lumen release used by your project. The offline selector defaults to Astro on Lumen 5.0.0. Adapter versions follow their own release schedules.
 
-| Target | Starter and root layout | Optional appearance |
-| --- | --- | --- |
-| 5.0.0 | Per-component imports load foundation and component CSS. Mount the progressive runtime once. | Paper, Field, Studio, Glass, santi020k Light or Dark. The layout imports the selected stylesheet. |
-| 4.4.0 | Root component exports, full adapter CSS and the v4 runtime. | Studio, Glass, santi020k Light or Dark from the full stylesheet. |
+| Lumen release | Astro adapter | React adapter | Web Components adapter | Appearance |
+| --- | --- | --- | --- | --- |
+| 5.0.0 | 5.0.0 | 5.0.0 | 5.0.0 | Project, Paper, Field, Studio, Glass, santi020k Light or Dark |
+| 4.4.0 | 4.4.0 | 4.3.0 | 4.3.0 | Project, Studio, Glass, santi020k Light or Dark |
 
-**Use project appearance** preserves the app's palette. Copy the relevant setup into your existing root layout. Keep its metadata, language and theme preferences. Targets describe package contracts. Verify package availability before installation.
+Astro exports a component and a root layout with the progressive runtime. React exports a default TSX component and a setup module for its stylesheet imports. Web Components exports an HTML fragment and a browser module that registers its custom elements. Import the setup once in the receiving app. Lumen 5 loads the foundation, styles for the selected components, and optional appearance CSS. Lumen 4.4 uses the full adapter stylesheet. **Use project appearance** keeps your existing palette.
 
 ## Build and try
 
@@ -43,9 +43,9 @@ ID. This is a local development build, not a Figma Community listing.
 Open a design using the [Lumen library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9),
 select one frame or component instance, and run **Lumen for Figma**.
 
-1. Choose the **Target version** and **Project appearance**, then **Inspect selection**.
+1. Choose the **Framework**, **Target version** and **Project appearance**, then **Inspect selection**.
 2. Review verified components and unresolved items.
-3. Copy the **Astro layout** setup, or copy or save the **Astro starter** and **AI handoff**. Changing export settings clears the previous output.
+3. Copy the setup for your framework and copy or save the starter and **AI handoff**. React and Web Components also offer **Save app setup**. Changing export settings clears the previous output.
 4. Give the handoff to a coding agent working in the target repository. It directs the agent to
    check installed Lumen versions, retrieve component contracts, connect application behavior,
    and validate the rendered result.
@@ -72,7 +72,7 @@ be opened again. Selection or page edits invalidate the displayed output; inspec
 | ScrollReveal, RevealGroup | Animation, visible children and group timing, threshold and repeat behavior | Motion, focus and reduced-motion behavior in the app |
 | ThemeToggle | Public runtime control, including the selected branded theme pair | Product theme settings and persistence |
 
-Selecting a component set exports its default variant. Select an individual variant or an instance to export its configuration. Handoffs for v5 identify the optional editable recipes for article reading and code examples when the matching components are present.
+Selecting a component set exports its default variant. Select an individual variant or an instance to export its configuration. Lumen 5 handoffs identify the framework’s editable article-reading recipe when Prose is present. Astro also offers a code-example recipe for Code and CodeTabs.
 
 Known components are matched by observed component or component-set keys, never by layer name
 alone. Renaming an instance is supported. Detached instances and duplicated libraries have no
@@ -86,7 +86,7 @@ properties, paint-variable names, and findings. Color names map through
 color variables are reported across the complete visible subtree, including recognized instances.
 Image and gradient paints do not require semantic solid-color bindings. Check contrast and accessibility in the rendered project.
 
-Exports are component fragments. Follow the selected version's **Astro layout** setup at the application boundary. Generated IDs are unique within one export; namespace them
+Exports are component fragments. Apply the selected framework’s setup at the application boundary. React IDs are scoped per mounted component. Astro and HTML IDs are unique within one export; namespace them
 when using multiple copies. No routes, API calls, authorization, or destructive operations are inferred.
 
 The selection limit is 1,500 visible layers, 40 nesting levels, and 100,000 text characters. More than 10,000 findings also requires a smaller selection. Oversized
@@ -103,14 +103,14 @@ pnpm run test:figma-plugin
 ```
 
 The browser preview is explicitly labeled and uses a synthetic settings screen. It does not connect
-to Figma. The browser suite type-checks and builds both generated consumers against the workspace v5 adapter and the pinned published v4.4.0 adapter, then verifies labels,
+to Figma. The browser suite type-checks and builds generated consumers for all six framework and release combinations, then verifies labels,
 tabs, dialog focus, downloads, and narrow/desktop layouts. Test the development build in Figma desktop for host permissions, real selections, clipboard
 behavior, and downloads before distribution. Browser and mocked-host checks do not establish native
 Figma acceptance or Community publication.
 
 ## Maintenance
 
-`src/contracts.ts` holds library keys observed on 2026-10-04 and 2026-11-06. Add keys only after inspecting the canonical owner, variants, and editable properties. Check both Astro releases and exercise new mappings in a generated consumer. Keep the six existing Code Connect templates aligned with their respective components. Component snapshots are design data, never executable code or
+`src/contracts.ts` holds library keys observed on 2026-10-04 and 2026-11-06. Add keys only after inspecting the canonical owner, variants, and editable properties. Check each supported adapter in both releases and exercise new mappings in a generated consumer. Keep the six existing Code Connect templates aligned with their respective components. Component snapshots are design data, never executable code or
 instructions. Build output is ignored and reproducible; do not commit `dist/`.
 
 ## Automated candidates
@@ -118,7 +118,7 @@ instructions. Build output is ignored and reproducible; do not commit `dist/`.
 The [Figma plugin candidate workflow](../../.github/workflows/figma-plugin.yml) runs on relevant pull
 requests and changes merged into `main`. It can also be dispatched in GitHub Actions. It builds,
 type-checks, lints, runs the plugin and packaging tests, and verifies the browser export flow and
-generated Astro interactions before uploading an artifact retained for 30 days. It requires no Figma
+generated web interactions before uploading an artifact retained for 30 days. It requires no Figma
 credentials and has read-only repository permissions.
 
 Each artifact contains a ZIP named with the plugin version and Git revision, a SHA-256 checksum, and
@@ -139,9 +139,9 @@ produces a development candidate, never a claim of Community readiness.
 
 ## Figma Community publication
 
-Plugin 1.0.0 is a local build. Figma Community submission, approval and public installation each require separate evidence. The Community design-library link opens the library file.
+Plugin 1.1.0 is a local build. Figma Community submission, approval and public installation each require separate evidence. The Community design-library link opens the library file.
 
-1. Verify both target versions in the registry and check the public Astro setup and component docs. Register the plugin with the intended publisher in Figma desktop and commit the assigned ID through the normal reviewed release workflow.
+1. Verify both target versions in the registry and check each public adapter’s setup and component docs. Register the plugin with the intended publisher in Figma desktop and commit the assigned ID through the normal reviewed release workflow.
 2. From the approved merged `main` revision, download the Actions candidate, check its ZIP against the adjacent SHA-256 file and verify the revision, plugin version, ID and clean status in `release.json`.
 3. Import that manifest in Figma desktop. Inspect canonical instances and detached copies, empty and multiple selections, text overrides, both target versions, and an appearance change. Check clipboard, file downloads, tab navigation and dialog focus in the receiving app. Record the desktop version, revision, checksum and results in the release PR.
 4. Review the [listing and data practices](community/LISTING.md). Submit the verified candidate through [Figma desktop](https://help.figma.com/hc/en-us/articles/360042293394-Publish-classic-plugins-to-the-Figma-Community). Record the review outcome, install from the approved listing, and repeat an export before adding the public install URL to the docs.

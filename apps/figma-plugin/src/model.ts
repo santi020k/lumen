@@ -1,5 +1,5 @@
-import type { ExportTarget, LumenVersion } from './targets.js'
-import { isVersion } from './targets.js'
+import type { ExportTarget, LumenVersion, WebPlatform } from './targets.js'
+import { isPlatform, isVersion } from './targets.js'
 
 export interface DesignNode {
   id: string
@@ -24,7 +24,7 @@ export interface Finding {
 export interface Analysis {
   schemaVersion: 1
   status: 'stable'
-  target: 'astro'
+  target: WebPlatform
   lumenVersion: LumenVersion
   layout: string
   selection: DesignNode
@@ -38,7 +38,7 @@ export type PluginMessage =
   { type: 'result', result: PluginResult } |
   { type: 'error', message: string }
 
-export type PluginResult = Pick<Analysis, 'code' | 'layout' | 'handoff' | 'findings' | 'lumenVersion'> & { selectionName: string }
+export type PluginResult = Pick<Analysis, 'target' | 'code' | 'layout' | 'handoff' | 'findings' | 'lumenVersion'> & { selectionName: string }
 
 export interface PluginBridge {
   analyze: (target: ExportTarget) => void
@@ -54,7 +54,7 @@ const isFinding = (value: unknown): value is Finding => isRecord(value) &&
 
 const isResult = (value: unknown): value is PluginResult => isRecord(value) &&
   typeof value.code === 'string' && typeof value.handoff === 'string' &&
-  typeof value.selectionName === 'string' && isVersion(value.lumenVersion) && typeof value.layout === 'string' &&
+  typeof value.selectionName === 'string' && isPlatform(value.target) && isVersion(value.lumenVersion) && typeof value.layout === 'string' &&
   Array.isArray(value.findings) && value.findings.length <= 10_000 &&
   value.findings.every(isFinding)
 
@@ -70,6 +70,7 @@ export const isPluginMessage = (value: unknown): value is PluginMessage => {
 
 export const resultMessage = (analysis: Analysis): PluginMessage => ({ type: 'result',
   result: {
+    target: analysis.target,
     code: analysis.code,
     handoff: analysis.handoff,
     layout: analysis.layout,

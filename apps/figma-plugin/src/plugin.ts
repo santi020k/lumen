@@ -4,11 +4,11 @@ import { analyzeSelection } from './convert.js'
 import type { PluginMessage } from './model.js'
 import { isRecord, resultMessage } from './model.js'
 import type { ExportTarget } from './targets.js'
-import { isVersion, supportsAppearance } from './targets.js'
+import { readTarget } from './targets.js'
 
 figma.showUI(__html__, { width: 480, height: 720, themeColors: true })
 
-figma.root.setRelaunchData({ inspect: 'Inspect Lumen components and prepare an Astro AI handoff.' })
+figma.root.setRelaunchData({ inspect: 'Inspect Lumen components and prepare a Lumen handoff.' })
 
 const send = (message: PluginMessage) => {
   figma.ui.postMessage(message)
@@ -83,15 +83,15 @@ figma.ui.onmessage = (message: unknown) => {
 
   if (message.type !== 'analyze' || busy) return
 
-  const { version, appearance } = message
+  const target = readTarget(message.platform, message.version, message.appearance)
 
-  if (!isVersion(version) || !supportsAppearance(version, appearance)) {
-    send({ type: 'error', message: 'Choose a supported Lumen version and appearance.' })
+  if (!target) {
+    send({ type: 'error', message: 'Choose a supported framework, Lumen version and appearance.' })
 
     return
   }
 
-  inspect({ version, appearance }).catch(() => {
+  inspect(target).catch(() => {
     busy = false
 
     send({ type: 'error', message: 'Could not inspect this selection. Try a smaller frame.' })

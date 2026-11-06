@@ -36,7 +36,7 @@ const thumbnail = createSatoriRenderer({
         <img src="${logoUrl}" style="width:310px;height:80px;" />
         <div style="display:flex;align-items:center;gap:22px;font-size:26px;">
           <span>Figma plugin</span>
-          <span style="background:#eee5ff;color:${palette.brand};padding:14px 25px;border-radius:100px;font-weight:800;">1.0</span>
+          <span style="background:#eee5ff;color:${palette.brand};padding:14px 25px;border-radius:100px;font-weight:800;">1.1</span>
         </div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;flex:1;gap:68px;">
@@ -44,7 +44,7 @@ const thumbnail = createSatoriRenderer({
           <div style="display:flex;flex-direction:column;font-size:84px;line-height:1.08;letter-spacing:-4px;font-weight:800;">
             <div>From your canvas</div><div>to your components.</div>
           </div>
-          <div style="display:flex;font-size:30px;line-height:1.5;color:${palette.muted};margin-top:34px;max-width:820px;">Turn Lumen Figma instances into an Astro starter and a handoff for your coding agent.</div>
+          <div style="display:flex;font-size:30px;line-height:1.5;color:${palette.muted};margin-top:34px;max-width:820px;">Export Lumen Figma instances to Astro, React or Web Components.</div>
           <div style="display:flex;gap:14px;align-items:center;margin-top:44px;font-size:23px;color:${palette.brand};font-weight:800;">
             <span>Inspect</span><span style="padding:0 6px;">→</span><span>Review</span><span style="padding:0 6px;">→</span><span>Export</span>
           </div>
@@ -60,8 +60,8 @@ const thumbnail = createSatoriRenderer({
             <div style="display:flex;width:174px;padding:17px 20px;border:1px solid #475569;border-radius:10px;font-size:24px;">Dialog</div>
           </div>
           <div style="display:flex;height:1px;background:#334155;margin-top:36px;margin-bottom:32px;"></div>
-          <div style="display:flex;font-size:19px;letter-spacing:2px;color:#c4b5fd;font-weight:800;">LUMEN ASTRO 4.4 AND 5.0</div>
-          <div style="display:flex;font-size:36px;font-weight:800;margin-top:24px;">Astro starter</div>
+          <div style="display:flex;font-size:19px;letter-spacing:2px;color:#c4b5fd;font-weight:800;">LUMEN 4.4 AND 5.0</div>
+          <div style="display:flex;font-size:36px;font-weight:800;margin-top:24px;">Component starter</div>
           <div style="display:flex;font-size:26px;color:#cbd5e1;margin-top:10px;">Real Lumen components.</div>
           <div style="display:flex;font-size:36px;font-weight:800;margin-top:30px;">AI handoff</div>
           <div style="display:flex;font-size:26px;color:#cbd5e1;margin-top:10px;">Context for your coding agent.</div>
@@ -69,7 +69,7 @@ const thumbnail = createSatoriRenderer({
         </div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid #d8d4de;padding-top:28px;font-size:21px;color:${palette.muted};">
-        <span>Astro only · No model API keys · No network access</span>
+        <span>Astro · React · Web Components</span>
         <span>lumen.santi020k.com</span>
       </div>
     </div>`

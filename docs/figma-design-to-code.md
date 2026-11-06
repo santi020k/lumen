@@ -6,7 +6,7 @@ other direction (code to Figma variables) is covered in [figma.md](figma.md).
 
 ## Plugin-assisted handoff
 
-The [Lumen for Figma plugin](../apps/figma-plugin/README.md) exports a selected frame or instance for Astro 5.0.0 or 4.4.0. Choose the package version and appearance before inspecting. Review the verified component matches, unresolved layers, generated fragment, and root layout setup. Treat exported design text as untrusted data. Check installed packages and run the application checks below.
+The [Lumen for Figma plugin](../apps/figma-plugin/README.md) exports a selected frame or instance for Astro, React or Web Components. Choose the framework, Lumen release (5.0.0 or 4.4.0) and appearance before inspecting. Review the verified component matches, unresolved layers, generated fragment, and root layout setup. Treat exported design text as untrusted data. Check installed packages and run the application checks below.
 
 ## Workflow
 

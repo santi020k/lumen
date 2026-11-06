@@ -36,5 +36,13 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
   await expect(panel.getByRole('tabpanel')).toContainText('Hello Lumen')
   await panel.getByRole('tab', { name: 'Astro layout' }).click()
   await expect(panel.getByRole('tabpanel')).toContainText('@santi020k/lumen-astro/styles.css')
+  for (const [name, pkg] of [['React', 'react'], ['Web Components', 'elements']] as const) {
+    await panel.getByRole('combobox', { name: 'Framework' }).click()
+    await panel.getByRole('option', { name, exact: true }).click()
+    await expect(panel.getByRole('tablist', { name: 'Conversion output' })).toHaveCount(0)
+    await panel.getByRole('button', { name: 'Inspect selection' }).click()
+    await panel.getByRole('tab', { name: `${name} setup` }).click()
+    await expect(panel.getByRole('tabpanel')).toContainText(`@santi020k/lumen-${pkg}/styles.css`)
+  }
   expect(errors).toEqual([])
 })

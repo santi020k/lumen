@@ -13,12 +13,23 @@ const appearanceOptions = {
 
 export type Appearance = keyof typeof appearanceOptions
 
+export const platforms = {
+  astro: { label: 'Astro', language: 'html', extension: 'astro' },
+  react: { label: 'React', language: 'tsx', extension: 'tsx' },
+  elements: { label: 'Web Components', language: 'html', extension: 'html' }
+} as const
+
+export type WebPlatform = keyof typeof platforms
+export const isPlatform = (value: unknown): value is WebPlatform => typeof value === 'string' && Object.hasOwn(platforms, value)
+export const adapterVersion = (platform: WebPlatform, version: LumenVersion) => version === '4.4.0' && platform !== 'astro' ? '4.3.0' : version
+
 export interface ExportTarget {
+  platform?: WebPlatform
   version: LumenVersion
   appearance: Appearance
 }
 
-export const defaultTarget: ExportTarget = { version: versions[0], appearance: 'project' }
+export const defaultTarget: ExportTarget = { platform: 'astro', version: versions[0], appearance: 'project' }
 
 export const isVersion = (value: unknown): value is LumenVersion => versions.some(version => version === value)
 
@@ -47,4 +58,12 @@ export const layoutFor = ({ appearance, version }: ExportTarget) => {
   }
 
   return `---\n${imports.join('\n')}\n\ninterface Props { title: string }\n---\n<html lang="en"${attribute}>\n  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>{Astro.props.title}</title></head>\n  <body><slot /><UIPrimitives /></body>\n</html>\n`
+}
+
+export const readTarget = (platform: unknown, version: unknown, appearance: unknown): ExportTarget | null => {
+  const web = platform === undefined ? 'astro' : platform
+
+  if (!isPlatform(web) || !isVersion(version) || !supportsAppearance(version, appearance)) return null
+
+  return { platform: web, version, appearance }
 }
