@@ -4,6 +4,8 @@
 
 ### Major Changes
 
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.
+
 - Generate selective public component imports and required CSS in editable wrappers. Register only the
   selected Elements constructor, preserve idempotence, and identify catalog fallbacks explicitly.
   Astro wrappers rely on the Lumen 5 automatic component CSS contract.

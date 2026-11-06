@@ -4,6 +4,8 @@
 
 ### Minor Changes
 
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.
+
 - Preserve ThemeBuilder code typography and PromptComposer spacing when primitive styles load after compound styles.
 
 - Improve success badge text contrast in both themes and branded code-token contrast while retaining semantic colors.
