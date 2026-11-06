@@ -57,7 +57,7 @@ export const checkAppearanceDelivery = async (browser, repo) => {
 
       assert.equal(plain.filter, 'none')
 
-      assert.equal(plain.brand, scheme === 'light' ? '201 96% 32%' : '199 91% 56%')
+      assert.equal(plain.brand, scheme === 'light' ? '193 79% 26%' : '185 56% 72%')
 
       assert.deepEqual(await read(base, theme, 'studio'), plain)
 
@@ -67,7 +67,7 @@ export const checkAppearanceDelivery = async (browser, repo) => {
 
       assert.equal(solidStudio.filter, 'none')
 
-      assert.equal(solidStudio.nestedBrand, '201 96% 32%')
+      assert.equal(solidStudio.nestedBrand, '193 79% 26%')
 
       const brandTheme = `santi020k-${scheme}`
       const brandOnly = await read(base + branded, brandTheme, '')

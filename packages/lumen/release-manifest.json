@@ -6,7 +6,7 @@
         "com.santi020k:lumen-compose",
         "com.santi020k:lumen-compose-wear"
       ],
-      "version": "4.0.1"
+      "version": "4.0.2"
     },
     "npm": {
       "packages": {
@@ -67,7 +67,7 @@
         },
         "@santi020k/lumen-tokens": {
           "peerDependencies": {},
-          "version": "4.0.0"
+          "version": "4.0.1"
         }
       }
     },

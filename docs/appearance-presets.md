@@ -5,9 +5,9 @@ components. Presets change presentation; they preserve component behavior and ap
 
 | Preset | Appearance | Recommended surface material |
 | --- | --- | --- |
-| `default` | Existing Lumen colors, typography and radii | Solid |
+| `default` | Warm paper or charcoal surfaces, deep cyan actions and restrained shadows | Solid |
 | `studio` | PostLens-inspired neutral surfaces, monochrome actions, smaller radii and restrained elevation | Solid |
-| `glass` | Existing semantic colors with more generous radii and glass effect tokens | Glass on selected supporting surfaces |
+| `glass` | Default semantic colors with more generous radii and glass effect tokens | Glass on selected supporting surfaces |
 
 Status colors retain their semantic roles. Light and dark schemes remain independent from the
 preset. A preset does not reproduce PostLens's editor layout or bring photo workflows into Lumen.

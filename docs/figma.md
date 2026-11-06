@@ -62,8 +62,9 @@ Foundations, Glass Components, Icons, component-category, and Utilities pages. T
 file and Lumen's runtime CSS both use Montserrat for interface and documentation text. Cascadia Mono
 remains reserved for the small amount of code-style text.
 
-Variables carry Web code syntax (`var(--token)`). The `Light` and `Dark` modes match the base
-Lumen palette in `packages/lumen/styles.css`. Its `santi020k Light` and `santi020k Dark` palettes
+Variables carry Web code syntax (`var(--token)`). The repository defines the target `Light` and `Dark` modes from
+the base Lumen palette in `packages/lumen/styles.css`. The v5 base palette needs a separate sync
+to the published design library. Its `santi020k Light` and `santi020k Dark` palettes
 mirror the parent website and ship through `styles/themes/santi020k.css` for selective web builds.
 The [Figma token contract](../registry/figma-theme-tokens.json) checks all four modes against
 their source selectors. Component fills, strokes, radii, and effects bind to those variables.

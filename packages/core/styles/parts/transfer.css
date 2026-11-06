@@ -89,7 +89,7 @@
 
 .ui-transfer__option:has(.ui-checkbox:checked) {
   background: hsl(var(--brand-soft) / 0.72);
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 
 .ui-transfer__option > span {

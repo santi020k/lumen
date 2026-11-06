@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Refresh default light and dark tokens in the bundled catalog.
+
 Keep Input discovery and versioned portable skill guidance aligned with the v5 package contracts.
 
 - Keep mobile article contents focus and disclosure cleanup when the shared runtime handles fragment navigation. Avoid a second scroll after enhanced navigation.

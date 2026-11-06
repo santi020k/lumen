@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
+
 Expose selective Card and Input entries, with packed subscribe-form delivery budgets.
 
 ### Major Changes

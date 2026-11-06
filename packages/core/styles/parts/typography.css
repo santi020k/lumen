@@ -30,7 +30,7 @@
 
 @layer lumen.components {
 .ui-typography :where(a) {
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
   text-underline-offset: 0.25rem;
 }
 }

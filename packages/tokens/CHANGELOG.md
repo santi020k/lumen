@@ -1,5 +1,11 @@
 # @santi020k/lumen-tokens
 
+## 4.0.1
+
+### Patch Changes
+
+- Refresh the default light and dark palettes with warm paper surfaces, charcoal, and deep cyan actions. Chart accents and text roles follow the same palette across platforms.
+
 ## 4.0.0
 
 ### Minor Changes

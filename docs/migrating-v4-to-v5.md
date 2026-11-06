@@ -14,7 +14,7 @@ runtime adapters in production dependencies.
 
 Use the [release manifest](../registry/release-manifest.json) for each package's version. In the initial
 v5 release, the six linked web/tooling packages target 5.0.0; React Hook Form targets 4.0.2, brand icons 4.0.1, React Native 4.0.3,
-and tokens remain 4.0.0. V5 dependency migration uses this map instead of assigning 5.0.0 to every
+and tokens 4.0.1. V5 dependency migration uses this map instead of assigning 5.0.0 to every
 package. `migrate v5` follows the bundled CLI's v5 release versions; explicit audit targets must match
 that bundled manifest. Swift and Maven pins remain application-owned. The refreshed Lucide catalog retains all previous names through aliases and adds new Swift enum cases. Review exhaustive `LumenIconName` switches when updating the Swift package. The repository playground now uses Expo SDK 58 with React Native 0.88 and React 19.3; regenerate and rebuild native applications when adopting that toolchain. See [dependency upgrades](lumen-5-dependencies.md) for exact versions and compatibility holds.
 
@@ -53,6 +53,14 @@ recovery, client navigation and application-created markup.
 `ScrollReveal` and `RevealGroup` honor their explicit visibility ratio. Tall or clipped content stays
 visible if that ratio is unreachable. Keyboard focus and reduced motion disable decorative hiding.
 Check repeatable reveals and enlarged text; keep thresholds that express your intended animation.
+
+## Default appearance
+
+The default light and dark palettes change across web and native, including chart colors that
+follow the brand. Review visual baselines and product colors paired with Lumen backgrounds. Token
+names and control dimensions stay the same. Use `brand` for text on `brand-soft` and `on-brand`
+for text on `brand-solid`. Applications can keep their own palette at the theme boundary. The
+optional santi020k and Studio palettes retain their own brand colors.
 
 ## Optional delivery and composition improvements
 

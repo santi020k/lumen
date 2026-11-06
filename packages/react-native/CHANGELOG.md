@@ -2,6 +2,8 @@
 
 ## 4.0.3
 
+- Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
+
 ### Patch Changes
 
 - Support the Expo 58 / React Native 0.88 / React 19.3 toolchain with correctly typed component refs. Add 188 icon graphics while preserving all previous icon names and exports.

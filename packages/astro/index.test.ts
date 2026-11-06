@@ -790,7 +790,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-sr-only')
     expect(styles).toContain('[data-theme$="-dark"]')
     expect(styles).toContain('[data-theme="lumen-light"]')
-    expect(styles).toContain('--brand: 201 96% 32%')
+    expect(styles).toContain('--brand: 193 79% 26%')
   })
 
   test('ships Select as a progressively enhanced listbox distinct from NativeSelect', async () => {

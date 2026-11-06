@@ -28,6 +28,6 @@
 @layer lumen.components {
 .ui-command :where(button, [data-ui-command-item], [role="option"]):hover {
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 }

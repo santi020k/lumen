@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
+
 - Preserve customized wrappers and show the local-to-incoming diff when `lumen add --merge` encounters edits.
 
 Expose a Vite client build report for rendered audits and generate selective subscribe-form wrappers.
