@@ -118,3 +118,20 @@ test('recovers from network failures and reports blocked clipboard access', asyn
     expect(document.querySelector('[data-icon-status]')?.textContent).toContain('Could not copy. Icon name: icon-0')
   })
 })
+
+test('rendered SVGs belong to the active document and remain independent across renders', () => {
+  const first = createCatalogSvg(svg)
+  const second = createCatalogSvg(svg)
+
+  expect(first.ownerDocument).toBe(document)
+  expect(second.ownerDocument).toBe(document)
+  expect(first).not.toBe(second)
+  first.querySelector('path')?.setAttribute('fill', 'red')
+  expect(second.querySelector('path')?.hasAttribute('fill')).toBe(false)
+})
+
+test('validates nested geometry before transferring the SVG into the document', () => {
+  expect(createCatalogSvg('<svg xmlns="http://www.w3.org/2000/svg"><g><path d="M1 1h2"/></g></svg>').querySelector('g > path')).not.toBeNull()
+  expect(() => createCatalogSvg('<svg xmlns="http://www.w3.org/2000/svg"><g><path onclick="alert(1)"/></g></svg>')).toThrow()
+  expect(() => createCatalogSvg('<svg xmlns="http://www.w3.org/2000/svg"><g><foreignObject/></g></svg>')).toThrow()
+})
