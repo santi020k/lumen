@@ -60,10 +60,10 @@ be opened again. Selection or page edits invalidate the displayed output; inspec
 | Button | Label, variant, size, loading, disabled | Action behavior and icon swaps |
 | Input | Placeholder, visual size | Label, type, name, validation |
 | Field | Label, helper visibility/text, one recognized Input | Other control swaps and form rules |
-| Card | Title and body | Custom nested content and heading hierarchy |
-| Tabs | Three labels and active tab | Panel content and application state |
-| Dialog | Title, description, action labels/visibility | Trigger placement, confirmation action |
-| Badge, Code | Badge text and variant, inline or multiline code, wrapping, v5 editorial block appearance for Paper and Field | Custom layer overrides and code language |
+| Card | Title and body, including exposed content, surface and density from the v5 presentation set | Custom nested content and heading hierarchy |
+| Tabs | Three labels, active tab and optional indicator | Panel content and application state |
+| Dialog | Title, description, action labels/visibility and the v5 presentation set’s layout and material | Trigger placement, confirmation action |
+| Badge, Code | Badge text and variant, inline or multiline code, wrapping, language, copy labels, scroll cue and explicit v5 editorial appearance | Application clipboard handling and announcements |
 | CodeTabs | Three labels and code samples, active tab, wrapping and copy control | Sample contents and localization |
 | Prose, Callout, Note | Headings, body, list, note label and border | Editorial links and heading levels |
 | Timeline | Three event titles, descriptions and times | Real dates and data source |

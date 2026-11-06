@@ -1,4 +1,5 @@
 import type { DesignNode } from './model.js'
+import { presentationName } from './presentations.js'
 
 // Observed in the canonical library on 2026-10-04. Keys identify components even
 // after instances are renamed; copied libraries need explicit remapping.
@@ -140,7 +141,7 @@ export type ComponentName = keyof typeof componentKeys
 
 export const isComponentName = (value: string): value is ComponentName => Object.hasOwn(componentKeys, value)
 
-export const identifyComponent = (node: DesignNode): ComponentName | null => {
+const originalComponent = (node: DesignNode): ComponentName | null => {
   if (!node.component) return null
 
   for (const name of Object.keys(componentKeys)) {
@@ -153,4 +154,22 @@ export const identifyComponent = (node: DesignNode): ComponentName | null => {
   }
 
   return null
+}
+
+export const identifyComponent = (node: DesignNode): ComponentName | null => {
+  const presentation = presentationName(node)
+
+  if (!presentation) return originalComponent(node)
+
+  const [content] = node.children
+
+  return node.children.length === 1 && content && originalComponent(content) === presentation ? presentation : null
+}
+
+export const withPresentationContent = (node: DesignNode): DesignNode => {
+  const [content] = node.children
+
+  if (!content || !presentationName(node) || !identifyComponent(node)) return node
+
+  return { ...node, properties: { ...content.properties, ...node.properties } }
 }
