@@ -1,6 +1,8 @@
 package com.santi020k.lumen.playground.compose
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.isPopup
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
@@ -37,7 +39,7 @@ class PlaygroundAppearanceTest {
         composeRule.onNodeWithText("Dark", substring = false).performClick()
         for (label in listOf("Studio", "Glass", "santi020k", "Paper", "Field", "Normal")) {
             composeRule.onNodeWithContentDescription("Theme").performScrollTo().performClick()
-            composeRule.onNodeWithText(label, substring = false).performClick()
+            composeRule.onNode(hasText(label, substring = false) and hasAnyAncestor(isPopup())).performClick()
             composeRule.onNodeWithText("$label · Dark", substring = false).performScrollTo().assertIsDisplayed()
         }
     }

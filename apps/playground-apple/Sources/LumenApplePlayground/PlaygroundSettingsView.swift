@@ -162,16 +162,13 @@ struct PlaygroundSettingsView: View {
     private var themePreview: some View {
         LumenCard(variant: .accent) {
             VStack(alignment: .leading, spacing: LumenSpacing.md) {
-                HStack {
-                    VStack(alignment: .leading, spacing: LumenSpacing.xs) {
-                        LumenText("Theme preview", variant: .title)
-                        LumenText(
-                            "\(themePreset.title) semantic roles preserve hierarchy in \(themePreference.title.lowercased()) appearance.",
-                            variant: .caption,
-                            tone: .muted
-                        )
-                    }
-                    Spacer()
+                VStack(alignment: .leading, spacing: LumenSpacing.xs) {
+                    LumenText("Theme preview", variant: .title)
+                    LumenText(
+                        "\(themePreset.title) semantic roles preserve hierarchy in \(themePreference.title.lowercased()) appearance.",
+                        variant: .caption,
+                        tone: .muted
+                    )
                     LumenBadge("\(themePreset.title) · \(themePreference.title)", tone: .accent)
                 }
                 HStack(spacing: LumenSpacing.sm) {
