@@ -18,6 +18,32 @@ describe('selective component installation', () => {
     }
   })
 
+  test('preserves an edited React Button and reports the same diff on preview and retry', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-edited-button-'))
+    const options = { cwd, target: 'react', conflict: 'merge' } as const
+    const path = 'src/lumen/button.tsx'
+    try {
+      await addLumenRegistryItem('Button', options)
+      const original = await readFile(join(cwd, path), 'utf8')
+      expect((await addLumenRegistryItem('Button', options)).conflicts).toEqual([])
+      const edited = original.replace('<LumenButton {...props}', '<LumenButton data-kind="checkout" {...props}')
+      expect(edited).not.toBe(original)
+      await writeFile(join(cwd, path), edited)
+      for (const dryRun of [true, false, false]) {
+        const result = await addLumenRegistryItem('Button', { ...options, dryRun })
+        expect(result.merged).toEqual([])
+        expect(result.conflicts.map(file => file.path)).toEqual([path])
+        expect(result.conflicts[0]?.diff).toContain(
+          '-export const Button = (props: ButtonProps) => <LumenButton data-kind="checkout" {...props} />\n' +
+          '+export const Button = (props: ButtonProps) => <LumenButton {...props} />'
+        )
+        expect(await readFile(join(cwd, path), 'utf8')).toBe(edited)
+      }
+    } finally {
+      await rm(cwd, { recursive: true, force: true })
+    }
+  })
+
   test('installs auto-styled Astro and selectively styled React/Elements wrappers', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-selective-install-'))
     try {

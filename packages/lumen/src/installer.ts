@@ -39,6 +39,7 @@ export interface LumenMergeConflict {
 
 export interface LumenAddResult {
   added: string[]
+  conflicts: { path: string, diff: string }[]
   dryRun: boolean
   files: string[]
   item: LumenRegistryEntry
@@ -227,37 +228,38 @@ const fileExists = async (path: string): Promise<boolean> => {
   }
 }
 
-const mergeFileSource = ({ existing, incoming, path }: LumenMergeConflict): string => {
-  if (existing.includes(incoming.trim())) return existing
+// Exclude matching outer lines. One replacement hunk keeps work linear even for unrelated templates.
+const diffSource = ({ existing, incoming, path }: LumenMergeConflict): string => {
+  const before = existing ? existing.split(/(?<=\n)/) : []
+  const after = incoming ? incoming.split(/(?<=\n)/) : []
+  let start = 0
 
-  return `${existing.trimEnd()}\n\n/* Lumen merge: ${path} */\n${incoming}`
+  while (start < before.length && before[start] === after[start]) start++
+
+  let oldEnd = before.length
+  let newEnd = after.length
+
+  while (oldEnd > start && newEnd > start && before[oldEnd - 1] === after[newEnd - 1]) {
+    oldEnd--
+
+    newEnd--
+  }
+
+  const range = (end: number) => `${end === start ? start : start + 1},${end - start}`
+
+  const lines = (source: string[], end: number, prefix: string) => source.slice(start, end)
+    .map(line => prefix + (line.endsWith('\n') ? line.slice(0, -1) : line + '\n\\ No newline at end of file'))
+
+  return [
+    `--- local/${path}`,
+    `+++ incoming/${path}`,
+    `@@ -${range(oldEnd)} +${range(newEnd)} @@`,
+    ...lines(before, oldEnd, '-'),
+    ...lines(after, newEnd, '+')
+  ].join('\n')
 }
 
 const getConflictMode = (options: LumenAddOptions) => (options.force ? 'overwrite' : (options.conflict ?? 'skip'))
-
-const getInstallSource = async (
-  file: LumenRecipeFile,
-  target: string,
-  exists: boolean,
-  options: LumenAddOptions,
-  conflict: NonNullable<LumenAddOptions['conflict']>
-) => {
-  if (!exists || conflict !== 'merge') return file.source
-
-  return (options.merge ?? mergeFileSource)({
-    existing: await readFile(target, 'utf8'),
-    incoming: file.source,
-    path: file.path
-  })
-}
-
-const writeInstallFile = async (target: string, source: string, dryRun: boolean | undefined) => {
-  if (dryRun) return
-
-  await mkdir(dirname(target), { recursive: true })
-
-  await writeFile(target, source, 'utf8')
-}
 
 const assertNoSymlinkSegments = async (cwd: string, path: string): Promise<void> => {
   let current = resolve(cwd)
@@ -312,7 +314,32 @@ const validateInstallConflicts = async (
   }
 }
 
-type InstallFileOutcome = 'added' | 'merged' | 'skipped'
+type InstallFileOutcome = 'added' | 'merged' | 'skipped' | { path: string, diff: string }
+
+const handleExistingFile = async (
+  file: LumenRecipeFile,
+  target: string,
+  options: LumenAddOptions,
+  conflict: NonNullable<LumenAddOptions['conflict']>
+): Promise<InstallFileOutcome> => {
+  if (conflict === 'error') throw new Error(`Refusing to overwrite existing file: ${file.path}`)
+
+  if (conflict === 'skip') return 'skipped'
+
+  const existing = await readFile(target, 'utf8')
+
+  if (existing === file.source) return 'skipped'
+
+  const input = { existing, incoming: file.source, path: file.path }
+
+  if (!options.merge) return { path: file.path, diff: diffSource(input) }
+
+  const merged = options.merge(input)
+
+  if (!options.dryRun) await writeFile(target, merged, 'utf8')
+
+  return 'merged'
+}
 
 const installRegistryFile = async (
   file: LumenRecipeFile,
@@ -321,19 +348,24 @@ const installRegistryFile = async (
   conflict: NonNullable<LumenAddOptions['conflict']>
 ): Promise<InstallFileOutcome> => {
   const target = join(cwd, file.path)
-  const exists = await fileExists(target)
 
-  if (exists && conflict === 'error') {
-    throw new Error(`Refusing to overwrite existing file: ${file.path}`)
+  if (options.dryRun) {
+    if (conflict === 'overwrite' || !(await fileExists(target))) return 'added'
+
+    return handleExistingFile(file, target, options, conflict)
   }
 
-  if (exists && conflict === 'skip') return 'skipped'
+  await mkdir(dirname(target), { recursive: true })
 
-  const source = await getInstallSource(file, target, exists, options, conflict)
+  try {
+    await writeFile(target, file.source, { encoding: 'utf8', flag: conflict === 'overwrite' ? 'w' : 'wx' })
 
-  await writeInstallFile(target, source, options.dryRun)
+    return 'added'
+  } catch (error) {
+    if (!(error instanceof Error && 'code' in error && error.code === 'EEXIST')) throw error
 
-  return exists && conflict === 'merge' ? 'merged' : 'added'
+    return handleExistingFile(file, target, options, conflict)
+  }
 }
 
 export const addLumenRegistryItem = async (name: string, options: LumenAddOptions = {}): Promise<LumenAddResult> => {
@@ -357,11 +389,18 @@ export const addLumenRegistryItem = async (name: string, options: LumenAddOption
 
   await validateInstallConflicts(files, cwd, conflict)
 
+  const conflicts: LumenAddResult['conflicts'] = []
   const merged: string[] = []
   const skipped: string[] = []
 
   for (const file of files) {
     const outcome = await installRegistryFile(file, cwd, options, conflict)
+
+    if (typeof outcome !== 'string') {
+      conflicts.push(outcome)
+
+      continue
+    }
 
     if (outcome === 'skipped') {
       skipped.push(file.path)
@@ -378,6 +417,7 @@ export const addLumenRegistryItem = async (name: string, options: LumenAddOption
 
   return {
     added,
+    conflicts,
     dryRun: Boolean(options.dryRun),
     files: files.map(file => file.path),
     item,

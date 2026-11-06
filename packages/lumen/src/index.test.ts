@@ -634,7 +634,7 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
-  test('merges registry recipes with existing files', async () => {
+  test('supports a caller-supplied merge resolver', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'lumen-merge-'))
 
     try {
@@ -645,6 +645,7 @@ describe('@santi020k/lumen umbrella package', () => {
 
       const result = await addLumenRegistryItem('custom', {
         conflict: 'merge',
+        merge: ({ existing, incoming }) => existing + incoming,
         cwd,
         registry: {
           description: 'Test registry',
@@ -666,7 +667,6 @@ describe('@santi020k/lumen umbrella package', () => {
       expect(result.added).toEqual([])
       expect(result.merged).toEqual(['src/lumen/custom.astro'])
       expect(source).toContain('Existing')
-      expect(source).toContain('Lumen merge: src/lumen/custom.astro')
       expect(source).toContain('Incoming')
     } finally {
       await rm(cwd, { force: true, recursive: true })

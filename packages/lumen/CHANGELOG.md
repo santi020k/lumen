@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Preserve customized wrappers and show the local-to-incoming diff when `lumen add --merge` encounters edits.
+
 ### Major Changes
 
 - Generate selective public component imports and required CSS in editable wrappers. Register only the
