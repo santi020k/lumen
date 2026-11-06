@@ -13,7 +13,7 @@ Publish only after the target packages and documentation are live and verified, 
 | Support | <https://lumen.santi020k.com/support> |
 | Documentation | <https://lumen.santi020k.com/docs/figma> |
 | Privacy | <https://lumen.santi020k.com/privacy#figma-plugin> |
-| Publish as | Lumen team |
+| Publish as | Santi020k Team · requested Community handle `@santi020k_lumen` |
 | Author | [santi020k](https://santi020k.com) |
 
 ## Description to paste
