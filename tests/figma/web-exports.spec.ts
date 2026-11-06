@@ -52,7 +52,7 @@ for (const platform of ['react', 'elements'] as const) {
 test('switches framework, downloads the selected starter and clears stale output', async ({ page }) => {
   await page.goto('/')
   for (const [label, extension, pkg] of [['React', 'tsx', 'react'], ['Web Components', 'html', 'elements']] as const) {
-    await page.getByRole('combobox', { name: 'Framework' }).click()
+    await page.getByRole('combobox', { name: 'Export target' }).click()
     await page.getByRole('option', { name: label, exact: true }).click()
     await expect(page.getByRole('tablist', { name: 'Conversion output' })).toHaveCount(0)
     await page.getByRole('combobox', { name: 'Target version' }).click()

@@ -8,7 +8,7 @@ import { readTarget } from './targets.js'
 
 figma.showUI(__html__, { width: 480, height: 720, themeColors: true })
 
-figma.root.setRelaunchData({ inspect: 'Inspect Lumen components and prepare a Lumen handoff.' })
+figma.root.setRelaunchData({ inspect: 'Inspect Lumen components and export a web or native starter.' })
 
 const send = (message: PluginMessage) => {
   figma.ui.postMessage(message)
@@ -86,7 +86,7 @@ figma.ui.onmessage = (message: unknown) => {
   const target = readTarget(message.platform, message.version, message.appearance)
 
   if (!target) {
-    send({ type: 'error', message: 'Choose a supported framework, Lumen version and appearance.' })
+    send({ type: 'error', message: 'Choose a supported platform, adapter version and appearance.' })
 
     return
   }

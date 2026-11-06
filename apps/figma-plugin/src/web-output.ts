@@ -1,10 +1,10 @@
-import type { Appearance, ExportTarget, WebPlatform } from './targets.js'
+import type { Appearance, WebPlatform, WebTarget } from './targets.js'
 import { layoutFor } from './targets.js'
 import { kebab } from './web-markup.js'
 
 const stylesheet = (appearance: Appearance) => appearance === 'glass' ? 'effects/glass' : `themes/${appearance.startsWith('santi020k-') ? 'santi020k' : appearance}`
 
-const setupImports = (target: ExportTarget, pkg: string, names: string[]) => {
+const setupImports = (target: WebTarget, pkg: string, names: string[]) => {
   const css = target.version === '4.4.0' ?
     ['styles.css'] :
     [
@@ -58,7 +58,7 @@ const themeFunction = (appearance: Appearance) => {
 }
 
 interface WebSource {
-  target: ExportTarget
+  target: WebTarget
   platform: WebPlatform
   names: string[]
   markup: string
@@ -115,7 +115,7 @@ const addThemeSwitchBehavior = (setup: string[], appearance: Appearance) => {
 
 const granularElements = new Set(['Badge', 'Button', 'Card', 'Dialog', 'Input', 'Kbd', 'Label', 'Timeline'])
 
-const elementRegistrations = (names: string[], target: ExportTarget, pkg: string) => {
+const elementRegistrations = (names: string[], target: WebTarget, pkg: string) => {
   if (!names.length) return []
 
   if (target.version === '5.0.0' && names.every(name => granularElements.has(name))) {

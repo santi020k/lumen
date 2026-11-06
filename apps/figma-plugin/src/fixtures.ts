@@ -62,3 +62,16 @@ export const editorialFixture = componentNode('Stack', { Direction: 'Vertical', 
     componentNode('ScrollReveal', { Animation: 'Scale' }, [componentNode('Kbd', { Text: 'Enter' })])
   ])
 ])
+
+// Exercise every native mapping, nested layout, independent field state and literal escaping in real compilers.
+export const nativeFixture = designNode({ children: [
+  ...settingsFixture.children,
+  componentNode('Stack', { Gap: 'Sm', Direction: 'Horizontal' }, [
+    componentNode('Eyebrow', { Text: 'Workspace' }),
+    componentNode('CardTitle', { Text: 'Settings' }),
+    componentNode('CardDescription', { Text: 'Preferences' }),
+    componentNode('Input', { Placeholder: 'Search', Size: 'Sm' }),
+    componentNode('Badge', { Variant: 'Success' }, [designNode({ type: 'TEXT', name: 'Badge', text: 'Ready' })])
+  ]),
+  designNode({ type: 'TEXT', text: 'Literal "value"\n${amount} \\(value) <tag/> & 👋', tokens: [{ field: 'fills', name: 'color/ink-muted' }] })
+] })

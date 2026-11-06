@@ -1,5 +1,5 @@
-import type { ExportTarget, LumenVersion, WebPlatform } from './targets.js'
-import { isPlatform, isVersion } from './targets.js'
+import type { ExportTarget, Platform } from './targets.js'
+import { isPlatform, readTarget } from './targets.js'
 
 export interface DesignNode {
   id: string
@@ -24,8 +24,8 @@ export interface Finding {
 export interface Analysis {
   schemaVersion: 1
   status: 'stable'
-  target: WebPlatform
-  lumenVersion: LumenVersion
+  target: Platform
+  lumenVersion: ExportTarget['version']
   layout: string
   selection: DesignNode
   findings: Finding[]
@@ -54,7 +54,7 @@ const isFinding = (value: unknown): value is Finding => isRecord(value) &&
 
 const isResult = (value: unknown): value is PluginResult => isRecord(value) &&
   typeof value.code === 'string' && typeof value.handoff === 'string' &&
-  typeof value.selectionName === 'string' && isPlatform(value.target) && isVersion(value.lumenVersion) && typeof value.layout === 'string' &&
+  typeof value.selectionName === 'string' && isPlatform(value.target) && readTarget(value.target, value.lumenVersion, 'project') !== null && typeof value.layout === 'string' &&
   Array.isArray(value.findings) && value.findings.length <= 10_000 &&
   value.findings.every(isFinding)
 

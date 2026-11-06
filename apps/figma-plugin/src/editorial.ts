@@ -1,10 +1,10 @@
 import type { DesignNode } from './model.js'
-import type { ExportTarget } from './targets.js'
+import type { WebTarget } from './targets.js'
 import type { WebMarkup } from './web-markup.js'
 import { elementTabs, expression } from './web-markup.js'
 
 interface RenderContext {
-  target: ExportTarget
+  target: WebTarget
   text: (node: DesignNode, property: string, fallback: string) => string
   choice: (node: DesignNode, property: string, options: string[], fallback: string) => string
   issue: (node: DesignNode, message: string) => void
