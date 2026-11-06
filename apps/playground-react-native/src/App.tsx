@@ -1095,6 +1095,7 @@ const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boo
     )}
     {isVisible('Waterfall chart') && (
       <LumenWaterfallChart
+        testID="component-waterfall-chart"
         label="Revenue movement"
         heading="Revenue movement"
         description="Opening balance to closing · USD, thousands"
@@ -1120,6 +1121,7 @@ const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boo
     )}
     {isVisible('Histogram') && (
       <LumenHistogram
+        testID="component-histogram"
         label="Response times"
         heading="Response time"
         description="Distribution of requests · milliseconds"
@@ -1531,6 +1533,7 @@ const Playground = ({
   return (
     <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
       <ScrollView
+        testID="component-preview"
         contentContainerStyle={getPlaygroundContentStyle(embedded)}
         keyboardShouldPersistTaps="handled"
         refreshControl={(

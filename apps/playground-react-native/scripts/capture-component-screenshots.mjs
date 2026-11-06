@@ -13,7 +13,7 @@ const outputDirectory = resolve(
   process.argv[2] ?? join(repositoryRoot, 'test-results/react-native-components')
 )
 
-const focusedCaptureSlugs = ['time-field', 'autocomplete', 'number-field', 'password-field', 'input-otp', 'image-comparison', 'media-viewport', 'media-thumbnail', 'media-filmstrip']
+const focusedCaptureSlugs = ['range-slider', 'histogram', 'waterfall-chart', 'time-field', 'autocomplete', 'number-field', 'password-field', 'input-otp', 'image-comparison', 'media-viewport', 'media-thumbnail', 'media-filmstrip']
 // Keep parity examples in a reproducible phone layout instead of mixing manual crops
 // and desktop catalog captures in the documentation baseline.
 const phoneExampleSlugs = ['timeline', 'table', 'stepper', 'breadcrumb', 'mentions', 'rating', 'tour', 'data-table', 'tree-grid', 'command', 'tooltip', 'carousel', 'tree-select', 'transfer', 'color-picker', 'schedule', 'calendar', 'agenda', 'kanban-board', 'kanban-column', 'cascader', 'tree', 'qr-code']
@@ -40,9 +40,11 @@ try {
 
     url.searchParams.set('component', component.name)
 
+    url.searchParams.set('embed', 'true')
+
     await page.goto(url.href, { waitUntil: 'load' })
 
-    await page.getByText('Lumen Playground', { exact: true }).waitFor()
+    await page.getByTestId('component-preview').waitFor()
 
     await page.evaluate(async () => {
       await document.fonts.ready
