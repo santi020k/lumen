@@ -104,6 +104,22 @@ describe('optional browser tooling', () => {
     expect(report.diagnostics[0]?.message).toContain('Install it explicitly')
   })
 
+  test('rejects ambiguous build reports before opening a browser', async () => {
+    const cwd = await mkdtemp(join(tmpdir(), 'lumen-build-report-'))
+    const path = join(cwd, 'graph.json')
+    const asset = { path: '/asset.js', imports: [['./entry.js', '@santi020k/lumen-react/dist/label.js']] }
+    try {
+      for (const assets of [[asset, asset], [{ ...asset, path: '//other.test/a.js' }], [{ ...asset, imports: [17] }]]) {
+        await writeFile(path, JSON.stringify({ schemaVersion: 1, assets }))
+        const result = await runRenderedAuditCommand(['http://localhost:9/', '--build-report', path, '--json'], cwd)
+        expect(result.exitCode).toBe(2)
+        expect(result.output).toContain('invalid-build-report')
+      }
+    } finally {
+      await rm(cwd, { recursive: true, force: true })
+    }
+  })
+
   test('rejects malformed asset inventories before loading a browser', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'lumen-rendered-expectations-'))
     try {

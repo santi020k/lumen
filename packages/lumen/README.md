@@ -132,6 +132,10 @@ Component wrapper names must be ASCII identifiers containing letters, digits, or
 starting with a letter or underscore, and cannot be reserved module keywords. Invalid names are
 rejected before generating or writing any wrapper; recipe names retain their existing format.
 
+For Vite 8 and Astro client builds, `@santi020k/lumen/vite/build-report` exports the optional
+`lumenBuildReport()` plugin. Pass its build report to `lumen audit-rendered --build-report` to see
+the modules and import chains associated with requested scripts. See the [rendered audit guide](../../docs/rendered-audit.md).
+
 Run `lumen doctor` to check adapter/style agreement, duplicate stylesheet entrypoints, Tailwind
 layer order, Astro runtime mounts, and fragile internal selector dependencies. In a workspace,
 diagnostics are scoped to the nearest package boundary, generated build trees are ignored, and

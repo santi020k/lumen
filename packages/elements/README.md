@@ -946,3 +946,6 @@ An intersecting element waits until that ratio is reached. If its size or a clip
 the threshold unreachable, it stays visible without animation. Resizing and enlarged text are
 rechecked. Keyboard focus within a reveal and reduced motion bypass decorative hiding immediately.
 Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.
+
+Use `defineLumenInput` from `@santi020k/lumen-elements/components/input` for a standalone
+form input. It shares its constructor with the full catalog. See the [web quick start](../../README.md#web-components).

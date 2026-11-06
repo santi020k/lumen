@@ -157,6 +157,14 @@
     "./components/scroll-progress": {
       "types": "./dist/entries/scroll-progress.d.ts",
       "import": "./dist/entries/scroll-progress.js"
+    },
+    "./components/card": {
+      "types": "./dist/entries/card.d.ts",
+      "import": "./dist/entries/card.js"
+    },
+    "./components/input": {
+      "types": "./dist/entries/input.d.ts",
+      "import": "./dist/entries/input.js"
     }
   },
   "files": [

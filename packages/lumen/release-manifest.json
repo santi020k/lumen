@@ -32,7 +32,8 @@
         },
         "@santi020k/lumen": {
           "peerDependencies": {
-            "react": ">=19"
+            "react": ">=19",
+            "vite": "*"
           },
           "version": "5.0.0"
         },

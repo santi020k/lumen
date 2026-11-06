@@ -39,6 +39,24 @@ framework-selection, component-composition, theming, accessibility, and verifica
 Use it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific
 requests.
 
+The portable skill records its guidance revision in `metadata.guidance-version` in `SKILL.md`.
+An unstamped installation predates versioned guidance. For a manager-tracked global skill, run
+`npx skills check -g` and refresh only Lumen with `npx skills update lumen-ui -g`. Use `-p` for
+a project install. The configured source determines which revision the manager offers.
+
+For a manual copy or release candidate, compare the whole skill with the intended Lumen checkout,
+including its framework references. For example, from the checkout:
+
+```bash
+git diff --no-index --stat -- skills/lumen-ui "$HOME/.codex/skills/lumen-ui"
+```
+
+Exit 1 identifies differences; exit 0 means the files match. Review local edits before refreshing.
+To install from that checkout, run `npx skills add . --skill lumen-ui --agent codex -g`.
+Use the same command without `-g` and with the checkout's absolute path in place of `.` to
+refresh a project copy from its project directory. The adapter installed in the application
+determines which CSS instructions apply.
+
 The skill and MCP server complement each other: the skill explains how to work, while
 `@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,
 source, tokens, resources, and rules.

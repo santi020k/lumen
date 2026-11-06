@@ -38,6 +38,33 @@ measured overflow are findings even when the observation completes.
 Reports omit URL credentials, query strings, and fragments. Console warning/error text is retained
 for diagnosis. Review that text before sharing a report.
 
+## Explain a requested JavaScript chunk
+
+For a Vite 8 client build, add the optional plugin from the Lumen CLI package to the app's
+`plugins` list. In Astro, put it under `vite.plugins` in `astro.config.mjs`.
+
+```js
+import { defineConfig } from 'vite'
+import { lumenBuildReport } from '@santi020k/lumen/vite/build-report'
+
+export default defineConfig({ plugins: [lumenBuildReport()] })
+```
+
+Build and serve that same output, then run:
+
+    pnpm exec lumen audit-rendered http://127.0.0.1:4321/ --build-report .cache/lumen/build-report.json
+
+Each matched script lists the Lumen modules the bundler associated with that chunk and one
+build-time import chain for each. Use the first application module in a chain to investigate
+why the dependency is present. A shared chunk may have several import paths. The browser
+request establishes which chunks loaded; the chain describes a possible build dependency.
+An entry with only a module name means the bundler supplied no path from a client entry.
+
+The report is local to the build and uses origin-relative Vite bases, including subdirectories.
+Use a distinct filename for each client build. It recognizes installed packages under
+`node_modules/@santi020k/lumen*`. CSS, externalized modules and workspace aliases that bypass the
+installed packages require separate evidence. Use an explicit inventory to enforce a route policy.
+
 ## Explicit asset expectations
 
 Pass --asset-expectations ./lumen-assets.json to classify known Lumen request URLs.

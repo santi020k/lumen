@@ -257,6 +257,9 @@ jobs:
       - name: Verify primitive motion and reduced-motion behavior
         run: pnpm run test:motion && pnpm run check:route-delivery
 
+      - name: Measure packed README subscribe forms
+        run: pnpm run measure:subscribe-form
+
       - name: Enforce web unit coverage
         run: pnpm run test:web-coverage
 

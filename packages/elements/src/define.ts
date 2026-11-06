@@ -159,6 +159,7 @@ import {
   LumenImageComparisonElement as GranularLumenImageComparisonElement,
   lumenImageComparisonElementConfig
 } from './components/image-comparison.js'
+import { LumenInputElement as GranularLumenInputElement, lumenInputElementConfig } from './components/input.js'
 import { LumenMediaFilmstripElement as GranularLumenMediaFilmstripElement, lumenMediaFilmstripElementConfig, LumenMediaThumbnailElement as GranularLumenMediaThumbnailElement, lumenMediaThumbnailElementConfig } from './components/media-selection.js'
 import { LumenMediaViewportElement as GranularLumenMediaViewportElement, lumenMediaViewportElementConfig } from './components/media-viewport.js'
 import { LumenTimelineElement as GranularLumenTimelineElement, lumenTimelineElementConfig } from './components/timeline.js'
@@ -738,14 +739,7 @@ const elementConfigs = {
     defaults: { fit: 'cover', radius: 'lg' },
     tagName: 'lumen-image'
   },
-  Input: {
-    attributeClasses: {
-      'visual-size': { lg: 'ui-input--lg', sm: 'ui-input--sm' }
-    },
-    baseClassName: 'ui-input',
-    defaults: { type: 'text' },
-    tagName: 'lumen-input'
-  },
+  Input: lumenInputElementConfig,
   InputGroup: { baseClassName: 'ui-input-group', tagName: 'lumen-input-group' },
   InputOTP: {
     baseClassName: 'ui-input-otp-field',
@@ -11202,7 +11196,6 @@ const behaviorElementClasses: Partial<
   WaterfallChart: LumenWaterfallChartBehaviorElement,
   Illustration: LumenIllustrationBehaviorElement,
   Icon: LumenIconBehaviorElement,
-  Input: LumenScalarFormControlElement,
   KanbanBoard: LumenKanbanBoardBehaviorElement,
   LanguageToggle: LumenLanguageToggleBehaviorElement,
   LineChart: LumenLineChartBehaviorElement,
@@ -11288,6 +11281,7 @@ const granularElementClasses: Partial<
   MediaViewport: GranularLumenMediaViewportElement,
   MediaThumbnail: GranularLumenMediaThumbnailElement,
   MediaFilmstrip: GranularLumenMediaFilmstripElement,
+  Input: GranularLumenInputElement,
   Label: GranularLumenLabelElement,
   Separator: GranularLumenSeparatorElement,
   Skeleton: GranularLumenSkeletonElement,

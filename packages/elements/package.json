@@ -124,6 +124,10 @@
     "./components/timeline": {
       "types": "./dist/components/timeline.d.ts",
       "import": "./dist/components/timeline.js"
+    },
+    "./components/input": {
+      "types": "./dist/entries/input.d.ts",
+      "import": "./dist/entries/input.js"
     }
   },
   "files": [

@@ -1199,3 +1199,6 @@ An intersecting element waits until that ratio is reached. If its size or a clip
 the threshold unreachable, it stays visible without animation. Resizing and enlarged text are
 rechecked. Keyboard focus within a reveal and reduced motion bypass decorative hiding immediately.
 Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.
+
+The subscribe-form components have individual entries under `/components/button`, `/components/card`,
+`/components/input` and `/components/label`. See the [web quick start](../../README.md#react).

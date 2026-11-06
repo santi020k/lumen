@@ -18,6 +18,24 @@ output bytes, and their raw samples as JSON. Set `LUMEN_BENCHMARK_ITERATIONS` to
 count. The Elements command builds the package once and compares complete-catalog registration with
 an explicit Card, Input, and Button set through the same minified browser bundler.
 
+## Packed subscribe-form quick start
+
+Run `pnpm run measure:subscribe-form` with Chromium installed. The fixture extracts the React and
+Elements examples directly from the root README, installs packed Lumen packages, and builds each
+example twice with Vite. Only the imports change between the catalog and granular cases. Each run
+opens a cold browser page, fills the email control and records requested JS and CSS response bodies.
+Gzip totals compress each response locally at level 9; React totals include React and React DOM.
+
+| Adapter | Traversed modules, catalog → granular | Requested JS + CSS gzip, catalog → granular |
+| --- | ---: | ---: |
+| React | 2,355 → 29 | 67,631 → 67,635 B |
+| Elements | 2,212 → 22 | 512,128 → 15,780 B |
+
+These are development measurements on packed candidates. React's improvement is in the build graph.
+Both Elements costs fell. The fixture checks for an unexpected catalog import and compares the module
+counts on every run. Granular builds allow 45 modules and 75,000 gzip bytes for React or 20,000 for
+Elements. Actual route requests on a consumer app depend on its bundler and shared chunks.
+
 ## November 5, 2026 Astro route delivery
 
 The modular candidate (`b328b53f`) is measured against published v4.4.0 (`fc264ae2`) using the same six cold
