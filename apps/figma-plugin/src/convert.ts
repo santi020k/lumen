@@ -1,7 +1,7 @@
 import designMap from '../../../registry/figma-design-map.json'
 
 import type { ComponentName } from './contracts.js'
-import { identifyComponent, isComponentName, libraryFileKey, withPresentationContent } from './contracts.js'
+import { identifyComponent, isComponentBoundary, isComponentName, isLayoutLayer, libraryFileKey, namedLayoutNote, withPresentationContent } from './contracts.js'
 import { editorialRenderers } from './editorial.js'
 import type { Analysis, DesignNode } from './model.js'
 import { analyzeNative } from './native.js'
@@ -215,11 +215,17 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
       return renderers[component](withPresentationContent(node), id, children)
     }
 
-    if (node.component || node.type === 'INSTANCE' || isComponentName(node.name)) return unverified(node)
+    if (isComponentBoundary(node)) return unverified(node)
 
     if (node.type === 'TEXT') return `<p>${markup.text(node.text ?? '')}</p>`
 
-    if (['FRAME', 'GROUP', 'SECTION'].includes(node.type)) return renderFrame(node, node.children.map(render).join('\n'))
+    if (isLayoutLayer(node)) {
+      const note = namedLayoutNote(node)
+
+      if (note) issue(node, note, 'inferred')
+
+      return renderFrame(node, node.children.map(render).join('\n'))
+    }
 
     issue(node, `Manually implement ${node.type.toLowerCase()} layers. Review the design context.`, 'unsupported')
 
