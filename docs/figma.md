@@ -21,17 +21,19 @@ custom layers stay in the handoff with review findings.
 
 Select one frame or instance, choose the version installed in the receiving project, then choose **Inspect selection**. Review the findings and the selected text before sharing an export. The plugin runs offline. See [setup, component coverage and version compatibility](../apps/figma-plugin/README.md).
 
-GitHub Actions prepares the versioned ZIP, revision and checksum for desktop verification. Community submission and installation verification follow the [publication checklist](../apps/figma-plugin/README.md#figma-community-publication). The Community link below opens the design library.
+GitHub Actions prepares the versioned ZIP, revision and checksum for desktop verification. Community submission and installation verification follow the [publication checklist](../apps/figma-plugin/README.md#figma-community-publication). The Community links below open the three design files.
 
 ## Design files
 
-| File | Open it to |
-| --- | --- |
-| [Lumen UI Library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) | Find the canonical components, styles, variables and [light/dark theme specimens](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9?node-id=600-3). |
-| [Lumen Templates](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3) | Adapt an editable desktop or mobile layout from the [template gallery](https://lumen.santi020k.com/templates). |
-| [Lumen Playgrounds](https://www.figma.com/design/G0NjJ4eAci1013PaLmseXI) | Compare web and native screens with the [running playgrounds](playgrounds.md). |
+Open a Community listing to get your own copy, or use the working file to inspect the source.
 
-Start from the [Community listing](https://www.figma.com/community/file/1662337342676541513) for a public copy of the library. Anyone with the companion links can view the six template layouts and four playground pages. Team members can use the published UI Library in both companion files.
+| Community resource | What you can do | Working file |
+| --- | --- | --- |
+| [Lumen UI Library](https://www.figma.com/community/file/1662337342676541513) | Explore reusable components, variables and [theme specimens](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9?node-id=600-3). | [Library source](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) |
+| [Lumen Templates](https://www.figma.com/community/file/1700607667944072280) | Adapt one of six desktop and mobile layouts from the [template gallery](https://lumen.santi020k.com/templates). | [Templates source](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3) |
+| [Lumen Playgrounds](https://www.figma.com/community/file/1700608473577262170) | Compare web and native screens with the [running playgrounds](playgrounds.md). | [Playgrounds source](https://www.figma.com/design/G0NjJ4eAci1013PaLmseXI) |
+
+The [Community artwork](../apps/docs/src/assets/figma-community/README.md) contains each cover and its four gallery screenshots.
 
 Set **Theme** on a frame to Lumen, Studio, Paper, Field, santi020k or Glass. Set **Color** to
 Light or Dark. Child instances inherit both choices. Set either control on a nested frame for a
