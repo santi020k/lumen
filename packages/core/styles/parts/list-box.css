@@ -113,7 +113,7 @@
 @layer lumen.components {
 .ui-list-box__option[aria-selected="true"] {
     background: hsl(var(--brand-soft));
-    color: hsl(var(--brand-solid));
+    color: hsl(var(--brand));
     font-weight: 650;
   }
 }
@@ -121,7 +121,7 @@
 @layer lumen.components {
 [data-ui-list-box-option][aria-selected="true"] {
     background: hsl(var(--brand-soft));
-    color: hsl(var(--brand-solid));
+    color: hsl(var(--brand));
     font-weight: 650;
   }
 }

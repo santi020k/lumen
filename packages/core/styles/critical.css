@@ -7,35 +7,35 @@
 [data-theme="light"],
 [data-theme="lumen-light"] {
   color-scheme: light;
-  --canvas: 210 24% 98%;
-  --surface: 0 0% 100%;
-  --surface-muted: 210 22% 95%;
-  --surface-strong: 213 18% 88%;
-  --line: 214 17% 84%;
-  --ink: 216 28% 12%;
-  --ink-soft: 215 14% 35%;
-  --ink-muted: 215 10% 50%;
-  --brand: 201 96% 32%;
-  --brand-solid: 201 96% 28%;
-  --brand-soft: 198 64% 92%;
+  --canvas: 45 24% 95%;
+  --surface: 48 40% 99%;
+  --surface-muted: 42 17% 91%;
+  --surface-strong: 40 13% 85%;
+  --line: 39 11% 76%;
+  --ink: 190 22% 12%;
+  --ink-soft: 190 11% 29%;
+  --ink-muted: 189 8% 36%;
+  --brand: 193 79% 26%;
+  --brand-solid: 192 72% 24%;
+  --brand-soft: 179 28% 88%;
   --on-brand: 0 0% 100%;
-  --accent: 169 78% 33%;
+  --accent: 160 48% 26%;
   --success: 142 76% 36%;
   --warning: 38 92% 50%;
   --danger: 0 84% 60%;
   --on-danger: 0 0% 0%;
   --chart-axis: var(--ink-muted);
-  --chart-diverging-mid: 213 18% 88%;
+  --chart-diverging-mid: 40 13% 85%;
   --chart-diverging-negative: 0 84% 60%;
-  --chart-diverging-positive: 201 96% 32%;
+  --chart-diverging-positive: 193 79% 26%;
   --chart-grid: var(--line);
   --chart-reference: var(--ink-soft);
   --chart-selection: var(--brand);
-  --chart-sequential-high: 201 96% 24%;
-  --chart-sequential-low: 198 64% 92%;
-  --chart-sequential-mid: 201 80% 58%;
-  --chart-series-1: 201 96% 32%;
-  --chart-series-2: 169 78% 33%;
+  --chart-sequential-high: 193 71% 19%;
+  --chart-sequential-low: 179 28% 88%;
+  --chart-sequential-mid: 191 43% 54%;
+  --chart-series-1: 193 79% 26%;
+  --chart-series-2: 160 48% 26%;
   --chart-series-3: 280 72% 56%;
   --chart-series-4: 25 95% 53%;
   --chart-series-5: 340 82% 55%;
@@ -64,9 +64,9 @@
   --ui-radius: 0.625rem;
   --ui-radius-sm: 0.375rem;
   --ui-radius-lg: 0.75rem;
-  --ui-shadow-sm: 0 1px 2px hsl(222 47% 11% / 0.06);
-  --ui-shadow-md: 0 8px 24px hsl(222 47% 11% / 0.08);
-  --ui-shadow-lg: 0 24px 64px hsl(222 47% 11% / 0.14);
+  --ui-shadow-sm: 0 1px 2px hsl(190 22% 12% / 0.05);
+  --ui-shadow-md: 0 4px 12px -3px hsl(190 22% 12% / 0.14);
+  --ui-shadow-lg: 0 16px 40px -10px hsl(190 22% 12% / 0.2);
   --glass-bg: 0 0% 100% / 0.55;
   --glass-bg-subtle: 0 0% 100% / 0.38;
   --glass-bg-strong: 0 0% 100% / 0.72;
@@ -94,35 +94,35 @@
 [data-theme="dark"],
 [data-theme="lumen-dark"] {
   color-scheme: dark;
-  --canvas: 224 24% 8%;
-  --surface: 224 18% 11%;
-  --surface-muted: 223 16% 15%;
-  --surface-strong: 222 14% 22%;
-  --line: 222 14% 26%;
-  --ink: 210 20% 96%;
-  --ink-soft: 214 14% 77%;
-  --ink-muted: 216 10% 62%;
-  --brand: 199 91% 56%;
-  --brand-solid: 199 91% 36%;
-  --brand-soft: 199 84% 16%;
+  --canvas: 190 14% 8%;
+  --surface: 188 11% 12%;
+  --surface-muted: 185 9% 16%;
+  --surface-strong: 182 8% 22%;
+  --line: 182 7% 32%;
+  --ink: 45 18% 94%;
+  --ink-soft: 160 8% 79%;
+  --ink-muted: 166 7% 68%;
+  --brand: 185 56% 72%;
+  --brand-solid: 189 66% 30%;
+  --brand-soft: 185 30% 17%;
   --on-brand: 0 0% 100%;
-  --accent: 166 76% 43%;
+  --accent: 153 44% 68%;
   --success: 142 69% 45%;
   --warning: 38 92% 55%;
   --danger: 0 84% 65%;
-  --on-danger: 224 24% 8%;
+  --on-danger: 190 14% 8%;
   --chart-axis: var(--ink-muted);
-  --chart-diverging-mid: 222 14% 22%;
+  --chart-diverging-mid: 182 8% 22%;
   --chart-diverging-negative: 0 84% 65%;
-  --chart-diverging-positive: 199 91% 56%;
+  --chart-diverging-positive: 185 56% 72%;
   --chart-grid: var(--line);
   --chart-reference: var(--ink-soft);
   --chart-selection: var(--brand);
-  --chart-sequential-high: 199 91% 66%;
-  --chart-sequential-low: 199 84% 16%;
-  --chart-sequential-mid: 199 72% 42%;
-  --chart-series-1: 199 91% 56%;
-  --chart-series-2: 166 76% 43%;
+  --chart-sequential-high: 182 58% 82%;
+  --chart-sequential-low: 185 30% 17%;
+  --chart-sequential-mid: 187 38% 43%;
+  --chart-series-1: 185 56% 72%;
+  --chart-series-2: 153 44% 68%;
   --chart-series-3: 285 82% 72%;
   --chart-series-4: 31 96% 62%;
   --chart-series-5: 342 88% 68%;
@@ -132,9 +132,9 @@
   --chart-tooltip-background: var(--ink);
   --chart-tooltip-foreground: var(--canvas);
   --ui-on-danger: var(--canvas);
-  --ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.18);
-  --ui-shadow-md: 0 12px 32px hsl(0 0% 0% / 0.24);
-  --ui-shadow-lg: 0 28px 80px hsl(0 0% 0% / 0.36);
+  --ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
+  --ui-shadow-md: 0 4px 14px -3px hsl(0 0% 0% / 0.36);
+  --ui-shadow-lg: 0 18px 44px -10px hsl(0 0% 0% / 0.48);
   --glass-bg: 224 20% 13% / 0.78;
   --glass-bg-subtle: 224 20% 13% / 0.64;
   --glass-bg-strong: 224 20% 13% / 0.9;
@@ -581,28 +581,17 @@
   opacity: 0.52;
 }
 
-.ui-button--default {
-  background: hsl(var(--brand-solid));
-  border-color: hsl(var(--brand-solid));
-  color: hsl(var(--on-brand));
-  box-shadow: 0 8px 20px hsl(var(--brand) / 0.22);
-}
-
-.ui-button--default:hover {
-  background: hsl(var(--brand-solid));
-  border-color: hsl(var(--brand-solid));
-}
-
+.ui-button--default,
 .ui-button--primary {
   background: hsl(var(--brand-solid));
   border-color: hsl(var(--brand-solid));
   color: hsl(var(--on-brand));
-  box-shadow: 0 8px 20px hsl(var(--brand) / 0.22);
+  box-shadow: var(--ui-shadow-sm);
 }
 
+.ui-button--default:hover,
 .ui-button--primary:hover {
-  background: hsl(var(--brand-solid));
-  border-color: hsl(var(--brand-solid));
+  box-shadow: var(--ui-shadow-md);
 }
 
 .ui-button--secondary {
@@ -1024,7 +1013,7 @@ lumen-date-picker.ui-date-picker-field {
 .ui-select__list [role="option"]:is(:hover, :focus-visible),
 .ui-select__list [role="option"][aria-selected="true"] {
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
   outline: none;
 }
 
@@ -1648,7 +1637,7 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 .ui-calendar__nav:hover:not(:disabled) {
   border-color: hsl(var(--brand) / 0.42);
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 
 .ui-calendar__nav:focus-visible {
@@ -1686,7 +1675,7 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 
 .ui-calendar td:hover:not([aria-disabled="true"]) {
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 
 .ui-calendar td:focus-visible {
@@ -2323,7 +2312,7 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 
 .ui-transfer__option:has(.ui-checkbox:checked) {
   background: hsl(var(--brand-soft) / 0.72);
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 
 .ui-transfer__controls .ui-button {
@@ -2471,19 +2460,19 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 [data-lumen-preset="default"],
 [data-lumen-preset="default"][data-lumen-scheme="light"] {
   color-scheme: light;
-  --canvas: 210 24% 98%;
-  --surface: 0 0% 100%;
-  --surface-muted: 210 22% 95%;
-  --surface-strong: 213 18% 88%;
-  --line: 214 17% 84%;
-  --ink: 216 28% 12%;
-  --ink-soft: 215 14% 35%;
-  --ink-muted: 215 10% 50%;
-  --brand: 201 96% 32%;
-  --brand-solid: 201 96% 28%;
-  --brand-soft: 198 64% 92%;
+  --canvas: 45 24% 95%;
+  --surface: 48 40% 99%;
+  --surface-muted: 42 17% 91%;
+  --surface-strong: 40 13% 85%;
+  --line: 39 11% 76%;
+  --ink: 190 22% 12%;
+  --ink-soft: 190 11% 29%;
+  --ink-muted: 189 8% 36%;
+  --brand: 193 79% 26%;
+  --brand-solid: 192 72% 24%;
+  --brand-soft: 179 28% 88%;
   --on-brand: 0 0% 100%;
-  --accent: 169 78% 33%;
+  --accent: 160 48% 26%;
   --success: 142 76% 36%;
   --warning: 38 92% 50%;
   --danger: 0 84% 60%;
@@ -2501,9 +2490,9 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
   --ui-radius-lg: 0.75rem;
   --ui-border-width: 1px;
   --ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
-  --ui-shadow-sm: 0 1px 2px hsl(222 47% 11% / 0.06);
-  --ui-shadow-md: 0 8px 24px hsl(222 47% 11% / 0.08);
-  --ui-shadow-lg: 0 24px 64px hsl(222 47% 11% / 0.14);
+  --ui-shadow-sm: 0 1px 2px hsl(190 22% 12% / 0.05);
+  --ui-shadow-md: 0 4px 12px -3px hsl(190 22% 12% / 0.14);
+  --ui-shadow-lg: 0 16px 40px -10px hsl(190 22% 12% / 0.2);
   --glass-bg: 0 0% 100% / 0.55;
   --glass-bg-subtle: 0 0% 100% / 0.38;
   --glass-bg-strong: 0 0% 100% / 0.72;
@@ -2526,23 +2515,23 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 [data-lumen-preset="default"][data-theme="dark"]:not([data-lumen-scheme="light"]),
 [data-lumen-preset="default"][data-theme="lumen-dark"]:not([data-lumen-scheme="light"]) {
   color-scheme: dark;
-  --canvas: 224 24% 8%;
-  --surface: 224 18% 11%;
-  --surface-muted: 223 16% 15%;
-  --surface-strong: 222 14% 22%;
-  --line: 222 14% 26%;
-  --ink: 210 20% 96%;
-  --ink-soft: 214 14% 77%;
-  --ink-muted: 216 10% 62%;
-  --brand: 199 91% 56%;
-  --brand-solid: 199 91% 36%;
-  --brand-soft: 199 84% 16%;
+  --canvas: 190 14% 8%;
+  --surface: 188 11% 12%;
+  --surface-muted: 185 9% 16%;
+  --surface-strong: 182 8% 22%;
+  --line: 182 7% 32%;
+  --ink: 45 18% 94%;
+  --ink-soft: 160 8% 79%;
+  --ink-muted: 166 7% 68%;
+  --brand: 185 56% 72%;
+  --brand-solid: 189 66% 30%;
+  --brand-soft: 185 30% 17%;
   --on-brand: 0 0% 100%;
-  --accent: 166 76% 43%;
+  --accent: 153 44% 68%;
   --success: 142 69% 45%;
   --warning: 38 92% 55%;
   --danger: 0 84% 65%;
-  --on-danger: 224 24% 8%;
+  --on-danger: 190 14% 8%;
   --ui-space-zero: 0rem;
   --ui-space-xs: 0.25rem;
   --ui-space-sm: 0.5rem;
@@ -2556,9 +2545,9 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
   --ui-radius-lg: 0.75rem;
   --ui-border-width: 1px;
   --ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
-  --ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.18);
-  --ui-shadow-md: 0 12px 32px hsl(0 0% 0% / 0.24);
-  --ui-shadow-lg: 0 28px 80px hsl(0 0% 0% / 0.36);
+  --ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
+  --ui-shadow-md: 0 4px 14px -3px hsl(0 0% 0% / 0.36);
+  --ui-shadow-lg: 0 18px 44px -10px hsl(0 0% 0% / 0.48);
   --glass-bg: 224 20% 13% / 0.78;
   --glass-bg-subtle: 224 20% 13% / 0.64;
   --glass-bg-strong: 224 20% 13% / 0.9;
@@ -2648,7 +2637,7 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
   --success: 142 69% 45%;
   --warning: 38 92% 55%;
   --danger: 0 84% 65%;
-  --on-danger: 224 24% 8%;
+  --on-danger: 190 14% 8%;
   --ui-space-zero: 0rem;
   --ui-space-xs: 0.25rem;
   --ui-space-sm: 0.5rem;
@@ -2683,19 +2672,19 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 [data-lumen-preset="glass"],
 [data-lumen-preset="glass"][data-lumen-scheme="light"] {
   color-scheme: light;
-  --canvas: 210 24% 98%;
-  --surface: 0 0% 100%;
-  --surface-muted: 210 22% 95%;
-  --surface-strong: 213 18% 88%;
-  --line: 214 17% 84%;
-  --ink: 216 28% 12%;
-  --ink-soft: 215 14% 35%;
-  --ink-muted: 215 10% 50%;
-  --brand: 201 96% 32%;
-  --brand-solid: 201 96% 28%;
-  --brand-soft: 198 64% 92%;
+  --canvas: 45 24% 95%;
+  --surface: 48 40% 99%;
+  --surface-muted: 42 17% 91%;
+  --surface-strong: 40 13% 85%;
+  --line: 39 11% 76%;
+  --ink: 190 22% 12%;
+  --ink-soft: 190 11% 29%;
+  --ink-muted: 189 8% 36%;
+  --brand: 193 79% 26%;
+  --brand-solid: 192 72% 24%;
+  --brand-soft: 179 28% 88%;
   --on-brand: 0 0% 100%;
-  --accent: 169 78% 33%;
+  --accent: 160 48% 26%;
   --success: 142 76% 36%;
   --warning: 38 92% 50%;
   --danger: 0 84% 60%;
@@ -2738,23 +2727,23 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 [data-lumen-preset="glass"][data-theme="dark"]:not([data-lumen-scheme="light"]),
 [data-lumen-preset="glass"][data-theme="lumen-dark"]:not([data-lumen-scheme="light"]) {
   color-scheme: dark;
-  --canvas: 224 24% 8%;
-  --surface: 224 18% 11%;
-  --surface-muted: 223 16% 15%;
-  --surface-strong: 222 14% 22%;
-  --line: 222 14% 26%;
-  --ink: 210 20% 96%;
-  --ink-soft: 214 14% 77%;
-  --ink-muted: 216 10% 62%;
-  --brand: 199 91% 56%;
-  --brand-solid: 199 91% 36%;
-  --brand-soft: 199 84% 16%;
+  --canvas: 190 14% 8%;
+  --surface: 188 11% 12%;
+  --surface-muted: 185 9% 16%;
+  --surface-strong: 182 8% 22%;
+  --line: 182 7% 32%;
+  --ink: 45 18% 94%;
+  --ink-soft: 160 8% 79%;
+  --ink-muted: 166 7% 68%;
+  --brand: 185 56% 72%;
+  --brand-solid: 189 66% 30%;
+  --brand-soft: 185 30% 17%;
   --on-brand: 0 0% 100%;
-  --accent: 166 76% 43%;
+  --accent: 153 44% 68%;
   --success: 142 69% 45%;
   --warning: 38 92% 55%;
   --danger: 0 84% 65%;
-  --on-danger: 224 24% 8%;
+  --on-danger: 190 14% 8%;
   --ui-space-zero: 0rem;
   --ui-space-xs: 0.25rem;
   --ui-space-sm: 0.5rem;

@@ -63,9 +63,9 @@ export const lumenRadius = {
 } as const
 
 export const lumenShadow = {
-  lg: '0 24px 64px hsl(222 47% 11% / 0.14)',
-  md: '0 8px 24px hsl(222 47% 11% / 0.08)',
-  sm: '0 1px 2px hsl(222 47% 11% / 0.06)'
+  lg: '0 16px 40px -10px hsl(190 22% 12% / 0.2)',
+  md: '0 4px 12px -3px hsl(190 22% 12% / 0.14)',
+  sm: '0 1px 2px hsl(190 22% 12% / 0.05)'
 } as const
 
 export const lumenFont = lumenFontFamilies.sans

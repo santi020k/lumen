@@ -95,7 +95,7 @@ test('scoped CSS presets reset palettes and remain opaque without explicit glass
   await expect(parent).toHaveCSS('--brand', '0 0% 96%')
   await expect(parent).toHaveCSS('--ui-shadow-md', 'none')
   const child = parent.locator('[data-lumen-preset="default"]')
-  await expect(child).toHaveCSS('--brand', '201 96% 32%')
+  await expect(child).toHaveCSS('--brand', '193 79% 26%')
   expect(await child.evaluate(element => getComputedStyle(element).getPropertyValue('--ui-shadow-md'))).not.toBe('none')
 })
 

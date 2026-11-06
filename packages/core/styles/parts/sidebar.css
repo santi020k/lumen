@@ -31,14 +31,14 @@
 @layer lumen.components {
 .ui-sidebar a:hover {
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 }
 
 @layer lumen.components {
 .ui-sidebar a[aria-current="page"] {
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 }
 

@@ -48,7 +48,7 @@ const expected = {
   '@santi020k/lumen-react-hook-form': '4.0.2',
   '@santi020k/lumen-icons-brand': '4.0.1',
   '@santi020k/lumen-react-native': '4.0.3',
-  '@santi020k/lumen-tokens': '4.0.0'
+  '@santi020k/lumen-tokens': '4.0.1'
 }
 const lock = (versions: Readonly<Record<string, string>>) => `packages:\n${Object.entries(versions)
   .map(([name, version]) => `  '${name}@${version}': {}`).join('\n')}\n`
@@ -109,7 +109,7 @@ test('updates direct ranges and named/default catalogs idempotently without chan
   const workspace = updateLumenWorkspaceSource(await readFile(join(root, 'pnpm-workspace.yaml'), 'utf8'), '5.0.0', expected)
 
   expect(workspace).toContain('\'@santi020k/lumen-react-native\': ~4.0.3')
-  expect(workspace).toContain('\'@santi020k/lumen-tokens\': ^4.0.0')
+  expect(workspace).toContain('\'@santi020k/lumen-tokens\': ^4.0.1')
   expect(updateLumenWorkspaceSource(workspace, '5.0.0', expected)).toBe(workspace)
 })
 
@@ -149,7 +149,7 @@ test('applies exact mixed targets, restores range styles, cleans stale release-a
 
   expect(update?.[1]).toContain('@santi020k/lumen-react-hook-form@4.0.2')
   expect(update?.[1]).toContain('@santi020k/lumen-react-native@4.0.3')
-  expect(update?.[1]).toContain('@santi020k/lumen-tokens@4.0.0')
+  expect(update?.[1]).toContain('@santi020k/lumen-tokens@4.0.1')
   expect(update?.[1]).not.toContain('@santi020k/lumen-react-hook-form@5.0.0')
   expect(report.dependencies?.repositories[0]?.warnings).toEqual([])
   expect(report.consumerAudit?.findings.filter(finding => finding.classification === 'compatibility-failure')).toEqual([])

@@ -2,6 +2,8 @@
 
 ## 4.0.3
 
+- Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
+
 ### Patch Changes
 
 - Stop tree traversal if a caller changes node IDs or parent links after validation and creates a cycle.

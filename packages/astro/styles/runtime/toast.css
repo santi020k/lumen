@@ -102,14 +102,7 @@
   background: hsl(var(--brand-solid));
   border-color: hsl(var(--brand-solid));
   color: hsl(var(--on-brand));
-  box-shadow: 0 8px 20px hsl(var(--brand) / 0.22);
-}
-}
-
-@layer lumen.components {
-.ui-button--default:hover {
-  background: hsl(var(--brand-solid));
-  border-color: hsl(var(--brand-solid));
+  box-shadow: var(--ui-shadow-sm);
 }
 }
 
@@ -118,14 +111,19 @@
   background: hsl(var(--brand-solid));
   border-color: hsl(var(--brand-solid));
   color: hsl(var(--on-brand));
-  box-shadow: 0 8px 20px hsl(var(--brand) / 0.22);
+  box-shadow: var(--ui-shadow-sm);
+}
+}
+
+@layer lumen.components {
+.ui-button--default:hover {
+  box-shadow: var(--ui-shadow-md);
 }
 }
 
 @layer lumen.components {
 .ui-button--primary:hover {
-  background: hsl(var(--brand-solid));
-  border-color: hsl(var(--brand-solid));
+  box-shadow: var(--ui-shadow-md);
 }
 }
 

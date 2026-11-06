@@ -165,7 +165,7 @@ const structuredData = composeJsonLd(
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <MetadataHead {page} site={site.options} noindexPolicy="minimal" />
-    <meta name="theme-color" content="#f8fafc" />
+    <meta name="theme-color" content="#f5f4ef" />
     <script
       is:inline
       type="application/ld+json"
@@ -257,9 +257,9 @@ const structuredData = composeJsonLd(
   )
 
   const getThemeColor = (theme: ColorTheme): string => {
-    if (theme === 'lumen-dark') return '#111827'
+    if (theme === 'lumen-dark') return '#121617'
 
-    if (theme === 'lumen-light') return '#f8fafc'
+    if (theme === 'lumen-light') return '#f5f4ef'
 
     if (theme === 'santi020k-dark') return '#110c1d'
 

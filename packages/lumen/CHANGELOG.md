@@ -6,6 +6,8 @@
 
 - Default upgrade audits to the bundled release, attribute requested full CSS through Vite and Astro build reports (with an optional PostCSS import collector), and add editable feedback-board and responsive-navigation recipes.
 
+- Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
+
 - Preserve customized wrappers and show the local-to-incoming diff when `lumen add --merge` encounters edits.
 
 Expose a Vite client build report for rendered audits and generate selective subscribe-form wrappers.

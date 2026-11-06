@@ -248,7 +248,7 @@
 .ui-speed-dial__action:hover {
   border-color: hsl(var(--brand) / 0.38);
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
   transform: translateY(-1px);
 }
 
@@ -260,7 +260,7 @@
   justify-content: center;
   border-radius: 9999px;
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 
 .ui-speed-dial__action-icon :where(svg) {

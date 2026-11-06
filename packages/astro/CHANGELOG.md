@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
+
 ### Major Changes
 
 - Ship Lumen light and dark in selective CSS. Add Studio, santi020k, Paper, Field, and glass independently with optional style imports. Paper and Field support light and dark reading surfaces and forms. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions, and shared website colors from `@santi020k/theme/site.css` with increased-contrast support.

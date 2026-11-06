@@ -51,14 +51,14 @@
   --ui-code-fg: hsl(var(--ink));
   --ui-code-header-bg: hsl(var(--surface) / 0.72);
   --ui-code-inline-bg: hsl(var(--brand-soft));
-  --ui-code-inline-fg: hsl(var(--brand-solid));
+  --ui-code-inline-fg: hsl(var(--brand));
   --ui-code-muted: hsl(var(--ink-soft));
-  --ui-code-token-accent: hsl(var(--brand-solid));
+  --ui-code-token-accent: hsl(var(--brand));
   --ui-code-token-comment: hsl(var(--ink-soft));
-  --ui-code-token-keyword: hsl(var(--brand-solid));
+  --ui-code-token-keyword: hsl(var(--brand));
   --ui-code-token-string: hsl(var(--ink-soft));
   --ui-code-token-symbol: hsl(var(--ink-soft));
-  --ui-code-token-type: hsl(var(--brand-solid));
+  --ui-code-token-type: hsl(var(--brand));
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 }
@@ -109,14 +109,14 @@
   --ui-code-fg: hsl(var(--ink));
   --ui-code-header-bg: hsl(var(--surface) / 0.72);
   --ui-code-inline-bg: hsl(var(--brand-soft));
-  --ui-code-inline-fg: hsl(var(--brand-solid));
+  --ui-code-inline-fg: hsl(var(--brand));
   --ui-code-muted: hsl(var(--ink-muted));
   --ui-code-token-accent: hsl(var(--accent));
   --ui-code-token-comment: hsl(var(--ink-muted));
   --ui-code-token-keyword: hsl(var(--brand));
   --ui-code-token-string: hsl(var(--success));
   --ui-code-token-symbol: hsl(var(--warning));
-  --ui-code-token-type: hsl(var(--brand-solid));
+  --ui-code-token-type: hsl(var(--brand));
 }
 }
 

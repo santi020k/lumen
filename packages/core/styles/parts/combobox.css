@@ -54,7 +54,7 @@
 @layer lumen.components {
 .ui-combobox__list [role="option"]:is(:hover, :focus-visible) {
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
   outline: none;
 }
 }
@@ -62,7 +62,7 @@
 @layer lumen.components {
 .ui-combobox__list [role="option"][aria-selected="true"] {
   background: hsl(var(--brand-soft));
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
   outline: none;
 }
 }

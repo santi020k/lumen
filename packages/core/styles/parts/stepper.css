@@ -88,7 +88,7 @@
   border-color: hsl(var(--brand));
   background: hsl(var(--brand-soft));
   box-shadow: 0 0 0 3px hsl(var(--brand) / 0.1);
-  color: hsl(var(--brand-solid));
+  color: hsl(var(--brand));
 }
 
 .ui-stepper__step[data-state="complete"] .ui-stepper__marker {
