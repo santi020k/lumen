@@ -163,6 +163,61 @@
 }
 }
 
+/* Optional santi020k palette used by the documentation. */
+@layer lumen.tokens {
+:root[data-theme="santi020k-light"] {
+  color-scheme: light;
+  --canvas: 268 20% 98%;
+  --surface: 268 20% 100%;
+  --surface-muted: 268 20% 96%;
+  --surface-strong: 268 15% 90%;
+  --line: 268 15% 84%;
+  --ink: 268 10% 20%;
+  --ink-soft: 268 8% 36%;
+  --ink-muted: 268 6% 28%;
+  --brand: 264 92% 47%;
+  --brand-solid: 264 92% 42%;
+  --brand-soft: 264 60% 94%;
+  --accent: 264 95% 57%;
+  --success: 142 76% 36%;
+  --warning: 38 92% 50%;
+  --danger: 0 84% 60%;
+}
+
+:root[data-theme="santi020k-dark"] {
+  color-scheme: dark;
+  --canvas: 260 43% 8%;
+  --surface: 260 30% 12%;
+  --surface-muted: 260 25% 15%;
+  --surface-strong: 260 20% 21%;
+  --line: 260 15% 30%;
+  --ink: 260 10% 88%;
+  --ink-soft: 260 8% 72%;
+  --ink-muted: 260 6% 56%;
+  --brand: 264 90% 70%;
+  --brand-solid: 264 90% 52%;
+  --brand-soft: 264 45% 18%;
+  --accent: 264 90% 68%;
+  --success: 142 71% 45%;
+  --warning: 38 92% 55%;
+  --danger: 0 84% 65%;
+  --glass-bg: 260 22% 12% / 0.78;
+  --glass-bg-subtle: 260 22% 12% / 0.64;
+  --glass-bg-strong: 260 22% 12% / 0.9;
+  --glass-border: 260 28% 88% / 0.24;
+  --glass-highlight: 260 36% 96% / 0.1;
+  --glass-brightness: 1;
+  --glass-edge: 260 40% 98% / 0.24;
+  --glass-edge-soft: 260 40% 98% / 0.08;
+  --glass-shade: 260 45% 3% / 0.34;
+  --glass-refraction: 264 95% 70% / 0.12;
+  --glass-shadow:
+    0 1px 2px hsl(0 0% 0% / 0.32),
+    0 16px 40px hsl(0 0% 0% / 0.36),
+    0 40px 96px hsl(0 0% 0% / 0.4);
+}
+}
+
 @layer lumen.base {
 /* Preserve native hiding even when a primitive establishes its own display mode. */
 [hidden]:not([hidden="until-found"]) {
@@ -6468,7 +6523,8 @@ lumen-dialog-close {
 }
 
 .ui-stat--accent,
-.ui-stat--glass {
+.ui-stat--glass,
+.ui-stat.ui-stat--glass {
   --ui-stat-gap: 0.5rem;
   --ui-stat-padding: 1.25rem;
 

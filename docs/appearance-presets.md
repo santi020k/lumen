@@ -14,14 +14,25 @@ preset. A preset does not reproduce PostLens's editor layout or bring photo work
 
 ## Web
 
-Load the adapter stylesheet once. The preset CSS adds about 1.3 KiB compressed to the shared stylesheet. Set the preset on the application root or a scoped section;
-set `data-lumen-scheme` explicitly when the section owns its scheme. Without an explicit scheme,
-the preset follows an ancestor's `data-theme="dark"` or `data-theme="lumen-dark"`.
+The selective web foundation provides Lumen light and dark. Import the optional CSS you use from
+your web adapter, Core, or the umbrella package. Each entry works independently.
+
+| Optional import | How to use it |
+| --- | --- |
+| `styles/themes/studio.css` | Set `data-lumen-preset="studio"` on the root or a section for the PostLens palette. |
+| `styles/effects/glass.css` | Set the component's `glass` prop for a translucent surface with any palette. This entry also supplies the `glass` appearance preset and glass variables. |
+| `styles/themes/santi020k.css` | Set `data-theme="santi020k-light"` or `data-theme="santi020k-dark"` on the document root for the docs palette. This entry also styles `Code` with `theme="santi020k"`. |
+
+Astro components load the foundation automatically. For React and Elements, import
+`styles/foundation.css` once and the CSS for each component. The full `styles.css` includes
+all three appearances. A scoped preset follows an ancestor's `data-theme="dark"` or
+`data-theme="lumen-dark"`. Set `data-lumen-scheme` when the section owns its scheme.
 
 ```astro
 ---
 import { Button, Card } from '@santi020k/lumen-astro'
-import '@santi020k/lumen-astro/styles.css'
+import '@santi020k/lumen-astro/styles/themes/studio.css'
+import '@santi020k/lumen-astro/styles/effects/glass.css'
 ---
 
 <section data-lumen-preset="studio" data-lumen-scheme="light">

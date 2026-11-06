@@ -56,6 +56,14 @@ The latter adds composition routes, which changes shared chunk composition. All 
 comparisons match the v4 baseline. Navigation checks include a dynamically created toast before
 and after an Astro page swap, retaining its stylesheet without another download.
 
+## Optional appearance CSS in v5
+
+With Node 22.23.4, Astro 7.4.5 and the same six cold routes, the base Card/Button page
+requested 5,180 gzip bytes of CSS, down from 7,025 at `b3c9194b` (1,845 bytes or 26.3%).
+Uncompressed CSS went from 36,421 to 18,218 bytes. Both builds requested zero JavaScript for
+this route. The dialog went from 8,705 to 6,975 gzip bytes and CodeTabs from 8,069 to 6,065.
+The static fixture has a 5,500-byte gzip budget. These totals apply to selective imports.
+
 ## November 5, 2026 production installation footprint
 
 Ten empty projects compared published Core/Astro/CLI 4.4.0 and React/Elements 4.3.0 with fresh packs

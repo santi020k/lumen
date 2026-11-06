@@ -1,7 +1,7 @@
 {
   "static": {
     "javascriptGzip": 0,
-    "cssGzip": 7500,
+    "cssGzip": 5500,
     "controllers": []
   },
   "static-runtime": {

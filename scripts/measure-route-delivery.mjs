@@ -8,6 +8,7 @@ import { gzipSync } from 'node:zlib'
 
 import { chromium } from '@playwright/test'
 
+import { checkAppearanceDelivery } from './check-appearance-delivery.mjs'
 import { captureStyleMatrix, compareStyleMatrix } from './check-component-css-rendering.mjs'
 import { checkColdInteractions, checkDialogViewport, checkDynamicToast, checkFailedChunkRecovery, checkNavigation } from './check-route-runtime.mjs'
 
@@ -231,6 +232,8 @@ try {
       assert(!result.modules.some(module => /(?:world-map|phone-input|rich-text|schedule)/.test(module)),
         `${route} requested an unrelated heavy feature`)
     }
+
+    await checkAppearanceDelivery(browser, repo)
 
     await checkColdInteractions(browser, origin, graph)
 

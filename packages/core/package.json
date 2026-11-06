@@ -107,6 +107,9 @@
       "import": "./dist/media-viewport.js"
     },
     "./styles/foundation.css": "./styles/foundation.css",
+    "./styles/themes/studio.css": "./styles/themes/studio.css",
+    "./styles/themes/santi020k.css": "./styles/themes/santi020k.css",
+    "./styles/effects/glass.css": "./styles/effects/glass.css",
     "./styles/components/*.css": "./styles/components/*.css",
     "./styles.css": "./styles/lumen.css",
     "./styles/manifest.json": "./styles/manifest.json",

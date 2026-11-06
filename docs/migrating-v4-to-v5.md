@@ -59,6 +59,7 @@ Check repeatable reveals and enlarged text; keep thresholds that express your in
 Astro components import their foundation and component styles automatically. React and Elements
 consumers can import `styles/foundation.css` once and `styles/components/<component>.css` for each
 documented component. `lumen add` generates the supported setup. Full `styles.css` remains supported.
+The selective foundation ships Lumen light and dark. Add only the appearances you use from your adapter: `styles/themes/studio.css`, `styles/themes/santi020k.css`, or `styles/effects/glass.css`. Full `styles.css` includes all three. This includes glass variants and the branded Code theme.
 Remove full CSS only after checking all routes, themes, compound children, Markdown, and runtime-created
 markup. Frameworks may share CSS and JavaScript chunks across routes.
 

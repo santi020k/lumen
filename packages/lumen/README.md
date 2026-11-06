@@ -114,6 +114,7 @@ Lumen 5 wrappers use verified selective component entries and their required CSS
 register only the selected constructor. Unavailable selective entries carry a catalog-fallback
 comment. See [selective installation](../../docs/selective-installation.md) for automatic Astro CSS,
 manual markup setup, source doctor version evidence, and the full stylesheet convenience option.
+For selective styles, add Studio, santi020k or glass using the [appearance imports](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md#web).
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
 `--target elements` for a custom-elements starter. Recipe availability varies by family; the editorial family supports Astro. With `--conflict error`, existing target files are checked before any recipe
