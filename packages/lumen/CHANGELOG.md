@@ -76,6 +76,8 @@ Expose a Vite client build report for rendered audits and generate selective sub
   file and directory destinations before installation, protect linked files during updates, and enforce
   the local registry byte limit while reading.
 
+- Preserve list indentation and unrelated pnpm settings when updating release-age exclusions during a rollout.
+
 - Resolve v5 dependency migrations and audits through the release manifest so independently versioned companions retain their actual versions. Native Swift and Maven pins remain application-owned.
 
 - Keep compact PhoneInput sizing when shared Input styles load later in another component chunk.

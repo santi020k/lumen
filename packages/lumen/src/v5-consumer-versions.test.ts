@@ -127,6 +127,10 @@ test('v5 dependency dry-run reports individual targets and leaves manifests, cat
 
 test('applies exact mixed targets, restores range styles, cleans stale release-age exceptions and verifies the lock', async () => {
   const root = await fixture()
+  const workspacePath = join(root, 'pnpm-workspace.yaml')
+  const sibling = 'allowedDeprecatedVersions:\n  unrelated:\n    - "@santi020k/lumen-react-native@4.0.2"\n'
+
+  await writeFile(workspacePath, await readFile(workspacePath, 'utf8') + sibling)
 
   execution.run.mockImplementation(async (executable, args, options) => {
     if (executable === 'corepack' && args.includes('update')) {
@@ -154,7 +158,8 @@ test('applies exact mixed targets, restores range styles, cleans stale release-a
   expect(workspace).toContain('"webpack"')
   expect(workspace).toContain('"@santi020k/lumen-react-hook-form@4.0.2"')
   expect(workspace).not.toContain('"@santi020k/lumen-react-hook-form@4.0.1"')
-  expect(workspace).not.toContain('"@santi020k/lumen-react-native@4.0.2"')
+  expect(workspace).toContain(sibling)
+  expect(workspace.split('allowedDeprecatedVersions:')[0]).not.toContain('"@santi020k/lumen-react-native@4.0.2"')
   expect(await readFile(join(root, 'package.json'), 'utf8')).toContain('"^4.0.2"')
   expect(await readFile(join(root, 'Package.swift'), 'utf8')).toBe('let version = "4.4.0"\n')
   expect(await readFile(join(root, 'build.gradle.kts'), 'utf8')).toContain('lumen-compose:4.0.1')
