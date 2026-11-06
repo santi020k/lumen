@@ -16,6 +16,7 @@ interface Props extends HTMLAttributes<'code'> {
   class?: string | null
   className?: string
   code?: string
+  appearance?: 'default' | 'editorial'
   copy?: boolean
   codeLabel?: string
   copyLabel?: string
@@ -35,6 +36,7 @@ const {
   class: classProp = '',
   className = '',
   code,
+  appearance = 'default',
   copy = false,
   codeLabel = 'Code example',
   copyLabel = 'Copy code to clipboard',
@@ -54,6 +56,7 @@ const {
 const { classList: blockClassList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-code',
   'ui-code--block',
+  appearance === 'editorial' && 'ui-code--editorial',
   wrap && 'ui-code--wrap'
 ], classProp, className)
 
@@ -83,6 +86,7 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
     >
       {shouldShowHeader && (
         <figcaption class="ui-code__header">
+          <Fragment set:html={renderLumenIconSvg('code-xml', { className: 'ui-code__symbol' })} />
           <span class="ui-code__dots" aria-hidden="true">
             <span class="ui-code__dot ui-code__dot--red"></span>
             <span class="ui-code__dot ui-code__dot--yellow"></span>
@@ -108,6 +112,13 @@ const renderedCode = hasCode ? renderLumenCodeHtml(code, language) : ''
             >
               <Fragment set:html={renderLumenIconSvg('copy', { className: 'ui-code__copy-icon' })} />
               <Fragment set:html={renderLumenIconSvg('check', { className: 'ui-code__check-icon' })} />
+              {appearance === 'editorial' && (
+<span class="ui-code__copy-text">
+                <span data-slot="copy-idle">{copyLabel}</span>
+                <span data-slot="copy-copied" hidden>{copiedLabel}</span>
+                <span data-slot="copy-error" hidden>{errorLabel}</span>
+              </span>
+)}
             </button>
           )}
         </figcaption>

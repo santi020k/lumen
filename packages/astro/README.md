@@ -934,3 +934,17 @@ An intersecting element waits until that ratio is reached. If its size or a clip
 the threshold unreachable, it stays visible without animation. Resizing and enlarged text are
 rechecked. Keyboard focus within a reveal and reduced motion bypass decorative hiding immediately.
 Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.
+
+### Editorial code blocks
+
+Use `appearance="editorial"` on a block `Code` (or `<lumen-code>`) for a theme-aware
+code icon, wrapping header metadata, and visible copy feedback. The default appearance retains
+the window dots and icon-only copy control. Both appearances provide stable 44px copy targets.
+Existing copy labels also supply the visible editorial feedback, so localize them together:
+`copyLabel`, `copiedLabel`, and `errorLabel` in Astro/React; `copy-label`, `copied-label`, and
+`error-label` in Elements. Set a descriptive `codeLabel` (`code-label` in Elements) for each
+keyboard-scrollable example. Astro also supports `scrollCue` for an overflow-only reading hint.
+
+The docs compose public `Code` and `Collapsible` primitives to preview the first 12 lines of
+examples longer than 24 lines. Folding is application policy; clipboard content always remains
+the complete source. Pass the original `code` when supplying highlighted or preview content.

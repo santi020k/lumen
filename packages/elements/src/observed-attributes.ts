@@ -16,6 +16,7 @@ export const observedAttributeNames = [
   'target-label',
   'activation-offset',
   'animation',
+  'appearance',
   'area',
   'autocomplete',
   'border-position',

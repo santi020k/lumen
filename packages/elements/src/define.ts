@@ -488,6 +488,7 @@ const elementConfigs = {
   Collapsible: lumenCollapsibleElementConfig,
   Code: {
     attributeClasses: {
+      appearance: { editorial: 'ui-code--editorial' },
       variant: {
         block: 'ui-code--block',
         inline: 'ui-code--inline'
@@ -8718,7 +8719,7 @@ class LumenCodeBehaviorElement extends LumenElement {
     })
 
     this.observer.observe(this, {
-      attributeFilter: ['code-label', 'copy', 'copy-label', 'copied-label', 'error-label', 'wrap', 'variant'],
+      attributeFilter: ['appearance', 'code-label', 'copy', 'copy-label', 'copied-label', 'error-label', 'wrap', 'variant'],
       attributes: true,
       childList: true,
       subtree: true
@@ -8831,7 +8832,13 @@ class LumenCodeBehaviorElement extends LumenElement {
 
         meta.textContent = this.getAttribute('label') ?? ''
 
-        header.append(decoration, meta)
+        const symbol = document.createElement('span')
+
+        symbol.className = 'ui-code__symbol'
+
+        symbol.innerHTML = renderLumenIconSvg('code-xml')
+
+        header.append(symbol, decoration, meta)
 
         this.prepend(header)
       }
@@ -8874,6 +8881,30 @@ class LumenCodeBehaviorElement extends LumenElement {
 
       button.title = label
     }
+
+    this.#updateCopyText(button)
+  }
+
+  #updateCopyText(button: HTMLButtonElement) {
+    let text = button.querySelector('.ui-code__copy-text')
+
+    if (this.getAttribute('appearance') !== 'editorial') {
+      text?.remove()
+
+      return
+    }
+
+    if (!text) {
+      text = document.createElement('span')
+
+      text.className = 'ui-code__copy-text'
+
+      button.append(text)
+    }
+
+    const label = button.getAttribute('aria-label') ?? ''
+
+    if (text.textContent !== label) text.textContent = label
   }
 
   async #copy(button: HTMLButtonElement) {
@@ -8916,6 +8947,8 @@ class LumenCodeBehaviorElement extends LumenElement {
 
     button.title = feedback
 
+    this.#updateCopyText(button)
+
     const status = this.querySelector<HTMLElement>('[data-ui-code-status]')
 
     if (status) status.textContent = feedback
@@ -8928,6 +8961,8 @@ class LumenCodeBehaviorElement extends LumenElement {
       button.setAttribute('aria-label', label)
 
       button.title = label
+
+      this.#updateCopyText(button)
 
       if (status) status.textContent = ''
     }, 2000)

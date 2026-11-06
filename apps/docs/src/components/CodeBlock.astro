@@ -1,25 +1,32 @@
 ---
 import type { CodeLanguage } from 'astro'
 
-import { Code as AstroCode } from 'astro:components'
+import { Code, Collapsible } from '@santi020k/lumen-astro'
 
-import { Code } from '@santi020k/lumen-astro'
-
-import { cachedLumenThemes, cachedSanti020kThemes } from '../lib/lumen-shiki-themes'
+import HighlightedSource from './HighlightedSource.astro'
 
 interface Props {
   code: string
   codeLabel?: string
   lang?: CodeLanguage
   title?: string
+  /** Disable the compact preview for examples that should remain fully visible. */
+  collapsible?: boolean
 }
 
-const { code, codeLabel, lang = 'plaintext', title } = Astro.props
+const { code, codeLabel, collapsible = true, lang = 'plaintext', title } = Astro.props
 const language = typeof lang === 'string' ? lang : lang.name
+const lines = code.replaceAll(/\r\n?/g, '\n').split('\n')
+const fold = collapsible && lines.length > 24
+const preview = lines.slice(0, 12).join('\n')
 ---
 
 <Code
+  appearance="editorial"
   class="docs-code-block"
+  code={code}
+  copyLabel="Copy code"
+  copiedLabel="Copied"
   codeLabel={codeLabel ?? (title ? `${title} code example` : `${language} code example`)}
   copy
   highlighted
@@ -27,20 +34,58 @@ const language = typeof lang === 'string' ? lang : lang.name
   language={language}
   variant="block"
 >
-  <div class="docs-code-block__variant docs-code-block__variant--santi020k">
-    <AstroCode code={code} defaultColor={false} lang={lang} themes={cachedSanti020kThemes} />
-  </div>
-  <div class="docs-code-block__variant docs-code-block__variant--lumen">
-    <AstroCode code={code} defaultColor={false} lang={lang} themes={cachedLumenThemes} />
-  </div>
+  {fold ?
+(
+<>
+    <Collapsible class="docs-code-block__fold">
+      <summary>
+        <span class="docs-code-block__expand">Show full example</span>
+        <span class="docs-code-block__collapse">Collapse example</span>
+        <span class="docs-code-block__count">{lines.length} lines</span>
+      </summary>
+      <HighlightedSource code={code} codeLabel={codeLabel ?? `${title ?? language} code example`} lang={lang} />
+    </Collapsible>
+    <div class="docs-code-block__preview">
+      <HighlightedSource code={preview} codeLabel={`Preview, first 12 lines: ${title ?? language}`} lang={lang} />
+    </div>
+  </>
+) :
+<HighlightedSource code={code} codeLabel={codeLabel ?? `${title ?? language} code example`} lang={lang} />}
 </Code>
 
 <style>
-  .docs-code-block__variant :global(pre) {
-    background: var(--shiki-light-bg, var(--ui-code-bg));
+  .docs-code-block__fold {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
   }
 
-  :global(:root:is([data-theme='dark'], [data-theme='lumen-dark'], [data-theme='santi020k-dark'])) .docs-code-block__variant :global(pre) {
-    background: var(--shiki-dark-bg, var(--ui-code-bg));
+  .docs-code-block__fold > summary {
+    display: list-item;
+    min-block-size: 44px;
+    border-bottom: 1px solid hsl(var(--line));
+    padding: 0.875rem 1.25rem;
+    color: hsl(var(--brand));
+    font: 500 0.875rem/1.6 var(--ui-font);
+  }
+
+  .docs-code-block__count {
+    margin-inline-start: 0.75rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.75rem;
+  }
+
+  .docs-code-block__fold:not([open]) .docs-code-block__collapse,
+  .docs-code-block__fold[open] .docs-code-block__expand,
+  .docs-code-block__fold[open] + .docs-code-block__preview {
+    display: none;
+  }
+
+  @media print {
+    .docs-code-block__fold > summary,
+    .docs-code-block__preview { display: none; }
+    .docs-code-block__fold::details-content { content-visibility: visible; }
+    .docs-code-block__fold > :global(:not(summary)) { display: block; }
   }
 </style>

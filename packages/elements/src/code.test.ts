@@ -188,3 +188,27 @@ test('refreshes inherited generated labels when reconnecting under another code-
     expect(code.querySelector('pre')?.getAttribute('aria-label')).toBe('Second source')
   })
 })
+
+test.each([true, false])('editorial Code preserves localized feedback when appearance changes (success: %s)', async success => {
+  const writeText = success ? vi.fn().mockResolvedValue(undefined) : vi.fn().mockRejectedValue(new Error('Unavailable'))
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  const { code, button } = renderCode()
+  code.setAttribute('appearance', 'editorial')
+  await vi.waitFor(() => {
+    expect(code.classList.contains('ui-code--editorial')).toBe(true)
+    expect(button.textContent).toBe('Copy snippet')
+  })
+  button.click()
+  await vi.waitFor(() => {
+    expect(button.textContent).toBe(success ? 'Snippet saved' : 'Select and copy manually.')
+  })
+  expect(writeText).toHaveBeenCalledWith('pnpm install')
+  code.removeAttribute('appearance')
+  await vi.waitFor(() => {
+    expect(button.querySelector('.ui-code__copy-text')).toBeNull()
+  })
+  code.setAttribute('appearance', 'editorial')
+  await vi.waitFor(() => {
+    expect(button.textContent).toBe(success ? 'Snippet saved' : 'Select and copy manually.')
+  })
+})

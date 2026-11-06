@@ -1489,6 +1489,9 @@ const apiReferenceByComponent = {
   ],
   Code: [
     apiRow(
+      'appearance', '"default" | "editorial"', '"default"', 'Editorial blocks use a code icon and visible localized copy feedback. Both appearances wrap metadata at narrow widths.'
+    ),
+    apiRow(
       'variant', '"inline" | "block"', '"inline"', 'Switches between inline code and a framed code block.'
     ),
     apiRow(

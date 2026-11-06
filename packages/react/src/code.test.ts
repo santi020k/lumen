@@ -270,3 +270,30 @@ test('highlighted code preserves attributes adopted by an independently updating
   expect(pre.getAttribute('role')).toBe('region')
   expect(pre.getAttribute('aria-label')).toBe('Example')
 })
+
+test.each([true, false])('editorial Code shows localized clipboard feedback (success: %s)', async success => {
+  const writeText = success ? vi.fn().mockResolvedValue(undefined) : vi.fn().mockRejectedValue(new Error('Unavailable'))
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  await act(async () => {
+    await Promise.resolve()
+    root.render(createElement(Code, {
+      appearance: 'editorial',
+      code: 'const answer = 42\n',
+      copy: true,
+      copyLabel: 'Copy snippet',
+      copiedLabel: 'Snippet saved',
+      errorLabel: 'Copy manually',
+      variant: 'block'
+    }))
+  })
+  expect(container.querySelector('figure')?.classList.contains('ui-code--editorial')).toBe(true)
+  expect(button().textContent).toBe('Copy snippet')
+  await click()
+  expect(writeText).toHaveBeenCalledWith('const answer = 42\n')
+  expect(button().textContent).toBe(success ? 'Snippet saved' : 'Copy manually')
+  await act(async () => {
+    await Promise.resolve()
+    vi.advanceTimersByTime(2000)
+  })
+  expect(button().textContent).toBe('Copy snippet')
+})

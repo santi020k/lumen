@@ -2154,6 +2154,7 @@ export const CheckboxGroup = ({
 )
 
 export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
+  appearance?: 'default' | 'editorial'
   codeLabel?: string
   copyLabel?: string
   copiedLabel?: string
@@ -2190,13 +2191,14 @@ const renderCodeChildren = (
   tokenizeLumenCode(code, language).map(renderCodeToken)
 
 interface CodeCopyLabels {
+  appearance: 'default' | 'editorial'
   code: string | undefined
   copyLabel: string
   copiedLabel: string
   errorLabel: string
 }
 
-const CodeCopyButton = ({ code, copyLabel, copiedLabel, errorLabel }: CodeCopyLabels) => {
+const CodeCopyButton = ({ appearance, code, copyLabel, copiedLabel, errorLabel }: CodeCopyLabels) => {
   const { accessibleLabel, handleClick, state } = useCopyFeedback({
     copiedLabel,
     errorLabel,
@@ -2223,6 +2225,7 @@ const CodeCopyButton = ({ code, copyLabel, copiedLabel, errorLabel }: CodeCopyLa
       >
         {renderLucideIcon('copy', 'ui-code__copy-icon')}
         {renderLucideIcon('check', 'ui-code__check-icon')}
+        {appearance === 'editorial' && <span className="ui-code__copy-text">{accessibleLabel}</span>}
       </button>
       <span aria-live="polite" className="ui-sr-only" role="status">
         {state === 'idle' ? '' : accessibleLabel}
@@ -2305,26 +2308,52 @@ interface CodeHeaderOptions extends CodeCopyLabels {
   language: string | undefined
 }
 
-const renderCodeHeader = ({ code, copy, copyLabel, copiedLabel, errorLabel, label, language }: CodeHeaderOptions) => {
+const renderCodeHeader = ({
+  appearance, code, copy, copyLabel, copiedLabel, errorLabel, label, language
+}: CodeHeaderOptions) => {
   if (!copy && !label && !language) return null
 
   return (
     <figcaption className="ui-code__header">
-      <span aria-hidden="true" className="ui-code__dots">
-        <span className="ui-code__dot ui-code__dot--red" />
-        <span className="ui-code__dot ui-code__dot--yellow" />
-        <span className="ui-code__dot ui-code__dot--green" />
+      <span
+        aria-hidden="true"
+        className={appearance === 'editorial' ?
+          'ui-code__symbol' :
+          'ui-code__dots'}
+      >
+        {appearance === 'editorial' ?
+          renderLucideIcon('code-xml', 'ui-code__symbol-icon') :
+          (
+            <>
+              <span className="ui-code__dot ui-code__dot--red" />
+              <span className="ui-code__dot ui-code__dot--yellow" />
+              <span className="ui-code__dot ui-code__dot--green" />
+            </>
+          )}
       </span>
       <span className="ui-code__meta">
         {language && <span className="ui-code__language">{language}</span>}
         {label && <span className="ui-code__label">{label}</span>}
       </span>
-      {copy && <CodeCopyButton code={code} copiedLabel={copiedLabel} copyLabel={copyLabel} errorLabel={errorLabel} />}
+      {copy && (
+        <CodeCopyButton
+          appearance={appearance}
+          code={code}
+          copiedLabel={copiedLabel}
+          copyLabel={copyLabel}
+          errorLabel={errorLabel}
+        />
+      )}
     </figcaption>
   )
 }
 
+const codeBlockClassName = (appearance: CodeProps['appearance'], wrap: boolean, className?: string) => composeClassName(
+  'ui-code ui-code--block', appearance === 'editorial' && 'ui-code--editorial', wrap && 'ui-code--wrap', className
+)
+
 export const Code = ({
+  appearance = 'default',
   children,
   className,
   code,
@@ -2347,16 +2376,14 @@ export const Code = ({
   if (variant === 'block') {
     return (
       <figure
-        className={composeClassName(
-          'ui-code ui-code--block', wrap && 'ui-code--wrap', className
-        )}
+        className={codeBlockClassName(appearance, wrap, className)}
         data-code-theme={theme}
         data-language={language}
         data-slot="code"
         data-ui-code
         {...props}
       >
-        {renderCodeHeader({ code, copy, ...labels, label, language })}
+        {renderCodeHeader({ appearance, code, copy, ...labels, label, language })}
         {highlighted ?
           (
             <HighlightedCode codeLabel={labels.codeLabel} wrap={wrap}>{children}</HighlightedCode>

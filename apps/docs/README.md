@@ -51,6 +51,20 @@ Use the public Lumen primitive whenever an equivalent exists. Keep a working pre
 copyable example. Update navigation and search metadata with new routes; follow the
 [documentation contribution guide](../../CONTRIBUTING.md#documentation-and-guides).
 
+## Code examples
+
+`CodeBlock` composes the public editorial `Code` appearance with themed Shiki output. It
+previews the first 12 lines when an example exceeds 24 lines, using public `Collapsible` for a
+keyboard-accessible disclosure that works without JavaScript. Set `collapsible={false}` when
+an example needs to stay fully visible. Copying always uses the original complete source,
+independently of the preview, line numbers, and active syntax theme. Overflow hints appear only
+when horizontal scrolling is needed; printing expands the complete example.
+
+These patterns come from the santi020k v5 website. Shared Code owns the wrapping headers,
+stable touch targets, optional editorial presentation, localized clipboard feedback, and print
+styles. Preview thresholds and line numbers remain docs policy. Site branding and article-specific
+features stay with their application rather than becoming component defaults.
+
 ## Validate and build
 
 Run these commands from the repository root:

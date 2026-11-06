@@ -1,0 +1,63 @@
+---
+import type { CodeLanguage } from 'astro'
+
+import { Code as AstroCode } from 'astro:components'
+
+import { Code } from '@santi020k/lumen-astro'
+
+import { cachedLumenThemes, cachedSanti020kThemes } from '../lib/lumen-shiki-themes'
+
+interface Props {
+  code: string
+  codeLabel: string
+  lang: CodeLanguage
+}
+
+const { code, codeLabel, lang } = Astro.props
+
+const variants = [
+  { className: 'docs-code-block__variant docs-code-block__variant--santi020k', themes: cachedSanti020kThemes },
+  { className: 'docs-code-block__variant docs-code-block__variant--lumen', themes: cachedLumenThemes }
+]
+---
+
+{variants.map(({ className, themes }) => (
+<div
+  class={className}
+>
+  <Code class="docs-code-source" code={code} codeLabel={codeLabel} highlighted scrollCue variant="block">
+  <AstroCode aria-label={codeLabel} code={code} defaultColor={false} lang={lang} role="region" tabindex="0" themes={themes} />
+  </Code>
+</div>
+))}
+
+<style>
+  .docs-code-block__variant :global(code) { counter-reset: code-line; }
+  .docs-code-block__variant :global(.line)::before {
+    counter-increment: code-line;
+    content: counter(code-line) / "";
+    display: inline-block;
+    min-inline-size: 3ch;
+    margin-inline-end: 1rem;
+    border-inline-end: 1px solid hsl(var(--line));
+    padding-inline-end: 0.75rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.75rem;
+    text-align: end;
+    user-select: none;
+  }
+
+  :global(.docs-code-source) {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .docs-code-block__variant :global(pre) {
+    background: var(--shiki-light-bg, var(--ui-code-bg));
+  }
+
+  :global(:root:is([data-theme='dark'], [data-theme='lumen-dark'], [data-theme='santi020k-dark'])) .docs-code-block__variant :global(pre) {
+    background: var(--shiki-dark-bg, var(--ui-code-bg));
+  }
+</style>
