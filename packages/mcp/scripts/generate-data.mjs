@@ -958,6 +958,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/react/src/attachments.tsx')),
     await readIfExists(p('packages/react/src/amount-field.tsx')),
     await readIfExists(p('packages/react/src/components.tsx')),
+    await readIfExists(p('packages/react/src/form-primitives.tsx')),
     await readIfExists(p('packages/react/src/editorial-controls.tsx')),
     await readIfExists(p('packages/react/src/dialog.tsx')),
     await readIfExists(p('packages/react/src/reading-navigation.tsx')),

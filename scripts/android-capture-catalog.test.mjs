@@ -21,18 +21,19 @@ test('Android default captures cover the generated catalog and focused arguments
 
     await mkdir(bin)
 
-    await writeFile(join(bin, 'sleep'), '#!/usr/bin/env bash\nexit 0\n', { mode: 0o755 })
+    await writeFile(join(bin, 'sleep'), '#!/bin/sh\nexit 0\n', { mode: 0o755 })
 
-    await writeFile(join(sdk, 'platform-tools/adb'), `#!/usr/bin/env bash
-if [[ "$1" == "devices" ]]; then
+    await writeFile(join(sdk, 'platform-tools/adb'), `#!/bin/sh
+if [ "$1" = "devices" ]; then
     printf 'List of devices attached\\nfixture-device\\tdevice\\n'
-elif [[ "$1 $2 $3 $4" == "shell pm list features" ]]; then
+elif [ "$1 $2 $3 $4" = "shell pm list features" ]; then
     printf 'feature:android.hardware.camera\\n'
-elif [[ "$1 $2 $3" == "shell settings get" ]]; then
+elif [ "$1 $2 $3" = "shell settings get" ]; then
     printf '1'
-elif [[ "$1 $2 $3" == "shell am start" ]]; then
-    printf '%s\\n' "\${@: -1}" >> "$LUMEN_CAPTURE_TEST_LOG"
-elif [[ "$1" == "exec-out" ]]; then
+elif [ "$1 $2 $3" = "shell am start" ]; then
+    for argument do last="$argument"; done
+    printf '%s\\n' "$last" >> "$LUMEN_CAPTURE_TEST_LOG"
+elif [ "$1" = "exec-out" ]; then
     printf 'fixture image'
 fi
 `, { mode: 0o755 })
@@ -46,7 +47,7 @@ fi
         timeout: 30_000
       })
 
-      assert.equal(result.status, 0, result.stderr)
+      assert.equal(result.status, 0, result.stderr || result.error?.message)
 
       return (await readFile(log, 'utf8')).trim().split('\n').map(line => {
         const component = JSON.parse(line)

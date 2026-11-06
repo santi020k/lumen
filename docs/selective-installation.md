@@ -63,3 +63,12 @@ project; rerunning add preserves edited files. Use `--merge --dry-run` to previe
 diffs. With `--merge`, missing files are added, identical files are skipped and edited files stay
 untouched. A conflict returns exit code 1 so you can review the diff and apply selected edits.
 Only `--force` replaces the local copy.
+
+## Consumer form measurement
+
+The packed subscribe-form benchmark also renders Field, FieldError and Checkbox in its React fixture.
+On November 6, 2026, the local v5 candidate traversed 2,359 modules with catalog imports and 35 with
+selective imports. Both requested two assets. Requested gzip totals were 66,474 and 66,475 bytes,
+respectively. This fixture demonstrates a smaller build graph with equivalent browser transfer size.
+Run `pnpm run measure:subscribe-form` to reproduce with freshly packed packages. Application routes,
+bundler versions and shared chunks can produce different results.

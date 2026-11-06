@@ -168,6 +168,14 @@
     "./components/input": {
       "types": "./dist/entries/input.d.ts",
       "import": "./dist/entries/input.js"
+    },
+    "./components/field": {
+      "types": "./dist/entries/field.d.ts",
+      "import": "./dist/entries/field.js"
+    },
+    "./components/checkbox": {
+      "types": "./dist/entries/checkbox.d.ts",
+      "import": "./dist/entries/checkbox.js"
     }
   },
   "files": [

@@ -3,7 +3,7 @@ import { extname, relative, resolve } from 'node:path'
 
 import { major, satisfies, valid } from 'semver'
 
-import { consumerPackageVersion, consumerReleaseVersions } from './consumer-release-versions.js'
+import { bundledReleaseTarget, consumerPackageVersion, consumerReleaseVersions  } from './consumer-release-versions.js'
 import { type ConsumerInventory, inspectLumenConsumer } from './consumer-rollout.js'
 import type { LumenDiagnosticFinding } from './integration-diagnostics.js'
 import { discoverSourceFiles } from './v2-migration.js'
@@ -84,16 +84,39 @@ const contractFindings = (
   return [review(file, change.id, `Source review signals: ${signals.join(', ')}. These matches can include comments or examples.`, change.migration, change.kind === 'adoption' ? 'adoption-opportunity' : 'compatibility-review')]
 })
 
+const migrationHistoryFindings = (inventory: ConsumerInventory): LumenConsumerUpgradeFinding[] => {
+  const reviews: LumenConsumerUpgradeFinding[] = []
+  const webAdapters = new Set(['@santi020k/lumen-astro', '@santi020k/lumen-react', '@santi020k/lumen-elements'])
+
+  const installedMajors = inventory.references
+    .filter(reference => reference.source === 'lockfile' && webAdapters.has(reference.packageName) && valid(reference.version))
+    .map(reference => major(reference.version))
+
+  const fromMajor = Math.min(...installedMajors)
+
+  for (const nextMajor of [2, 3, 4, 5]) {
+    if (fromMajor >= nextMajor) continue
+
+    reviews.push(review('pnpm-lock.yaml', 'migration-history-review', `Review the v${nextMajor - 1} to v${nextMajor} contract when upgrading this consumer.`, `https://github.com/santi020k/lumen/blob/main/docs/migrating-v${nextMajor - 1}-to-v${nextMajor}.md`, 'compatibility-review'))
+  }
+
+  return reviews
+}
+
 /** Advisory inventory only: patches and product CSS are never deleted or rewritten. */
 export const inspectLumenConsumerUpgrade = async (
-  repository: string, targetVersion = '4.0.0'
+  repository: string, targetVersion?: string
 ): Promise<LumenConsumerUpgradeAudit> => {
+  targetVersion ??= await bundledReleaseTarget()
+
   if (!valid(targetVersion)) throw new Error('Consumer audit requires an exact semantic target version.')
 
   const root = resolve(repository)
   const inventory = await inspectLumenConsumer(root)
   const findings = versionFindings(inventory, targetVersion, await consumerReleaseVersions(targetVersion))
   const contract = major(targetVersion) === 5 ? await loadLumenV5Contract() : undefined
+
+  if (contract) findings.push(...migrationHistoryFindings(inventory))
 
   const files = await discoverSourceFiles(root, new Set([
     '.css',

@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Default upgrade audits to the bundled release, attribute requested full CSS through client build reports, and add editable feedback-board and responsive-navigation recipes.
+
 - Preserve customized wrappers and show the local-to-incoming diff when `lumen add --merge` encounters edits.
 
 Expose a Vite client build report for rendered audits and generate selective subscribe-form wrappers.

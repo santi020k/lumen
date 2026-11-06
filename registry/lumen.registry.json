@@ -739,6 +739,62 @@
       "files": [
         "docs/studio-media-workspaces.md"
       ]
+    },
+    {
+      "name": "feedback-board",
+      "type": "recipe",
+      "components": [
+        "Badge",
+        "Button",
+        "Card",
+        "Input",
+        "Label",
+        "Select",
+        "Textarea"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "files": [
+        "docs/consumer-ui-recipes.md"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Mount UIPrimitives once in the application layout.",
+            "See consumer-ui-recipes.md for lifecycle and callback setup."
+          ]
+        }
+      }
+    },
+    {
+      "name": "responsive-navigation",
+      "type": "recipe",
+      "components": [
+        "Button",
+        "Dialog",
+        "DialogClose",
+        "DialogHeader",
+        "DialogTitle",
+        "Link",
+        "NavigationMenu"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "files": [
+        "docs/consumer-ui-recipes.md"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Mount UIPrimitives once in the application layout.",
+            "See consumer-ui-recipes.md for lifecycle and callback setup."
+          ]
+        }
+      }
     }
   ],
   "components": [
