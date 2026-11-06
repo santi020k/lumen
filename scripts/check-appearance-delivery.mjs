@@ -42,6 +42,19 @@ const compareNativePalette = async (page, css, name, scheme, expected) => {
   }
 }
 
+const compareNativeThemes = async (page, repo, siteColors, { full, base, paper, field, branded }) => {
+  const tokens = JSON.parse(await readFile(join(repo, 'tokens/lumen.tokens.json'), 'utf8'))
+  const named = resolveNamedThemes(tokens, siteColors)
+
+  for (const [name, optional] of [['paper', paper], ['field', field], ['santi020k', branded]]) {
+    for (const scheme of ['light', 'dark']) {
+      for (const cssText of [full, base + optional]) {
+        await compareNativePalette(page, cssText, name, scheme, named[name][scheme])
+      }
+    }
+  }
+}
+
 // Resolve the public imports from a real consumer package, including adapter and Core re-exports.
 export const checkAppearanceDelivery = async (browser, repo) => {
   const root = join(repo, 'apps/docs')
@@ -77,17 +90,22 @@ export const checkAppearanceDelivery = async (browser, repo) => {
 
   const page = await browser.newPage({ reducedMotion: 'reduce' })
 
-  try {
-    const tokens = JSON.parse(await readFile(join(repo, 'tokens/lumen.tokens.json'), 'utf8'))
-    const named = resolveNamedThemes(tokens, siteColors)
+  for (const styles of [full, base + studio + glass + branded]) {
+    for (const [theme, boundary, scheme] of [
+      ['lumen-dark', 'data-theme="lumen-light"', 'light'],
+      ['santi020k-dark', '', 'dark'],
+      ['lumen-light', 'data-lumen-scheme="dark"', 'dark']
+    ]) {
+      for (const preset of ['default', 'studio', 'glass']) {
+        await page.setContent(`<html data-theme="${theme}"><style>${styles}</style><section ${boundary}><div data-lumen-preset="${preset}"></div></section></html>`)
 
-    for (const [name, optional] of [['paper', paper], ['field', field], ['santi020k', branded]]) {
-      for (const scheme of ['light', 'dark']) {
-        for (const cssText of [full, base + optional]) {
-          await compareNativePalette(page, cssText, name, scheme, named[name][scheme])
-        }
+        assert.equal(await page.locator('[data-lumen-preset]').evaluate(element => getComputedStyle(element).colorScheme), scheme)
       }
     }
+  }
+
+  try {
+    await compareNativeThemes(page, repo, siteColors, { full, base, paper, field, branded })
 
     const read = async (styles, theme, preset) => {
       await page.setContent(`<!doctype html><html data-theme="${theme}" data-lumen-preset="${preset}"><head>

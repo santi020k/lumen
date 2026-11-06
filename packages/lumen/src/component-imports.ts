@@ -2,9 +2,11 @@ import { lumenComponentNames } from '@santi020k/lumen-core'
 import { createSourceFile, type ImportDeclaration, isImportDeclaration, isNamedImports, isStringLiteral, ScriptKind, ScriptTarget, type SourceFile, SyntaxKind } from 'typescript'
 
 import { componentDeliveryEntries } from './component-delivery.js'
+import { findMarkupTagEnd } from './v2-migration.js'
 
 const componentName = (name: string): string | undefined => {
-  const canonical = name.startsWith('Lumen') && name.endsWith('Element') ? name.slice(5, -7) : name
+  const candidate = name.startsWith('defineLumen') ? name.slice(11) : name
+  const canonical = candidate.startsWith('Lumen') && candidate.endsWith('Element') ? candidate.slice(5, -7) : candidate
 
   return lumenComponentNames.some(component => component === canonical) ? canonical : undefined
 }
@@ -87,6 +89,41 @@ const scriptImports = (body: string, leadingOnly: boolean): ValueImport[] => {
   return entries
 }
 
+const htmlImports = (source: string): ValueImport[] => {
+  const lower = source.toLowerCase()
+  const imports: ValueImport[] = []
+  let cursor = 0
+
+  while (cursor < source.length) {
+    const start = lower.indexOf('<', cursor)
+
+    if (start < 0) break
+
+    if (lower.startsWith('<!--', start)) {
+      const end = lower.indexOf('-->', start + 4)
+
+      cursor = end < 0 ? source.length : end + 3
+
+      continue
+    }
+
+    cursor = start + 1
+
+    if (!lower.startsWith('<script', start) || !/[\s>]/u.test(lower[start + 7] ?? '')) continue
+
+    const openingEnd = findMarkupTagEnd(source, start + 7)
+    const closing = lower.indexOf('</script', openingEnd)
+
+    if (openingEnd < 0 || closing < 0) break
+
+    imports.push(...scriptImports(source.slice(openingEnd + 1, closing), false))
+
+    cursor = closing + 8
+  }
+
+  return imports
+}
+
 export const readComponentImports = (source: string, file = '') => {
   const trimmed = source.trimStart()
   const opening = /^---[ \t]*\r?(?:\n|$)/u.exec(trimmed)
@@ -94,7 +131,7 @@ export const readComponentImports = (source: string, file = '') => {
   const end = opening ? /^---[ \t]*\r?$/mu.exec(script)?.index : undefined
   const body = script.slice(0, end)
   // Loose Astro snippets can begin with imports. Markup and HTML comments cannot declare components.
-  const entries = scriptImports(body, !opening && file.endsWith('.astro'))
+  const entries = /\.html?$/u.test(file) ? htmlImports(source) : scriptImports(body, !opening && file.endsWith('.astro'))
 
   return {
     astro: adapterImports(entries, 'astro'),

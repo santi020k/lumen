@@ -414,125 +414,122 @@
 }
 
 @layer lumen.tokens.foundation {
-[data-lumen-preset="default"],
-[data-lumen-preset="default"][data-lumen-scheme="light"] {
---glass-bg: 0 0% 100% / 0.55;
---glass-bg-subtle: 0 0% 100% / 0.38;
---glass-bg-strong: 0 0% 100% / 0.72;
---glass-border: 220 30% 100% / 0.55;
---glass-highlight: 0 0% 100% / 0.85;
---glass-blur: 22px;
---glass-saturate: 1.7;
---glass-brightness: 1.05;
---glass-edge: 0 0% 100% / 0.9;
---glass-edge-soft: 0 0% 100% / 0.34;
---glass-shade: 222 47% 11% / 0.07;
---glass-refraction: 201 96% 32% / 0.08;
---glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
+:where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"]) {
+--_ld-glass-bg: 0 0% 100% / 0.55;
+--_ld-glass-bg-subtle: 0 0% 100% / 0.38;
+--_ld-glass-bg-strong: 0 0% 100% / 0.72;
+--_ld-glass-border: 220 30% 100% / 0.55;
+--_ld-glass-highlight: 0 0% 100% / 0.85;
+--_ld-glass-blur: 22px;
+--_ld-glass-saturate: 1.7;
+--_ld-glass-brightness: 1.05;
+--_ld-glass-edge: 0 0% 100% / 0.9;
+--_ld-glass-edge-soft: 0 0% 100% / 0.34;
+--_ld-glass-shade: 222 47% 11% / 0.07;
+--_ld-glass-refraction: 201 96% 32% / 0.08;
+--_ld-glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
     0 12px 32px hsl(222 47% 11% / 0.12),
     0 32px 80px hsl(222 47% 11% / 0.14);
 }
 }
 
 @layer lumen.tokens.foundation {
-:where([data-theme="dark"], [data-theme="lumen-dark"]) [data-lumen-preset="default"]:not([data-lumen-scheme="light"], [data-theme="light"], [data-theme="lumen-light"]),
-[data-lumen-preset="default"][data-lumen-scheme="dark"],
-[data-lumen-preset="default"][data-theme="dark"]:not([data-lumen-scheme="light"]),
-[data-lumen-preset="default"][data-theme="lumen-dark"]:not([data-lumen-scheme="light"]) {
---glass-bg: 224 20% 13% / 0.78;
---glass-bg-subtle: 224 20% 13% / 0.64;
---glass-bg-strong: 224 20% 13% / 0.9;
---glass-border: 210 30% 92% / 0.24;
---glass-highlight: 210 30% 96% / 0.1;
---glass-brightness: 1;
---glass-edge: 210 40% 98% / 0.24;
---glass-edge-soft: 210 40% 98% / 0.08;
---glass-shade: 240 40% 3% / 0.3;
---glass-refraction: 199 91% 56% / 0.1;
---glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
+[data-lumen-preset="default"] {
+--glass-bg: var(--_ld-glass-bg);
+--glass-bg-subtle: var(--_ld-glass-bg-subtle);
+--glass-bg-strong: var(--_ld-glass-bg-strong);
+--glass-border: var(--_ld-glass-border);
+--glass-highlight: var(--_ld-glass-highlight);
+--glass-blur: var(--_ld-glass-blur);
+--glass-saturate: var(--_ld-glass-saturate);
+--glass-brightness: var(--_ld-glass-brightness);
+--glass-edge: var(--_ld-glass-edge);
+--glass-edge-soft: var(--_ld-glass-edge-soft);
+--glass-shade: var(--_ld-glass-shade);
+--glass-refraction: var(--_ld-glass-refraction);
+--glass-shadow: var(--_ld-glass-shadow);
+}
+}
+
+@layer lumen.tokens.foundation {
+:where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"]) {
+--_ld-glass-bg: 224 20% 13% / 0.78;
+--_ld-glass-bg-subtle: 224 20% 13% / 0.64;
+--_ld-glass-bg-strong: 224 20% 13% / 0.9;
+--_ld-glass-border: 210 30% 92% / 0.24;
+--_ld-glass-highlight: 210 30% 96% / 0.1;
+--_ld-glass-brightness: 1;
+--_ld-glass-edge: 210 40% 98% / 0.24;
+--_ld-glass-edge-soft: 210 40% 98% / 0.08;
+--_ld-glass-shade: 240 40% 3% / 0.3;
+--_ld-glass-refraction: 199 91% 56% / 0.1;
+--_ld-glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
     0 16px 40px hsl(0 0% 0% / 0.34),
     0 40px 96px hsl(0 0% 0% / 0.38);
 }
 }
 
 @layer lumen.tokens {
-[data-lumen-preset="glass"],
-[data-lumen-preset="glass"][data-lumen-scheme="light"] {
-color-scheme: light;
---canvas: 45 24% 95%;
---surface: 48 40% 99%;
---surface-muted: 42 17% 91%;
---surface-strong: 40 13% 85%;
---line: 39 11% 76%;
---ink: 190 22% 12%;
---ink-soft: 190 11% 29%;
---ink-muted: 189 8% 36%;
---brand: 193 79% 26%;
---brand-solid: 192 72% 24%;
---brand-soft: 179 28% 88%;
---on-brand: 0 0% 100%;
---accent: 160 48% 26%;
---success: 142 76% 36%;
---warning: 38 92% 50%;
---danger: 0 84% 60%;
---on-danger: 0 0% 0%;
---ui-space-zero: 0rem;
---ui-space-xs: 0.25rem;
---ui-space-sm: 0.5rem;
---ui-space-md: 0.75rem;
---ui-space-lg: 1rem;
---ui-space-xl: 1.5rem;
---ui-space-2xl: 2rem;
---ui-space-3xl: 3rem;
---ui-radius-sm: 0.5249999999999999rem;
---ui-radius: 0.875rem;
---ui-radius-lg: 1.0499999999999998rem;
---ui-border-width: 1px;
---ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
---ui-shadow-sm: 0 1px 2px hsl(222 47% 11% / 0.06);
---ui-shadow-md: 0 8px 24px hsl(222 47% 11% / 0.08);
---ui-shadow-lg: 0 24px 64px hsl(222 47% 11% / 0.14);
---glass-bg: 0 0% 100% / 0.55;
---glass-bg-subtle: 0 0% 100% / 0.38;
---glass-bg-strong: 0 0% 100% / 0.72;
---glass-border: 220 30% 100% / 0.55;
---glass-highlight: 0 0% 100% / 0.85;
---glass-blur: 22px;
---glass-saturate: 1.7;
---glass-brightness: 1.05;
---glass-edge: 0 0% 100% / 0.9;
---glass-edge-soft: 0 0% 100% / 0.34;
---glass-shade: 222 47% 11% / 0.07;
---glass-refraction: 201 96% 32% / 0.08;
---glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
+:where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"]) {
+--_lg-scheme: light;
+--_lg-c0: 45 24% 95%;
+--_lg-c1: 48 40% 99%;
+--_lg-c2: 42 17% 91%;
+--_lg-c3: 40 13% 85%;
+--_lg-c4: 39 11% 76%;
+--_lg-c5: 190 22% 12%;
+--_lg-c6: 190 11% 29%;
+--_lg-c7: 189 8% 36%;
+--_lg-c8: 193 79% 26%;
+--_lg-c9: 192 72% 24%;
+--_lg-c10: 179 28% 88%;
+--_lg-c11: 0 0% 100%;
+--_lg-c12: 160 48% 26%;
+--_lg-c13: 142 76% 36%;
+--_lg-c14: 38 92% 50%;
+--_lg-c15: 0 84% 60%;
+--_lg-c16: 0 0% 0%;
+--_lg-ui-shadow-sm: 0 1px 2px hsl(222 47% 11% / 0.06);
+--_lg-ui-shadow-md: 0 8px 24px hsl(222 47% 11% / 0.08);
+--_lg-ui-shadow-lg: 0 24px 64px hsl(222 47% 11% / 0.14);
+--_lg-glass-bg: 0 0% 100% / 0.55;
+--_lg-glass-bg-subtle: 0 0% 100% / 0.38;
+--_lg-glass-bg-strong: 0 0% 100% / 0.72;
+--_lg-glass-border: 220 30% 100% / 0.55;
+--_lg-glass-highlight: 0 0% 100% / 0.85;
+--_lg-glass-blur: 22px;
+--_lg-glass-saturate: 1.7;
+--_lg-glass-brightness: 1.05;
+--_lg-glass-edge: 0 0% 100% / 0.9;
+--_lg-glass-edge-soft: 0 0% 100% / 0.34;
+--_lg-glass-shade: 222 47% 11% / 0.07;
+--_lg-glass-refraction: 201 96% 32% / 0.08;
+--_lg-glass-shadow: 0 1px 2px hsl(222 47% 11% / 0.08),
     0 12px 32px hsl(222 47% 11% / 0.12),
     0 32px 80px hsl(222 47% 11% / 0.14);
 }
 }
 
 @layer lumen.tokens {
-:where([data-theme="dark"], [data-theme="lumen-dark"]) [data-lumen-preset="glass"]:not([data-lumen-scheme="light"], [data-theme="light"], [data-theme="lumen-light"]),
-[data-lumen-preset="glass"][data-lumen-scheme="dark"],
-[data-lumen-preset="glass"][data-theme="dark"]:not([data-lumen-scheme="light"]),
-[data-lumen-preset="glass"][data-theme="lumen-dark"]:not([data-lumen-scheme="light"]) {
-color-scheme: dark;
---canvas: 190 14% 8%;
---surface: 188 11% 12%;
---surface-muted: 185 9% 16%;
---surface-strong: 182 8% 22%;
---line: 182 7% 32%;
---ink: 45 18% 94%;
---ink-soft: 160 8% 79%;
---ink-muted: 166 7% 68%;
---brand: 185 56% 72%;
---brand-solid: 189 66% 30%;
---brand-soft: 185 30% 17%;
---on-brand: 0 0% 100%;
---accent: 153 44% 68%;
---success: 142 69% 45%;
---warning: 38 92% 55%;
---danger: 0 84% 65%;
---on-danger: 190 14% 8%;
+[data-lumen-preset="glass"] {
+color-scheme: var(--_lg-scheme);
+--canvas: var(--_lg-c0);
+--surface: var(--_lg-c1);
+--surface-muted: var(--_lg-c2);
+--surface-strong: var(--_lg-c3);
+--line: var(--_lg-c4);
+--ink: var(--_lg-c5);
+--ink-soft: var(--_lg-c6);
+--ink-muted: var(--_lg-c7);
+--brand: var(--_lg-c8);
+--brand-solid: var(--_lg-c9);
+--brand-soft: var(--_lg-c10);
+--on-brand: var(--_lg-c11);
+--accent: var(--_lg-c12);
+--success: var(--_lg-c13);
+--warning: var(--_lg-c14);
+--danger: var(--_lg-c15);
+--on-danger: var(--_lg-c16);
 --ui-space-zero: 0rem;
 --ui-space-xs: 0.25rem;
 --ui-space-sm: 0.5rem;
@@ -546,20 +543,59 @@ color-scheme: dark;
 --ui-radius-lg: 1.0499999999999998rem;
 --ui-border-width: 1px;
 --ui-font: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
---ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.18);
---ui-shadow-md: 0 12px 32px hsl(0 0% 0% / 0.24);
---ui-shadow-lg: 0 28px 80px hsl(0 0% 0% / 0.36);
---glass-bg: 224 20% 13% / 0.78;
---glass-bg-subtle: 224 20% 13% / 0.64;
---glass-bg-strong: 224 20% 13% / 0.9;
---glass-border: 210 30% 92% / 0.24;
---glass-highlight: 210 30% 96% / 0.1;
---glass-brightness: 1;
---glass-edge: 210 40% 98% / 0.24;
---glass-edge-soft: 210 40% 98% / 0.08;
---glass-shade: 240 40% 3% / 0.3;
---glass-refraction: 199 91% 56% / 0.1;
---glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
+--ui-shadow-sm: var(--_lg-ui-shadow-sm);
+--ui-shadow-md: var(--_lg-ui-shadow-md);
+--ui-shadow-lg: var(--_lg-ui-shadow-lg);
+--glass-bg: var(--_lg-glass-bg);
+--glass-bg-subtle: var(--_lg-glass-bg-subtle);
+--glass-bg-strong: var(--_lg-glass-bg-strong);
+--glass-border: var(--_lg-glass-border);
+--glass-highlight: var(--_lg-glass-highlight);
+--glass-blur: var(--_lg-glass-blur);
+--glass-saturate: var(--_lg-glass-saturate);
+--glass-brightness: var(--_lg-glass-brightness);
+--glass-edge: var(--_lg-glass-edge);
+--glass-edge-soft: var(--_lg-glass-edge-soft);
+--glass-shade: var(--_lg-glass-shade);
+--glass-refraction: var(--_lg-glass-refraction);
+--glass-shadow: var(--_lg-glass-shadow);
+}
+}
+
+@layer lumen.tokens {
+:where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"]) {
+--_lg-scheme: dark;
+--_lg-c0: 190 14% 8%;
+--_lg-c1: 188 11% 12%;
+--_lg-c2: 185 9% 16%;
+--_lg-c3: 182 8% 22%;
+--_lg-c4: 182 7% 32%;
+--_lg-c5: 45 18% 94%;
+--_lg-c6: 160 8% 79%;
+--_lg-c7: 166 7% 68%;
+--_lg-c8: 185 56% 72%;
+--_lg-c9: 189 66% 30%;
+--_lg-c10: 185 30% 17%;
+--_lg-c11: 0 0% 100%;
+--_lg-c12: 153 44% 68%;
+--_lg-c13: 142 69% 45%;
+--_lg-c14: 38 92% 55%;
+--_lg-c15: 0 84% 65%;
+--_lg-c16: 190 14% 8%;
+--_lg-ui-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.18);
+--_lg-ui-shadow-md: 0 12px 32px hsl(0 0% 0% / 0.24);
+--_lg-ui-shadow-lg: 0 28px 80px hsl(0 0% 0% / 0.36);
+--_lg-glass-bg: 224 20% 13% / 0.78;
+--_lg-glass-bg-subtle: 224 20% 13% / 0.64;
+--_lg-glass-bg-strong: 224 20% 13% / 0.9;
+--_lg-glass-border: 210 30% 92% / 0.24;
+--_lg-glass-highlight: 210 30% 96% / 0.1;
+--_lg-glass-brightness: 1;
+--_lg-glass-edge: 210 40% 98% / 0.24;
+--_lg-glass-edge-soft: 210 40% 98% / 0.08;
+--_lg-glass-shade: 240 40% 3% / 0.3;
+--_lg-glass-refraction: 199 91% 56% / 0.1;
+--_lg-glass-shadow: 0 1px 2px hsl(0 0% 0% / 0.3),
     0 16px 40px hsl(0 0% 0% / 0.34),
     0 40px 96px hsl(0 0% 0% / 0.38);
 }

@@ -97,6 +97,18 @@ const appearanceBlockEntry = header => {
   return appearanceEntry(header.slice(start, findCssGroupEnd(header, start)))
 }
 
+const presetAppearanceEntry = rule => {
+  const entry = appearanceEntry(rule.header)
+
+  if (entry) return entry
+
+  if (rule.body.includes('--_ls-')) return 'themes/studio'
+
+  if (rule.body.includes('--_lg-')) return 'effects/glass'
+
+  return undefined
+}
+
 const partitionTokens = (source, foundation, appearances, ancestors) => {
   for (const rule of readCssNodes(source)) {
     if (rule.header.startsWith('@')) {
@@ -107,7 +119,7 @@ const partitionTokens = (source, foundation, appearances, ancestors) => {
       continue
     }
 
-    const entry = appearanceEntry(rule.header)
+    const entry = presetAppearanceEntry(rule)
     // Keep optional palettes above base defaults even if a bundler reverses the imports.
     // Base and scoped default resets use the same selectors for their glass variables.
     const layer = entry ? '@layer lumen.tokens' : '@layer lumen.tokens.foundation'
@@ -115,7 +127,7 @@ const partitionTokens = (source, foundation, appearances, ancestors) => {
     const declarations = readCssNodes(rule.body.trimEnd() + ';').filter(node => node.header)
 
     const groups = Map.groupBy(declarations, node =>
-      !entry && node.header.startsWith('--glass-') ? appearances['effects/glass'] : palette)
+      !entry && (node.header.startsWith('--glass-') || node.header.startsWith('--_ld-glass-')) ? appearances['effects/glass'] : palette)
 
     for (const [target, values] of groups) {
       target.push(wrapRule(values.map(node => node.text).join('\n'), [...ancestors, layer, rule.header]))
@@ -180,12 +192,16 @@ export const partitionComponentCss = sources => {
     }
   }
 
+  const addStatement = (header, text, ancestors) => {
+    if (!header.startsWith('@import')) foundation.push(wrapRule(text, ancestors))
+  }
+
   const visit = (source, ancestors = []) => {
     for (const node of readCssNodes(source)) {
       const { header, body, text } = node
 
       if (body === null) {
-        if (!header.startsWith('@import')) foundation.push(wrapRule(text, ancestors))
+        addStatement(header, text, ancestors)
 
         continue
       }
@@ -200,6 +216,10 @@ export const partitionComponentCss = sources => {
         foundation.push(wrapRule(text, ancestors))
       } else if (/^@(layer|media|supports|container|scope)\b/u.test(header)) {
         visit(body, [...ancestors, header])
+      } else if (/^@keyframes ui-map-(?:enter|pulse)$/u.test(header)) {
+        representative('world-map')
+
+        rules.push({ families: ['world-map'], text: wrapRule(text, ancestors) })
       } else if (header.startsWith('@')) {
         foundation.push(wrapRule(text, ancestors))
       } else {

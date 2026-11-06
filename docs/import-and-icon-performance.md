@@ -28,10 +28,10 @@ Gzip totals compress each response locally at level 9; React totals include Reac
 
 | Adapter | Traversed modules, catalog → granular | Requested JS + CSS gzip, catalog → granular |
 | --- | ---: | ---: |
-| React | 2,355 → 29 | 67,631 → 67,635 B |
-| Elements | 2,212 → 22 | 512,128 → 15,780 B |
+| React | 2,364 → 35 | 66,564 → 66,564 B |
+| Elements | 2,217 → 22 | 509,741 → 14,110 B |
 
-These are development measurements on packed candidates. React's improvement is in the build graph.
+These November 6, 2026 measurements use candidate fce87932. The React fixture also includes Field, FieldError and Checkbox. These are development measurements on packed candidates. React's improvement is in the build graph.
 Both Elements costs fell. The fixture checks for an unexpected catalog import and compares the module
 counts on every run. Granular builds allow 45 modules and 75,000 gzip bytes for React or 20,000 for
 Elements. Actual route requests on a consumer app depend on its bundler and shared chunks.

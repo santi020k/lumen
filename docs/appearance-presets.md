@@ -29,8 +29,7 @@ your web adapter, Core, or the umbrella package. Each entry works independently.
 
 Astro components load the foundation automatically. For React and Elements, import
 `styles/foundation.css` once and the CSS for each component. The full `styles.css` includes
-every web appearance. A scoped preset follows an ancestor's `data-theme="dark"` or
-`data-theme="lumen-dark"`. Set `data-lumen-scheme` when the section owns its scheme.
+every web appearance. A scoped preset follows the nearest light or dark boundary, including named themes such as `santi020k-dark`. Set `data-lumen-scheme` when the section owns its scheme.
 
 ```astro
 ---

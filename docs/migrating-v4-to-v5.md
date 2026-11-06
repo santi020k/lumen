@@ -77,6 +77,10 @@ The selective foundation ships Lumen light and dark. Add only the appearances yo
 Remove full CSS only after checking all routes, themes, compound children, Markdown, and runtime-created
 markup. Frameworks may share CSS and JavaScript chunks across routes.
 
+Built-in presets follow the nearest named or explicit light/dark boundary, including
+`santi020k-dark`. Use `data-lumen-scheme` on a section to pin its scheme. The CLI checks
+explicit preset and glass imports in selective setups; verify dynamic theme choices in the browser.
+
 For example, a React button can use these public imports:
 
 ```tsx

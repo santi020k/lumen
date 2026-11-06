@@ -10,6 +10,38 @@ import {
 } from './integration-diagnostics.js'
 
 describe('Lumen integration diagnostics', () => {
+  test('follows a critical stylesheet through relative imports and flags uncovered components', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-critical-style-'))
+
+    try {
+      const page = join(root, 'index.astro')
+      const content = (name: string): string => `---\nimport { ${name} } from '@santi020k/lumen-astro'\nimport './global.css'\n---\n<${name} />\n`
+
+      await writeFile(page, content('Card'))
+      await writeFile(join(root, 'global.css'), '@import url("./library.css");\n')
+      await writeFile(join(root, 'library.css'), '@import "@santi020k/lumen-astro/styles/critical.css";\n')
+
+      expect((await inspectLumenIntegration(root)).healthy).toBe(true)
+
+      await writeFile(page, content('Pill'))
+      expect((await inspectLumenIntegration(root)).findings).toEqual([
+        expect.objectContaining({ file: 'library.css', rule: 'framework-critical-style-coverage' })
+      ])
+
+      expect((await inspectLumenIntegration(root)).findings[0]?.message).toContain('Pill')
+
+      await writeFile(join(root, 'global.css'), '')
+      expect((await inspectLumenIntegration(root)).findings).toEqual([
+        expect.objectContaining({ rule: 'framework-style-missing' })
+      ])
+
+      await writeFile(join(root, 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      expect((await inspectLumenIntegration(root)).healthy).toBe(true)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   test('distinguishes static Astro use from missing interactive runtime setup', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-'))
 
@@ -754,4 +786,22 @@ describe('Lumen integration diagnostics', () => {
     expect(createLumenSetup('elements')).toContain('/styles/foundation.css')
     expect(createLumenSetup('elements')).not.toContain('defineLumenElements()')
   })
+})
+
+test.each([
+  ['core', 'import { Button } from \'@santi020k/lumen-react/components/button\'\nimport \'@santi020k/lumen-core/styles/foundation.css\'\nimport \'@santi020k/lumen-core/styles/components/button.css\'', true],
+  ['comment', '// import \'@santi020k/lumen-react/styles.css\'\nimport { Button } from \'@santi020k/lumen-react/components/button\'', false],
+  ['helper', 'import { defineLumenButton } from \'@santi020k/lumen-elements/components/button\'\nimport \'@santi020k/lumen-elements/styles/foundation.css\'\ndefineLumenButton()', false],
+  ['appearance', 'import { Card } from \'@santi020k/lumen-react/components/card\'\nimport \'@santi020k/lumen-react/styles/foundation.css\'\nimport \'@santi020k/lumen-react/styles/components/card.css\'\nconst View = () => <section data-lumen-preset="studio"><Card glass>Preview</Card></section>', false],
+  ['html', '<script type="module">\nimport {defineLumenButton} from "@santi020k/lumen-elements/components/button"\n</script><lumen-button>Continue</lumen-button>', false]
+])('selective diagnostics validate %s consumer setup', async (kind, source, healthy) => {
+  const root = await mkdtemp(join(tmpdir(), 'lumen-style-review-'))
+
+  try {
+    await writeFile(join(root, 'package.json'), JSON.stringify({ dependencies: { '@santi020k/lumen-react': '5.0.0', '@santi020k/lumen-elements': '5.0.0' } }))
+    await writeFile(join(root, kind === 'html' ? 'index.html' : 'view.tsx'), source)
+    expect((await inspectLumenIntegration(root)).healthy).toBe(healthy)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
 })

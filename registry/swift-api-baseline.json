@@ -710,6 +710,59 @@
           "precise": "s:7LumenUI0A10MetricToneO7warningyA2CmF"
         },
         {
+          "declaration": "struct LumenNamedTheme",
+          "kind": "swift.struct",
+          "path": [
+            "LumenNamedTheme"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV"
+        },
+        {
+          "declaration": "func overridingColors(_ transform: (LumenColorPalette, LumenColorScheme) -> LumenColorPalette) -> LumenNamedTheme",
+          "kind": "swift.method",
+          "path": [
+            "LumenNamedTheme",
+            "overridingColors(_:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV16overridingColorsyAcA0A12ColorPaletteVAF_AA0aG6SchemeOtXEF"
+        },
+        {
+          "declaration": "static let field: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "field"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5fieldACvpZ"
+        },
+        {
+          "declaration": "init(light: LumenColorPalette, dark: LumenColorPalette, radii: LumenThemeRadii? = nil, serifHeadings: Bool = false, inkActions: Bool = false, lightChartBrand: Color? = nil, darkChartBrand: Color? = nil, lightOnSuccess: Color? = nil, darkOnSuccess: Color? = nil, lightStatusText: Color? = nil, darkStatusText: Color? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenNamedTheme",
+            "init(light:dark:radii:serifHeadings:inkActions:lightChartBrand:darkChartBrand:lightOnSuccess:darkOnSuccess:lightStatusText:darkStatusText:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5light4dark5radii13serifHeadings10inkActions0E10ChartBrand0flM00E9OnSuccess0fnO00E10StatusText0fpQ0AcA0A12ColorPaletteV_ApA0aD5RadiiVSgS2b05SwiftB00R0VSgA5Wtcfc"
+        },
+        {
+          "declaration": "static let paper: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "paper"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5paperACvpZ"
+        },
+        {
+          "declaration": "static let santi020k: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "santi020k"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV9santi020kACvpZ"
+        },
+        {
           "declaration": "@MainActor struct LumenPhoneInput",
           "kind": "swift.struct",
           "path": [
@@ -945,6 +998,23 @@
             "caption"
           ],
           "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "struct LumenThemeRadii",
+          "kind": "swift.struct",
+          "path": [
+            "LumenThemeRadii"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV"
+        },
+        {
+          "declaration": "init(sm: CGFloat, md: CGFloat, lg: CGFloat)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemeRadii",
+            "init(sm:md:lg:)"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV2sm2md2lgAC14CoreFoundation7CGFloatV_A2Itcfc"
         },
         {
           "declaration": "struct LumenTourLayout",
@@ -9163,6 +9233,15 @@
             "LumenTheme"
           ],
           "precise": "s:7LumenUI0A5ThemeV"
+        },
+        {
+          "declaration": "init(_ definition: LumenNamedTheme, scheme: LumenColorScheme, textStyles: LumenTextStyles? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(_:scheme:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV_6scheme10textStylesAcA0a5NamedC0V_AA0A11ColorSchemeOAA0a4TextF0VSgtcfc"
         },
         {
           "declaration": "let appearance: LumenAppearance",
@@ -35749,6 +35828,15 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
         },
         {
+          "declaration": "@MainActor func lumenThemeScope(_ definition: LumenNamedTheme, scheme: LumenColorScheme? = nil, applyTint: Bool = true) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenThemeScope(_:scheme:applyTint:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E15lumenThemeScope_6scheme9applyTintQrAD0d5NamedF0V_AD0D11ColorSchemeOSgSbtF"
+        },
+        {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, confirmLoadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), onConfirm: @escaping () -> Void) -> some View\n",
           "kind": "swift.method",
           "path": [
@@ -36496,6 +36584,59 @@
           "precise": "s:7LumenUI0A10MetricToneO7warningyA2CmF"
         },
         {
+          "declaration": "struct LumenNamedTheme",
+          "kind": "swift.struct",
+          "path": [
+            "LumenNamedTheme"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV"
+        },
+        {
+          "declaration": "func overridingColors(_ transform: (LumenColorPalette, LumenColorScheme) -> LumenColorPalette) -> LumenNamedTheme",
+          "kind": "swift.method",
+          "path": [
+            "LumenNamedTheme",
+            "overridingColors(_:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV16overridingColorsyAcA0A12ColorPaletteVAF_AA0aG6SchemeOtXEF"
+        },
+        {
+          "declaration": "static let field: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "field"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5fieldACvpZ"
+        },
+        {
+          "declaration": "init(light: LumenColorPalette, dark: LumenColorPalette, radii: LumenThemeRadii? = nil, serifHeadings: Bool = false, inkActions: Bool = false, lightChartBrand: Color? = nil, darkChartBrand: Color? = nil, lightOnSuccess: Color? = nil, darkOnSuccess: Color? = nil, lightStatusText: Color? = nil, darkStatusText: Color? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenNamedTheme",
+            "init(light:dark:radii:serifHeadings:inkActions:lightChartBrand:darkChartBrand:lightOnSuccess:darkOnSuccess:lightStatusText:darkStatusText:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5light4dark5radii13serifHeadings10inkActions0E10ChartBrand0flM00E9OnSuccess0fnO00E10StatusText0fpQ0AcA0A12ColorPaletteV_ApA0aD5RadiiVSgS2b05SwiftB00R0VSgA5Wtcfc"
+        },
+        {
+          "declaration": "static let paper: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "paper"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5paperACvpZ"
+        },
+        {
+          "declaration": "static let santi020k: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "santi020k"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV9santi020kACvpZ"
+        },
+        {
           "declaration": "@MainActor struct LumenPhoneInput",
           "kind": "swift.struct",
           "path": [
@@ -36731,6 +36872,23 @@
             "caption"
           ],
           "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "struct LumenThemeRadii",
+          "kind": "swift.struct",
+          "path": [
+            "LumenThemeRadii"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV"
+        },
+        {
+          "declaration": "init(sm: CGFloat, md: CGFloat, lg: CGFloat)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemeRadii",
+            "init(sm:md:lg:)"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV2sm2md2lgAC14CoreFoundation7CGFloatV_A2Itcfc"
         },
         {
           "declaration": "struct LumenTourLayout",
@@ -44941,6 +45099,15 @@
             "LumenTheme"
           ],
           "precise": "s:7LumenUI0A5ThemeV"
+        },
+        {
+          "declaration": "init(_ definition: LumenNamedTheme, scheme: LumenColorScheme, textStyles: LumenTextStyles? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(_:scheme:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV_6scheme10textStylesAcA0a5NamedC0V_AA0A11ColorSchemeOAA0a4TextF0VSgtcfc"
         },
         {
           "declaration": "let appearance: LumenAppearance",
@@ -71491,6 +71658,15 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
         },
         {
+          "declaration": "@MainActor func lumenThemeScope(_ definition: LumenNamedTheme, scheme: LumenColorScheme? = nil, applyTint: Bool = true) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenThemeScope(_:scheme:applyTint:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E15lumenThemeScope_6scheme9applyTintQrAD0d5NamedF0V_AD0D11ColorSchemeOSgSbtF"
+        },
+        {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, confirmLoadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), onConfirm: @escaping () -> Void) -> some View\n",
           "kind": "swift.method",
           "path": [
@@ -72125,6 +72301,59 @@
           "precise": "s:7LumenUI0A10MetricToneO7warningyA2CmF"
         },
         {
+          "declaration": "struct LumenNamedTheme",
+          "kind": "swift.struct",
+          "path": [
+            "LumenNamedTheme"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV"
+        },
+        {
+          "declaration": "func overridingColors(_ transform: (LumenColorPalette, LumenColorScheme) -> LumenColorPalette) -> LumenNamedTheme",
+          "kind": "swift.method",
+          "path": [
+            "LumenNamedTheme",
+            "overridingColors(_:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV16overridingColorsyAcA0A12ColorPaletteVAF_AA0aG6SchemeOtXEF"
+        },
+        {
+          "declaration": "static let field: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "field"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5fieldACvpZ"
+        },
+        {
+          "declaration": "init(light: LumenColorPalette, dark: LumenColorPalette, radii: LumenThemeRadii? = nil, serifHeadings: Bool = false, inkActions: Bool = false, lightChartBrand: Color? = nil, darkChartBrand: Color? = nil, lightOnSuccess: Color? = nil, darkOnSuccess: Color? = nil, lightStatusText: Color? = nil, darkStatusText: Color? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenNamedTheme",
+            "init(light:dark:radii:serifHeadings:inkActions:lightChartBrand:darkChartBrand:lightOnSuccess:darkOnSuccess:lightStatusText:darkStatusText:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5light4dark5radii13serifHeadings10inkActions0E10ChartBrand0flM00E9OnSuccess0fnO00E10StatusText0fpQ0AcA0A12ColorPaletteV_ApA0aD5RadiiVSgS2b05SwiftB00R0VSgA5Wtcfc"
+        },
+        {
+          "declaration": "static let paper: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "paper"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5paperACvpZ"
+        },
+        {
+          "declaration": "static let santi020k: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "santi020k"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV9santi020kACvpZ"
+        },
+        {
           "declaration": "@MainActor struct LumenRangeChart",
           "kind": "swift.struct",
           "path": [
@@ -72264,6 +72493,23 @@
             "caption"
           ],
           "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "struct LumenThemeRadii",
+          "kind": "swift.struct",
+          "path": [
+            "LumenThemeRadii"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV"
+        },
+        {
+          "declaration": "init(sm: CGFloat, md: CGFloat, lg: CGFloat)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemeRadii",
+            "init(sm:md:lg:)"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV2sm2md2lgAC14CoreFoundation7CGFloatV_A2Itcfc"
         },
         {
           "declaration": "struct LumenTourLayout",
@@ -78110,6 +78356,15 @@
             "LumenTheme"
           ],
           "precise": "s:7LumenUI0A5ThemeV"
+        },
+        {
+          "declaration": "init(_ definition: LumenNamedTheme, scheme: LumenColorScheme, textStyles: LumenTextStyles? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(_:scheme:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV_6scheme10textStylesAcA0a5NamedC0V_AA0A11ColorSchemeOAA0a4TextF0VSgtcfc"
         },
         {
           "declaration": "let appearance: LumenAppearance",
@@ -103725,6 +103980,15 @@
             "lumenTheme(_:enforceColorScheme:)"
           ],
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
+        },
+        {
+          "declaration": "@MainActor func lumenThemeScope(_ definition: LumenNamedTheme, scheme: LumenColorScheme? = nil, applyTint: Bool = true) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenThemeScope(_:scheme:applyTint:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E15lumenThemeScope_6scheme9applyTintQrAD0d5NamedF0V_AD0D11ColorSchemeOSgSbtF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, confirmLoadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), onConfirm: @escaping () -> Void) -> some View\n",
@@ -104474,6 +104738,59 @@
           "precise": "s:7LumenUI0A10MetricToneO7warningyA2CmF"
         },
         {
+          "declaration": "struct LumenNamedTheme",
+          "kind": "swift.struct",
+          "path": [
+            "LumenNamedTheme"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV"
+        },
+        {
+          "declaration": "func overridingColors(_ transform: (LumenColorPalette, LumenColorScheme) -> LumenColorPalette) -> LumenNamedTheme",
+          "kind": "swift.method",
+          "path": [
+            "LumenNamedTheme",
+            "overridingColors(_:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV16overridingColorsyAcA0A12ColorPaletteVAF_AA0aG6SchemeOtXEF"
+        },
+        {
+          "declaration": "static let field: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "field"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5fieldACvpZ"
+        },
+        {
+          "declaration": "init(light: LumenColorPalette, dark: LumenColorPalette, radii: LumenThemeRadii? = nil, serifHeadings: Bool = false, inkActions: Bool = false, lightChartBrand: Color? = nil, darkChartBrand: Color? = nil, lightOnSuccess: Color? = nil, darkOnSuccess: Color? = nil, lightStatusText: Color? = nil, darkStatusText: Color? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenNamedTheme",
+            "init(light:dark:radii:serifHeadings:inkActions:lightChartBrand:darkChartBrand:lightOnSuccess:darkOnSuccess:lightStatusText:darkStatusText:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5light4dark5radii13serifHeadings10inkActions0E10ChartBrand0flM00E9OnSuccess0fnO00E10StatusText0fpQ0AcA0A12ColorPaletteV_ApA0aD5RadiiVSgS2b05SwiftB00R0VSgA5Wtcfc"
+        },
+        {
+          "declaration": "static let paper: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "paper"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5paperACvpZ"
+        },
+        {
+          "declaration": "static let santi020k: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "santi020k"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV9santi020kACvpZ"
+        },
+        {
           "declaration": "@MainActor struct LumenPhoneInput",
           "kind": "swift.struct",
           "path": [
@@ -104709,6 +105026,23 @@
             "caption"
           ],
           "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "struct LumenThemeRadii",
+          "kind": "swift.struct",
+          "path": [
+            "LumenThemeRadii"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV"
+        },
+        {
+          "declaration": "init(sm: CGFloat, md: CGFloat, lg: CGFloat)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemeRadii",
+            "init(sm:md:lg:)"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV2sm2md2lgAC14CoreFoundation7CGFloatV_A2Itcfc"
         },
         {
           "declaration": "struct LumenTourLayout",
@@ -112919,6 +113253,15 @@
             "LumenTheme"
           ],
           "precise": "s:7LumenUI0A5ThemeV"
+        },
+        {
+          "declaration": "init(_ definition: LumenNamedTheme, scheme: LumenColorScheme, textStyles: LumenTextStyles? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(_:scheme:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV_6scheme10textStylesAcA0a5NamedC0V_AA0A11ColorSchemeOAA0a4TextF0VSgtcfc"
         },
         {
           "declaration": "let appearance: LumenAppearance",
@@ -139469,6 +139812,15 @@
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
         },
         {
+          "declaration": "@MainActor func lumenThemeScope(_ definition: LumenNamedTheme, scheme: LumenColorScheme? = nil, applyTint: Bool = true) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenThemeScope(_:scheme:applyTint:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E15lumenThemeScope_6scheme9applyTintQrAD0d5NamedF0V_AD0D11ColorSchemeOSgSbtF"
+        },
+        {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, confirmLoadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), onConfirm: @escaping () -> Void) -> some View\n",
           "kind": "swift.method",
           "path": [
@@ -140103,6 +140455,59 @@
           "precise": "s:7LumenUI0A10MetricToneO7warningyA2CmF"
         },
         {
+          "declaration": "struct LumenNamedTheme",
+          "kind": "swift.struct",
+          "path": [
+            "LumenNamedTheme"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV"
+        },
+        {
+          "declaration": "func overridingColors(_ transform: (LumenColorPalette, LumenColorScheme) -> LumenColorPalette) -> LumenNamedTheme",
+          "kind": "swift.method",
+          "path": [
+            "LumenNamedTheme",
+            "overridingColors(_:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV16overridingColorsyAcA0A12ColorPaletteVAF_AA0aG6SchemeOtXEF"
+        },
+        {
+          "declaration": "static let field: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "field"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5fieldACvpZ"
+        },
+        {
+          "declaration": "init(light: LumenColorPalette, dark: LumenColorPalette, radii: LumenThemeRadii? = nil, serifHeadings: Bool = false, inkActions: Bool = false, lightChartBrand: Color? = nil, darkChartBrand: Color? = nil, lightOnSuccess: Color? = nil, darkOnSuccess: Color? = nil, lightStatusText: Color? = nil, darkStatusText: Color? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenNamedTheme",
+            "init(light:dark:radii:serifHeadings:inkActions:lightChartBrand:darkChartBrand:lightOnSuccess:darkOnSuccess:lightStatusText:darkStatusText:)"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5light4dark5radii13serifHeadings10inkActions0E10ChartBrand0flM00E9OnSuccess0fnO00E10StatusText0fpQ0AcA0A12ColorPaletteV_ApA0aD5RadiiVSgS2b05SwiftB00R0VSgA5Wtcfc"
+        },
+        {
+          "declaration": "static let paper: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "paper"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV5paperACvpZ"
+        },
+        {
+          "declaration": "static let santi020k: LumenNamedTheme",
+          "kind": "swift.type.property",
+          "path": [
+            "LumenNamedTheme",
+            "santi020k"
+          ],
+          "precise": "s:7LumenUI0A10NamedThemeV9santi020kACvpZ"
+        },
+        {
           "declaration": "@MainActor struct LumenRangeChart",
           "kind": "swift.struct",
           "path": [
@@ -140242,6 +140647,23 @@
             "caption"
           ],
           "precise": "s:7LumenUI0A10TextStylesV7caption05SwiftB04FontVvp"
+        },
+        {
+          "declaration": "struct LumenThemeRadii",
+          "kind": "swift.struct",
+          "path": [
+            "LumenThemeRadii"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV"
+        },
+        {
+          "declaration": "init(sm: CGFloat, md: CGFloat, lg: CGFloat)",
+          "kind": "swift.init",
+          "path": [
+            "LumenThemeRadii",
+            "init(sm:md:lg:)"
+          ],
+          "precise": "s:7LumenUI0A10ThemeRadiiV2sm2md2lgAC14CoreFoundation7CGFloatV_A2Itcfc"
         },
         {
           "declaration": "struct LumenTourLayout",
@@ -146244,6 +146666,15 @@
           "precise": "s:7LumenUI0A5ThemeV"
         },
         {
+          "declaration": "init(_ definition: LumenNamedTheme, scheme: LumenColorScheme, textStyles: LumenTextStyles? = nil)",
+          "kind": "swift.init",
+          "path": [
+            "LumenTheme",
+            "init(_:scheme:textStyles:)"
+          ],
+          "precise": "s:7LumenUI0A5ThemeV_6scheme10textStylesAcA0a5NamedC0V_AA0A11ColorSchemeOAA0a4TextF0VSgtcfc"
+        },
+        {
           "declaration": "let appearance: LumenAppearance",
           "kind": "swift.property",
           "path": [
@@ -171857,6 +172288,15 @@
             "lumenTheme(_:enforceColorScheme:)"
           ],
           "precise": "s:7SwiftUI4ViewP05LumenB0E10lumenTheme_18enforceColorSchemeQrAD0dF0V_SbtF"
+        },
+        {
+          "declaration": "@MainActor func lumenThemeScope(_ definition: LumenNamedTheme, scheme: LumenColorScheme? = nil, applyTint: Bool = true) -> some View\n",
+          "kind": "swift.method",
+          "path": [
+            "View",
+            "lumenThemeScope(_:scheme:applyTint:)"
+          ],
+          "precise": "s:7SwiftUI4ViewP05LumenB0E15lumenThemeScope_6scheme9applyTintQrAD0d5NamedF0V_AD0D11ColorSchemeOSgSbtF"
         },
         {
           "declaration": "@MainActor func lumenAlertDialog(isPresented: Binding<Bool>, title: LocalizedStringKey, description: LocalizedStringKey? = nil, confirmLabel: LocalizedStringKey, cancelLabel: LocalizedStringKey = \"Cancel\", confirmRole: ButtonRole? = nil, confirmDisabled: Bool = false, confirmLoading: Bool = false, confirmLoadingAccessibilityValue: LumenTextContent = .localizedKey(\"Loading\"), onConfirm: @escaping () -> Void) -> some View\n",
