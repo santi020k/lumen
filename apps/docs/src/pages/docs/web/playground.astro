@@ -21,6 +21,7 @@ import {
 
 import CommunityFeedback from '../../../components/CommunityFeedback.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
+import FigmaCommunityCover from '../../../components/FigmaCommunityCover.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
 const playgrounds = [
@@ -81,6 +82,8 @@ const playgrounds = [
       <div class="playground-hero-visual__swatches"><span></span><span></span><span></span><span></span><span></span></div>
     </div>
   </DocsPageHero>
+
+  <FigmaCommunityCover file="playgrounds" />
 
   <section class="web-framework-playground" id="live-preview" aria-labelledby="framework-playground-title">
     <div class="web-framework-playground__heading">
