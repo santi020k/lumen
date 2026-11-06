@@ -78,7 +78,7 @@ test('Git scope includes both rename sides, deletions and unusual names from the
 })
 
 test('Figma plugin sources and browser regressions select browser coverage', () => {
-  for (const path of ['apps/figma-plugin/src/plugin.ts', 'tests/figma/plugin-beta.spec.ts']) {
+  for (const path of ['apps/figma-plugin/src/plugin.ts', 'tests/figma/plugin.spec.ts']) {
     const classification = classifyCiPaths([path])
 
     assert.equal(classification.playwright, true)

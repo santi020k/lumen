@@ -1,6 +1,6 @@
 # Figma Integration
 
-Lumen connects Figma and code through semantic theme tokens, Code Connect mappings, and a beta
+Lumen connects Figma and code through semantic theme tokens, Code Connect mappings, and an offline
 plugin for inspecting a selection and preparing an Astro handoff.
 
 For the reverse direction — implementing Figma designs with Lumen components — see
@@ -10,35 +10,13 @@ For the reverse direction — implementing Figma designs with Lumen components �
 AI agents maintaining the library itself should follow the reusable
 [Figma AI working guide](figma-ai-working-guide.md).
 
-## Figma plugin — Beta
+## Figma plugin
 
-**Lumen for Figma is a beta version.** The development plugin recognizes six canonical Lumen
-components, generates an Astro starter, and prepares a structured AI handoff. It runs locally with
-no network access; AI generation and project validation happen in the user's existing coding agent.
-Generated code, responsive behavior, unsupported layers, and application actions require review.
+Lumen for Figma 1.0.0 inspects canonical instances and exports an Astro starter, layout setup, and structured handoff. Choose **Lumen Astro 5.0.0** for selective imports and optional appearance styles or **4.4.0** for the full stylesheet setup. The plugin matches 21 components by library key, including controls, editorial content, timelines and reveal groups. Review detached instances, custom layers, responsive behavior and application actions before integration.
 
-The beta supports Button, Input, Field, Card, Tabs, and Dialog. Its generated starter targets
-`@santi020k/lumen-astro` v4; compare the exact version in the handoff with the installed package
-before integrating it. The plugin's own beta version is separate from Lumen's package version.
+Select one frame or instance, choose the version installed in the receiving project, then choose **Inspect selection**. Review the findings and the selected text before sharing an export. The plugin runs offline. See [setup, component coverage and version compatibility](../apps/figma-plugin/README.md).
 
-Select one frame or component instance from the canonical library, choose **Inspect selection**,
-review the findings, and copy or save the **Astro starter** or **AI handoff**. Load the Astro
-stylesheet and `UIPrimitives` once at the application boundary, then connect application behavior
-and verify keyboard interaction and responsive layouts. Exports contain the selected design's
-visible text and component data; review them before sharing with an external coding agent.
-
-See the [plugin setup and limitations](../apps/figma-plugin/README.md). The beta is available as a
-repository development build, not a published Figma Community plugin. The existing Community link
-below points to the design library.
-
-GitHub Actions prepares tested beta ZIPs with source revisions and checksums. See the
-[Community publishing guide](../apps/figma-plugin/README.md#figma-community-publication) for the
-remaining Figma desktop registration, host verification, and submission steps.
-
-The v4 packages and public documentation must be live and verified before the plugin is submitted
-to Figma Community. Figma review is separate from the Lumen release. After approval and a verified
-public install, the documentation will link to the actual plugin listing while retaining its Beta
-label and supported-component limits.
+GitHub Actions prepares the versioned ZIP, revision and checksum for desktop verification. Community submission and installation verification follow the [publication checklist](../apps/figma-plugin/README.md#figma-community-publication). The Community link below opens the design library.
 
 ## Figma Library File
 

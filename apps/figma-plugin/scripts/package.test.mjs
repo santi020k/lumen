@@ -21,7 +21,7 @@ const fixture = async (t, overrides = {}) => {
 
   await mkdir(join(root, 'dist'))
 
-  await writeFile(join(root, 'package.json'), JSON.stringify({ version: '0.1.0-beta.1' }))
+  await writeFile(join(root, 'package.json'), JSON.stringify({ version: '1.0.0' }))
 
   const manifestText = JSON.stringify({ ...manifest, ...overrides })
 
@@ -31,7 +31,7 @@ const fixture = async (t, overrides = {}) => {
 
   await writeFile(join(root, 'dist/code.js'), 'figma.showUI(__html__)')
 
-  await writeFile(join(root, 'dist/ui.html'), '<!doctype html><title>Beta</title>')
+  await writeFile(join(root, 'dist/ui.html'), '<!doctype html><title>Lumen for Figma</title>')
 
   return root
 }
@@ -56,7 +56,7 @@ test('packages only runtime files and verifiable source metadata, with repeatabl
 
   assert.equal(metadata.revision, revision)
 
-  assert.equal(metadata.version, '0.1.0-beta.1')
+  assert.equal(metadata.version, '1.0.0')
 
   assert.equal(metadata.pluginId, null)
 
@@ -118,10 +118,10 @@ test('rejects stale manifests, missing output, unsafe names, and invalid source 
   await assert.rejects(packagePlugin(root, { revision: 'unknown', dirty: false }), /Git commit/u)
 })
 
-test('rejects unexpected entrypoints, invalid IDs, and network access in the offline beta', async t => {
+test('rejects unexpected entrypoints, invalid IDs, and network access in the offline plugin', async t => {
   for (const override of [{ main: '../code.js' }, { id: 'placeholder' }, { networkAccess: { allowedDomains: ['*'] } }]) {
     const root = await fixture(t, override)
 
-    await assert.rejects(packagePlugin(root, source), /beta package|plugin ID/u)
+    await assert.rejects(packagePlugin(root, source), /plugin package|plugin ID/u)
   }
 })

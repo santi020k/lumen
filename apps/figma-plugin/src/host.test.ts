@@ -17,6 +17,11 @@ interface MockNode {
   visible: boolean
   characters: string
   children: MockNode[]
+  key?: string
+  defaultVariant?: MockNode
+  parent?: MockNode
+  variantProperties?: Record<string, string>
+  componentPropertyDefinitions?: Record<string, { type: string, defaultValue: string | boolean }>
   fills?: readonly Paint[]
   strokes?: readonly Paint[]
   componentProperties: Record<string, { type: string, value: string | boolean }>
@@ -96,10 +101,10 @@ describe('Figma host lifecycle', () => {
     expect(app.messages).toEqual([])
     await app.send({ type: 'ready' })
     expect(app.messages.at(-1)).toEqual({ type: 'selection', name: null })
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     expect(app.messages.at(-1)?.type).toBe('error')
     app.page.selection = [node(), node()]
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     expect(app.messages.at(-1)?.type).toBe('error')
   })
 
@@ -108,12 +113,25 @@ describe('Figma host lifecycle', () => {
     await app.send(null)
     await app.send({ type: 'delete' })
     expect(app.messages).toEqual([])
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     const message = app.messages.at(-1)
     expect(message?.type).toBe('result')
     if (message?.type !== 'result') throw new Error('Expected conversion result.')
     expect(message.result.code).toContain('Visible')
     expect(message.result.handoff).not.toContain('Hidden')
+  })
+
+  test('rejects unsupported targets and exports the version requested by the panel', async () => {
+    const app = host([node()])
+    for (const [version, appearance] of [['3.0.0', 'project'], ['4.4.0', 'paper'], ['5.0.0', '__proto__']]) {
+      await app.send({ type: 'analyze', version, appearance })
+      expect(app.messages.at(-1)?.type).toBe('error')
+    }
+    await app.send({ type: 'analyze', version: '4.4.0', appearance: 'studio' })
+    const message = app.messages.at(-1)
+    if (message?.type !== 'result') throw new Error('Expected the requested v4 export.')
+    expect(message.result.lumenVersion).toBe('4.4.0')
+    expect(message.result.layout).toContain('styles.css')
   })
 
   test('normalizes property suffixes and recognizes canonical instances', async () => {
@@ -129,10 +147,26 @@ describe('Figma host lifecycle', () => {
         Size: { type: 'VARIANT', value: 'Sm' }
       }
     })])
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     const message = app.messages.at(-1)
     if (message?.type !== 'result') throw new Error('Expected conversion result.')
     expect(message.result.code).toContain('<Button variant="outline" size="sm">{"Continue"}</Button>')
+  })
+
+  test('exports a selected component set through its default variant and actual variant values', async () => {
+    const set = node({ id: 'set',
+      type: 'COMPONENT_SET',
+      key: componentKeys.Button[0] ?? '',
+      componentPropertyDefinitions: {
+        Variant: { type: 'VARIANT', defaultValue: 'Default' }, Size: { type: 'VARIANT', defaultValue: 'Default' }, 'Label#key': { type: 'TEXT', defaultValue: 'Send' }
+      } })
+    set.defaultVariant = node({ type: 'COMPONENT', parent: set, key: 'variant', variantProperties: { Variant: 'Outline', Size: 'Sm' } })
+    const app = host([set])
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
+    const message = app.messages.at(-1)
+    if (message?.type !== 'result') throw new Error('Expected default variant output.')
+    expect(message.result.code).toContain('<Button variant="outline" size="sm">{"Send"}</Button>')
+    expect(message.result.findings.some(finding => finding.message.includes('default variant'))).toBe(true)
   })
 
   test('rejects ambiguous properties without silently replacing their values', async () => {
@@ -140,7 +174,7 @@ describe('Figma host lifecycle', () => {
       componentProperties: {
         'Label#1': { type: 'TEXT', value: 'First' }, 'Label#2': { type: 'TEXT', value: 'Second' }
       } })])
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     expect(app.messages.at(-1)?.type).toBe('error')
   })
 
@@ -154,7 +188,7 @@ describe('Figma host lifecycle', () => {
       node({ visible: false })
     ]) {
       const app = host([selection])
-      await app.send({ type: 'analyze' })
+      await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
       expect(app.messages.at(-1)?.type).toBe('error')
     }
   })
@@ -166,7 +200,7 @@ describe('Figma host lifecycle', () => {
       app.events.get('selectionchange')?.()
       return Promise.resolve(null)
     }
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     expect(app.messages.at(-1)?.type).toBe('error')
     expect(app.messages.some(message => message.type === 'result')).toBe(false)
   })
@@ -192,7 +226,7 @@ test('audits only detached visible solid fills and strokes', async () => {
     ],
     strokes: [{ type: 'SOLID', color: { r: 0, g: 0, b: 1 } }]
   })])
-  await app.send({ type: 'analyze' })
+  await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
   const message = app.messages.at(-1)
   if (message?.type !== 'result') throw new Error('Expected paint audit result.')
   expect(message.result.findings.some(finding => finding.message.includes('2 visible paints'))).toBe(true)

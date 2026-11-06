@@ -13,9 +13,14 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI
     },
     {
-      command: 'pnpm --filter @santi020k/lumen-figma-plugin run verify:generated && pnpm --filter @santi020k/lumen-figma-plugin exec vite preview --outDir .verification/dist --host 127.0.0.1 --port 4762 --strictPort',
+      command: 'pnpm --filter @santi020k/lumen-figma-plugin run verify:generated && pnpm --filter @santi020k/lumen-figma-plugin exec vite preview --outDir .verification/5.0.0/dist --host 127.0.0.1 --port 4762 --strictPort',
       url: 'http://127.0.0.1:4762',
-      timeout: 120_000,
+      timeout: 180_000,
+      reuseExistingServer: !process.env.CI
+    },
+    {
+      command: 'pnpm --filter @santi020k/lumen-figma-plugin exec vite preview --outDir .verification/4.4.0/dist --host 127.0.0.1 --port 4763 --strictPort',
+      url: 'http://127.0.0.1:4763',
       reuseExistingServer: !process.env.CI
     }
   ]

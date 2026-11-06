@@ -1,12 +1,22 @@
 import { expect, test } from '@playwright/test'
 
 for (const width of [390, 1440]) {
-  test(`beta preview exports the selected design at ${width}px`, async ({ page }, testInfo) => {
+  test(`Plugin preview exports the selected design at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
     await expect(page.getByText('Local preview · Synthetic settings screen. No Figma file is connected.')).toBeVisible()
     await page.getByRole('button', { name: 'Inspect selection' }).click()
     await expect(page.getByText('6 verified')).toBeVisible()
+    const appearance = page.getByRole('combobox', { name: 'Project appearance' })
+    await appearance.click()
+    await page.getByRole('option', { name: 'Paper', exact: true }).click()
+    await expect(page.getByRole('tablist', { name: 'Conversion output' })).toHaveCount(0)
+    const version = page.getByRole('combobox', { name: 'Target version' })
+    await version.click()
+    await page.getByRole('option', { name: 'Lumen Astro 4.4.0' }).click()
+    await expect(appearance).toHaveText('Use project appearance')
+    await page.getByRole('button', { name: 'Inspect selection' }).click()
+    await expect(page.getByText(/Lumen 4\.4\.0 ·/u)).toBeVisible()
     const tabs = page.getByRole('tablist', { name: 'Conversion output' })
     await tabs.getByRole('tab', { name: 'Astro starter' }).focus()
     await page.keyboard.press('ArrowRight')
@@ -18,15 +28,20 @@ for (const width of [390, 1440]) {
     await page.screenshot({ path: testInfo.outputPath(`plugin-${width}.png`), fullPage: true })
   })
 
-  test(`generated Astro labels, tabs, and dialog work at ${width}px`, async ({ page }, testInfo) => {
+  for (const [version, port] of [['5.0.0', 4762], ['4.4.0', 4763]] as const) test(`generated Astro ${version} interactions work at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 })
     await page.emulateMedia({ reducedMotion: 'reduce' })
-    await page.goto('http://127.0.0.1:4762')
+    await page.goto(`http://127.0.0.1:${port}`)
     await expect(page.getByLabel('Workspace name')).toHaveAttribute('aria-describedby', /-help$/u)
     await page.getByRole('tab', { name: 'Profile' }).focus()
     await page.keyboard.press('ArrowRight')
     await expect(page.getByRole('tab', { name: 'Team' })).toHaveAttribute('aria-selected', 'true')
-    await expect(page.getByRole('tabpanel')).toContainText('details content')
+    await expect(page.getByRole('tabpanel').filter({ hasText: 'details content' })).toContainText('details content')
+    await expect(page.locator('html')).toHaveAttribute('data-lumen-preset', version === '5.0.0' ? 'paper' : 'studio')
+    await expect(page.getByRole('tab', { name: 'npm', exact: true })).toHaveAttribute('aria-selected', 'true')
+    await page.getByRole('tab', { name: 'yarn' }).click()
+    await expect(page.getByRole('tabpanel').filter({ hasText: 'yarn install' })).toBeVisible()
+    await expect(page.getByText('Release 3', { exact: true })).toBeVisible()
     const trigger = page.getByRole('button', { name: 'Open dialog' })
     await trigger.click()
     const dialog = page.getByRole('dialog', { name: 'Archive workspace' })

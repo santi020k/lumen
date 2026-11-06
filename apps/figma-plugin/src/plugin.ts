@@ -3,6 +3,8 @@ import { collectSelection } from './collect.js'
 import { analyzeSelection } from './convert.js'
 import type { PluginMessage } from './model.js'
 import { isRecord, resultMessage } from './model.js'
+import type { ExportTarget } from './targets.js'
+import { isVersion, supportsAppearance } from './targets.js'
 
 figma.showUI(__html__, { width: 480, height: 720, themeColors: true })
 
@@ -39,7 +41,7 @@ figma.on('currentpagechange', () => {
   selectionChanged()
 })
 
-const inspect = async () => {
+const inspect = async (target: ExportTarget) => {
   const selection = figma.currentPage.selection
   const node = selection[0]
 
@@ -62,7 +64,7 @@ const inspect = async () => {
       return
     }
 
-    send(resultMessage(analyzeSelection(snapshot)))
+    send(resultMessage(analyzeSelection(snapshot, target)))
   } catch (error) {
     send({ type: 'error', message: error instanceof Error ? error.message : 'Could not inspect this selection. Try a smaller frame.' })
   } finally {
@@ -81,7 +83,15 @@ figma.ui.onmessage = (message: unknown) => {
 
   if (message.type !== 'analyze' || busy) return
 
-  inspect().catch(() => {
+  const { version, appearance } = message
+
+  if (!isVersion(version) || !supportsAppearance(version, appearance)) {
+    send({ type: 'error', message: 'Choose a supported Lumen version and appearance.' })
+
+    return
+  }
+
+  inspect({ version, appearance }).catch(() => {
     busy = false
 
     send({ type: 'error', message: 'Could not inspect this selection. Try a smaller frame.' })

@@ -2,8 +2,8 @@ import { isPluginMessage, isRecord } from './model.js'
 import { mountPanel } from './mount.js'
 
 mountPanel({
-  analyze: () => {
-    parent.postMessage({ pluginMessage: { type: 'analyze' } }, '*')
+  analyze: target => {
+    parent.postMessage({ pluginMessage: { type: 'analyze', ...target } }, '*')
   },
   subscribe: listener => {
     const receive = (event: MessageEvent<unknown>) => {

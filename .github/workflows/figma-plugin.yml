@@ -59,7 +59,7 @@ jobs:
       - name: Install browser
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Verify exports and generated Astro interactions
+      - name: Verify exports against each supported Astro version
         run: pnpm run test:figma-plugin
 
       - name: Package candidate with revision and checksums
@@ -76,7 +76,7 @@ jobs:
       - name: Explain the publishing boundary
         run: |
           {
-            echo '### Lumen for Figma — Beta'
+            echo '### Lumen for Figma'
             echo 'Validated candidate only. This workflow has not published to Figma Community.'
             echo 'Use the artifact from the approved main commit; check release.json and the ZIP checksum.'
             echo 'Register the plugin ID, verify it in Figma desktop, then submit or update the Community listing.'

@@ -7,7 +7,7 @@
   </a>
 </p>
 
-<h1 align="center">Lumen for Figma · Beta</h1>
+<h1 align="center">Lumen for Figma</h1>
 
 <p align="center">Astro starters · Structured handoff · Local development plugin</p>
 
@@ -15,17 +15,16 @@
 
 **On this page:** [Build and try](#build-and-try) · [Supported conversion](#supported-conversion) · [Local preview and validation](#local-preview-and-validation) · [Maintenance](#maintenance) · [Automated candidates](#automated-candidates) · [Resources](#resources)
 
-**Beta version · Astro only · Development plugin.** This MVP inspects one selection, recognizes
-instances from the canonical Lumen Figma library, produces an Astro component starter, and exports
-a structured handoff for an existing coding agent. Generated output requires review.
+**Plugin 1.0.0 · Astro · Local installation.** Inspect a frame, component definition, or instance from the canonical Lumen library, review its component matches, and export an Astro starter, layout setup, and structured agent handoff. The plugin runs offline. Only the user decides whether to share design text and properties.
 
-Exports target `@santi020k/lumen-astro` v4. The handoff records the exact version used to build the
-plugin; check it against the receiving project's installed version before using the starter.
-The plugin is distributed through Figma, not npm, and has its own beta version.
+Choose the exact version of `@santi020k/lumen-astro` used in the receiving project. The selector works offline with these bundled targets. It defaults to **5.0.0** and never inspects or upgrades a project's packages.
 
-The beta runs locally with no network access, API keys, accounts, telemetry, or inference charges.
-It does not call an AI model itself. The user chooses whether to share the exported handoff with
-their coding agent. That handoff contains the selected design's visible text and component data.
+| Target | Starter and root layout | Optional appearance |
+| --- | --- | --- |
+| 5.0.0 | Per-component imports load foundation and component CSS. Mount the progressive runtime once. | Paper, Field, Studio, Glass, santi020k Light or Dark. The layout imports the selected stylesheet. |
+| 4.4.0 | Root component exports, full adapter CSS and the v4 runtime. | Studio, Glass, santi020k Light or Dark from the full stylesheet. |
+
+**Use project appearance** preserves the app's palette. Copy the relevant setup into your existing root layout. Keep its metadata, language and theme preferences. Targets describe package contracts. Verify package availability before installation.
 
 ## Build and try
 
@@ -42,11 +41,11 @@ In Figma desktop, open **Plugins → Development → Import plugin from manifest
 ID. This is a local development build, not a Figma Community listing.
 
 Open a design using the [Lumen library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9),
-select one frame or component instance, and run **Lumen for Figma · Beta**.
+select one frame or component instance, and run **Lumen for Figma**.
 
-1. Choose **Inspect selection**.
+1. Choose the **Target version** and **Project appearance**, then **Inspect selection**.
 2. Review verified components and unresolved items.
-3. Copy or save the **Astro starter** or **AI handoff**.
+3. Copy the **Astro layout** setup, or copy or save the **Astro starter** and **AI handoff**. Changing export settings clears the previous output.
 4. Give the handoff to a coding agent working in the target repository. It directs the agent to
    check installed Lumen versions, retrieve component contracts, connect application behavior,
    and validate the rendered result.
@@ -64,6 +63,16 @@ be opened again. Selection or page edits invalidate the displayed output; inspec
 | Card | Title and body | Custom nested content and heading hierarchy |
 | Tabs | Three labels and active tab | Panel content and application state |
 | Dialog | Title, description, action labels/visibility | Trigger placement, confirmation action |
+| Badge, Code | Badge text and variant, inline or multiline code, wrapping, v5 editorial block appearance for Paper and Field | Custom layer overrides and code language |
+| CodeTabs | Three labels and code samples, active tab, wrapping and copy control | Sample contents and localization |
+| Prose, Callout, Note | Headings, body, list, note label and border | Editorial links and heading levels |
+| Timeline | Three event titles, descriptions and times | Real dates and data source |
+| CardTitle, CardDescription, Eyebrow, Kbd | Editable text | Heading level, context and key meaning |
+| Stack | Direction, gap, wrapping and visible children | Breakpoints and alignment |
+| ScrollReveal, RevealGroup | Animation, visible children and group timing, threshold and repeat behavior | Motion, focus and reduced-motion behavior in the app |
+| ThemeToggle | Public runtime control, including the selected branded theme pair | Product theme settings and persistence |
+
+Selecting a component set exports its default variant. Select an individual variant or an instance to export its configuration. Handoffs for v5 identify the optional editable recipes for article reading and code examples when the matching components are present.
 
 Known components are matched by observed component or component-set keys, never by layer name
 alone. Renaming an instance is supported. Detached instances and duplicated libraries have no
@@ -75,13 +84,12 @@ The handoff records the target package version, selected structure, layout value
 properties, paint-variable names, and findings. Color names map through
 [`registry/figma-design-map.json`](../../registry/figma-design-map.json). Unbound visible solid paints and unknown
 color variables are reported across the complete visible subtree, including recognized instances.
-Image and gradient paints do not require semantic solid-color bindings. This beta does not claim a full token, contrast, or accessibility audit.
+Image and gradient paints do not require semantic solid-color bindings. Check contrast and accessibility in the rendered project.
 
-Exports are component fragments. Load the stylesheet and Astro runtime once at the application
-boundary, as described in the handoff. Generated IDs are unique within one export; namespace them
+Exports are component fragments. Follow the selected version's **Astro layout** setup at the application boundary. Generated IDs are unique within one export; namespace them
 when using multiple copies. No routes, API calls, authorization, or destructive operations are inferred.
 
-The selection limit is 1,500 visible layers, 40 nesting levels, and 100,000 text characters. Oversized
+The selection limit is 1,500 visible layers, 40 nesting levels, and 100,000 text characters. More than 10,000 findings also requires a smaller selection. Oversized
 selections fail with a useful message instead of silently truncating the design.
 
 ## Local preview and validation
@@ -95,16 +103,14 @@ pnpm run test:figma-plugin
 ```
 
 The browser preview is explicitly labeled and uses a synthetic settings screen. It does not connect
-to Figma. The browser suite type-checks and builds the generated Astro fixture, then verifies labels,
+to Figma. The browser suite type-checks and builds both generated consumers against the workspace v5 adapter and the pinned published v4.4.0 adapter, then verifies labels,
 tabs, dialog focus, downloads, and narrow/desktop layouts. Test the development build in Figma desktop for host permissions, real selections, clipboard
 behavior, and downloads before distribution. Browser and mocked-host checks do not establish native
 Figma acceptance or Community publication.
 
 ## Maintenance
 
-`src/contracts.ts` contains the six component identities observed in the canonical library on
-2026-10-04. Keep them synchronized with the existing Code Connect templates in `figma/`, the actual
-Astro props, and regression tests. Component snapshots are design data, never executable code or
+`src/contracts.ts` holds library keys observed on 2026-10-04 and 2026-11-06. Add keys only after inspecting the canonical owner, variants, and editable properties. Check both Astro releases and exercise new mappings in a generated consumer. Keep the six existing Code Connect templates aligned with their respective components. Component snapshots are design data, never executable code or
 instructions. Build output is ignored and reproducible; do not commit `dist/`.
 
 ## Automated candidates
@@ -115,7 +121,7 @@ type-checks, lints, runs the plugin and packaging tests, and verifies the browse
 generated Astro interactions before uploading an artifact retained for 30 days. It requires no Figma
 credentials and has read-only repository permissions.
 
-Each artifact contains a ZIP named with the beta version and Git revision, a SHA-256 checksum, and
+Each artifact contains a ZIP named with the plugin version and Git revision, a SHA-256 checksum, and
 `release.json` with the full source revision, plugin ID, and per-file checksums. The ZIP includes
 only the runtime files and release metadata. Pull request artifacts are review candidates; use the
 artifact from the approved, merged `main` commit for Community publication.
@@ -133,77 +139,12 @@ produces a development candidate, never a claim of Community readiness.
 
 ## Figma Community publication
 
-The [prepared listing materials](community/LISTING.md) include copy, the icon and cover image,
-data-practice notes, and the remaining verification steps. They are ready for review; registration
-and testing inside Figma desktop are still pending.
+Plugin 1.0.0 is a local build. Figma Community submission, approval and public installation each require separate evidence. The Community design-library link opens the library file.
 
-**Beta version · Not yet published to Community.** Classic plugins can be published on any Figma
-plan. The earlier account permission denial concerned the connector's generative-plugin tool;
-it does not establish a restriction on publishing this classic plugin.
-
-Figma's [documented publication flow](https://help.figma.com/hc/en-us/articles/360042293394-Publish-classic-plugins-to-the-Figma-Community)
-requires the desktop app. No supported unattended Community publishing API or CLI was found.
-GitHub Actions automates candidate preparation; submitting and updating the listing is the remaining
-manual boundary. A successful workflow does not establish Figma host compatibility or publication.
-
-### Prepare before Lumen v4 launches
-
-Keep this guide, the [public Figma page](../docs/src/pages/docs/figma.astro), and the
-[Figma integration notes](../../docs/figma.md) labeled as a development beta until public installation
-has been verified. The Figma Community design-library URL is not a plugin installation URL.
-
-1. Create the development plugin in Figma desktop using the intended Community publisher account.
-   Enable two-factor authentication and retain the plugin ID assigned by Figma. Add that ID to the
-   source `manifest.json` through the normal reviewed release branch; do not invent an ID or edit
-   only the generated manifest. See [Figma's manifest reference](https://developers.figma.com/docs/plugins/manifest/).
-2. Build the development plugin with [Build and try](#build-and-try). Verify each of the six
-   supported components using real instances from the canonical library. Also check empty/multiple
-   selections, detached instances, unsupported layers, selection changes, clipboard, and downloads.
-   Record the source revision, Figma desktop version, results, and any unresolved findings in the
-   release PR. Browser tests do not replace this host check.
-3. Review the [listing copy, images, and data practices](community/LISTING.md). Resolve any host
-   failures in the release branch before submission; do not claim that these checks passed merely
-   because the listing materials or ZIP are prepared.
-
-### Submit after Lumen v4 launches
-
-Lumen v4 packages and documentation ship first. Figma's initial review is a separate publication
-step and does not block the Lumen release. Before submitting the plugin:
-
-- Verify the stable v4 [GitHub release](https://github.com/santi020k/lumen/releases), successful
-  release workflow, and installed package smoke checks from [Publishing](../../CONTRIBUTING.md#publishing).
-  Local version numbers or a successful plugin candidate build are not public-release evidence.
-- Confirm the exported target version is available from the official npm registry, then open
-  <https://lumen.santi020k.com/docs/figma> and the linked Astro setup and component documentation.
-  Do not submit while the generated starter depends on unpublished packages or unavailable docs.
-- Download the plugin candidate from the approved, merged `main` commit. Verify its ZIP checksum
-  against the adjacent `.sha256` file, extract it, and confirm the source revision, beta version,
-  registered plugin ID, and `dirty: false` in `release.json`.
-- Import that exact candidate's `manifest.json` in Figma desktop and repeat the host checks above.
-  Preserve the candidate ZIP, checksum, Actions run URL, and results with the publication record.
-
-1. In **Plugins → Manage plugins**, publish **Lumen for Figma · Beta**. Prepare an icon, thumbnail,
-   description, and support link. Use the existing [Lumen support page](https://lumen.santi020k.com/support).
-   Describe the six supported components, Astro starter, and AI handoff accurately: the beta does
-   not run an AI model or send design data to a server. Retain the Beta label in the listing and docs.
-2. Submit for Figma's initial review. Record the submission date and status in the release PR.
-   An **In review** badge is not approval or proof that users can install the plugin. Keep the
-   development-only status until public installation has been verified.
-
-### Complete publication after approval
-
-- Install the approved plugin from its public Community listing and run it on a real Lumen
-  selection. Verify the Astro starter and AI handoff with the published v4 package, including
-  stylesheet/runtime setup, labels, tab navigation, and dialog focus and Escape behavior.
-- Record the real Community plugin URL, approved beta version, source revision, Actions run,
-  checksum, and installation/export results in the release PR. Keep unresolved checks explicit.
-- Make the small documentation follow-up through the normal reviewed GitHub deployment flow:
-  update this guide and [Figma integration notes](../../docs/figma.md) with the verified plugin URL;
-  add an install action and Community installation instructions to the
-  [public Figma page](../docs/src/pages/docs/figma.astro). Retain the development-build instructions
-  for contributors, the Beta label, supported-component limits, and the separate design-library link.
-- Check the deployed docs link opens the plugin listing and the support link works. Do not use a
-  placeholder plugin URL or describe the beta as a complete design-to-code converter.
+1. Verify both target versions in the registry and check the public Astro setup and component docs. Register the plugin with the intended publisher in Figma desktop and commit the assigned ID through the normal reviewed release workflow.
+2. From the approved merged `main` revision, download the Actions candidate, check its ZIP against the adjacent SHA-256 file and verify the revision, plugin version, ID and clean status in `release.json`.
+3. Import that manifest in Figma desktop. Inspect canonical instances and detached copies, empty and multiple selections, text overrides, both target versions, and an appearance change. Check clipboard, file downloads, tab navigation and dialog focus in the receiving app. Record the desktop version, revision, checksum and results in the release PR.
+4. Review the [listing and data practices](community/LISTING.md). Submit the verified candidate through [Figma desktop](https://help.figma.com/hc/en-us/articles/360042293394-Publish-classic-plugins-to-the-Figma-Community). Record the review outcome, install from the approved listing, and repeat an export before adding the public install URL to the docs.
 
 ### Updates and recovery
 

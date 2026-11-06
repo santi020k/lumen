@@ -1,11 +1,23 @@
 import { useEffect, useState } from 'react'
 
-import '@santi020k/lumen-react/styles.css'
+import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/badge.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import '@santi020k/lumen-react/styles/components/card.css'
+import '@santi020k/lumen-react/styles/components/code-tabs.css'
+import '@santi020k/lumen-react/styles/components/label.css'
+import '@santi020k/lumen-react/styles/components/select.css'
+import '@santi020k/lumen-react/styles/components/stack.css'
 import './styles.css'
 
-import { Badge, Button, Card, CodeTabs, Stack } from '@santi020k/lumen-react'
+import { Badge, Button, Card, CodeTabs, Label, Select, Stack } from '@santi020k/lumen-react'
 
+import { componentKeys } from './contracts.js'
 import type { PluginBridge, PluginResult } from './model.js'
+import type { ExportTarget } from './targets.js'
+import { appearancesFor, defaultTarget, isVersion, supportsAppearance, versions } from './targets.js'
+
+const versionOptions = versions.map(value => ({ value, label: `Lumen Astro ${value}` }))
 
 const download = (contents: string, name: string) => {
   const url = URL.createObjectURL(new Blob([contents], { type: 'text/plain;charset=utf-8' }))
@@ -21,6 +33,7 @@ const download = (contents: string, name: string) => {
 }
 
 export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: boolean }) => {
+  const [target, setTarget] = useState(defaultTarget)
   const [selection, setSelection] = useState<string | null>(null)
   const [result, setResult] = useState<PluginResult | null>(null)
   const [busy, setBusy] = useState(false)
@@ -28,7 +41,7 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
   const [failed, setFailed] = useState(false)
 
   useEffect(() => bridge.subscribe(message => {
-    setBusy(false)
+    if (message.type !== 'selection') setBusy(false)
 
     setFailed(message.type === 'error')
 
@@ -49,6 +62,16 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
     }
   }), [bridge])
 
+  const changeTarget = (next: ExportTarget) => {
+    setTarget(next)
+
+    setResult(null)
+
+    setFailed(false)
+
+    setStatus(selection ? 'Inspect the selection to export with these settings.' : 'Select one frame or component in Figma.')
+  }
+
   const findings = result ? result.findings : []
   const verified = findings.filter(finding => finding.status === 'verified').length
   const review = findings.filter(finding => finding.status !== 'verified')
@@ -56,22 +79,44 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
   return (
     <main className="plugin-panel">
       <header className="plugin-header">
-        <div className="plugin-wordmark">
-          Lumen
-          <Badge variant="outline">Beta</Badge>
-        </div>
-        <h1>
-          From your canvas
-          <br />
-          to your components.
-        </h1>
-        <p>Inspect a Lumen design and prepare an Astro starter for your coding agent.</p>
+        <h1>Lumen for Figma</h1>
+        <p>Export the selected design as an Astro component and a handoff for your coding agent.</p>
       </header>
       {preview && <p className="preview-note">Local preview · Synthetic settings screen. No Figma file is connected.</p>}
       <Card className="selection-card">
         <p className="eyebrow">Selected design</p>
         <h2>{selection ?? 'Nothing selected'}</h2>
-        <p className="selection-meta">Astro · 6 supported Lumen components</p>
+        <p className="selection-meta">
+          {Object.keys(componentKeys).length}
+          {' '}
+          supported components
+        </p>
+        <div className="target-field">
+          <Label htmlFor="lumen-version" id="version-label">Target version</Label>
+          <Select
+            aria-labelledby="version-label"
+            disabled={busy}
+            id="lumen-version"
+            onValueChange={version => {
+              if (isVersion(version)) changeTarget({ version, appearance: supportsAppearance(version, target.appearance) ? target.appearance : 'project' })
+            }}
+            options={versionOptions}
+            value={target.version}
+          />
+        </div>
+        <div className="target-field">
+          <Label htmlFor="lumen-appearance" id="appearance-label">Project appearance</Label>
+          <Select
+            aria-labelledby="appearance-label"
+            disabled={busy}
+            id="lumen-appearance"
+            onValueChange={appearance => {
+              if (supportsAppearance(target.version, appearance)) changeTarget({ ...target, appearance })
+            }}
+            options={appearancesFor(target.version)}
+            value={target.appearance}
+          />
+        </div>
         <Button
           disabled={!selection || busy}
           loading={busy}
@@ -84,7 +129,7 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
 
             setStatus('Inspecting component identities and design properties…')
 
-            bridge.analyze()
+            bridge.analyze(target)
           }}
         >
           Inspect selection
@@ -132,7 +177,8 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
               className="conversion-code"
               items={[
                 { value: 'astro', label: 'Astro starter', code: result.code, language: 'html' },
-                { value: 'handoff', label: 'AI handoff', code: result.handoff, language: 'text' }
+                { value: 'handoff', label: 'AI handoff', code: result.handoff, language: 'text' },
+                { value: 'layout', label: 'Astro layout', code: result.layout, language: 'html' }
               ]}
             />
             <Stack className="download-actions" direction="horizontal" gap="sm" wrap>
@@ -158,7 +204,7 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
         </Stack>
       )}
       <footer className="plugin-footer">
-        <p>Beta · Generated output needs review. Analysis stays in Figma; sharing the handoff is your choice.</p>
+        <p>Analysis runs locally. Review selected text before sharing the handoff.</p>
         <a href="https://santi020k.com" rel="noopener noreferrer" target="_blank">By santi020k</a>
       </footer>
     </main>
