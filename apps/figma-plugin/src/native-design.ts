@@ -2,7 +2,7 @@ import type { ComponentName } from './contracts.js'
 import { identifyComponent, isComponentBoundary, isLayoutLayer, namedLayoutNote, withPresentationContent } from './contracts.js'
 import type { DesignNode } from './model.js'
 import type { NativeControl } from './native-controls.js'
-import { drawnProgress, labelText, matchesControl, percentValue } from './native-controls.js'
+import { drawnProgress, emailAlert, labelText, matchesControl, percentValue } from './native-controls.js'
 import type { createReview } from './review.js'
 import type { NativePlatform } from './targets.js'
 
@@ -31,7 +31,7 @@ export type NativeNode =
   { kind: 'text', content: string, variant: 'title' | 'body' | 'label', tone: typeof tones[keyof typeof tones] } |
   { kind: 'checkbox', index: number, label: string } |
   { kind: 'progress', label: string, value: number } |
-  { kind: 'input', index: number, size: Size, label: string, placeholder: string, helper: string, visibleLabel: boolean }
+  { kind: 'input', index: number, size: Size, label: string, placeholder: string, helper: string, visibleLabel: boolean, emailError: string | undefined }
 
 const inputChildren = (node: DesignNode): DesignNode[] => {
   if (identifyComponent(node) === 'Input') return [node]
@@ -66,7 +66,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
     if (node.type === 'COMPONENT_SET') issue(node, 'Exported the default variant; select an instance to export its configuration.')
   }
 
-  const input = (node: DesignNode, fieldLabel?: string, helper = ''): NativeNode => {
+  const input = (node: DesignNode, fieldLabel?: string, helper = '', emailError?: string): NativeNode => {
     verified(node, 'Input')
 
     const placeholder = text(node, 'Placeholder', '')
@@ -76,9 +76,9 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
 
     if (platform === 'compose' && placeholder && label !== placeholder) issue(node, 'The Compose control accepts a label but no separate placeholder. The placeholder remains in the handoff.')
 
-    issue(node, 'Connect local editing state to the form and supply validation.')
+    issue(node, emailError ? 'Connect local editing state to the form.' : 'Connect local editing state to the form and supply validation.')
 
-    return { kind: 'input', index: ++fields, size: sizeFor(node), label, placeholder, visibleLabel: Boolean(fieldLabel), helper }
+    return { kind: 'input', index: ++fields, size: sizeFor(node), label, placeholder, visibleLabel: Boolean(fieldLabel), helper, emailError }
   }
 
   const field = (node: DesignNode): NativeNode | null => {
@@ -158,13 +158,13 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
     return { kind: 'progress', label: 'Progress', value }
   }
 
-  const pairedControl = (first: DesignNode, second: DesignNode | undefined, onlyPair: boolean) => {
+  const pairedControl = (first: DesignNode, second: DesignNode | undefined, onlyPair: boolean, emailError?: string) => {
     if (!second) return null
 
     if (matchesControl(first, 'Label') && identifyComponent(second) === 'Input') {
       verified(first, 'Label')
 
-      return input(second, text(first, 'Text', 'Field label'))
+      return input(second, text(first, 'Text', 'Field label'), '', emailError)
     }
 
     const label = onlyPair && matchesControl(first, 'Checkbox') ? labelText(second) : null
@@ -175,10 +175,15 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
   const readChildren = (node: DesignNode, read: Reader) => {
     const children: NativeNode[] = []
     const progress = drawnProgress(node)
-    const siblings = node.children.entries()
+    const email = emailAlert(node)
+
+    if (email) issue(email.alert, 'Inferred live email format validation from the field alert and its invalid email outline.', 'inferred')
+
+    const content = email ? node.children.filter(n => n !== email.alert && n !== email.outline) : node.children
+    const siblings = content.entries()
 
     for (const [i, child] of siblings) {
-      const pair = pairedControl(child, node.children[i + 1], node.children.length === 2)
+      const pair = pairedControl(child, content[i + 1], content.length === 2, email?.message)
 
       if (pair) {
         children.push(pair)

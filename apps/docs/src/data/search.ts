@@ -266,10 +266,10 @@ const recipeItems: DocsSearchItem[] = [
   {
     category: 'Figma',
     description:
-      'Open the Lumen Figma library and learn how variables, pages, and component variants map back to code.',
+      'Find the Lumen UI Library, Templates, and Playgrounds on Figma Community, and learn how design maps to code.',
     href: '/docs/figma',
     keywords: normalizeKeywords(
-      'figma library design file variables tokens color radius cover foundations components variants code connect handoff'
+      'figma community library templates playgrounds design files variables tokens color radius cover foundations components variants code connect handoff'
     ),
     title: 'Lumen Figma library',
     type: 'Recipe'

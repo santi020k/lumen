@@ -1,12 +1,39 @@
 ---
-import { Badge, Card, CodeTabs, Icon } from '@santi020k/lumen-astro'
+import { Badge, Card, CardDescription, CardTitle, CodeTabs, Icon, Image, Link } from '@santi020k/lumen-astro'
 
+import playgroundsCover from '../../assets/figma-community/playgrounds/cover.png'
+import templatesCover from '../../assets/figma-community/templates/cover.png'
+import libraryCover from '../../assets/figma-community/ui-library/cover.png'
 import DocsActionLink from '../../components/DocsActionLink.astro'
 import DocsPageHero from '../../components/DocsPageHero.astro'
 import DocsLayout from '../../layouts/DocsLayout.astro'
 
 const figmaCommunityUrl = 'https://www.figma.com/community/file/1662337342676541513'
-const figmaFileKey = 'luQW2pTQ3jGGxSFPAAsfa9'
+
+const communityFiles = [
+  {
+    title: 'Lumen UI Library',
+    id: 'file-title',
+    cover: libraryCover,
+    href: figmaCommunityUrl,
+    description: 'Design with shared components, variables, and six themes in light and dark modes.'
+  },
+  {
+    title: 'Lumen Templates',
+    id: 'templates-title',
+    cover: templatesCover,
+    href: 'https://www.figma.com/community/file/1700607667944072280',
+    description: 'Adapt six desktop and mobile layouts, including dashboards, onboarding, and editorial pages.'
+  },
+  {
+    title: 'Lumen Playgrounds',
+    id: 'playgrounds-title',
+    cover: playgroundsCover,
+    href: 'https://www.figma.com/community/file/1700608473577262170',
+    description: 'Compare web examples with screens for React Native, SwiftUI, and Jetpack Compose.'
+  }
+]
+
 const pluginSetup = 'pnpm install --frozen-lockfile\npnpm exec turbo run build --filter=@santi020k/lumen-figma-plugin'
 
 const figmaDetails = [
@@ -93,6 +120,32 @@ const workflow = [
       </div>
     </DocsPageHero>
 
+    <section class="figma-section" aria-labelledby="working-files-title">
+      <div class="figma-section__heading">
+        <h2 id="working-files-title">Design files on Figma Community</h2>
+      </div>
+      <div class="figma-details">
+        {communityFiles.map(({ title, id, cover, href, description }) => (
+          <Card as="article" density="compact">
+            <Link class="figma-resource-link" href={href} newTab>
+              <Image
+                alt=""
+                fit="contain"
+                format="webp"
+                radius="md"
+                sizes="(max-width: 32rem) 90vw, (max-width: 64rem) 45vw, 20rem"
+                src={cover}
+                width={480}
+                widths={[320, 480, 640, 960]}
+              />
+              <CardTitle as="h3" id={id}>{title} <Icon decorative name="arrow-up-right" size="sm" /></CardTitle>
+            </Link>
+            <CardDescription as="p">{description}</CardDescription>
+          </Card>
+        ))}
+      </div>
+    </section>
+
     <Card as="section" class="figma-plugin-card" aria-labelledby="plugin-title" id="plugin">
       <div class="figma-plugin-card__title">
         <span id="plugin-beta" aria-hidden="true"></span>
@@ -125,8 +178,8 @@ const workflow = [
       <p>
         In Figma desktop, choose <strong>Plugins → Development → Import plugin from manifest</strong>{' '}
         and select <code>apps/figma-plugin/dist/manifest.json</code>. Run these build commands from
-        the Lumen repository root. The plugin is not yet published to Figma Community; the separate
-        Community link on this page opens the design library.
+        the Lumen repository root. The plugin is not yet published to Figma Community; the links above
+        open the published design files.
       </p>
       <p>
         Select one frame or component instance, choose <strong>Inspect selection</strong>, and
@@ -194,39 +247,6 @@ const workflow = [
         ))}
       </ol>
     </section>
-
-    <section class="figma-section" aria-labelledby="working-files-title">
-      <div class="figma-section__heading">
-        <div>
-          <p>Design files</p>
-          <h2 id="working-files-title">Work with Lumen 5 in Figma</h2>
-        </div>
-        <p>Use the library for components and themes, Templates for editable layouts, and Playgrounds for platform examples. Working files follow their Figma sharing settings.</p>
-      </div>
-      <div class="figma-plugin-card__title">
-        <DocsActionLink href={`https://www.figma.com/design/${figmaFileKey}`} rel="noopener noreferrer" target="_blank" variant="outline">Open UI Library</DocsActionLink>
-        <DocsActionLink href="https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3" rel="noopener noreferrer" target="_blank" variant="outline">Open Templates</DocsActionLink>
-        <DocsActionLink href="https://www.figma.com/design/G0NjJ4eAci1013PaLmseXI" rel="noopener noreferrer" target="_blank" variant="outline">Open Playgrounds</DocsActionLink>
-      </div>
-    </section>
-
-    <Card as="section" class="figma-file-card" aria-labelledby="file-title" glass="subtle">
-      <div>
-        <Badge>Figma Community</Badge>
-        <h2 id="file-title">Lumen UI Library</h2>
-        <p>
-          Add the published library to your Figma workflow for token references, component
-          variants, and design-to-code review.
-        </p>
-      </div>
-      <code>File key: {figmaFileKey}</code>
-      <DocsActionLink
-        href={figmaCommunityUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >View in Community
-      </DocsActionLink>
-    </Card>
   </div>
 </DocsLayout>
 
@@ -327,8 +347,7 @@ const workflow = [
     text-transform: uppercase;
   }
 
-  .figma-section__heading h2,
-  .figma-file-card h2 {
+  .figma-section__heading h2 {
     margin-top: 0.25rem;
     color: hsl(var(--ink));
     font-size: clamp(1.5rem, 3vw, 2rem);
@@ -336,8 +355,7 @@ const workflow = [
     letter-spacing: -0.025em;
   }
 
-  .figma-section__heading > p,
-  .figma-file-card p {
+  .figma-section__heading > p {
     max-width: 36rem;
     color: hsl(var(--ink-soft));
     font-size: 0.9rem;
@@ -410,44 +428,16 @@ const workflow = [
     gap: 0.35rem;
   }
 
-  .figma-file-card {
+  .figma-resource-link {
     display: grid;
-    gap: 1.25rem;
-    align-items: center;
-    padding: clamp(1.25rem, 3vw, 2rem);
-  }
-
-  .figma-file-card > div {
-    display: grid;
-    gap: 0.5rem;
-    min-width: 0;
-  }
-
-  .figma-file-card code {
-    overflow: hidden;
-    color: hsl(var(--ink-muted));
-    font-size: 0.72rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .figma-file-card > :global(.ui-button) {
-    width: max-content;
+    gap: var(--ui-space-md);
+    border-radius: var(--ui-radius);
   }
 
   @media (min-width: 48rem) {
-    .figma-section__heading {
+    .figma-section__heading:has(> p) {
       grid-template-columns: minmax(13rem, 0.8fr) minmax(18rem, 1fr);
       align-items: end;
-    }
-
-    .figma-file-card {
-      grid-template-columns: minmax(0, 1fr) auto;
-    }
-
-    .figma-file-card > :global(.ui-button) {
-      grid-column: 2;
-      grid-row: 1;
     }
   }
 </style>
