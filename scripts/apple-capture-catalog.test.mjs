@@ -22,7 +22,9 @@ test('Apple default captures cover phone components and focused arguments overri
   try {
     await mkdir(bin)
 
-    await writeFile(join(bin, 'sleep'), '#!/usr/bin/env bash\nexit 0\n', { mode: 0o755 })
+    const shellSetup = join(directory, 'capture-fixture.bash')
+
+    await writeFile(shellSetup, 'sleep() { :; }\n')
 
     await writeFile(join(bin, 'xcodebuild'), '#!/usr/bin/env bash\nprintf "%s\\n" "$*" >> "$LUMEN_CAPTURE_TEST_BUILD_LOG"\n', { mode: 0o755 })
 
@@ -57,6 +59,7 @@ fi
           CI: 'true',
           ...(products ? { LUMEN_CAPTURE_PRODUCTS: products } : {}),
           LUMEN_SIMULATOR_UDID: 'fixture-device',
+          BASH_ENV: shellSetup,
           LUMEN_CAPTURE_TEST_LOG: log,
           LUMEN_CAPTURE_TEST_BUILD_LOG: buildLog,
           LUMEN_CAPTURE_TEST_MISSING_ATTACHMENT: String(missingAttachment),
