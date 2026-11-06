@@ -8,13 +8,24 @@ import '@santi020k/lumen-react/styles/components/code-tabs.css'
 import '@santi020k/lumen-react/styles/components/label.css'
 import '@santi020k/lumen-react/styles/components/select.css'
 import '@santi020k/lumen-react/styles/components/stack.css'
+import '@santi020k/lumen-react/styles/components/eyebrow.css'
+import '@santi020k/lumen-react/styles/components/field.css'
+import '@santi020k/lumen-react/styles/components/icon.css'
+import '@santi020k/lumen-react/styles/components/image.css'
+import '@santi020k/lumen-react/styles/components/link.css'
+import '@santi020k/lumen-react/styles/components/scroll-area.css'
 import './styles.css'
 
-import { Badge, Button, Card, CodeTabs, Label, Select, Stack } from '@santi020k/lumen-react'
+import { Button, Card, Eyebrow, Field, Image, Label, Link, Select } from '@santi020k/lumen-react'
+import { ArrowUpRight, CircleAlert, Frame, Icon, Info, ScanSearch, SlidersHorizontal } from '@santi020k/lumen-react/icons'
+
+import pluginIcon from '../community/assets/icon.png'
 
 import { componentKeys } from './contracts.js'
+import { ExportResult } from './export-result.js'
 import type { PluginBridge, PluginResult } from './model.js'
 import { nativeComponents } from './native-design.js'
+import { SelectionArt } from './selection-art.js'
 import type { ExportTarget, WebPlatform } from './targets.js'
 import { adapterVersion, appearancesFor, defaultFor, defaultTarget, isNativeTarget, isPlatform, isVersion, isWebPlatform, nativeBaseline, platforms, supportsAppearance, versions } from './targets.js'
 
@@ -23,119 +34,6 @@ const platformOptions = Object.entries(platforms).map(([value, { label }]) => ({
 const versionOptions = (platform: WebPlatform) => versions.map(value => ({
   value, label: platform === 'astro' ? `Lumen Astro ${value}` : `Lumen ${value} · ${platforms[platform].label} ${adapterVersion(platform, value)}`
 }))
-
-const setupTab = (result: PluginResult) => {
-  const webModule = result.target === 'react' || result.target === 'elements'
-
-  if (webModule) return { value: 'layout', label: platforms[result.target].label + ' setup', code: result.layout, language: 'javascript' }
-
-  return { value: 'layout', label: result.target === 'astro' ? 'Astro layout' : 'Platform setup', code: result.layout, language: result.target === 'astro' ? 'html' : 'text' }
-}
-
-const download = (contents: string, name: string) => {
-  const url = URL.createObjectURL(new Blob([contents], { type: 'text/plain;charset=utf-8' }))
-  const anchor = document.createElement('a')
-
-  anchor.href = url
-
-  anchor.download = name
-
-  anchor.click()
-
-  URL.revokeObjectURL(url)
-}
-
-const ExportResult = ({ result }: { result: PluginResult }) => {
-  const output = platforms[result.target]
-  const findings = result.findings
-  const verified = findings.filter(finding => finding.status === 'verified').length
-  const review = findings.filter(finding => finding.status !== 'verified')
-
-  return (
-    <Stack gap="lg">
-      <section aria-labelledby="findings-title">
-        <div className="section-heading">
-          <h2 id="findings-title">Design review</h2>
-          <Badge variant="outline">
-            {verified}
-            {' '}
-            verified
-          </Badge>
-        </div>
-        <p className="review-intro">
-          Lumen
-          {' '}
-          {result.lumenVersion}
-          {' '}
-          ·
-          {' '}
-          {review.length}
-          {' '}
-          items to review
-        </p>
-        {review.length > 0 && (
-          <ul className="findings">
-            {review.map(finding => (
-              <li key={`${finding.nodeId}-${finding.message}`}>
-                <strong>{finding.name}</strong>
-                <span>{finding.message}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-      <section aria-labelledby="handoff-title">
-        <h2 id="handoff-title">Take it into your project</h2>
-        <p className="review-intro">Give the AI handoff to your coding agent. It contains the design context, starter, and checks to run.</p>
-        <CodeTabs
-          ariaLabel="Conversion output"
-          className="conversion-code"
-          items={[
-            ...(result.code ? [{ value: 'starter', label: output.label + ' starter', code: result.code, language: output.language }] : []),
-            { value: 'handoff', label: 'AI handoff', code: result.handoff, language: 'text' },
-            setupTab(result)
-          ]}
-        />
-        <Stack className="download-actions" direction="horizontal" gap="sm" wrap>
-          <Button
-            onClick={() => {
-              download(result.handoff, 'lumen-figma-handoff.md')
-            }}
-            size="sm"
-          >
-            Save AI handoff
-          </Button>
-          {result.code && (
-            <Button
-              onClick={() => {
-                download(result.code, 'LumenSelection.' + output.extension)
-              }}
-              size="sm"
-              variant="outline"
-            >
-              Save
-              {' '}
-              {output.label}
-              {' '}
-              starter
-            </Button>
-          )}
-          {isWebPlatform(result.target) && result.target !== 'astro' && (
-            <Button
-              onClick={() => {
-                download(result.layout, 'lumen-setup.js')
-              }}
-              size="sm"
-              variant="outline"
-            >
-              Save app setup
-            </Button>
-          )}
-        </Stack>
-      </section>
-    </Stack>
-  )
-}
 
 export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: boolean }) => {
   const [target, setTarget] = useState<ExportTarget>(defaultTarget)
@@ -182,79 +80,105 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
   return (
     <main className="plugin-panel">
       <header className="plugin-header">
-        <h1>Lumen for Figma</h1>
-        <p>Export the selected design as web or native code, with a handoff for your coding agent.</p>
+        <Image alt="" height={36} loading="eager" radius="none" src={pluginIcon} width={36} />
+        <h1>
+          Lumen
+          <span>for Figma</span>
+        </h1>
+        <span className="offline-label">Runs locally</span>
       </header>
-      {preview && <p className="preview-note">Local preview · Synthetic settings screen. No Figma file is connected.</p>}
-      <Card className="selection-card">
-        <p className="eyebrow">Selected design</p>
-        <h2>{selection ?? 'Nothing selected'}</h2>
-        <p className="selection-meta">
-          {isWebPlatform(platform) ? Object.keys(componentKeys).length : nativeComponents.length}
-          {' '}
-          supported components
-        </p>
-        <div className="target-field">
-          <Label htmlFor="lumen-platform" id="platform-label">Export target</Label>
-          <Select
-            aria-labelledby="platform-label"
-            disabled={busy}
-            id="lumen-platform"
-            onValueChange={value => {
-              if (!isPlatform(value)) return
-
-              const next = isWebPlatform(value) && !isNativeTarget(target) ?
-                { ...target, platform: value } :
-                defaultFor(value)
-
-              changeTarget(next)
-            }}
-            options={platformOptions}
-            value={platform}
-          />
+      <Card
+        aria-labelledby="selection-title"
+        as="section"
+        className="selection-card"
+        data-theme="dark"
+      >
+        <div className="selection-copy">
+          <Eyebrow>
+            <Icon icon={Frame} size="sm" />
+            Selected design
+          </Eyebrow>
+          <h2 id="selection-title">{selection ?? 'Nothing selected'}</h2>
+          <p>
+            {isWebPlatform(platform) ? Object.keys(componentKeys).length : nativeComponents.length}
+            {' supported components for '}
+            {platforms[platform].label}
+          </p>
         </div>
-        {isNativeTarget(target) ?
-          (
-            <div className="target-field">
-              <p className="eyebrow">Supported adapter version</p>
-              <p className="selection-meta">
-                {target.version}
-                {' · '}
-                {nativeBaseline[target.platform]}
-                {' · Uses project appearance'}
-              </p>
-            </div>
-          ) :
-          (
-            <>
-              <div className="target-field">
-                <Label htmlFor="lumen-version" id="version-label">Target version</Label>
-                <Select
-                  aria-labelledby="version-label"
-                  disabled={busy}
-                  id="lumen-version"
-                  onValueChange={version => {
-                    if (isVersion(version)) changeTarget({ ...target, version, appearance: supportsAppearance(version, target.appearance) ? target.appearance : 'project' })
-                  }}
-                  options={versionOptions(target.platform ?? 'astro')}
-                  value={target.version}
-                />
+        <SelectionArt />
+      </Card>
+      <Card
+        aria-labelledby="settings-title"
+        as="section"
+        className="settings-card"
+      >
+        <h2 id="settings-title">
+          <Icon icon={SlidersHorizontal} />
+          Export settings
+        </h2>
+        <div className="settings-fields" data-platform={platform}>
+          <Field className="platform-field">
+            <Label htmlFor="lumen-platform" id="platform-label">Export target</Label>
+            <Select
+              aria-labelledby="platform-label"
+              disabled={busy}
+              id="lumen-platform"
+              onValueChange={value => {
+                if (!isPlatform(value)) return
+
+                const next = isWebPlatform(value) && !isNativeTarget(target) ?
+                  { ...target, platform: value } :
+                  defaultFor(value)
+
+                changeTarget(next)
+              }}
+              options={platformOptions}
+              value={platform}
+            />
+          </Field>
+          {isNativeTarget(target) ?
+            (
+              <div className="native-version">
+                <strong>Supported adapter version</strong>
+                <p>
+                  {target.version}
+                  {' · '}
+                  {nativeBaseline[target.platform]}
+                  {' · Uses project appearance'}
+                </p>
               </div>
-              <div className="target-field">
-                <Label htmlFor="lumen-appearance" id="appearance-label">Project appearance</Label>
-                <Select
-                  aria-labelledby="appearance-label"
-                  disabled={busy}
-                  id="lumen-appearance"
-                  onValueChange={appearance => {
-                    if (supportsAppearance(target.version, appearance)) changeTarget({ ...target, appearance })
-                  }}
-                  options={appearancesFor(target.version)}
-                  value={target.appearance}
-                />
-              </div>
-            </>
-          )}
+            ) :
+            (
+              <>
+                <Field>
+                  <Label htmlFor="lumen-version" id="version-label">Target version</Label>
+                  <Select
+                    aria-labelledby="version-label"
+                    disabled={busy}
+                    id="lumen-version"
+                    onValueChange={version => {
+                      if (isVersion(version)) changeTarget({ ...target, version, appearance: supportsAppearance(version, target.appearance) ? target.appearance : 'project' })
+                    }}
+                    options={versionOptions(target.platform ?? 'astro')}
+                    value={target.version}
+                  />
+                </Field>
+                <Field>
+                  <Label htmlFor="lumen-appearance" id="appearance-label">Project appearance</Label>
+                  <Select
+                    aria-labelledby="appearance-label"
+                    disabled={busy}
+                    id="lumen-appearance"
+                    onValueChange={appearance => {
+                      if (supportsAppearance(target.version, appearance)) changeTarget({ ...target, appearance })
+                    }}
+                    options={appearancesFor(target.version)}
+                    value={target.appearance}
+                  />
+                </Field>
+              </>
+            )}
+        </div>
         <Button
           disabled={!selection || busy}
           loading={busy}
@@ -270,14 +194,24 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
             bridge.analyze(target)
           }}
         >
+          <Icon icon={ScanSearch} />
           Inspect selection
         </Button>
+        <p className="status" data-error={failed} role="status">
+          <Icon icon={failed ? CircleAlert : Info} size="sm" />
+          {status}
+        </p>
       </Card>
-      <p aria-live="polite" className={failed ? 'status status-error' : 'status'} role="status">{status}</p>
       {result && <ExportResult result={result} />}
       <footer className="plugin-footer">
-        <p>Analysis runs locally. Review selected text before sharing the handoff.</p>
-        <a href="https://santi020k.com" rel="noopener noreferrer" target="_blank">By santi020k</a>
+        {preview && <p className="preview-note">Local preview · Synthetic settings screen. No Figma file is connected.</p>}
+        <div className="footer-row">
+          <p>Review design text before sharing a handoff.</p>
+          <Link href="https://santi020k.com" newTab>
+            By santi020k
+            <Icon icon={ArrowUpRight} size="sm" />
+          </Link>
+        </div>
       </footer>
     </main>
   )
