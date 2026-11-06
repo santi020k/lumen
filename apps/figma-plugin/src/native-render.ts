@@ -36,10 +36,16 @@ const literal = (value: string, language: 'swift' | 'kotlin' | 'tsx'): string =>
 
 const textNode = (content: string, variant: 'body' | 'title'): NativeNode => ({ kind: 'text', content, variant, tone: 'default' })
 const fieldStates = (count: number, line: (index: number) => string) => Array.from({ length: count }, (_, i) => line(i + 1)).join('\n')
+// The same dot-atom and dotted host rule in all three languages. Bound work on pasted input.
+const atom = '[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+'
+const domainLabel = '[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?'
+
+export const emailPattern = `${atom}(?:[.]${atom})*@${domainLabel}(?:[.]${domainLabel})+`
 
 const reactNative = (root: NativeNode, fields: number, checks: readonly boolean[]) => {
   const foundation = new Set<string>()
   const extra = new Set<string>()
+  const errors: string[] = []
   const expr = (value: string) => `{${literal(value, 'tsx')}}`
 
   const renderStack = (node: Extract<NativeNode, { kind: 'stack' }>, render: (child: NativeNode) => string) => {
@@ -63,7 +69,11 @@ const reactNative = (root: NativeNode, fields: number, checks: readonly boolean[
 
     extra.add('LumenFieldGroup')
 
-    return jsx(`LumenFieldGroup label=${expr(node.label)}${node.helper ? ` description=${expr(node.helper)}` : ''}`, 'LumenFieldGroup', control)
+    const field = `field${node.index}`
+
+    if (node.emailError) errors.push(`const ${field}Error = ${field}.length > 0 && (${field}.length > 254 || !emailPattern.test(${field})) ? ${literal(node.emailError, 'tsx')} : ''`)
+
+    return jsx(`LumenFieldGroup${node.emailError ? ` errorMessage={${field}Error}` : ''} label=${expr(node.label)}${node.helper ? ` description=${expr(node.helper)}` : ''}`, 'LumenFieldGroup', control)
   }
 
   const render = (node: NativeNode): string => {
@@ -118,23 +128,30 @@ const reactNative = (root: NativeNode, fields: number, checks: readonly boolean[
     view ? 'const { spacing } = useLumenTheme()' : '',
     fieldStates(fields, i => `const [field${i}, setField${i}] = useState('')`),
     ...checks.map((checked, i) => `const [checked${i + 1}, setChecked${i + 1}] = useState(${checked})`),
+    ...errors,
     `return (\n${indent(body)}\n)`
   ].filter(Boolean)
 
-  return imports.join('\n') + '\n\n' + block('export function LumenSelection()', statements.join('\n')) + '\n'
+  return imports.join('\n') + '\n\n' + (errors.length ? `const emailPattern = new RegExp(${literal('^' + emailPattern + '$', 'tsx')})\n\n` : '') + block('export function LumenSelection()', statements.join('\n')) + '\n'
 }
 
 const swiftEdge = { top: 'top', end: 'trailing', bottom: 'bottom', start: 'leading' }
 
 const swift = (root: NativeNode, fields: number, checks: readonly boolean[]) => {
+  const errors: string[] = []
   const q = (text: string) => `.verbatim(${literal(text, 'swift')})`
 
   const renderInput = (node: Extract<NativeNode, { kind: 'input' }>) => {
-    const control = `LumenTextField(${q(node.placeholder)}, text: $field${node.index}, size: .${node.size})\n  .accessibilityLabel(Text(verbatim: ${literal(node.label, 'swift')}))`
+    const field = `field${node.index}`
+    const error = node.emailError ? `, errorMessage: ${field}Error` : ''
+
+    if (node.emailError) errors.push(`let ${field}Error: LumenTextContent? = !${field}.isEmpty && (${field}.utf8.count > 254 || ${field}.wholeMatch(of: #/${emailPattern}/#) == nil) ? ${q(node.emailError)} : nil`)
+
+    const control = `LumenTextField(${q(node.placeholder)}, text: $field${node.index}, size: .${node.size}${error})\n  .accessibilityLabel(Text(verbatim: ${literal(node.label, 'swift')}))`
 
     if (!node.visibleLabel) return control
 
-    return block(`LumenFieldGroup(${q(node.label)}${node.helper ? `, description: ${q(node.helper)}` : ''})`, control)
+    return block(`LumenFieldGroup(${q(node.label)}${node.helper ? `, description: ${q(node.helper)}` : ''}${error})`, control)
   }
 
   const render = (node: NativeNode): string => {
@@ -167,7 +184,9 @@ const swift = (root: NativeNode, fields: number, checks: readonly boolean[]) => 
     ...checks.map((checked, i) => `@State private var checked${i + 1} = ${checked}`)
   ].filter(Boolean).join('\n')
 
-  return 'import SwiftUI\nimport LumenUI\n\n' + block('struct LumenSelection: View', [state, block('var body: some View', render(root))].filter(Boolean).join('\n\n')) + '\n'
+  const body = render(root)
+
+  return 'import SwiftUI\nimport LumenUI\n\n' + block('struct LumenSelection: View', [state, block('var body: some View', [...errors, body].join('\n'))].filter(Boolean).join('\n\n')) + '\n'
 }
 
 // A JVM constant is limited to 65,535 modified UTF-8 bytes. Preserve long layer text
@@ -194,6 +213,7 @@ const kotlinString = (value: string) => {
 }
 
 const compose = (root: NativeNode, fields: number, checks: readonly boolean[]) => {
+  const errors: string[] = []
   const q = kotlinString
   const imports = new Set(['androidx.compose.runtime.Composable', 'com.santi020k.lumen.*'])
 
@@ -217,6 +237,20 @@ const compose = (root: NativeNode, fields: number, checks: readonly boolean[]) =
     return block(`${head}(${args.join(', ')})`, node.children.map(render).join('\n'))
   }
 
+  const renderInput = (node: Extract<NativeNode, { kind: 'input' }>) => {
+    const field = `field${node.index}`
+
+    if (node.emailError) errors.push(`val ${field}Error = if (${field}.isNotEmpty() && (${field}.length > 254 || !emailPattern.matches(${field}))) ${q(node.emailError)} else null`)
+
+    const control = `LumenTextField(value = field${node.index}, onValueChange = { field${node.index} = it }, label = ${q(node.label)}, size = LumenControlSize.${upper(node.size)}${node.emailError ? `, errorMessage = ${field}Error` : ''})`
+
+    if (!node.helper) return control
+
+    imports.add('androidx.compose.foundation.layout.Column')
+
+    return block('Column', control + '\n' + `LumenText(${q(node.helper)}, variant = LumenTextVariant.Caption, tone = LumenTextTone.Muted)`)
+  }
+
   const render = (node: NativeNode): string => {
     switch (node.kind) {
       case 'text': return `LumenText(${q(node.content)}, variant = LumenTextVariant.${upper(node.variant)}, tone = LumenTextTone.${upper(node.tone)})`
@@ -232,15 +266,7 @@ const compose = (root: NativeNode, fields: number, checks: readonly boolean[]) =
 
       case 'progress': return `LumenProgress(value = ${node.value}f, label = ${q(node.label)})`
 
-      case 'input': {
-        const control = `LumenTextField(value = field${node.index}, onValueChange = { field${node.index} = it }, label = ${q(node.label)}, size = LumenControlSize.${upper(node.size)})`
-
-        if (!node.helper) return control
-
-        imports.add('androidx.compose.foundation.layout.Column')
-
-        return block('Column', control + '\n' + `LumenText(${q(node.helper)}, variant = LumenTextVariant.Caption, tone = LumenTextTone.Muted)`)
-      }
+      case 'input': return renderInput(node)
 
       case 'card':
         imports.add('androidx.compose.foundation.layout.Column')
@@ -262,7 +288,7 @@ const compose = (root: NativeNode, fields: number, checks: readonly boolean[]) =
     ...checks.map((checked, i) => `var checked${i + 1} by rememberSaveable { mutableStateOf(${checked}) }`)
   ].filter(Boolean).join('\n')
 
-  return [...imports].sort().map(name => 'import ' + name).join('\n') + '\n\n@Composable\n' + block('fun LumenSelection()', [state, body
+  return [...imports].sort().map(name => 'import ' + name).join('\n') + (errors.length ? `\n\nprivate val emailPattern = Regex(${q(emailPattern)})` : '') + '\n\n@Composable\n' + block('fun LumenSelection()', [state, ...errors, body
   ].filter(Boolean).join('\n')) + '\n'
 }
 

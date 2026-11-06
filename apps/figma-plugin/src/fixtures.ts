@@ -79,9 +79,13 @@ const field = (label: string, placeholder: string, ...rest: DesignNode[]) => fra
 export const caption = (amount: string) => frame('Caption', frame('Span', copy('Setup progress')), frame('Strong', copy(amount)))
 export const track = frame('Track', frame('Progress bar'))
 
+const dangerRect = (name: string, field: string) => designNode({ type: 'RECTANGLE', name, tokens: [{ name: 'color/danger', field }] })
+
+export const emailField = field('Work email', 'maya@example', frame('Alert', dangerRect('Danger border', 'strokes'), dangerRect('Danger tint', 'fills'), copy('Enter a complete email address.')), dangerRect('Invalid email outline', 'strokes'))
+
 export const onboardingFixture = frame('Form',
   field('Workspace name', 'Northstar Labs'),
-  field('Work email', 'maya@example', copy('Enter a complete email address.')),
+  emailField,
   frame('Options', control('Checkbox', { Checked: 'True' }), frame('Span', copy('Send updates'))),
   frame('Other option', control('Checkbox', { Checked: false }), copy('Send reminders')),
   frame('Setup', caption('50%'), track))
