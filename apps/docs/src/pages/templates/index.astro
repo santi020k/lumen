@@ -3,6 +3,7 @@ import '@santi020k/lumen-templates/styles.css'
 
 import TemplateGallery from '@santi020k/lumen-templates/TemplateGallery.astro'
 
+import FigmaCommunityCover from '../../components/FigmaCommunityCover.astro'
 import FigmaCommunityLink from '../../components/FigmaCommunityLink.astro'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 ---
@@ -14,4 +15,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro'
   <TemplateGallery>
     <FigmaCommunityLink file="templates" slot="actions" />
   </TemplateGallery>
+  <aside
+aria-label="Templates design file"
+class="mx-auto mb-12 w-[min(100%-2rem,80rem)]"
+  >
+    <FigmaCommunityCover file="templates" />
+  </aside>
 </BaseLayout>

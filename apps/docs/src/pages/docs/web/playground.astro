@@ -21,7 +21,7 @@ import {
 
 import CommunityFeedback from '../../../components/CommunityFeedback.astro'
 import DocsPageHero from '../../../components/DocsPageHero.astro'
-import FigmaCommunityLink from '../../../components/FigmaCommunityLink.astro'
+import FigmaCommunityCover from '../../../components/FigmaCommunityCover.astro'
 import DocsLayout from '../../../layouts/DocsLayout.astro'
 
 const playgrounds = [
@@ -71,7 +71,6 @@ const playgrounds = [
     <Fragment slot="actions">
       <ButtonLink href="#live-preview" showArrow>Try the live demo</ButtonLink>
       <ButtonLink href="/docs/components" variant="secondary">Explore components</ButtonLink>
-      <FigmaCommunityLink file="playgrounds" />
     </Fragment>
     <div class="playground-hero-visual" slot="visual" aria-hidden="true">
       <div class="playground-hero-visual__label"><Icon decorative name="box" /> One design language. Your stack.</div>
@@ -83,6 +82,8 @@ const playgrounds = [
       <div class="playground-hero-visual__swatches"><span></span><span></span><span></span><span></span><span></span></div>
     </div>
   </DocsPageHero>
+
+  <FigmaCommunityCover file="playgrounds" />
 
   <section class="web-framework-playground" id="live-preview" aria-labelledby="framework-playground-title">
     <div class="web-framework-playground__heading">
