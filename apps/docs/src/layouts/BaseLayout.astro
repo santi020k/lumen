@@ -20,6 +20,7 @@ import { defineSite } from '@santi020k/og/site'
 import ExposureMetrics from '../components/ExposureMetrics.astro'
 import SiteFooter from '../components/SiteFooter.astro'
 import SiteHeader from '../components/SiteHeader.astro'
+import { siteThemePreferences, themeStorageKey } from '../data/site-themes'
 import { latinFontUrl } from '../data/web-font'
 import { getSocialImageUrl } from '../lib/social-image'
 
@@ -184,43 +185,26 @@ const structuredData = composeJsonLd(
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" href={latinFontUrl} as="font" type="font/woff2" crossorigin />
     <ClientRouter />
-    <script is:inline>
-      const themeStorageKey = 'lumen-theme'
-      const colorThemes = ['santi020k-light', 'santi020k-dark', 'lumen-light', 'lumen-dark']
+    <script define:vars={{ siteThemePreferences, themeStorageKey }}>
+      const systemMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      let key = `lumen-${systemMode}`
 
-      const getLegacyTheme = theme => {
-        if (theme === 'dark') return 'lumen-dark'
+      try {
+        const stored = localStorage.getItem(themeStorageKey)
 
-        if (theme === 'light') return 'lumen-light'
-
-        return null
+        if (stored && Object.hasOwn(siteThemePreferences, stored)) key = stored
+      } catch {
+        // Use the system scheme when storage is unavailable.
       }
 
-      const normalizeTheme = theme => {
-        if (colorThemes.includes(theme)) return theme
+      const theme = siteThemePreferences[key]
+      const root = document.documentElement
 
-        return getLegacyTheme(theme)
-      }
+      root.dataset.theme = theme.rootTheme
 
-      const getStoredTheme = () => {
-        try {
-          const storedTheme = localStorage.getItem(themeStorageKey)
+      if (theme.family.preset) root.dataset.lumenPreset = theme.family.preset
 
-          return normalizeTheme(storedTheme)
-        } catch {
-          return null
-        }
-      }
-
-      const getSystemTheme = () => (
-        window.matchMedia('(prefers-color-scheme: dark)').matches ? 'lumen-dark' : 'lumen-light'
-      )
-
-      const initialTheme = getStoredTheme() ?? getSystemTheme()
-
-      document.documentElement.dataset.theme = initialTheme
-
-      document.documentElement.classList.toggle('dark', initialTheme.endsWith('-dark'))
+      root.classList.toggle('dark', theme.mode === 'dark')
     </script>
   </head>
   <body>
@@ -236,98 +220,39 @@ const structuredData = composeJsonLd(
 </html>
 
 <script>
+  import {
+    defaultThemeFamily,
+    type SiteTheme,
+    siteTheme,
+    siteThemeFamilies,
+    siteThemePreferences,
+    themeStorageKey
+  } from '../data/site-themes'
+
   let shouldScrollDocsContentToTop = false
   let docsSidebarScrollTop = 0
-  const colorThemes = ['santi020k-light', 'santi020k-dark', 'lumen-light', 'lumen-dark'] as const
-  const themeFamilies = ['santi020k', 'lumen'] as const
+  let sessionTheme: SiteTheme | null = null
 
-  type ColorTheme = typeof colorThemes[number]
-
-  type ThemeFamily = typeof themeFamilies[number]
-
-  type ThemeMode = 'dark' | 'light'
-
-  type LegacyColorTheme = 'dark' | 'light'
-
-  const themeStorageKey = 'lumen-theme'
-  let sessionTheme: ColorTheme | null = null
-
-  const getLegacyTheme = (theme: LegacyColorTheme): ColorTheme => (
-    theme === 'dark' ? 'lumen-dark' : 'lumen-light'
-  )
-
-  const getThemeColor = (theme: ColorTheme): string => {
-    if (theme === 'lumen-dark') return '#121617'
-
-    if (theme === 'lumen-light') return '#f5f4ef'
-
-    if (theme === 'santi020k-dark') return '#110c1d'
-
-    return '#f8f6fd'
-  }
-
-  const isColorTheme = (theme: string | null | undefined): theme is ColorTheme => (
-    colorThemes.includes(theme as ColorTheme)
-  )
-
-  const normalizeTheme = (theme: string | null | undefined): ColorTheme | null => {
-    if (isColorTheme(theme)) return theme
-
-    return theme === 'dark' || theme === 'light' ? getLegacyTheme(theme) : null
-  }
-
-  const isThemeFamily = (themeFamily: string | null | undefined): themeFamily is ThemeFamily => (
-    themeFamilies.includes(themeFamily as ThemeFamily)
-  )
-
-  const getThemeFamily = (theme: ColorTheme): ThemeFamily => (
-    theme.startsWith('lumen') ? 'lumen' : 'santi020k'
-  )
-
-  const getThemeMode = (theme: ColorTheme): ThemeMode => (
-    theme.endsWith('dark') ? 'dark' : 'light'
-  )
-
-  const getTheme = (themeFamily: ThemeFamily, mode: ThemeMode): ColorTheme => (
-    `${themeFamily}-${mode}` as ColorTheme
-  )
-
-  const getStoredTheme = (): ColorTheme | null => {
+  const getStoredTheme = (): SiteTheme | null => {
     try {
-      const storedTheme = localStorage.getItem(themeStorageKey)
+      const stored = localStorage.getItem(themeStorageKey)
 
-      return normalizeTheme(storedTheme)
+      return stored && Object.hasOwn(siteThemePreferences, stored) ? siteThemePreferences[stored] ?? null : null
     } catch {
       return null
     }
   }
 
-  const getSystemTheme = (): ColorTheme => (
-    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'lumen-dark' : 'lumen-light'
-  )
+  const preferredColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
+  const getSystemTheme = () => siteTheme(defaultThemeFamily, preferredColorScheme.matches ? 'dark' : 'light')
+  const getPreferredTheme = () => sessionTheme ?? getStoredTheme() ?? getSystemTheme()
+  const getNextMode = (theme: SiteTheme) => theme.mode === 'dark' ? 'light' : 'dark'
 
-  const getPreferredTheme = (): ColorTheme => (
-    sessionTheme ?? getStoredTheme() ?? normalizeTheme(document.documentElement.dataset.theme) ?? getSystemTheme()
-  )
-
-  const getToggledTheme = (theme: ColorTheme): ColorTheme => {
-    const nextMode = getThemeMode(theme) === 'dark' ? 'light' : 'dark'
-
-    return getTheme(getThemeFamily(theme), nextMode)
-  }
-
-  const setThemeColor = (theme: ColorTheme, targetDocument = document) => {
-    targetDocument
-      .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-      ?.setAttribute('content', getThemeColor(theme))
-  }
-
-  const syncThemeToggles = (theme: ColorTheme, targetDocument = document) => {
-    const nextTheme = getToggledTheme(theme)
-    const label = `Switch to ${getThemeMode(nextTheme)} mode`
+  const syncThemeToggles = (theme: SiteTheme, targetDocument = document) => {
+    const label = `Switch to ${getNextMode(theme)} mode`
 
     for (const toggle of targetDocument.querySelectorAll<HTMLElement>('[data-theme-toggle], [data-ui-theme-toggle]')) {
-      toggle.dataset.themeToggle = theme
+      toggle.dataset.themeToggle = theme.key
 
       toggle.setAttribute('aria-label', label)
 
@@ -337,21 +262,30 @@ const structuredData = composeJsonLd(
     }
   }
 
-  const syncThemeSelects = (theme: ColorTheme, targetDocument = document) => {
+  const syncThemeSelects = (theme: SiteTheme, targetDocument = document) => {
     for (const select of targetDocument.querySelectorAll<HTMLSelectElement>('[data-theme-select]')) {
-      select.value = getThemeFamily(theme)
+      select.value = theme.family.value
 
       // Notify the enhanced Select without re-entering the delegated theme handler.
       select.dispatchEvent(new Event('change'))
     }
   }
 
-  const applyTheme = (theme: ColorTheme, targetDocument = document) => {
-    targetDocument.documentElement.dataset.theme = theme
+  const applyTheme = (theme: SiteTheme, targetDocument = document) => {
+    const root = targetDocument.documentElement
 
-    targetDocument.documentElement.classList.toggle('dark', getThemeMode(theme) === 'dark')
+    root.dataset.theme = theme.rootTheme
 
-    setThemeColor(theme, targetDocument)
+    if (theme.family.preset) root.dataset.lumenPreset = theme.family.preset
+    else delete root.dataset.lumenPreset
+
+    root.classList.toggle('dark', theme.mode === 'dark')
+
+    // The canvas token already has its final color while the background is transitioning.
+    const canvas = getComputedStyle(document.documentElement).getPropertyValue('--canvas').trim()
+
+    targetDocument.querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', `hsl(${canvas})`)
 
     syncThemeToggles(theme, targetDocument)
 
@@ -379,14 +313,13 @@ const structuredData = composeJsonLd(
     }
   }
 
-  const preferredColorScheme = window.matchMedia('(prefers-color-scheme: dark)')
   let isThemeAnimating = false
 
-  const commitTheme = (nextTheme: ColorTheme) => {
+  const commitTheme = (nextTheme: SiteTheme) => {
     sessionTheme = nextTheme
 
     try {
-      localStorage.setItem(themeStorageKey, nextTheme)
+      localStorage.setItem(themeStorageKey, nextTheme.key)
     } catch {
       // Theme controls still work for this document when storage is unavailable.
     }
@@ -394,7 +327,7 @@ const structuredData = composeJsonLd(
     applyTheme(nextTheme)
   }
 
-  const circularRevealTheme = (toggle: HTMLElement, currentTheme: ColorTheme, nextTheme: ColorTheme) => {
+  const circularRevealTheme = (toggle: HTMLElement, nextTheme: SiteTheme) => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
 
@@ -423,7 +356,7 @@ const structuredData = composeJsonLd(
       inset: '0',
       zIndex: '99999',
       pointerEvents: 'none',
-      backgroundColor: getThemeColor(currentTheme),
+      backgroundColor: getComputedStyle(document.documentElement).backgroundColor,
       clipPath: `circle(${maxRadius}px at ${x}px ${y}px)`,
       willChange: 'clip-path'
     })
@@ -463,9 +396,8 @@ const structuredData = composeJsonLd(
     if (!toggle || isThemeAnimating) return
 
     const currentTheme = getPreferredTheme()
-    const nextTheme = getToggledTheme(currentTheme)
 
-    circularRevealTheme(toggle, currentTheme, nextTheme)
+    circularRevealTheme(toggle, siteTheme(currentTheme.family, getNextMode(currentTheme)))
   })
 
   document.addEventListener('change', event => {
@@ -476,19 +408,15 @@ const structuredData = composeJsonLd(
     if (!select) return
 
     const currentTheme = getPreferredTheme()
-    const selectedFamily = select.value
+    const family = siteThemeFamilies.find(option => option.value === select.value)
 
-    const nextTheme = isThemeFamily(selectedFamily) ?
-      getTheme(selectedFamily, getThemeMode(currentTheme)) :
-      normalizeTheme(selectedFamily)
-
-    if (!nextTheme) {
+    if (!family) {
       syncThemeSelects(currentTheme)
 
       return
     }
 
-    commitTheme(nextTheme)
+    commitTheme(siteTheme(family, currentTheme.mode))
   })
 
   preferredColorScheme.addEventListener('change', () => {

@@ -4,6 +4,7 @@
 @import "@santi020k/lumen/styles.css";
 @import "@santi020k/lumen/tailwind.css";
 @import "@santi020k/theme/typography.css";
+@import "../../public/examples/themes/harbor.css";
 
 @source "../../../../packages/astro/components";
 @source "../../../../packages/react/src";
@@ -39,6 +40,12 @@
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --theme-bg: var(--canvas);
   --glow: var(--brand);
+}
+
+:root[data-lumen-preset] {
+  --app-font-sans: var(--ui-font);
+  --app-font-display: var(--ui-font);
+  --glow: var(--accent);
 }
 
 @theme {
@@ -2520,6 +2527,7 @@ pre:where(:not(.ui-code pre)) code {
   right: 0;
   left: auto;
   width: 12rem;
+  max-height: min(24rem, 50dvh);
   margin-top: 0.2rem;
   padding: 0.375rem;
   border-radius: var(--ui-radius);
