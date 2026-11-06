@@ -13,7 +13,7 @@ import {
 import { createSourceFile, forEachChild, type ImportDeclaration, type ImportSpecifier, isForOfStatement, isImportDeclaration, isNamedImports, isStringLiteral, type Node, ScriptKind, ScriptTarget, type Statement, SyntaxKind } from 'typescript'
 
 import { componentCssName } from './component-delivery.js'
-import { importedComponents } from './component-imports.js'
+import { readComponentImports } from './component-imports.js'
 import { type DeliveryVersion, getDeliveryVersion } from './delivery-version.js'
 import { hasComponentCss } from './style-coverage.js'
 import { findMarkupTagEnd, getMarkupStart } from './v2-migration.js'
@@ -107,21 +107,6 @@ const discoverProject = async (root: string): Promise<DiscoveredProject> => {
   return { packageRoots, sourceFiles }
 }
 
-const importedNames = (source: string, packageName: string): string[] => {
-  const names: string[] = []
-  const pattern = new RegExp(`import\\s*\\{([\\s\\S]*?)\\}\\s*from\\s*['"]${packageName}['"]`, 'g')
-
-  for (const match of source.matchAll(pattern)) {
-    for (const entry of (match[1] ?? '').split(',')) {
-      const name = entry.trim().split(/\s+as\s+/u)[0]
-
-      if (name) names.push(name)
-    }
-  }
-
-  return names
-}
-
 const finding = (
   file: string,
   rule: string,
@@ -133,6 +118,7 @@ const finding = (
 type LumenFramework = 'astro' | 'elements' | 'react'
 
 interface SourceEntry {
+  imports: ReturnType<typeof readComponentImports>
   file: string
   source: string
 }
@@ -359,7 +345,7 @@ const collectCompatibilityFindings = (
     ))
   }
 
-  if (importedNames(item.source, '@santi020k/lumen-astro').includes('UIPrimitives')) {
+  if (item.imports.astro.rootNames.includes('UIPrimitives')) {
     findings.push(finding(
       file,
       'removed-root-export',
@@ -371,12 +357,9 @@ const collectCompatibilityFindings = (
   return findings
 })
 
-const hasImportedPrimitive = (sources: SourceEntry[], names: readonly string[]): boolean => [
-  '@santi020k/lumen-astro',
-  '@santi020k/lumen-react'
-].some(packageName => sources.some(item => (
-  importedNames(item.source, packageName).some(name => names.includes(name))
-)))
+const hasImportedPrimitive = (sources: SourceEntry[], names: readonly string[]): boolean => sources.some(item => (
+  names.some(name => item.imports.astro.rootNames.includes(name) || item.imports.react.rootNames.includes(name))
+))
 
 interface DuplicatedBehaviorRule {
   detects: (source: string, sourceLower: string) => boolean
@@ -499,13 +482,13 @@ const collectDuplicatedBehaviorFindings = (
 
 const getCatalogFingerprint = (sources: SourceEntry[]): string => {
   const names = [...new Set(sources.flatMap(item => [
-    ...importedNames(item.source, '@santi020k/lumen-astro'),
-    ...importedNames(item.source, '@santi020k/lumen-react')
+    ...item.imports.astro.rootNames,
+    ...item.imports.react.rootNames
   ]))]
-    .filter(name => name in lumenComponentBehavior)
+    .filter((name): name is LumenComponentName => Object.hasOwn(lumenComponentBehavior, name))
     .sort()
 
-  const contracts = names.map(name => [name, lumenComponentBehavior[name as LumenComponentName]])
+  const contracts = names.map(name => [name, lumenComponentBehavior[name]])
 
   return createHash('sha256').update(JSON.stringify(contracts)).digest('hex')
 }
@@ -559,13 +542,23 @@ const componentNeedsAstroRuntime = (
 }
 
 const getRuntimeImports = (sources: SourceEntry[]): { file: string, name: string }[] => {
-  const imports = sources.flatMap(item => importedComponents(item.source, 'astro')
-    .map(name => ({ file: item.file, name })))
+  const importingSources = new Map<string, SourceEntry[]>()
 
-  return imports.filter(item => componentNeedsAstroRuntime(
-    item.name,
-    sources.filter(source => importedComponents(source.source, 'astro').includes(item.name))
-  ))
+  for (const item of sources) {
+    for (const name of item.imports.astro.components) {
+      const entries = importingSources.get(name)
+
+      if (entries) entries.push(item)
+      else importingSources.set(name, [item])
+    }
+  }
+
+  const required = new Set([...importingSources]
+    .filter(([name, entries]) => componentNeedsAstroRuntime(name, entries))
+    .map(([name]) => name))
+
+  return sources.flatMap(item => item.imports.astro.components.filter(name => required.has(name))
+    .map(name => ({ file: item.file, name })))
 }
 
 const getGlobalRuntimeBehaviors = (sources: SourceEntry[]): string[] => lumenGlobalBehaviors
@@ -996,7 +989,7 @@ const collectSelectiveStyleFindings = (
   root: string, boundary: ApplicationBoundary, framework: LumenFramework
 ): LumenDiagnosticFinding[] => {
   const adapter = `@santi020k/lumen-${framework}`
-  const components = [...new Set(boundary.sources.flatMap(item => importedComponents(item.source, framework)))]
+  const components = [...new Set(boundary.sources.flatMap(item => item.imports[framework].components))]
 
   if (framework === 'astro' && components.length > 0) return []
 
@@ -1113,10 +1106,11 @@ export const inspectLumenIntegration = async (repository: string): Promise<Lumen
 
   const discovered = await discoverProject(root)
 
-  const sources = await Promise.all(discovered.sourceFiles.map(async file => ({
-    file,
-    source: await readFile(file, 'utf8')
-  })))
+  const sources = await Promise.all(discovered.sourceFiles.map(async file => {
+    const source = await readFile(file, 'utf8')
+
+    return { file, imports: readComponentImports(source), source }
+  }))
 
   const boundaries = await createBoundaries(root, discovered.packageRoots, sources)
   const applicationBoundaries = boundaries.filter(boundary => boundary.kind === 'application')

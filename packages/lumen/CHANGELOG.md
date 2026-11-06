@@ -74,6 +74,10 @@ Expose a Vite client build report for rendered audits and generate selective sub
 
 ### Patch Changes
 
+- Parse each consumer file once when discovering component imports in `lumen doctor`. Unrelated
+  imports can no longer mask a removed Astro root export, and type-only imports and source examples
+  no longer count as runtime imports.
+
 - Keep external recipe names separate from filesystem paths. Honor inline recipes, reject conflicting
   file and directory destinations before installation, protect linked files during updates, and enforce
   the local registry byte limit while reading. Reject destination collisions across case and Unicode

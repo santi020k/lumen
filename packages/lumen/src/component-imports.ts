@@ -9,48 +9,58 @@ const componentName = (name: string): string | undefined => {
   return lumenComponentNames.some(component => component === canonical) ? canonical : undefined
 }
 
-const namedComponents = (
-  statement: ImportDeclaration, framework: 'astro' | 'elements' | 'react', path: string, root: string
-): string[] => {
-  const clause = statement.importClause
+type Adapter = 'astro' | 'elements' | 'react'
 
-  if (!clause) return []
-
-  const bindings = clause.namedBindings
-
-  if (!bindings || !isNamedImports(bindings)) return []
-
-  return bindings.elements.filter(binding => !binding.isTypeOnly).flatMap(binding => {
-    const name = componentName((binding.propertyName ?? binding.name).text)
-
-    if (!name) return []
-
-    if (path === root) return [name]
-
-    if (framework === 'astro') return []
-
-    return componentDeliveryEntries[framework][name] === path.slice((root + '/components/').length) ? [name] : []
-  })
+interface ValueImport {
+  defaultImport: boolean
+  named: string[]
+  path: string
 }
 
-const namesFromImport = (statement: ImportDeclaration, framework: 'astro' | 'elements' | 'react'): string[] => {
-  if (!isStringLiteral(statement.moduleSpecifier)) return []
-
-  const path = statement.moduleSpecifier.text
+const valueImport = (statement: ImportDeclaration): ValueImport[] => {
   const clause = statement.importClause
-  const root = `@santi020k/lumen-${framework}`
 
   if (!clause || clause.phaseModifier === SyntaxKind.TypeKeyword) return []
 
-  if (path !== root && !path.startsWith(root + '/components/')) return []
+  if (!isStringLiteral(statement.moduleSpecifier)) return []
 
-  if (framework === 'astro' && path.startsWith(root + '/components/') && clause.name) {
-    const name = componentName(path.slice((root + '/components/').length).replace(/\.astro$/u, ''))
+  const bindings = clause.namedBindings
 
-    return name ? [name] : []
+  const named = bindings && isNamedImports(bindings) ?
+    bindings.elements.filter(binding => !binding.isTypeOnly)
+      .map(binding => (binding.propertyName ?? binding.name).text) :
+    []
+
+  return [{ defaultImport: Boolean(clause.name), named, path: statement.moduleSpecifier.text }]
+}
+
+const componentsFromImport = (entry: ValueImport, framework: Adapter, root: string): string[] => {
+  const prefix = root + '/components/'
+
+  if (entry.path !== root && !entry.path.startsWith(prefix)) return []
+
+  const names = entry.named.map(componentName).filter(name => name !== undefined)
+
+  if (entry.path === root) return names
+
+  const subpath = entry.path.slice(prefix.length)
+
+  if (framework === 'astro') {
+    const name = componentName(subpath.replace(/\.astro$/u, ''))
+
+    return entry.defaultImport && name ? [name] : []
   }
 
-  return namedComponents(statement, framework, path, root)
+  return names.filter(name => componentDeliveryEntries[framework][name] === subpath)
+}
+
+const adapterImports = (entries: readonly ValueImport[], framework: Adapter) => {
+  const root = `@santi020k/lumen-${framework}`
+
+  return {
+    components: [...new Set(entries.flatMap(entry => componentsFromImport(entry, framework, root)))],
+    rootNames: [...new Set(entries.filter(entry => entry.path === root).flatMap(entry => entry.named))]
+  }
 }
 
 const parseConsumer = (body: string): SourceFile | undefined => {
@@ -63,15 +73,15 @@ const parseConsumer = (body: string): SourceFile | undefined => {
   }
 }
 
-export const importedComponents = (source: string, framework: 'astro' | 'elements' | 'react'): string[] => {
+export const readComponentImports = (source: string) => {
   const end = source.indexOf('\n---', 3)
   const body = source.startsWith('---') ? source.slice(3, end < 0 ? undefined : end) : source
-  const parsed = parseConsumer(body)
+  const statements = body.includes('import') ? parseConsumer(body)?.statements.filter(isImportDeclaration) : undefined
+  const entries = statements?.flatMap(valueImport) ?? []
 
-  if (!parsed) return []
-
-  const names = parsed.statements.filter(isImportDeclaration)
-    .flatMap(statement => namesFromImport(statement, framework))
-
-  return [...new Set(names)]
+  return {
+    astro: adapterImports(entries, 'astro'),
+    elements: adapterImports(entries, 'elements'),
+    react: adapterImports(entries, 'react')
+  }
 }

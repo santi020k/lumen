@@ -38,6 +38,22 @@ describe('Lumen integration diagnostics', () => {
     }
   })
 
+  test('reports removed root exports after unrelated named imports and ignores type-only and example imports', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-imports-'))
+    const file = join(root, 'Page.astro')
+    const prefix = '---\nimport { helper } from \'./helper\'\n'
+
+    try {
+      await writeFile(file, prefix + 'import { UIPrimitives as Removed } from \'@santi020k/lumen-astro\'\n---\n<Removed />')
+      expect((await inspectLumenIntegration(root)).findings).toContainEqual(expect.objectContaining({ rule: 'removed-root-export' }))
+
+      await writeFile(file, prefix + 'import { type UIPrimitives } from \'@santi020k/lumen-astro\'\n---\n<!-- import { UIPrimitives } from \'@santi020k/lumen-astro\' -->')
+      expect((await inspectLumenIntegration(root)).findings.map(item => item.rule)).not.toContain('removed-root-export')
+    } finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
   test.each([
     ['import Runtime from', 'Runtime'],
     ['import { default as Runtime } from', 'Runtime'],
