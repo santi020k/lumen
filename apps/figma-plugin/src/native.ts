@@ -1,6 +1,7 @@
 import { libraryFileKey } from './contracts.js'
 import type { Analysis, DesignNode } from './model.js'
 import { nativeDesign } from './native-design.js'
+import { bindOnboarding } from './native-onboarding.js'
 import { renderNative } from './native-render.js'
 import { createReview } from './review.js'
 import type { NativeTarget } from './targets.js'
@@ -19,7 +20,11 @@ export const analyzeNative = (selection: DesignNode, { platform, version }: Nati
   review.auditTokens(selection)
 
   const { root, ...state } = nativeDesign(selection, platform, review)
-  const code = root ? renderNative(platform, root, state) : ''
+  const flow = bindOnboarding(selection, root)
+
+  if (flow) review.issue(selection, 'Inferred local Workspace and Preferences steps from the Onboarding template. Back preserves the form draft.', 'inferred')
+
+  const code = root ? renderNative(platform, root, state, flow) : ''
   const layout = nativeSetup[platform]
   const { findings } = review
 
