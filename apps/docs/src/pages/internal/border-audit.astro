@@ -1,0 +1,84 @@
+---
+import { createElement as h } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import '../../styles/global.css'
+
+import { AspectRatio, AttachmentPreview, Avatar, ButtonLink, Card, Chart, CodeTabs, Container, CountryFlag, CoverImage, DeviceFrame, Image, ImageComparison, Input, InputGroup, Link, MediaThumbnail, MediaViewport, Prose, QRCode, Stack, Table, Tabs, TabsList, TabsPanel, TabsTrigger, WorldMap } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'
+import { AspectRatio as ReactAspectRatio, CoverImage as ReactCoverImage, DeviceFrame as ReactDeviceFrame, Image as ReactImage, ImageComparison as ReactImageComparison, MediaThumbnail as ReactMediaThumbnail, MediaViewport as ReactMediaViewport } from '@santi020k/lumen-react'
+
+import cover from '../../assets/cover-dummy.jpg'
+
+const contexts = ['standalone', 'default', 'editorial'] as const
+const image = (id: string) => h(ReactImage, { id, alt: 'Illustrated landscape', src: '/comparison-before.svg', width: 960, height: 600, radius: 'full' })
+const reactFrames = renderToStaticMarkup(h('div', { id: 'react-frames' }, h(ReactAspectRatio, { id: 'react-aspect' }, image('react-aspect-image')), h(ReactCoverImage, { id: 'react-cover', style: { borderRadius: 'var(--ui-radius)' }, showBottomGradient: true }, image('react-cover-image')), h(ReactDeviceFrame, { id: 'react-device', device: 'iphone' }, image('react-device-image')), h(ReactImageComparison, { id: 'react-comparison', label: 'Compare landscapes', before: image('react-before'), after: image('react-after') }), h(ReactMediaThumbnail, { id: 'react-thumbnail', label: 'Landscape', mediaId: 'landscape' }, image('react-thumbnail-image')), h(ReactMediaViewport, { id: 'react-viewport', label: 'Inspect landscape' }, image('react-viewport-image'))))
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head><script>
+  import { defineLumenElements } from '@santi020k/lumen-elements'
+
+  defineLumenElements()
+
+  // The reference uses the same authored components outside a reading boundary.
+  document.querySelector('#context-standalone')?.classList.remove('ui-prose')
+</script><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="robots" content="noindex, nofollow" /><title>Border composition audit</title></head>
+  <body>
+    <Container as="main"><Stack gap="section">
+      <h1>Border composition audit</h1>
+      <InputGroup id="input-frame"><span>@</span><Input id="input-edge" aria-label="Domain" placeholder="example.com" /></InputGroup>
+      <Tabs id="audit-tabs" initialValue="a"><TabsList aria-label="Audit sections"><TabsTrigger value="a">A</TabsTrigger><TabsTrigger value="b">B</TabsTrigger></TabsList><TabsPanel value="a">First panel</TabsPanel><TabsPanel value="b">Second panel</TabsPanel></Tabs>
+      <Table id="audit-table"><table><thead><tr><th scope="col">Example</th><th scope="col">Status</th></tr></thead><tbody><tr><td>Framed content</td><td>Ready</td></tr></tbody></table></Table>
+      <Card id="card-overflow"><ButtonLink href="#frames" id="card-focus">Inspect media</ButtonLink></Card>
+      <div id="frames"><Stack gap="lg">
+        <AspectRatio id="astro-aspect"><Image id="astro-aspect-image" alt="Illustrated landscape" src="/comparison-before.svg" width={960} height={600} radius="full" /></AspectRatio>
+        <CoverImage id="astro-cover" alt="Landscape cover" image={cover} showBottomGradient style="border-radius:var(--ui-radius)" />
+        <DeviceFrame id="astro-device" device="iphone"><Image id="astro-device-image" alt="Illustrated landscape" src="/comparison-before.svg" width={960} height={600} radius="full" /></DeviceFrame>
+        <ImageComparison id="astro-comparison" label="Compare landscapes"><Image slot="before" id="astro-before" alt="Original landscape" src="/comparison-before.svg" width={960} height={600} radius="full" /><Image slot="after" id="astro-after" alt="Adjusted landscape" src="/comparison-after.svg" width={960} height={600} radius="full" /></ImageComparison>
+        <MediaThumbnail id="astro-thumbnail" label="Landscape" mediaId="landscape"><Image id="astro-thumbnail-image" alt="" src="/comparison-before.svg" width={960} height={600} radius="full" /></MediaThumbnail>
+        <MediaViewport id="astro-viewport" label="Inspect landscape"><Image id="astro-viewport-image" alt="Illustrated landscape" src="/comparison-before.svg" width={960} height={600} radius="full" /></MediaViewport>
+      </Stack></div>
+      <ImageComparison id="comparison-contain" fit="contain" label="Compare contained landscapes"><Image slot="before" alt="Original landscape" src="/comparison-before.svg" width={960} height={600} /><Image slot="after" alt="Adjusted landscape" src="/comparison-after.svg" width={960} height={600} /></ImageComparison>
+      <Fragment set:html={reactFrames} />
+      <lumen-prose appearance="editorial" id="elements-reading"><div id="elements-frames">
+        <lumen-aspect-ratio id="elements-aspect" style="aspect-ratio:16 / 9"><lumen-image radius="full"><img id="elements-aspect-image" alt="Illustrated landscape" src="/comparison-before.svg" width="960" height="600" /></lumen-image></lumen-aspect-ratio>
+        <lumen-cover-image id="elements-cover" style="border-radius:var(--ui-radius)"><lumen-image radius="full"><img id="elements-cover-image" alt="Illustrated landscape" src="/comparison-before.svg" width="960" height="600" /></lumen-image></lumen-cover-image>
+        <lumen-device-frame id="elements-device" device="iphone"><lumen-image radius="full"><img id="elements-device-image" alt="Illustrated landscape" src="/comparison-before.svg" width="960" height="600" /></lumen-image></lumen-device-frame>
+        <lumen-image-comparison id="elements-comparison" label="Compare landscapes"><lumen-image slot="before" radius="full"><img id="elements-before" alt="Original landscape" src="/comparison-before.svg" width="960" height="600" /></lumen-image><lumen-image slot="after" radius="full"><img id="elements-after" alt="Adjusted landscape" src="/comparison-after.svg" width="960" height="600" /></lumen-image></lumen-image-comparison>
+        <lumen-media-thumbnail id="elements-thumbnail" label="Landscape" media-id="landscape"><lumen-image radius="full"><img id="elements-thumbnail-image" alt="" src="/comparison-before.svg" width="960" height="600" /></lumen-image></lumen-media-thumbnail>
+        <lumen-media-viewport id="elements-viewport" label="Inspect landscape"><lumen-image radius="full"><img id="elements-viewport-image" alt="Illustrated landscape" src="/comparison-before.svg" width="960" height="600" /></lumen-image></lumen-media-viewport>
+      </div>
+      </lumen-prose>
+      {contexts.map(context => (
+<Prose
+id={`context-${context}`}
+appearance={context === 'editorial' ? 'editorial' : 'default'}
+class={context === 'standalone' ? 'audit-standalone' : null}
+>
+        <h2>{context} components</h2>
+        <ButtonLink id={`${context}-link`} href="#frames">Inspect media</ButtonLink>
+        <Link id={`${context}-text-link`} href="#frames">Read the example</Link>
+        <a id={`${context}-native-link`} href="#frames">Native article reference</a>
+        <Avatar id={`${context}-avatar`} alt="Lumen logo" src="/icon.svg" />
+        <CountryFlag id={`${context}-flag`} regionCode="CO" />
+        <AttachmentPreview id={`${context}-attachment`} alt="Landscape attachment" src="/comparison-before.svg" contentType="image/svg+xml"><span slot="caption">Attachment caption</span></AttachmentPreview>
+        <ImageComparison id={`${context}-comparison`} label="Compare landscapes"><Image slot="before" alt="Original landscape" src="/comparison-before.svg" width={960} height={600} /><Image slot="after" alt="Adjusted landscape" src="/comparison-after.svg" width={960} height={600} /></ImageComparison>
+        <MediaViewport id={`${context}-viewport`} label="Inspect landscape"><Image alt="Illustrated landscape" src="/comparison-before.svg" width={960} height={600} /></MediaViewport>
+        <QRCode id={`${context}-qr`} value="https://lumen.santi020k.com" />
+        <Chart id={`${context}-chart`} heading="Example chart"><svg viewBox="0 0 100 40" aria-label="Illustrative chart"><path d="M0 35L100 5" /></svg><span slot="caption">Chart caption</span></Chart>
+        <WorldMap countries={lumenWorldMapCountries.slice(0, 3)} label="Example world map" caption="Map caption" animated={false} interactive={false} zoomable={false} />
+        <CodeTabs id={`${context}-tabs`} items={[{ code: 'const value = 1', label: 'TypeScript', value: 'ts' }]} />
+      </Prose>
+))}
+    </Stack></Container>
+    <UIPrimitives />
+  </body>
+</html>
+
+<style>
+  :global(#frames), :global(#react-frames), :global(#elements-frames) { max-width: 28rem; }
+  :global(#astro-device), :global(#react-device), :global(#elements-device) { max-width: 16rem; }
+</style>

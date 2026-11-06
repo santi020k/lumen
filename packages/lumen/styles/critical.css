@@ -670,6 +670,19 @@
   padding: 0;
 }
 
+:where(.ui-prose) :where(a:not(.ui-link, .ui-button)) {
+  color: hsl(var(--brand));
+  text-decoration: underline;
+  text-underline-offset: .2em;
+  overflow-wrap: anywhere;
+}
+
+:where(.ui-prose) :where(a:not(.ui-link, .ui-button):focus-visible) {
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: 3px;
+  border-radius: .125rem;
+}
+
 .ui-prose :where(table:not(.ui-table)) { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
 
 .ui-prose :where(table:not(.ui-table) th, table:not(.ui-table) td) { padding: .625rem .75rem; border-bottom: var(--ui-border-width, 1px) solid hsl(var(--line)); text-align: start; }

@@ -33,7 +33,7 @@
 }
 
 @layer lumen.components {
-.ui-image-comparison__frame :where(img, video, picture, .ui-image) { display: block; width: 100%; height: 100%; max-width: none; border-radius: 0; object-fit: cover; }
+.ui-image-comparison__frame :is(img, video, picture, .ui-image) { display: block; width: 100%; height: 100%; max-width: none; border-radius: 0; object-fit: cover; }
 }
 
 @layer lumen.components {

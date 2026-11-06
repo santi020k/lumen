@@ -1,14 +1,11 @@
 ---
-import {
-  AspectRatio,
-  Card
-} from '@santi020k/lumen-astro'
+import { AspectRatio, Image } from '@santi020k/lumen-astro'
 ---
 
 <AspectRatio ratio="16 / 9">
-  <Card variant="muted">16 / 9 media area</Card>
+  <Image alt="A mountain landscape in a wide frame" src="/comparison-before.svg" width={960} height={600} />
 </AspectRatio>
 
 <AspectRatio ratio="4 / 3">
-  <Card variant="muted">4 / 3 media area</Card>
+  <Image alt="The same landscape in a taller frame" src="/comparison-after.svg" width={960} height={600} />
 </AspectRatio>

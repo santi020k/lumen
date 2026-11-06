@@ -12,6 +12,22 @@ The exported `lumenStylingContracts` record in `@santi020k/lumen-core` is author
 listed hook has `stability: "stable"` and is shared by Astro, React, and Elements. `lumen doctor`
 uses the same record when it audits consumer CSS.
 
+## Frame borders and corners
+
+Assign an outer border and corner clipping to one frame. AspectRatio, CoverImage, DeviceFrame,
+ImageComparison, MediaViewport, and the media part of MediaThumbnail flatten their media's inner
+corners. This includes optimized `picture` content and public Image children, regardless of the
+order selective component styles load. Set the outer frame's geometry rather than adding another
+rounded border to flush media. Standalone Image still owns its `radius` prop.
+
+Card keeps overflow visible for focus rings and overlays. Put clipped media inside a dedicated
+frame; do not clip an entire interactive Card. Keep padded, independently bordered surfaces inset.
+
+Prose preserves the borders, spacing, captions, and media corners of Lumen figure components.
+Editorial figure framing applies to authored article figures. Use `Image radius="none"` inside
+those native figures so the article frame owns the shared image/caption edge. Prose's native-link
+focus treatment does not replace public Link or ButtonLink geometry.
+
 ## Foundational variables
 
 | Component | Stable custom properties |

@@ -4,7 +4,7 @@
 
 .ui-media-thumbnail__media { display: block; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: var(--ui-radius-sm); background: hsl(var(--surface-muted)); }
 
-.ui-media-thumbnail__media :where(img, picture, .ui-image) { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.ui-media-thumbnail__media :is(img, picture, .ui-image) { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
 
 .ui-media-thumbnail__label { overflow-wrap: anywhere; }
 

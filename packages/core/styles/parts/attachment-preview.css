@@ -17,6 +17,7 @@
 
 @layer lumen.components {
 .ui-attachment-preview [data-slot="attachment-preview-media"] img {
+  border-radius: 0;
   display: block;
   width: 100%;
   max-height: 28rem;

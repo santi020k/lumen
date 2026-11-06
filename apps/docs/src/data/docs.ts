@@ -1279,6 +1279,7 @@ const apiReferenceByComponent = {
   ],
   AlertDialog: [...dialogTriggerApiRows('alert-dialog')],
   AspectRatio: [
+    apiRow('children / default slot', 'media content', '-', 'Frames image, picture, or video content and owns its corner clipping. Keep interactive cards outside the clipped frame.'),
     apiRow(
       'ratio', 'number | string', '"16 / 9"', 'Sets the preferred CSS aspect-ratio value; invalid values fall back to 16 / 9.'
     )

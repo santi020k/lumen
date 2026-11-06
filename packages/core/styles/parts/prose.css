@@ -2,6 +2,7 @@
 @layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities;
 @layer lumen.components {
 .ui-prose {
+  display: block;
   overflow-wrap: anywhere;
   max-width: 65ch;
   color: hsl(var(--ink-soft));
@@ -22,7 +23,7 @@
 }
 
 @layer lumen.components {
-.ui-prose :where(a) {
+:where(.ui-prose) :where(a:not(.ui-link, .ui-button)) {
   color: hsl(var(--brand));
   text-decoration: underline;
   text-underline-offset: .2em;
@@ -31,7 +32,7 @@
 }
 
 @layer lumen.components {
-.ui-prose :where(a:focus-visible) {
+:where(.ui-prose) :where(a:not(.ui-link, .ui-button):focus-visible) {
   outline: 2px solid hsl(var(--brand));
   outline-offset: 3px;
   border-radius: .125rem;
@@ -52,11 +53,11 @@
 }
 
 @layer lumen.components {
-.ui-prose :where(img, video) { max-width: 100%; height: auto; }
+:where(.ui-prose) :where(img, video) { max-width: 100%; height: auto; }
 }
 
 @layer lumen.components {
-.ui-prose :where(img:not(.ui-image), video) { border-radius: var(--ui-radius-sm); }
+:where(.ui-prose) :where(img:not(.ui-image), video:not(.ui-image)) { border-radius: var(--ui-radius-sm); }
 }
 
 @layer lumen.components {
@@ -196,7 +197,7 @@
 }
 
 @layer lumen.components {
-.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) {
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart, .ui-attachment-preview, .ui-image-comparison, .ui-media-viewport, .ui-qr-code)) {
   min-inline-size: 0;
   max-inline-size: 100%;
   margin: 2rem 0;
@@ -208,7 +209,7 @@
 }
 
 @layer lumen.components {
-.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > :where(img, video, picture) {
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart, .ui-attachment-preview, .ui-image-comparison, .ui-media-viewport, .ui-qr-code)) > :where(img, video, picture) {
   display: block;
   max-inline-size: 100%;
   margin: 0;
@@ -216,19 +217,19 @@
 }
 
 @layer lumen.components {
-.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > :where(img:not(.ui-image)) {
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart, .ui-attachment-preview, .ui-image-comparison, .ui-media-viewport, .ui-qr-code)) > :where(img:not(.ui-image)) {
   border-radius: 0;
 }
 }
 
 @layer lumen.components {
-.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > picture > :where(img:not(.ui-image)) {
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart, .ui-attachment-preview, .ui-image-comparison, .ui-media-viewport, .ui-qr-code)) > picture > :where(img:not(.ui-image)) {
   border-radius: 0;
 }
 }
 
 @layer lumen.components {
-.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > figcaption {
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart, .ui-attachment-preview, .ui-image-comparison, .ui-media-viewport, .ui-qr-code)) > figcaption {
   margin: 0;
   border-block-start: 1px solid hsl(var(--line));
   padding: 0.875rem 1.25rem;
@@ -247,7 +248,7 @@
 
 @layer lumen.components {
 @container ui-prose (width < 20rem) {
-.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > figcaption { padding-inline: 0.75rem; }
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart, .ui-attachment-preview, .ui-image-comparison, .ui-media-viewport, .ui-qr-code)) > figcaption { padding-inline: 0.75rem; }
 }
 }
 
@@ -259,7 +260,7 @@
 
 @layer lumen.components {
 @media print {
-.ui-prose.ui-prose--editorial :where(blockquote, figure:not([data-slot], [data-ui-code], .ui-chart)) { break-inside: avoid; }
+.ui-prose.ui-prose--editorial :where(blockquote, figure:not([data-slot], [data-ui-code], .ui-chart, .ui-attachment-preview, .ui-image-comparison, .ui-media-viewport, .ui-qr-code)) { break-inside: avoid; }
 }
 }
 

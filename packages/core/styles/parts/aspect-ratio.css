@@ -2,10 +2,25 @@
 @layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities;
 @layer lumen.components {
 .ui-aspect-ratio {
+  display: block;
   position: relative;
   width: 100%;
   overflow: hidden;
   border-radius: var(--ui-radius);
+}
+}
+
+@layer lumen.components {
+.ui-aspect-ratio > :is(img, video, picture, .ui-image) {
+  display: block;
+  border-radius: 0;
+}
+}
+
+@layer lumen.components {
+.ui-aspect-ratio > :is(picture, .ui-image) > img {
+  display: block;
+  border-radius: 0;
 }
 }
 

@@ -705,6 +705,10 @@ attributes, and accessible markup.
   `radius="lg"`, which otherwise leaves rounded gaps at the shared edge. Keep standalone image
   rounding when appropriate. Prose preserves the public Image radius prop; its generic media
   rounding applies only to unstyled article images.
+- Dedicated media frames (AspectRatio, CoverImage, DeviceFrame, ImageComparison, MediaViewport,
+  and MediaThumbnail) own clipping and flatten flush media corners, including public Image and
+  optimized picture children. Keep interactive cards outside those frames. See the
+  [frame styling contract](styling-contract.md#frame-borders-and-corners).
 - Use a single divider between header and body rather than overlapping full borders. Inset
   surfaces with padding may have their own radius; account for the inset so their curves align.
   Clip artwork at its frame, not an entire interactive surface where focus rings or overlays

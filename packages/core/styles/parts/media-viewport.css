@@ -8,7 +8,7 @@
 
 .ui-media-viewport__content { position: absolute; inset: 0; transform-origin: center; }
 
-.ui-media-viewport__content :where(img, video, picture, .ui-image) { display: block; width: 100%; height: 100%; max-width: none; object-fit: contain; border-radius: 0; user-select: none; }
+.ui-media-viewport__content :is(img, video, picture, .ui-image) { display: block; width: 100%; height: 100%; max-width: none; object-fit: contain; border-radius: 0; user-select: none; }
 
 .ui-media-viewport :is(figcaption, .ui-media-viewport__caption) { display: grid; gap: var(--ui-space-sm); }
 
