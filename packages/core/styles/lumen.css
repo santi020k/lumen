@@ -4128,7 +4128,7 @@ lumen-dialog-close {
     box-shadow: none;
   }
 
-  .ui-code__copy, .ui-code--block [data-scroll-cue-message] {
+  .ui-code__copy, .ui-code--block [data-scroll-cue-message], .ui-code--block > textarea[readonly] {
     display: none;
   }
 

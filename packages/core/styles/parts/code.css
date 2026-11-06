@@ -462,6 +462,14 @@
 
 @layer lumen.components {
 @media print {
+.ui-code--block > textarea[readonly] {
+    display: none;
+  }
+}
+}
+
+@layer lumen.components {
+@media print {
 .ui-code--block :where(pre) {
     white-space: pre-wrap;
     overflow-wrap: anywhere;

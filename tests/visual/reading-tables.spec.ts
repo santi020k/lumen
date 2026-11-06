@@ -58,4 +58,6 @@ test('Elements updates its sticky column attribute without replacing table conte
   await expect(table.locator('tbody tr')).toHaveCount(3)
   await table.evaluate(element => { element.setAttribute('sticky-first-column', 'true') })
   await expect(table).toHaveClass(/ui-table-wrap--sticky-column/)
+  await table.evaluate(element => { element.setAttribute('sticky-first-column', '') })
+  await expect(table).toHaveClass(/ui-table-wrap--sticky-column/)
 })
