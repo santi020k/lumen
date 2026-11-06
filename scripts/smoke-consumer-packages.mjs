@@ -51,6 +51,30 @@ const run = (
   return result.stdout
 }
 
+const checkEditedButton = async () => {
+  const buttonArgs = ['node_modules/@santi020k/lumen/bin/lumen.mjs', 'add', 'Button', '--target', 'react']
+
+  run(process.execPath, buttonArgs, consumerDirectory)
+
+  const buttonFile = join(consumerDirectory, 'src/lumen/button.tsx')
+  const originalButton = await readFile(buttonFile, 'utf8')
+  const customButton = originalButton.replace('<LumenButton {...props}', '<LumenButton data-kind="checkout" {...props}')
+
+  assert.notEqual(customButton, originalButton)
+
+  await writeFile(buttonFile, customButton)
+
+  const review = spawnSync(process.execPath, [...buttonArgs, '--merge'], { cwd: consumerDirectory, encoding: 'utf8' })
+
+  assert.equal(review.status, 1, review.stderr)
+
+  assert.match(review.stdout, /--- local\/src\/lumen\/button\.tsx/)
+
+  assert.match(review.stdout, /\+\+\+ incoming\/src\/lumen\/button\.tsx/)
+
+  assert.equal(await readFile(buttonFile, 'utf8'), customButton)
+}
+
 try {
   await Promise.all([
     mkdir(archiveDirectory, { recursive: true }),
@@ -424,27 +448,7 @@ export default function Page() {
 `
   )
 
-  const buttonArgs = ['node_modules/@santi020k/lumen/bin/lumen.mjs', 'add', 'Button', '--target', 'react']
-
-  run(process.execPath, buttonArgs, consumerDirectory)
-
-  const buttonFile = join(consumerDirectory, 'src/lumen/button.tsx')
-  const originalButton = await readFile(buttonFile, 'utf8')
-  const customButton = originalButton.replace('<LumenButton {...props}', '<LumenButton data-kind="checkout" {...props}')
-
-  assert.notEqual(customButton, originalButton)
-
-  await writeFile(buttonFile, customButton)
-
-  const review = spawnSync(process.execPath, [...buttonArgs, '--merge'], { cwd: consumerDirectory, encoding: 'utf8' })
-
-  assert.equal(review.status, 1, review.stderr)
-
-  assert.match(review.stdout, /--- local\/src\/lumen\/button\.tsx/)
-
-  assert.match(review.stdout, /\+\+\+ incoming\/src\/lumen\/button\.tsx/)
-
-  assert.equal(await readFile(buttonFile, 'utf8'), customButton)
+  if (!requestedPackages || requestedPackages.has('@santi020k/lumen')) await checkEditedButton()
 
   run(process.execPath, ['smoke.mjs'], consumerDirectory)
 
