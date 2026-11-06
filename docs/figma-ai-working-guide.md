@@ -77,8 +77,7 @@ After that publication, the library panel reported `No changes`. The historical 
 
 On November 6, 2026, the Lumen project published the v5 team library. The source library
 reported **No changes**. Both [companion files](figma.md#design-files) had the team library
-enabled and reported **No updates available** with all pages selected. The Community
-listing was not updated as part of this team release.
+enabled and reported **No updates available** with all pages selected.
 
 - The catalog contains 196 registry families, six presentation sets and the preserved legacy Sonner asset.
   All 203 assets imported into Templates with their expected keys, variant counts and public properties.
@@ -91,6 +90,13 @@ listing was not updated as part of this team release.
 For future updates, compare the live catalog with the release registry. Publish the team library,
 accept applicable updates on all pages of both companions, and verify a new variable and component
 from a consuming file. Record Community publication separately.
+
+## Published v5 Community file
+
+On November 6, 2026, Santi020k updated the existing [Lumen UI Library v5 listing](https://www.figma.com/community/file/1662337342676541513/lumen-ui-library-v5).
+The published thumbnail shows the v5 cover. The description and Getting Started page link to the
+companion files. Following the public listing links while signed out exposed all six Templates
+pages and the Web, React Native, SwiftUI and Compose pages in Playgrounds.
 
 ## Page organization
 
