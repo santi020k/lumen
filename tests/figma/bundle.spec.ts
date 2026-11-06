@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises'
 
-import { expect, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
-test('the built sandbox and offline UI exchange versioned exports', async ({ page }) => {
+const openBundle = async (page: Page) => {
   const dist = new URL('../../apps/figma-plugin/dist/', import.meta.url)
   const [sandbox, ui] = await Promise.all([
     readFile(new URL('code.js', dist), 'utf8'),
@@ -30,6 +30,11 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
   await page.goto('/bundle-test')
   const panel = page.frameLocator('iframe')
   await expect(panel.getByRole('heading', { name: 'Real bridge test' })).toBeVisible()
+  return { panel, errors }
+}
+
+test('the built sandbox and offline UI exchange versioned web exports', async ({ page }) => {
+  const { panel, errors } = await openBundle(page)
   await panel.getByRole('combobox', { name: 'Target version' }).click()
   await panel.getByRole('option', { name: 'Lumen Astro 4.4.0' }).click()
   await panel.getByRole('button', { name: 'Inspect selection' }).click()
@@ -58,24 +63,25 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
     await panel.getByRole('tab', { name: 'Setup' }).click()
     await expect(panel.getByRole('tabpanel')).toContainText(`@santi020k/lumen-${pkg}/styles.css`)
   }
-  for (const [label, extension, version] of [
-    ['React Native', 'tsx', '4.1.0'], ['Android · Jetpack Compose', 'kt', '4.1.0'],
-    ['iPhone · SwiftUI', 'swift', '5.0.0'], ['Mac · SwiftUI', 'swift', '5.0.0']
-  ] as const) {
-    await panel.getByRole('button', { name: 'Back to review' }).click()
-    await panel.getByRole('button', { name: 'Back to setup' }).click()
-    await panel.getByRole('combobox', { name: 'Export target' }).click()
-    await panel.getByRole('option', { name: label, exact: true }).click()
-    await expect(panel.getByRole('tablist')).toHaveCount(0)
-    await expect(panel.getByText(version + ' ·', { exact: false })).toBeVisible()
-    await expect(panel.getByRole('combobox', { name: 'Project appearance' })).toHaveCount(0)
-    await panel.getByRole('button', { name: 'Inspect selection' }).click()
-    await panel.getByRole('button', { name: 'Open handoff' }).click()
-    await expect(panel.getByRole('tabpanel')).toContainText('Hello Lumen')
-    const download = page.waitForEvent('download')
-    await panel.getByRole('button', { name: 'Save ' + label + ' starter' }).click()
-    expect((await download).suggestedFilename()).toBe('LumenSelection.' + extension)
-  }
+  expect(errors).toEqual([])
+})
+
+for (const [label, extension, version] of [
+  ['React Native', 'tsx', '4.1.0'], ['Android · Jetpack Compose', 'kt', '4.1.0'],
+  ['iPhone · SwiftUI', 'swift', '5.0.0'], ['Mac · SwiftUI', 'swift', '5.0.0']
+] as const) test(`the offline inspector exports a ${label} starter`, async ({ page }) => {
+  const { panel, errors } = await openBundle(page)
+  await panel.getByRole('combobox', { name: 'Export target' }).click()
+  await panel.getByRole('option', { name: label, exact: true }).click()
+  await expect(panel.getByRole('tablist')).toHaveCount(0)
+  await expect(panel.getByText(version + ' ·', { exact: false })).toBeVisible()
+  await expect(panel.getByRole('combobox', { name: 'Project appearance' })).toHaveCount(0)
+  await panel.getByRole('button', { name: 'Inspect selection' }).click()
+  await panel.getByRole('button', { name: 'Open handoff' }).click()
+  await expect(panel.getByRole('tabpanel')).toContainText('Hello Lumen')
+  const download = page.waitForEvent('download')
+  await panel.getByRole('button', { name: 'Save ' + label + ' starter' }).click()
+  expect((await download).suggestedFilename()).toBe('LumenSelection.' + extension)
   expect(errors).toEqual([])
 })
 
