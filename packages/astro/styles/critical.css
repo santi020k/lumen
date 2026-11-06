@@ -157,54 +157,75 @@
 }
 
 @layer lumen.tokens {
+/* BEGIN:generated-santi020k-site-colors */
+/* Generated from @santi020k/theme/site.css v3.0.0. */
+:root[data-theme="santi020k-light"] {
+  --canvas: 257 64% 98%;
+  --surface: 255 50% 95%;
+  --surface-muted: 253 41% 93%;
+  --surface-strong: 254 36% 91%;
+  --line: 254 33% 85%;
+  --ink: 255 8% 20%;
+  --ink-soft: 260 18% 27%;
+  --ink-muted: 260 18% 27%;
+  --brand: 267 77% 42%;
+  --brand-solid: 267 80% 38%;
+  --brand-soft: 267 60% 94%;
+  --accent: 270 57% 44%;
+  --success: 134 61% 41%;
+  --warning: 36 85% 41%;
+  --danger: 6 63% 46%;
+  --ui-website-brand: 267 77% 42%;
+}
+
+:root[data-theme="santi020k-dark"] {
+  --canvas: 258 41% 8%;
+  --surface: 262 31% 12%;
+  --surface-muted: 259 25% 15%;
+  --surface-strong: 260 20% 21%;
+  --line: 261 15% 30%;
+  --ink: 260 10% 88%;
+  --ink-soft: 262 8% 72%;
+  --ink-muted: 261 6% 56%;
+  --brand: 262 87% 76%;
+  --brand-solid: 262 87% 46%;
+  --brand-soft: 262 45% 18%;
+  --accent: 262 87% 76%;
+  --success: 167 23% 59%;
+  --warning: 40 77% 60%;
+  --danger: 3 76% 65%;
+  --ui-website-brand: 262 87% 66%;
+}
+/* END:generated-santi020k-site-colors */
+
+:root[data-theme="santi020k-light"],
+:root[data-theme="santi020k-dark"] {
+  --chart-series-1: var(--ui-website-brand);
+  --chart-series-2: var(--accent);
+  --chart-diverging-positive: var(--ui-website-brand);
+  --chart-sequential-high: var(--brand-solid);
+  --chart-sequential-mid: var(--ui-website-brand);
+  --chart-sequential-low: var(--brand-soft);
+  --chart-diverging-mid: var(--surface-strong);
+  --glass-refraction: var(--accent) / 0.12;
+}
+
 :root[data-theme="santi020k-light"] {
   color-scheme: light;
-  --ui-editorial-emphasis: var(--brand);
-  --canvas: 268 20% 98%;
-  --surface: 268 20% 100%;
-  --surface-muted: 268 20% 96%;
-  --surface-strong: 268 15% 90%;
-  --line: 268 15% 84%;
-  --ink: 268 10% 20%;
-  --ink-soft: 268 8% 36%;
-  --ink-muted: 268 6% 28%;
-  --brand: 264 92% 47%;
-  --brand-solid: 264 92% 42%;
-  --brand-soft: 264 60% 94%;
-  --accent: 264 95% 57%;
-  --success: 142 76% 36%;
-  --warning: 38 92% 50%;
-  --danger: 0 84% 60%;
+  --on-danger: 0 0% 100%;
 }
 
 :root[data-theme="santi020k-dark"] {
   color-scheme: dark;
-  --ui-editorial-emphasis: var(--accent);
-  --canvas: 260 43% 8%;
-  --surface: 260 30% 12%;
-  --surface-muted: 260 25% 15%;
-  --surface-strong: 260 20% 21%;
-  --line: 260 15% 30%;
-  --ink: 260 10% 88%;
-  --ink-soft: 260 8% 72%;
-  --ink-muted: 260 6% 56%;
-  --brand: 264 90% 70%;
-  --brand-solid: 264 90% 52%;
-  --brand-soft: 264 45% 18%;
-  --accent: 264 90% 68%;
-  --success: 142 71% 45%;
-  --warning: 38 92% 55%;
-  --danger: 0 84% 65%;
-  --glass-bg: 260 22% 12% / 0.78;
-  --glass-bg-subtle: 260 22% 12% / 0.64;
-  --glass-bg-strong: 260 22% 12% / 0.9;
-  --glass-border: 260 28% 88% / 0.24;
-  --glass-highlight: 260 36% 96% / 0.1;
+  --glass-bg: var(--surface) / 0.78;
+  --glass-bg-subtle: var(--surface) / 0.64;
+  --glass-bg-strong: var(--surface) / 0.9;
+  --glass-border: var(--ink) / 0.24;
+  --glass-highlight: var(--ink) / 0.1;
   --glass-brightness: 1;
-  --glass-edge: 260 40% 98% / 0.24;
-  --glass-edge-soft: 260 40% 98% / 0.08;
-  --glass-shade: 260 45% 3% / 0.34;
-  --glass-refraction: 264 95% 70% / 0.12;
+  --glass-edge: var(--ink) / 0.24;
+  --glass-edge-soft: var(--ink) / 0.08;
+  --glass-shade: var(--canvas) / 0.34;
   --glass-shadow:
     0 1px 2px hsl(0 0% 0% / 0.32),
     0 16px 40px hsl(0 0% 0% / 0.36),
@@ -212,31 +233,10 @@
 }
 
 @media (prefers-contrast: more) {
-  :root[data-theme="santi020k-light"] {
-    --surface-muted: 268 18% 94%;
-    --surface-strong: 268 14% 88%;
-    --line: 268 18% 66%;
-    --ink-soft: 268 12% 24%;
-    --ink-muted: 268 10% 18%;
-    --brand: 264 92% 40%;
-    --brand-solid: 264 92% 38%;
-    --brand-soft: 264 60% 92%;
-    --success: 142 76% 30%;
-    --warning: 38 92% 35%;
-    --danger: 0 84% 48%;
-    --on-danger: 0 0% 100%;
-    --ui-on-danger: var(--on-danger);
-  }
-
+  :root[data-theme="santi020k-light"],
   :root[data-theme="santi020k-dark"] {
-    --line: 260 15% 48%;
-    --ink-soft: 260 10% 84%;
-    --ink-muted: 260 8% 76%;
-    --brand: 264 90% 75%;
-    --brand-soft: 264 45% 22%;
-    --success: 142 71% 55%;
-    --warning: 38 92% 65%;
-    --danger: 0 84% 72%;
+    --line: var(--ink-soft);
+    --ink-muted: var(--ink);
   }
 }
 }
@@ -2832,7 +2832,7 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 @scope (:root:is([data-theme="santi020k-light"], [data-theme="santi020k-dark"])) to ([data-theme], [data-lumen-preset], [data-ui-theme-preview]) {
 .ui-typography > :where(h1, h2) em,
     .ui-card__title em {
-      color: hsl(var(--ui-editorial-emphasis));
+      color: hsl(var(--ui-website-brand));
       font-style: normal;
     }
 
@@ -2843,7 +2843,7 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
     }
 
 .ui-card--interactive:where(:not(.ui-card--glass)):hover {
-      border-color: hsl(var(--brand));
+      border-color: hsl(var(--ui-website-brand));
       box-shadow: none;
       transform: none;
     }
@@ -2901,7 +2901,7 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
     }
 
 .ui-button:focus-visible {
-      outline: 2px solid hsl(var(--brand));
+      outline: 2px solid hsl(var(--ui-website-brand));
       outline-offset: 4px;
     }
 }

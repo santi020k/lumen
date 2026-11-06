@@ -18,18 +18,10 @@
   --lumen-logo-dot: 38 92% 50%;
 }
 
-:root[data-theme="santi020k-light"] {
-  --app-font-sans: var(--santi020k-font-sans);
-  --app-font-display: var(--santi020k-font-display);
-  --theme-bg: var(--canvas);
-  --glow: 264 95% 70%;
-}
-
+:root[data-theme="santi020k-light"],
 :root[data-theme="santi020k-dark"] {
-  --app-font-sans: var(--santi020k-font-sans);
-  --app-font-display: var(--santi020k-font-display);
   --theme-bg: var(--canvas);
-  --glow: 270 90% 60%;
+  --glow: var(--accent);
 }
 
 :root:not([data-theme]),

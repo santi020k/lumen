@@ -8,7 +8,7 @@ Expose selective Card and Input entries, with packed subscribe-form delivery bud
 
 ### Major Changes
 
-- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, Paper, Field, and glass independently with optional style imports. Paper and Field support light and dark reading surfaces and forms. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions and increased-contrast colors.
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, Paper, Field, and glass independently with optional style imports. Paper and Field support light and dark reading surfaces and forms. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions, and shared website colors from `@santi020k/theme/site.css` with increased-contrast support.
 
 - Deliver shared foundation and component CSS through the existing packages. Astro components now
   import their own styles automatically; React and Elements can import `styles/foundation.css` once

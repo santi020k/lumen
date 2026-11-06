@@ -3,6 +3,8 @@ import { join } from 'node:path'
 
 import { preprocessCSS, resolveConfig } from 'vite'
 
+import { readSanti020kSiteColors } from './lib/santi020k-site-colors.mjs'
+
 // Resolve the public imports from a real consumer package, including adapter and Core re-exports.
 export const checkAppearanceDelivery = async (browser, repo) => {
   const root = join(repo, 'apps/docs')
@@ -22,6 +24,7 @@ export const checkAppearanceDelivery = async (browser, repo) => {
   const glass = await css(['styles/effects/glass'])
   const branded = await css(['styles/themes/santi020k'])
   const full = await css(['styles'])
+  const siteColors = await readSanti020kSiteColors()
 
   assert.doesNotMatch(base, /data-lumen-preset="(?:studio|glass|paper|field)"|santi020k-dark|ui-card--glass|--glass-bg:/u)
 
@@ -42,7 +45,7 @@ export const checkAppearanceDelivery = async (browser, repo) => {
       await page.setContent(`<!doctype html><html data-theme="${theme}" data-lumen-preset="${preset}"><head>
         <style>${styles}</style></head><body><div class="ui-card ui-card--glass ui-glass-subtle">Toolbar</div>
         <div class="ui-stat ui-stat--glass">Metric</div><code class="ui-code" data-code-theme="auto">value</code>
-        <article class="ui-card"><button class="ui-button ui-button--default">Read</button></article>
+        <article class="ui-card" style="color: hsl(var(--ink))"><button class="ui-button ui-button--default">Read</button></article>
         <div class="ui-stack ui-stack--gap-section"></div>
         <section data-lumen-preset="default" data-lumen-scheme="light"><article class="ui-card"></article></section></body></html>`)
 
@@ -57,6 +60,7 @@ export const checkAppearanceDelivery = async (browser, repo) => {
           code: getComputedStyle(document.querySelector('code')).getPropertyValue('--ui-code-fg').trim(),
           sheet: getComputedStyle(document.querySelector('article')).borderRadius,
           primary: getComputedStyle(document.querySelector('button')).backgroundColor,
+          ink: getComputedStyle(document.querySelector('article')).color,
           sectionGap: getComputedStyle(document.querySelector('.ui-stack')).rowGap,
           nestedSheet: getComputedStyle(document.querySelector('section article')).borderRadius,
           background: card.backgroundImage, filter: card.backdropFilter,
@@ -86,13 +90,29 @@ export const checkAppearanceDelivery = async (browser, repo) => {
       const brandTheme = `santi020k-${scheme}`
       const brandOnly = await read(base + branded, brandTheme, '')
 
-      assert.equal(brandOnly.brand, scheme === 'light' ? '264 92% 47%' : '264 90% 70%')
+      const colors = await page.evaluate(roles => {
+        const style = getComputedStyle(document.documentElement)
+
+        return Object.fromEntries(roles.map(role => [role, style.getPropertyValue(`--${role}`).trim()]))
+      }, Object.keys(siteColors[scheme]))
+
+      const published = siteColors[scheme]
+
+      assert.deepEqual(colors, {
+        ...published,
+        brand: scheme === 'dark' ? published.accent : published.brand,
+        'ink-muted': scheme === 'light' ? published['ink-soft'] : published['ink-muted']
+      })
+
+      assert.equal(await page.locator('html').evaluate(root =>
+        getComputedStyle(root).getPropertyValue('--ui-website-brand').trim()
+      ), published.brand)
 
       assert.equal(brandOnly.filter, 'none')
 
       assert.equal(brandOnly.sheet, '24px 24px 8px')
 
-      assert.equal(brandOnly.primary, scheme === 'light' ? 'rgb(51, 46, 56)' : 'rgb(223, 221, 227)')
+      assert.equal(brandOnly.primary, brandOnly.ink)
 
       assert.equal(brandOnly.sectionGap, '112px')
 

@@ -111,7 +111,7 @@ test('Studio preview stays within a narrow mobile viewport', async ({ page }) =>
 for (const scheme of ['light', 'dark'] as const) {
   test(`website theme keeps editorial actions readable at a narrow width in ${scheme}`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
-    await page.emulateMedia({ contrast: 'more', reducedMotion: 'reduce' })
+    await page.emulateMedia({ contrast: 'no-preference', reducedMotion: 'reduce' })
     await page.addInitScript(mode => { localStorage.setItem('lumen-theme', `santi020k-${mode}`); }, scheme)
     await page.goto('/docs/web#website-theme-title')
 
@@ -120,7 +120,11 @@ for (const scheme of ['light', 'dark'] as const) {
     const secondary = card.getByRole('link', { name: 'Explore components' })
 
     await expect(card).toHaveCSS('border-bottom-right-radius', '8px')
-    await expect(card).toHaveCSS('--line', scheme === 'dark' ? '260 15% 48%' : '268 18% 66%')
+    const standardLine = await card.evaluate(element => getComputedStyle(element).getPropertyValue('--line').trim())
+    await page.emulateMedia({ contrast: 'more' })
+    await expect(card).not.toHaveCSS('--line', standardLine)
+    const highContrastLine = await card.evaluate(element => getComputedStyle(element).getPropertyValue('--ink-soft').trim())
+    await expect(card).toHaveCSS('--line', highContrastLine)
     await expect(primary).toHaveCSS('border-radius', '12px')
     await expect(primary).toHaveCSS('min-height', '44px')
     await primary.focus()

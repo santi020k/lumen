@@ -104,9 +104,12 @@ existing generated mode. Existing calls without a preset keep generated color be
 
 ### The santi020k website appearance
 
-Import the stylesheet once in the root layout. Use the existing named light and dark modes; this
-is a web appearance, not a new cross-platform ThemeBuilder preset. The full stylesheet already
-includes it. Font files remain application-owned; the theme uses Montserrat when available.
+Lumen generates the named light and dark palettes from the shared website colors in
+`@santi020k/theme/site.css`. Import the Lumen appearance once in your root layout, or use
+the full Lumen stylesheet, which includes it. Primary actions use the site’s ink color. Violet
+marks emphasized headings and focus. Small text uses the site’s lighter accent for dark links
+and its soft ink for light captions so both stay readable on cards. Supply Montserrat in your
+application for the site typography.
 
 ```astro
 ---

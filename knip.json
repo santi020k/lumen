@@ -12,7 +12,7 @@
     ".": {
       "entry": ["scripts/check-maven-pom-metadata.mjs", "scripts/report-android-workspace-runtime.mjs"],
       "ignoreBinaries": ["codex", "infisical", "pod", "quality", "swift"],
-      "project": ["*.{js,css}", "scripts/*.mjs"]
+      "project": ["*.{js,css}", "scripts/*.mjs", "scripts/lib/santi020k-site-colors.mjs"]
     },
     "apps/docs": {
       "entry": ["src/pages/**/*.astro", "scripts/**/*.{js,mjs}"],
