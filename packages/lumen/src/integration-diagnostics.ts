@@ -10,7 +10,7 @@ import {
   type LumenStylingContract,
   lumenStylingContracts
 } from '@santi020k/lumen-core'
-import { createSourceFile, forEachChild, type ImportDeclaration, type ImportSpecifier, isForOfStatement, isImportDeclaration, isNamedImports, isStringLiteral, type Node, ScriptKind, ScriptTarget, type Statement, SyntaxKind } from 'typescript'
+import { createSourceFile, forEachChild, type ImportDeclaration, type ImportSpecifier, isForOfStatement, isImportDeclaration, isJsxAttribute, isNamedImports, isStringLiteral, type JsxAttribute, type Node, ScriptKind, ScriptTarget, type SourceFile, type Statement, SyntaxKind } from 'typescript'
 
 import { componentCssName } from './component-delivery.js'
 import { readComponentImports } from './component-imports.js'
@@ -1128,6 +1128,84 @@ const collectCssFindings = (
   })
 })
 
+const namedAppearance = (name: string, value: string): string | undefined => {
+  if (name === 'data-lumen-preset' && ['paper', 'field', 'studio', 'glass'].includes(value)) return value
+
+  if (name === 'data-theme' && value.startsWith('santi020k-')) return 'santi020k'
+
+  if (name === 'theme' && value === 'santi020k') return 'santi020k'
+
+  return undefined
+}
+
+const attributeAppearance = (attribute: JsxAttribute, parsed: SourceFile): string | undefined => {
+  const name = attribute.name.getText(parsed)
+
+  if (name === 'glass') return attribute.initializer?.getText(parsed).replaceAll(/\s/gu, '') === '{false}' ? undefined : 'glass'
+
+  if (!attribute.initializer || !isStringLiteral(attribute.initializer)) return undefined
+
+  return namedAppearance(name, attribute.initializer.text)
+}
+
+const withoutHtmlComments = (source: string): string => {
+  let result = ''
+  let cursor = 0
+
+  while (cursor < source.length) {
+    const start = source.indexOf('<!--', cursor)
+
+    if (start < 0) return result + source.slice(cursor)
+
+    const end = source.indexOf('-->', start + 4)
+    const finish = end < 0 ? source.length : end + 3
+
+    result += source.slice(cursor, start) + source.slice(start, finish).replaceAll(/[^\n]/gu, ' ')
+
+    cursor = finish
+  }
+
+  return result
+}
+
+const appearanceSignals = (entry: SourceEntry): string[] => {
+  if (!['.astro', '.tsx', '.jsx', '.js', '.html', '.htm'].includes(extname(entry.file))) return []
+
+  let parsed: SourceFile
+
+  try {
+    const markup = entry.source.slice(getMarkupStart(entry.source, entry.file))
+    const source = ['.astro', '.html', '.htm'].includes(extname(entry.file)) ? withoutHtmlComments(markup) : markup
+
+    parsed = createSourceFile('appearance.tsx', source, ScriptTarget.Latest, false, ScriptKind.TSX)
+  } catch (error: unknown) {
+    if (!(error instanceof RangeError)) throw error
+
+    return []
+  }
+
+  const found = new Set<string>()
+  const pending: Node[] = [parsed]
+
+  while (pending.length > 0) {
+    const node = pending.pop()
+
+    if (!node) continue
+
+    if (isJsxAttribute(node)) {
+      const appearance = attributeAppearance(node, parsed)
+
+      if (appearance) found.add(appearance)
+    }
+
+    node.forEachChild(child => {
+      pending.push(child)
+    })
+  }
+
+  return [...found]
+}
+
 const collectSelectiveStyleFindings = (
   root: string, boundary: ApplicationBoundary, framework: LumenFramework
 ): LumenDiagnosticFinding[] => {
@@ -1138,13 +1216,7 @@ const collectSelectiveStyleFindings = (
   const foundation = [adapter, '@santi020k/lumen', '@santi020k/lumen-core']
     .some(packageName => references.has(`${packageName}/styles/foundation.css`))
 
-  const appearances = ['paper', 'field', 'studio', 'santi020k', 'glass'].filter(name => boundary.sources.some(item => {
-    if (name === 'glass') return /\bglass(?:\s*=|[ >])/u.test(item.source)
-
-    if (name === 'santi020k') return /santi020k-(?:light|dark)/u.test(item.source)
-
-    return item.source.includes(`data-lumen-preset="${name}"`)
-  }))
+  const appearances = [...new Set(boundary.sources.flatMap(appearanceSignals))]
 
   const appearancePaths = appearances.map(name => `styles/${name === 'glass' ? 'effects' : 'themes'}/${name}.css`)
     .filter(path => ![adapter, '@santi020k/lumen', '@santi020k/lumen-core'].some(pkg => references.has(`${pkg}/${path}`)))
