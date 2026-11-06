@@ -51,9 +51,9 @@ Use the release branch's canonical tokens and resolved CSS for each theme and co
 Keep previously pinned website color modes compatible with existing frames. Compare the actual
 Figma variables and styled instances with the matching release source before changing the contract.
 
-## Release baseline
+## First-release baseline
 
-The published release is clean at the following baseline:
+The first release had the following verified baseline:
 
 - 123 public component assets.
 - 36 hidden icon-support components named `__IconAsset/*`.
@@ -70,16 +70,27 @@ The published release is clean at the following baseline:
 - No visible detached solid paints.
 - No variables missing descriptions or `WEB` code syntax.
 
-After publication, the library panel reported `No changes`. The 123 public assets are the published
-baseline count; do not inflate that number with the 36 hidden icon components.
+After that publication, the library panel reported `No changes`. The historical count of
+123 public assets excludes the 36 hidden icon components.
 
-## Current maintenance state
+## Published v5 team library
 
-The v5 migration started with 149 public assets and 69 variables in the working file. Keep
-the first-release counts above as historical evidence. The v5 working file links all 196 registry families, with six additional presentation sets and the preserved legacy Sonner asset. For a new release, count the live working
-file and compare it with the current registry by name. Record team-library publication and
-Community publication separately. Assets newly added to the library can be used in its own
-frames immediately. Companion files receive the new keys and values through a team-library update.
+On November 6, 2026, the Lumen project published the v5 team library. The source library
+reported **No changes**. Both [companion files](figma.md#design-files) had the team library
+enabled and reported **No updates available** with all pages selected. The Community
+listing was not updated as part of this team release.
+
+- The catalog contains 196 registry families, six presentation sets and the preserved legacy Sonner asset.
+  All 203 assets imported into Templates with their expected keys, variant counts and public properties.
+- All 149 original asset IDs and 401 existing public property IDs were preserved.
+- The library has 301 variables across Color, Radius, Effects, Theme and Foundations.
+- The Analytics desktop frame resolved the expected canvas across six appearances in both schemes
+  without losing the tested Button and Card overrides. React Native, SwiftUI and Compose Settings
+  explicitly use Field and Dark from the published library.
+
+For future updates, compare the live catalog with the release registry. Publish the team library,
+accept applicable updates on all pages of both companions, and verify a new variable and component
+from a consuming file. Record Community publication separately.
 
 ## Page organization
 
@@ -302,12 +313,12 @@ return {
 };
 ```
 
-Expected release result:
+Expected v5 team-release result:
 
 ```json
 {
-  "total": 159,
-  "public": 123,
+  "total": 239,
+  "public": 203,
   "hidden": 36,
   "missingDescriptions": [],
   "unusedProperties": []
