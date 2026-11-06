@@ -36,7 +36,9 @@ test('reinitialization removes old listeners and disposed loads cannot replace n
   })
   expect(old.submit).not.toHaveBeenCalled()
   firstDispose()
+  expect(root.querySelector('fieldset')?.disabled).toBe(false)
   dispose()
+  expect(root.querySelector('fieldset')?.disabled).toBe(true)
 })
 
 test('a failed mutation retains the draft and exposes a focused recovery message', async () => {
