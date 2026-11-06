@@ -63,9 +63,33 @@ export const editorialFixture = componentNode('Stack', { Direction: 'Vertical', 
   ])
 ])
 
+// The template contains local field frames, canonical controls, and a drawn progress track.
+const owners = {
+  Label: 'cf1f941d67edc5ac6bf9157e0a5217927d6671a0',
+  Checkbox: '962cdd43e4e24be04ed68f9964c9db3b5f98f6cd',
+  Progress: '9a260692bf62accfb6cd13d5caf0189efc8b0260'
+}
+
+export const control = (name: keyof typeof owners, properties: DesignNode['properties']) => designNode({ type: 'INSTANCE', name: 'Custom instance name', component: { key: 'variant', setKey: owners[name], name }, properties })
+export const frame = (name: string, ...children: DesignNode[]) => designNode({ name, children })
+export const copy = (text: string) => designNode({ type: 'TEXT', text })
+
+const field = (label: string, placeholder: string, ...rest: DesignNode[]) => frame('Field', control('Label', { Text: label }), componentNode('Input', { Placeholder: placeholder, Size: 'Default' }), ...rest)
+
+export const caption = (amount: string) => frame('Caption', frame('Span', copy('Setup progress')), frame('Strong', copy(amount)))
+export const track = frame('Track', frame('Progress bar'))
+
+export const onboardingFixture = frame('Form',
+  field('Workspace name', 'Northstar Labs'),
+  field('Work email', 'maya@example', copy('Enter a complete email address.')),
+  frame('Options', control('Checkbox', { Checked: 'True' }), frame('Span', copy('Send updates'))),
+  frame('Other option', control('Checkbox', { Checked: false }), copy('Send reminders')),
+  frame('Setup', caption('50%'), track))
+
 // Exercise every native mapping, nested layout, independent field state and literal escaping in real compilers.
 export const nativeFixture = designNode({ children: [
   ...settingsFixture.children,
+  ...onboardingFixture.children,
   componentNode('Stack', { Gap: 'Sm', Direction: 'Horizontal' }, [
     componentNode('Eyebrow', { Text: 'Workspace' }),
     componentNode('CardTitle', { Text: 'Settings' }),

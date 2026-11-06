@@ -37,7 +37,7 @@ const literal = (value: string, language: 'swift' | 'kotlin' | 'tsx'): string =>
 const textNode = (content: string, variant: 'body' | 'title'): NativeNode => ({ kind: 'text', content, variant, tone: 'default' })
 const fieldStates = (count: number, line: (index: number) => string) => Array.from({ length: count }, (_, i) => line(i + 1)).join('\n')
 
-const reactNative = (root: NativeNode, fields: number) => {
+const reactNative = (root: NativeNode, fields: number, checks: readonly boolean[]) => {
   const foundation = new Set<string>()
   const extra = new Set<string>()
   const expr = (value: string) => `{${literal(value, 'tsx')}}`
@@ -52,6 +52,18 @@ const reactNative = (root: NativeNode, fields: number) => {
     for (const { gap, side } of node.padding) properties.push(`padding${upper(side)}: spacing['${gap}']`)
 
     return jsx(`View style={{ ${properties.join(', ')} }}`, 'View', node.children.map(render).join('\n'))
+  }
+
+  const renderInput = (node: Extract<NativeNode, { kind: 'input' }>) => {
+    foundation.add('LumenTextField')
+
+    const control = `<LumenTextField ${node.visibleLabel ? '' : `accessibilityLabel=${expr(node.label)} `}placeholder=${expr(node.placeholder)} size="${node.size}" value={field${node.index}} onChangeText={setField${node.index}} />`
+
+    if (!node.visibleLabel) return control
+
+    extra.add('LumenFieldGroup')
+
+    return jsx(`LumenFieldGroup label=${expr(node.label)}${node.helper ? ` description=${expr(node.helper)}` : ''}`, 'LumenFieldGroup', control)
   }
 
   const render = (node: NativeNode): string => {
@@ -71,17 +83,17 @@ const reactNative = (root: NativeNode, fields: number) => {
 
         return `<LumenBadge tone="${node.tone}">${expr(node.label)}</LumenBadge>`
 
-      case 'input': {
-        foundation.add('LumenTextField')
+      case 'checkbox':
+        extra.add('LumenCheckbox')
 
-        const control = `<LumenTextField ${node.visibleLabel ? '' : `accessibilityLabel=${expr(node.label)} `}placeholder=${expr(node.placeholder)} size="${node.size}" value={field${node.index}} onChangeText={setField${node.index}} />`
+        return `<LumenCheckbox label=${expr(node.label)} checked={checked${node.index}} onCheckedChange={setChecked${node.index}} />`
 
-        if (!node.visibleLabel) return control
+      case 'progress':
+        extra.add('LumenProgress')
 
-        extra.add('LumenFieldGroup')
+        return `<LumenProgress label=${expr(node.label)} value={${node.value}} />`
 
-        return jsx(`LumenFieldGroup label=${expr(node.label)}${node.helper ? ` description=${expr(node.helper)}` : ''}`, 'LumenFieldGroup', control)
-      }
+      case 'input': return renderInput(node)
 
       case 'card':
         extra.add('LumenCard')
@@ -96,21 +108,34 @@ const reactNative = (root: NativeNode, fields: number) => {
   const view = foundation.has('useLumenTheme')
 
   const imports = [
-    ...(fields ? ['import { useState } from \'react\''] : []),
+    ...(fields || checks.length ? ['import { useState } from \'react\''] : []),
     ...(view ? ['import { View } from \'react-native\''] : []),
     ...(foundation.size ? [`import { ${[...foundation].sort().join(', ')} } from '@santi020k/lumen-react-native/foundations'`] : []),
     ...(extra.size ? [`import { ${[...extra].sort().join(', ')} } from '@santi020k/lumen-react-native'`] : [])
   ]
 
-  const statements = [view ? 'const { spacing } = useLumenTheme()' : '', fieldStates(fields, i => `const [field${i}, setField${i}] = useState('')`), `return (\n${indent(body)}\n)`].filter(Boolean)
+  const statements = [
+    view ? 'const { spacing } = useLumenTheme()' : '',
+    fieldStates(fields, i => `const [field${i}, setField${i}] = useState('')`),
+    ...checks.map((checked, i) => `const [checked${i + 1}, setChecked${i + 1}] = useState(${checked})`),
+    `return (\n${indent(body)}\n)`
+  ].filter(Boolean)
 
   return imports.join('\n') + '\n\n' + block('export function LumenSelection()', statements.join('\n')) + '\n'
 }
 
 const swiftEdge = { top: 'top', end: 'trailing', bottom: 'bottom', start: 'leading' }
 
-const swift = (root: NativeNode, fields: number) => {
+const swift = (root: NativeNode, fields: number, checks: readonly boolean[]) => {
   const q = (text: string) => `.verbatim(${literal(text, 'swift')})`
+
+  const renderInput = (node: Extract<NativeNode, { kind: 'input' }>) => {
+    const control = `LumenTextField(${q(node.placeholder)}, text: $field${node.index}, size: .${node.size})\n  .accessibilityLabel(Text(verbatim: ${literal(node.label, 'swift')}))`
+
+    if (!node.visibleLabel) return control
+
+    return block(`LumenFieldGroup(${q(node.label)}${node.helper ? `, description: ${q(node.helper)}` : ''})`, control)
+  }
 
   const render = (node: NativeNode): string => {
     switch (node.kind) {
@@ -120,13 +145,11 @@ const swift = (root: NativeNode, fields: number) => {
 
       case 'badge': return `LumenBadge(${q(node.label)}, tone: .${node.tone})`
 
-      case 'input': {
-        const control = `LumenTextField(${q(node.placeholder)}, text: $field${node.index}, size: .${node.size})\n  .accessibilityLabel(Text(verbatim: ${literal(node.label, 'swift')}))`
+      case 'checkbox': return `LumenCheckbox(${literal(node.label, 'swift')}, isChecked: $checked${node.index})`
 
-        if (!node.visibleLabel) return control
+      case 'progress': return `LumenProgress(value: ${node.value}, label: ${literal(node.label, 'swift')})`
 
-        return block(`LumenFieldGroup(${q(node.label)}${node.helper ? `, description: ${q(node.helper)}` : ''})`, control)
-      }
+      case 'input': return renderInput(node)
 
       case 'card': return block(`LumenCard(variant: .${node.variant})`, block('VStack(alignment: .leading, spacing: LumenSpacing.sm)', [textNode(node.title, 'title'), textNode(node.body, 'body')].map(render).join('\n')))
 
@@ -139,7 +162,10 @@ const swift = (root: NativeNode, fields: number) => {
     }
   }
 
-  const state = fieldStates(fields, i => `@State private var field${i} = ""`)
+  const state = [
+    fieldStates(fields, i => `@State private var field${i} = ""`),
+    ...checks.map((checked, i) => `@State private var checked${i + 1} = ${checked}`)
+  ].filter(Boolean).join('\n')
 
   return 'import SwiftUI\nimport LumenUI\n\n' + block('struct LumenSelection: View', [state, block('var body: some View', render(root))].filter(Boolean).join('\n\n')) + '\n'
 }
@@ -167,7 +193,7 @@ const kotlinString = (value: string) => {
   return 'listOf(' + chunks.join(', ') + ').joinToString("")'
 }
 
-const compose = (root: NativeNode, fields: number) => {
+const compose = (root: NativeNode, fields: number, checks: readonly boolean[]) => {
   const q = kotlinString
   const imports = new Set(['androidx.compose.runtime.Composable', 'com.santi020k.lumen.*'])
 
@@ -202,6 +228,10 @@ const compose = (root: NativeNode, fields: number) => {
 
       case 'badge': return `LumenBadge(${q(node.label)}, tone = LumenBadgeTone.${upper(node.tone)})`
 
+      case 'checkbox': return `LumenCheckbox(label = ${q(node.label)}, checked = checked${node.index}, onCheckedChange = { checked${node.index} = it })`
+
+      case 'progress': return `LumenProgress(value = ${node.value}f, label = ${q(node.label)})`
+
       case 'input': {
         const control = `LumenTextField(value = field${node.index}, onValueChange = { field${node.index} = it }, label = ${q(node.label)}, size = LumenControlSize.${upper(node.size)})`
 
@@ -223,17 +253,23 @@ const compose = (root: NativeNode, fields: number) => {
 
   const body = render(root)
 
-  if (fields) {
+  if (fields || checks.length) {
     for (const symbol of ['getValue', 'setValue', 'mutableStateOf', 'saveable.rememberSaveable']) imports.add('androidx.compose.runtime.' + symbol)
   }
 
-  const state = fieldStates(fields, i => `var field${i} by rememberSaveable { mutableStateOf("") }`)
+  const state = [
+    fieldStates(fields, i => `var field${i} by rememberSaveable { mutableStateOf("") }`),
+    ...checks.map((checked, i) => `var checked${i + 1} by rememberSaveable { mutableStateOf(${checked}) }`)
+  ].filter(Boolean).join('\n')
 
-  return [...imports].sort().map(name => 'import ' + name).join('\n') + '\n\n@Composable\n' + block('fun LumenSelection()', [state, body].filter(Boolean).join('\n')) + '\n'
+  return [...imports].sort().map(name => 'import ' + name).join('\n') + '\n\n@Composable\n' + block('fun LumenSelection()', [state, body
+  ].filter(Boolean).join('\n')) + '\n'
 }
 
-export const renderNative = (platform: NativePlatform, root: NativeNode, fields: number): string => {
-  if (platform === 'react-native') return reactNative(root, fields)
+export const renderNative = (
+  platform: NativePlatform, root: NativeNode, fields: number, checks: readonly boolean[]
+): string => {
+  if (platform === 'react-native') return reactNative(root, fields, checks)
 
-  return platform === 'compose' ? compose(root, fields) : swift(root, fields)
+  return platform === 'compose' ? compose(root, fields, checks) : swift(root, fields, checks)
 }
