@@ -21,7 +21,7 @@ an explicit Card, Input, and Button set through the same minified browser bundle
 ## Packed subscribe-form quick start
 
 Run `pnpm run measure:subscribe-form` with Chromium installed. The fixture extracts the React and
-Elements examples directly from the root README, installs packed Lumen packages, and builds each
+Elements examples from the [selective installation guide](selective-installation.md#consumer-form-measurement), installs packed Lumen packages, and builds each
 example twice with Vite. Only the imports change between the catalog and granular cases. Each run
 opens a cold browser page, fills the email control and records requested JS and CSS response bodies.
 Gzip totals compress each response locally at level 9; React totals include React and React DOM.

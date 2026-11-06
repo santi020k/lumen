@@ -8,13 +8,13 @@ import { gzipSync } from 'node:zlib'
 import { chromium } from '@playwright/test'
 import { build, preview } from 'vite'
 
-const readme = await readFile(new URL('../README.md', import.meta.url), 'utf8')
+const guide = await readFile(new URL('../docs/selective-installation.md', import.meta.url), 'utf8')
 
 const example = (heading, language) => {
-  const section = readme.split('### ' + heading + '\n')[1]
+  const section = guide.split('\n### ' + heading + '\n')[1]?.split('\n#')[0]
   const snippet = section?.split('```' + language + '\n')[1]?.split('\n```')[0]
 
-  assert.ok(snippet?.includes('Subscribe'), 'Missing README quick start: ' + heading)
+  assert.ok(snippet?.includes('Subscribe'), 'Missing selective installation example: ' + heading)
 
   return snippet
 }

@@ -360,7 +360,7 @@ jobs:
         if: matrix.shard == 1
         run: pnpm run test:motion && pnpm run check:route-delivery
 
-      - name: Measure packed README subscribe forms
+      - name: Measure packed selective subscribe forms
         if: matrix.shard == 1
         run: pnpm run measure:subscribe-form
       - name: Preserve browser failure diagnostics
