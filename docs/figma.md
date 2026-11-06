@@ -18,36 +18,29 @@ Select one frame or instance, choose the version installed in the receiving proj
 
 GitHub Actions prepares the versioned ZIP, revision and checksum for desktop verification. Community submission and installation verification follow the [publication checklist](../apps/figma-plugin/README.md#figma-community-publication). The Community link below opens the design library.
 
-## Figma Library File
+## Design files
 
-The Lumen Figma library lives at
-[Lumen UI Library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) (file key
-`luQW2pTQ3jGGxSFPAAsfa9`). The canonical file contains 128 public component assets and 69 local
-variables across three collections:
+| File | Open it to |
+| --- | --- |
+| [Lumen UI Library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) | Find the canonical components, styles, variables and [light/dark theme specimens](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9?node-id=600-3). |
+| [Lumen Templates](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3) | Adapt an editable desktop or mobile layout from the [template gallery](https://lumen.santi020k.com/templates). |
+| [Lumen Playgrounds](https://www.figma.com/design/G0NjJ4eAci1013PaLmseXI) | Compare web and native screens with the [running playgrounds](playgrounds.md). |
 
-- `Color`: 62 semantic and supporting variables in `Light`, `Dark`, `santi020k Light`, and
-  `santi020k Dark` modes.
-- `Radius`: four values (`sm`, `md`, `lg`, and `full`).
-- `Effects`: three semantic shadow variables in `Light` and `Dark` modes.
+These links open working files with their existing Figma access permissions. The
+[Community listing](https://www.figma.com/community/file/1662337342676541513) distributes the public
+library. Working-file edits, team-library updates and Community releases are separate steps.
 
-The published library is available from the
-[Lumen UI Library on Figma Community](https://www.figma.com/community/file/1662337342676541513).
-Use the Community listing to add or duplicate the library; use the canonical design file above for
-exact component-node links and library maintenance.
+Set **Theme** on a frame to Lumen, Studio, Paper, Field, santi020k or Glass. Set **Color** to
+Light or Dark. Child instances inherit both choices. Set either control on a nested frame for a
+local appearance. The existing santi020k Light and Dark **Color** modes retain their pinned colors
+for older designs. For a new branded frame, choose santi020k under **Theme** to get its colors,
+type and corner treatments together.
 
-The file also provides 38 text styles, 8 effect styles, and dedicated Cover, Getting Started,
-Foundations, Glass Components, Icons, component-category, and Utilities pages. The canonical design
-file and Lumen's runtime CSS both use Montserrat for interface and documentation text. Cascadia Mono
-remains reserved for the small amount of code-style text.
-
-Variables carry Web code syntax (`var(--token)`). The repository defines the target `Light` and
-`Dark` modes from the base Lumen palette in `packages/lumen/styles.css`. The refreshed v5 palette
-needs a separate sync to the published design library. The `santi020k Light` and `santi020k Dark`
-modes use the website colors from `@santi020k/theme/site.css`, including the accessible text mappings
-described in [appearance presets](appearance-presets.md). Selective web builds load those colors
-through `styles/themes/santi020k.css`.
-The [Figma token contract](../registry/figma-theme-tokens.json) checks all four modes against
-their source selectors. Component fills, strokes, radii, and effects bind to those variables.
+The variables expose web CSS names in Dev Mode. The [appearance guide](appearance-presets.md)
+documents the matching runtime choices and component-level glass treatment. Paper reading headings
+use Tinos in Figma as a substitute for the web serif fallback. The
+[base and website token contract](../registry/figma-theme-tokens.json) covers four named palettes.
+Check Studio, Paper, Field, Glass and component-specific roles against the resolved release CSS.
 
 The component catalog includes editable text, boolean, instance-swap, and variant properties where
 the code API has a meaningful match. `Button`, for example, provides 24 `Variant` x `Size`
@@ -57,11 +50,8 @@ props, so `Variant=Destructive, Size=Sm` corresponds to
 prototype transitions for toggles, disclosures, tabs, selection controls, menus, theme controls,
 and reveal behavior.
 
-The data-visualization family includes the general `Chart` asset plus dedicated `Sparkline`,
-`BarChart`, `LineChart`, and `PieChart` assets. `ScrollProgress` lives on the Utilities page. These
-assets use the 20 `color/chart/*` variables for categorical, sequential, diverging, axis, grid,
-reference, selection, and tooltip
-roles and have been checked in all four Color modes.
+Chart components share categorical series, sequential and diverging scales, axis, grid,
+reference, selection and tooltip roles. Use the semantic variables when adapting a chart.
 
 ## Theme Tokens
 
@@ -136,7 +126,7 @@ pnpm dlx @figma/code-connect connect parse --config figma.config.json
 ```
 
 Publishing the mappings requires the Figma components to be published as a team library and the
-account to have a Dev or Full seat on an Organization or Enterprise plan. Once those prerequisites
+account to have an eligible Dev or Full seat under the current [Code Connect requirements](https://developers.figma.com/docs/code-connect/quickstart-guide/). Once those prerequisites
 are available, run the official Code Connect publish command and verify each mapping from an
 instance in Dev Mode.
 
