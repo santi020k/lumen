@@ -54,7 +54,8 @@ beforeAll(async () => {
   script = new Script(source)
 })
 
-const host = (selection: MockNode[]) => {
+const host = (selection: MockNode[], pluginId?: string) => {
+  const relaunchCommands: string[] = []
   const messages: PluginMessage[] = []
   const events = new Map<string, () => void>()
   const pageEvents = new Map<string, () => void>()
@@ -77,10 +78,16 @@ const host = (selection: MockNode[]) => {
   script.runInNewContext({
     __html__: '<div>Plugin test</div>',
     figma: {
+      pluginId,
       mixed: Symbol('mixed'),
       ui,
       currentPage: page,
-      root: { setRelaunchData: () => {} },
+      root: {
+        setRelaunchData: (data: Record<string, string>) => {
+          if (!pluginId || pluginId === 'local-extension') throw new Error('Cannot set relaunch data in a plugin without an ID.')
+          relaunchCommands.push(...Object.keys(data))
+        }
+      },
       showUI: () => {},
       on: (type: string, callback: () => void) => {
         events.set(type, callback)
@@ -92,10 +99,15 @@ const host = (selection: MockNode[]) => {
     ui.onmessage(message)
     await new Promise<void>(resolve => setImmediate(resolve))
   }
-  return { messages, events, pageEvents, page, send }
+  return { messages, events, pageEvents, page, send, relaunchCommands }
 }
 
 describe('Figma host lifecycle', () => {
+  test('starts an unregistered build even when the host provides a local extension identifier', () => {
+    expect(host([]).relaunchCommands).toEqual([])
+    expect(host([], 'local-extension').relaunchCommands).toEqual([])
+  })
+
   test('waits for the UI handshake and rejects empty or multiple selections', async () => {
     const app = host([])
     expect(app.messages).toEqual([])

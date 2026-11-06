@@ -50,8 +50,8 @@ select one frame or component instance, and run **Lumen for Figma**.
    check installed Lumen versions, retrieve component contracts, connect application behavior,
    and validate the rendered result.
 
-The plugin does not modify the selected design. It adds a document-level relaunch entry so it can
-be opened again. Selection or page edits invalidate the displayed output; inspect again to refresh.
+The plugin does not modify the selected design. Builds with a Figma-assigned ID also add a document-level
+relaunch shortcut. Use the Development menu to reopen a local build. Selection or page edits invalidate the displayed output; inspect again to refresh.
 
 ## Supported conversion
 
