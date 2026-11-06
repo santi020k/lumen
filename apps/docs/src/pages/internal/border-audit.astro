@@ -29,6 +29,10 @@ const reactFrames = renderToStaticMarkup(h('div', { id: 'react-frames' }, h(Reac
   <body>
     <Container as="main"><Stack gap="section">
       <h1>Border composition audit</h1>
+      <Image id="astro-standalone" alt="Standalone landscape" src="/comparison-before.svg" width={160} height={100} radius="full" fit="contain" />
+      <Fragment set:html={renderToStaticMarkup(h(ReactImage, { id: 'react-standalone', alt: 'Standalone landscape', src: '/comparison-before.svg', width: 160, height: 100, radius: 'full', fit: 'contain' }))} />
+      <lumen-image id="elements-standalone" radius="full" fit="contain" style="width:160px;height:100px"><img alt="Standalone landscape" src="/comparison-before.svg" width="160" height="100" /></lumen-image>
+      <AspectRatio id="aspect-contain" ratio="4 / 3"><picture><source srcset="/comparison-before.svg" type="image/svg+xml" /><Image id="aspect-contain-image" alt="Contained landscape" src="/comparison-before.svg" width={960} height={600} radius="full" fit="contain" /></picture></AspectRatio>
       <InputGroup id="input-frame"><span>@</span><Input id="input-edge" aria-label="Domain" placeholder="example.com" /></InputGroup>
       <Tabs id="audit-tabs" initialValue="a"><TabsList aria-label="Audit sections"><TabsTrigger value="a">A</TabsTrigger><TabsTrigger value="b">B</TabsTrigger></TabsList><TabsPanel value="a">First panel</TabsPanel><TabsPanel value="b">Second panel</TabsPanel></Tabs>
       <Table id="audit-table"><table><thead><tr><th scope="col">Example</th><th scope="col">Status</th></tr></thead><tbody><tr><td>Framed content</td><td>Ready</td></tr></tbody></table></Table>

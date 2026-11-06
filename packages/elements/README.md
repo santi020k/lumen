@@ -365,6 +365,10 @@ serialized series and defaults to `variant="donut"`.
 
 ## Optimized images
 
+When composing `<lumen-image>` with a native `img` child, the image inherits the wrapper's `radius`
+and `fit`. Dedicated media frames own their shared corners; see the
+[frame styling contract](../../docs/styling-contract.md#frame-borders-and-corners).
+
 Image optimization belongs to the host framework or CDN. Keep its generated `picture`, `srcset`,
 and `sizes` output, and put Lumen's `ui-image` class on the final `img`. This works with optimized
 markup from Nuxt, SvelteKit, a CMS, an image CDN, or a static build pipeline without sending the

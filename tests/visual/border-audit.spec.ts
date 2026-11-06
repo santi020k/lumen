@@ -133,3 +133,28 @@ test('grouped controls retain one outer border and visible focus', async ({ page
     await expect(page.locator(`#${context}-tabs figure`)).toHaveCSS('border-radius', '0px')
   }
 })
+
+test('standalone Image wrappers preserve the requested radius and fit', async ({ page }) => {
+  await page.goto('/internal/border-audit')
+  await expect(page.locator('#elements-standalone')).toHaveClass(/ui-image--radius-full/)
+  const radius = await page.locator('#astro-standalone').evaluate(element => getComputedStyle(element).borderRadius)
+  await expect(page.locator('#react-standalone')).toHaveCSS('border-radius', radius)
+  const nativeImage = page.locator('#elements-standalone img')
+  await expect(nativeImage).toHaveCSS('border-radius', radius)
+  await expect(nativeImage).toHaveCSS('object-fit', 'contain')
+})
+
+test('picture media fills its aspect frame while preserving contain fit', async ({ page }) => {
+  await page.goto('/internal/border-audit')
+  await expect(page.getByRole('heading', { level: 1, name: 'Border composition audit' })).toBeVisible()
+  await page.addStyleTag({ content: imageStyles })
+  const frame = page.locator('#aspect-contain')
+  const image = page.locator('#aspect-contain-image')
+  await expect(image).toHaveCSS('object-fit', 'contain')
+  await expect(image).toHaveCSS('border-radius', '0px')
+  const frameBox = await frame.boundingBox()
+  const imageBox = await image.boundingBox()
+  if (!frameBox || !imageBox) throw new Error('Expected measurable picture media')
+  expect(Math.abs(frameBox.width - imageBox.width)).toBeLessThan(1)
+  expect(Math.abs(frameBox.height - imageBox.height)).toBeLessThan(1)
+})

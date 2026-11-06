@@ -13,3 +13,6 @@ avatar, flag, attachment, and QRCode images from inheriting article corner round
 
 Give custom-element media frames and reading surfaces block layout, and replace the AspectRatio
 docs' clipped Cards with actual media examples. Card retains visible interactive overflow.
+
+Image wrappers pass radius and fit to native image children, and AspectRatio keeps picture media
+sized to its frame even when Image styles load later. Explicit Image fitting remains available.

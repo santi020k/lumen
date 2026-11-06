@@ -18,7 +18,9 @@ Assign an outer border and corner clipping to one frame. AspectRatio, CoverImage
 ImageComparison, MediaViewport, and the media part of MediaThumbnail flatten their media's inner
 corners. This includes optimized `picture` content and public Image children, regardless of the
 order selective component styles load. Set the outer frame's geometry rather than adding another
-rounded border to flush media. Standalone Image still owns its `radius` prop.
+rounded border to flush media. Standalone Image still owns its `radius` prop. Image wrappers
+pass their radius and fit to a native `img` child. AspectRatio fills optimized picture content
+without replacing an Image child’s explicit fit mode.
 
 Card keeps overflow visible for focus rings and overlays. Put clipped media inside a dedicated
 frame; do not clip an entire interactive Card. Keep padded, independently bordered surfaces inset.
