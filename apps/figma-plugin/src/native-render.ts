@@ -86,7 +86,7 @@ const reactNative = (root: NativeNode, fields: number) => {
       case 'card':
         extra.add('LumenCard')
 
-        return jsx('LumenCard', 'LumenCard', [textNode(node.title, 'title'), textNode(node.body, 'body')].map(render).join('\n'))
+        return jsx(`LumenCard variant="${node.variant}"`, 'LumenCard', [textNode(node.title, 'title'), textNode(node.body, 'body')].map(render).join('\n'))
 
       case 'stack': return renderStack(node, render)
     }
@@ -128,7 +128,7 @@ const swift = (root: NativeNode, fields: number) => {
         return block(`LumenFieldGroup(${q(node.label)}${node.helper ? `, description: ${q(node.helper)}` : ''})`, control)
       }
 
-      case 'card': return block('LumenCard', block('VStack(alignment: .leading, spacing: LumenSpacing.sm)', [textNode(node.title, 'title'), textNode(node.body, 'body')].map(render).join('\n')))
+      case 'card': return block(`LumenCard(variant: .${node.variant})`, block('VStack(alignment: .leading, spacing: LumenSpacing.sm)', [textNode(node.title, 'title'), textNode(node.body, 'body')].map(render).join('\n')))
 
       case 'stack': {
         const head = node.row ? 'HStack(alignment: .top' : 'VStack(alignment: .leading'
@@ -215,7 +215,7 @@ const compose = (root: NativeNode, fields: number) => {
       case 'card':
         imports.add('androidx.compose.foundation.layout.Column')
 
-        return block('LumenCard', block('Column', [textNode(node.title, 'title'), textNode(node.body, 'body')].map(render).join('\n')))
+        return block(`LumenCard(variant = LumenCardVariant.${upper(node.variant)})`, block('Column', [textNode(node.title, 'title'), textNode(node.body, 'body')].map(render).join('\n')))
 
       case 'stack': return renderStack(node, render)
     }

@@ -23,7 +23,7 @@ const hasKey = <T extends string>(record: Record<T, unknown>, key: string): key 
 
 export type NativeNode =
   | { kind: 'stack', row: boolean, wrap: boolean, gap: Gap, padding: { side: Side, gap: Gap }[], children: NativeNode[] } |
-  { kind: 'card', title: string, body: string } |
+  { kind: 'card', variant: 'muted' | 'default', title: string, body: string } |
   { kind: 'button', label: string, intent: typeof intents[keyof typeof intents], size: Size, disabled: boolean, loading: boolean } |
   { kind: 'badge', label: string, tone: typeof badges[keyof typeof badges] } |
   { kind: 'text', content: string, variant: 'title' | 'body' | 'label', tone: typeof tones[keyof typeof tones] } |
@@ -41,7 +41,8 @@ const badgeLabels = (node: DesignNode): string[] => node.type === 'TEXT' && node
 
 type Review = ReturnType<typeof createReview>
 
-const stackGap = (name: string): Gap => hasKey({ sm: 1, md: 1, lg: 1, xl: 1 }, name) ? name : 'zero'
+const stackGaps = { none: 'zero', xs: 'xs', sm: 'sm', md: 'md', lg: 'lg', xl: 'xl', '2xl': '2xl', '3xl': '3xl', related: 'sm', group: 'lg', section: '2xl' } as const satisfies Record<string, Gap>
+const stackGap = (name: string): Gap => hasKey(stackGaps, name) ? stackGaps[name] : 'md'
 
 type Reader = (node: DesignNode) => NativeNode | null
 
@@ -139,7 +140,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
       return token ?? fallback
     }
 
-    const gap = keyed ? stackGap(choice(node, 'Gap', ['none', 'sm', 'md', 'lg', 'xl'], 'md')) : spacing(layout.gap, 'md')
+    const gap = keyed ? stackGap(choice(node, 'Gap', Object.keys(stackGaps), 'md')) : spacing(layout.gap, 'md')
     const children = node.children.map(read).filter(child => child !== null)
 
     if (!children.length) {
@@ -153,6 +154,17 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
     return { kind: 'stack', row, wrap, gap, padding, children }
   }
 
+  const card = (node: DesignNode): NativeNode => {
+    const variant = String(node.properties.Variant ?? 'default').toLowerCase()
+    const density = String(node.properties.Density ?? 'default').toLowerCase()
+
+    if (!['default', 'muted'].includes(variant)) issue(node, 'This Card presentation has no verified native mapping; the starter uses the default surface.')
+
+    if (density !== 'default') issue(node, 'Review the Card density; the starter uses the native default padding.')
+
+    return { kind: 'card', variant: variant === 'muted' ? 'muted' : 'default', title: text(node, 'Title', 'Card title'), body: text(node, 'Body', '') }
+  }
+
   const known = (node: DesignNode, component: ComponentName, recurse: Reader): NativeNode | null => {
     if (component === 'Field') return field(node)
 
@@ -161,7 +173,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
     const renderers = {
       Badge: badge,
       Button: button,
-      Card: (n: DesignNode): NativeNode => ({ kind: 'card', title: text(n, 'Title', 'Card title'), body: text(n, 'Body', '') }),
+      Card: card,
       Stack: (n: DesignNode) => stack(n, true, recurse),
       CardTitle: (n: DesignNode) => nativeText(n, 'title'),
       CardDescription: (n: DesignNode) => nativeText(n, 'body'),

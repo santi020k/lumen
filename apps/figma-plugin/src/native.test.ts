@@ -5,6 +5,7 @@ import manifest from '../../../registry/release-manifest.json'
 import { analyzeSelection } from './convert.js'
 import { componentNode, designNode, nativeFixture } from './fixtures.js'
 import { isPluginMessage, resultMessage } from './model.js'
+import { presentationKeys } from './presentations.js'
 import { defaultFor, readTarget } from './targets.js'
 
 const targets = ['react-native', 'compose', 'swiftui-ios', 'swiftui-macos'] as const
@@ -53,6 +54,20 @@ describe.each(targets)('%s native export', platform => {
       expect(result.code).toBe('')
       expect(result.findings.some(f => f.status === 'unsupported')).toBe(true)
     }
+  })
+
+  test('preserves verified v5 Card overrides and native spacing in a semantic Stack', () => {
+    const card = designNode({ type: 'INSTANCE',
+      component: { name: 'Card', key: 'variant', setKey: presentationKeys.Card },
+      properties: { Variant: 'Muted', Density: 'Compact' },
+      children: [componentNode('Card', { Title: 'Invoice', Body: 'Amount due' })] })
+    const { code, findings } = analyzeSelection(componentNode('Stack', { Direction: 'Vertical', Gap: 'Section' }, [card]), target)
+    expect(code.toLowerCase()).toContain('muted')
+    expect(code.toLowerCase()).toContain('2xl')
+    expect(code).toContain('Invoice')
+    expect(code).toContain('Amount due')
+    expect(findings.some(f => f.message.includes('Card density'))).toBe(true)
+    expect(analyzeSelection({ ...card, children: [componentNode('Dialog')] }, target).code).toBe('')
   })
 
   test('uses verified key and native state even when an instance is renamed', () => {
