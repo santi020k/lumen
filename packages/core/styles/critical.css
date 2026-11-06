@@ -785,7 +785,7 @@
 
 .ui-badge--default {
   background: hsl(var(--brand-solid));
-  color: white;
+  color: hsl(var(--on-brand));
 }
 
 .ui-badge--secondary {

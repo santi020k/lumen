@@ -63,11 +63,15 @@ test('long examples remain expandable without JavaScript', async ({ browser }) =
   await context.close()
 })
 
-test('clipboard failure leaves complete source available for manual copying', async ({ page }) => {
+test('clipboard failure exposes complete source and a successful retry clears recovery', async ({ page }) => {
   await page.addInitScript(() => {
+    let attempts = 0
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
-      value: { writeText: () => Promise.reject(new Error('Permission denied')) }
+      value: { writeText: () => {
+        attempts += 1
+        return attempts === 1 ? Promise.reject(new Error('Permission denied')) : Promise.resolve()
+      } }
     })
   })
   await page.goto('/internal/editorial-code')
@@ -82,12 +86,16 @@ test('clipboard failure leaves complete source available for manual copying', as
   await expect(recovery).toHaveValue(/const line30 =/)
   await code.locator('summary').click()
   await expect(code.getByRole('region')).toContainText('const line30 =')
+  await button.click()
+  await expect(button).toHaveAccessibleName('Copied')
+  await expect(recovery).toHaveCount(0)
 })
 
 for (const width of [240, 390, 1440]) {
   test(`code header keeps metadata and copy control separate at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
     await page.goto('/internal/editorial-code')
+    if (width === 240) await page.evaluate(() => { document.documentElement.style.fontSize = '200%' })
     const code = page.locator('.docs-code-block').first()
     const title = code.locator('> figcaption .ui-code__label')
     const copy = code.locator('> figcaption button')
