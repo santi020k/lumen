@@ -119,7 +119,9 @@ The build matrix installs Chromium before affected package tests; Turbo passes t
 location to those tests without using the machine-specific path as a cache key. Motion browser
 tests depend on their own preview build as well as dependency package builds.
 The matrix limits concurrent Turbo tasks to half the runner's logical CPUs because each Vitest
-suite uses two workers. This keeps CPU-heavy catalog tests within their normal timeouts.
+suite uses two workers. The native catalog check runs the Android and Apple capture scripts in
+sequence because both launch a subprocess for each fixture interaction. This keeps the capture
+checks within their individual timeouts under load.
 Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
 complete release gate.
 Linux browser setup configures 30-second APT connection/data timeouts and two retries per failed

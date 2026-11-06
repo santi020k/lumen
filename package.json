@@ -64,7 +64,7 @@
     "generate:world-map-data": "node scripts/generate-world-map-data.mjs",
     "check:world-map-data": "node scripts/generate-world-map-data.mjs --check && node --test scripts/world-map-geometry.test.mjs",
     "generate:native-playground-catalogs": "node scripts/generate-native-playground-catalogs.mjs",
-    "check:native-playground-catalogs": "node scripts/generate-native-playground-catalogs.mjs --check && node --test scripts/android-capture-catalog.test.mjs scripts/apple-capture-catalog.test.mjs",
+    "check:native-playground-catalogs": "node scripts/generate-native-playground-catalogs.mjs --check && node --test --test-concurrency=1 scripts/android-capture-catalog.test.mjs scripts/apple-capture-catalog.test.mjs",
     "check:native-playground-structure": "node scripts/check-native-playground-structure.mjs",
     "test:native-playground-structure": "node --test scripts/check-native-playground-structure.test.mjs",
     "check:playground-store-readiness": "node scripts/check-playground-store-readiness.mjs",
