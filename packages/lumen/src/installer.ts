@@ -303,7 +303,7 @@ const validateInstallFiles = async (
   conflict: ConflictMode
 ): Promise<void> => {
   // A trailing slash sorts a file immediately before any descendants, even beside "a-other".
-  const paths = files.map(file => file.path + '/').sort()
+  const paths = files.map(file => file.path.normalize('NFC').toLowerCase() + '/').sort()
   let previous = ''
 
   for (const path of paths) {

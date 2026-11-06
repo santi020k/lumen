@@ -18,6 +18,11 @@ describe('selective component installation', () => {
     }
   })
 
+  test.each(['constructor', 'toString', 'hasOwnProperty'])('ignores inherited object keys when resolving %s', name => {
+    expect(getComponentEntry(name, 'react')).toBeUndefined()
+    expect(getComponentEntry(name, 'elements')).toBeUndefined()
+  })
+
   test('preserves an edited React Button and reports the same diff on preview and retry', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'lumen-edited-button-'))
     const options = { cwd, target: 'react', conflict: 'merge' } as const

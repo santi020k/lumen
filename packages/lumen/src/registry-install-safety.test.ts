@@ -5,7 +5,7 @@ import { join } from 'node:path'
 
 import { afterEach, beforeEach, expect, test } from 'vitest'
 
-import { addLumenRegistryItem, loadLumenRegistry, type LumenRegistryFile } from './registry.js'
+import { addLumenRegistryItem, getLumenRegistryItem, loadLumenRegistry, type LumenRegistryFile } from './registry.js'
 
 let cwd: string
 
@@ -133,4 +133,19 @@ test('preserves a replacement file created during a custom merge', async () => {
 
 test.skipIf(process.platform !== 'linux')('counts bytes in a virtual registry file with a zero stat size', async () => {
   await expect(loadLumenRegistry('/proc/version', { maxBytes: 1 })).rejects.toThrow('byte limit')
+})
+
+test.each([['Config.txt', 'config.txt'], ['Café', 'Cafe\u0301'], ['Folder', 'folder/entry']])(
+  'rejects ambiguous portable paths %s and %s in both preview and install', async (first, second) => {
+    const registry = recipe('example', [first, second].map(path => ({ path, source: 'example' })))
+
+    for (const dryRun of [true, false]) {
+      await expect(addLumenRegistryItem('example', { cwd, dryRun, force: true, registry })).rejects.toThrow(/Duplicate|directory/u)
+      expect(await readdir(cwd)).toEqual([])
+    }
+  }
+)
+
+test.each(['QRCode', 'qrcode', 'qr-code'])('resolves the published QRCode component as %s', name => {
+  expect(getLumenRegistryItem(name)?.name).toBe('QRCode')
 })

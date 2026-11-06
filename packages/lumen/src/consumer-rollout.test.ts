@@ -101,6 +101,14 @@ minimumReleaseAgeExclude: [webpack, "esbuild"]
     expect(addReleaseAgeTarget(updated, ['@santi020k/lumen-astro'], '5.0.0')).toBe(updated)
   })
 
+  test('preserves comments and leaves a satisfied flow list byte-for-byte intact', () => {
+    const source = 'minimumReleaseAgeExclude: [webpack, "@santi020k/lumen@5.0.0"]  # reviewed [keep]\r\n'
+
+    expect(addReleaseAgeTarget(source, ['@santi020k/lumen'], '5.0.0')).toBe(source)
+    expect(addReleaseAgeTarget(source, ['@santi020k/lumen-react'], '5.0.0'))
+      .toContain('minimumReleaseAgeExclude:  # reviewed [keep]\r\n')
+  })
+
   test('reports command and post-upgrade validation failures to the CLI', () => {
     const repository: ConsumerRolloutReport['repositories'][number] = {
       branch: 'main',

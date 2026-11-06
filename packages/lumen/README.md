@@ -126,7 +126,8 @@ Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin
 `dashboard-shell`, and `validated-form`.
 
 External registry manifests are treated as untrusted input. Inline recipe files must use unique,
-relative forward-slash paths with portable filenames. Windows device names, alternate data streams,
+relative forward-slash paths with portable filenames. Paths must remain distinct when normalized to NFC
+and converted to lowercase. Windows device names, alternate data streams,
 and trailing spaces or periods are rejected on every host. Inline sources take precedence over bundled recipes of the same name.
 Only a matching packaged catalog entry can select a bundled template. The installer checks all
 destinations before writing, including paths used as both files and directories. It rejects symbolic

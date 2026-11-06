@@ -416,7 +416,7 @@ const runCommand = async (
 }
 
 const parseFlowSequence = (source: string): string[] | undefined => {
-  const match = /^\[([\s\S]*)\]\s*(?:#.*)?$/.exec(source.trim())
+  const match = /^\[([^\]#]*)\][ \t]*(?:#.*)?$/.exec(source.trim())
 
   if (!match || /[\\{}&*!#]|''/u.test(match[1] ?? '')) return undefined
 
@@ -463,6 +463,7 @@ const releaseAgeSection = (source: string) => {
   const lines = source.split(newline)
   const firstKey = lines.find(line => /^ *[^#\s-][^:]*:/u.test(line))
   const rootIndent = firstKey?.match(/^ */u)?.[0] ?? ''
+
   const start = lines.findIndex(line => (
     line.startsWith(rootIndent) && /^minimumReleaseAgeExclude *:/u.test(line.slice(rootIndent.length))
   ))
@@ -515,12 +516,12 @@ export const addReleaseAgeTarget = (source: string, packages: string[], version:
     .filter(value => !existing.has(value))
     .map(value => `${indent}- ${JSON.stringify(value)}`)
 
-  if (!additions.length && !inlineValues) return source
+  if (!additions.length) return source
 
   if (inlineValues) {
     const declaration = lines[start] ?? ''
 
-    lines[start] = declaration.slice(0, declaration.indexOf(':') + 1)
+    lines[start] = declaration.slice(0, declaration.indexOf(':') + 1) + declaration.slice(declaration.indexOf(']') + 1)
 
     additions.unshift(...inlineValues.map(value => `${indent}- ${JSON.stringify(value)}`))
   }
@@ -535,13 +536,13 @@ const removeObsoleteReleaseAgeEntries = (
 ): string => {
   const section = releaseAgeSection(source)
 
-  if (!section || section.inlineValues) return source
+  if (!section) return source
 
   const { end, lines, newline, start } = section
   const pattern = packageVersions ? lumenPackageNamePattern : '@santi020k/lumen(?:-(?:astro|core|elements|mcp|react))?'
   const entry = new RegExp(`^\\s*-\\s*['"]?(${pattern})@([^'"\\s]+)['"]?\\s*$`, 'u')
 
-  const retained = lines.slice(start + 1, end).filter(line => {
+  const isCurrent = (line: string): boolean => {
     const match = entry.exec(line)
     const name = match?.[1]
 
@@ -550,7 +551,22 @@ const removeObsoleteReleaseAgeEntries = (
     const expected = packageVersions ? packageVersions[name] : targetVersion
 
     return !expected || match[2] === expected
-  })
+  }
+
+  if (section.inlineValues) {
+    const kept = section.inlineValues.filter(value => isCurrent('- ' + JSON.stringify(value)))
+
+    if (kept.length === section.inlineValues.length) return source
+
+    const declaration = lines[start] ?? ''
+    const values = kept.map(value => JSON.stringify(value)).join(', ')
+
+    lines[start] = declaration.slice(0, declaration.indexOf('[') + 1) + values + declaration.slice(declaration.indexOf(']'))
+
+    return lines.join(newline)
+  }
+
+  const retained = lines.slice(start + 1, end).filter(isCurrent)
 
   return [...lines.slice(0, start + 1), ...retained, ...lines.slice(end)].join(newline)
 }

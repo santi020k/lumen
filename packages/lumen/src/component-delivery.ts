@@ -94,7 +94,8 @@ const elementsEntries: Readonly<Record<string, string>> = {
 export const componentDeliveryEntries = { react: reactEntries, elements: elementsEntries } as const
 
 export const getComponentEntry = (name: string, target: 'elements' | 'react'): string | undefined => {
-  const entry = componentDeliveryEntries[target][name]
+  const entries = componentDeliveryEntries[target]
+  const entry = Object.hasOwn(entries, name) ? entries[name] : undefined
 
   return entry ? `@santi020k/lumen-${target}/components/${entry}` : undefined
 }

@@ -1,6 +1,7 @@
 import { constants } from 'node:fs'
 import { open } from 'node:fs/promises'
 
+import { componentCssName } from './component-delivery.js'
 import { isSafeRegistryComponentName } from './registry-component-name.js'
 import { lumenRegistry } from './registry-data.js'
 import { isSafeRegistryFilePath } from './registry-path.js'
@@ -62,7 +63,8 @@ export const getLumenRegistryItem = (
 
   return (
     entries.find(item => item.name === name) ??
-    entries.find(item => normalizeRegistryEntryName(item.name) === normalizedName)
+    entries.find(item => normalizeRegistryEntryName(item.name) === normalizedName) ??
+    entries.find(item => item.type === 'component' && componentCssName(item.name) === normalizedName)
   )
 }
 
