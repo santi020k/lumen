@@ -28,8 +28,8 @@ and verify keyboard interaction and responsive layouts. Exports contain the sele
 visible text and component data; review them before sharing with an external coding agent.
 
 See the [plugin setup and limitations](../apps/figma-plugin/README.md). The beta is available as a
-repository development build, not a published Figma Community plugin. The existing Community link
-below points to the design library.
+repository development build, not a published Figma Community plugin. The Community links
+below open the published design files.
 
 GitHub Actions prepares tested beta ZIPs with source revisions and checksums. See the
 [Community publishing guide](../apps/figma-plugin/README.md#figma-community-publication) for the
@@ -42,9 +42,19 @@ label and supported-component limits.
 
 ## Figma Library File
 
+| Community resource | What you can do | Working file |
+| --- | --- | --- |
+| [Lumen UI Library](https://www.figma.com/community/file/1662337342676541513) | Explore reusable components, variables and [theme specimens](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9?node-id=600-3). | [Library source](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) |
+| [Lumen Templates](https://www.figma.com/community/file/1700607667944072280) | Adapt one of six desktop and mobile layouts from the [template gallery](https://lumen.santi020k.com/templates). | [Templates source](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3) |
+| [Lumen Playgrounds](https://www.figma.com/community/file/1700608473577262170) | Compare web and native screens with the [running playgrounds](playgrounds.md). | [Playgrounds source](https://www.figma.com/design/G0NjJ4eAci1013PaLmseXI) |
+
+The [Community artwork](../apps/docs/src/assets/figma-community/README.md) contains each cover and its four gallery screenshots.
+
+### Lumen v4 library snapshot
+
 The Lumen Figma library lives at
 [Lumen UI Library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) (file key
-`luQW2pTQ3jGGxSFPAAsfa9`). The canonical file contains 128 public component assets and 69 local
+`luQW2pTQ3jGGxSFPAAsfa9`). The v4 snapshot contained 128 public component assets and 69 local
 variables across three collections:
 
 - `Color`: 62 semantic and supporting variables in `Light`, `Dark`, `santi020k Light`, and
@@ -52,12 +62,7 @@ variables across three collections:
 - `Radius`: four values (`sm`, `md`, `lg`, and `full`).
 - `Effects`: three semantic shadow variables in `Light` and `Dark` modes.
 
-The published library is available from the
-[Lumen UI Library on Figma Community](https://www.figma.com/community/file/1662337342676541513).
-Use the Community listing to add or duplicate the library; use the canonical design file above for
-exact component-node links and library maintenance.
-
-The file also provides 38 text styles, 8 effect styles, and dedicated Cover, Getting Started,
+That snapshot also included 38 text styles, 8 effect styles, and dedicated Cover, Getting Started,
 Foundations, Glass Components, Icons, component-category, and Utilities pages. The canonical design
 file and Lumen's runtime CSS both use Montserrat for interface and documentation text. Cascadia Mono
 remains reserved for the small amount of code-style text.

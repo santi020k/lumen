@@ -78,6 +78,7 @@ Use `pnpm run check:docs-performance` for the documented Lighthouse budgets.
 ## Preview assets and deployment
 
 - [Platform images](src/assets/platforms/README.md) document each screenshot's source.
+- [Figma Community artwork](src/assets/figma-community/README.md) catalogs the three covers and their gallery screenshots.
 - [Native preview hosts](native-previews/README.md) separate real platform rendering from browser demos.
 - [Launch media](public/launch/README.md) explains reproducible campaign assets.
 
