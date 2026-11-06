@@ -36,5 +36,28 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
   await expect(panel.getByRole('tabpanel')).toContainText('Hello Lumen')
   await panel.getByRole('tab', { name: 'Astro layout' }).click()
   await expect(panel.getByRole('tabpanel')).toContainText('@santi020k/lumen-astro/styles.css')
+  for (const [name, pkg] of [['React', 'react'], ['Web Components', 'elements']] as const) {
+    await panel.getByRole('combobox', { name: 'Export target' }).click()
+    await panel.getByRole('option', { name, exact: true }).click()
+    await expect(panel.getByRole('tablist', { name: 'Conversion output' })).toHaveCount(0)
+    await panel.getByRole('button', { name: 'Inspect selection' }).click()
+    await panel.getByRole('tab', { name: `${name} setup` }).click()
+    await expect(panel.getByRole('tabpanel')).toContainText(`@santi020k/lumen-${pkg}/styles.css`)
+  }
+  for (const [label, extension, version] of [
+    ['React Native', 'tsx', '4.1.0'], ['Android · Jetpack Compose', 'kt', '4.1.0'],
+    ['iPhone · SwiftUI', 'swift', '5.0.0'], ['Mac · SwiftUI', 'swift', '5.0.0']
+  ] as const) {
+    await panel.getByRole('combobox', { name: 'Export target' }).click()
+    await panel.getByRole('option', { name: label, exact: true }).click()
+    await expect(panel.getByRole('tablist')).toHaveCount(0)
+    await expect(panel.getByText(version + ' ·', { exact: false })).toBeVisible()
+    await expect(panel.getByRole('combobox', { name: 'Project appearance' })).toHaveCount(0)
+    await panel.getByRole('button', { name: 'Inspect selection' }).click()
+    await expect(panel.getByRole('tabpanel')).toContainText('Hello Lumen')
+    const download = page.waitForEvent('download')
+    await panel.getByRole('button', { name: 'Save ' + label + ' starter' }).click()
+    expect((await download).suggestedFilename()).toBe('LumenSelection.' + extension)
+  }
   expect(errors).toEqual([])
 })

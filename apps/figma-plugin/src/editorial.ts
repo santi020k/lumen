@@ -1,17 +1,15 @@
 import type { DesignNode } from './model.js'
 import { stackGaps } from './presentations.js'
-import type { ExportTarget } from './targets.js'
-
-// Encode design content as data inside an Astro expression, including frontmatter
-// delimiters, tags, and JavaScript-looking text in editable code examples.
-export const expression = (value: string | readonly Record<string, string>[]) => `{${JSON.stringify(value).replaceAll('<', '\\u003c').replaceAll('>', '\\u003e').replaceAll('\u2028', '\\u2028').replaceAll('\u2029', '\\u2029')}}`
+import type { WebTarget } from './targets.js'
+import type { WebMarkup } from './web-markup.js'
+import { elementTabs, expression, kebab } from './web-markup.js'
 
 interface RenderContext {
-  target: ExportTarget
+  target: WebTarget
   text: (node: DesignNode, property: string, fallback: string) => string
   choice: (node: DesignNode, property: string, options: string[], fallback: string) => string
   issue: (node: DesignNode, message: string) => void
-  addImports: (...names: string[]) => void
+  markup: WebMarkup
 }
 
 const layerText = (node: DesignNode, layer: string): string[] => {
@@ -20,34 +18,42 @@ const layerText = (node: DesignNode, layer: string): string[] => {
   return node.children.flatMap(child => layerText(child, layer))
 }
 
-const optionalTextAttribute = (node: DesignNode, property: string, attribute: string) => {
-  const value = node.properties[property]
+const scrollCue = (node: DesignNode, context: RenderContext, wrap: boolean) => {
+  if (wrap || node.properties['Show scroll cue'] !== true) return ''
 
-  return typeof value === 'string' && value ? ` ${attribute}=${expression(value)}` : ''
+  if ((context.target.platform ?? 'astro') === 'astro') return ' scrollCue'
+
+  context.issue(node, 'The selected adapter supports scrolling code. Review the separate Astro scroll cue in your app.')
+
+  return ''
 }
 
-const copyAttributes = (node: DesignNode) => {
-  if (node.properties['Show copy'] !== true) return ''
+const codePresentation = (node: DesignNode, context: RenderContext, wrap: boolean) => {
+  const { target, markup } = context
 
-  return ' copy' + optionalTextAttribute(node, 'Copy label', 'copyLabel') +
-    optionalTextAttribute(node, 'Copied label', 'copiedLabel') + optionalTextAttribute(node, 'Error label', 'errorLabel')
-}
+  const optional = (property: string, key: string) => {
+    const value = node.properties[property]
 
-const codePresentation = (node: DesignNode, target: ExportTarget, variant: string, wrap: boolean) => {
-  if (variant !== 'block') return ''
+    return typeof value === 'string' && value ? ` ${markup.elements ? kebab(key) : key}=${markup.attr(value)}` : ''
+  }
 
   const selected = node.properties.Appearance
   const editorial = selected === undefined ? ['paper', 'field'].includes(target.appearance) : selected === 'Editorial'
   const appearance = target.version === '5.0.0' && editorial ? ' appearance="editorial"' : ''
-  const scrollCue = !wrap && node.properties['Show scroll cue'] === true ? ' scrollCue' : ''
+  const language = optional('Language', markup.elements ? 'label' : 'language')
+  const copy = node.properties['Show copy'] === true
+  const labels = copy ? optional('Copy label', 'copyLabel') + optional('Copied label', 'copiedLabel') + optional('Error label', 'errorLabel') : ''
 
-  return appearance + optionalTextAttribute(node, 'Language', 'language') + copyAttributes(node) + scrollCue
+  return appearance + language + markup.flag('copy', copy) + labels + scrollCue(node, context, wrap)
 }
 
-export const editorialRenderers = ({ target, text, choice, issue, addImports }: RenderContext) => {
-  const content = (node: DesignNode, property: string) => expression(text(node, property, ''))
-  const textComponent = (name: string) => (node: DesignNode) => `<${name}>${content(node, 'Text')}</${name}>`
+export const editorialRenderers = (context: RenderContext) => {
+  const { target, text, choice, issue, markup } = context
+  const { elements, react, tag, flag } = markup
+  const content = (node: DesignNode, property: string) => markup.text(text(node, property, ''))
+  const textComponent = (name: string) => (node: DesignNode) => tag(name, '', content(node, 'Text'))
   const animation = (node: DesignNode) => choice(node, 'Animation', ['fade', 'slide up', 'scale'], 'fade').replaceAll(' ', '-')
+  const literal = (value: number | boolean) => elements ? `"${value}"` : `{${value}}`
 
   const numeric = (node: DesignNode, property: string, fallback: number, unit: 'ratio' | 'ms') => {
     const raw = node.properties[property]
@@ -69,34 +75,46 @@ export const editorialRenderers = ({ target, text, choice, issue, addImports }: 
 
       if (labels.length !== 1) issue(node, 'Review the badge label in the design context.')
 
-      return `<Badge variant="${variant}">${expression(labels.join(' '))}</Badge>`
+      return tag('Badge', ` variant="${variant}"`, markup.text(labels.join(' ')))
     },
     Code: (node: DesignNode) => {
       const variant = choice(node, 'Variant', ['inline', 'block'], 'inline')
       const lines = layerText(node, variant === 'inline' ? 'Code' : 'Line')
       const wrap = choice(node, 'Wrap', ['off', 'on'], 'off') === 'on'
-      const presentation = codePresentation(node, target, variant, wrap)
 
       if (!lines.length) issue(node, 'The code source layers are missing. Supply the example as plain text.')
 
-      return `<Code variant="${variant}" code=${expression(lines.join('\n'))}${wrap ? ' wrap' : ''}${presentation} />`
+      const source = lines.join('\n')
+      const modifiers = flag('wrap', wrap) + (variant === 'block' ? codePresentation(node, context, wrap) : '')
+
+      if (elements) {
+        const code = `<code>${markup.text(source)}</code>`
+
+        return tag('Code', ` variant="${variant}"${modifiers}`, variant === 'block' ? `<pre>${code}</pre>` : code)
+      }
+
+      return tag('Code', ` variant="${variant}" code=${expression(source)}${modifiers}`)
     },
     CardTitle: textComponent('CardTitle'),
     CardDescription: textComponent('CardDescription'),
     Kbd: textComponent('Kbd'),
     Eyebrow: textComponent('Eyebrow'),
-    Callout: (node: DesignNode) => `<Callout><strong>${content(node, 'Title')}</strong><p>${content(node, 'Body')}</p></Callout>`,
+    Callout: (node: DesignNode) => tag('Callout', '', `<strong>${content(node, 'Title')}</strong><p>${content(node, 'Body')}</p>`),
     Note: (node: DesignNode) => {
       const border = choice(node, 'Border', ['left', 'right', 'none'], 'left')
-      const label = node.properties['Show Label'] === true ? ` label=${content(node, 'Label')}` : ''
+      const showLabel = node.properties['Show Label'] === true
 
-      return `<Note borderPosition="${border}"${label}>${content(node, 'Body')}</Note>`
+      if (elements) return tag('Note', ` border-position="${border}"`, `${showLabel ? `<strong>${content(node, 'Label')}</strong>` : ''}<p>${content(node, 'Body')}</p>`)
+
+      const label = showLabel ? ` label=${markup.attr(text(node, 'Label', ''))}` : ''
+
+      return tag('Note', ` borderPosition="${border}"${label}`, content(node, 'Body'))
     },
     Stack: (node: DesignNode, _id: string, children: string) => {
       const direction = choice(node, 'Direction', ['vertical', 'horizontal'], 'vertical')
       const gap = choice(node, 'Gap', stackGaps, 'md')
 
-      return `<Stack direction="${direction}" gap="${gap}"${node.layout?.wrap ? ' wrap' : ''}>\n${children}\n</Stack>`
+      return tag('Stack', ` direction="${direction}" gap="${gap}"${flag('wrap', node.layout?.wrap === true)}`, `\n${children}\n`)
     },
     Prose: (node: DesignNode) => {
       const items = text(node, 'List', '').split('\n').map(line => line.trim().replace(/^•\s*/u, '')).filter(Boolean)
@@ -104,37 +122,50 @@ export const editorialRenderers = ({ target, text, choice, issue, addImports }: 
 
       if (link) issue(node, 'Supply the editorial link destination and review the heading hierarchy.')
 
-      return `<Prose>\n  <h2>${content(node, 'Heading')}</h2>\n  <p>${content(node, 'Paragraph')}</p>\n  <h3>${content(node, 'Subheading')}</h3>${items.length ? `\n  <ul>${items.map(item => `<li>${expression(item)}</li>`).join('')}</ul>` : ''}${link ? `\n  <p>${expression(link)}</p>` : ''}\n</Prose>`
+      return tag('Prose', '', `\n  <h2>${content(node, 'Heading')}</h2>\n  <p>${content(node, 'Paragraph')}</p>\n  <h3>${content(node, 'Subheading')}</h3>${items.length ? `\n  <ul>${items.map(item => `<li>${markup.text(item)}</li>`).join('')}</ul>` : ''}${link ? `\n  <p>${markup.text(link)}</p>` : ''}\n`)
     },
     Timeline: (node: DesignNode) => {
-      addImports('TimelineItem')
+      const events = [1, 2, 3].map(i => {
+        const body = `<span>${content(node, `Event ${i} time`)}</span> <strong>${content(node, `Event ${i} title`)}</strong><p>${content(node, `Event ${i} description`)}</p>`
 
-      const events = [1, 2, 3].map(i => `  <TimelineItem><span>${content(node, `Event ${i} time`)}</span> <strong>${content(node, `Event ${i} title`)}</strong><p>${content(node, `Event ${i} description`)}</p></TimelineItem>`)
+        return elements ? `  <li>${body}</li>` : `  ${tag('TimelineItem', '', body)}`
+      })
 
-      return `<Timeline>\n${events.join('\n')}\n</Timeline>`
+      return tag('Timeline', elements ? ' role="list"' : '', `\n${events.join('\n')}\n`)
     },
-    CodeTabs: (node: DesignNode) => {
+    CodeTabs: (node: DesignNode, id: string) => {
       const items = ['Pnpm', 'Npm', 'Yarn'].map(key => ({
         value: key.toLowerCase(), label: text(node, `${key} label`, key), code: text(node, `${key} code`, '')
       }))
 
       const active = choice(node, 'Active', ['pnpm', 'npm', 'yarn'], 'pnpm')
       const wrap = choice(node, 'Wrap', ['on', 'off'], 'off') === 'on'
+      const copy = node.properties.Copy === true
 
-      return `<CodeTabs items=${expression(items)} initialValue="${active}" copy={${node.properties.Copy === true}} wrap={${wrap}} />`
+      if (elements) {
+        const panels = items.map(item => ({ ...item, panel: tag('Code', ` variant="block"${flag('copy', copy)}${flag('wrap', wrap)}`, `<pre><code>${markup.text(item.code)}</code></pre>`) }))
+
+        return tag('CodeTabs', '', elementTabs(id, 'Code examples', active, panels))
+      }
+
+      return tag('CodeTabs', ` items=${expression(items)} initialValue="${active}" copy={${copy}} wrap={${wrap}}`)
     },
     ThemeToggle: (node: DesignNode) => {
       issue(node, 'The application owns theme preference and storage. The design shows one preview state.')
 
-      return target.appearance.startsWith('santi020k-') ?
-        '<ThemeToggle lightTheme="santi020k-light" darkTheme="santi020k-dark" />' :
-        '<ThemeToggle />'
+      const branded = target.appearance.startsWith('santi020k-')
+
+      if (react) return tag('ThemeToggle', ' onClick={toggleSelectionTheme}')
+
+      if (elements) return branded ? tag('Button', ' data-lumen-figma-theme-toggle', 'Toggle color theme') : tag('ThemeToggle', ' tabindex="0" data-lumen-figma-theme-switch aria-label="Toggle color theme"')
+
+      return tag('ThemeToggle', branded ? ' lightTheme="santi020k-light" darkTheme="santi020k-dark"' : '')
     },
-    ScrollReveal: (node: DesignNode, _id: string, children: string) => `<ScrollReveal animation="${animation(node)}">\n${children}\n</ScrollReveal>`,
+    ScrollReveal: (node: DesignNode, _id: string, children: string) => tag('ScrollReveal', ` animation="${animation(node)}"`, `\n${children}\n`),
     RevealGroup: (node: DesignNode, _id: string, children: string) => {
       const duration = choice(node, 'Duration', ['fast', 'standard', 'slow'], 'standard')
 
-      return `<RevealGroup animation="${animation(node)}" duration="${duration}" delay={${numeric(node, 'Delay', 0, 'ms')}} stagger={${numeric(node, 'Stagger', 80, 'ms')}} threshold={${numeric(node, 'Threshold', 0.15, 'ratio')}} once={${node.properties.Once !== false}}>\n${children}\n</RevealGroup>`
+      return tag('RevealGroup', ` animation="${animation(node)}" duration="${duration}" delay=${literal(numeric(node, 'Delay', 0, 'ms'))} stagger=${literal(numeric(node, 'Stagger', 80, 'ms'))} threshold=${literal(numeric(node, 'Threshold', 0.15, 'ratio'))} once=${literal(node.properties.Once !== false)}`, `\n${children}\n`)
     }
   }
 }

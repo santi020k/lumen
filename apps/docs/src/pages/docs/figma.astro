@@ -27,7 +27,7 @@ const figmaDetails = [
   ],
   [
     'Code workflow',
-    'Use Code Connect mappings and the plugin to bring Lumen components into an Astro handoff.',
+    'Use Code Connect mappings and the plugin to bring Lumen components into a web or native handoff.',
     'code-xml'
   ]
 ] as const
@@ -48,9 +48,9 @@ const workflow = [
       description="Design and implementation share one semantic language. Explore variables, component variants, and handoff patterns that map directly to Lumen code."
       eyebrow="Design handoff"
       stats={[
-        { label: 'Plugin version', value: '1.0.0' },
-        { label: 'Mapped components', value: 21 },
-        { label: 'Plugin target', value: 'Astro v4 / v5' }
+        { label: 'Plugin version', value: '1.1.0' },
+        { label: 'Web / native components', value: '21 / 9' },
+        { label: 'Export targets', value: 5 }
       ]}
       title="One system from canvas to code."
     >
@@ -100,18 +100,23 @@ const workflow = [
         <Badge variant="outline">Local build</Badge>
       </div>
       <p>
-        Select a design built with Lumen, inspect its components, and take an Astro starter into
+        Select a design built with Lumen, inspect its components, and take a web or native starter into
         your project. The AI handoff gives your coding agent the selected structure, component
         properties, semantic color references, and items that need review.
       </p>
       <p>
-        The plugin recognizes 21 components by their canonical library keys, including form controls,
+        Web export recognizes 21 components by their canonical library keys, including form controls,
         CodeTabs, Prose, Timeline and RevealGroup. Detached components and custom layers appear in the review findings.
       </p>
       <p>
-        Choose the version of <code>@santi020k/lumen-astro</code> installed in your project.
-        Version 5.0.0 uses per-component imports and loads your chosen appearance, including Paper and Field.
-        Version 4.4.0 uses the full stylesheet. Copy the matching runtime setup from <strong>Astro layout</strong>.
+        Choose your framework and Lumen release. Lumen 5.0.0 offers selective styles, including Paper and Field.
+        Lumen 4.4.0 uses the full stylesheet and pairs Astro 4.4.0 with React and Elements 4.3.0.
+        Copy the setup alongside the starter to load the styles and behavior for your framework.
+      </p>
+      <p>
+        For native code, select React Native or Android Compose (adapter 4.1.0), or SwiftUI for
+        iPhone or Mac (Swift package v5.0.0). All four targets support nine keyed components and
+        nested layouts. They use the app’s theme and list unsupported layers in the handoff.
       </p>
       <CodeTabs
         ariaLabel="Build the Figma plugin"
@@ -125,7 +130,7 @@ const workflow = [
       </p>
       <p>
         Select one frame or component instance, choose <strong>Inspect selection</strong>, and
-        review the findings. Copy or save the <strong>Astro starter</strong> or <strong>AI handoff</strong> for your project.
+        review the findings. Copy or save the <strong>starter</strong> or <strong>AI handoff</strong> for your project.
         Exports include the selected design's visible
         text and component data, so review them before sharing with your coding agent.
       </p>

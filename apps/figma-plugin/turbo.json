@@ -2,7 +2,7 @@
   "extends": ["//"],
   "tasks": {
     "build": { "inputs": ["$TURBO_EXTENDS$", "$TURBO_ROOT$/registry/figma-design-map.json"] },
-    "test": { "inputs": ["$TURBO_EXTENDS$", "$TURBO_ROOT$/registry/figma-design-map.json"] },
+    "test": { "inputs": ["$TURBO_EXTENDS$", "$TURBO_ROOT$/registry/figma-design-map.json", "$TURBO_ROOT$/registry/release-manifest.json"] },
     "typecheck": { "inputs": ["$TURBO_EXTENDS$", "$TURBO_ROOT$/registry/figma-design-map.json"] }
   }
 }

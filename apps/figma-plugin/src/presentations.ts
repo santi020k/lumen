@@ -25,26 +25,26 @@ const property = (node: DesignNode, name: string) => {
   return typeof raw === 'string' ? raw.toLowerCase() : ''
 }
 
-const glassAttribute = (value: string) => {
-  if (value === 'glass') return ' glass'
+const glassAttribute = (value: string, elements: boolean) => {
+  if (value === 'glass') return elements ? ' glass="true"' : ' glass'
 
   if (value === 'subtle' || value === 'strong') return ` glass="${value}"`
 
   return ''
 }
 
-export const cardPresentationAttributes = (node: DesignNode) => {
+export const cardPresentationAttributes = (node: DesignNode, elements: boolean) => {
   const variant = property(node, 'Variant')
   const density = property(node, 'Density')
   const surface = variant.startsWith('glass ') ? variant.slice(6) : variant
-  const appearance = ['muted', 'interactive', 'unstyled'].includes(variant) ? ` variant="${variant}"` : glassAttribute(surface)
+  const appearance = ['muted', 'interactive', 'unstyled'].includes(variant) ? ` variant="${variant}"` : glassAttribute(surface, elements)
   const padding = ['compact', 'spacious'].includes(density) ? ` density="${density}"` : ''
 
   return appearance + padding
 }
 
-export const dialogPresentationAttributes = (node: DesignNode) => {
+export const dialogPresentationAttributes = (node: DesignNode, elements: boolean) => {
   const layout = property(node, 'Layout') === 'fullscreen' ? ' layout="fullscreen"' : ''
 
-  return layout + glassAttribute(property(node, 'Surface'))
+  return layout + glassAttribute(property(node, 'Surface'), elements)
 }

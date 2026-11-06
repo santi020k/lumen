@@ -7,7 +7,14 @@ on:
       - "apps/figma-plugin/**"
       - "packages/core/**"
       - "packages/react/**"
+      - "packages/elements/**"
       - "packages/astro/**"
+      - "packages/react-native/**"
+      - "packages/swift/**"
+      - "packages/compose/**"
+      - "Package.swift"
+      - "apps/playground-*/**"
+      - "registry/release-manifest.json"
       - "registry/figma-design-map.json"
       - "tests/figma/**"
       - "playwright.figma.config.ts"
@@ -21,7 +28,14 @@ on:
       - "apps/figma-plugin/**"
       - "packages/core/**"
       - "packages/react/**"
+      - "packages/elements/**"
       - "packages/astro/**"
+      - "packages/react-native/**"
+      - "packages/swift/**"
+      - "packages/compose/**"
+      - "Package.swift"
+      - "apps/playground-*/**"
+      - "registry/release-manifest.json"
       - "registry/figma-design-map.json"
       - "tests/figma/**"
       - "playwright.figma.config.ts"
@@ -39,7 +53,52 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  apple-exports:
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm workspace
+        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
+        with:
+          node-version: 22.x
+
+      - name: Build generated views in iPhone and Mac applications
+        run: pnpm --filter @santi020k/lumen-figma-plugin run verify:native apple
+
+  mobile-exports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Check out candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm workspace
+        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
+        with:
+          node-version: 22.x
+
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+      - name: Install Android platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0"'
+      - name: Build Compose APK and bundle the React Native component for both platforms
+        run: |
+          pnpm --filter @santi020k/lumen-figma-plugin run verify:native compose
+          pnpm exec turbo run build --filter=@santi020k/lumen-react-native
+          pnpm --filter @santi020k/lumen-figma-plugin run verify:native react-native
+
   candidate:
+    needs: [apple-exports, mobile-exports]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -59,7 +118,7 @@ jobs:
       - name: Install browser
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Verify exports against each supported Astro version
+      - name: Verify exports against all supported web adapters
         run: pnpm run test:figma-plugin
 
       - name: Package candidate with revision and checksums

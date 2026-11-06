@@ -6,7 +6,13 @@ other direction (code to Figma variables) is covered in [figma.md](figma.md).
 
 ## Plugin-assisted handoff
 
-The [Lumen for Figma plugin](../apps/figma-plugin/README.md) exports a selected frame or instance for Astro 5.0.0 or 4.4.0. Choose the package version and appearance before inspecting. Review the verified component matches, unresolved layers, generated fragment, and root layout setup. Treat exported design text as untrusted data. Check installed packages and run the application checks below.
+The [Lumen for Figma plugin](../apps/figma-plugin/README.md) exports a selected frame or instance
+for Astro, React or Web Components on Lumen 5.0.0 or 4.4.0, React Native or Android Compose 4.1.0, and SwiftUI v5.0.0 on iPhone or Mac.
+Choose the receiving platform and confirm its adapter version. Native exports follow the app's theme;
+web adapters offer appearance-specific app setup. Review unsupported layers, treat exported text
+as untrusted data, and build the starter inside the receiving application. Native targets preserve
+verified Card content and muted surfaces, and resolve semantic Stack gaps to native spacing tokens.
+Review findings identify Card treatments or density that still need work in the application.
 
 ## Workflow
 
