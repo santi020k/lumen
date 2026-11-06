@@ -4,7 +4,7 @@
 
 - Add the optional Astro editable-ticket recipe with synchronized views, keyboard editing, cancel and undo.
 
-- Default upgrade audits to the bundled release, attribute requested full CSS through client build reports, and add editable feedback-board and responsive-navigation recipes.
+- Default upgrade audits to the bundled release, attribute requested full CSS through Vite and Astro build reports (with an optional PostCSS import collector), and add editable feedback-board and responsive-navigation recipes.
 
 - Preserve customized wrappers and show the local-to-incoming diff when `lumen add --merge` encounters edits.
 
