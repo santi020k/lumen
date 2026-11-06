@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Add the optional Astro editable-ticket recipe with synchronized views, keyboard editing, cancel and undo.
+
 - Default upgrade audits to the bundled release, attribute requested full CSS through client build reports, and add editable feedback-board and responsive-navigation recipes.
 
 - Preserve customized wrappers and show the local-to-incoming diff when `lumen add --merge` encounters edits.
@@ -14,7 +16,7 @@ Expose a Vite client build report for rendered audits and generate selective sub
 
 ### Major Changes
 
-- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, Paper, Field, and glass independently with optional style imports. Paper and Field support light and dark reading surfaces and forms. The full stylesheet includes every appearance.
 
 - Generate selective public component imports and required CSS in editable wrappers. Register only the
   selected Elements constructor, preserve idempotence, and identify catalog fallbacks explicitly.

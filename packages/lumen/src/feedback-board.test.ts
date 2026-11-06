@@ -27,7 +27,8 @@ test('reinitialization removes old listeners and disposed loads cannot replace n
   await vi.waitFor(() => {
     expect(root.querySelector('[data-feedback-status]')?.textContent).toBe('Empty')
   })
-  resolveOld?.([{ id: 'old', title: 'Stale', description: '', status: '', votes: '', voted: false }])
+  const staleItem: FeedbackItem = { id: 'old', title: 'Stale', description: '', status: '', votes: '', voted: false }
+  resolveOld?.([staleItem])
   await oldLoad
   expect(root.textContent).not.toContain('Stale')
   root.querySelector('form')?.dispatchEvent(new Event('submit', { cancelable: true }))
@@ -36,7 +37,9 @@ test('reinitialization removes old listeners and disposed loads cannot replace n
   })
   expect(old.submit).not.toHaveBeenCalled()
   firstDispose()
+  expect(root.querySelector('fieldset')?.disabled).toBe(false)
   dispose()
+  expect(root.querySelector('fieldset')?.disabled).toBe(true)
 })
 
 test('a failed mutation retains the draft and exposes a focused recovery message', async () => {

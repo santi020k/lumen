@@ -1,0 +1,14 @@
+lumen-editable-ticket { display: grid; gap: var(--ui-space-group); color: hsl(var(--ink)); font-family: var(--ui-font); }
+lumen-editable-ticket .editable-ticket { border-inline-start: 4px solid hsl(var(--brand)); }
+lumen-editable-ticket :where(h2, h3, p) { margin: 0; overflow-wrap: anywhere; }
+lumen-editable-ticket .ticket-actions { display: flex; gap: var(--ui-space-related); flex-wrap: wrap; }
+lumen-editable-ticket [data-editor] { display: grid; gap: var(--ui-space-group); }
+lumen-editable-ticket .ticket-listing { display: grid; gap: var(--ui-space-related); padding-block: var(--ui-space-group); border-block: 1px solid hsl(var(--line)); }
+lumen-editable-ticket [data-undo] { justify-self: start; }
+lumen-editable-ticket [hidden] { display: none !important; }
+
+lumen-editable-ticket .editable-ticket { display: grid; grid-template-columns: minmax(0, 1fr) minmax(6rem, 25%); }
+lumen-editable-ticket .ticket-face { min-width: 0; display: grid; gap: var(--ui-space-group); }
+lumen-editable-ticket .ticket-stub { display: grid; align-content: center; gap: var(--ui-space-related); border-inline-start: 1px dashed hsl(var(--line)); padding-inline-start: var(--ui-space-group); font-size: .875rem; }
+lumen-editable-ticket [data-editor] { grid-column: 1 / -1; }
+@media (max-width: 30rem) { lumen-editable-ticket .editable-ticket { grid-template-columns: minmax(0, 1fr); } lumen-editable-ticket .ticket-stub { border-inline-start: 0; border-block-start: 1px dashed hsl(var(--line)); padding-inline-start: 0; padding-block-start: var(--ui-space-group); } }

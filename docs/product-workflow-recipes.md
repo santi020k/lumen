@@ -95,3 +95,8 @@ The installed consumer uses the public CLI to install these files. Browser check
 media and caption requests, recovery and transcript access, full-source copying, native-share
 cancellation, failures, focus, navigation, and no-JavaScript use. The rendered Markdown fixture
 passes a highlighted pre/code tree from Astro's existing Markdown processor into CodeExample.
+
+## Editable ticket
+
+The optional Astro [editable-ticket recipe](editable-ticket.md) edits event names and venues
+with synchronized ticket and listing views, keyboard support, cancel and undo.

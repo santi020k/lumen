@@ -797,6 +797,29 @@ export const lumenRegistry = {
           ]
         }
       }
+    },
+    {
+      name: 'editable-ticket',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'Input',
+        'Label'
+      ],
+      files: [
+        'docs/editable-ticket.md'
+      ],
+      dependencies: [
+        '@santi020k/lumen-astro'
+      ],
+      setup: {
+        astro: {
+          instructions: [
+            'Import the copied Astro component. Each instance requires a unique id. Persist committed ui:event-change values in the application.'
+          ]
+        }
+      }
     }
   ],
   components: [
