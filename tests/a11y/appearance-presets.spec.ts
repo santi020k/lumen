@@ -134,3 +134,25 @@ for (const scheme of ['light', 'dark'] as const) {
     expect(await card.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true)
   })
 }
+
+test('the default Badge label stays readable when the brand fill changes theme', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/docs/components/badge')
+  const badge = page.locator('.ui-badge--default').filter({ hasText: /^Pro plan$/u }).first()
+  await expect(badge).toBeVisible()
+  await badge.scrollIntoViewIfNeeded()
+  await page.addScriptTag({ path: 'packages/elements/node_modules/axe-core/axe.min.js' })
+
+  for (const preset of ['studio', 'paper', 'field']) {
+    for (const scheme of ['light', 'dark']) {
+      await badge.evaluate((element, appearance) => {
+        element.id = 'badge-contrast-probe'
+        element.setAttribute('data-lumen-preset', appearance.preset)
+        element.setAttribute('data-lumen-scheme', appearance.scheme)
+      }, { preset, scheme })
+      await expect(badge).toHaveCSS('color-scheme', scheme)
+      const violations: unknown = await page.evaluate('axe.run("#badge-contrast-probe", { runOnly: ["color-contrast"] }).then(result => result.violations)')
+      expect(violations, `${preset} ${scheme}`).toEqual([])
+    }
+  }
+})

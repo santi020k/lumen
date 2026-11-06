@@ -19,7 +19,7 @@
 @layer lumen.components {
 .ui-badge--default {
   background: hsl(var(--brand-solid));
-  color: white;
+  color: hsl(var(--on-brand));
 }
 }
 
