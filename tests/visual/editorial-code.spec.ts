@@ -77,6 +77,27 @@ test('clipboard failure leaves complete source available for manual copying', as
   await button.click()
   await expect(button).toHaveAttribute('data-state', 'error')
   await expect(button).toContainText('Select and copy it manually.')
+  const recovery = code.getByRole('textbox', { name: 'Select and copy the complete example' })
+  await expect(recovery).toBeVisible()
+  await expect(recovery).toHaveValue(/const line30 =/)
   await code.locator('summary').click()
   await expect(code.getByRole('region')).toContainText('const line30 =')
 })
+
+for (const width of [240, 390, 1440]) {
+  test(`code header keeps metadata and copy control separate at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/internal/editorial-code')
+    const code = page.locator('.docs-code-block').first()
+    const title = code.locator('> figcaption .ui-code__label')
+    const copy = code.locator('> figcaption button')
+    const titleBox = await title.boundingBox()
+    const copyBox = await copy.boundingBox()
+    if (!titleBox || !copyBox) throw new Error('Expected visible code header')
+    const separateRows = titleBox.y + titleBox.height <= copyBox.y
+    const separateColumns = titleBox.x + titleBox.width <= copyBox.x
+    expect(separateRows || separateColumns).toBe(true)
+    expect(copyBox.height).toBeGreaterThanOrEqual(44)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+  })
+}

@@ -3243,6 +3243,54 @@ lumen-dialog-close {
   font-size: 0.875rem;
 }
 
+.ui-table-wrap--sticky-column {
+  container: ui-table / inline-size;
+  overscroll-behavior-inline: contain;
+}
+
+.ui-table-wrap--sticky-column:not(.ui-table-wrap--records) table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.ui-table-wrap--sticky-column:not(.ui-table-wrap--records) tr > :is(th, td):first-child {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  border-inline-end: var(--ui-border-width, 1px) solid hsl(var(--line));
+  background: hsl(var(--surface));
+}
+
+.ui-table-wrap--sticky-column:not(.ui-table-wrap--records) thead tr > :is(th, td):first-child {
+  background: hsl(var(--surface-muted));
+}
+
+/* Enlarged text should leave enough room to read an entire data column. */
+@container ui-table (width < 12rem) {
+  .ui-table-wrap--sticky-column:not(.ui-table-wrap--records) tr > :is(th, td):first-child {
+    position: static;
+  }
+}
+
+@media print {
+  .ui-table-wrap--sticky-column {
+    overflow: visible;
+  }
+
+  .ui-table-wrap--sticky-column:not(.ui-table-wrap--records) tr > :is(th, td):first-child {
+    position: static;
+  }
+
+  .ui-table-wrap--sticky-column :is(th, td) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .ui-table-scroll [data-scroll-cue-message] {
+    display: none;
+  }
+}
+
 /* Mobile record labels are aria-hidden; retain explicit table roles. */
 .ui-table__label {
   display: none;
@@ -3962,13 +4010,17 @@ lumen-dialog-close {
 }
 
 .ui-code--editorial {
+  container: ui-code / inline-size;
   background: hsl(var(--surface));
   box-shadow: none;
 }
 
 .ui-code--editorial > .ui-code__header {
-  background: hsl(var(--brand-soft));
-  padding: 0.75rem 1.25rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  background: color-mix(in srgb, hsl(var(--surface)) 96%, hsl(var(--brand)));
+  padding: 0.75rem 1rem;
 }
 
 .ui-code--editorial > .ui-code__header > .ui-code__dots {
@@ -3978,31 +4030,86 @@ lumen-dialog-close {
 .ui-code--editorial > .ui-code__header > .ui-code__symbol {
   display: inline-flex;
   flex: 0 0 auto;
-  width: 1rem;
-  height: 1rem;
+  box-sizing: border-box;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-sm);
+  background: hsl(var(--surface));
+  padding: 0.4375rem;
   color: hsl(var(--brand));
 }
 
+.ui-code--editorial .ui-code__symbol > svg {
+  width: 1rem;
+  height: 1rem;
+}
+
 .ui-code--editorial .ui-code__meta {
+  display: grid;
   justify-content: start;
+  justify-items: start;
+  justify-self: stretch;
+  gap: 0.25rem;
   font-family: var(--ui-font);
-  font-weight: 500;
+}
+
+.ui-code--editorial .ui-code__label {
+  color: hsl(var(--ink));
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .ui-code--editorial .ui-code__language {
   border: 0;
   background: transparent;
   padding: 0;
-  font: inherit;
+  color: hsl(var(--brand));
+  font-size: 0.625rem;
+  font-weight: 650;
   letter-spacing: 0.08em;
+  line-height: 1.4;
 }
 
 .ui-code--editorial .ui-code__copy {
+  justify-self: end;
+  max-inline-size: 10rem;
+  margin-inline-start: 0;
   gap: 0.5rem;
-  border-color: transparent;
-  background: transparent;
-  font: 500 0.75rem/1.6 var(--ui-font);
+  border-color: hsl(var(--line));
+  background: hsl(var(--surface));
+  padding-inline: 0.75rem;
+  color: hsl(var(--ink-soft));
+  font: 600 0.75rem/1.5 var(--ui-font);
   text-align: start;
+}
+
+.ui-code--editorial .ui-code__copy:hover {
+  border-color: hsl(var(--brand));
+  background: hsl(var(--brand-soft));
+  color: hsl(var(--brand));
+}
+
+@container ui-code (width < 22rem) {
+  .ui-code--editorial > .ui-code__header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .ui-code--editorial > .ui-code__header > .ui-code__symbol {
+    display: none;
+  }
+}
+
+@container ui-code (width < 16rem) {
+  .ui-code--editorial > .ui-code__header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ui-code--editorial .ui-code__copy {
+    justify-self: start;
+    max-inline-size: 100%;
+  }
 }
 
 .ui-code--editorial :where(pre) {

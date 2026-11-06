@@ -57,13 +57,22 @@ copyable example. Update navigation and search metadata with new routes; follow 
 previews the first 12 lines when an example exceeds 24 lines, using public `Collapsible` for a
 keyboard-accessible disclosure that works without JavaScript. Set `collapsible={false}` when
 an example needs to stay fully visible. Copying always uses the original complete source,
-independently of the preview, line numbers, and active syntax theme. Overflow hints appear only
+independently of the preview, line numbers, and active syntax theme. If clipboard access fails,
+a selectable recovery field exposes the complete source without expanding or switching themes. Overflow hints appear only
 when horizontal scrolling is needed; printing expands the complete example.
 
 These patterns come from the santi020k v5 website. Shared Code owns the wrapping headers,
 stable touch targets, optional editorial presentation, localized clipboard feedback, and print
 styles. Preview thresholds and line numbers remain docs policy. Site branding and article-specific
 features stay with their application rather than becoming component defaults.
+
+## Reference tables
+
+`DocsReferenceTable` uses the public `Table` sticky first-column option to keep row identifiers
+visible during native horizontal scrolling. It retains native table headers and a named keyboard
+region, shows the overflow hint only when needed, follows RTL direction, and releases the pinned
+column for enlarged text and print output. The behavior comes from the santi020k v5 comparison
+tables; the library owns positioning while the docs retain their typography and column sizing.
 
 ## Validate and build
 

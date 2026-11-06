@@ -14,6 +14,7 @@ interface Props extends HTMLAttributes<'div'> {
   glass?: boolean | 'subtle' | 'strong'
   layout?: 'records' | 'scroll'
   scrollCue?: boolean | string
+  stickyFirstColumn?: boolean
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   glass = false,
   layout = 'scroll',
   scrollCue = false,
+  stickyFirstColumn = false,
   ...rest
 } = Astro.props
 
@@ -33,6 +35,7 @@ const cueLabel = typeof scrollCue === 'string' ? scrollCue : 'Scroll horizontall
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-table-wrap',
+  stickyFirstColumn && 'ui-table-wrap--sticky-column',
   layout === 'records' && 'ui-table-wrap--records',
   glass && 'ui-table-wrap--glass',
   glass === 'subtle' && 'ui-glass-subtle',

@@ -1,0 +1,70 @@
+---
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import '../../styles/global.css'
+
+import { Container, Stack, Table } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+import { Table as ReactTable } from '@santi020k/lumen-react'
+
+import DocsReferenceTable from '../../components/DocsReferenceTable.astro'
+
+const columns = ['Package', 'Platform', 'Support', 'Notes']
+
+const rows = [
+  ['Astro', 'Server-rendered web interfaces', 'Progressive enhancement', 'Keep native HTML and keyboard paths available.'],
+  ['React', 'Interactive web applications', 'Component-owned behavior', 'Share the same table styling and semantic roles.'],
+  ['Elements', 'Framework-neutral interfaces', 'Native custom elements', 'Register only the elements used by the application.']
+]
+
+const tableChildren = [
+  createElement('thead', { key: 'head' }, createElement('tr', null, columns.map(column => createElement('th', { key: column, scope: 'col' }, column)))),
+  createElement('tbody', { key: 'body' }, rows.map(row => createElement('tr', { key: row[0] }, row.map((cell, index) => createElement(index === 0 ? 'th' : 'td', { key: cell, ...(index === 0 ? { scope: 'row' } : {}) }, cell)))))
+]
+
+const reactTable = renderToStaticMarkup(createElement(ReactTable, { 'aria-label': 'React comparison', className: 'reading-table', id: 'react-table', role: 'region', stickyFirstColumn: true, tabIndex: 0 }, createElement('table', null, tableChildren)))
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><meta name="robots" content="noindex, nofollow" /><title>Reading table examples</title></head>
+  <body>
+    <Container as="main" size="md"><Stack gap="group">
+      <h1>Reading table examples</h1>
+      <Table aria-label="Astro comparison" class="reading-table" id="astro-table" scrollCue stickyFirstColumn>
+        <table><thead><tr>{columns.map(column => <th scope="col">{column}</th>)}</tr></thead>
+          <tbody>{rows.map(row => <tr>{row.map((cell, index) => index === 0 ? <th scope="row">{cell}</th> : <td>{cell}</td>)}</tr>)}</tbody>
+        </table>
+      </Table>
+      <Fragment set:html={reactTable} />
+      <lumen-table aria-label="Elements comparison" class="reading-table" id="elements-table" role="region" sticky-first-column="true" tabindex="0">
+        <table><thead><tr>{columns.map(column => <th scope="col">{column}</th>)}</tr></thead>
+          <tbody>{rows.map(row => <tr>{row.map((cell, index) => index === 0 ? <th scope="row">{cell}</th> : <td>{cell}</td>)}</tr>)}</tbody>
+        </table>
+      </lumen-table>
+      <h2 id="reference-title">Reference table</h2>
+      <DocsReferenceTable columns={columns} labelledBy="reference-title" rows={rows} />
+      <Table aria-label="Record layout" class="reading-table" id="records-table" layout="records" stickyFirstColumn>
+        <table><thead><tr>{columns.map(column => <th scope="col">{column}</th>)}</tr></thead>
+          <tbody>{rows.map(row => <tr>{row.map(cell => <td>{cell}</td>)}</tr>)}</tbody>
+        </table>
+      </Table>
+    </Stack></Container>
+    <UIPrimitives />
+  </body>
+</html>
+
+<script>
+  import { defineLumenElements } from '@santi020k/lumen-elements'
+
+  defineLumenElements()
+</script>
+
+<style>
+  :global(.reading-table) { display: block; }
+  :global(.reading-table table) { min-width: 44rem; }
+  :global(.reading-table th), :global(.reading-table td) { min-width: 10ch; }
+  :global(.reading-table thead) { background: hsl(var(--surface-muted)); }
+  @media print { :global(.reading-table table) { min-width: 0; } }
+</style>

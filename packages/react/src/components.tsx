@@ -5712,13 +5712,14 @@ export const Switch = ({
 )
 
 export interface TableProps extends ComponentPropsWithoutRef<'div'> {
+  stickyFirstColumn?: boolean
   glass?: LumenGlassProp
   layout?: 'records' | 'scroll'
 }
-export const Table = ({ className, glass = false, layout = 'scroll', ...props }: TableProps) => (
+export const Table = ({ className, glass = false, layout = 'scroll', stickyFirstColumn = false, ...props }: TableProps) => (
   <div
     className={composeClassName(
-      'ui-table-wrap', glassClass('ui-table-wrap', glass), layout === 'records' && 'ui-table-wrap--records', className
+      'ui-table-wrap', glassClass('ui-table-wrap', glass), layout === 'records' && 'ui-table-wrap--records', stickyFirstColumn && 'ui-table-wrap--sticky-column', className
     )}
     data-slot="table"
     {...props}

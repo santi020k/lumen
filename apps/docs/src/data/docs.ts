@@ -2495,6 +2495,9 @@ const apiReferenceByComponent = {
     apiRow('type', '"checkbox"', '"checkbox"', 'Fixed by the component.')
   ],
   Table: [
+    apiRow(
+      'stickyFirstColumn', 'boolean', 'false', 'Keeps row identifiers visible during horizontal scrolling. Uses logical positioning for RTL and releases the column in very narrow containers, record layouts, and print.'
+    ),
     apiRow('layout', '"scroll" | "records"', '"scroll"', 'Opt into labeled records below 48rem. Supply aria-hidden ui-table__label spans from the same column labels and preserve explicit table roles; see the responsive table recipe.'),
     apiRow(
       'children', 'caption, thead, tbody, and tfoot', 'required', 'Provides semantic native table structure inside the styled wrapper.'

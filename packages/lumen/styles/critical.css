@@ -1416,6 +1416,53 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
   font-size: 0.875rem;
 }
 
+.ui-table-wrap--sticky-column {
+  container: ui-table / inline-size;
+  overscroll-behavior-inline: contain;
+}
+
+.ui-table-wrap--sticky-column:not(.ui-table-wrap--records) table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.ui-table-wrap--sticky-column:not(.ui-table-wrap--records) tr > :is(th, td):first-child {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  border-inline-end: var(--ui-border-width, 1px) solid hsl(var(--line));
+  background: hsl(var(--surface));
+}
+
+.ui-table-wrap--sticky-column:not(.ui-table-wrap--records) thead tr > :is(th, td):first-child {
+  background: hsl(var(--surface-muted));
+}
+
+@container ui-table (width < 12rem) {
+.ui-table-wrap--sticky-column:not(.ui-table-wrap--records) tr > :is(th, td):first-child {
+    position: static;
+  }
+}
+
+@media print {
+.ui-table-wrap--sticky-column {
+    overflow: visible;
+  }
+
+.ui-table-wrap--sticky-column:not(.ui-table-wrap--records) tr > :is(th, td):first-child {
+    position: static;
+  }
+
+.ui-table-wrap--sticky-column :is(th, td) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+.ui-table-scroll [data-scroll-cue-message] {
+    display: none;
+  }
+}
+
 .ui-table__label {
   display: none;
 }

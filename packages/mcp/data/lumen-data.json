@@ -116,7 +116,7 @@
       "Sparkline": "5ffeed9f98f26de427f5d3288f48ac9bfd99874168221d68d13564dde46779f2",
       "Spinner": "76ba2165e33f320d03eb3defdaf68600289b61047897626d351ac62d6d225e31",
       "Switch": "8a81f07613ce36f41ca076c73d5574cfa42e19d321d24df9db30e6ab53d1b75a",
-      "Table": "4786850c6b73ed972190598d792cab899043ac81cbb5170be912fceb8fe77ad5",
+      "Table": "40749d0c798e68e83b2ec13fd1ff32a617072d51c99ef9c005640e0614a6fbbf",
       "Tabs": "3c167f3fa367d445d2308a424e6805f6f4d6fb029018f86288d6f682991209b8",
       "TagGroup": "1add288d64495fe6c99c250b7b920e09363c0542f5f8465eb97de31081f21c44",
       "Textarea": "5d2a3b9304d07c1dafd3d6c5d49bf28acf840755933cc61104a9ecfdd23f027c",
@@ -27309,6 +27309,12 @@
           "values": "boolean | \"subtle\" | \"strong\""
         },
         {
+          "attribute": "stickyFirstColumn",
+          "defaultValue": "false",
+          "description": "Keeps row identifiers visible during horizontal scrolling. Uses logical positioning for RTL and releases the column in very narrow containers, record layouts, and print.",
+          "values": "boolean"
+        },
+        {
           "attribute": "layout",
           "defaultValue": "\"scroll\"",
           "description": "Opt into labeled records below 48rem. Supply aria-hidden ui-table__label spans from the same column labels and preserve explicit table roles; see the responsive table recipe.",
@@ -27333,7 +27339,7 @@
           "values": "HTML attributes"
         }
       ],
-      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/table.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport ScrollCue from '../internal/ScrollCue.astro'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  layout?: 'records' | 'scroll'\n  scrollCue?: boolean | string\n}\n\nconst {\n  'aria-label': ariaLabel,\n  role,\n  tabindex,\n  class: classProp = '',\n  className = '',\n  glass = false,\n  layout = 'scroll',\n  scrollCue = false,\n  ...rest\n} = Astro.props\n\nconst showCue = Boolean(scrollCue) && layout === 'scroll'\nconst cueLabel = typeof scrollCue === 'string' ? scrollCue : 'Scroll horizontally to compare'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-table-wrap',\n  layout === 'records' && 'ui-table-wrap--records',\n  glass && 'ui-table-wrap--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n{showCue ?\n(\n  <div class=\"ui-table-scroll\" data-ui-scroll-cue>\n    <ScrollCue label={cueLabel} />\n    <div\n      class:list={classList}\n      data-scroll-cue-viewport\n      data-slot=\"table\"\n      role={role ?? 'region'}\n      tabindex={tabindex ?? 0}\n      aria-label={ariaLabel ?? (Astro.props['aria-labelledby'] ? undefined : 'Table')}\n      {...passthrough}\n    >\n      <slot />\n    </div>\n  </div>\n) :\n(\n  <div aria-label={ariaLabel} role={role} tabindex={tabindex} class:list={classList} data-slot=\"table\" {...passthrough}>\n    <slot />\n  </div>\n)}\n",
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/table.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport ScrollCue from '../internal/ScrollCue.astro'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  layout?: 'records' | 'scroll'\n  scrollCue?: boolean | string\n  stickyFirstColumn?: boolean\n}\n\nconst {\n  'aria-label': ariaLabel,\n  role,\n  tabindex,\n  class: classProp = '',\n  className = '',\n  glass = false,\n  layout = 'scroll',\n  scrollCue = false,\n  stickyFirstColumn = false,\n  ...rest\n} = Astro.props\n\nconst showCue = Boolean(scrollCue) && layout === 'scroll'\nconst cueLabel = typeof scrollCue === 'string' ? scrollCue : 'Scroll horizontally to compare'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-table-wrap',\n  stickyFirstColumn && 'ui-table-wrap--sticky-column',\n  layout === 'records' && 'ui-table-wrap--records',\n  glass && 'ui-table-wrap--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n{showCue ?\n(\n  <div class=\"ui-table-scroll\" data-ui-scroll-cue>\n    <ScrollCue label={cueLabel} />\n    <div\n      class:list={classList}\n      data-scroll-cue-viewport\n      data-slot=\"table\"\n      role={role ?? 'region'}\n      tabindex={tabindex ?? 0}\n      aria-label={ariaLabel ?? (Astro.props['aria-labelledby'] ? undefined : 'Table')}\n      {...passthrough}\n    >\n      <slot />\n    </div>\n  </div>\n) :\n(\n  <div aria-label={ariaLabel} role={role} tabindex={tabindex} class:list={classList} data-slot=\"table\" {...passthrough}>\n    <slot />\n  </div>\n)}\n",
       "category": "Data display",
       "collections": [
         "Structured data"
@@ -27388,17 +27394,24 @@
               "name": "scrollCue",
               "optional": true,
               "type": "boolean | string"
+            },
+            {
+              "name": "stickyFirstColumn",
+              "optional": true,
+              "type": "boolean"
             }
           ],
           "propsExtends": "HTMLAttributes<'div'>",
-          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/table.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport ScrollCue from '../internal/ScrollCue.astro'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  layout?: 'records' | 'scroll'\n  scrollCue?: boolean | string\n}\n\nconst {\n  'aria-label': ariaLabel,\n  role,\n  tabindex,\n  class: classProp = '',\n  className = '',\n  glass = false,\n  layout = 'scroll',\n  scrollCue = false,\n  ...rest\n} = Astro.props\n\nconst showCue = Boolean(scrollCue) && layout === 'scroll'\nconst cueLabel = typeof scrollCue === 'string' ? scrollCue : 'Scroll horizontally to compare'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-table-wrap',\n  layout === 'records' && 'ui-table-wrap--records',\n  glass && 'ui-table-wrap--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n{showCue ?\n(\n  <div class=\"ui-table-scroll\" data-ui-scroll-cue>\n    <ScrollCue label={cueLabel} />\n    <div\n      class:list={classList}\n      data-scroll-cue-viewport\n      data-slot=\"table\"\n      role={role ?? 'region'}\n      tabindex={tabindex ?? 0}\n      aria-label={ariaLabel ?? (Astro.props['aria-labelledby'] ? undefined : 'Table')}\n      {...passthrough}\n    >\n      <slot />\n    </div>\n  </div>\n) :\n(\n  <div aria-label={ariaLabel} role={role} tabindex={tabindex} class:list={classList} data-slot=\"table\" {...passthrough}>\n    <slot />\n  </div>\n)}\n",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/table.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\nimport ScrollCue from '../internal/ScrollCue.astro'\n\ninterface Props extends HTMLAttributes<'div'> {\n  class?: string | null\n  className?: string\n  glass?: boolean | 'subtle' | 'strong'\n  layout?: 'records' | 'scroll'\n  scrollCue?: boolean | string\n  stickyFirstColumn?: boolean\n}\n\nconst {\n  'aria-label': ariaLabel,\n  role,\n  tabindex,\n  class: classProp = '',\n  className = '',\n  glass = false,\n  layout = 'scroll',\n  scrollCue = false,\n  stickyFirstColumn = false,\n  ...rest\n} = Astro.props\n\nconst showCue = Boolean(scrollCue) && layout === 'scroll'\nconst cueLabel = typeof scrollCue === 'string' ? scrollCue : 'Scroll horizontally to compare'\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-table-wrap',\n  stickyFirstColumn && 'ui-table-wrap--sticky-column',\n  layout === 'records' && 'ui-table-wrap--records',\n  glass && 'ui-table-wrap--glass',\n  glass === 'subtle' && 'ui-glass-subtle',\n  glass === 'strong' && 'ui-glass-strong'\n], classProp, className)\n---\n\n{showCue ?\n(\n  <div class=\"ui-table-scroll\" data-ui-scroll-cue>\n    <ScrollCue label={cueLabel} />\n    <div\n      class:list={classList}\n      data-scroll-cue-viewport\n      data-slot=\"table\"\n      role={role ?? 'region'}\n      tabindex={tabindex ?? 0}\n      aria-label={ariaLabel ?? (Astro.props['aria-labelledby'] ? undefined : 'Table')}\n      {...passthrough}\n    >\n      <slot />\n    </div>\n  </div>\n) :\n(\n  <div aria-label={ariaLabel} role={role} tabindex={tabindex} class:list={classList} data-slot=\"table\" {...passthrough}>\n    <slot />\n  </div>\n)}\n",
           "styleImport": "import '@santi020k/lumen-astro/styles.css'"
         },
         "elements": {
           "attributes": [
             "data-slot",
             "layout",
+            "sticky-first-column",
             "glass",
+            "stickyFirstColumn",
             "children",
             "class, className",
             "...native attributes"
@@ -27415,7 +27428,7 @@
           "props": [],
           "propsExtends": "HTMLElement attributes",
           "registration": "defineLumenElements()",
-          "source": "Table: {\n    attributeClasses: {\n      ...glassAttributeClasses('ui-table-wrap--glass'),\n      layout: { records: 'ui-table-wrap--records' }\n    },\n    baseClassName: 'ui-table-wrap',\n    defaults: { 'data-slot': 'table' },\n    tagName: 'lumen-table'\n  }",
+          "source": "Table: {\n    attributeClasses: {\n      ...glassAttributeClasses('ui-table-wrap--glass'),\n      layout: { records: 'ui-table-wrap--records' },\n      'sticky-first-column': { true: 'ui-table-wrap--sticky-column' }\n    },\n    baseClassName: 'ui-table-wrap',\n    defaults: { 'data-slot': 'table' },\n    tagName: 'lumen-table'\n  }",
           "styleImport": "import '@santi020k/lumen-elements/styles.css'",
           "tagName": "lumen-table"
         },
@@ -27431,6 +27444,11 @@
           "packageName": "@santi020k/lumen-react",
           "props": [
             {
+              "name": "stickyFirstColumn",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
               "name": "glass",
               "optional": true,
               "type": "LumenGlassProp"
@@ -27442,7 +27460,7 @@
             }
           ],
           "propsExtends": "ComponentPropsWithoutRef<'div'>",
-          "source": "export interface TableProps extends ComponentPropsWithoutRef<'div'> {\n  glass?: LumenGlassProp\n  layout?: 'records' | 'scroll'\n}\n\nexport const Table = ({ className, glass = false, layout = 'scroll', ...props }: TableProps) => (\n  <div\n    className={composeClassName(\n      'ui-table-wrap', glassClass('ui-table-wrap', glass), layout === 'records' && 'ui-table-wrap--records', className\n    )}\n    data-slot=\"table\"\n    {...props}\n  />\n)",
+          "source": "export interface TableProps extends ComponentPropsWithoutRef<'div'> {\n  stickyFirstColumn?: boolean\n  glass?: LumenGlassProp\n  layout?: 'records' | 'scroll'\n}\n\nexport const Table = ({ className, glass = false, layout = 'scroll', stickyFirstColumn = false, ...props }: TableProps) => (\n  <div\n    className={composeClassName(\n      'ui-table-wrap', glassClass('ui-table-wrap', glass), layout === 'records' && 'ui-table-wrap--records', stickyFirstColumn && 'ui-table-wrap--sticky-column', className\n    )}\n    data-slot=\"table\"\n    {...props}\n  />\n)",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -27502,6 +27520,11 @@
           "name": "scrollCue",
           "optional": true,
           "type": "boolean | string"
+        },
+        {
+          "name": "stickyFirstColumn",
+          "optional": true,
+          "type": "boolean"
         }
       ],
       "propsExtends": "HTMLAttributes<'div'>",
@@ -46517,7 +46540,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <picture>\n      <source media=\"(prefers-color-scheme: dark)\" srcset=\"./docs/assets/readme/hero-dark.svg\">\n      <img src=\"./docs/assets/readme/hero-light.svg\" alt=\"Lumen UI — A shared language. Every interface.\" width=\"1200\" height=\"340\">\n    </picture>\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  <strong>Accessible primitives. Native authoring. Shared foundations.</strong><br>\n  An open-source UI system for Astro, React, Web Components, React Native, SwiftUI, and Jetpack Compose.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com/docs\">Documentation</a> ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a> ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Playgrounds</a> ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a> ·\n  <a href=\"https://lumen.santi020k.com/support\">Support</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/ci.yml\"><img alt=\"CI status on main\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&amp;style=flat-square&amp;label=CI\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL status\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"Published Astro package version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&amp;label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-036b8c?style=flat-square\"></a>\n</p>\n\n## One system, your framework\n\nBuild web and native interfaces with shared design tokens, accessible components, and each\nplatform's own authoring conventions. Astro is the reference implementation.\n\n<p>\n  <a href=\"https://lumen.santi020k.com/docs/web/playground\">\n    <img src=\"./apps/docs/src/assets/platforms/web.webp\" alt=\"A Lumen web workspace with navigation, metric cards, an interactive chart, and a task form\" width=\"1184\" height=\"802\">\n  </a>\n</p>\n\n*Real Lumen components with illustrative data. [Open the web playground →](https://lumen.santi020k.com/docs/web/playground)*\n\n## Start building\n\nChoose your framework, install its adapter, and follow the setup guide for styles and runtime.\n\n| Framework | Setup guide |\n| --- | --- |\n| **Astro** | [Astro quick start](https://lumen.santi020k.com/docs/frameworks/astro) |\n| **React** | [React quick start](https://lumen.santi020k.com/docs/frameworks/react) |\n| **Web Components** | [Elements quick start](https://lumen.santi020k.com/docs/frameworks/elements) |\n| **React Native** | [React Native guide](https://lumen.santi020k.com/docs/react-native) |\n| **SwiftUI** | [Apple guide](https://lumen.santi020k.com/docs/apple) |\n| **Jetpack Compose** | [Android guide](https://lumen.santi020k.com/docs/android) |\n\nAstro requires Astro 5+; React requires React 19+. See each guide for supported toolchains\nand complete configuration. Browse the [package directory](https://lumen.santi020k.com/docs/packages)\nfor tokens, icons, integrations, and focused native packages.\n\n> **Upgrading to Lumen 5?** Follow the [migration guide](https://lumen.santi020k.com/docs/migrations/v4-to-v5)\n> and [selective installation guide](docs/selective-installation.md). Package versions and store\n> builds follow their own release schedules; check availability before upgrading.\n\n## Explore the system\n\n| I want to… | Go to |\n| --- | --- |\n| Find a component and its API | [Component catalog](https://lumen.santi020k.com/docs/components) |\n| Try components, states, and themes | [Web playground](https://lumen.santi020k.com/docs/web/playground) |\n| Start from a complete product layout | [Dashboard and app templates](https://lumen.santi020k.com/templates) |\n| Customize colors and appearance | [Web themes](https://lumen.santi020k.com/docs/web/themes) · [Theme playground](https://lumen.santi020k.com/docs/theme-playground) |\n| Use Tailwind alongside Lumen | [Tailwind integration](https://lumen.santi020k.com/docs/web/tailwind) |\n| Build a real screen step by step | [Practical guides](https://lumen.santi020k.com/guides) |\n| Understand the shared foundations | [Tokens and platform contracts](https://lumen.santi020k.com/docs/foundations) |\n\n## Try it on native\n\n<table>\n  <tr>\n    <th>SwiftUI</th>\n    <th>Jetpack Compose</th>\n    <th>React Native</th>\n  </tr>\n  <tr>\n    <td><a href=\"https://lumen.santi020k.com/docs/apple/playground\"><img src=\"./apps/docs/src/assets/platforms/apple.webp\" alt=\"Native SwiftUI release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/android/playground\"><img src=\"./apps/docs/src/assets/platforms/android.webp\" alt=\"Native Compose release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/react-native/playground\"><img src=\"./apps/docs/src/assets/platforms/react-native.webp\" alt=\"Expo browser preview of the contributor profile example\" width=\"220\"></a></td>\n  </tr>\n  <tr>\n    <td>Native app capture</td>\n    <td>Native app capture</td>\n    <td>Expo browser preview</td>\n  </tr>\n</table>\n\nSee [capture provenance](apps/docs/src/assets/platforms/README.md) for sources and verification scope.\n\n[Apple App Store](https://apps.apple.com/app/id6805250815) ·\n[Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose) ·\n[React Native browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n\nFor local setup and source, see the [playground guide](docs/playgrounds.md).\nCheck [native compatibility](docs/native-compatibility.md) and\n[device validation evidence](docs/native-device-validation.md) for your target.\n\n## Build with AI and Figma\n\nGive your coding agent Lumen's component selection, composition, and verification guidance:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\n[Agent skill guide](https://lumen.santi020k.com/docs/ai-skill) ·\n[MCP catalog](https://lumen.santi020k.com/docs/mcp) ·\n[Lumen UI plugin for ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\n\nDesign with the [Figma community library](https://www.figma.com/community/file/1662337342676541513)\nand follow the [Figma integration guide](https://lumen.santi020k.com/docs/figma)\nfor variables and Code Connect. The [local Figma plugin](apps/figma-plugin/README.md) exports\ncomponent starters and layout setup for Lumen Astro 5.0.0 and 4.4.0.\n\n## Contribute and connect\n\nRead [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, workspace commands, tests, and release rules.\nThe [architecture guide](docs/cross-platform.md) explains package boundaries and platform responsibilities.\n\n[Feedback and support](https://lumen.santi020k.com/support) ·\n[Public roadmap](https://lumen.santi020k.com/support#roadmap) ·\n[Community showcase](https://lumen.santi020k.com/community) ·\n[Changelog](https://lumen.santi020k.com/changelog)\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n\nCreated and maintained by [Santiago Molina](https://santi020k.com).\n"
   },
   "meta": {
-    "catalogHash": "17c7b6ef14dc61edf6709610c1dcae9f0fff6bb566fc0d47fb4e38c9e3aeb0f4",
+    "catalogHash": "4d0e0b1c7a7716a30101c49db09ace2b8d942f7bfda378a0398361faadfcec6c",
     "componentCount": 196,
     "nativeComponentCount": 125,
     "packages": [

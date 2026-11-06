@@ -965,3 +965,16 @@ keyboard-scrollable example. Astro also supports `scrollCue` for an overflow-onl
 The docs compose public `Code` and `Collapsible` primitives to preview the first 12 lines of
 examples longer than 24 lines. Folding is application policy; clipboard content always remains
 the complete source. Pass the original `code` when supplying highlighted or preview content.
+
+## Anchored table row labels
+
+Set `stickyFirstColumn` on `Table` in Astro/React or `sticky-first-column="true"` on
+`<lumen-table>` to keep the first cell of each row visible during horizontal scrolling.
+Use `th scope="row"` for row identifiers and label the scroll region with `aria-label` or
+`aria-labelledby`, `role="region"`, and `tabindex="0"` (`tabIndex` in React). Astro's
+`scrollCue` option supplies the keyboard region and an overflow-only hint automatically.
+
+The first column follows writing direction, including RTL. It returns to normal flow in
+containers narrower than 12rem, in records layouts, and when printing, so enlarged text and
+printed data retain the available width. Keep column widths suitable for the content; avoid
+pinning an unusually wide description column.

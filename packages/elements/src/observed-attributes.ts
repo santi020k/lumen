@@ -17,6 +17,7 @@ export const observedAttributeNames = [
   'activation-offset',
   'animation',
   'appearance',
+  'sticky-first-column',
   'area',
   'autocomplete',
   'border-position',

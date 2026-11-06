@@ -999,7 +999,8 @@ const elementConfigs = {
   Table: {
     attributeClasses: {
       ...glassAttributeClasses('ui-table-wrap--glass'),
-      layout: { records: 'ui-table-wrap--records' }
+      layout: { records: 'ui-table-wrap--records' },
+      'sticky-first-column': { true: 'ui-table-wrap--sticky-column' }
     },
     baseClassName: 'ui-table-wrap',
     defaults: { 'data-slot': 'table' },

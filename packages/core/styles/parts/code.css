@@ -288,6 +288,7 @@
 
 @layer lumen.components {
 .ui-code--editorial {
+  container: ui-code / inline-size;
   background: hsl(var(--surface));
   box-shadow: none;
 }
@@ -295,8 +296,11 @@
 
 @layer lumen.components {
 .ui-code--editorial > .ui-code__header {
-  background: hsl(var(--brand-soft));
-  padding: 0.75rem 1.25rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  background: color-mix(in srgb, hsl(var(--surface)) 96%, hsl(var(--brand)));
+  padding: 0.75rem 1rem;
 }
 }
 
@@ -310,17 +314,41 @@
 .ui-code--editorial > .ui-code__header > .ui-code__symbol {
   display: inline-flex;
   flex: 0 0 auto;
-  width: 1rem;
-  height: 1rem;
+  box-sizing: border-box;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius-sm);
+  background: hsl(var(--surface));
+  padding: 0.4375rem;
   color: hsl(var(--brand));
 }
 }
 
 @layer lumen.components {
+.ui-code--editorial .ui-code__symbol > svg {
+  width: 1rem;
+  height: 1rem;
+}
+}
+
+@layer lumen.components {
 .ui-code--editorial .ui-code__meta {
+  display: grid;
   justify-content: start;
+  justify-items: start;
+  justify-self: stretch;
+  gap: 0.25rem;
   font-family: var(--ui-font);
-  font-weight: 500;
+}
+}
+
+@layer lumen.components {
+.ui-code--editorial .ui-code__label {
+  color: hsl(var(--ink));
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
 }
 }
 
@@ -329,18 +357,67 @@
   border: 0;
   background: transparent;
   padding: 0;
-  font: inherit;
+  color: hsl(var(--brand));
+  font-size: 0.625rem;
+  font-weight: 650;
   letter-spacing: 0.08em;
+  line-height: 1.4;
 }
 }
 
 @layer lumen.components {
 .ui-code--editorial .ui-code__copy {
+  justify-self: end;
+  max-inline-size: 10rem;
+  margin-inline-start: 0;
   gap: 0.5rem;
-  border-color: transparent;
-  background: transparent;
-  font: 500 0.75rem/1.6 var(--ui-font);
+  border-color: hsl(var(--line));
+  background: hsl(var(--surface));
+  padding-inline: 0.75rem;
+  color: hsl(var(--ink-soft));
+  font: 600 0.75rem/1.5 var(--ui-font);
   text-align: start;
+}
+}
+
+@layer lumen.components {
+.ui-code--editorial .ui-code__copy:hover {
+  border-color: hsl(var(--brand));
+  background: hsl(var(--brand-soft));
+  color: hsl(var(--brand));
+}
+}
+
+@layer lumen.components {
+@container ui-code (width < 22rem) {
+.ui-code--editorial > .ui-code__header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+}
+
+@layer lumen.components {
+@container ui-code (width < 22rem) {
+.ui-code--editorial > .ui-code__header > .ui-code__symbol {
+    display: none;
+  }
+}
+}
+
+@layer lumen.components {
+@container ui-code (width < 16rem) {
+.ui-code--editorial > .ui-code__header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+}
+
+@layer lumen.components {
+@container ui-code (width < 16rem) {
+.ui-code--editorial .ui-code__copy {
+    justify-self: start;
+    max-inline-size: 100%;
+  }
 }
 }
 
