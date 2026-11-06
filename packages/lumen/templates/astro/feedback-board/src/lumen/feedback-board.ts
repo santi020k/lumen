@@ -199,8 +199,6 @@ export const initializeFeedbackBoard = (root: HTMLElement, actions: FeedbackActi
     void load()
   }, { signal: lifetime.signal })
 
-  void load()
-
   // History restoration can update native form values after Astro's page-load event.
   const synchronizeSort = () => {
     if (isActive() && requestedSort !== sort.value) void load()
@@ -211,6 +209,8 @@ export const initializeFeedbackBoard = (root: HTMLElement, actions: FeedbackActi
   requestAnimationFrame(() => requestAnimationFrame(synchronizeSort))
 
   const dispose = () => {
+    if (!isActive()) return
+
     fields.disabled = true
 
     lifetime.abort()
@@ -219,6 +219,8 @@ export const initializeFeedbackBoard = (root: HTMLElement, actions: FeedbackActi
   }
 
   mountedBoards.set(root, dispose)
+
+  void load()
 
   return dispose
 }
