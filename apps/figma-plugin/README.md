@@ -191,7 +191,7 @@ produces a development candidate, never a claim of Community readiness.
 ## Plugin release notes
 
 - **1.0.0** adds Astro starters for Lumen 5.0 and 4.4, appearance-specific setup, and fifteen additional verified component mappings. The v5 export preserves Card and Dialog overrides, Code appearance and copy labels, Tabs indicators and Stack gaps.
-- **1.1.0** adds React and Web Components for both Lumen releases, plus React Native, Android Compose and SwiftUI starters for iPhone and Mac. Native onboarding exports include labeled inputs, editable checkboxes, single-select workspace choices, determinate progress and validation for nonempty email fields. In Figma Desktop, development builds receive the selection with or without a registered ID. Linked components inside ordinary frames retain their identity. Generated React theme switches preserve the project’s named light and dark palette.
+- **1.1.0** adds React and Web Components for both Lumen releases, plus React Native, Android Compose and SwiftUI starters for iPhone and Mac. Native onboarding exports include labeled inputs, editable checkboxes, single-select workspace choices, determinate progress and validation for nonempty email fields. Back and Continue preserve the onboarding draft between Workspace and Preferences. In Figma Desktop, development builds receive the selection with or without a registered ID. Linked components inside ordinary frames retain their identity. Generated React theme switches preserve the project’s named light and dark palette.
 
 ## Figma Community publication
 
