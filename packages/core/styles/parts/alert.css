@@ -34,7 +34,7 @@
 .ui-alert--destructive {
   border-color: hsl(var(--danger) / 0.36);
   background: hsl(var(--danger) / 0.08);
-  color: hsl(var(--danger));
+  color: hsl(var(--ink));
 }
 }
 
