@@ -86,6 +86,17 @@ const appearanceEntry = selector => {
   return undefined
 }
 
+// A scoped appearance owns the whole block; its lower boundary may name a different theme.
+const appearanceBlockEntry = header => {
+  if (header === '@layer lumen.glass') return 'effects/glass'
+
+  if (!header.startsWith('@scope (')) return undefined
+
+  const start = header.indexOf('(')
+
+  return appearanceEntry(header.slice(start, findCssGroupEnd(header, start)))
+}
+
 const partitionTokens = (source, foundation, appearances, ancestors) => {
   for (const rule of readCssNodes(source)) {
     if (rule.header.startsWith('@')) {
@@ -179,13 +190,15 @@ export const partitionComponentCss = sources => {
         continue
       }
 
+      const appearance = appearanceBlockEntry(header)
+
       if (header === '@layer lumen.tokens') {
         partitionTokens(body, foundation, appearances, ancestors)
-      } else if (header === '@layer lumen.glass') {
-        appearances['effects/glass'].push(wrapRule(text, ancestors))
+      } else if (appearance) {
+        appearances[appearance].push(wrapRule(text, ancestors))
       } else if (header === '@layer lumen.base') {
         foundation.push(wrapRule(text, ancestors))
-      } else if (/^@(layer|media|supports|container)\b/u.test(header)) {
+      } else if (/^@(layer|media|supports|container|scope)\b/u.test(header)) {
         visit(body, [...ancestors, header])
       } else if (header.startsWith('@')) {
         foundation.push(wrapRule(text, ancestors))

@@ -62,6 +62,21 @@ test('splitting grouped selectors keeps each component cascade in canonical orde
   assert(button.indexOf('color:red') < button.indexOf('color:blue'))
 })
 
+test('appearance scopes keep their lower boundary without absorbing neutral scopes', () => {
+  const start = '[data-theme="santi020k-light"]'
+
+  const { appearances, foundation, parts } = partitionComponentCss([
+    `@layer lumen.components { @scope (${start}) to ([data-theme]) { .ui-card { color: purple; } }
+    @scope (.demo) to (${start}) { .ui-card { color: black; } } }`
+  ])
+
+  assert.match(appearances['themes/santi020k'].join(''), /to \(\[data-theme\]\)/u)
+
+  assert.match(parts.get('card'), /color: black/u)
+
+  assert.doesNotMatch(foundation + parts.get('card'), /color: purple/u)
+})
+
 test('optional glass variables keep URL delimiters and media conditions', () => {
   const { appearances, foundation } = partitionComponentCss([
     '@layer lumen.tokens { @media print { :root { --glass-bg: url(data:image/svg+xml;base64,abc); --brand: blue } } }'

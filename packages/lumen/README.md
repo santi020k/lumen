@@ -304,6 +304,8 @@ do not need it; React consumers should follow the React adapter's existing insta
 Choose Default, Studio or Glass with `data-lumen-preset` on a scoped web container.
 Use the [appearance guide](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for semantic overrides,
 ThemeBuilder controls and native fallbacks. The Studio preset uses PostLens as its visual reference.
+For the santi020k website’s editorial cards and ink-colored actions, import
+`styles/themes/santi020k.css` and select `santi020k-light` or `santi020k-dark` on the document root.
 
 ## Preview a v4 migration
 

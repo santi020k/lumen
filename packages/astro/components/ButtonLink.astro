@@ -34,7 +34,7 @@ const {
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
   'ui-button-link',
   variant !== 'unstyled' && 'group inline-flex cursor-pointer items-center justify-center gap-2 text-sm font-semibold tracking-[0.01em]',
-  variant !== 'inline' && variant !== 'unstyled' && 'min-h-11 rounded-full border',
+  variant !== 'inline' && variant !== 'unstyled' && 'min-h-11 rounded-[var(--ui-button-link-radius,9999px)] border',
   variant === 'primary' && 'ui-button ui-button--primary',
   variant === 'secondary' && 'ui-button ui-button--secondary',
   variant === 'ghost' && 'ui-button ui-button--ghost',

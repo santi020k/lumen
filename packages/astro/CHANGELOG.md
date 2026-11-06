@@ -4,7 +4,7 @@
 
 ### Major Changes
 
-- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions and increased-contrast colors.
 
 - Load Astro controllers by the features present on each page instead of shipping the interactive
   catalog with every runtime mount. Preserve delayed first clicks, keyboard navigation, native

@@ -3,7 +3,13 @@ import {
   Accordion,
   Badge,
   Button,
+  ButtonLink,
   Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Eyebrow,
   Field,
   Input,
   Label,
@@ -51,7 +57,7 @@ const setupSteps = [
 ] as const
 
 const basicThemeSetups = themeSetups.slice(0, 2)
-const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme')
+const websiteThemeSetup = themeSetups.find(setup => setup.label === 'santi020k website theme')
 ---
 
 <DocsLayout
@@ -267,23 +273,23 @@ const customThemeSetup = themeSetups.find(setup => setup.label === 'Custom theme
         </Card>
       ))}
     </div>
-    {customThemeSetup && (
-      <Card class="docs-theme-feature" variant="muted">
-        <div class="docs-theme-feature__intro">
-          <h3 class="text-base font-bold text-ink">{customThemeSetup.label}</h3>
-          <p class="text-sm/6 text-ink-soft">{customThemeSetup.description}</p>
-          <div class="docs-token-strip docs-token-strip--flush" aria-label="Theme token examples" role="group">
-            <span style="--swatch: hsl(var(--brand));"></span>
-            <span style="--swatch: hsl(var(--accent));"></span>
-            <span style="--swatch: hsl(var(--success));"></span>
-            <span style="--swatch: hsl(var(--warning));"></span>
-            <span style="--swatch: hsl(var(--danger));"></span>
-          </div>
-        </div>
-        <div class="docs-code-compact">
-          <CodeBlock code={customThemeSetup.code} codeLabel="Custom theme setup example" lang={customThemeSetup.lang} />
-        </div>
-      </Card>
+    {websiteThemeSetup && (
+      <Stack as="section" gap="group" aria-labelledby="website-theme-title">
+        <h3 id="website-theme-title">{websiteThemeSetup.label}</h3>
+        <p>{websiteThemeSetup.description}</p>
+        <CodeBlock code={websiteThemeSetup.code} codeLabel="Website theme import" lang={websiteThemeSetup.lang} />
+        <Card as="article" aria-labelledby="website-example-title">
+          <CardHeader>
+            <Eyebrow>Selected work · Design systems</Eyebrow>
+            <CardTitle as="h4" id="website-example-title">One component library, <em>three web frameworks.</em></CardTitle>
+            <CardDescription>How Lumen brings the same interface to Astro, React, and Web Components.</CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <ButtonLink href="https://santi020k.com/portfolio/lumen-ui/">Read the case study</ButtonLink>
+            <ButtonLink href="/docs/components" variant="secondary">Explore components</ButtonLink>
+          </CardFooter>
+        </Card>
+      </Stack>
     )}
   </section>
 

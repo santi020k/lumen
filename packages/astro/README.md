@@ -194,6 +194,8 @@ ThemeToggle supports `--ui-theme-toggle-icon-size` independently of its control 
 
 ## Appearance presets
 
+Import `@santi020k/lumen-astro/styles/themes/santi020k.css` once and set `data-theme="santi020k-light"` or `data-theme="santi020k-dark"` on `html` for the website appearance. Card, Eyebrow and ButtonLink then use the shared editorial styling.
+
 Set `data-lumen-preset="studio"` and an optional `data-lumen-scheme="light|dark"` on the application root. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for Default, Studio, Glass and scoped customization.
 
 ## Compound interactive components

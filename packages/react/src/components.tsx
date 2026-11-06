@@ -6972,7 +6972,7 @@ const getButtonLinkVariantClass = (
 
   if (variant === 'inline') return 'ui-button ui-button--inline'
 
-  return `ui-button ui-button--${variant} min-h-11 rounded-full border`
+  return `ui-button ui-button--${variant} min-h-11 rounded-[var(--ui-button-link-radius,9999px)] border`
 }
 
 export const ButtonLink = ({
