@@ -42,7 +42,16 @@ const domainLabel = '[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?'
 
 export const emailPattern = `${atom}(?:[.]${atom})*@${domainLabel}(?:[.]${domainLabel})+`
 
-const reactNative = (root: NativeNode, fields: number, checks: readonly boolean[]) => {
+interface NativeState {
+  fields: number
+  checks: readonly boolean[]
+  choices: readonly string[]
+}
+
+const hasState = ({ fields, checks, choices }: NativeState) => fields > 0 || checks.length > 0 || choices.length > 0
+
+const reactNative = (root: NativeNode, state: NativeState) => {
+  const { fields, checks, choices } = state
   const foundation = new Set<string>()
   const extra = new Set<string>()
   const errors: string[] = []
@@ -93,6 +102,14 @@ const reactNative = (root: NativeNode, fields: number, checks: readonly boolean[
 
         return `<LumenBadge tone="${node.tone}">${expr(node.label)}</LumenBadge>`
 
+      case 'radioGroup': {
+        extra.add('LumenRadioGroup')
+
+        const options = node.options.map(option => `{ value: ${literal(option.value, 'tsx')}, label: ${literal(option.label, 'tsx')}, description: ${literal(option.description, 'tsx')} }`)
+
+        return `<LumenRadioGroup label=${expr(node.label)} value={choice${node.index}} onValueChange={setChoice${node.index}} options={[\n${indent(options.join(',\n'))}\n]} />`
+      }
+
       case 'checkbox':
         extra.add('LumenCheckbox')
 
@@ -118,7 +135,7 @@ const reactNative = (root: NativeNode, fields: number, checks: readonly boolean[
   const view = foundation.has('useLumenTheme')
 
   const imports = [
-    ...(fields || checks.length ? ['import { useState } from \'react\''] : []),
+    ...(hasState(state) ? ['import { useState } from \'react\''] : []),
     ...(view ? ['import { View } from \'react-native\''] : []),
     ...(foundation.size ? [`import { ${[...foundation].sort().join(', ')} } from '@santi020k/lumen-react-native/foundations'`] : []),
     ...(extra.size ? [`import { ${[...extra].sort().join(', ')} } from '@santi020k/lumen-react-native'`] : [])
@@ -128,6 +145,7 @@ const reactNative = (root: NativeNode, fields: number, checks: readonly boolean[
     view ? 'const { spacing } = useLumenTheme()' : '',
     fieldStates(fields, i => `const [field${i}, setField${i}] = useState('')`),
     ...checks.map((checked, i) => `const [checked${i + 1}, setChecked${i + 1}] = useState(${checked})`),
+    ...choices.map((value, i) => `const [choice${i + 1}, setChoice${i + 1}] = useState(${literal(value, 'tsx')})`),
     ...errors,
     `return (\n${indent(body)}\n)`
   ].filter(Boolean)
@@ -137,7 +155,7 @@ const reactNative = (root: NativeNode, fields: number, checks: readonly boolean[
 
 const swiftEdge = { top: 'top', end: 'trailing', bottom: 'bottom', start: 'leading' }
 
-const swift = (root: NativeNode, fields: number, checks: readonly boolean[]) => {
+const swift = (root: NativeNode, { fields, checks, choices }: NativeState) => {
   const errors: string[] = []
   const q = (text: string) => `.verbatim(${literal(text, 'swift')})`
 
@@ -156,6 +174,13 @@ const swift = (root: NativeNode, fields: number, checks: readonly boolean[]) => 
     return block(`LumenFieldGroup(${q(node.label)}${node.helper ? `, description: ${q(node.helper)}` : ''}${error})`, control)
   }
 
+  const renderStack = (node: Extract<NativeNode, { kind: 'stack' }>, render: (child: NativeNode) => string) => {
+    const head = node.row ? 'HStack(alignment: .top' : 'VStack(alignment: .leading'
+    const body = block(`${head}, spacing: LumenSpacing.${member(node.gap)})`, node.children.map(render).join('\n'))
+
+    return body + node.padding.map(({ side, gap }) => `\n.padding(.${swiftEdge[side]}, LumenSpacing.${member(gap)})`).join('')
+  }
+
   const render = (node: NativeNode): string => {
     switch (node.kind) {
       case 'text': return `LumenText(${q(node.content)}, variant: .${node.variant}, tone: .${node.tone})`
@@ -163,6 +188,12 @@ const swift = (root: NativeNode, fields: number, checks: readonly boolean[]) => 
       case 'button': return `LumenButton(${q(node.label)}, intent: .${node.intent}, size: .${node.size}, loading: ${node.loading}, disabled: ${node.disabled}) { /* Connect action */ }`
 
       case 'badge': return `LumenBadge(${q(node.label)}, tone: .${node.tone})`
+
+      case 'radioGroup': {
+        const options = node.options.map(option => `LumenSelectionOption(${literal(option.label, 'swift')}, value: ${literal(option.value, 'swift')}, description: ${literal(option.description, 'swift')})`)
+
+        return `LumenRadioGroup(${literal(node.label, 'swift')}, selection: $choice${node.index}, options: [\n${indent(options.join(',\n'))}\n])`
+      }
 
       case 'checkbox': return `LumenCheckbox(${literal(node.label, 'swift')}, isChecked: $checked${node.index})`
 
@@ -172,18 +203,14 @@ const swift = (root: NativeNode, fields: number, checks: readonly boolean[]) => 
 
       case 'card': return block(`LumenCard(variant: .${node.variant})`, block('VStack(alignment: .leading, spacing: LumenSpacing.sm)', [textNode(node.title, 'title'), textNode(node.body, 'body')].map(render).join('\n')))
 
-      case 'stack': {
-        const head = node.row ? 'HStack(alignment: .top' : 'VStack(alignment: .leading'
-        const body = block(`${head}, spacing: LumenSpacing.${member(node.gap)})`, node.children.map(render).join('\n'))
-
-        return body + node.padding.map(({ side, gap }) => `\n.padding(.${swiftEdge[side]}, LumenSpacing.${member(gap)})`).join('')
-      }
+      case 'stack': return renderStack(node, render)
     }
   }
 
   const state = [
     fieldStates(fields, i => `@State private var field${i} = ""`),
-    ...checks.map((checked, i) => `@State private var checked${i + 1} = ${checked}`)
+    ...checks.map((checked, i) => `@State private var checked${i + 1} = ${checked}`),
+    ...choices.map((value, i) => `@State private var choice${i + 1} = ${literal(value, 'swift')}`)
   ].filter(Boolean).join('\n')
 
   const body = render(root)
@@ -214,7 +241,8 @@ const kotlinString = (value: string) => {
   return 'listOf(' + chunks.join(', ') + ').joinToString("")'
 }
 
-const compose = (root: NativeNode, fields: number, checks: readonly boolean[]) => {
+const compose = (root: NativeNode, form: NativeState) => {
+  const { fields, checks, choices } = form
   const errors: string[] = []
   const q = kotlinString
   const imports = new Set(['androidx.compose.runtime.Composable', 'com.santi020k.lumen.*'])
@@ -264,6 +292,12 @@ const compose = (root: NativeNode, fields: number, checks: readonly boolean[]) =
 
       case 'badge': return `LumenBadge(${q(node.label)}, tone = LumenBadgeTone.${upper(node.tone)})`
 
+      case 'radioGroup': {
+        const options = node.options.map(option => `LumenSelectionOption(value = ${q(option.value)}, label = ${q(option.label)}, description = ${q(option.description)})`)
+
+        return `LumenRadioGroup(label = ${q(node.label)}, value = choice${node.index}, onValueChange = { choice${node.index} = it }, options = listOf(\n${indent(options.join(',\n'))}\n))`
+      }
+
       case 'checkbox': return `LumenCheckbox(label = ${q(node.label)}, checked = checked${node.index}, onCheckedChange = { checked${node.index} = it })`
 
       case 'progress': return `LumenProgress(value = ${node.value}f, label = ${q(node.label)})`
@@ -281,13 +315,14 @@ const compose = (root: NativeNode, fields: number, checks: readonly boolean[]) =
 
   const body = render(root)
 
-  if (fields || checks.length) {
+  if (hasState(form)) {
     for (const symbol of ['getValue', 'setValue', 'mutableStateOf', 'saveable.rememberSaveable']) imports.add('androidx.compose.runtime.' + symbol)
   }
 
   const state = [
     fieldStates(fields, i => `var field${i} by rememberSaveable { mutableStateOf("") }`),
-    ...checks.map((checked, i) => `var checked${i + 1} by rememberSaveable { mutableStateOf(${checked}) }`)
+    ...checks.map((checked, i) => `var checked${i + 1} by rememberSaveable { mutableStateOf(${checked}) }`),
+    ...choices.map((value, i) => `var choice${i + 1} by rememberSaveable { mutableStateOf(${q(value)}) }`)
   ].filter(Boolean).join('\n')
 
   return [...imports].sort().map(name => 'import ' + name).join('\n') + (errors.length ? `\n\nprivate val emailPattern = Regex(${q(emailPattern)})` : '') + '\n\n@Composable\n' + block('fun LumenSelection()', [state, ...errors, body
@@ -295,9 +330,9 @@ const compose = (root: NativeNode, fields: number, checks: readonly boolean[]) =
 }
 
 export const renderNative = (
-  platform: NativePlatform, root: NativeNode, fields: number, checks: readonly boolean[]
+  platform: NativePlatform, root: NativeNode, state: NativeState
 ): string => {
-  if (platform === 'react-native') return reactNative(root, fields, checks)
+  if (platform === 'react-native') return reactNative(root, state)
 
-  return platform === 'compose' ? compose(root, fields, checks) : swift(root, fields, checks)
+  return platform === 'compose' ? compose(root, state) : swift(root, state)
 }

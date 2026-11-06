@@ -70,6 +70,8 @@ an incomplete address shows the design’s message, and a complete address clear
 Other helper text stays visible. A Field requires exactly one identified Input. Compose uses a field label and reports a separate
 placeholder when it cannot represent it. A linked Label immediately before a linked Input supplies its visible and accessible label. Checkbox
 rows use their adjacent caption and keep independent state initialized from the design. A drawn
+group of choice cards with a legend and exactly one highlighted option exports as a radio group.
+It preserves the option titles, descriptions and initial selection. A drawn
 progress track with a visible caption and percentage exports a labeled progress indicator. Review
 the inferred mapping and connect progress to the application. App actions are left for you to connect.
 

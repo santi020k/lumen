@@ -83,9 +83,19 @@ const dangerRect = (name: string, field: string) => designNode({ type: 'RECTANGL
 
 export const emailField = field('Work email', 'maya@example', frame('Alert', dangerRect('Danger border', 'strokes'), dangerRect('Danger tint', 'fills'), copy('Enter a complete email address.')), dangerRect('Invalid email outline', 'strokes'))
 
+export const choiceCard = (label: string, description: string, selected: boolean) => {
+  const span = frame('Span', frame('Icon', designNode({ type: 'VECTOR' })), frame('Strong', copy(label)), frame('Small', copy(description)))
+  const tokens = selected ? [{ field: 'fills', name: 'color/brand-soft' }, { field: 'strokes', name: 'color/brand' }] : [{ field: 'strokes', name: 'color/line' }]
+
+  return frame('Label', { ...span, tokens })
+}
+
+export const workspaceLegend = frame('Legend', copy('What are you setting up?'))
+
 export const onboardingFixture = frame('Form',
   field('Workspace name', 'Northstar Labs'),
   emailField,
+  frame('Onboarding choices', workspaceLegend, choiceCard('A team workspace', 'Coordinate projects and collaborators.', true), choiceCard('A personal workspace', 'Organize individual projects and ideas.', false)),
   frame('Options', control('Checkbox', { Checked: 'True' }), frame('Span', copy('Send updates'))),
   frame('Other option', control('Checkbox', { Checked: false }), copy('Send reminders')),
   frame('Setup', caption('50%'), track))
