@@ -29,12 +29,14 @@ const command = (args: string[]): Promise<CommandResult> => new Promise(resolve 
 const fixtureBody = (path: string): string => {
   const script = path === '/problem' ? 'problem.abc123.js' : 'mystery.abc123.js'
   const overflow = path === '/problem' ? '<div style="width:2200px">Overflow fixture</div>' : ''
+  const control = path === '/text-clipping' ? '<button id="clipped" style="font-size:1rem;width:110px;height:30px;overflow:hidden;white-space:nowrap">Read article</button>' : ''
+  const decoration = path === '/decorated' ? '<style>button::before{content:"";position:absolute;width:300px;height:3px;left:0;top:0;background:linear-gradient(red,blue)}</style><button style="position:relative;overflow:hidden;width:150px;font-size:1rem">Read</button>' : ''
   const extra = path === '/unexpected' ? '<script src="/assets/heavy.abcdef.js"></script>' : ''
   const external = path === '/external' ? '<script src="https://example.invalid/never.js"></script>' : ''
   const socket = path === '/socket' ? '<script>new WebSocket("wss://example.invalid/socket?token=fixture-secret")</script>' : ''
   return '<!doctype html><html><head><meta name="viewport" content="width=device-width">' +
     '<link rel="stylesheet" href="/assets/ui.abc123.css"></head><body><main><h1>Local audit fixture</h1>' +
-    overflow + '</main><footer><a href="https://santi020k.com">Santiago Molina</a></footer>' +
+    overflow + control + decoration + '<label style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search the documentation</label></main><footer><a href="https://santi020k.com">Santiago Molina</a></footer>' +
     '<script src="/assets/' + script + '"></script>' + extra + external + socket + '</body></html>'
 }
 
@@ -206,4 +208,24 @@ test('blocks socket connections before they leave the browser', async ({ browser
   expect(result.stdout).not.toContain('fixture-secret')
   expect(report).toHaveProperty('routes.0.observationComplete', false)
   expect(report).toHaveProperty('routes.0.blockedRequests.0', 'wss://example.invalid/socket')
+})
+
+
+test('reports clipped controls at enlarged text without requiring page overflow', async ({ browserName }) => {
+  const baseline = await command([...auditArguments('/text-clipping', browserName), '--viewport', '320x568'])
+  expect(baseline.code, baseline.stdout).toBe(0)
+  const enlarged = await command([...auditArguments('/text-clipping', browserName), '--viewport', '320x568', '--text-scale', '200'])
+  expect(enlarged.code, enlarged.stdout).toBe(1)
+  const report: unknown = JSON.parse(enlarged.stdout)
+  expect(report).toMatchObject({ status: 'issues', routes: [{ textScale: 200, layout: { horizontalOverflowPixels: 0 }, clippedControls: [{ id: 'clipped', tag: 'button' }] }] })
+  const healthy = await command([...auditArguments('/healthy', browserName), '--viewport', '320x568', '--text-scale', '200'])
+  expect(healthy.code, healthy.stdout).toBe(0)
+})
+
+
+test('ignores decorative overflow when control text fits', async ({ browserName }) => {
+  const result = await command([...auditArguments('/decorated', browserName), '--viewport', '320x568', '--text-scale', '200'])
+  expect(result.code, result.stdout).toBe(0)
+  const report: unknown = JSON.parse(result.stdout)
+  expect(report).toMatchObject({ routes: [{ clippedControls: [] }] })
 })

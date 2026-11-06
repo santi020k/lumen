@@ -1,0 +1,154 @@
+---
+import { Alert, Code, CodeTabs, CopyButton, Link, Table } from '@santi020k/lumen-astro'
+
+import ArticleReading from '../../../../../packages/lumen/templates/astro/article-reading/src/lumen/article-reading.astro'
+import { getGuide } from '../../data/guides'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const guide = getGuide('/guides/build-an-editorial-article')
+
+const chapters = [
+  { id: 'reading', label: 'Start with the reading path' },
+  { id: 'install', label: 'Install the editable recipe' },
+  { id: 'examples', label: 'Keep code examples connected' },
+  { id: 'tables', label: 'Give wide tables room' },
+  { id: 'verify', label: 'Verify enlarged text' }
+]
+
+const commands = [
+  { value: 'pnpm', label: 'pnpm', language: 'shell', code: 'pnpm add @santi020k/lumen-astro\npnpm add -D @santi020k/lumen\npnpm exec lumen add article-reading --target astro' },
+  { value: 'npm', label: 'npm', language: 'shell', code: 'npm install @santi020k/lumen-astro\nnpm install -D @santi020k/lumen\nnpx lumen add article-reading --target astro' }
+]
+
+const auditCommands = [
+  { value: 'pnpm', label: 'pnpm', language: 'shell', code: 'pnpm add -D @playwright/test\npnpm exec playwright install chromium\npnpm exec lumen audit-rendered http://127.0.0.1:4321/guides/build-an-editorial-article --viewport 320x844 --text-scale 200 --json' },
+  { value: 'npm', label: 'npm', language: 'shell', code: 'npm install -D @playwright/test\nnpx playwright install chromium\nnpx lumen audit-rendered http://127.0.0.1:4321/guides/build-an-editorial-article --viewport 320x844 --text-scale 200 --json' }
+]
+
+const layoutSource = `---
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+<html lang="en">
+  <body>
+    <slot />
+    <UIPrimitives />
+  </body>
+</html>`
+
+const articleSource = `---
+import ArticleReading from '../lumen/article-reading.astro'
+const chapters = [{ id: 'design', label: 'Design the reading path' }]
+---
+<ArticleReading articleId="story" chapters={chapters}>
+  <section id="design">
+    <h2>Design the reading path</h2>
+    <p>Your original article goes here.</p>
+  </section>
+</ArticleReading>`
+---
+
+<BaseLayout title={guide.title} description={guide.description} article={{ author: guide.author, publishedAt: guide.publishedAt }}>
+  <main class="article-guide">
+    <header class="article-guide__header">
+      <Link href="/guides">All guides</Link>
+      <h1>{guide.title}</h1>
+      <p>Give readers a clear path through a long technical story. Try this page’s contents menu,
+        switch its package-manager examples, and scroll the comparison table with your keyboard.</p>
+      <p class="article-guide__context">Inspired by the reading experience on{' '}
+        <Link href="https://santi020k.com">santi020k.com v5</Link>. This example uses original instructional content.</p>
+      <Alert>This guide demonstrates the Lumen 5 candidate. Check registry availability before installing.
+        Use the matching package versions and CLI when following the examples.</Alert>
+    </header>
+    <ArticleReading articleId="editorial-story" chapters={chapters}>
+      <section id="reading">
+        <h2>Start with the reading path</h2>
+        <p>A reader may arrive from search halfway through an article, browse its headings on a phone,
+          or enlarge the text before reading a code example. Keep the article in document order and
+          let its controls adapt to the space around it.</p>
+        <p>The editable <code>article-reading</code> recipe composes Lumen’s Anchor, Collapsible,
+          SkipLink, and ScrollProgress. A wider screen gets a contents rail. A narrow screen gets
+          a native disclosure. Reading progress measures this article, so the site footer does not
+          become part of the story.</p>
+        <p>On the released website, some tab, anchor, and progress behaviors were carried by a
+          version-pinned consumer patch. The Lumen 5 candidate includes the shared fixes.
+          Verify the upgrade against your own article before removing a patch.</p>
+        <Link href="/docs/migrations/v4-to-v5">Read the v4 to v5 migration guide</Link>
+      </section>
+      <section id="install">
+        <h2>Install the editable recipe</h2>
+        <p>Add the Astro adapter and CLI, then copy the recipe into your application. The CLI owns
+          installation and diagnostics. The copied composition belongs to your app, while its imports
+          continue to receive package-owned primitive fixes.</p>
+        <CodeTabs ariaLabel="Install the article recipe" items={commands} storageKey="editorial-guide-manager" wrap={false} scrollCue />
+        <p>Mount the runtime once in your root layout. Astro components include their selective CSS.</p>
+        <Code variant="block" copy wrap code={layoutSource} language="astro" label="Root layout" />
+        <p>Give each heading a stable, unique ID and pass the same IDs into the recipe.</p>
+        <Code variant="block" copy wrap code={articleSource} language="astro" label="Article page" />
+        <Link href="/docs/components/anchor">Explore the Anchor contract</Link>
+      </section>
+      <section id="examples">
+        <h2>Keep code examples connected</h2>
+        <p>Both package-manager examples on this page share one <code>storageKey</code>. Choose npm
+          above and the verification commands below follow that choice. The group you activate keeps
+          focus while the other updates in place. The complete source remains available for copying.</p>
+        <p>Use a shared key only for examples representing the same choice. Keep an unrelated language
+          picker independent. Long lines scroll within their own named region, with a cue when more
+          content lies outside it.</p>
+        <Link href="/docs/components/code-tabs">Explore CodeTabs</Link>
+      </section>
+      <section id="tables">
+        <h2>Give wide tables room</h2>
+        <p>This table preserves its caption and headers. Focus the scroll region and use the arrow
+          keys at narrow widths. The surrounding article continues to fit the viewport.</p>
+        <Table scrollCue aria-label="Compare the responsibilities in an editorial page">
+          <table>
+            <caption>Responsibilities in this article</caption>
+            <thead><tr><th scope="col">Layer</th><th scope="col">Maintains</th><th scope="col">Example</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Lumen primitive</th><td>Keyboard behavior and semantic controls</td><td>Anchor, CodeTabs, ScrollProgress</td></tr>
+              <tr><th scope="row">Editable recipe</th><td>Responsive composition and local labels</td><td>Contents rail and mobile disclosure</td></tr>
+              <tr><th scope="row">Application</th><td>Writing, routing, localization, and content policy</td><td>Heading IDs and publishing decisions</td></tr>
+            </tbody>
+          </table>
+        </Table>
+        <p>For Markdown-generated tables, apply the same contract during rendering.</p>
+        <Link href="/guides/readable-markdown-tables">Build the Markdown table integration</Link>
+      </section>
+      <section id="verify">
+        <h2>Verify enlarged text</h2>
+        <p>Run a built preview locally and audit this route at 320px with 200% text. The opt-in text
+          scale check reports clipped control text alongside document overflow. Review each finding
+          in the rendered page, including controls inside disclosures and overlays after opening them.</p>
+        <CodeTabs ariaLabel="Audit the article with enlarged text" items={auditCommands} storageKey="editorial-guide-manager" wrap={false} scrollCue />
+        <p>Repeat at desktop width and in both themes. Follow a contents link, switch package managers,
+          copy a complete example, and navigate away and back. Disable JavaScript to verify that
+          headings, the mobile disclosure, and source examples remain readable. Use keyboard and
+          screen-reader checks to verify the reading order and focus destination.</p>
+        <Link href="/docs/components/scroll-progress">Explore scoped reading progress</Link>
+        <div class="article-guide__share">
+          <CopyButton value="https://lumen.santi020k.com/guides/build-an-editorial-article/" label="Copy guide link">Copy guide link</CopyButton>
+          <Link href="/templates/editorial">Explore the editorial recipes</Link>
+        </div>
+      </section>
+    </ArticleReading>
+  </main>
+</BaseLayout>
+
+<style>
+  .article-guide { max-inline-size: 80rem; margin-inline: auto; padding: clamp(1rem, 4vw, 3rem); overflow-wrap: anywhere; }
+  .article-guide__header { max-inline-size: 52rem; margin-block-end: 3rem; }
+  h1 { margin-block: 1rem; font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.12; letter-spacing: -0.035em; color: hsl(var(--ink)); }
+  h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.2; color: hsl(var(--ink)); }
+  p { margin-block: 1rem; line-height: 1.8; color: hsl(var(--ink-soft)); }
+  section { min-inline-size: 0; scroll-margin-block-start: 8rem; }
+  section + section { margin-block-start: 3rem; }
+  .article-guide__context { color: hsl(var(--ink-muted)); }
+  .article-guide__share { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; margin-block-start: 2rem; }
+  .article-guide__share :global(button) { max-inline-size: 100%; white-space: normal; overflow-wrap: anywhere; }
+  table { min-inline-size: 34rem; }
+  caption { text-align: start; padding-block: 1rem; font-weight: 600; }
+  th, td { padding: 0.85rem; text-align: start; border-block-end: 1px solid hsl(var(--line)); }
+  :global(.article-guide .article-reading) { --article-reading-sticky-offset: 7rem; }
+  :global(.article-guide .chapter-rail), :global(.article-guide .chapter-disclosure) { overflow-wrap: anywhere; }
+  @media print { .article-guide { max-inline-size: none; } .article-guide__share { display: none; } table { min-inline-size: 0; } }
+</style>

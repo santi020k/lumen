@@ -321,6 +321,7 @@ versions and explicit SDK dependency-review findings.
 
 ## Rendered route audit
 
+Add `--text-scale 200` to check root-relative enlarged text and clipped controls.
 Use `lumen audit-rendered <local-url> --cwd <project> --json` for explicit loopback layout,
 console, and asset-request inspection through the target project's existing Playwright tool.
 Supply exact asset expectations to classify known Lumen files. See the
