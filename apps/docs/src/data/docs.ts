@@ -210,30 +210,10 @@ document.documentElement.dataset.theme = nextTheme`,
     lang: 'ts'
   },
   {
-    code: `@import "@santi020k/lumen-astro/styles.css";
-
-:root[data-theme="santi020k-light"] {
-  color-scheme: light;
-  --canvas: 268 20% 98%;
-  --surface: 268 20% 100%;
-  --ink: 268 10% 20%;
-  --brand: 264 92% 47%;
-  --accent: 264 95% 57%;
-  /* ...override the remaining tokens */
-}
-
-:root[data-theme="santi020k-dark"] {
-  color-scheme: dark;
-  --canvas: 260 43% 8%;
-  --surface: 260 30% 12%;
-  --ink: 260 10% 88%;
-  --brand: 264 90% 58%;
-  --accent: 264 90% 68%;
-  /* ...override the remaining tokens */
-}`,
+    code: '@import "@santi020k/lumen-astro/styles/themes/santi020k.css";',
     description:
-      'These docs run santi020k-light and santi020k-dark, a custom theme family built on the same token contract. Copy the shape and adapt the values to your brand.',
-    label: 'Custom theme',
+      'Import the website appearance once, then set data-theme="santi020k-light" or data-theme="santi020k-dark" on html. Switch the docs theme family to santi020k to see the same card change.',
+    label: 'santi020k website theme',
     lang: 'css'
   }
 ]

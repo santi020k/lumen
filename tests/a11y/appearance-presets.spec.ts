@@ -107,3 +107,26 @@ test('Studio preview stays within a narrow mobile viewport', async ({ page }) =>
   expect(dimensions.content).toBeLessThanOrEqual(dimensions.width + 1)
   await expect(page.locator('#studio-reference-title')).toBeVisible()
 })
+
+for (const scheme of ['light', 'dark'] as const) {
+  test(`website theme keeps editorial actions readable at a narrow width in ${scheme}`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.emulateMedia({ contrast: 'more', reducedMotion: 'reduce' })
+    await page.addInitScript(mode => { localStorage.setItem('lumen-theme', `santi020k-${mode}`); }, scheme)
+    await page.goto('/docs/web#website-theme-title')
+
+    const card = page.getByRole('article', { name: 'One component library, three web frameworks.' })
+    const primary = card.getByRole('link', { name: 'Read the case study' })
+    const secondary = card.getByRole('link', { name: 'Explore components' })
+
+    await expect(card).toHaveCSS('border-bottom-right-radius', '8px')
+    await expect(card).toHaveCSS('--line', scheme === 'dark' ? '260 15% 48%' : '268 18% 66%')
+    await expect(primary).toHaveCSS('border-radius', '12px')
+    await expect(primary).toHaveCSS('min-height', '44px')
+    await primary.focus()
+    await page.keyboard.press('Tab')
+    await expect(secondary).toBeFocused()
+    await expect(secondary).toHaveCSS('outline-style', 'solid')
+    expect(await card.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true)
+  })
+}

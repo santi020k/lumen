@@ -15,7 +15,7 @@ export const checkAppearanceDelivery = async (browser, repo) => {
     return result.code
   }
 
-  const base = await css(['styles/foundation', 'styles/components/card', 'styles/components/code', 'styles/components/stat'])
+  const base = await css(['styles/foundation', 'styles/components/card', 'styles/components/button', 'styles/components/stack', 'styles/components/code', 'styles/components/stat'])
   const studio = await css(['styles/themes/studio'])
   const glass = await css(['styles/effects/glass'])
   const branded = await css(['styles/themes/santi020k'])
@@ -34,7 +34,9 @@ export const checkAppearanceDelivery = async (browser, repo) => {
       await page.setContent(`<!doctype html><html data-theme="${theme}" data-lumen-preset="${preset}"><head>
         <style>${styles}</style></head><body><div class="ui-card ui-card--glass ui-glass-subtle">Toolbar</div>
         <div class="ui-stat ui-stat--glass">Metric</div><code class="ui-code" data-code-theme="auto">value</code>
-        <section data-lumen-preset="default" data-lumen-scheme="light"></section></body></html>`)
+        <article class="ui-card"><button class="ui-button ui-button--default">Read</button></article>
+        <div class="ui-stack ui-stack--gap-section"></div>
+        <section data-lumen-preset="default" data-lumen-scheme="light"><article class="ui-card"></article></section></body></html>`)
 
       return page.evaluate(() => {
         const rootStyle = getComputedStyle(document.documentElement)
@@ -45,6 +47,10 @@ export const checkAppearanceDelivery = async (browser, repo) => {
           radius: rootStyle.getPropertyValue('--ui-radius').trim(),
           nestedBrand: getComputedStyle(document.querySelector('section')).getPropertyValue('--brand').trim(),
           code: getComputedStyle(document.querySelector('code')).getPropertyValue('--ui-code-fg').trim(),
+          sheet: getComputedStyle(document.querySelector('article')).borderRadius,
+          primary: getComputedStyle(document.querySelector('button')).backgroundColor,
+          sectionGap: getComputedStyle(document.querySelector('.ui-stack')).rowGap,
+          nestedSheet: getComputedStyle(document.querySelector('section article')).borderRadius,
           background: card.backgroundImage, filter: card.backdropFilter,
           statPadding: getComputedStyle(document.querySelector('.ui-stat')).paddingTop
         }
@@ -75,6 +81,16 @@ export const checkAppearanceDelivery = async (browser, repo) => {
       assert.equal(brandOnly.brand, scheme === 'light' ? '264 92% 47%' : '264 90% 70%')
 
       assert.equal(brandOnly.filter, 'none')
+
+      assert.equal(brandOnly.sheet, '24px 24px 8px')
+
+      assert.equal(brandOnly.primary, scheme === 'light' ? 'rgb(51, 46, 56)' : 'rgb(223, 221, 227)')
+
+      assert.equal(brandOnly.sectionGap, '112px')
+
+      assert.equal(brandOnly.nestedSheet, plain.sheet)
+
+      assert.deepEqual(await read(branded + base, theme, ''), plain)
 
       for (const [activeTheme, preset, extra] of [
         [theme, '', ''], [theme, 'studio', studio], [theme, 'glass', ''], [brandTheme, '', branded]

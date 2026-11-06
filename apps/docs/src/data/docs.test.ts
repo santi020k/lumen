@@ -315,10 +315,11 @@ import { Button, Dialog } from '@santi020k/lumen-astro'
   test('documents built-in and example theme setup', () => {
     const themeExamples = themeSetups.map(setup => `${setup.description}\n${setup.code}`).join('\n')
 
-    expect(themeSetups.map(setup => setup.label)).toEqual(['Default themes', 'Runtime switch', 'Custom theme'])
+    expect(themeSetups.map(setup => setup.label)).toEqual(['Default themes', 'Runtime switch', 'santi020k website theme'])
     expect(themeExamples).toContain('data-theme')
     expect(themeExamples).toContain('light')
     expect(themeExamples).toContain('dark')
+    expect(themeExamples).toContain('styles/themes/santi020k.css')
     expect(themeExamples).toContain('santi020k-light')
     expect(themeExamples).toContain('santi020k-dark')
   })

@@ -21,7 +21,7 @@ your web adapter, Core, or the umbrella package. Each entry works independently.
 | --- | --- |
 | `styles/themes/studio.css` | Set `data-lumen-preset="studio"` on the root or a section for the PostLens palette. |
 | `styles/effects/glass.css` | Set the component's `glass` prop for a translucent surface with any palette. This entry also supplies the `glass` appearance preset and glass variables. |
-| `styles/themes/santi020k.css` | Set `data-theme="santi020k-light"` or `data-theme="santi020k-dark"` on the document root for the docs palette. This entry also styles `Code` with `theme="santi020k"`. |
+| `styles/themes/santi020k.css` | Set `data-theme="santi020k-light"` or `data-theme="santi020k-dark"` on the document root for the website’s violet palette and editorial components. This entry also styles `Code` with `theme="santi020k"`. |
 
 Astro components load the foundation automatically. For React and Elements, import
 `styles/foundation.css` once and the CSS for each component. The full `styles.css` includes
@@ -92,6 +92,47 @@ React's `useThemeBuilder` accepts controlled `preset`, `radiusScale`, `spacingSc
 `borderWidth` options. `defaultPreset`, `onPresetChange`, `setPreset` and `getPresetProps` support
 local or application-owned preset selection. Passing `undefined` to `setPreset` restores the
 existing generated mode. Existing calls without a preset keep generated color behavior.
+
+### The santi020k website appearance
+
+Import the stylesheet once in the root layout. Use the existing named light and dark modes; this
+is a web appearance, not a new cross-platform ThemeBuilder preset. The full stylesheet already
+includes it. Font files remain application-owned; the theme uses Montserrat when available.
+
+```astro
+---
+import { ButtonLink, Card, CardDescription, CardFooter, CardHeader, CardTitle, Eyebrow } from '@santi020k/lumen-astro'
+import '@santi020k/lumen-astro/styles/themes/santi020k.css'
+---
+
+<html lang="en" data-theme="santi020k-light">
+  <body>
+    <Card as="article">
+      <CardHeader>
+        <Eyebrow>Selected work</Eyebrow>
+        <CardTitle as="h2">Lumen UI</CardTitle>
+        <CardDescription>One component library for three web frameworks.</CardDescription>
+      </CardHeader>
+      <CardFooter><ButtonLink href="/portfolio/lumen-ui/">Read the case study</ButtonLink></CardFooter>
+    </Card>
+  </body>
+</html>
+```
+
+The ordinary Card becomes a flat sheet with a shorter lower-right corner. Primary actions use
+surface-colored text on ink; secondary actions stay outlined.
+Card titles, eyebrows and bare statistics follow the website's type hierarchy. An emphasized
+phrase in a title uses violet; the rest stays in ink. For a landing
+section, use a direct heading inside `Typography` and `Stack` or `Grid` with `gap="section"`
+for 4.5rem between sections on mobile and 7rem from 48rem. Article prose keeps its own scale.
+Increased contrast follows the visitor's system preference. Nested themes and preset previews
+retain their component styling. No JavaScript or extra font request is required by the appearance.
+
+For a future website migration, keep the stored light/dark preference and map it to the named
+mode before first paint. Update site selectors that currently match the plain `dark` value.
+Replace matching action, card and heading rules with the public components; keep routing, font
+loading, page compositions, print styles and product imagery in the website. Do not load a second
+root palette over Lumen. See the [web theme example](https://lumen.santi020k.com/docs/web#website-theme-title).
 
 ## SwiftUI
 
