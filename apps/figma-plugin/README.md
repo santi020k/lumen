@@ -77,7 +77,8 @@ It preserves the option titles, descriptions and initial selection. A drawn
 progress track with a visible caption and percentage exports a labeled progress indicator. Review
 the inferred mapping and connect progress to the application. Selecting the complete Onboarding form wires Continue to Preferences (step 3 of 4, 75%) once the
 workspace name and email are valid. Continue on Preferences opens Invite (step 4 of 4, 100%).
-Back retraces those steps and preserves the workspace name, email, workspace choice and latest
+Invite has its own teammate email field. The address stays in the draft when you return to Preferences
+and continue to Invite again. Back retraces those steps and preserves the workspace name, email, workspace choice and latest
 product-updates setting. Back is disabled on the initial Workspace step (50%).
 Connect other button actions in the receiving application.
 

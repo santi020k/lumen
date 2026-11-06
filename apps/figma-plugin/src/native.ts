@@ -20,7 +20,7 @@ export const analyzeNative = (selection: DesignNode, { platform, version }: Nati
   review.auditTokens(selection)
 
   const { root, ...state } = nativeDesign(selection, platform, review)
-  const flow = bindOnboarding(selection, root)
+  const flow = bindOnboarding(selection, root, () => ++state.fields)
 
   if (flow) review.issue(selection, 'Inferred local Workspace, Preferences and Invite steps from the Onboarding template. Back preserves the form draft.', 'inferred')
 
