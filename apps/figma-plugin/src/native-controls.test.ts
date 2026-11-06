@@ -67,3 +67,9 @@ test('accepts common mailbox punctuation and requires complete domain labels', (
   for (const value of ['o\'brien+qa@sub.example.test', 'qa.team@my-team.test', 'a@b.co']) expect(pattern.test(value)).toBe(true)
   for (const value of ['qa@example', 'qa@@example.test', 'qa @example.test', 'a..b@example.test', 'a@.example.test', 'a@example.test.', 'a@-team.test', 'a@team-.test']) expect(pattern.test(value)).toBe(false)
 })
+
+test.each(['swiftui-ios', 'swiftui-macos'] as const)('%s keeps the editing control mounted when the email hint changes', platform => {
+  const { code } = analyzeSelection(onboardingFixture, defaultFor(platform))
+  expect(code).toContain('.accessibilityHint(Text(verbatim: field2Error')
+  expect(code).not.toMatch(/LumenTextField[^\n]*errorMessage/u)
+})

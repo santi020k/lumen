@@ -143,11 +143,13 @@ const swift = (root: NativeNode, fields: number, checks: readonly boolean[]) => 
 
   const renderInput = (node: Extract<NativeNode, { kind: 'input' }>) => {
     const field = `field${node.index}`
-    const error = node.emailError ? `, errorMessage: ${field}Error` : ''
+    const error = node.emailError ? `, errorMessage: ${field}Error.map(LumenTextContent.verbatim)` : ''
 
-    if (node.emailError) errors.push(`let ${field}Error: LumenTextContent? = !${field}.isEmpty && (${field}.utf8.count > 254 || ${field}.wholeMatch(of: #/${emailPattern}/#) == nil) ? ${q(node.emailError)} : nil`)
+    if (node.emailError) errors.push(`let ${field}Error: String? = !${field}.isEmpty && (${field}.utf8.count > 254 || ${field}.wholeMatch(of: #/${emailPattern}/#) == nil) ? ${literal(node.emailError, 'swift')} : nil`)
 
-    const control = `LumenTextField(${q(node.placeholder)}, text: $field${node.index}, size: .${node.size}${error})\n  .accessibilityLabel(Text(verbatim: ${literal(node.label, 'swift')}))`
+    // Keep the TextField's identity across validation changes so typing never loses focus.
+    const hint = node.emailError ? `\n  .accessibilityHint(Text(verbatim: ${field}Error ?? ""))` : ''
+    const control = `LumenTextField(${q(node.placeholder)}, text: $field${node.index}, size: .${node.size})\n  .accessibilityLabel(Text(verbatim: ${literal(node.label, 'swift')}))${hint}`
 
     if (!node.visibleLabel) return control
 
