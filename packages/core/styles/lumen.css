@@ -1175,6 +1175,107 @@
 .ui-prose :where(table:not(.ui-table) th, table:not(.ui-table) td) { padding: .625rem .75rem; border-bottom: var(--ui-border-width, 1px) solid hsl(var(--line)); text-align: start; }
 .ui-prose :where(table:not(.ui-table) th) { color: hsl(var(--ink)); font-weight: 600; }
 
+/* Editorial prose preserves authored HTML and leaves technical/media blocks wide. */
+.ui-prose.ui-prose--editorial {
+  container: ui-prose / inline-size;
+  max-inline-size: none;
+  line-height: 1.8;
+}
+
+.ui-prose.ui-prose--editorial > :where(p, ul, ol, dl, h1, h2, h3, h4, h5, h6),
+.ui-prose.ui-prose--editorial > :where(section) > :where(p, ul, ol, dl, h1, h2, h3, h4, h5, h6) {
+  max-inline-size: var(--ui-prose-measure, 65ch);
+}
+
+.ui-prose.ui-prose--editorial > :where(h2),
+.ui-prose.ui-prose--editorial > :where(section) > :where(h2) {
+  margin-block: 2.5rem 1rem;
+  border-block-end: 1px solid hsl(var(--line));
+  padding-block-end: 0.75rem;
+  font-size: clamp(1.375rem, 3cqi, 1.875rem);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.ui-prose.ui-prose--editorial > :where(h3),
+.ui-prose.ui-prose--editorial > :where(section) > :where(h3) {
+  margin-block: 2rem 0.75rem;
+  font-size: clamp(1.125rem, 2.5cqi, 1.375rem);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.ui-prose.ui-prose--editorial :where(blockquote) {
+  max-inline-size: var(--ui-prose-measure, 65ch);
+  margin-block: 2rem;
+  border-block: 1px solid hsl(var(--line));
+  border-inline-start: 2px solid hsl(var(--brand));
+  padding: 1.25rem;
+  color: hsl(var(--ink));
+  font-size: clamp(1rem, 2.5cqi, 1.125rem);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.ui-prose.ui-prose--editorial :where(blockquote) > :first-child { margin-block-start: 0; }
+.ui-prose.ui-prose--editorial :where(blockquote) > :last-child { margin-block-end: 0; }
+
+.ui-prose.ui-prose--editorial :where(blockquote footer) {
+  margin-block-start: 0.875rem;
+  color: hsl(var(--ink-soft));
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.ui-prose.ui-prose--editorial :where(blockquote cite) { font-style: normal; }
+
+/* Component-owned figures keep their own captions and spacing. */
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  margin: 2rem 0;
+  border: 1px solid hsl(var(--line));
+  border-radius: var(--ui-radius);
+  background: hsl(var(--surface));
+  overflow: hidden;
+}
+
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > :where(img, video, picture) {
+  display: block;
+  max-inline-size: 100%;
+  margin: 0;
+}
+
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > :where(img:not(.ui-image)),
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > picture > :where(img:not(.ui-image)) {
+  border-radius: 0;
+}
+
+.ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > figcaption {
+  margin: 0;
+  border-block-start: 1px solid hsl(var(--line));
+  padding: 0.875rem 1.25rem;
+  color: hsl(var(--ink-soft));
+  font-size: 0.875rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+@container ui-prose (width < 20rem) {
+  .ui-prose.ui-prose--editorial :where(blockquote) { padding: 1rem 0.75rem; }
+  .ui-prose.ui-prose--editorial :where(figure:not([data-slot], [data-ui-code], .ui-chart)) > figcaption { padding-inline: 0.75rem; }
+}
+
+@media print {
+  .ui-prose.ui-prose--editorial :where(h2, h3, h4, h5, h6) { break-after: avoid; }
+  .ui-prose.ui-prose--editorial :where(blockquote, figure:not([data-slot], [data-ui-code], .ui-chart)) { break-inside: avoid; }
+}
+
+.ui-prose.ui-prose--editorial > :where(section):first-child > :first-child {
+  margin-block-start: 0;
+}
+
 .ui-image-comparison { display: grid; min-width: 0; gap: .75rem; margin: 0; }
 .ui-image-comparison__frame {
   position: relative;

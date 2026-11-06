@@ -61,3 +61,37 @@ test('the built sandbox and offline UI exchange versioned exports', async ({ pag
   }
   expect(errors).toEqual([])
 })
+
+test('receives selection from the Figma editor above the desktop sandbox', async ({ page }) => {
+  const ui = await readFile(new URL('../../apps/figma-plugin/dist/ui.html', import.meta.url), 'utf8')
+  // Desktop relays UI requests through its sandbox, then responds directly from the top frame.
+  const wrapper = `<!doctype html><script>
+    window.addEventListener('message', event => {
+      if (event.source === frames[0] && event.data.pluginMessage?.type === 'ready') parent.postMessage('ready', '*')
+      if (event.source === parent && event.data === 'done') {
+        frames[0].postMessage({ pluginMessage: { type: 'error', message: 'Host check complete' } }, '*')
+      }
+    })
+  </script><iframe sandbox="allow-scripts" src="/local-plugin"></iframe>`
+  const editor = `<!doctype html><script>
+    window.addEventListener('message', event => {
+      if (event.source === frames[0] && event.data === 'ready') {
+        frames[0].frames[0].postMessage({ pluginMessage: { type: 'selection', name: 'Onboarding form' } }, '*')
+        frames[0].postMessage('done', '*')
+      }
+    })
+  </script><iframe src="https://www.figma.com/local-sandbox"></iframe>`
+  await page.route('https://www.figma.com/local-plugin', route => route.fulfill({ contentType: 'text/html', body: ui }))
+  await page.route('https://www.figma.com/local-sandbox', route => route.fulfill({ contentType: 'text/html', body: wrapper }))
+  await page.route('https://www.figma.com/local-editor', route => route.fulfill({ contentType: 'text/html', body: editor }))
+  await page.goto('https://www.figma.com/local-editor')
+  const panel = page.frameLocator('iframe').frameLocator('iframe')
+  await expect(panel.getByRole('heading', { name: 'Onboarding form' })).toBeVisible()
+  await expect(panel.getByRole('button', { name: 'Inspect selection' })).toBeEnabled()
+
+  await page.route('https://untrusted.example/local-editor', route => route.fulfill({ contentType: 'text/html', body: editor }))
+  await page.goto('https://untrusted.example/local-editor')
+  await expect(panel.getByText('Host check complete')).toBeVisible()
+  await expect(panel.getByRole('heading', { name: 'Nothing selected' })).toBeVisible()
+  await expect(panel.getByRole('button', { name: 'Inspect selection' })).toBeDisabled()
+})

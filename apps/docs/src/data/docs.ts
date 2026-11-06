@@ -2334,6 +2334,9 @@ const apiReferenceByComponent = {
   ],
   Prose: [
     apiRow(
+      'appearance', '"default" | "editorial"', '"default"', 'Editorial reading rhythm, attributed quotations, and connected native figure captions. Preserves supplied markup and component-owned figures.'
+    ),
+    apiRow(
       'children', 'rendered Markdown, CMS, or long-form HTML', 'required', 'Applies readable measure and typographic rhythm without changing the supplied semantics.'
     )
   ],

@@ -6234,9 +6234,15 @@ export const Pill = ({
     )
 }
 
-export type ProseProps = ComponentPropsWithoutRef<'div'>
-export const Prose = ({ className, ...props }: ProseProps) => (
-  <div className={composeClassName('ui-prose', className)} {...props} />
+export interface ProseProps extends ComponentPropsWithoutRef<'div'> {
+  appearance?: 'default' | 'editorial'
+}
+export const Prose = ({ appearance = 'default', className, ...props }: ProseProps) => (
+  <div
+    className={composeClassName('ui-prose', appearance === 'editorial' && 'ui-prose--editorial', className)}
+    data-slot="prose"
+    {...props}
+  />
 )
 
 export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>

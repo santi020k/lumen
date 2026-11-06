@@ -31,7 +31,8 @@ GitHub Actions prepares the versioned ZIP, revision and checksum for desktop ver
 | [Lumen Templates](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3) | Adapt an editable desktop or mobile layout from the [template gallery](https://lumen.santi020k.com/templates). |
 | [Lumen Playgrounds](https://www.figma.com/design/G0NjJ4eAci1013PaLmseXI) | Compare web and native screens with the [running playgrounds](playgrounds.md). |
 
-These links open working files with their existing Figma access permissions. The
+The v5 UI Library is published to the Figma team and enabled in both companion files.
+These links follow the files’ existing Figma access permissions. The
 [Community listing](https://www.figma.com/community/file/1662337342676541513) distributes the public
 library. Working-file edits, team-library updates and Community releases are separate steps.
 

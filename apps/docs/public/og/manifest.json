@@ -10441,15 +10441,15 @@
     },
     "/guides/build-an-editorial-article": {
       "alt": "Build an editorial article — Product guides social preview from Lumen UI",
-      "description": "Build an editorial article with a responsive contents rail, synchronized code examples, readable tables, and enlarged-text verification.",
+      "description": "Build an editorial article with readable prose, attributed quotations, connected figure captions, responsive contents, and synchronized code examples.",
       "images": [
         {
           "format": "webp",
           "height": 630,
           "output": "guides--build-an-editorial-article.webp",
           "primary": true,
-          "url": "/og/pages/guides--build-an-editorial-article.webp?v=cbcc59fc25a3",
-          "version": "cbcc59fc25a3",
+          "url": "/og/pages/guides--build-an-editorial-article.webp?v=b94bf7619a75",
+          "version": "b94bf7619a75",
           "width": 1200
         }
       ],

@@ -12,12 +12,13 @@ export interface GuideMetadata {
 export const publishedGuides = [
   {
     author: 'Santiago Molina',
-    description: 'Build an editorial article with a responsive contents rail, synchronized code examples, readable tables, and enlarged-text verification.',
+    description: 'Build an editorial article with readable prose, attributed quotations, connected figure captions, responsive contents, and synchronized code examples.',
     href: '/guides/build-an-editorial-article',
     icon: 'book-open',
     publishedAt: '2026-11-05',
-    readingTime: '15 minute build',
-    title: 'Build an editorial article'
+    readingTime: '20 minute build',
+    title: 'Build an editorial article',
+    updatedAt: '2026-11-06'
   },
   {
     author: 'Santiago Molina',

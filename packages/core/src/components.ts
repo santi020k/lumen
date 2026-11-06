@@ -533,6 +533,12 @@ export const lumenStylingContracts = {
     rootSlot: 'phone-input',
     stability: 'stable'
   },
+  Prose: {
+    customProperties: ['--ui-prose-measure'],
+    parts: [],
+    rootSlot: 'prose',
+    stability: 'stable'
+  },
   Table: {
     customProperties: ['--ui-table-cell-padding'],
     parts: ['scroll-cue'],
