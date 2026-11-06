@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+Keep Input discovery and versioned portable skill guidance aligned with the v5 package contracts.
+
 ### Minor Changes
 
 - Add an explicit v5 migration contract and target-version audit evidence. `lumen migrate v5` keeps

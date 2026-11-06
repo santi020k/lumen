@@ -4,6 +4,8 @@
 
 - Preserve customized wrappers and show the local-to-incoming diff when `lumen add --merge` encounters edits.
 
+Expose a Vite client build report for rendered audits and generate selective subscribe-form wrappers.
+
 ### Major Changes
 
 - Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.

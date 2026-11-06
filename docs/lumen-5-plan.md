@@ -340,3 +340,10 @@ The 188 reviewed icon-case additions and all migration requirements remain uncha
 
 The final local gate includes the CSS and metadata follow-up. The next pushed revision must rerun
 GitHub checks; the release remains a draft and publication still needs explicit approval.
+
+## Consolidated v5 release scope
+
+The selective subscribe-form entries, packed delivery benchmark, Vite build report, rendered-audit
+import explanations and versioned skill refresh guidance are included in 5.0.0. The former local
+v5.1 development branch is integrated into release/v5.0.0. Its Changeset is folded into the
+prepared 5.0.0 changelogs so this work does not schedule a subsequent minor release.

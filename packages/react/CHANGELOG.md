@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+Expose selective Card and Input entries, with packed subscribe-form delivery budgets.
+
 ### Major Changes
 
 - Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.

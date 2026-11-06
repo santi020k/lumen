@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+Expose a standalone Input entry sharing its constructor and form behavior with the full catalog.
+
 ### Major Changes
 
 - Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.
