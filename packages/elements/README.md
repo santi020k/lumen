@@ -604,7 +604,10 @@ copy button. Use `copy-label`, `copied-label`, and `error-label` for clipboard
 feedback, and `code-label` to name its keyboard-scrollable source region. The same
 labels can be placed on an enclosing `<lumen-code-tabs>`; child labels take
 precedence. Copy emits `ui:copy-success` or `ui:copy-error` and announces feedback
-in a live region. Clipboard failures leave the source available for manual copy.
+in a live region. Set `recovery-label="Select and copy the complete source"` to offer a
+visibly labelled read-only field after clipboard failure. It selects on focus without taking
+focus automatically. A successful retry, source update, tab change, disabling copy, or disconnect
+removes generated recovery UI. Omitting the label keeps feedback-only behavior.
 
 Unwrapped `pre` children receive `tabindex="0"` and region semantics while keeping
 authored accessible names. Generated names follow `code-label` updates and the current enclosing code tabs after reconnecting. Changing to `wrap="true"` removes only enhancer-added focus attributes.

@@ -297,3 +297,95 @@ test.each([true, false])('editorial Code shows localized clipboard feedback (suc
   })
   expect(button().textContent).toBe('Copy snippet')
 })
+
+const update = async (apply: () => void): Promise<void> => {
+  await act(async () => {
+    apply()
+
+    await Promise.resolve()
+  })
+}
+
+test.each(['', 'const greeting = "¡Hola!";\nconsole.log(greeting)'])('Code offers exact manual recovery for %j and clears it on retry', async source => {
+  const writeText = vi.fn().mockRejectedValueOnce(new Error('Denied')).mockResolvedValue(undefined)
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  await update(() => {
+    root.render(createElement(Code, { code: source, copy: true, variant: 'block', recoveryLabel: 'Copy this source manually' }))
+  })
+  button().focus()
+  await click()
+  const field = container.querySelector('textarea')
+  if (!field) throw new Error('Missing recovery field')
+  expect(field.value).toBe(source)
+  expect(field.readOnly).toBe(true)
+  expect(document.activeElement).toBe(button())
+  field.focus()
+  expect(field.selectionStart).toBe(0)
+  expect(field.selectionEnd).toBe(source.length)
+  await update(() => {
+    vi.advanceTimersByTime(2100)
+  })
+  expect(container.querySelector('textarea')).toBe(field)
+  await click()
+  expect(container.querySelector('textarea')).toBeNull()
+})
+
+test('CodeTabs removes stale recovery on a tab change and copies the newly selected source', async () => {
+  const writeText = vi.fn().mockRejectedValue(new Error('Denied'))
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  await update(() => {
+    root.render(createElement(CodeTabs, { recoveryLabel: 'Select this command',
+      items: [
+        { value: 'one', label: 'First', code: 'first' },
+        { value: 'two', label: 'Second', code: 'second' }
+      ] }))
+  })
+  await click()
+  expect(container.querySelector('textarea')?.value).toBe('first')
+  const next = container.querySelectorAll<HTMLButtonElement>('[role="tab"]')[1]
+  if (!next) throw new Error('Missing second tab')
+  await update(() => {
+    next.click()
+  })
+  expect(container.querySelector('textarea')).toBeNull()
+  const copy = container.querySelector<HTMLButtonElement>('[role="tabpanel"]:not([hidden]) button')
+  if (!copy) throw new Error('Missing active copy button')
+  await update(() => {
+    copy.click()
+  })
+  expect(container.querySelector('textarea')?.value).toBe('second')
+})
+
+test.each([false, true])('a source update cancels pending recovery with highlighted=%s', async highlighted => {
+  let rejectCopy: ((reason: Error) => void) | undefined
+  vi.stubGlobal('navigator', { clipboard: { writeText: () => new Promise<never>((_resolve, reject) => {
+    rejectCopy = reject
+  }) } })
+  const render = (code: string) => {
+    root.render(highlighted ?
+      createElement(Code, { highlighted: true, copy: true, variant: 'block', recoveryLabel: 'Copy current source' }, createElement('pre', {}, createElement('code', {}, code))) :
+      createElement(Code, { code, copy: true, variant: 'block', recoveryLabel: 'Copy current source' }))
+  }
+  await update(() => {
+    render('old source')
+  })
+  await click()
+  await update(() => {
+    render('new source')
+  })
+  await update(() => {
+    rejectCopy?.(new Error('Denied'))
+  })
+  expect(container.querySelector('textarea')).toBeNull()
+  expect(button().dataset.state).toBe('idle')
+})
+
+test('missing highlighted source never offers a non-existent recovery field', async () => {
+  vi.stubGlobal('navigator', {})
+  await update(() => {
+    root.render(createElement(Code, { highlighted: true, copy: true, variant: 'block', errorLabel: 'No source available', recoveryLabel: 'Select complete source' }))
+  })
+  await click()
+  expect(container.querySelector('textarea')).toBeNull()
+  expect(container.querySelector('[role="status"]')?.textContent).toBe('No source available')
+})

@@ -146,7 +146,8 @@ import { composeHandlers, glassClass, glassSurfaceClass, resolveSurface, type Su
 import {
   Input,
   type InputProps,
-  Label
+  Label,
+  Textarea
 } from './server-components.js'
 import { useCopyFeedback } from './use-copy-feedback.js'
 
@@ -2159,6 +2160,7 @@ export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
   copyLabel?: string
   copiedLabel?: string
   errorLabel?: string
+  recoveryLabel?: string
   code?: string
   copy?: boolean
   highlighted?: boolean
@@ -2192,14 +2194,23 @@ const renderCodeChildren = (
 
 interface CodeCopyLabels {
   appearance: 'default' | 'editorial'
+  source: ReactNode
   code: string | undefined
   copyLabel: string
   copiedLabel: string
   errorLabel: string
+  recoveryLabel: string | undefined
 }
 
-const CodeCopyButton = ({ appearance, code, copyLabel, copiedLabel, errorLabel }: CodeCopyLabels) => {
-  const { accessibleLabel, handleClick, state } = useCopyFeedback({
+const CodeCopyButton = ({
+  appearance, code, copyLabel, copiedLabel, errorLabel, recoveryLabel, source
+}: CodeCopyLabels) => {
+  const tabs = use(TabsContext)
+  const recoveryKey = useMemo(() => [code, source, tabs?.value], [code, source, tabs?.value])
+
+  const { accessibleLabel, handleClick, recoveryValue, state } = useCopyFeedback({
+    recoveryLabel,
+    recoveryKey,
     copiedLabel,
     errorLabel,
     getValue: button => {
@@ -2228,8 +2239,25 @@ const CodeCopyButton = ({ appearance, code, copyLabel, copiedLabel, errorLabel }
         {appearance === 'editorial' && <span className="ui-code__copy-text">{accessibleLabel}</span>}
       </button>
       <span aria-live="polite" className="ui-sr-only" role="status">
-        {state === 'idle' ? '' : accessibleLabel}
+        {state === 'idle' ? '' : `${accessibleLabel}${state === 'error' && recoveryValue !== undefined && recoveryLabel ? ` ${recoveryLabel}` : ''}`}
       </span>
+      {recoveryLabel && recoveryValue !== undefined && (
+        <label className="ui-code__recovery">
+          <span>{recoveryLabel}</span>
+          <Textarea
+            aria-label={recoveryLabel}
+            onClick={event => {
+              event.currentTarget.select()
+            }}
+            onFocus={event => {
+              event.currentTarget.select()
+            }}
+            readOnly
+            rows={3}
+            value={recoveryValue}
+          />
+        </label>
+      )}
     </>
   )
 }
@@ -2309,7 +2337,7 @@ interface CodeHeaderOptions extends CodeCopyLabels {
 }
 
 const renderCodeHeader = ({
-  appearance, code, copy, copyLabel, copiedLabel, errorLabel, label, language
+  appearance, code, copy, copyLabel, copiedLabel, errorLabel, recoveryLabel, label, language, source
 }: CodeHeaderOptions) => {
   if (!copy && !label && !language) return null
 
@@ -2342,6 +2370,8 @@ const renderCodeHeader = ({
           copiedLabel={copiedLabel}
           copyLabel={copyLabel}
           errorLabel={errorLabel}
+          recoveryLabel={recoveryLabel}
+          source={source}
         />
       )}
     </figcaption>
@@ -2362,6 +2392,7 @@ export const Code = ({
   copyLabel,
   copiedLabel,
   errorLabel,
+  recoveryLabel,
   highlighted = false,
   label,
   language,
@@ -2381,9 +2412,10 @@ export const Code = ({
         data-language={language}
         data-slot="code"
         data-ui-code
+        data-ui-owner="react"
         {...props}
       >
-        {renderCodeHeader({ appearance, code, copy, ...labels, label, language })}
+        {renderCodeHeader({ appearance, code, copy, ...labels, recoveryLabel, label, language, source: children })}
         {highlighted ?
           (
             <HighlightedCode codeLabel={labels.codeLabel} wrap={wrap}>{children}</HighlightedCode>
@@ -2474,6 +2506,7 @@ export const CopyButton = ({
       data-slot="copy-button"
       data-state={state}
       data-ui-copy-button
+      data-ui-owner="react"
       onClick={handleClick}
       size={size}
       variant={variant}
@@ -2507,6 +2540,7 @@ export interface CodeTabsProps extends Omit<
   copyLabel?: string
   copiedLabel?: string
   errorLabel?: string
+  recoveryLabel?: string
   initialValue?: string
   items?: readonly CodeTabItem[]
   storageKey?: string
@@ -5822,6 +5856,7 @@ export const CodeTabs = ({
   copyLabel,
   copiedLabel,
   errorLabel,
+  recoveryLabel,
   initialValue,
   items = emptyCodeTabItems,
   storageKey,
@@ -5918,6 +5953,7 @@ export const CodeTabs = ({
           <Code
             code={item.code}
             copy={copy}
+            {...(recoveryLabel === undefined ? {} : { recoveryLabel })}
             {...labels}
             {...(item.language === undefined ?
               {} :

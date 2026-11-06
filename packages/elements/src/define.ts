@@ -8706,6 +8706,8 @@ class LumenCodeBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private observer: MutationObserver | undefined
   private resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
+  private source: string | undefined
+  private recovery: HTMLLabelElement | undefined
   private operation = 0
   private generatedCopyButton: HTMLButtonElement | undefined
   private generatedCopyStatus: HTMLElement | undefined
@@ -8725,9 +8727,10 @@ class LumenCodeBehaviorElement extends LumenElement {
     })
 
     this.observer.observe(this, {
-      attributeFilter: ['appearance', 'code-label', 'copy', 'copy-label', 'copied-label', 'error-label', 'wrap', 'variant'],
+      attributeFilter: ['appearance', 'code-label', 'copy', 'copy-label', 'copied-label', 'error-label', 'recovery-label', 'wrap', 'variant'],
       attributes: true,
       childList: true,
+      characterData: true,
       subtree: true
     })
 
@@ -8737,6 +8740,18 @@ class LumenCodeBehaviorElement extends LumenElement {
       if (button?.closest('lumen-code') === this) void this.#copy(button)
     }, { signal: this.abortController.signal })
 
+    const tabs = this.closest('lumen-code-tabs')
+
+    tabs?.addEventListener('ui:tabs-change', event => {
+      if (event.target !== tabs || !this.closest<HTMLElement>('[role="tabpanel"]')?.hidden) return
+
+      this.operation += 1
+
+      this.recovery?.remove()
+
+      this.recovery = undefined
+    }, { signal: this.abortController.signal })
+
     this.#updateCode()
   }
 
@@ -8744,6 +8759,10 @@ class LumenCodeBehaviorElement extends LumenElement {
     this.abortController?.abort()
 
     this.observer?.disconnect()
+
+    this.recovery?.remove()
+
+    this.recovery = undefined
 
     this.operation += 1
 
@@ -8762,6 +8781,10 @@ class LumenCodeBehaviorElement extends LumenElement {
     this.operation += 1
 
     globalThis.clearTimeout(this.resetTimer)
+
+    this.recovery?.remove()
+
+    this.recovery = undefined
 
     this.generatedCopyButton?.remove()
 
@@ -8807,6 +8830,24 @@ class LumenCodeBehaviorElement extends LumenElement {
 
   #updateCode() {
     const pre = this.querySelector('pre')
+    const content = pre?.querySelector('code')
+    const source = content?.innerText ?? content?.textContent ?? undefined
+
+    if (source !== this.source) {
+      this.operation += 1
+
+      this.source = source
+
+      this.recovery?.remove()
+
+      this.recovery = undefined
+    }
+
+    if (this.recovery && this.recovery.querySelector('span')?.textContent !== this.#label('recovery-label', '')) {
+      this.recovery.remove()
+
+      this.recovery = undefined
+    }
 
     this.#updateFocusAttributes(pre, this.getAttribute('variant') === 'block' && this.getAttribute('wrap') !== 'true')
 
@@ -8913,7 +8954,49 @@ class LumenCodeBehaviorElement extends LumenElement {
     if (text.textContent !== label) text.textContent = label
   }
 
+  #showRecovery(value: string) {
+    const label = this.#label('recovery-label', '')
+
+    if (!label) return
+
+    this.recovery?.remove()
+
+    const recovery = this.ownerDocument.createElement('label')
+    const caption = this.ownerDocument.createElement('span')
+    const input = this.ownerDocument.createElement('textarea')
+
+    recovery.className = 'ui-code__recovery'
+
+    caption.textContent = label
+
+    input.className = 'ui-textarea'
+
+    input.readOnly = true
+
+    input.rows = 3
+
+    input.value = value
+
+    input.setAttribute('aria-label', label)
+
+    input.addEventListener('focus', () => {
+      input.select()
+    })
+
+    input.addEventListener('click', () => {
+      input.select()
+    })
+
+    recovery.append(caption, input)
+
+    this.append(recovery)
+
+    this.recovery = recovery
+  }
+
   async #copy(button: HTMLButtonElement) {
+    this.#updateCode()
+
     if (!this.#copyEnabled()) return
 
     const operation = ++this.operation
@@ -8923,10 +9006,12 @@ class LumenCodeBehaviorElement extends LumenElement {
     const label = this.#label('copy-label', 'Copy code to clipboard')
     let feedback = this.#label('copied-label', 'Code copied to clipboard')
     let state: 'copied' | 'error' = 'copied'
+    let value: string | undefined
 
     try {
       const code = this.querySelector<HTMLElement>('pre code')
-      const value = code?.innerText ?? code?.textContent
+
+      value = code?.innerText ?? code?.textContent
 
       if (value === undefined) throw new Error('Clipboard is unavailable')
 
@@ -8934,11 +9019,17 @@ class LumenCodeBehaviorElement extends LumenElement {
 
       if (operation !== this.operation) return
 
+      this.recovery?.remove()
+
+      this.recovery = undefined
+
       button.dispatchEvent(new CustomEvent('ui:copy-success', { bubbles: true, detail: { value } }))
     } catch (error) {
       if (operation !== this.operation) return
 
       state = 'error'
+
+      if (value !== undefined) this.#showRecovery(value)
 
       feedback = this.#label('error-label', 'Could not copy code. Select and copy it manually.')
 
@@ -8957,7 +9048,7 @@ class LumenCodeBehaviorElement extends LumenElement {
 
     const status = this.querySelector<HTMLElement>('[data-ui-code-status]')
 
-    if (status) status.textContent = feedback
+    if (status) status.textContent = this.recovery ? `${feedback} ${this.#label('recovery-label', '')}` : feedback
 
     this.resetTimer = globalThis.setTimeout(() => {
       button.dataset.state = 'idle'

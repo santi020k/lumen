@@ -41,7 +41,9 @@ const bindCodeRegions = (root: HTMLElement): void => {
 }
 
 export const initCodeRegions = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-code]')) bindCodeRegions(root)
+  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-code]')) {
+    if (!root.closest('[data-ui-owner], lumen-code')) bindCodeRegions(root)
+  }
 }
 
 const getCopyTargetValue = (target: HTMLElement | null): string | undefined => {
@@ -77,13 +79,14 @@ const announceCopy = (button: HTMLElement, label: string, variant: 'success' | '
 }
 
 const bindCopyButtons = (button: HTMLButtonElement): void => {
-  if (button.dataset.uiCopyButtonBound === 'true') return
+  if (button.dataset.uiCopyButtonBound === 'true' || button.closest('[data-ui-owner], lumen-code, lumen-copy-button')) return
 
   button.dataset.uiCopyButtonBound = 'true'
 
   let resetTimer = 0
   let operation = 0
-  let recovery: HTMLTextAreaElement | undefined
+  let recovery: HTMLLabelElement | undefined
+  let recoveryInput: HTMLTextAreaElement | undefined
   const recoveryLabel = button.dataset.copyRecoveryLabel
   const codeRoot = button.closest('[data-ui-code]')
   const panel = button.closest<HTMLElement>('[role="tabpanel"]')
@@ -105,25 +108,35 @@ const bindCopyButtons = (button: HTMLButtonElement): void => {
     if (!recoveryLabel) return
 
     if (!recovery) {
-      recovery = button.ownerDocument.createElement('textarea')
+      recovery = button.ownerDocument.createElement('label')
 
-      recovery.className = 'ui-textarea'
+      recovery.className = codeRoot ? 'ui-code__recovery' : 'ui-copy-button__recovery'
 
-      recovery.readOnly = true
+      const caption = button.ownerDocument.createElement('span')
 
-      recovery.rows = 2
+      caption.textContent = recoveryLabel
 
-      recovery.setAttribute('aria-label', recoveryLabel)
+      recoveryInput = button.ownerDocument.createElement('textarea')
 
-      recovery.addEventListener('focus', () => recovery?.select())
+      recoveryInput.className = 'ui-textarea'
 
-      recovery.addEventListener('click', () => recovery?.select())
+      recoveryInput.readOnly = true
+
+      recoveryInput.rows = 3
+
+      recoveryInput.setAttribute('aria-label', recoveryLabel)
+
+      recoveryInput.addEventListener('focus', () => recoveryInput?.select())
+
+      recoveryInput.addEventListener('click', () => recoveryInput?.select())
+
+      recovery.append(caption, recoveryInput)
 
       if (codeRoot) codeRoot.append(recovery)
       else button.after(recovery)
     }
 
-    recovery.value = value
+    if (recoveryInput) recoveryInput.value = value
   }
 
   const setCopyButtonState = (state: 'copied' | 'error' | 'idle'): void => {

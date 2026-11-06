@@ -624,7 +624,10 @@ See [consumer workflows](https://github.com/santi020k/lumen/blob/main/docs/consu
 success/error feedback; `codeLabel` names the keyboard-focusable region for an
 unwrapped code block. A denied or unavailable clipboard reports the error label
 and keeps the source available for manual selection. `CodeTabs` forwards these
-labels to each code example.
+labels to each code example. Set `recoveryLabel="Select and copy the complete source"`
+to show a labelled read-only field after clipboard failure. It contains the complete source,
+selects on focus, and stays available after button feedback clears. Successful copying or
+changing tabs removes it. Recovery never takes focus automatically.
 
 `Code` with `highlighted` enhances the supplied `pre` when the Astro runtime loads.
 For keyboard scrolling before JavaScript loads, give that `pre` `tabindex="0"`,

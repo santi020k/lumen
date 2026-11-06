@@ -1556,6 +1556,9 @@ const apiReferenceByComponent = {
   ],
   Code: [
     apiRow(
+      'recoveryLabel', 'string', '-', 'Opts into a visibly labelled, read-only field with the complete source after clipboard failure. Focusing it selects the text; retrying successfully removes it.'
+    ),
+    apiRow(
       'appearance', '"default" | "editorial"', '"default"', 'Editorial blocks use a code icon and visible localized copy feedback. Both appearances wrap metadata at narrow widths.'
     ),
     apiRow(
@@ -1584,6 +1587,9 @@ const apiReferenceByComponent = {
     )
   ],
   CodeTabs: [
+    apiRow(
+      'recoveryLabel', 'string', '-', 'Forwards manual-copy recovery to each code example and clears stale recovery when changing tabs. Elements uses recovery-label on lumen-code-tabs.'
+    ),
     apiRow(
       'items', 'Array<{ code, label, language?, value }>', 'required', 'Defines the labelled code examples and their stable selection values.'
     ),

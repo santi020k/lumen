@@ -1254,3 +1254,11 @@ optional `footer`/`cite` inside `blockquote`; keep media and its `figcaption` to
 or optimized native image integration. Component-owned figures, including Code and charts,
 retain their own styling. Prose styles content; the application owns parsing, sanitization,
 heading IDs, captions, citations, and localization.
+
+### Manual code-copy recovery
+
+Pass `recoveryLabel="Select and copy the complete source"` to `Code` or `CodeTabs`
+to show a labelled read-only field when clipboard access fails. It contains the exact source,
+including empty strings, and selects its contents on focus. Recovery does not take focus and
+remains available after transient feedback resets. A successful retry, source update, or tab
+change removes it. Omit the prop to keep the existing feedback-only behavior.

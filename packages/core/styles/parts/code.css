@@ -2,6 +2,7 @@
 @layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities;
 @layer lumen.components {
 .ui-code-tabs .ui-code--block {
+  display: block;
   margin: 0;
   border: 0;
   border-radius: 0;
@@ -266,6 +267,26 @@
 }
 
 @layer lumen.components {
+.ui-code__recovery {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--ui-space-sm);
+  margin: var(--ui-space-md);
+  color: var(--ui-code-muted, hsl(var(--ink-soft)));
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+}
+
+@layer lumen.components {
+.ui-code__recovery > textarea { width: 100%; min-inline-size: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+}
+
+@layer lumen.components {
+.ui-code__header > .ui-code__recovery { flex: 1 0 100%; grid-column: 1 / -1; margin: 0; }
+}
+
+@layer lumen.components {
 .ui-code__copy:hover {
   border-color: color-mix(in srgb, var(--ui-code-token-keyword), transparent 48%);
   color: var(--ui-code-token-keyword);
@@ -462,7 +483,7 @@
 
 @layer lumen.components {
 @media print {
-.ui-code--block > textarea[readonly] {
+.ui-code__recovery {
     display: none;
   }
 }

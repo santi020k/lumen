@@ -863,3 +863,13 @@ owner; keep schemas, financial policy, requests, authorization, and draft storag
 For photo and media editors, install the `media-workspace` recipe and follow
 [Studio media workspaces](studio-media-workspaces.md). Reuse public media controls; keep
 image processing, storage and export in the consumer application.
+
+## Manual code-copy recovery
+
+For documentation and generated commands, set `recoveryLabel="Select and copy the complete source"`
+on `Code` or `CodeTabs` in Astro and React. Elements accepts `recovery-label` on `lumen-code` or
+its enclosing `lumen-code-tabs`. Clipboard failure then exposes the complete text in a labelled,
+read-only field that selects on focus. Recovery never takes focus automatically, stays usable
+after transient feedback resets, and clears on a successful retry or a tab change. This is opt-in;
+keep `errorLabel` useful when no recovery field is requested. Supply `code` when highlighted or
+folded previews do not contain the full source.

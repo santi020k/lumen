@@ -28,3 +28,19 @@
   display: none;
 }
 }
+
+@layer lumen.components {
+.ui-copy-button__recovery {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--ui-space-sm);
+  margin: var(--ui-space-md);
+  color: var(--ui-code-muted, hsl(var(--ink-soft)));
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+}
+
+@layer lumen.components {
+.ui-copy-button__recovery > textarea { width: 100%; min-inline-size: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+}
