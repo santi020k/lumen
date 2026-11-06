@@ -206,11 +206,16 @@ const formatAddResult = async (itemName: string, registry: LumenRegistry) => {
     target: getAddTarget(targetValue, targetProvided)
   })
 
+  const heading = result.dryRun ? 'Would add' : 'Added'
+
+  if (result.conflicts.length) process.exitCode = 1
+
   return [
-    `${result.dryRun ? 'Would add' : 'Added'} ${result.item.name}`,
+    `${result.conflicts.length ? 'Review conflicts for' : heading} ${result.item.name}`,
     ...result.added.map(file => `- ${file}`),
     ...result.merged.map(file => `- merged existing ${file}`),
-    ...result.skipped.map(file => `- skipped existing ${file}`)
+    ...result.skipped.map(file => `- skipped existing ${file}`),
+    ...result.conflicts.map(({ path, diff }) => `- preserved edited ${path}\n${diff}`)
   ].join('\n')
 }
 
@@ -276,7 +281,7 @@ const help = [
   '  --dry-run              Print files without writing them',
   '  --fail-on-conflict     Exit if a target recipe file already exists',
   '  --force                Overwrite existing recipe files',
-  '  --merge                Merge recipe files with existing files',
+  '  --merge                Preserve edited files and show local-to-incoming diffs',
   '  --registry <source>    Load list/show data from a local or remote registry JSON file',
   '  --registry-token <key> Use a bearer token for private remote registries',
   '  --target <framework>   Generate wrappers or recipe starters for astro, react, or elements',

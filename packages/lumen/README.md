@@ -116,8 +116,9 @@ comment. See [selective installation](../../docs/selective-installation.md) for 
 manual markup setup, source doctor version evidence, and the full stylesheet convenience option.
 
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
-`--target elements` for a custom-elements starter. Recipe availability varies by family; the editorial family supports Astro. With `--conflict error`, existing target files are checked before any recipe
-files are written; runtime write failures can still require cleanup.
+`--target elements` for a custom-elements starter. Recipe availability varies by family; the editorial family supports Astro. With `--fail-on-conflict`, existing target files are checked before any recipe
+files are written. Use `--merge` to add missing files and review a diff for each edited file.
+Edited files are preserved and the CLI exits 1 on conflicts. Add `--dry-run` to preview the whole install.
 
 Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin`,
 `commerce-dashboard`, `project-workspace`, `auth-onboarding`, `docs-shell`, `marketing-shell`,

@@ -56,4 +56,7 @@ checks and legacy guidance remain available. Source imports describe setup inten
 
 Setup prints the Lumen 5 foundation guidance. It does not install dependencies or register a complete
 Elements catalog. Keep dry runs and conflict policies when adopting generated wrappers in an existing
-project; rerunning add preserves edited files unless an explicit overwrite or merge policy is chosen.
+project; rerunning add preserves edited files. Use `--merge --dry-run` to preview local-to-incoming
+diffs. With `--merge`, missing files are added, identical files are skipped and edited files stay
+untouched. A conflict returns exit code 1 so you can review the diff and apply selected edits.
+Only `--force` replaces the local copy.
