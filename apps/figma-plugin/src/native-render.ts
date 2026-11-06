@@ -1,4 +1,5 @@
 import type { NativeNode } from './native-design.js'
+import type { OnboardingFlow } from './native-onboarding.js'
 import type { NativePlatform } from './targets.js'
 
 const indent = (lines: string) => lines.split('\n').map(line => '  ' + line).join('\n')
@@ -50,7 +51,45 @@ interface NativeState {
 
 const hasState = ({ fields, checks, choices }: NativeState) => fields > 0 || checks.length > 0 || choices.length > 0
 
-const reactNative = (root: NativeNode, state: NativeState) => {
+type Button = Extract<NativeNode, { kind: 'button' }>
+
+const buttonAction = (button: Button, platform: 'tsx' | 'native') => {
+  if (!button.navigation) return '/* Connect action */'
+
+  const forward = button.navigation === 'preferences'
+
+  return platform === 'tsx' ? `setShowPreferences(${forward})` : `showPreferences = ${forward}`
+}
+
+const buttonDisabled = (button: Button) => {
+  if (button.disabled) return 'true'
+
+  return button.navigation === 'preferences' ? '!canContinue' : 'false'
+}
+
+const buttonEnabled = (button: Button) => {
+  if (button.disabled) return 'false'
+
+  return button.navigation === 'preferences' ? 'canContinue' : 'true'
+}
+
+type RenderNode = (node: NativeNode) => string
+
+const renderPages = (root: NativeNode, flow: OnboardingFlow | null, render: RenderNode, platform: NativePlatform) => {
+  const workspace = render(root)
+
+  if (!flow) return workspace
+
+  const preferences = render(flow.preferences)
+
+  if (platform === 'react-native') return `showPreferences ? (\n${indent(preferences)}\n) : (\n${indent(workspace)}\n)`
+
+  const condition = platform === 'compose' ? 'if (showPreferences)' : 'if showPreferences'
+
+  return `${block(condition, preferences)} else {\n${indent(workspace)}\n}`
+}
+
+const reactNative = (root: NativeNode, state: NativeState, flow: OnboardingFlow | null) => {
   const { fields, checks, choices } = state
   const foundation = new Set<string>()
   const extra = new Set<string>()
@@ -95,7 +134,7 @@ const reactNative = (root: NativeNode, state: NativeState) => {
       case 'button':
         foundation.add('LumenButton')
 
-        return `<LumenButton intent="${node.intent}" size="${node.size}" loading={${node.loading}} disabled={${node.disabled}} onPress={() => { /* Connect action */ }}>${expr(node.label)}</LumenButton>`
+        return `<LumenButton intent="${node.intent}" size="${node.size}" loading={${node.loading}} disabled={${buttonDisabled(node)}} onPress={() => { ${buttonAction(node, 'tsx')} }}>${expr(node.label)}</LumenButton>`
 
       case 'badge':
         foundation.add('LumenBadge')
@@ -131,7 +170,7 @@ const reactNative = (root: NativeNode, state: NativeState) => {
     }
   }
 
-  const body = render(root)
+  const body = renderPages(root, flow, render, 'react-native')
   const view = foundation.has('useLumenTheme')
 
   const imports = [
@@ -146,7 +185,9 @@ const reactNative = (root: NativeNode, state: NativeState) => {
     fieldStates(fields, i => `const [field${i}, setField${i}] = useState('')`),
     ...checks.map((checked, i) => `const [checked${i + 1}, setChecked${i + 1}] = useState(${checked})`),
     ...choices.map((value, i) => `const [choice${i + 1}, setChoice${i + 1}] = useState(${literal(value, 'tsx')})`),
+    ...(flow ? ['const [showPreferences, setShowPreferences] = useState(false)'] : []),
     ...errors,
+    ...(flow ? [`const canContinue = field${flow.workspaceField}.trim().length > 0 && field${flow.emailField}.length > 0 && !field${flow.emailField}Error`] : []),
     `return (\n${indent(body)}\n)`
   ].filter(Boolean)
 
@@ -155,7 +196,7 @@ const reactNative = (root: NativeNode, state: NativeState) => {
 
 const swiftEdge = { top: 'top', end: 'trailing', bottom: 'bottom', start: 'leading' }
 
-const swift = (root: NativeNode, { fields, checks, choices }: NativeState) => {
+const swift = (root: NativeNode, { fields, checks, choices }: NativeState, flow: OnboardingFlow | null) => {
   const errors: string[] = []
   const q = (text: string) => `.verbatim(${literal(text, 'swift')})`
 
@@ -185,7 +226,7 @@ const swift = (root: NativeNode, { fields, checks, choices }: NativeState) => {
     switch (node.kind) {
       case 'text': return `LumenText(${q(node.content)}, variant: .${node.variant}, tone: .${node.tone})`
 
-      case 'button': return `LumenButton(${q(node.label)}, intent: .${node.intent}, size: .${node.size}, loading: ${node.loading}, disabled: ${node.disabled}) { /* Connect action */ }`
+      case 'button': return `LumenButton(${q(node.label)}, intent: .${node.intent}, size: .${node.size}, loading: ${node.loading}, disabled: ${buttonDisabled(node)}) { ${buttonAction(node, 'native')} }`
 
       case 'badge': return `LumenBadge(${q(node.label)}, tone: .${node.tone})`
 
@@ -208,12 +249,15 @@ const swift = (root: NativeNode, { fields, checks, choices }: NativeState) => {
   }
 
   const state = [
+    flow ? '@State private var showPreferences = false' : '',
     fieldStates(fields, i => `@State private var field${i} = ""`),
     ...checks.map((checked, i) => `@State private var checked${i + 1} = ${checked}`),
     ...choices.map((value, i) => `@State private var choice${i + 1} = ${literal(value, 'swift')}`)
   ].filter(Boolean).join('\n')
 
-  const body = render(root)
+  const body = renderPages(root, flow, render, 'swiftui-ios')
+
+  if (flow) errors.push(`let canContinue = !field${flow.workspaceField}.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !field${flow.emailField}.isEmpty && field${flow.emailField}Error == nil`)
 
   return 'import SwiftUI\nimport LumenUI\n\n' + block('struct LumenSelection: View', [state, block('var body: some View', [...errors, body].join('\n'))].filter(Boolean).join('\n\n')) + '\n'
 }
@@ -241,7 +285,7 @@ const kotlinString = (value: string) => {
   return 'listOf(' + chunks.join(', ') + ').joinToString("")'
 }
 
-const compose = (root: NativeNode, form: NativeState) => {
+const compose = (root: NativeNode, form: NativeState, flow: OnboardingFlow | null) => {
   const { fields, checks, choices } = form
   const errors: string[] = []
   const q = kotlinString
@@ -288,7 +332,7 @@ const compose = (root: NativeNode, form: NativeState) => {
       case 'button':
         imports.add('androidx.compose.material3.Text')
 
-        return `LumenButton(onClick = { /* Connect action */ }, intent = LumenButtonIntent.${upper(node.intent)}, size = LumenControlSize.${upper(node.size)}, loading = ${node.loading}, enabled = ${!node.disabled}) { Text(${q(node.label)}) }`
+        return `LumenButton(onClick = { ${buttonAction(node, 'native')} }, intent = LumenButtonIntent.${upper(node.intent)}, size = LumenControlSize.${upper(node.size)}, loading = ${node.loading}, enabled = ${buttonEnabled(node)}) { Text(${q(node.label)}) }`
 
       case 'badge': return `LumenBadge(${q(node.label)}, tone = LumenBadgeTone.${upper(node.tone)})`
 
@@ -313,26 +357,29 @@ const compose = (root: NativeNode, form: NativeState) => {
     }
   }
 
-  const body = render(root)
+  const body = renderPages(root, flow, render, 'compose')
 
   if (hasState(form)) {
     for (const symbol of ['getValue', 'setValue', 'mutableStateOf', 'saveable.rememberSaveable']) imports.add('androidx.compose.runtime.' + symbol)
   }
 
   const state = [
+    flow ? 'var showPreferences by rememberSaveable { mutableStateOf(false) }' : '',
     fieldStates(fields, i => `var field${i} by rememberSaveable { mutableStateOf("") }`),
     ...checks.map((checked, i) => `var checked${i + 1} by rememberSaveable { mutableStateOf(${checked}) }`),
     ...choices.map((value, i) => `var choice${i + 1} by rememberSaveable { mutableStateOf(${q(value)}) }`)
   ].filter(Boolean).join('\n')
+
+  if (flow) errors.push(`val canContinue = field${flow.workspaceField}.isNotBlank() && field${flow.emailField}.isNotEmpty() && field${flow.emailField}Error == null`)
 
   return [...imports].sort().map(name => 'import ' + name).join('\n') + (errors.length ? `\n\nprivate val emailPattern = Regex(${q(emailPattern)})` : '') + '\n\n@Composable\n' + block('fun LumenSelection()', [state, ...errors, body
   ].filter(Boolean).join('\n')) + '\n'
 }
 
 export const renderNative = (
-  platform: NativePlatform, root: NativeNode, state: NativeState
+  platform: NativePlatform, root: NativeNode, state: NativeState, flow: OnboardingFlow | null
 ): string => {
-  if (platform === 'react-native') return reactNative(root, state)
+  if (platform === 'react-native') return reactNative(root, state, flow)
 
-  return platform === 'compose' ? compose(root, state) : swift(root, state)
+  return platform === 'compose' ? compose(root, state, flow) : swift(root, state, flow)
 }
