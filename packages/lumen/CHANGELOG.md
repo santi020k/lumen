@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Add the optional Astro editable-ticket recipe with synchronized views, keyboard editing, cancel and undo.
+
 - Preserve customized wrappers and show the local-to-incoming diff when `lumen add --merge` encounters edits.
 
 Expose a Vite client build report for rendered audits and generate selective subscribe-form wrappers.
