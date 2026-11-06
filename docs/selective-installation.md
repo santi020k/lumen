@@ -36,7 +36,7 @@ The component CSS entries include their declared dependencies. Full styles.css r
 alternative to individually selected CSS. Do not combine full CSS with selective imports to claim
 smaller route delivery; measure the emitted and requested assets in the actual application.
 
-Select Studio, santi020k or glass using the [optional appearance imports](appearance-presets.md#web).
+Select Paper, Field, Studio, santi020k or glass using the [optional appearance imports](appearance-presets.md#web).
 The base includes Lumen light and dark.
 
 ## Source diagnostics
