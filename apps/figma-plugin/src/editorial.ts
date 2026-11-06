@@ -1,4 +1,5 @@
 import type { DesignNode } from './model.js'
+import { stackGaps } from './presentations.js'
 import type { ExportTarget } from './targets.js'
 
 // Encode design content as data inside an Astro expression, including frontmatter
@@ -17,6 +18,30 @@ const layerText = (node: DesignNode, layer: string): string[] => {
   if (node.type === 'TEXT') return node.name === layer && node.text !== null ? [node.text] : []
 
   return node.children.flatMap(child => layerText(child, layer))
+}
+
+const optionalTextAttribute = (node: DesignNode, property: string, attribute: string) => {
+  const value = node.properties[property]
+
+  return typeof value === 'string' && value ? ` ${attribute}=${expression(value)}` : ''
+}
+
+const copyAttributes = (node: DesignNode) => {
+  if (node.properties['Show copy'] !== true) return ''
+
+  return ' copy' + optionalTextAttribute(node, 'Copy label', 'copyLabel') +
+    optionalTextAttribute(node, 'Copied label', 'copiedLabel') + optionalTextAttribute(node, 'Error label', 'errorLabel')
+}
+
+const codePresentation = (node: DesignNode, target: ExportTarget, variant: string, wrap: boolean) => {
+  if (variant !== 'block') return ''
+
+  const selected = node.properties.Appearance
+  const editorial = selected === undefined ? ['paper', 'field'].includes(target.appearance) : selected === 'Editorial'
+  const appearance = target.version === '5.0.0' && editorial ? ' appearance="editorial"' : ''
+  const scrollCue = !wrap && node.properties['Show scroll cue'] === true ? ' scrollCue' : ''
+
+  return appearance + optionalTextAttribute(node, 'Language', 'language') + copyAttributes(node) + scrollCue
 }
 
 export const editorialRenderers = ({ target, text, choice, issue, addImports }: RenderContext) => {
@@ -50,11 +75,11 @@ export const editorialRenderers = ({ target, text, choice, issue, addImports }: 
       const variant = choice(node, 'Variant', ['inline', 'block'], 'inline')
       const lines = layerText(node, variant === 'inline' ? 'Code' : 'Line')
       const wrap = choice(node, 'Wrap', ['off', 'on'], 'off') === 'on'
-      const editorial = variant === 'block' && ['paper', 'field'].includes(target.appearance)
+      const presentation = codePresentation(node, target, variant, wrap)
 
       if (!lines.length) issue(node, 'The code source layers are missing. Supply the example as plain text.')
 
-      return `<Code variant="${variant}" code=${expression(lines.join('\n'))}${wrap ? ' wrap' : ''}${editorial ? ' appearance="editorial"' : ''} />`
+      return `<Code variant="${variant}" code=${expression(lines.join('\n'))}${wrap ? ' wrap' : ''}${presentation} />`
     },
     CardTitle: textComponent('CardTitle'),
     CardDescription: textComponent('CardDescription'),
@@ -69,7 +94,7 @@ export const editorialRenderers = ({ target, text, choice, issue, addImports }: 
     },
     Stack: (node: DesignNode, _id: string, children: string) => {
       const direction = choice(node, 'Direction', ['vertical', 'horizontal'], 'vertical')
-      const gap = choice(node, 'Gap', ['none', 'sm', 'md', 'lg', 'xl'], 'md')
+      const gap = choice(node, 'Gap', stackGaps, 'md')
 
       return `<Stack direction="${direction}" gap="${gap}"${node.layout?.wrap ? ' wrap' : ''}>\n${children}\n</Stack>`
     },

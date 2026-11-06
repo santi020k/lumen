@@ -1,9 +1,10 @@
 import designMap from '../../../registry/figma-design-map.json'
 
 import type { ComponentName } from './contracts.js'
-import { identifyComponent, isComponentName, libraryFileKey } from './contracts.js'
+import { identifyComponent, isComponentName, libraryFileKey, withPresentationContent } from './contracts.js'
 import { editorialRenderers, expression } from './editorial.js'
 import type { Analysis, DesignNode, Finding } from './model.js'
+import { cardPresentationAttributes, dialogPresentationAttributes } from './presentations.js'
 import type { ExportTarget } from './targets.js'
 import { defaultTarget, layoutFor } from './targets.js'
 
@@ -66,7 +67,9 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
     if (node.unboundPaints > 0) issue(node, `${node.unboundPaints} visible paints have no variable binding. Review semantic colors.`)
 
     for (const token of node.tokens) {
-      if (!Object.hasOwn(designMap.tokenMap, token.name)) issue(node, `Review variable ${token.name}; it has no shared color mapping.`)
+      if (!Object.hasOwn(designMap.tokenMap, token.name) && !Object.hasOwn(designMap.componentPaints, token.name)) {
+        issue(node, `Review variable ${token.name}; it has no shared color mapping.`)
+      }
     }
 
     node.children.forEach(auditTokens)
@@ -125,7 +128,7 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
   const renderCard = (node: DesignNode): string => {
     addImports('CardHeader', 'CardTitle', 'CardContent')
 
-    return `<Card>\n  <CardHeader><CardTitle>${expression(text(node, 'Title', 'Card title'))}</CardTitle></CardHeader>\n  <CardContent><p>${expression(text(node, 'Body', ''))}</p></CardContent>\n</Card>`
+    return `<Card${cardPresentationAttributes(node)}>\n  <CardHeader><CardTitle>${expression(text(node, 'Title', 'Card title'))}</CardTitle></CardHeader>\n  <CardContent><p>${expression(text(node, 'Body', ''))}</p></CardContent>\n</Card>`
   }
 
   const renderTabs = (node: DesignNode): string => {
@@ -137,7 +140,7 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
 
     issue(node, 'Tab labels and active state are mapped. Replace the placeholder panel content.')
 
-    return `<Tabs initialValue="${active}">\n  <TabsList aria-label="Sections">\n${values.map((value, index) => `    <TabsTrigger value="${value}">${expression(labels[index] ?? value)}</TabsTrigger>`).join('\n')}\n  </TabsList>\n${values.map(value => `  <TabsPanel value="${value}"><p>Replace with ${value} content.</p></TabsPanel>`).join('\n')}\n</Tabs>`
+    return `<Tabs initialValue="${active}"${node.properties['Show indicator'] === true ? ' indicator' : ''}>\n  <TabsList aria-label="Sections">\n${values.map((value, index) => `    <TabsTrigger value="${value}">${expression(labels[index] ?? value)}</TabsTrigger>`).join('\n')}\n  </TabsList>\n${values.map(value => `  <TabsPanel value="${value}"><p>Replace with ${value} content.</p></TabsPanel>`).join('\n')}\n</Tabs>`
   }
 
   const renderDialog = (node: DesignNode, id: string): string => {
@@ -149,7 +152,7 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
 
     issue(node, 'A preview trigger is included. Connect the confirmation action and review its close behavior.')
 
-    return `<Button data-ui-dialog-trigger="${id}">Open dialog</Button>\n<Dialog id="${id}" aria-labelledby="${id}-title"${content ? ` aria-describedby="${id}-description"` : ''}>\n  <DialogHeader>\n    <DialogTitle id="${id}-title">${expression(text(node, 'Title', 'Dialog'))}</DialogTitle>\n  </DialogHeader>${content ? `\n  <DialogBody>\n    <p id="${id}-description">${expression(text(node, 'Description', ''))}</p>\n  </DialogBody>` : ''}\n  <DialogFooter>${node.properties['Show actions'] === true ? `\n    <DialogClose variant="outline">${expression(text(node, 'Cancel label', 'Cancel'))}</DialogClose>\n    <Button>${expression(text(node, 'Confirm label', 'Confirm'))}</Button>` : '\n    <DialogClose>Close dialog</DialogClose>'}\n  </DialogFooter>\n</Dialog>`
+    return `<Button data-ui-dialog-trigger="${id}">Open dialog</Button>\n<Dialog id="${id}"${dialogPresentationAttributes(node)} aria-labelledby="${id}-title"${content ? ` aria-describedby="${id}-description"` : ''}>\n  <DialogHeader>\n    <DialogTitle id="${id}-title">${expression(text(node, 'Title', 'Dialog'))}</DialogTitle>\n  </DialogHeader>${content ? `\n  <DialogBody>\n    <p id="${id}-description">${expression(text(node, 'Description', ''))}</p>\n  </DialogBody>` : ''}\n  <DialogFooter>${node.properties['Show actions'] === true ? `\n    <DialogClose variant="outline">${expression(text(node, 'Cancel label', 'Cancel'))}</DialogClose>\n    <Button>${expression(text(node, 'Confirm label', 'Confirm'))}</Button>` : '\n    <DialogClose>Close dialog</DialogClose>'}\n  </DialogFooter>\n</Dialog>`
   }
 
   const renderers: Record<ComponentName, (node: DesignNode, id: string, children: string) => string> = {
@@ -183,7 +186,7 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
       const id = `lumen-figma-${++serial}`
       const children = containers.has(component) ? node.children.map(render).join('\n') : ''
 
-      return renderers[component](node, id, children)
+      return renderers[component](withPresentationContent(node), id, children)
     }
 
     if (node.component || node.type === 'INSTANCE' || isComponentName(node.name)) return unverified(node)
@@ -214,7 +217,7 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
 
   const code = `---\n${statements.join('\n')}\n---\n\n<!-- Lumen Astro ${lumenVersion} -->\n${markup}\n`
   const layout = layoutFor(target)
-  const context = { schemaVersion: 1, target: 'astro', lumenVersion, appearance: target.appearance, libraryFileKey, selection, findings, tokenMap: designMap.tokenMap }
+  const context = { schemaVersion: 1, target: 'astro', lumenVersion, appearance: target.appearance, libraryFileKey, selection, findings, tokenMap: designMap.tokenMap, componentPaints: designMap.componentPaints }
 
   const handoff = [
     '# Lumen for Figma — Astro handoff',
