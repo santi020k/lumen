@@ -735,17 +735,22 @@ behaviorTest(['Code'], 'Code copies its block content and announces success', as
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
-      value: { writeText: () => Promise.resolve() }
+      value: { writeText: (value: string) => {
+        sessionStorage.setItem('test-copied-code', value)
+        return Promise.resolve()
+      } }
     })
   })
   await openPreview(page, 'code')
 
-  const copy = page.locator('.component-doc-preview [data-ui-code-copy]').first()
+  const block = page.locator('.component-doc-preview [data-ui-code]').filter({ hasText: 'theme.ts' })
+  const copy = block.getByRole('button')
 
-  await expect(copy).toHaveAttribute('aria-label', 'Copy code to clipboard')
+  await expect(copy).toHaveAccessibleName('Copy code')
   await copy.click()
-  await expect(copy).toHaveAttribute('aria-label', 'Code copied to clipboard')
-  await expect(page.getByText('Code copied to clipboard', { exact: true })).toBeAttached()
+  await expect(copy).toHaveAccessibleName('Copied')
+  expect(await page.evaluate(() => sessionStorage.getItem('test-copied-code'))).toBe(await block.locator('pre code').textContent())
+  await expect(copy.getByText('Copied', { exact: true })).toBeVisible()
 })
 
 behaviorTest(['Command'], 'Command filters actions from its search input', async ({ page }) => {

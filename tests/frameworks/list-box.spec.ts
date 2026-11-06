@@ -100,12 +100,16 @@ test('external labels name and focus the visible ListBox while explicit names ke
 });
 
 test('React ListBox follows labels after adoption into another document', async ({ page }) => {
-  await page.locator('#external-reviewer').evaluate(select => {
+  await page.locator('#external-reviewer').evaluate(async select => {
     const root = select.closest('[data-ui-list-box]');
     if (!root) throw new Error('Expected ListBox root');
     const frame = document.createElement('iframe');
     frame.title = 'Adopted ListBox';
+    // Adopt into the loaded document, since an iframe can replace its initial about:blank.
+    const loaded = new Promise<void>(resolve => { frame.addEventListener('load', () => { resolve(); }, { once: true }); });
+    frame.srcdoc = '<!doctype html><html lang="en"><title>Adopted ListBox</title><body></body></html>';
     document.body.append(frame);
+    await loaded;
     const destination = frame.contentDocument;
     if (!destination) throw new Error('Expected frame document');
     const label = destination.createElement('label');
