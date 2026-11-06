@@ -83,6 +83,28 @@ Expose a Vite client build report for rendered audits and generate selective sub
 
 ### Patch Changes
 
+- Use the theme’s foreground color on solid web badges so the label stays readable on light brand fills in dark mode.
+
+- Add an opt-in editorial Code appearance with a code icon and visible localized copy feedback. Make block headers wrap at narrow widths and keep copy targets at least 44px without scaling on press. Improve code printing and adopt compact, expandable examples with exact-source copying and overflow hints in the documentation.
+
+- Add an opt-in editorial Prose appearance across the web adapters, with a configurable reading measure, clearer section hierarchy, attributed quotations, and connected native figure captions. Keep authored HTML and component-owned figures intact, including Code and charts.
+
+  Adopt the shared appearance in documentation migration/theme guides and expand the editorial article guide with semantic quotations and media.
+
+  The editable article-reading recipes print article text without contents controls or reading progress.
+
+- Restore the outlines and diagonal strokes of the empty, success, error, and offline illustrations across the web adapters.
+
+- Preserve public Image radius props inside default and editorial Prose. Generic article image rounding no longer overrides `radius="none"` or other explicit Image radii, so a figure can own its outer border and corner clipping without rounded gaps between the image and its caption.
+
+- Keep destructive web alerts and toasts readable on their tinted surfaces in light and dark themes.
+
+- Refine editorial Code headers with deliberate metadata hierarchy, a restrained surface, and a distinct copy control that adapts to narrow containers.
+
+  Add opt-in sticky first columns to Table across web adapters. Row identifiers remain visible during horizontal scrolling, respect RTL, and return to normal flow in narrow containers, records layouts, and print. Documentation reference tables adopt this mode with named keyboard regions and overflow-only reading hints.
+
+  Documentation code examples expose complete-source manual recovery when clipboard access fails.
+
 - Parse each consumer file once when discovering component imports in `lumen doctor`. Unrelated
   imports can no longer mask a removed Astro root export, and type-only imports and source examples
   no longer count as runtime imports.

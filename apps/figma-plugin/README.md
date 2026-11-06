@@ -183,6 +183,11 @@ use `unzip`. Output goes to `dist/artifacts/`. Local changes add `-dirty` to the
 `dirty: true` in its metadata. CI refuses to package a dirty checkout. A missing Figma plugin ID
 produces a development candidate, never a claim of Community readiness.
 
+## Plugin release notes
+
+- **1.0.0** adds Astro starters for Lumen 5.0 and 4.4, appearance-specific setup, and fifteen additional verified component mappings. The v5 export preserves Card and Dialog overrides, Code appearance and copy labels, Tabs indicators and Stack gaps.
+- **1.1.0** adds React and Web Components for both Lumen releases, plus React Native, Android Compose and SwiftUI starters for iPhone and Mac. Native onboarding exports include labeled inputs, editable checkboxes, determinate progress and validation for nonempty email fields. In Figma Desktop, development builds receive the selection with or without a registered ID. Linked components inside ordinary frames retain their identity.
+
 ## Figma Community publication
 
 Plugin 1.1.0 is a local build. Figma Community submission, approval and public installation each require separate evidence. The Community design-library link opens the library file.
