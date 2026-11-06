@@ -80,7 +80,6 @@
     "typescript": "catalog:"
   },
   "devDependencies": {
-    "@santi020k/lumen-astro": "workspace:*",
     "@playwright/test": "catalog:",
     "@santi020k/lumen-elements": "workspace:*",
     "@types/node": "catalog:",
