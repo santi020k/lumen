@@ -158,3 +158,31 @@ test('picture media fills its aspect frame while preserving contain fit', async 
   expect(Math.abs(frameBox.width - imageBox.width)).toBeLessThan(1)
   expect(Math.abs(frameBox.height - imageBox.height)).toBeLessThan(1)
 })
+
+for (const width of [390, 1440]) {
+  test(`Figma gallery preserves inset image corners and link focus at ${width}px`, async ({ browserName, page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/docs/figma')
+    await page.evaluate(() => document.fonts.ready)
+    const cards = page.locator('article[data-slot="card"]:has(> .figma-resource-link)')
+    await expect(cards).toHaveCount(3)
+    for (const card of await cards.all()) {
+      await card.scrollIntoViewIfNeeded()
+      const image = card.locator('img')
+      await image.evaluate(async element => {
+        if (element instanceof HTMLImageElement) await element.decode()
+      })
+      await expect(card).toHaveCSS('overflow', 'visible')
+      await expect(card).toHaveCSS('border-width', '1px')
+      await expect(image).toHaveCSS('border-width', '0px')
+      const radius = await image.evaluate(element => Number.parseFloat(getComputedStyle(element).borderRadius))
+      expect(radius).toBeGreaterThan(0)
+      const outer = await card.boundingBox()
+      const inner = await image.boundingBox()
+      if (!outer || !inner) throw new Error('Expected inset gallery media')
+      expect(inner.x).toBeGreaterThan(outer.x)
+      expect(inner.x + inner.width).toBeLessThan(outer.x + outer.width)
+      await expectKeyboardFocus(page, browserName, card.locator('.figma-resource-link'))
+    }
+  })
+}
