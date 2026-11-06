@@ -31,10 +31,7 @@ GitHub Actions prepares the versioned ZIP, revision and checksum for desktop ver
 | [Lumen Templates](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3) | Adapt an editable desktop or mobile layout from the [template gallery](https://lumen.santi020k.com/templates). |
 | [Lumen Playgrounds](https://www.figma.com/design/G0NjJ4eAci1013PaLmseXI) | Compare web and native screens with the [running playgrounds](playgrounds.md). |
 
-The v5 UI Library is published to the Figma team and enabled in both companion files.
-These links follow the files’ existing Figma access permissions. The
-[Community listing](https://www.figma.com/community/file/1662337342676541513) distributes the public
-library. Working-file edits, team-library updates and Community releases are separate steps.
+Start from the [Community listing](https://www.figma.com/community/file/1662337342676541513) for a public copy of the library. Anyone with the companion links can view the six template layouts and four playground pages. Team members can use the published UI Library in both companion files.
 
 Set **Theme** on a frame to Lumen, Studio, Paper, Field, santi020k or Glass. Set **Color** to
 Light or Dark. Child instances inherit both choices. Set either control on a nested frame for a
