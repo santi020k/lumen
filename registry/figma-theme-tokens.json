@@ -12,12 +12,12 @@
       "role": "canonical-theme"
     },
     "santi020k Light": {
-      "file": "apps/docs/src/styles/global.css",
+      "file": "packages/lumen/styles.css",
       "selector": ":root[data-theme=\"santi020k-light\"]",
       "role": "parent-theme-mirror"
     },
     "santi020k Dark": {
-      "file": "apps/docs/src/styles/global.css",
+      "file": "packages/lumen/styles.css",
       "selector": ":root[data-theme=\"santi020k-dark\"]",
       "role": "parent-theme-mirror"
     }
