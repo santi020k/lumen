@@ -6,7 +6,7 @@ import { componentKeys } from './contracts.js'
 import { analyzeSelection } from './convert.js'
 import { componentNode, designNode, editorialFixture, settingsFixture } from './fixtures.js'
 import { isPluginMessage, resultMessage } from './model.js'
-import { appearancesFor, layoutFor, supportsAppearance, versions } from './targets.js'
+import { appearancesFor, defaultFor, isPlatform, layoutFor, platforms, supportsAppearance, versions } from './targets.js'
 
 describe('Lumen Figma conversion', () => {
   test('converts the six supported components with accessible compound primitives', async () => {
@@ -50,6 +50,23 @@ describe('Lumen Figma conversion', () => {
     expect(result.findings[0]?.status).toBe('inferred')
     expect(result.code).not.toContain('import { Button')
     expect(analyzeSelection(designNode({ name: 'Button' })).findings[0]?.status).toBe('inferred')
+  })
+
+  test('keeps linked inputs in ordinary Field frames without treating the frame or a copied instance as a Field', () => {
+    const input = componentNode('Input', { Size: 'Default', Placeholder: 'Team name' })
+    input.id = 'linked-input'
+    const wrapper = designNode({ name: 'Field', children: [input] })
+    const copied = componentNode('Field', {}, [input])
+    copied.component = { name: 'Field', key: 'copy', setKey: null }
+    for (const platform of Object.keys(platforms)) {
+      if (!isPlatform(platform)) throw new Error('Expected an export target.')
+      const target = defaultFor(platform)
+      const plain = analyzeSelection(wrapper, target)
+      expect(plain.code).toContain('Team name')
+      expect(plain.findings.filter(finding => finding.status === 'verified').map(finding => finding.nodeId)).toEqual(['linked-input'])
+      expect(plain.findings.some(finding => finding.status === 'inferred' && finding.nodeId === wrapper.id)).toBe(true)
+      expect(analyzeSelection(copied, target).code).not.toContain('Team name')
+    }
   })
 
   test('includes unknown design content in the handoff while omitting unsupported code', () => {

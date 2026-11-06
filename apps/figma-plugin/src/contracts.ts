@@ -141,6 +141,11 @@ export type ComponentName = keyof typeof componentKeys
 
 export const isComponentName = (value: string): value is ComponentName => Object.hasOwn(componentKeys, value)
 
+// A layer name is not an identity. Only real component boundaries own their internals.
+export const isComponentBoundary = (node: DesignNode) => Boolean(node.component) || ['INSTANCE', 'COMPONENT', 'COMPONENT_SET'].includes(node.type)
+export const isLayoutLayer = (node: DesignNode) => ['FRAME', 'GROUP', 'SECTION'].includes(node.type)
+export const namedLayoutNote = (node: DesignNode) => isComponentName(node.name) ? `This layout is named ${node.name} but has no verified component identity. Review the layout and its children.` : null
+
 const originalComponent = (node: DesignNode): ComponentName | null => {
   if (!node.component) return null
 

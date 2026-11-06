@@ -1,5 +1,5 @@
 import type { ComponentName } from './contracts.js'
-import { identifyComponent, isComponentName, withPresentationContent } from './contracts.js'
+import { identifyComponent, isComponentBoundary, isLayoutLayer, namedLayoutNote, withPresentationContent } from './contracts.js'
 import type { DesignNode } from './model.js'
 import type { createReview } from './review.js'
 import type { NativePlatform } from './targets.js'
@@ -196,7 +196,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
 
     if (component) return known(withPresentationContent(node), component, read)
 
-    if (node.component || node.type === 'INSTANCE' || node.type.startsWith('COMPONENT') || isComponentName(node.name)) {
+    if (isComponentBoundary(node)) {
       issue(node, 'Unverified library identity. The component and its internals were omitted.', 'unsupported')
 
       return null
@@ -204,7 +204,13 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
 
     if (node.type === 'TEXT') return nativeText(node, 'body')
 
-    if (['FRAME', 'GROUP', 'SECTION'].includes(node.type)) return stack(node, false, read)
+    if (isLayoutLayer(node)) {
+      const note = namedLayoutNote(node)
+
+      if (note) issue(node, note, 'inferred')
+
+      return stack(node, false, read)
+    }
 
     issue(node, 'Custom layer omitted. Review the original design context.', 'unsupported')
 
