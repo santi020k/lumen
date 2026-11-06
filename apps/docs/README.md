@@ -74,6 +74,14 @@ region, shows the overflow hint only when needed, follows RTL direction, and rel
 column for enlarged text and print output. The behavior comes from the santi020k v5 comparison
 tables; the library owns positioning while the docs retain their typography and column sizing.
 
+## Editorial reading surfaces
+
+Migration and theme guides opt into the public `Prose` editorial appearance. The editorial article
+guide demonstrates native quotations and figures with public Image, Code, Table, and Link
+components. Keep authored IDs, inline markup, captions, and citations in the document; avoid
+renderer-specific rewrites for a visual treatment. `--ui-prose-measure` controls paragraph width
+without narrowing technical examples or media. Code and chart figures retain their own contracts.
+
 ## Validate and build
 
 Run these commands from the repository root:

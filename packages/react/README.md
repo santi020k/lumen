@@ -1239,3 +1239,18 @@ The first column follows writing direction, including RTL. It returns to normal 
 containers narrower than 12rem, in records layouts, and when printing, so enlarged text and
 printed data retain the available width. Keep column widths suitable for the content; avoid
 pinning an unusually wide description column.
+
+## Editorial prose
+
+Use `appearance="editorial"` on `Prose` (or `<lumen-prose>`) for long-form reading with
+clear section rhythm, attributed blockquotes, and connected native figure captions. The default
+appearance remains unchanged. The editorial surface keeps ordinary paragraphs and lists at a
+readable measure while media and technical blocks can use the available width. Override
+`--ui-prose-measure` on the root to set that measure (the default is `65ch`).
+
+Supply semantic HTML: keep heading IDs and inline formatting; place quoted paragraphs and an
+optional `footer`/`cite` inside `blockquote`; keep media and its `figcaption` together inside
+`figure`. Write image alternatives separately from captions and use the framework's public Image
+or optimized native image integration. Component-owned figures, including Code and charts,
+retain their own styling. Prose styles content; the application owns parsing, sanitization,
+heading IDs, captions, citations, and localization.

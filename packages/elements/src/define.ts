@@ -908,7 +908,12 @@ const elementConfigs = {
     },
     tagName: 'lumen-progress'
   },
-  Prose: { baseClassName: 'ui-prose', tagName: 'lumen-prose' },
+  Prose: {
+    attributeClasses: { appearance: { editorial: 'ui-prose--editorial' } },
+    baseClassName: 'ui-prose',
+    defaults: { 'data-slot': 'prose' },
+    tagName: 'lumen-prose'
+  },
   RadioGroup: {
     baseClassName: 'ui-radio-group',
     defaults: { 'data-ui-radio-group': '' },

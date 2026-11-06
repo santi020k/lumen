@@ -147,4 +147,11 @@ const articleHref = `#${encodeURIComponent(articleId)}`
       display: none;
     }
   }
+
+  @media print {
+    .article-reading { display: block; }
+    .article-reading .chapter-rail,
+    .article-reading .chapter-disclosure,
+    .article-reading .article-progress { display: none; }
+  }
 </style>
