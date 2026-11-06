@@ -4,7 +4,7 @@ import { relative, resolve } from 'node:path'
 
 import { bundledV5ReleaseVersions, consumerPackageVersion } from './consumer-release-versions.js'
 import { formatConsumerRollout, inspectLumenConsumer } from './consumer-rollout.js'
-import { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
+import { formatLumenConsumerUpgradeAudit, inspectConsumerSource, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
 import { discoverSourceFiles } from './v2-migration.js'
 import { migrateLumenV4 } from './v4-migration.js'
 import {
@@ -195,7 +195,9 @@ const optionalConsumerAudit = async (root: string, version: string): Promise<Lum
     throw error
   }
 
-  return inspectLumenConsumerUpgrade(root, version)
+  if (version.startsWith('5.')) return inspectLumenConsumerUpgrade(root, version)
+
+  return { findings: await inspectConsumerSource(root), repository: root, targetVersion: version }
 }
 
 export const migrateLumenVersion = async (
@@ -245,11 +247,25 @@ export const migrateLumenVersion = async (
   return report
 }
 
+const formatManualReview = (findings: LumenVersionMigrationFinding[]): string[] => {
+  const groups = new Map<string, string[]>()
+
+  for (const { file, line, column, message } of findings) {
+    const locations = groups.get(message) ?? []
+
+    locations.push(`  ${file}:${line}:${column}`)
+
+    groups.set(message, locations)
+  }
+
+  return [...groups].flatMap(([message, locations]) => [`[manual review] ${message}`, ...locations])
+}
+
 export const formatLumenVersionMigration = (report: LumenVersionMigrationReport): string => [
   `Lumen ${report.version} migration ${report.applied ? 'apply' : 'dry run'}: ${report.root}`,
   `Scanned ${report.filesScanned} source files. ${report.applied ? 'Applied' : 'Would apply'} ${report.changes.length} changes in ${report.changedFiles.length} files.`,
   ...report.changes.map(item => `${item.file}:${item.line}:${item.column} [${item.kind}] ${item.message}`),
-  ...report.manualReview.map(item => `${item.file}:${item.line}:${item.column} [manual review] ${item.message}`),
+  ...formatManualReview(report.manualReview),
   ...(report.dependencies ? [formatConsumerRollout(report.dependencies)] : []),
   ...(report.consumerAudit ? [formatLumenConsumerUpgradeAudit(report.consumerAudit)] : []),
   {

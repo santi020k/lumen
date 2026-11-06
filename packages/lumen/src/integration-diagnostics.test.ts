@@ -10,6 +10,38 @@ import {
 } from './integration-diagnostics.js'
 
 describe('Lumen integration diagnostics', () => {
+  test('follows a critical stylesheet through relative imports and flags uncovered components', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'lumen-critical-style-'))
+
+    try {
+      const page = join(root, 'index.astro')
+      const content = (name: string): string => `---\nimport { ${name} } from '@santi020k/lumen-astro'\nimport './global.css'\n---\n<${name} />\n`
+
+      await writeFile(page, content('Card'))
+      await writeFile(join(root, 'global.css'), '@import url("./library.css");\n')
+      await writeFile(join(root, 'library.css'), '@import "@santi020k/lumen-astro/styles/critical.css";\n')
+
+      expect((await inspectLumenIntegration(root)).healthy).toBe(true)
+
+      await writeFile(page, content('Pill'))
+      expect((await inspectLumenIntegration(root)).findings).toEqual([
+        expect.objectContaining({ file: 'library.css', rule: 'framework-critical-style-coverage' })
+      ])
+
+      expect((await inspectLumenIntegration(root)).findings[0]?.message).toContain('Pill')
+
+      await writeFile(join(root, 'global.css'), '')
+      expect((await inspectLumenIntegration(root)).findings).toEqual([
+        expect.objectContaining({ rule: 'framework-style-missing' })
+      ])
+
+      await writeFile(join(root, 'global.css'), '@import "@santi020k/lumen-astro/styles.css";\n')
+      expect((await inspectLumenIntegration(root)).healthy).toBe(true)
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   test('distinguishes static Astro use from missing interactive runtime setup', async () => {
     const root = await mkdtemp(join(tmpdir(), 'lumen-doctor-'))
 

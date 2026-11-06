@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Audit historical release manifests, flag stale transitive packages and incomplete critical styles, and refuse dependency downgrades before writing consumer files.
+
 - Add the optional Astro editable-ticket recipe with synchronized views, keyboard editing, cancel and undo.
 
 - Default upgrade audits to the bundled release, attribute requested full CSS through Vite and Astro build reports (with an optional PostCSS import collector), and add editable feedback-board and responsive-navigation recipes.
