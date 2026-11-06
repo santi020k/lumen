@@ -5,9 +5,22 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import '../../styles/global.css'
 
 import { Container, Prose, Stack } from '@santi020k/lumen-astro'
-import { Code as ReactCode, Prose as ReactProse } from '@santi020k/lumen-react'
+import { Code as ReactCode, Image as ReactImage, Prose as ReactProse } from '@santi020k/lumen-react'
 
 type Adapter = 'astro' | 'react' | 'elements'
+
+const imageRadii = ['none', 'sm', 'md', 'lg', 'full'] as const
+
+const radiusImages = (id: string) => imageRadii.map(radius => renderToStaticMarkup(
+  createElement(ReactImage, {
+    alt: `Image with ${radius} corners`,
+height: 50,
+width: 80,
+    id: `${id}-radius-${radius}`,
+radius,
+src: '/comparison-before.svg'
+  })
+)).join('')
 
 // Static authored HTML represents already-rendered CMS content; Prose does not parse or sanitize it.
 const content = (adapter: Adapter) => `
@@ -25,6 +38,7 @@ const content = (adapter: Adapter) => `
   <h3 id="${adapter}-details">The original context</h3>
   <p><a href="#${adapter}-heading">${'a-long-reference-'.repeat(12)}</a></p>
 </section>
+${radiusImages(adapter)}
 ${renderToStaticMarkup(createElement(ReactCode, { code: 'const readable = true', id: `${adapter}-code`, label: 'Owned code caption', language: 'ts', variant: 'block' }))}`
 
 const reactMarkup = renderToStaticMarkup(createElement(ReactProse, {
@@ -44,7 +58,8 @@ id: 'react-prose',
       <Prose appearance="editorial" class="reading-prose" id="astro-prose"><Fragment set:html={content('astro')} /></Prose>
       <Fragment set:html={reactMarkup} />
       <lumen-prose appearance="editorial" class="reading-prose" id="elements-prose"><Fragment set:html={content('elements')} /></lumen-prose>
-      <Prose id="default-prose"><h2>Default prose</h2><blockquote><p>Existing appearance stays available.</p></blockquote></Prose>
+      <Prose id="default-prose"><h2>Default prose</h2><blockquote><p>Existing appearance stays available.</p></blockquote><Fragment set:html={radiusImages('default')} /></Prose>
+      <div id="radius-reference"><Fragment set:html={radiusImages('reference')} /></div>
     </Stack></Container>
   </body>
 </html>

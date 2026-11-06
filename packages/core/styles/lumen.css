@@ -1152,7 +1152,9 @@
 }
 
 .ui-prose :where(hr) { margin-block: 1.5rem; border: 0; border-top: var(--ui-border-width, 1px) solid hsl(var(--line)); }
-.ui-prose :where(img, video) { max-width: 100%; height: auto; border-radius: var(--ui-radius-sm); }
+.ui-prose :where(img, video) { max-width: 100%; height: auto; }
+/* Public Image owns its radius, including square edges inside a clipped frame. */
+.ui-prose :where(img:not(.ui-image), video) { border-radius: var(--ui-radius-sm); }
 .ui-prose :where(code:not(.ui-code, .ui-code code)) {
   border-radius: .25rem;
   background: hsl(var(--surface-muted));

@@ -14,7 +14,7 @@ for (const width of [390, 1440]) {
         await expect(prose.locator('h2 em')).toHaveText('what matters')
         await expect(prose.locator('blockquote')).toHaveAttribute('cite', /build-an-editorial-article/)
         await expect(prose.locator('blockquote cite')).toHaveText('Example editorial notes')
-        await expect(prose.getByRole('img')).toHaveAccessibleName('Illustrated mountains reflected in a lake')
+        await expect(prose.getByRole('img', { name: 'Illustrated mountains reflected in a lake', exact: true })).toHaveAccessibleName('Illustrated mountains reflected in a lake')
         const figure = prose.locator(`#${adapter}-figure`)
         const image = figure.locator('img')
         await image.evaluate(async element => {
@@ -109,3 +109,30 @@ test('the live article recipe omits navigation and progress in print', async ({ 
   await expect(page.locator('.article-reading')).toHaveCSS('display', 'block')
   await expect(article.locator('#content > figure:not([data-slot]) > figcaption')).toBeVisible()
 })
+
+for (const appearance of ['default', 'editorial']) {
+  test(`public Image radius props survive ${appearance} prose and framed media`, async ({ page }) => {
+    await page.goto('/internal/editorial-prose')
+    for (const adapter of ['astro', 'react', 'elements', 'default']) {
+      const prose = page.locator(`#${adapter === 'default' ? 'default' : adapter}-prose`)
+      // Exercise both presentation classes without changing the authored media or their props.
+      await prose.evaluate((element, value) => {
+        element.classList.toggle('ui-prose--editorial', value === 'editorial')
+      }, appearance)
+      for (const radius of ['none', 'sm', 'md', 'lg', 'full']) {
+        const reference = page.locator(`#reference-radius-${radius}`)
+        const image = page.locator(`#${adapter}-radius-${radius}`)
+        const expected = await reference.evaluate(element => getComputedStyle(element).borderRadius)
+        await expect(image).toHaveCSS('border-radius', expected)
+      }
+    }
+    await page.goto('/guides/build-an-editorial-article')
+    const figure = page.locator('#content > figure:not([data-slot])')
+    const image = figure.getByRole('img')
+    for (const corner of ['top-left', 'top-right', 'bottom-left', 'bottom-right']) {
+      await expect(image).toHaveCSS(`border-${corner}-radius`, '0px')
+    }
+    await expect(image).toHaveCSS('border-width', '0px')
+    await expect(figure).toHaveCSS('overflow', 'hidden')
+  })
+}

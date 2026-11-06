@@ -703,7 +703,8 @@ attributes, and accessible markup.
   let the frame own the border and corner clipping; remove child rounding with supported props.
   For example, use `<Image radius="none" ... />` below a framed header: `Image` defaults to
   `radius="lg"`, which otherwise leaves rounded gaps at the shared edge. Keep standalone image
-  rounding when appropriate.
+  rounding when appropriate. Prose preserves the public Image radius prop; its generic media
+  rounding applies only to unstyled article images.
 - Use a single divider between header and body rather than overlapping full borders. Inset
   surfaces with padding may have their own radius; account for the inset so their curves align.
   Clip artwork at its frame, not an entire interactive surface where focus rings or overlays

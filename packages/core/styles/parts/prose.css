@@ -52,7 +52,11 @@
 }
 
 @layer lumen.components {
-.ui-prose :where(img, video) { max-width: 100%; height: auto; border-radius: var(--ui-radius-sm); }
+.ui-prose :where(img, video) { max-width: 100%; height: auto; }
+}
+
+@layer lumen.components {
+.ui-prose :where(img:not(.ui-image), video) { border-radius: var(--ui-radius-sm); }
 }
 
 @layer lumen.components {
