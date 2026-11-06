@@ -64,10 +64,13 @@ relaunch shortcut. Use the Development menu to reopen a local build. Selection o
 | iPhone · SwiftUI | `LumenUI`, Swift package v5.0.0 | Swift tools 6.0, iOS 16+. Present the generated View in your iPhone scene. |
 | Mac · SwiftUI | `LumenUI`, Swift package v5.0.0 | Swift tools 6.0, macOS 13+. Use the same shared primitives in a Mac window. |
 
-The native targets support **Button, Input, Field, Card, Badge, Stack, CardTitle, CardDescription and Eyebrow**.
+The native targets support **Button, Input, Label, Field, Checkbox, Progress, Card, Badge, Stack, CardTitle, CardDescription and Eyebrow**.
 React Native uses the foundations subpath where possible. Each input has independent local editing
 state. A Field requires exactly one identified Input. Compose uses a field label and reports a separate
-placeholder when it cannot represent it. App actions are left for you to connect.
+placeholder when it cannot represent it. A linked Label immediately before a linked Input supplies its visible and accessible label. Checkbox
+rows use their adjacent caption and keep independent state initialized from the design. A drawn
+progress track with a visible caption and percentage exports a labeled progress indicator. Review
+the inferred mapping and connect progress to the application. App actions are left for you to connect.
 
 Nested layouts preserve child order, row/column direction, matching native spacing tokens and
 directional padding. Only React Native emits wrapping. Review notes identify approximations,

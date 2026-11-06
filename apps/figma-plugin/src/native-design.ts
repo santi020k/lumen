@@ -1,11 +1,13 @@
 import type { ComponentName } from './contracts.js'
 import { identifyComponent, isComponentBoundary, isLayoutLayer, namedLayoutNote, withPresentationContent } from './contracts.js'
 import type { DesignNode } from './model.js'
+import type { NativeControl } from './native-controls.js'
+import { drawnProgress, labelText, matchesControl, percentValue } from './native-controls.js'
 import type { createReview } from './review.js'
 import type { NativePlatform } from './targets.js'
 
 // Only these observed library identities have native translations.
-export const nativeComponents = ['Button', 'Card', 'Badge', 'Input', 'Field', 'Stack', 'CardTitle', 'CardDescription', 'Eyebrow'] as const satisfies readonly ComponentName[]
+export const nativeComponents = ['Button', 'Card', 'Badge', 'Input', 'Field', 'Stack', 'CardTitle', 'CardDescription', 'Eyebrow', 'Label', 'Checkbox', 'Progress'] as const satisfies readonly (ComponentName | NativeControl)[]
 
 type Size = 'sm' | 'md' | 'lg'
 
@@ -27,6 +29,8 @@ export type NativeNode =
   { kind: 'button', label: string, intent: typeof intents[keyof typeof intents], size: Size, disabled: boolean, loading: boolean } |
   { kind: 'badge', label: string, tone: typeof badges[keyof typeof badges] } |
   { kind: 'text', content: string, variant: 'title' | 'body' | 'label', tone: typeof tones[keyof typeof tones] } |
+  { kind: 'checkbox', index: number, label: string } |
+  { kind: 'progress', label: string, value: number } |
   { kind: 'input', index: number, size: Size, label: string, placeholder: string, helper: string, visibleLabel: boolean }
 
 const inputChildren = (node: DesignNode): DesignNode[] => {
@@ -48,6 +52,7 @@ type Reader = (node: DesignNode) => NativeNode | null
 
 export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { issue, text, choice }: Review) => {
   let fields = 0
+  const checks: boolean[] = []
 
   const sizeFor = (node: DesignNode): Size => {
     const value = choice(node, 'Size', ['sm', 'default', 'lg'], 'default')
@@ -61,19 +66,19 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
     if (node.type === 'COMPONENT_SET') issue(node, 'Exported the default variant; select an instance to export its configuration.')
   }
 
-  const input = (node: DesignNode, field?: DesignNode): NativeNode => {
+  const input = (node: DesignNode, fieldLabel?: string, helper = ''): NativeNode => {
     verified(node, 'Input')
 
     const placeholder = text(node, 'Placeholder', '')
-    const label = field ? text(field, 'Label', 'Field label') : placeholder || 'Field label'
+    const label = fieldLabel ?? (placeholder || 'Field label')
 
-    if (!field) issue(node, 'Supply a visible, descriptive field label in the application.')
+    if (!fieldLabel) issue(node, 'Supply a visible, descriptive field label in the application.')
 
     if (platform === 'compose' && placeholder && label !== placeholder) issue(node, 'The Compose control accepts a label but no separate placeholder. The placeholder remains in the handoff.')
 
     issue(node, 'Connect local editing state to the form and supply validation.')
 
-    return { kind: 'input', index: ++fields, size: sizeFor(node), label, placeholder, visibleLabel: Boolean(field), helper: field?.properties['Show helper'] === true ? text(field, 'Helper text', '') : '' }
+    return { kind: 'input', index: ++fields, size: sizeFor(node), label, placeholder, visibleLabel: Boolean(fieldLabel), helper }
   }
 
   const field = (node: DesignNode): NativeNode | null => {
@@ -88,7 +93,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
 
     verified(node, 'Field')
 
-    return input(control, node)
+    return input(control, text(node, 'Label', 'Field label'), node.properties['Show helper'] === true ? text(node, 'Helper text', '') : '')
   }
 
   const button = (node: DesignNode): NativeNode => {
@@ -123,6 +128,76 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
     return { kind: 'text', content: node.type !== 'TEXT' ? text(node, 'Text', '') : node.text ?? '', variant: variant, tone: hasKey(tones, color) ? tones[color] : 'default' }
   }
 
+  const checkbox = (node: DesignNode, label?: string): NativeNode | null => {
+    const checked = String(node.properties.Checked).toLowerCase()
+
+    if (checked !== 'true' && checked !== 'false') {
+      issue(node, 'Review the checkbox state before exporting.', 'unsupported')
+
+      return null
+    }
+
+    verified(node, 'Checkbox')
+
+    if (!label) issue(node, 'Supply a descriptive checkbox label in the application.')
+
+    return { kind: 'checkbox', index: checks.push(checked === 'true'), label: label ?? 'Checkbox' }
+  }
+
+  const progressControl = (node: DesignNode): NativeNode | null => {
+    const value = percentValue(node.properties.Value)
+
+    if (value === null) {
+      issue(node, 'Progress needs a numeric value from 0 to 100.', 'unsupported')
+
+      return null
+    }
+
+    verified(node, 'Progress')
+
+    return { kind: 'progress', label: 'Progress', value }
+  }
+
+  const pairedControl = (first: DesignNode, second: DesignNode | undefined, onlyPair: boolean) => {
+    if (!second) return null
+
+    if (matchesControl(first, 'Label') && identifyComponent(second) === 'Input') {
+      verified(first, 'Label')
+
+      return input(second, text(first, 'Text', 'Field label'))
+    }
+
+    const label = onlyPair && matchesControl(first, 'Checkbox') ? labelText(second) : null
+
+    return label ? checkbox(first, label) : null
+  }
+
+  const readChildren = (node: DesignNode, read: Reader) => {
+    const children: NativeNode[] = []
+    const progress = drawnProgress(node)
+    const siblings = node.children.entries()
+
+    for (const [i, child] of siblings) {
+      const pair = pairedControl(child, node.children[i + 1], node.children.length === 2)
+
+      if (pair) {
+        children.push(pair)
+
+        siblings.next()
+      } else if (progress?.track === child) {
+        issue(child, 'Inferred native progress from the drawn track and its visible percentage.', 'inferred')
+
+        children.push({ kind: 'progress', label: progress.label, value: progress.value })
+      } else {
+        const value = read(child)
+
+        if (value) children.push(value)
+      }
+    }
+
+    return children
+  }
+
   const stack = (node: DesignNode, keyed: boolean, read: Reader): NativeNode | null => {
     const layout = node.layout ?? { direction: 'NONE', wrap: false, gap: 0, padding: [] }
     const row = keyed ? choice(node, 'Direction', ['horizontal', 'vertical'], 'vertical') === 'horizontal' : layout.direction === 'HORIZONTAL'
@@ -141,7 +216,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
     }
 
     const gap = keyed ? stackGap(choice(node, 'Gap', Object.keys(stackGaps), 'md')) : spacing(layout.gap, 'md')
-    const children = node.children.map(read).filter(child => child !== null)
+    const children = readChildren(node, read)
 
     if (!children.length) {
       issue(node, 'No exportable visible content in this layout.', 'unsupported')
@@ -178,7 +253,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
       CardTitle: (n: DesignNode) => nativeText(n, 'title'),
       CardDescription: (n: DesignNode) => nativeText(n, 'body'),
       Eyebrow: (n: DesignNode) => nativeText(n, 'label')
-    } satisfies Record<Exclude<typeof nativeComponents[number], 'Field' | 'Input'>, Reader>
+    } satisfies Record<Exclude<typeof nativeComponents[number], 'Field' | 'Input' | NativeControl>, Reader>
 
     if (!hasKey(renderers, component)) {
       issue(node, `${component} is a known Lumen component, but this target has no verified export for it.`, 'unsupported')
@@ -195,6 +270,16 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
     const component = identifyComponent(node)
 
     if (component) return known(withPresentationContent(node), component, read)
+
+    if (matchesControl(node, 'Checkbox')) return checkbox(node)
+
+    if (matchesControl(node, 'Progress')) return progressControl(node)
+
+    if (matchesControl(node, 'Label')) {
+      verified(node, 'Label')
+
+      return nativeText(node, 'label')
+    }
 
     if (isComponentBoundary(node)) {
       issue(node, 'Unverified library identity. The component and its internals were omitted.', 'unsupported')
@@ -219,5 +304,5 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
 
   const root = read(selection)
 
-  return { root, fields }
+  return { root, fields, checks }
 }
