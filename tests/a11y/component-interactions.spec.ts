@@ -5,11 +5,7 @@ import type { LumenComponentName } from '../../packages/core/src/components.js'
 import { verifyAstroChartActivation } from './chart-activation.js'
 import { runtimeBehaviorComponentNames } from './component-coverage.js'
 import { verifyFocusNavigation } from './focus-navigation.js'
-
-const openPreview = async (page: Page, slug: string) => {
-  await page.goto(`/docs/components/${slug}`)
-  await expect(page.locator('.component-doc-preview')).toBeVisible()
-}
+import { openPreview } from './open-preview.js'
 
 type BehaviorTestBody = (fixtures: { page: Page }) => Promise<void>
 

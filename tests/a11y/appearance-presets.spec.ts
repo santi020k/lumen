@@ -151,6 +151,9 @@ test('the default Badge label stays readable when the brand fill changes theme',
         element.setAttribute('data-lumen-scheme', appearance.scheme)
       }, { preset, scheme })
       await expect(badge).toHaveCSS('color-scheme', scheme)
+      await badge.evaluate(async element => {
+        await Promise.all(element.getAnimations().map(animation => animation.finished))
+      })
       const violations: unknown = await page.evaluate('axe.run("#badge-contrast-probe", { runOnly: ["color-contrast"] }).then(result => result.violations)')
       expect(violations, `${preset} ${scheme}`).toEqual([])
     }
