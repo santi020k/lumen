@@ -496,7 +496,10 @@ const attachBuildImports = (asset: ObservedAsset, chains: string[][] | undefined
   if (asset.resourceType === 'stylesheet') {
     const fullCss = /^@santi020k\/lumen(?:-[\w-]+)?\/styles\.css$/u
 
-    asset.fullStylesheet = chains.some(chain => chain.some(label => fullCss.test(label)))
+    const observed = chains.some(chain => chain.some(label => fullCss.test(label) ||
+      label === '@santi020k/lumen-astro/styles/lumen.css'))
+
+    if (observed) asset.fullStylesheet = true
   }
 }
 
