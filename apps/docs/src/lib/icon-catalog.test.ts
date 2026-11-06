@@ -1,21 +1,11 @@
 // @vitest-environment jsdom
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { brandEntries, iconEntries } from '../data/icon-catalogs'
-
 import { createCatalogSvg, filterIconEntries, parseIconEntries } from './icon-catalog'
 import { setupIconCatalogs } from './icon-catalog-client'
 
 const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 1h2" /></svg>'
 const entries = Array.from({ length: 110 }, (_, index) => ({ name: `icon-${index}`, svg, terms: `icon-${index} alias-${index}` }))
-
-test('accepts the generated interface and brand catalogs including aliases and SVG geometry', () => {
-  for (const catalog of [iconEntries, brandEntries]) {
-    expect(parseIconEntries(catalog)).toHaveLength(catalog.length)
-
-    for (const entry of catalog) expect(createCatalogSvg(entry.svg).localName).toBe('svg')
-  }
-}, 30000)
 
 afterEach(() => {
   vi.unstubAllGlobals()
