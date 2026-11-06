@@ -106,7 +106,8 @@ export const generatePresetCss = (source, presets) => {
     const spacing = Object.entries(source.space).filter(([name]) => !name.startsWith('$')).map(([name, token]) => `  --ui-space-${name}: ${token.$value.value / 16 * preset.spacingScale}rem;`)
     const font = preset.fontFamily.map(family => ['system-ui', 'sans-serif'].includes(family) ? family : JSON.stringify(family)).join(', ')
     const declarations = `  color-scheme: ${scheme};\n${colors.join('\n')}\n${spacing.join('\n')}\n  --ui-radius-sm: ${source.radius.sm.$value.value / 16 * preset.radiusScale}rem;\n  --ui-radius: ${source.radius.md.$value.value / 16 * preset.radiusScale}rem;\n  --ui-radius-lg: ${source.radius.lg.$value.value / 16 * preset.radiusScale}rem;\n  --ui-border-width: ${preset.borderWidth}px;\n  --ui-font: ${font};\n${Object.entries(preset.effects[scheme]).map(([key, value]) => `  --${key}: ${value};`).join('\n')}`
-    const colorNames = Object.keys(source.color[scheme]).filter(role => !role.startsWith('$'))
+    // Both schemes use the light palette's canonical role order for private slots.
+    const colorNames = Object.keys(source.color.light).filter(role => !role.startsWith('$'))
 
     const privateName = key => {
       const color = colorNames.indexOf(key)
