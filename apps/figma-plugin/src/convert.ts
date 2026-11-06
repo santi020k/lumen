@@ -3,10 +3,12 @@ import designMap from '../../../registry/figma-design-map.json'
 import type { ComponentName } from './contracts.js'
 import { identifyComponent, isComponentName, libraryFileKey, withPresentationContent } from './contracts.js'
 import { editorialRenderers, expression } from './editorial.js'
-import type { Analysis, DesignNode, Finding } from './model.js'
+import type { Analysis, DesignNode } from './model.js'
+import { analyzeNative } from './native.js'
 import { cardPresentationAttributes, dialogPresentationAttributes } from './presentations.js'
+import { createReview } from './review.js'
 import type { ExportTarget } from './targets.js'
-import { defaultTarget, layoutFor } from './targets.js'
+import { defaultTarget, isNativeTarget, layoutFor } from './targets.js'
 
 const recipeHints = (imports: ReadonlySet<string>, version: ExportTarget['version']) => {
   if (version !== '5.0.0') return []
@@ -29,50 +31,14 @@ const stackAttributes = (layout: DesignNode['layout']) => {
 }
 
 export const analyzeSelection = (selection: DesignNode, target: ExportTarget = defaultTarget): Analysis => {
-  const findings: Finding[] = []
+  if (isNativeTarget(target)) return analyzeNative(selection, target)
+
+  const { findings, issue, text, choice, auditTokens } = createReview()
   const imports = new Set<string>()
   let serial = 0
 
-  const issue = (node: DesignNode, message: string, status: Finding['status'] = 'review') => {
-    if (findings.length >= 10_000) throw new Error('Too many findings to display. Inspect a smaller selection.')
-
-    findings.push({ nodeId: node.id, name: node.name, status, message })
-  }
-
   const addImports = (...names: string[]) => {
     names.forEach(name => imports.add(name))
-  }
-
-  const text = (node: DesignNode, prop: string, fallback: string) => {
-    const value = node.properties[prop]
-
-    if (typeof value === 'string') return value
-
-    issue(node, `Missing ${prop}; review the placeholder text.`)
-
-    return fallback
-  }
-
-  const choice = (node: DesignNode, prop: string, values: string[], fallback: string) => {
-    const value = node.properties[prop]
-
-    if (typeof value === 'string' && values.includes(value.toLowerCase())) return value.toLowerCase()
-
-    issue(node, `Unsupported or missing ${prop}; using ${fallback}.`)
-
-    return fallback
-  }
-
-  const auditTokens = (node: DesignNode) => {
-    if (node.unboundPaints > 0) issue(node, `${node.unboundPaints} visible paints have no variable binding. Review semantic colors.`)
-
-    for (const token of node.tokens) {
-      if (!Object.hasOwn(designMap.tokenMap, token.name) && !Object.hasOwn(designMap.componentPaints, token.name)) {
-        issue(node, `Review variable ${token.name}; it has no shared color mapping.`)
-      }
-    }
-
-    node.children.forEach(auditTokens)
   }
 
   const renderInput = (node: DesignNode, id: string, label?: string, describedBy?: string) => {

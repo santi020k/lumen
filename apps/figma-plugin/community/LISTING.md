@@ -1,7 +1,7 @@
 # Lumen for Figma listing materials
 
 These are prepared listing materials, not a published Community listing. Registration and Figma
-desktop verification remain pending. Publish only after the target web packages and documentation are
+desktop verification remain pending. Publish only after the target packages and documentation are
 live and verified, following the [publication workflow](../README.md#figma-community-publication).
 
 ## Listing fields
@@ -9,7 +9,7 @@ live and verified, following the [publication workflow](../README.md#figma-commu
 | Field | Prepared value |
 | --- | --- |
 | Name | Lumen for Figma |
-| Tagline | Turn Lumen Figma components into an Astro starter and AI handoff. |
+| Tagline | Turn Lumen Figma components into web or native code and AI handoff. |
 | Category | Software development |
 | Support | <https://lumen.santi020k.com/support> |
 | Documentation | <https://lumen.santi020k.com/docs/figma> |
@@ -17,18 +17,18 @@ live and verified, following the [publication workflow](../README.md#figma-commu
 
 ## Description to paste
 
-**Version 1.0.0 · Astro.** Bring your Lumen designs into your codebase using real Lumen
+**Version 1.1.0 · Web and native.** Bring your Lumen designs into your codebase using real Lumen
 components.
 
-Select a frame or component instance, inspect the design, and export an Astro starter or a structured
+Select a frame or component instance, inspect the design, and export web or native code or a structured
 handoff for your coding agent. The plugin recognizes verified instances from the canonical Lumen
 Figma library and highlights items that need your review.
 
-The plugin recognizes 21 canonical components, including Button, Input, Field, Card, Tabs, Dialog, CodeTabs, Prose, Timeline and ThemeToggle.
+Astro export recognizes 21 canonical components, including Button, Input, Field, Card, Tabs, Dialog, CodeTabs, Prose, Timeline and ThemeToggle.
 
 **What you get:**
 
-- An Astro component starter using `@santi020k/lumen-astro`.
+- An Astro, React Native, Android Compose, or SwiftUI starter for iPhone or Mac. Native targets map nine canonical components and nested layouts.
 - An AI handoff containing the selected design's structure, visible text, component properties,
   starter code, and checks for your coding agent.
 - Review notes for unsupported layers, detached instances, and properties requiring attention.
@@ -36,14 +36,14 @@ The plugin recognizes 21 canonical components, including Button, Input, Field, C
 **Getting started:**
 
 1. Open a design using the Lumen UI Figma library.
-2. Select one frame or component instance, select the target version and appearance, then choose **Inspect selection**.
-3. Review the findings, then copy or save the **Astro starter** or **AI handoff**.
+2. Select one frame or component instance, select the platform and confirm its version, then choose **Inspect selection**.
+3. Review the findings, then copy or save the **starter** or **AI handoff**.
 4. Use the handoff with your coding agent to connect application behavior and verify the result.
 
 **Conversion limits:** Output is a starting point, not a complete application or a promise of visual
 equivalence. Review layout, responsive behavior, accessibility, custom overrides, and action logic.
 Detached components, copied libraries, and unsupported layers require manual implementation. Exports
-target Lumen Astro 5.0.0 or 4.4.0, with a matching layout setup.
+target Lumen Astro 5.0.0 or 4.4.0, React Native and Compose 4.1.0, or SwiftUI v5.0.0.
 
 The plugin runs locally without network access, model API keys, a separate plugin account, or
 telemetry. It does not call an AI model. You decide whether to share an exported handoff with your
@@ -60,7 +60,7 @@ Built by [santi020k](https://santi020k.com).
 | Asset | Dimensions | Suggested alt text |
 | --- | --- | --- |
 | [Icon](assets/icon.png) | 128 × 128 PNG | Lumen UI monogram with a warm point of light. |
-| [Cover](assets/thumbnail.png) | 1920 × 1080 PNG | Lumen for Figma: inspect canonical components and export an Astro starter or AI handoff. |
+| [Cover](assets/thumbnail.png) | 1920 × 1080 PNG | Lumen for Figma: inspect canonical components and export web or native code or AI handoff. |
 
 The cover is a feature illustration, not a screenshot or evidence of Figma host verification. Both
 images reuse the canonical Lumen logo paths. Add a real Figma screenshot

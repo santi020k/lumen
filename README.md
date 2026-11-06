@@ -120,7 +120,7 @@ npx skills add santi020k/lumen --skill lumen-ui
 Design with the [Figma community library](https://www.figma.com/community/file/1662337342676541513)
 and follow the [Figma integration guide](https://lumen.santi020k.com/docs/figma)
 for variables and Code Connect. The [local Figma plugin](apps/figma-plugin/README.md) exports
-component starters and layout setup for Lumen Astro 5.0.0 and 4.4.0.
+Astro 5.0.0 or 4.4.0 starters, React Native and Compose 4.1.0 components, and SwiftUI views for iPhone and Mac using the v5.0.0 Swift package contract.
 
 ## Contribute and connect
 
