@@ -16,11 +16,12 @@ for (const width of [390, 1280]) {
     await board.getByLabel('Idea title').fill('Keep my draft')
     await board.getByLabel('Message', { exact: true }).fill('My message')
     await board.getByRole('button', { name: 'Send idea' }).click()
-    await expect(board.getByRole('status')).toHaveText('Unable to complete request')
+    await expect(board.locator('[data-feedback-action-status]')).toHaveText('Unable to complete request')
     await expect(board.getByLabel('Idea title')).toHaveValue('Keep my draft')
-    await expect(board.getByRole('status')).toBeFocused()
+    await expect(board.locator('[data-feedback-action-status]')).toBeFocused()
     await board.getByRole('button', { name: 'Support' }).click()
-    await expect(board.getByRole('status')).toHaveText('Saved')
+    await expect(board.locator('[data-feedback-action-status]')).toHaveText('Saved')
+    await expect(board.locator('[data-feedback-list]')).toHaveAttribute('aria-busy', 'false')
     if (width === 390) {
       await page.getByRole('button', { name: 'Open menu', exact: true }).click()
       await expect(page.getByRole('dialog')).toBeVisible()
@@ -60,11 +61,29 @@ test('new sort results survive a late response and navigation remounts listeners
   await expect(page.getByRole('heading', { name: 'Popular idea' })).toBeVisible()
   releaseOlder?.()
   await expect(page.getByRole('heading', { name: 'Popular idea' })).toBeVisible()
-  await page.getByRole('link', { name: 'Continue to another page' }).click()
+  await Promise.all([
+    page.waitForURL('**/other/'),
+    page.getByRole('link', { name: 'Continue to another page' }).click()
+  ])
   await expect(page.getByRole('heading', { name: 'Another page' })).toBeVisible()
   const previousLoads = count
   await page.goBack()
   await expect.poll(() => count).toBeGreaterThan(previousLoads)
   const restoredSort = await sort.inputValue()
   await expect(page.getByRole('heading', { name: restoredSort === 'popular' ? 'Popular idea' : 'Newest idea' })).toBeVisible()
+})
+
+
+test('mobile navigation retains its server links without scripts', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } })
+  try {
+    const page = await context.newPage()
+    await page.goto('/')
+    const header = page.locator('lumen-recipe-navigation').first()
+    await expect(header.locator('.mobile-opener')).not.toBeVisible()
+    await header.getByRole('link', { name: 'Other page', exact: true }).click()
+    await expect(page.getByRole('heading', { name: 'Another page' })).toBeVisible()
+  } finally {
+    await context.close()
+  }
 })
