@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { type FeedbackActions, initializeFeedbackBoard } from '../templates/astro/feedback-board/src/lumen/feedback-board.js'
+import { type FeedbackActions, type FeedbackItem, initializeFeedbackBoard } from '../templates/astro/feedback-board/src/lumen/feedback-board.js'
 
 const mount = () => {
   document.body.innerHTML = '<section data-loading="Loading" data-empty="Empty" data-failure="Failed" data-success="Saved"><form><fieldset data-feedback-fields><input name="title" value="Draft"><button type="submit">Submit</button></fieldset></form><select data-feedback-sort><option value="newest">Newest</option><option value="popular">Popular</option></select><p data-feedback-status tabindex="-1"></p><button data-feedback-retry>Retry</button><ol data-feedback-list></ol><template><li><span data-item-title></span><button data-item-id></button></li></template></section>'
@@ -27,7 +27,8 @@ test('reinitialization removes old listeners and disposed loads cannot replace n
   await vi.waitFor(() => {
     expect(root.querySelector('[data-feedback-status]')?.textContent).toBe('Empty')
   })
-  resolveOld?.([{ id: 'old', title: 'Stale', description: '', status: '', votes: '', voted: false }])
+  const staleItem: FeedbackItem = { id: 'old', title: 'Stale', description: '', status: '', votes: '', voted: false }
+  resolveOld?.([staleItem])
   await oldLoad
   expect(root.textContent).not.toContain('Stale')
   root.querySelector('form')?.dispatchEvent(new Event('submit', { cancelable: true }))
