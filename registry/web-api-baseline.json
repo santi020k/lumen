@@ -1875,6 +1875,10 @@
           "import": "./dist/components/image-comparison.js",
           "types": "./dist/components/image-comparison.d.ts"
         },
+        "./components/input": {
+          "import": "./dist/entries/input.js",
+          "types": "./dist/entries/input.d.ts"
+        },
         "./components/kbd": {
           "import": "./dist/entries/kbd.js",
           "types": "./dist/entries/kbd.d.ts"
@@ -2441,7 +2445,11 @@
         "./styles/themes/santi020k.css": "./styles/themes/santi020k.css",
         "./styles/themes/studio.css": "./styles/themes/studio.css",
         "./styles/world-map.css": "./styles/world-map.css",
-        "./tailwind.css": "./tailwind.css"
+        "./tailwind.css": "./tailwind.css",
+        "./vite/build-report": {
+          "import": "./dist/build-report-plugin.js",
+          "types": "./dist/build-report-plugin.d.ts"
+        }
       },
       "packageJson": "packages/lumen/package.json",
       "packageName": "@santi020k/lumen",
@@ -3012,6 +3020,10 @@
           "import": "./dist/entries/button.js",
           "types": "./dist/entries/button.d.ts"
         },
+        "./components/card": {
+          "import": "./dist/entries/card.js",
+          "types": "./dist/entries/card.d.ts"
+        },
         "./components/collapsible": {
           "import": "./dist/entries/collapsible.js",
           "types": "./dist/entries/collapsible.d.ts"
@@ -3059,6 +3071,10 @@
         "./components/image-comparison": {
           "import": "./dist/image-comparison.js",
           "types": "./dist/image-comparison.d.ts"
+        },
+        "./components/input": {
+          "import": "./dist/entries/input.js",
+          "types": "./dist/entries/input.d.ts"
         },
         "./components/interval-charts": {
           "import": "./dist/interval-charts.js",

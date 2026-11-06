@@ -359,6 +359,10 @@ jobs:
       - name: Verify release-candidate primitive motion
         if: matrix.shard == 1
         run: pnpm run test:motion && pnpm run check:route-delivery
+
+      - name: Measure packed README subscribe forms
+        if: matrix.shard == 1
+        run: pnpm run measure:subscribe-form
       - name: Preserve browser failure diagnostics
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

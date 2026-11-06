@@ -40,7 +40,11 @@
     "./styles/themes/studio.css": "./styles/themes/studio.css",
     "./styles/themes/santi020k.css": "./styles/themes/santi020k.css",
     "./styles/effects/glass.css": "./styles/effects/glass.css",
-    "./styles/components/*.css": "./styles/components/*.css"
+    "./styles/components/*.css": "./styles/components/*.css",
+    "./vite/build-report": {
+      "types": "./dist/build-report-plugin.d.ts",
+      "import": "./dist/build-report-plugin.js"
+    }
   },
   "files": [
     "bin",
@@ -86,13 +90,18 @@
     "jsdom": "catalog:",
     "react": "catalog:",
     "tailwindcss": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "vite": "catalog:"
   },
   "peerDependencies": {
-    "react": ">=19"
+    "react": ">=19",
+    "vite": "*"
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "vite": {
       "optional": true
     }
   },

@@ -117,7 +117,10 @@ import '@santi020k/lumen-react/styles/components/button.css'
 import '@santi020k/lumen-react/styles/components/card.css'
 import '@santi020k/lumen-react/styles/components/input.css'
 import '@santi020k/lumen-react/styles/components/label.css'
-import { Button, Card, Input, Label } from '@santi020k/lumen-react'
+import { Button } from '@santi020k/lumen-react/components/button'
+import { Card } from '@santi020k/lumen-react/components/card'
+import { Input } from '@santi020k/lumen-react/components/input'
+import { Label } from '@santi020k/lumen-react/components/label'
 
 export function SubscribeForm() {
   return (
@@ -141,9 +144,15 @@ Import styles from a bundler entry and register the elements used by the page:
   import '@santi020k/lumen-elements/styles/components/card.css'
   import '@santi020k/lumen-elements/styles/components/input.css'
   import '@santi020k/lumen-elements/styles/components/label.css'
-  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
+  import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+  import { defineLumenInput } from '@santi020k/lumen-elements/components/input'
+  import { defineLumenLabel } from '@santi020k/lumen-elements/components/label'
 
-  defineLumenElements(['Card', 'Label', 'Input', 'Button'])
+  defineLumenButton()
+  defineLumenCard()
+  defineLumenInput()
+  defineLumenLabel()
 </script>
 
 <lumen-card>
@@ -153,10 +162,8 @@ Import styles from a bundler entry and register the elements used by the page:
 </lumen-card>
 ```
 
-Both adapters retain full `styles.css` as a convenience alternative. The catalog imports above
-cover components without granular JavaScript exports; selected registration alone does not guarantee
-smaller JavaScript. See [selective installation](docs/selective-installation.md) for verified exports,
-editable wrappers and route measurement.
+Both adapters also support full `styles.css`. The [selective installation guide](docs/selective-installation.md)
+covers editable wrappers and measuring what a route requests.
 
 See the [Web documentation](https://lumen.santi020k.com/docs/web) for installation, theming,
 component examples, and API details.

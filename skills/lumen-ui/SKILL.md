@@ -1,5 +1,7 @@
 ---
 name: lumen-ui
+metadata:
+  guidance-version: "5.1.0"
 description: Build or restyle product interfaces with Lumen UI for Astro, React, Web Components, React Native, SwiftUI, or Jetpack Compose. Use for implementation requests using Lumen packages, components, or tokens, including accessible interfaces composed from Lumen primitives. Use lumen-review for requested audits and lumen-migrate for version upgrades.
 ---
 

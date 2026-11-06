@@ -39,6 +39,35 @@ framework-selection, component-composition, theming, accessibility, and verifica
 Use it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific
 requests.
 
+The portable skill records its guidance revision in `metadata.guidance-version` in `SKILL.md`.
+An unstamped installation predates versioned guidance. For a manager-tracked global skill, run
+`npx skills check -g` and refresh only Lumen with `npx skills update lumen-ui -g`. Use `-p` for
+a project install. The configured source determines which revision the manager offers.
+
+For a manual copy or release candidate, compare the whole skill with the intended Lumen checkout,
+including its framework references. For example, from the checkout:
+
+```bash
+installed_skill="$HOME/.codex/skills/lumen-ui"
+git diff --no-index --stat -- skills/lumen-ui "$installed_skill"
+```
+
+Exit 1 identifies differences and exit 0 means the files match. Use the path your agent
+actually loaded. Modern manager installations can live under `~/.agents/skills` while an
+older manual copy still lives under `~/.codex/skills`. For a manual directory, review local
+edits and replace that exact copy from the checkout, keeping the original outside skill discovery:
+
+```bash
+skill_backup="$HOME/lumen-ui-backup"
+mkdir "$skill_backup" && mv "$installed_skill" "$skill_backup/lumen-ui" && cp -R skills/lumen-ui "$installed_skill"
+git diff --no-index --stat -- skills/lumen-ui "$installed_skill"
+```
+
+For a manager-owned installation, use the manager instead. Run
+`npx skills add . --skill lumen-ui --agent codex -g` from the intended checkout, or omit `-g`
+and supply its absolute path from a project directory. The adapter installed in the application
+determines which CSS instructions apply.
+
 The skill and MCP server complement each other: the skill explains how to work, while
 `@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,
 source, tokens, resources, and rules.

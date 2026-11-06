@@ -6,9 +6,8 @@ import {
   type ElementType
 } from 'react'
 
+import type { LumenControlVisualSize } from '@santi020k/lumen-core'
 import {
-  composeClassName,
-  type LumenControlVisualSize,
   type LumenSkeletonAnimation,
   type LumenSkeletonShape,
   type LumenSkeletonSize,
@@ -17,7 +16,8 @@ import {
   resolveLumenSkeletonAnimation,
   resolveLumenSkeletonShape,
   resolveLumenSkeletonSize
-} from '@santi020k/lumen-core'
+} from '@santi020k/lumen-core/loading'
+import { composeClassName } from '@santi020k/lumen-core/tokens'
 
 export { Label, type LabelProps } from './label.js'
 

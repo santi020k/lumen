@@ -40,6 +40,7 @@
       "entry": [
         "src/index.ts",
         "src/cli.ts",
+        "src/build-report-plugin.ts",
         "bin/*.mjs",
         "templates/shared/common/src/lumen/lumen-template.css",
         "templates/{shared,elements}/media-workspace/src/lumen/media-workspace.css",

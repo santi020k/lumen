@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url'
 
 import type { APIResponse, Browser, BrowserType, ConsoleMessage, Page, Request, Response, Route } from '@playwright/test'
 
+import { loadBuildReport } from './build-report.js'
 import {
   isLoopbackHttpUrl,
   parseLoopbackUrl,
@@ -27,6 +28,7 @@ interface AssetExpectations {
 }
 
 interface ObservedAsset {
+  importChains?: string[][]
   url: string
   resourceType: string
   classification: 'known-lumen' | 'unclassified'
@@ -58,7 +60,7 @@ interface RenderedRouteReport {
   failedRequests: string[]
   assets: ObservedAsset[]
   assetAudit: {
-    scope: 'explicit-inventory' | 'unknown'
+    scope: 'explicit-inventory' | 'build-report' | 'unknown'
     observedLumenAssets: string[]
     unexpectedLumenAssets: string[]
     allowedAssetsNotObserved: string[]
@@ -477,21 +479,35 @@ const guardRequest = async (
   }
 }
 
-const classifyAssets = (report: RenderedRouteReport, expectations: AssetExpectations | undefined): void => {
+type BuildReport = Awaited<ReturnType<typeof loadBuildReport>>
+
+const scopeFor = (expectations: AssetExpectations | undefined, build: BuildReport): RenderedRouteReport['assetAudit']['scope'] => {
+  if (expectations) return 'explicit-inventory'
+
+  return build ? 'build-report' : 'unknown'
+}
+
+const classifyAssets = (
+  report: RenderedRouteReport, expectations: AssetExpectations | undefined, build: BuildReport
+): void => {
   const known = new Set(expectations?.knownLumenAssets)
   const allowed = new Set(expectations?.allowedLumenAssets)
 
   for (const asset of report.assets) {
-    if (known.has(asset.url)) asset.classification = 'known-lumen'
+    const chains = build?.get(asset.url)
+
+    if (chains && asset.resourceType === 'script') asset.importChains = chains
+
+    if (asset.importChains || known.has(asset.url)) asset.classification = 'known-lumen'
   }
 
   const observed = report.assets.filter(asset => asset.classification === 'known-lumen').map(asset => asset.url)
   const observedSet = new Set(observed)
 
   report.assetAudit = {
-    scope: expectations ? 'explicit-inventory' : 'unknown',
+    scope: scopeFor(expectations, build),
     observedLumenAssets: observed.sort(),
-    unexpectedLumenAssets: observed.filter(url => !allowed.has(url)).sort(),
+    unexpectedLumenAssets: observed.filter(url => known.has(url) && !allowed.has(url)).sort(),
     allowedAssetsNotObserved: [...allowed].filter(url => !observedSet.has(url)).sort(),
     unclassifiedAssets: report.assets.filter(asset => asset.classification === 'unclassified').map(asset => asset.url).sort()
   }
@@ -515,7 +531,8 @@ const inspectViewport = async (
   browser: Browser,
   options: RenderedAuditOptions,
   viewport: RenderedAuditViewport,
-  expectations: AssetExpectations | undefined
+  expectations: AssetExpectations | undefined,
+  build: BuildReport
 ): Promise<RenderedRouteReport> => {
   const report = emptyRoute(options.url, viewport)
 
@@ -641,7 +658,7 @@ const inspectViewport = async (
 
     await page.close()
 
-    classifyAssets(report, expectations)
+    classifyAssets(report, expectations, build)
 
     report.observationComplete = report.layout !== null && report.diagnostics.length === 0 &&
       report.blockedRequests.length === 0 && report.failedRequests.length === 0
@@ -664,7 +681,7 @@ export const inspectRenderedAudit = async (
 ): Promise<RenderedAuditReport> => {
   parseLoopbackUrl(options.url)
 
-  const expectations = await loadExpectations(options)
+  const [expectations, build] = await Promise.all([loadExpectations(options), loadBuildReport(options)])
   const loaded = await loadLauncher(options.cwd, options.browser)
 
   if ('diagnostic' in loaded) return unavailable(loaded.diagnostic, options.browser)
@@ -684,7 +701,7 @@ export const inspectRenderedAudit = async (
 
   try {
     for (const viewport of options.viewports) {
-      report.routes.push(await inspectViewport(browser, options, viewport, expectations))
+      report.routes.push(await inspectViewport(browser, options, viewport, expectations, build))
     }
 
     if (report.routes.some(routeHasIssues)) report.status = 'issues'
@@ -713,13 +730,14 @@ const formatRenderedAudit = (report: RenderedAuditReport): string => [
     ...route.pageErrors.map(message => 'Page error: ' + message),
     ...route.blockedRequests.map(url => 'Blocked request: ' + url),
     ...route.redirects.map(redirect => 'Redirect blocked: ' + (redirect.location ?? 'invalid or missing Location')),
+    ...route.assets.flatMap(asset => (asset.importChains ?? []).map(chain => asset.url + ' contains ' + chain.join(' -> '))),
     ...route.assetAudit.observedLumenAssets.map(url => 'Observed Lumen asset: ' + url),
     ...route.assetAudit.unexpectedLumenAssets.map(url => 'Unexpected Lumen asset: ' + url),
     ...route.assetAudit.unclassifiedAssets.map(url => 'Unclassified asset: ' + url),
     ...route.diagnostics.map(diagnostic => diagnostic.code + ': ' + diagnostic.message)
   ]),
   '',
-  'Asset classification covers the supplied exact inventory. Other hashed assets remain unclassified.'
+  'Asset classification uses exact URLs from the supplied inventory or build report.'
 ].join('\n')
 
 const help = [
@@ -729,6 +747,7 @@ const help = [
   '--text-scale 100..200 (optional root text enlargement and clipped-control checks)',
   '--timeout-ms 100..60000 (default 10000)',
   '--settle-ms 0..5000 (default 200, after load)',
+  '--build-report <json> explain observed JavaScript from the matching local Vite build',
   '--asset-expectations <json> with exact knownLumenAssets and allowedLumenAssets arrays',
   'Uses an already installed project Playwright module and browser. Starts no server and downloads no tools.'
 ].join('\n')
