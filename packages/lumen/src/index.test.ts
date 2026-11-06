@@ -129,9 +129,9 @@ describe('@santi020k/lumen umbrella package', () => {
       'guided-onboarding',
       'command-center',
       'media-workspace',
-      'editable-ticket',
       'feedback-board',
-      'responsive-navigation'
+      'responsive-navigation',
+      'editable-ticket'
     ])
 
     expect(getLumenRegistryItem('scheduler')).toMatchObject({
