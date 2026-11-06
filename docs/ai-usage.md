@@ -48,13 +48,24 @@ For a manual copy or release candidate, compare the whole skill with the intende
 including its framework references. For example, from the checkout:
 
 ```bash
-git diff --no-index --stat -- skills/lumen-ui "$HOME/.codex/skills/lumen-ui"
+installed_skill="$HOME/.codex/skills/lumen-ui"
+git diff --no-index --stat -- skills/lumen-ui "$installed_skill"
 ```
 
-Exit 1 identifies differences; exit 0 means the files match. Review local edits before refreshing.
-To install from that checkout, run `npx skills add . --skill lumen-ui --agent codex -g`.
-Use the same command without `-g` and with the checkout's absolute path in place of `.` to
-refresh a project copy from its project directory. The adapter installed in the application
+Exit 1 identifies differences and exit 0 means the files match. Use the path your agent
+actually loaded. Modern manager installations can live under `~/.agents/skills` while an
+older manual copy still lives under `~/.codex/skills`. For a manual directory, review local
+edits and replace that exact copy from the checkout, keeping the original outside skill discovery:
+
+```bash
+skill_backup="$HOME/lumen-ui-backup"
+mkdir "$skill_backup" && mv "$installed_skill" "$skill_backup/lumen-ui" && cp -R skills/lumen-ui "$installed_skill"
+git diff --no-index --stat -- skills/lumen-ui "$installed_skill"
+```
+
+For a manager-owned installation, use the manager instead. Run
+`npx skills add . --skill lumen-ui --agent codex -g` from the intended checkout, or omit `-g`
+and supply its absolute path from a project directory. The adapter installed in the application
 determines which CSS instructions apply.
 
 The skill and MCP server complement each other: the skill explains how to work, while
