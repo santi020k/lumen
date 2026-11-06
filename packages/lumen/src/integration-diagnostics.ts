@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { readdir, readFile, stat } from 'node:fs/promises'
-import { extname, join, relative, resolve, sep } from 'node:path'
+import { dirname, extname, join, relative, resolve, sep } from 'node:path'
 
 import {
   lumenComponentBehavior,
@@ -930,6 +930,93 @@ const styleImportByFramework = {
   react: '@santi020k/lumen-react/styles.css'
 } as const
 
+const criticalStyleImport = (framework: LumenFramework): string => `@santi020k/lumen-${framework}/styles/critical.css`
+
+// Keep this coverage in sync with scripts/generate-critical-web-css.mjs.
+const criticalStyleComponents = new Set<string>([
+  'Alert',
+  'Badge',
+  'Button',
+  'Calendar',
+  'Card',
+  'Checkbox',
+  'Combobox',
+  'DataTable',
+  'DatePicker',
+  'DatePickerField',
+  'Dialog',
+  'Field',
+  'Input',
+  'Label',
+  'Progress',
+  'Select',
+  'Skeleton',
+  'Spinner',
+  'Table',
+  'Tabs',
+  'Textarea',
+  'Toast',
+  'Tooltip'
+])
+
+const localStylesheetImport = /(?:^|[;\n])\s*(?:import\s+|@import\s+(?:url\(\s*)?)['"](\.{1,2}\/[^'"\r\n]+\.css)['"]/gu
+
+const connectedStyleSources = (sources: SourceEntry[]): SourceEntry[] => {
+  const byPath = new Map(sources.map(item => [item.file, item]))
+  const visited = new Set(sources.filter(item => !item.file.endsWith('.css')))
+  const queue = [...visited]
+
+  for (const item of queue) {
+    for (const match of item.source.matchAll(localStylesheetImport)) {
+      const stylesheet = byPath.get(resolve(dirname(item.file), match[1] ?? ''))
+
+      if (!stylesheet || visited.has(stylesheet)) continue
+
+      visited.add(stylesheet)
+
+      queue.push(stylesheet)
+    }
+  }
+
+  return queue
+}
+
+const missingCriticalComponents = (sources: SourceEntry[], framework: LumenFramework): string[] => {
+  const names = framework === 'elements' ?
+    sources.flatMap(item => [...item.source.matchAll(/<lumen-([a-z][a-z0-9-]*)[\s/>]/gu)]
+      .map(match => componentByClassName.get(match[1] ?? ''))) :
+    sources.flatMap(item => item.imports[framework].components)
+
+  return [...new Set(names)].filter((name): name is string => Boolean(
+    name && Object.hasOwn(lumenComponentBehavior, name) && !criticalStyleComponents.has(name)
+  )).sort()
+}
+
+const collectCriticalStyleFindings = (
+  repositoryRoot: string,
+  boundary: ApplicationBoundary,
+  effectiveSources: SourceEntry[],
+  framework: LumenFramework
+): LumenDiagnosticFinding[] | undefined => {
+  const styleImport = criticalStyleImport(framework)
+
+  const entry = connectedStyleSources(boundary.sources)
+    .find(item => getPackageReferences(item.source).includes(styleImport))
+
+  if (!entry) return undefined
+
+  const missing = missingCriticalComponents(effectiveSources, framework)
+
+  return missing.length ?
+    [finding(
+      relative(repositoryRoot, entry.file),
+      'framework-critical-style-coverage',
+      `The ${framework} critical stylesheet does not cover these detected components: ${missing.join(', ')}.`,
+      `Replace ${styleImport} with ${styleImportByFramework[framework]} in the application stylesheet.`
+    )] :
+    []
+}
+
 const countOccurrences = (source: string, value: string): number => source.split(value).length - 1
 
 interface InternalSelectorContract {
@@ -1096,6 +1183,10 @@ const collectFrameworkStyleFindings = (
   }
 
   if (references.length === 0) {
+    const critical = collectCriticalStyleFindings(repositoryRoot, boundary, selectiveSources, framework)
+
+    if (critical) return critical
+
     return [finding(
       relative(repositoryRoot, boundary.root) || '.',
       'framework-style-missing',

@@ -9,15 +9,15 @@ import type { LumenMigrationVersion, LumenVersionMigrationFinding, LumenVersionS
 const layoutGaps: Readonly<Record<string, string>> = { lg: 'xl', md: 'group', xl: '2xl' }
 
 const reviewComponents = new Map([
-  ['Card', 'Review padding, child margins, media clipping and footer wrapping in the rendered application.'],
+  ['Card', 'Check the card spacing and media overflow example in migrating-v3-to-v4.md. Render edge-to-edge media and a wrapping footer at a narrow viewport.'],
   ['Container', 'Review responsive gutters; use --ui-container-gutter only when a fixed gutter is intentional.'],
   ['Prose', 'Review reading-block margins and remove verified compensating offsets.'],
   ['Typography', 'Review first/last child margins and heading spacing.'],
-  ['Button', 'Review direct-child selectors for .ui-button__content and loading/disabled descendants.'],
+  ['Button', 'Check the Button loading styling contract in migrating-v3-to-v4.md. Toggle loading and disabled states and verify custom selectors still match the content and spinner.'],
   ['DatePicker', 'Associate labels with the focusable trigger; the native input ID now ends in -native.'],
   ['Combobox', 'Review focus assumptions; the editable input retains focus with aria-activedescendant.'],
-  ['Dialog', 'Review pending-state dismissal policy and focus restoration.'],
-  ['DataTable', 'Use controlled sort/onSortChange and sortMode="manual" for server-paginated React results.'],
+  ['Dialog', 'Check the Dialog dismissal contract in migrating-v3-to-v4.md. Test Escape and backdrop clicks while pending, then close and verify focus returns to the opener.'],
+  ['DataTable', 'Check the DataTable sorting contract in migrating-v3-to-v4.md. For server-paginated React results, set sortMode="manual" and verify sort/onSortChange requests the expected page and order.'],
   ['BarChart', 'Review stable unique X identities, label formatting and application-owned chart patches.'],
   ['LineChart', 'Review stable unique X identities, label formatting and application-owned chart patches.']
 ])

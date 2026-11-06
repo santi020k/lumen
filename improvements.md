@@ -103,6 +103,63 @@ location and explain what interaction or rendered state proves compatibility.
 Acceptance criteria: each finding points to a documented contract and a meaningful verification
 step. Avoid repeated generic warnings that obscure actionable source changes.
 
+## Historical 4.4 adoption work integrated into v5
+
+- Rollout and consumer audit accept a versioned release manifest. The 4.2 fixture covers
+  independent adapter and native targets, named catalogs, a stale transitive umbrella shared by
+  Astro and React, and refusal to downgrade a newer lockfile resolution. For a historical release,
+  pass its manifest with `--manifest`. Source-only migration keeps its historical rewrite rules
+  and leaves release-family version checks to rollout and consumer audit.
+- The integration audit follows relative CSS imports to the critical entry and identifies
+  detected components that need the full stylesheet. Full CSS remains supported.
+- Migration output groups repeated behavior findings, preserves source locations, and gives
+  rendered or interaction checks for cards, buttons, dialogs, and controlled table sorting.
+
+### SwiftPM adoption measurements
+
+On macOS 27.2 (arm64) with Swift 6.4.2, a fresh repository cache and scratch directory timed
+out after 180 seconds fetching the public repository. The probe produced no resolved checkout.
+The public annotated tag `v4.2.0` peeled to `eb00a5e5b29283fe2ce155ae58a28911166fab27`.
+
+To reproduce, create a macOS 13 Swift 6 package with the following dependency and add
+`.product(name: "LumenUI", package: "lumen")` to its executable target. Import `LumenUI`
+in the executable's source.
+
+```swift
+.package(url: "https://github.com/santi020k/lumen.git", exact: "4.2.0")
+```
+
+Run from the probe directory on macOS using empty paths for the cold run. Reuse those paths
+for the warm run after a successful resolve. Compare the revision in `Package.resolved`
+with the peeled tag before measuring the build.
+
+```bash
+probe_cache="$PWD/.probe-cache"
+probe_build="$PWD/.probe-build"
+/usr/bin/time -p swift package --cache-path "$probe_cache" --scratch-path "$probe_build" resolve
+/usr/bin/time -p swift package --cache-path "$probe_cache" --scratch-path "$probe_build" resolve
+/usr/bin/time -p swift build --cache-path "$probe_cache" --scratch-path "$probe_build"
+du -sh "$probe_build"/checkouts/*
+```
+
+A separate cache seeded from the local Git objects found the release without a remote update.
+Its first attempt reached the checkout and timed out at 120 seconds. Reusing that scratch
+directory resolved the verified revision in 21.89 seconds, and the next resolve took 6.25
+seconds. The checkout occupied 509 MiB on disk. These are seeded-cache timings from a busy
+development host. The first build reached Swift compilation and timed out at 180 seconds.
+
+The tagged tree contains about 463 MiB of tracked blob content. The root manifest and the
+two Swift library source trees account for about 3.34 MiB, including 2.71 MiB of LumenUI
+resources. These figures describe file content at the tag. They do not estimate a network
+pack, which also depends on history and Git negotiation.
+
+An existing-cache path keeps the source URL, tag, and products intact and can help repeat
+builds. A smaller source-only repository would need a different package URL and new
+provenance for its tags. A binary SwiftPM target could reduce consumer compilation but
+would require a platform artifact and checksum pipeline. Putting it in the current
+repository would still leave consumers fetching the source repository to read the
+manifest. No distribution change was made. Hosted macOS cold/warm comparison remains open.
+
 ## Consumer execution record
 
 The upgrade covers 21 npm-consuming repositories and the existing Swift consumers. Compose 4.0.0

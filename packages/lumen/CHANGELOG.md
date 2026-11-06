@@ -4,6 +4,8 @@
 
 - Correct selective style diagnostics for shared CSS exports, comments, Elements registration helpers, HTML entries and optional appearances. Include refreshed palettes and Swift icon switches in v5 consumer upgrade reports.
 
+- Audit historical release manifests, flag stale transitive packages and incomplete critical styles, and refuse dependency downgrades before writing consumer files.
+
 - Add the optional Astro editable-ticket recipe with synchronized views, keyboard editing, cancel and undo.
 
 - Default upgrade audits to the bundled release, attribute requested full CSS through Vite and Astro build reports (with an optional PostCSS import collector), and add editable feedback-board and responsive-navigation recipes.
