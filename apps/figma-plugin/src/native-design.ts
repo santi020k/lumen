@@ -1,5 +1,5 @@
 import type { ComponentName } from './contracts.js'
-import { identifyComponent, isComponentName } from './contracts.js'
+import { identifyComponent, isComponentName, withPresentationContent } from './contracts.js'
 import type { DesignNode } from './model.js'
 import type { createReview } from './review.js'
 import type { NativePlatform } from './targets.js'
@@ -182,7 +182,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
   const read: Reader = node => {
     const component = identifyComponent(node)
 
-    if (component) return known(node, component, read)
+    if (component) return known(withPresentationContent(node), component, read)
 
     if (node.component || node.type === 'INSTANCE' || node.type.startsWith('COMPONENT') || isComponentName(node.name)) {
       issue(node, 'Unverified library identity. The component and its internals were omitted.', 'unsupported')

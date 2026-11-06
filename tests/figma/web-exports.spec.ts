@@ -17,6 +17,7 @@ for (const platform of ['react', 'elements'] as const) {
       await expect(page.getByRole('tab', { name: 'npm', exact: true })).toHaveAttribute('aria-selected', 'true')
       await page.getByRole('tab', { name: 'yarn' }).click()
       await expect(page.getByRole('tabpanel', { name: 'yarn' })).toContainText('yarn install')
+      await expect(page.getByRole('button', { name: 'Copy release sample' })).toBeVisible()
       const sample = page.locator('code').filter({ hasText: 'throw Error("injected")' })
       expect(await sample.textContent()).toBe('</code><script>throw Error("injected")</script>\n{expression} & "quoted"')
       await expect(page.getByRole('textbox', { name: 'Review input label' })).toHaveAttribute('placeholder', '" autofocus onfocus="throw Error(1)')

@@ -89,7 +89,10 @@ export const appearancesFor = (version: LumenVersion) => Object.entries(appearan
   .filter(([value]) => supportsAppearance(version, value))
   .map(([value, label]) => ({ value, label }))
 
-export const layoutFor = ({ appearance, version }: WebTarget) => {
+export const needsGlassEffect = (target: WebTarget, used: boolean) => used && target.version === '5.0.0' && target.appearance !== 'glass'
+
+export const layoutFor = (target: WebTarget, usesGlass = false) => {
+  const { appearance, version } = target
   const imports = ['import UIPrimitives from \'@santi020k/lumen-astro/runtime\'']
   const branded = appearance.startsWith('santi020k-')
   let attribute = ''
@@ -105,6 +108,8 @@ export const layoutFor = ({ appearance, version }: WebTarget) => {
 
     imports.push(`import '@santi020k/lumen-astro/styles/${stylesheet}.css'`)
   }
+
+  if (needsGlassEffect(target, usesGlass)) imports.push('import \'@santi020k/lumen-astro/styles/effects/glass.css\'')
 
   return `---\n${imports.join('\n')}\n\ninterface Props { title: string }\n---\n<html lang="en"${attribute}>\n  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>{Astro.props.title}</title></head>\n  <body><slot /><UIPrimitives /></body>\n</html>\n`
 }

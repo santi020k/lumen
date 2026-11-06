@@ -1,10 +1,11 @@
 import designMap from '../../../registry/figma-design-map.json'
 
 import type { ComponentName } from './contracts.js'
-import { identifyComponent, isComponentName, libraryFileKey } from './contracts.js'
+import { identifyComponent, isComponentName, libraryFileKey, withPresentationContent } from './contracts.js'
 import { editorialRenderers } from './editorial.js'
 import type { Analysis, DesignNode } from './model.js'
 import { analyzeNative } from './native.js'
+import { cardPresentationAttributes, dialogPresentationAttributes } from './presentations.js'
 import { createReview } from './review.js'
 import type { ExportTarget, WebTarget } from './targets.js'
 import { adapterVersion, defaultTarget, isNativeTarget, platforms } from './targets.js'
@@ -40,6 +41,14 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
   const markup = webMarkup(platform, addImports)
   const { elements, react, tag, attr, flag, comment } = markup
   let usesId = false
+  let usesGlass = false
+
+  const surface = (attributes: string) => {
+    if (attributes.includes(' glass')) usesGlass = true
+
+    return attributes
+  }
+
   const matched = new Set<ComponentName>()
 
   const ref = (id: string) => {
@@ -110,7 +119,7 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
     const title = tag('CardTitle', '', markup.text(text(node, 'Title', 'Card title')))
     const body = tag('CardContent', '', `<p>${markup.text(text(node, 'Body', ''))}</p>`)
 
-    return tag('Card', '', `\n  ${tag('CardHeader', '', title)}\n  ${body}\n`)
+    return tag('Card', surface(cardPresentationAttributes(node, elements)), `\n  ${tag('CardHeader', '', title)}\n  ${body}\n`)
   }
 
   const renderTabs = (node: DesignNode, id: string): string => {
@@ -123,12 +132,14 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
 
     issue(node, 'Tab labels and active state are mapped. Replace the placeholder panel content.')
 
-    if (elements) return tag('Tabs', '', elementTabs(id, 'Sections', active, items))
+    const indicator = flag('indicator', node.properties['Show indicator'] === true)
+
+    if (elements) return tag('Tabs', indicator, elementTabs(id, 'Sections', active, items))
 
     const list = tag('TabsList', ' aria-label="Sections"', '\n' + items.map(item => '    ' + tag('TabsTrigger', ` value="${item.value}"`, markup.text(item.label))).join('\n') + '\n  ')
     const panels = items.map(item => '  ' + tag('TabsPanel', ` value="${item.value}"`, item.panel))
 
-    return tag('Tabs', ` ${react ? 'defaultValue' : 'initialValue'}="${active}"`, `\n  ${list}\n${panels.join('\n')}\n`)
+    return tag('Tabs', ` ${react ? 'defaultValue' : 'initialValue'}="${active}"${indicator}`, `\n  ${list}\n${panels.join('\n')}\n`)
   }
 
   const renderDialogFooter = (node: DesignNode) => {
@@ -153,12 +164,13 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
     const body = content ? '\n  ' + tag('DialogBody', '', `\n    <p id=${ref(id + '-description')}>${markup.text(text(node, 'Description', ''))}</p>\n  `) : ''
     const parts = `\n  ${header}${body}\n  ${renderDialogFooter(node)}\n`
     const labels = ` aria-labelledby=${ref(id + '-title')}${content ? ` aria-describedby=${ref(id + '-description')}` : ''}`
+    const presentation = surface(dialogPresentationAttributes(node, elements))
 
-    if (elements) return trigger + '\n' + tag('Dialog', ` id="${id}"`, `\n<dialog${labels}>${parts}</dialog>\n`)
+    if (elements) return trigger + '\n' + tag('Dialog', ` id="${id}"${presentation}`, `\n<dialog${labels}>${parts}</dialog>\n`)
 
     const state = react ? ` open={openDialog === "${id}"} onOpenChange={open => setOpenDialog(open ? "${id}" : null)}` : ''
 
-    return trigger + '\n' + tag('Dialog', ` id=${ref(id)}${labels}${state}`, parts)
+    return trigger + '\n' + tag('Dialog', ` id=${ref(id)}${presentation}${labels}${state}`, parts)
   }
 
   const renderers: Record<ComponentName, (node: DesignNode, id: string, children: string) => string> = {
@@ -200,7 +212,7 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
       const id = `lumen-figma-${++serial}`
       const children = containers.has(component) ? node.children.map(render).join('\n') : ''
 
-      return renderers[component](node, id, children)
+      return renderers[component](withPresentationContent(node), id, children)
     }
 
     if (node.component || node.type === 'INSTANCE' || isComponentName(node.name)) return unverified(node)
@@ -222,7 +234,7 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
   const label = platforms[platform].label
 
   const { code, layout } = webOutput({
-    target, platform, names: [...imports].sort(), markup: rendered, usesId, hasThemeToggle: matched.has('ThemeToggle')
+    target, platform, names: [...imports].sort(), markup: rendered, usesId, usesGlass, hasThemeToggle: matched.has('ThemeToggle')
   })
 
   const context = { schemaVersion: 1,
@@ -233,7 +245,8 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
     libraryFileKey,
     selection,
     findings,
-    tokenMap: designMap.tokenMap }
+    tokenMap: designMap.tokenMap,
+    componentPaints: designMap.componentPaints }
 
   const handoff = [
     `# Lumen for Figma — ${label} handoff`,

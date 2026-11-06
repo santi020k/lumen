@@ -1,5 +1,5 @@
 import type { Appearance, WebPlatform, WebTarget } from './targets.js'
-import { layoutFor } from './targets.js'
+import { layoutFor, needsGlassEffect } from './targets.js'
 import { kebab } from './web-markup.js'
 
 const stylesheet = (appearance: Appearance) => appearance === 'glass' ? 'effects/glass' : `themes/${appearance.startsWith('santi020k-') ? 'santi020k' : appearance}`
@@ -62,16 +62,17 @@ interface WebSource {
   platform: WebPlatform
   names: string[]
   markup: string
+  usesGlass: boolean
   usesId: boolean
   hasThemeToggle: boolean
 }
 
-const astroOutput = ({ names, target, markup }: WebSource) => {
+const astroOutput = ({ names, target, markup, usesGlass }: WebSource) => {
   let statements = names.map(name => `import ${name} from '@santi020k/lumen-astro/components/${name}'`)
 
   if (target.version === '4.4.0' && names.length > 0) statements = [`import { ${names.join(', ')} } from '@santi020k/lumen-astro'`]
 
-  return { code: `---\n${statements.join('\n')}\n---\n\n<!-- Lumen Astro ${target.version} -->\n${markup}\n`, layout: layoutFor(target) }
+  return { code: `---\n${statements.join('\n')}\n---\n\n<!-- Lumen Astro ${target.version} -->\n${markup}\n`, layout: layoutFor(target, usesGlass) }
 }
 
 const reactSource = ({ names, target, markup, usesId, hasThemeToggle }: WebSource) => {
@@ -138,6 +139,8 @@ export const webOutput = (source: WebSource) => {
 
   const pkg = `@santi020k/lumen-${platform}`
   const setup = setupImports(target, pkg, names)
+
+  if (needsGlassEffect(target, source.usesGlass)) setup.push(`import '${pkg}/styles/effects/glass.css'`)
 
   if (platform === 'elements') setup.push(...elementRegistrations(names, target, pkg))
 

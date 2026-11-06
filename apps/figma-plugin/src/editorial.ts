@@ -1,7 +1,8 @@
 import type { DesignNode } from './model.js'
+import { stackGaps } from './presentations.js'
 import type { WebTarget } from './targets.js'
 import type { WebMarkup } from './web-markup.js'
-import { elementTabs, expression } from './web-markup.js'
+import { elementTabs, expression, kebab } from './web-markup.js'
 
 interface RenderContext {
   target: WebTarget
@@ -17,7 +18,37 @@ const layerText = (node: DesignNode, layer: string): string[] => {
   return node.children.flatMap(child => layerText(child, layer))
 }
 
-export const editorialRenderers = ({ target, text, choice, issue, markup }: RenderContext) => {
+const scrollCue = (node: DesignNode, context: RenderContext, wrap: boolean) => {
+  if (wrap || node.properties['Show scroll cue'] !== true) return ''
+
+  if ((context.target.platform ?? 'astro') === 'astro') return ' scrollCue'
+
+  context.issue(node, 'The selected adapter supports scrolling code. Review the separate Astro scroll cue in your app.')
+
+  return ''
+}
+
+const codePresentation = (node: DesignNode, context: RenderContext, wrap: boolean) => {
+  const { target, markup } = context
+
+  const optional = (property: string, key: string) => {
+    const value = node.properties[property]
+
+    return typeof value === 'string' && value ? ` ${markup.elements ? kebab(key) : key}=${markup.attr(value)}` : ''
+  }
+
+  const selected = node.properties.Appearance
+  const editorial = selected === undefined ? ['paper', 'field'].includes(target.appearance) : selected === 'Editorial'
+  const appearance = target.version === '5.0.0' && editorial ? ' appearance="editorial"' : ''
+  const language = optional('Language', markup.elements ? 'label' : 'language')
+  const copy = node.properties['Show copy'] === true
+  const labels = copy ? optional('Copy label', 'copyLabel') + optional('Copied label', 'copiedLabel') + optional('Error label', 'errorLabel') : ''
+
+  return appearance + language + markup.flag('copy', copy) + labels + scrollCue(node, context, wrap)
+}
+
+export const editorialRenderers = (context: RenderContext) => {
+  const { target, text, choice, issue, markup } = context
   const { elements, react, tag, flag } = markup
   const content = (node: DesignNode, property: string) => markup.text(text(node, property, ''))
   const textComponent = (name: string) => (node: DesignNode) => tag(name, '', content(node, 'Text'))
@@ -50,12 +81,11 @@ export const editorialRenderers = ({ target, text, choice, issue, markup }: Rend
       const variant = choice(node, 'Variant', ['inline', 'block'], 'inline')
       const lines = layerText(node, variant === 'inline' ? 'Code' : 'Line')
       const wrap = choice(node, 'Wrap', ['off', 'on'], 'off') === 'on'
-      const editorial = variant === 'block' && ['paper', 'field'].includes(target.appearance)
 
       if (!lines.length) issue(node, 'The code source layers are missing. Supply the example as plain text.')
 
       const source = lines.join('\n')
-      const modifiers = flag('wrap', wrap) + (editorial ? ' appearance="editorial"' : '')
+      const modifiers = flag('wrap', wrap) + (variant === 'block' ? codePresentation(node, context, wrap) : '')
 
       if (elements) {
         const code = `<code>${markup.text(source)}</code>`
@@ -82,7 +112,7 @@ export const editorialRenderers = ({ target, text, choice, issue, markup }: Rend
     },
     Stack: (node: DesignNode, _id: string, children: string) => {
       const direction = choice(node, 'Direction', ['vertical', 'horizontal'], 'vertical')
-      const gap = choice(node, 'Gap', ['none', 'sm', 'md', 'lg', 'xl'], 'md')
+      const gap = choice(node, 'Gap', stackGaps, 'md')
 
       return tag('Stack', ` direction="${direction}" gap="${gap}"${flag('wrap', node.layout?.wrap === true)}`, `\n${children}\n`)
     },

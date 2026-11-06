@@ -42,7 +42,9 @@ export const createReview = () => {
     if (node.unboundPaints > 0) issue(node, `${node.unboundPaints} visible paints have no variable binding. Review semantic colors.`)
 
     for (const token of node.tokens) {
-      if (!Object.hasOwn(designMap.tokenMap, token.name)) issue(node, `Review variable ${token.name}; it has no shared color mapping.`)
+      if (!Object.hasOwn(designMap.tokenMap, token.name) && !Object.hasOwn(designMap.componentPaints, token.name)) {
+        issue(node, `Review variable ${token.name}; it has no shared color mapping.`)
+      }
     }
 
     node.children.forEach(auditTokens)

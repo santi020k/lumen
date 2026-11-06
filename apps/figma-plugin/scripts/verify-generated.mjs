@@ -103,7 +103,7 @@ import Layout from '../Layout.astro'
     selection: { ...settingsFixture,
       children: [...settingsFixture.children,
         editorialFixture,
-        componentNode('Code', { Variant: 'Block', Wrap: 'Off' }, [
+        componentNode('Code', { Variant: 'Block', Wrap: 'Off', Appearance: 'Editorial', Language: 'TypeScript', 'Show copy': true, 'Copy label': 'Copy release sample', 'Show scroll cue': true }, [
           designNode({ type: 'TEXT', name: 'Line', text: '</code><script>throw Error("injected")</script>' }),
           designNode({ type: 'TEXT', name: 'Line', text: '{expression} & "quoted"' })
         ]),
