@@ -24,6 +24,20 @@ Expose selective Card and Input entries, with packed subscribe-form delivery bud
 
 ### Minor Changes
 
+- Add an opt-in editorial Code appearance with a code icon and visible localized copy feedback. Make block headers wrap at narrow widths and keep copy targets at least 44px without scaling on press. Improve code printing and adopt compact, expandable examples with exact-source copying and overflow hints in the documentation.
+
+- Add an opt-in editorial Prose appearance across the web adapters, with a configurable reading measure, clearer section hierarchy, attributed quotations, and connected native figure captions. Keep authored HTML and component-owned figures intact, including Code and charts.
+
+  Adopt the shared appearance in documentation migration/theme guides and expand the editorial article guide with semantic quotations and media.
+
+  The editable article-reading recipes print article text without contents controls or reading progress.
+
+- Refine editorial Code headers with deliberate metadata hierarchy, a restrained surface, and a distinct copy control that adapts to narrow containers.
+
+  Add opt-in sticky first columns to Table across web adapters. Row identifiers remain visible during horizontal scrolling, respect RTL, and return to normal flow in narrow containers, records layouts, and print. Documentation reference tables adopt this mode with named keyboard regions and overflow-only reading hints.
+
+  Documentation code examples expose complete-source manual recovery when clipboard access fails.
+
 - Expose selective reading, search, and dialog controls without importing the full adapter catalog. Full and selective Elements registrations share constructors. Add article-scoped reading progress to React and Elements.
 
   Narrow per-control entries keep implementation helpers private, and the core loading helpers have a lightweight public subpath.
@@ -38,6 +52,12 @@ Expose selective Card and Input entries, with packed subscribe-form delivery bud
   Elements SkipLink reveals its host when the native child receives focus and preserves link contrast.
 
 ### Patch Changes
+
+- Copy buttons can write the active code sample to the clipboard from embedded editors such as Figma Desktop.
+
+- Restore the outlines and diagonal strokes of the empty, success, error, and offline illustrations across the web adapters.
+
+- Preserve public Image radius props inside default and editorial Prose. Generic article image rounding no longer overrides `radius="none"` or other explicit Image radii, so a figure can own its outer border and corner clipping without rounded gaps between the image and its caption.
 
 - Preserve the public layer order when component styles load before Tailwind. Keep enhanced native controls hidden and component colors and borders above Tailwind base styles regardless of stylesheet chunk order.
 
