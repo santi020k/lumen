@@ -5,6 +5,7 @@ import type { PlatformGuide } from '../data/platforms'
 import DocsLayout from '../layouts/DocsLayout.astro'
 
 import CommunityFeedback from './CommunityFeedback.astro'
+import FigmaCommunityCover from './FigmaCommunityCover.astro'
 import NativeLivePreview from './NativeLivePreview.astro'
 import PlatformShipping from './PlatformShipping.astro'
 import PlatformStoreAvailability from './PlatformStoreAvailability.astro'
@@ -46,6 +47,8 @@ const commands = guide.playgroundCommands ?? []
       </p>
     </Card>
   </section>
+
+  <FigmaCommunityCover file="playgrounds" />
 
   {guide.storeAvailability && (
     <PlatformStoreAvailability availability={guide.storeAvailability} />
