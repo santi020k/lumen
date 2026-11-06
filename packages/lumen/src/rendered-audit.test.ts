@@ -34,6 +34,8 @@ describe('rendered audit configuration', () => {
     expect(defaults.viewports).toEqual([{ width: 390, height: 844 }, { width: 1280, height: 900 }])
     const options = parseRenderedAuditArguments([
       'http://localhost:4321/',
+      '--text-scale',
+      '200',
       '--browser',
       'webkit',
       '--viewport',
@@ -46,7 +48,7 @@ describe('rendered audit configuration', () => {
       '0',
       '--json'
     ], '/project')
-    expect(options).toMatchObject({ browser: 'webkit', timeoutMs: 2500, settleMs: 0, viewports: [{ width: 320, height: 568 }, { width: 1280, height: 900 }] })
+    expect(options).toMatchObject({ textScale: 200, browser: 'webkit', timeoutMs: 2500, settleMs: 0, viewports: [{ width: 320, height: 568 }, { width: 1280, height: 900 }] })
   })
 
   test.each([
@@ -54,6 +56,9 @@ describe('rendered audit configuration', () => {
     ['--viewport', '9999x9999'],
     ['--viewport', '320.5x568'],
     ['--browser', 'unknown'],
+    ['--text-scale', '99'],
+    ['--text-scale', '201'],
+    ['--text-scale', 'NaN'],
     ['--timeout-ms', '0'],
     ['--settle-ms', '5001'],
     ['--asset-expectations'],

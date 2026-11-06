@@ -49,6 +49,8 @@ interface RenderedRouteReport {
   finalUrl: string
   viewport: RenderedAuditViewport
   httpStatus: number | null
+  textScale: number
+  clippedControls: { tag: string, id: string, horizontalPixels: number, verticalPixels: number }[]
   layout: LayoutMeasurement | null
   observationComplete: boolean
   console: { type: 'warning' | 'error', message: string }[]
@@ -229,6 +231,8 @@ const emptyRoute = (url: string, viewport: RenderedAuditViewport): RenderedRoute
   finalUrl: assetUrl(url, url),
   viewport,
   httpStatus: null,
+  textScale: 100,
+  clippedControls: [],
   layout: null,
   observationComplete: false,
   console: [],
@@ -515,6 +519,7 @@ const hasHttpErrors = (report: RenderedRouteReport): boolean => (
 )
 
 const routeHasIssues = (report: RenderedRouteReport): boolean => (
+  report.clippedControls.length > 0 ||
   Boolean(report.layout?.horizontalOverflowPixels) ||
   report.console.length > 0 || report.pageErrors.length > 0 ||
   report.blockedRequests.length > 0 || report.failedRequests.length > 0 ||
@@ -530,6 +535,9 @@ const inspectViewport = async (
   build: BuildReport
 ): Promise<RenderedRouteReport> => {
   const report = emptyRoute(options.url, viewport)
+
+  report.textScale = options.textScale ?? 100
+
   const observation: NetworkObservation = { active: true, timeoutMs: options.timeoutMs }
   const context = await browser.newContext({ viewport, serviceWorkers: 'block', acceptDownloads: false })
 
@@ -552,7 +560,88 @@ const inspectViewport = async (
 
       report.httpStatus = response?.status() ?? null
 
+      if (options.textScale) {
+        await page.evaluate(scale => {
+          const root = document.documentElement
+          const size = Number.parseFloat(getComputedStyle(root).fontSize)
+
+          root.style.setProperty('font-size', `${size * scale / 100}px`, 'important')
+        }, options.textScale)
+
+        await page.evaluate(async () => {
+          await document.fonts.ready
+        })
+      }
+
       await delay(options.settleMs)
+
+      if (options.textScale) {
+        report.clippedControls = await page.evaluate(() => {
+          const findings: { tag: string, id: string, horizontalPixels: number, verticalPixels: number }[] = []
+
+          const isVisuallyHidden = (control: HTMLElement, style: CSSStyleDeclaration): boolean => (
+            control.offsetWidth <= 1 && control.offsetHeight <= 1 &&
+            (style.getPropertyValue('clip') !== 'auto' || style.clipPath !== 'none')
+          )
+
+          const isVisibleTextControl = (control: HTMLElement, style: CSSStyleDeclaration): boolean => (
+            control.getClientRects().length > 0 && style.visibility === 'visible' &&
+            !isVisuallyHidden(control, style) &&
+            !control.closest('[hidden], [inert], [aria-hidden="true"]') && Boolean(control.textContent.trim())
+          )
+
+          const clips = (overflow: string): boolean => overflow === 'hidden' || overflow === 'clip'
+
+          const hasClipping = (style: CSSStyleDeclaration, horizontal: number, vertical: number): boolean => (
+            (horizontal > 1 && clips(style.overflowX)) || (vertical > 1 && clips(style.overflowY))
+          )
+
+          const rectExceedsBounds = (
+            rect: DOMRect, bounds: DOMRect, horizontal: boolean, vertical: boolean
+          ): boolean => (
+            (horizontal && (rect.left < bounds.left - 1 || rect.right > bounds.right + 1)) ||
+            (vertical && (rect.top < bounds.top - 1 || rect.bottom > bounds.bottom + 1))
+          )
+
+          const textExceedsBounds = (control: HTMLElement, horizontal: boolean, vertical: boolean): boolean => {
+            const bounds = control.getBoundingClientRect()
+            const walker = document.createTreeWalker(control, NodeFilter.SHOW_TEXT)
+            let node = walker.nextNode()
+
+            while (node) {
+              if (node.textContent?.trim() && !node.parentElement?.closest('[aria-hidden="true"], [hidden]')) {
+                const range = document.createRange()
+
+                range.selectNodeContents(node)
+
+                for (const rect of range.getClientRects()) {
+                  if (rectExceedsBounds(rect, bounds, horizontal, vertical)) return true
+                }
+              }
+
+              node = walker.nextNode()
+            }
+
+            return false
+          }
+
+          for (const control of document.querySelectorAll<HTMLElement>('button, a[href], summary, label, [role="button"], [role="tab"]')) {
+            const style = getComputedStyle(control)
+
+            if (!isVisibleTextControl(control, style)) continue
+
+            const horizontalPixels = Math.max(0, control.scrollWidth - control.clientWidth)
+            const verticalPixels = Math.max(0, control.scrollHeight - control.clientHeight)
+
+            if (hasClipping(style, horizontalPixels, verticalPixels) &&
+              textExceedsBounds(control, clips(style.overflowX), clips(style.overflowY))) {
+              findings.push({ tag: control.tagName.toLowerCase(), id: control.id, horizontalPixels, verticalPixels })
+            }
+          }
+
+          return findings
+        })
+      }
 
       report.finalUrl = assetUrl(page.url(), options.url)
 
@@ -630,6 +719,7 @@ const formatRenderedAudit = (report: RenderedAuditReport): string => [
     '',
     route.finalUrl + ' (' + String(route.viewport.width) + 'x' + String(route.viewport.height) + ')',
     'Observation complete: ' + String(route.observationComplete),
+    'Text scale: ' + String(route.textScale) + '%; clipped controls: ' + String(route.clippedControls.length),
     'Horizontal overflow: ' + String(route.layout?.horizontalOverflowPixels ?? 'unknown') + 'px',
     'Console warnings/errors: ' + String(route.console.length) + '; page errors: ' + String(route.pageErrors.length),
     'Blocked external requests: ' + String(route.blockedRequests.length),
@@ -654,6 +744,7 @@ const help = [
   'lumen audit-rendered <local-url> [--cwd <project>] [--json]',
   '--browser chromium|firefox|webkit (default chromium)',
   '--viewport WIDTHxHEIGHT (repeatable, up to 8; default 390x844 and 1280x900)',
+  '--text-scale 100..200 (optional root text enlargement and clipped-control checks)',
   '--timeout-ms 100..60000 (default 10000)',
   '--settle-ms 0..5000 (default 200, after load)',
   '--build-report <json> explain observed JavaScript from the matching local Vite build',

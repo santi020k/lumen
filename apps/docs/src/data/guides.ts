@@ -12,6 +12,24 @@ export interface GuideMetadata {
 export const publishedGuides = [
   {
     author: 'Santiago Molina',
+    description: 'Build an editorial article with a responsive contents rail, synchronized code examples, readable tables, and enlarged-text verification.',
+    href: '/guides/build-an-editorial-article',
+    icon: 'book-open',
+    publishedAt: '2026-11-05',
+    readingTime: '15 minute build',
+    title: 'Build an editorial article'
+  },
+  {
+    author: 'Santiago Molina',
+    description: 'Add captions, named keyboard scroll regions, and overflow cues to generated Markdown tables with an editable rehype integration.',
+    href: '/guides/readable-markdown-tables',
+    icon: 'table',
+    publishedAt: '2026-11-05',
+    readingTime: '10 minute build',
+    title: 'Make Markdown tables readable'
+  },
+  {
+    author: 'Santiago Molina',
     description: 'Build and verify an accessible notification panel in Astro or React with AI coding agents, Lumen components, and focused MCP context.',
     href: '/guides/build-ui-with-ai',
     icon: 'bot',

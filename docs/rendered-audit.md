@@ -65,6 +65,25 @@ Use a distinct filename for each client build. It recognizes installed packages 
 `node_modules/@santi020k/lumen*`. CSS, externalized modules and workspace aliases that bypass the
 installed packages require separate evidence. Use an explicit inventory to enforce a route policy.
 
+## Enlarged text
+
+Pass `--text-scale 200` to multiply the page's computed root font size by two after loading.
+The accepted integer range is 100 through 200. The audit waits for loaded fonts and the configured
+settle period before measuring. Each route reports `textScale` and `clippedControls`, including
+control tag, ID, and horizontal/vertical overflow in pixels. Clipped controls cause exit code 1.
+
+    pnpm exec lumen audit-rendered http://127.0.0.1:4321/guides/build-an-editorial-article --viewport 320x844 --text-scale 200 --json
+
+The check examines visible links, buttons, labels, summaries and button/tab roles with text whose
+own box uses hidden or clipped overflow. A one-pixel tolerance accommodates rounding. Scrollable
+code and tables remain scrollable. Hidden and inert controls are excluded. Reports omit control
+text to avoid collecting page content.
+
+This is root-relative text enlargement. Fixed-pixel text, clipping by ancestor boxes, text covered
+by other elements, and unopened overlays require separate interaction and visual checks. The tool
+measures the loaded state. Repeat the route without the flag for its original size, and verify
+keyboard paths and content manually. A passing result covers only the reported measurements.
+
 ## Explicit asset expectations
 
 Pass --asset-expectations ./lumen-assets.json to classify known Lumen request URLs.

@@ -10405,6 +10405,23 @@
       "pathname": "/docs/web/world-map",
       "title": "WorldMap guide — Lumen UI"
     },
+    "/guides/build-an-editorial-article": {
+      "alt": "Build an editorial article — Product guides social preview from Lumen UI",
+      "description": "Build an editorial article with a responsive contents rail, synchronized code examples, readable tables, and enlarged-text verification.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "guides--build-an-editorial-article.webp",
+          "primary": true,
+          "url": "/og/pages/guides--build-an-editorial-article.webp?v=cbcc59fc25a3",
+          "version": "cbcc59fc25a3",
+          "width": 1200
+        }
+      ],
+      "pathname": "/guides/build-an-editorial-article",
+      "title": "Build an editorial article"
+    },
     "/guides/build-ui-with-ai": {
       "alt": "Build accessible UI with AI in Astro and React — Product guides social preview from Lumen UI",
       "description": "Build and verify an accessible notification panel in Astro or React with AI coding agents, Lumen components, and focused MCP context.",
@@ -10455,6 +10472,23 @@
       ],
       "pathname": "/guides/measure-ai-ui-token-usage",
       "title": "Measure AI token usage when building UI — Lumen UI"
+    },
+    "/guides/readable-markdown-tables": {
+      "alt": "Make Markdown tables readable — Product guides social preview from Lumen UI",
+      "description": "Give generated Markdown tables captions, keyboard scrolling, and localized overflow cues with an editable rehype integration.",
+      "images": [
+        {
+          "format": "webp",
+          "height": 630,
+          "output": "guides--readable-markdown-tables.webp",
+          "primary": true,
+          "url": "/og/pages/guides--readable-markdown-tables.webp?v=d8a5809f5359",
+          "version": "d8a5809f5359",
+          "width": 1200
+        }
+      ],
+      "pathname": "/guides/readable-markdown-tables",
+      "title": "Make Markdown tables readable - Lumen UI"
     },
     "/guides/ship-a-settings-screen": {
       "alt": "Ship an accessible settings screen — Product guides social preview from Lumen UI",

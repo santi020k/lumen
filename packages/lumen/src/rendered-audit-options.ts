@@ -13,6 +13,7 @@ export interface RenderedAuditOptions {
   timeoutMs: number
   settleMs: number
   buildReportPath?: string
+  textScale?: number
   expectationsPath?: string
 }
 
@@ -24,6 +25,7 @@ interface ParsedArguments {
   timeoutMs: number
   settleMs: number
   buildReportPath?: string
+  textScale?: number
   expectationsPath?: string
 }
 
@@ -137,6 +139,11 @@ const applyOption = (options: ParsedArguments, flag: string, value: string | und
 
     case '--build-report':
       options.buildReportPath = requiredValue(flag, value)
+
+      return 2
+
+    case '--text-scale':
+      options.textScale = integerOption(requiredValue(flag, value), flag, 100, 200)
 
       return 2
 

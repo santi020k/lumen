@@ -23,7 +23,8 @@ import {
   RevealGroup,
   ScrollReveal,
   Stack,
-  Stat } from '@santi020k/lumen-astro'
+  Stat,
+  Table } from '@santi020k/lumen-astro'
 
 import androidPlaygroundPreview from '../../../playground-android/Store/Screenshots/phone-04-components-dark.png'
 import applePlaygroundPreview from '../../../playground-apple/Store/Screenshots/iphone-02-examples-light.png'
@@ -90,11 +91,21 @@ const principles = [
     title: 'The accessible path is the default path.'
   },
   {
-    description: 'Interactive Astro primitives use a tiny progressive-enhancement layer, not an app runtime.',
+    description: 'Astro loads component styles and requests the controllers used by the page.',
     icon: 'zap',
-    metric: '~4 KB',
-    title: 'Keep the interaction. Lose the weight.'
+    metric: 'Per route',
+    title: 'Load the components your page uses.'
   }
+] as const
+
+const deliverySnapshot = 'b328b53f'
+const deliverySource = `https://github.com/santi020k/lumen/tree/${deliverySnapshot}/tests/fixtures/delivery`
+const deliveryEvidence = 'https://github.com/santi020k/lumen/blob/b3c9194b/docs/import-and-icon-performance.md#november-5-2026-astro-route-delivery'
+
+const deliveryRoutes = [
+  { label: 'Static Card and Button', fixture: 'static', javascript: '0 B', css: '7,025 B' },
+  { label: 'Dialog', fixture: 'dialog', javascript: '5,448 B', css: '8,705 B' },
+  { label: 'Code tabs with scroll cues', fixture: 'code', javascript: '9,638 B', css: '8,071 B' }
 ] as const
 
 const categories = [
@@ -541,6 +552,48 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
           </Card>
         ))}
       </RevealGroup>
+    </section>
+
+    <section class="home-section home-container home-delivery" aria-labelledby="delivery-title">
+      <div class="home-section__head home-section__head--split">
+        <div>
+          <Eyebrow>Measured Astro delivery</Eyebrow>
+          <h2 id="delivery-title">See what a page loads.</h2>
+        </div>
+        <div class="home-section__aside">
+          <p>Compare static content, a dialog, and code tabs using the same built fixture app.</p>
+          <ButtonLink href={deliveryEvidence} showArrow variant="inline">Read the measurement method</ButtonLink>
+        </div>
+      </div>
+      <Table aria-label="Astro route asset measurements" scrollCue>
+        <table>
+          <caption>V5 candidate snapshot · November 5, 2026 · gzip bytes</caption>
+          <thead>
+            <tr>
+              <th scope="col">Route fixture</th>
+              <th scope="col">Initial JavaScript</th>
+              <th scope="col">Initial CSS</th>
+              <th scope="col">Added on first interaction</th>
+            </tr>
+          </thead>
+          <tbody>
+            {deliveryRoutes.map(route => (
+              <tr>
+                <th scope="row"><Link href={`${deliverySource}/${route.fixture}.astro.template`}>{route.label}</Link></th>
+                <td>{route.javascript}</td>
+                <td>{route.css}</td>
+                <td>{route.fixture === 'static' ? 'No interaction' : '0 B'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Table>
+      <p class="home-delivery__context">
+        Cold Chromium loads with selective CSS and CSS inlining disabled, measured at revision{' '}
+        <Link href={`https://github.com/santi020k/lumen/commit/${deliverySnapshot}`}>{deliverySnapshot}</Link>.
+        {' '}Assets are individually compressed with gzip level 9. The static fixture omits the root runtime.
+        Shared chunks and app setup affect the result. These local fixture sizes describe this candidate snapshot.
+      </p>
     </section>
 
     <section class="home-principles">
@@ -1134,6 +1187,28 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     .home-use-case:hover .home-use-case__phone {
       transform: translateY(-.45rem) rotate(1.5deg);
     }
+  }
+
+  .home-delivery :global(table) {
+    min-inline-size: 42rem;
+  }
+
+  .home-delivery :global(td) {
+    white-space: nowrap;
+  }
+
+  .home-delivery :global(caption) {
+    padding-block: 0.75rem;
+    text-align: start;
+    color: hsl(var(--ink-soft));
+  }
+
+  .home-delivery__context {
+    max-inline-size: 75ch;
+    margin-block-start: 1rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.875rem;
+    line-height: 1.7;
   }
 
   .home-principles {
