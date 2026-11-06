@@ -18,6 +18,10 @@ type NumberTokens<T> = { [Name in keyof T]: number }
 export interface LumenAppearance {
   borderWidth: number
   material: LumenSurfaceMaterial
+  onSuccess?: string
+  statusText?: string
+  inkActions?: boolean
+  serifHeadings?: boolean
 }
 
 export type LumenChartColorPalette = {
@@ -42,7 +46,23 @@ export interface LumenTheme {
   spacing: NumberTokens<typeof lumenSpacing>
 }
 
+export const resolveStatusText = (theme: LumenTheme, tone: 'danger' | 'success' | 'warning'): string => theme.appearance?.statusText ?? theme.colors[tone]
+
+/** A portable appearance, resolved against Lumen foundations in each scheme. */
+export interface LumenThemeDefinition {
+  light: Partial<LumenColorPalette>
+  dark: Partial<LumenColorPalette>
+  radii?: Partial<LumenTheme['radii']> | null
+  inkActions?: boolean
+  serifHeadings?: boolean
+  chartBrand?: Record<LumenColorScheme, string> | null
+  onSuccess?: Record<LumenColorScheme, string> | null
+  statusText?: Partial<Record<LumenColorScheme, string>> | null
+}
+
 export interface LumenThemeOptions {
+  definition?: LumenThemeDefinition
+  chartColors?: Partial<LumenChartColorPalette>
   preset?: LumenThemePreset
   colors?: Partial<LumenColorPalette>
   radii?: Partial<LumenTheme['radii']>
@@ -54,16 +74,52 @@ export interface LumenThemeOptions {
   appearance?: Partial<LumenAppearance>
 }
 
+const definitionAppearance = (
+  definition: LumenThemeDefinition | undefined, scheme: LumenColorScheme
+): Partial<LumenAppearance> => {
+  if (!definition) return {}
+
+  const onSuccess = definition.onSuccess?.[scheme]
+  const statusText = definition.statusText?.[scheme]
+
+  return {
+    inkActions: definition.inkActions ?? false,
+    serifHeadings: definition.serifHeadings ?? false,
+    ...onSuccess && { onSuccess },
+    ...statusText && { statusText }
+  }
+}
+
 export const createLumenTheme = (scheme: LumenColorScheme, options: LumenThemeOptions = {}): LumenTheme => {
   const preset = lumenThemePresetDefinitions[options.preset ?? 'default']
   const radius = preset.radiusScale
   const spacing = preset.spacingScale
   const elevation = preset.elevationScale
+  const definition = options.definition
+  const colors = { ...lumenColorTokens[scheme], ...preset.colors[scheme], ...definition?.[scheme], ...options.colors }
+  const chartBrand = definition?.chartBrand?.[scheme]
+
+  const chartColors = chartBrand ?
+    {
+      series1: chartBrand,
+      series2: colors.accent,
+      divergingPositive: chartBrand,
+      divergingMid: colors.surfaceStrong,
+      sequentialHigh: colors.brandSolid,
+      sequentialMid: chartBrand,
+      sequentialLow: colors.brandSoft
+    } :
+    undefined
 
   return {
-    appearance: { borderWidth: preset.borderWidth, material: preset.material, ...options.appearance },
-    chartColors: lumenChartColorTokens[scheme],
-    colors: { ...lumenColorTokens[scheme], ...preset.colors[scheme], ...options.colors },
+    appearance: {
+      borderWidth: preset.borderWidth,
+      material: preset.material,
+      ...definitionAppearance(definition, scheme),
+      ...options.appearance
+    },
+    chartColors: { ...lumenChartColorTokens[scheme], ...chartColors, ...options.chartColors },
+    colors,
     durations: lumenDurations,
     elevation: {
       resting: lumenElevation.resting * elevation,
@@ -74,7 +130,7 @@ export const createLumenTheme = (scheme: LumenColorScheme, options: LumenThemeOp
     fontFamilies: { ...lumenFontFamilies, ...options.fontFamilies },
     fontSizes: { ...lumenFontSizes, ...options.fontSizes },
     fontWeights: { ...lumenFontWeights, ...options.fontWeights },
-    radii: { ...lumenRadii, sm: lumenRadii.sm * radius, md: lumenRadii.md * radius, lg: lumenRadii.lg * radius, xl: lumenRadii.xl * radius, '2xl': lumenRadii['2xl'] * radius, '3xl': lumenRadii['3xl'] * radius, ...options.radii },
+    radii: { ...lumenRadii, sm: lumenRadii.sm * radius, md: lumenRadii.md * radius, lg: lumenRadii.lg * radius, xl: lumenRadii.xl * radius, '2xl': lumenRadii['2xl'] * radius, '3xl': lumenRadii['3xl'] * radius, ...definition?.radii, ...options.radii },
     scheme,
     spacing: { ...lumenSpacing, xs: lumenSpacing.xs * spacing, sm: lumenSpacing.sm * spacing, md: lumenSpacing.md * spacing, lg: lumenSpacing.lg * spacing, xl: lumenSpacing.xl * spacing, '2xl': lumenSpacing['2xl'] * spacing, '3xl': lumenSpacing['3xl'] * spacing, ...options.spacing }
   }

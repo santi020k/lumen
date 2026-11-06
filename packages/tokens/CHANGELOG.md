@@ -1,6 +1,10 @@
 # @santi020k/lumen-tokens
 
-## 4.0.1
+## 4.1.0
+
+### Minor Changes
+
+- Share light and dark colors, native radii and editorial heading preferences for Paper and Field in the reading theme extension.
 
 ### Patch Changes
 

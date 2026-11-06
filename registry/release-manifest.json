@@ -6,7 +6,7 @@
         "com.santi020k:lumen-compose",
         "com.santi020k:lumen-compose-wear"
       ],
-      "version": "4.0.2"
+      "version": "4.1.0"
     },
     "npm": {
       "packages": {
@@ -63,11 +63,11 @@
             "react-native": ">=0.86.2",
             "react-native-svg": ">=12 <16"
           },
-          "version": "4.0.3"
+          "version": "4.1.0"
         },
         "@santi020k/lumen-tokens": {
           "peerDependencies": {},
-          "version": "4.0.1"
+          "version": "4.1.0"
         }
       }
     },

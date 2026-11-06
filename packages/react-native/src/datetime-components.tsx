@@ -38,6 +38,7 @@ import {
   resolveLumenButtonOpacity,
   resolveLumenValidationHint
 } from './recipes.js'
+import { resolveStatusText } from './theme.js'
 import { useLumenTheme } from './theme-context.js'
 
 const defaultDateFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' })
@@ -71,7 +72,7 @@ const DateSupportingText = ({ description, errorMessage }: DateSupportingTextPro
     <Text
       accessibilityLiveRegion={errorMessage ? 'polite' : 'none'}
       style={{
-        color: errorMessage ? theme.colors.danger : theme.colors.inkMuted,
+        color: errorMessage ? resolveStatusText(theme, 'danger') : theme.colors.inkMuted,
         fontSize: theme.fontSizes.xs
       }}
     >
@@ -194,7 +195,7 @@ const LumenDateFieldControl = ({
     <View {...props} style={[{ gap: theme.spacing.xs }, style]}>
       <Text
         style={{
-          color: errorMessage ? theme.colors.danger : theme.colors.ink,
+          color: errorMessage ? resolveStatusText(theme, 'danger') : theme.colors.ink,
           fontSize: theme.fontSizes.sm,
           fontWeight: String(theme.fontWeights.semibold) as TextStyle['fontWeight']
         }}
@@ -311,7 +312,7 @@ export const LumenDateRangeField = ({
 }: LumenDateRangeFieldProps): ReactElement => {
   const theme = useLumenTheme()
   const endMinimum = resolveLumenDateRangeEndMinimum(value.start, minimumDate)
-  const labelColor = resolveDateLabelColor(theme.colors.danger, theme.colors.ink, errorMessage)
+  const labelColor = resolveDateLabelColor(resolveStatusText(theme, 'danger'), theme.colors.ink, errorMessage)
   const sharedFieldProps = resolveSharedDateFieldProps(enabled, formatValue, maximumDate, placeholder)
 
   return (

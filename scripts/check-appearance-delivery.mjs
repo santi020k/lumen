@@ -1,9 +1,46 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import { preprocessCSS, resolveConfig } from 'vite'
 
+import { resolveNamedThemes } from './lib/named-themes.mjs'
 import { readSanti020kSiteColors } from './lib/santi020k-site-colors.mjs'
+
+// Read actual CSS in a browser so inherited and aliased colors are checked against the
+// same native RGB values in full and selective installations.
+const compareNativePalette = async (page, css, name, scheme, expected) => {
+  const rootTheme = name === 'santi020k' ? name : 'lumen'
+
+  await page.setContent(`<html data-theme="${rootTheme}-${scheme}"><style>${css}</style><body><section></section></body></html>`)
+
+  const actual = await page.locator('section').evaluate((scope, { name: theme, palette }) => {
+    if (theme !== 'santi020k') scope.dataset.lumenPreset = theme
+
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    const style = getComputedStyle(scope)
+
+    return Object.fromEntries(Object.keys(palette).map(key => {
+      const property = '--' + key.replaceAll(/[A-Z]/gu, match => '-' + match.toLowerCase())
+      const value = style.getPropertyValue(property).trim()
+
+      if (!CSS.supports('color', `hsl(${value})`)) throw new Error(`Unresolved ${property}: ${value}`)
+
+      context.fillStyle = `hsl(${value})`
+
+      context.fillRect(0, 0, 1, 1)
+
+      return [key, Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3)]
+    }))
+  }, { name, palette: expected })
+
+  for (const [role, hex] of Object.entries(expected)) {
+    const channels = [1, 3, 5].map(i => Number.parseInt(hex.slice(i, i + 2), 16))
+
+    assert.ok(channels.every((channel, i) => Math.abs(channel - actual[role][i]) <= 1), `${name}.${scheme}.${role}: expected ${hex}, got ${actual[role]}`)
+  }
+}
 
 // Resolve the public imports from a real consumer package, including adapter and Core re-exports.
 export const checkAppearanceDelivery = async (browser, repo) => {
@@ -41,6 +78,17 @@ export const checkAppearanceDelivery = async (browser, repo) => {
   const page = await browser.newPage({ reducedMotion: 'reduce' })
 
   try {
+    const tokens = JSON.parse(await readFile(join(repo, 'tokens/lumen.tokens.json'), 'utf8'))
+    const named = resolveNamedThemes(tokens, siteColors)
+
+    for (const [name, optional] of [['paper', paper], ['field', field], ['santi020k', branded]]) {
+      for (const scheme of ['light', 'dark']) {
+        for (const cssText of [full, base + optional]) {
+          await compareNativePalette(page, cssText, name, scheme, named[name][scheme])
+        }
+      }
+    }
+
     const read = async (styles, theme, preset) => {
       await page.setContent(`<!doctype html><html data-theme="${theme}" data-lumen-preset="${preset}"><head>
         <style>${styles}</style></head><body><div class="ui-card ui-card--glass ui-glass-subtle">Toolbar</div>

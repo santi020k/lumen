@@ -531,7 +531,7 @@
     "@santi020k/lumen-mcp": "5.0.0",
     "@santi020k/lumen-react": "5.0.0",
     "@santi020k/lumen-react-hook-form": "4.0.2",
-    "@santi020k/lumen-react-native": "4.0.3",
-    "@santi020k/lumen-tokens": "4.0.1"
+    "@santi020k/lumen-react-native": "4.1.0",
+    "@santi020k/lumen-tokens": "4.1.0"
   }
 }

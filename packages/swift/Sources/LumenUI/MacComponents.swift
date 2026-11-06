@@ -158,7 +158,7 @@ public struct LumenShortcutRecorder: View {
                     )
                     Text(errorMessage)
                         .font(.caption)
-                        .foregroundStyle(theme.colors.warning)
+                        .foregroundStyle(theme.statusText(theme.colors.warning))
                 }
                 .accessibilityElement(children: .combine)
             }

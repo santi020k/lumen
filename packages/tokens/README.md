@@ -62,6 +62,11 @@ The package contains data only. It does not load CSS, apply a theme, or register
 Platform packages expose native generated values, so most application code should consume
 `@santi020k/lumen-react-native`, `LumenUI`, or the Compose module instead of parsing this file.
 
+The `$extensions["com.santi020k.lumen"].readingThemes` object contains Paper and Field light and
+dark colors as opaque HSL channels, corner radii in logical pixels, and the editorial heading
+preference. See the [appearance guide](../../docs/appearance-presets.md#named-themes-on-mobile)
+to use the generated definitions on a phone or tablet.
+
 ## Resources
 
 | Guide | What you will find |

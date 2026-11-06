@@ -107,7 +107,7 @@ fun LumenFieldGroup(
                     error(errorMessage)
                     liveRegion = LiveRegionMode.Polite
                 },
-                color = colors.danger,
+                color = lumenStatusTextColor(colors.danger),
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -143,7 +143,7 @@ fun LumenTextarea(
             val message = errorMessage ?: description
             if (message != null) Text(message)
         },
-        shape = RoundedCornerShape(LumenRadius.Sm),
+        shape = RoundedCornerShape(LumenSurfaceRadius.Sm.scoped()),
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = colors.surface,
             unfocusedContainerColor = colors.surface,
@@ -152,6 +152,8 @@ fun LumenTextarea(
             unfocusedTextColor = colors.ink,
             focusedBorderColor = colors.brand,
             unfocusedBorderColor = colors.line,
+            errorLabelColor = lumenStatusTextColor(Color.Unspecified),
+            errorSupportingTextColor = lumenStatusTextColor(Color.Unspecified),
             errorBorderColor = colors.danger,
             cursorColor = colors.brand
         )
@@ -218,7 +220,7 @@ fun LumenToast(
         modifier = modifier.semantics { liveRegion = LiveRegionMode.Polite },
         color = palette.background,
         contentColor = colors.ink,
-        shape = RoundedCornerShape(LumenRadius.Md),
+        shape = RoundedCornerShape(LumenSurfaceRadius.Md.scoped()),
         border = BorderStroke(1.dp, palette.border)
     ) {
         Row(
@@ -232,7 +234,7 @@ fun LumenToast(
             ) {
                 Text(
                     title,
-                    color = palette.accent,
+                    color = variant.textColor(palette.accent),
                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
                 )
                 if (description != null) {
@@ -241,7 +243,7 @@ fun LumenToast(
             }
             action?.invoke(this)
             if (onDismiss != null) {
-                TextButton(onClick = onDismiss) { Text(dismissLabel, color = palette.accent) }
+                TextButton(onClick = onDismiss) { Text(dismissLabel, color = variant.textColor(palette.accent)) }
             }
         }
     }

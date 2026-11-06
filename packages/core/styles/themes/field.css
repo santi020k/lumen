@@ -5,6 +5,7 @@
   /* Scheme values inherit from the nearest light or dark boundary. */
   :where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"]) {
     --_field-scheme: light;
+    /* BEGIN:generated-light */
     --_field-canvas: 104 18% 90%;
     --_field-surface: 92 30% 97%;
     --_field-surface-muted: 102 17% 87%;
@@ -21,10 +22,12 @@
     --_field-on-danger: 0 0% 100%;
     --_field-success: 175 57% 25%;
     --_field-warning: 32 82% 30%;
+    /* END:generated-light */
   }
 
   :where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"]) {
     --_field-scheme: dark;
+    /* BEGIN:generated-dark */
     --_field-canvas: 152 18% 9%;
     --_field-surface: 147 20% 13%;
     --_field-surface-muted: 147 14% 19%;
@@ -41,6 +44,7 @@
     --_field-on-danger: 355 35% 12%;
     --_field-success: 172 44% 68%;
     --_field-warning: 39 80% 70%;
+    /* END:generated-dark */
   }
 
   /* Full CSS can set a base scheme on the same element as the preset. */
@@ -68,8 +72,10 @@
     --brand: var(--brand-solid);
     --ui-on-danger: var(--on-danger);
     --ui-font: system-ui, sans-serif;
+    /* BEGIN:generated-radii */
     --ui-radius-sm: 0.65rem;
     --ui-radius: 0.85rem;
     --ui-radius-lg: 1.05rem;
+    /* END:generated-radii */
   }
 }

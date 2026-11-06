@@ -74,7 +74,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:4.0.2")
+    implementation("com.santi020k:lumen-compose:4.1.0")
 }
 ```
 
@@ -266,6 +266,44 @@ TalkBack, font scaling, contrast, focus order, and reduced motion on hardware.
 
 Use `LumenTheme(preset = LumenThemePreset.Studio)` or customize `LumenThemeValues.preset(...)`. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for dimensions, precedence and the solid material fallback.
 
+
+Choose a named theme at the root or a local screen boundary. The root follows Android's
+appearance setting. A nested scope inherits its parent's resolved scheme. Pass
+`darkTheme = true` or `false` to pin a subtree, including dialogs and sheets opened inside it.
+
+```kotlin
+import com.santi020k.lumen.LumenNamedThemes
+import com.santi020k.lumen.LumenThemeScope
+
+LumenThemeScope(LumenNamedThemes.Field) {
+    AccountSettings()
+    LumenThemeScope(LumenNamedThemes.Paper, darkTheme = false) {
+        ArticlePreview()
+    }
+}
+```
+
+Paper uses compact corners and serif titles. Field uses rounded surfaces and controls.
+The santi020k theme uses ink for a Lumen primary button, violet for emphasis, and its own
+chart accents. Material controls receive the named theme's solid action and paired foreground.
+A supplied Material color scheme has precedence for Material controls. Scoped typography
+and shapes default to their enclosing Material values. Android surfaces use opaque fills.
+
+To share a custom palette between screens, publish or pass a typed value owned by the app.
+This Harbor theme customizes the accent in both schemes.
+
+```kotlin
+val harbor = LumenNamedThemes.Field.copy(
+    light = LumenNamedThemes.Field.light.copy(accent = LumenColors.Light.brand),
+    dark = LumenNamedThemes.Field.dark.copy(accent = LumenColors.Dark.brand)
+)
+LumenThemeScope(harbor) { Reader() }
+```
+
+Read the selected scheme and semantic colors from `LocalLumenTheme.current`.
+Use `LumenThemeScope(theme = null, preset = LumenThemePreset.Studio)` when a single
+picker switches between named themes and the existing presets.
+
 ## Data visualization
 
 `LumenCalendarHeatmap`, `LumenFunnelChart`, and `LumenBoxPlot` extend the chart catalog.
@@ -323,7 +361,7 @@ See the [native compatibility matrix](https://github.com/santi020k/lumen/blob/ma
 JDK, Gradle, Kotlin, and Compose baselines.
 
 Wear OS applications should use the sibling
-[`lumen-compose-wear`](https://github.com/santi020k/lumen/tree/main/packages/compose/wear) artifact (`com.santi020k:lumen-compose-wear:4.0.2`). It provides a
+[`lumen-compose-wear`](https://github.com/santi020k/lumen/tree/main/packages/compose/wear) artifact (`com.santi020k:lumen-compose-wear:4.1.0`). It provides a
 deliberately small round-screen tier without
 forcing phone applications to acquire wearable contracts or requiring consumers to migrate their
 selected Wear Material version.

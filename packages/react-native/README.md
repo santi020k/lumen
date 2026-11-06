@@ -386,6 +386,33 @@ VoiceOver and TalkBack evidence.
 
 ## Appearance presets
 
+Import optional themes individually. Paper gives titles a system serif and tighter corners.
+Field rounds controls and santi020k uses ink on primary buttons and violet accents.
+The public theme value also works with `createLumenTheme(scheme, { definition: paperTheme })`.
+
+```tsx
+import { LumenProvider, LumenThemeScope, type LumenThemeDefinition } from '@santi020k/lumen-react-native/foundations'
+import { paperTheme } from '@santi020k/lumen-react-native/themes/paper'
+
+const harbor = {
+  light: { brand: '#0D6769', brandSolid: '#0D6769', onBrand: '#FFFFFF' },
+  dark: { brand: '#80DBD3', brandSolid: '#80DBD3', onBrand: '#0D2326' }
+} satisfies LumenThemeDefinition
+
+<LumenProvider scheme="system" definition={paperTheme}>
+  <Article />
+  <LumenThemeScope definition={harbor} scheme="light">
+    <HarborPreview />
+  </LumenThemeScope>
+</LumenProvider>
+```
+
+Use `themes/field` and `themes/santi020k` for the named `fieldTheme` and `santi020kTheme` exports.
+A scope without a scheme follows its parent's resolved scheme. Render sheets inside their initiating
+scope. Themes resolve from Lumen foundations for the selected scheme. Application overrides passed
+to `createLumenTheme` take precedence over the definition. A complete `theme` on the provider takes
+precedence over its other settings.
+
 Start with `createLumenTheme(scheme, { preset: 'studio' })` or `<LumenProvider preset="studio">`. Theme options support custom numeric scales and semantic colors. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for the opaque material fallback.
 
 ## Data visualization

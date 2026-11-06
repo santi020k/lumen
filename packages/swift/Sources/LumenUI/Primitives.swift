@@ -72,12 +72,12 @@ public struct LumenText: View {
 
     private var foregroundColor: Color {
         switch tone {
-        case .danger: theme.colors.danger
+        case .danger: theme.statusText(theme.colors.danger)
         case .default: contentColor ?? theme.colors.ink
         case .muted: theme.colors.inkMuted
         case .soft: theme.colors.inkSoft
-        case .success: theme.colors.success
-        case .warning: theme.colors.warning
+        case .success: theme.statusText(theme.colors.success)
+        case .warning: theme.statusText(theme.colors.warning)
         }
     }
 }
@@ -156,7 +156,7 @@ public struct LumenSurface<Content: View>: View {
         content
             .padding(padding.value * theme.appearance.spacingScale)
             .modifier(LumenSurfaceBackground(color: backgroundColor, material: material))
-            .clipShape(RoundedRectangle(cornerRadius: radius.value * theme.appearance.radiusScale, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: theme.surfaceRadius(radius), style: .continuous))
     }
 
     private var backgroundColor: Color {
@@ -292,17 +292,17 @@ public struct LumenIconButtonStyle: ButtonStyle {
             .frame(width: metrics.touchTarget, height: metrics.touchTarget)
             .background(backgroundColor)
             .overlay {
-                RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
+                RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous)
                     .stroke(borderColor, lineWidth: 1)
             }
-            .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous))
             .opacity(isEnabled ? (configuration.isPressed ? 0.84 : 1) : 0.52)
     }
 
     private var backgroundColor: Color {
         switch intent {
         case .danger: theme.colors.danger
-        case .primary: theme.colors.brandSolid
+        case .primary: theme.actionFill
         case .quiet: .clear
         case .secondary: theme.colors.surfaceMuted
         case .success: theme.colors.success
@@ -312,7 +312,7 @@ public struct LumenIconButtonStyle: ButtonStyle {
     private var borderColor: Color {
         switch intent {
         case .danger: theme.colors.danger
-        case .primary: theme.colors.brandSolid
+        case .primary: theme.actionFill
         case .quiet: .clear
         case .secondary: theme.colors.line
         case .success: theme.colors.success
@@ -502,10 +502,10 @@ public struct LumenIconButton: View {
     private var foregroundColor: Color {
         switch intent {
         case .danger: theme.colors.onDanger
-        case .primary: theme.colors.onBrand
+        case .primary: theme.actionForeground
         case .quiet: theme.colors.inkSoft
         case .secondary: theme.colors.ink
-        case .success: theme.colors.onBrand
+        case .success: theme.successForeground
         }
     }
 }
@@ -560,20 +560,20 @@ public struct LumenButtonStyle: ButtonStyle {
             .foregroundStyle(foregroundColor)
             .frame(minHeight: metrics.minHeight)
             .padding(.horizontal, metrics.horizontalPadding)
-            .contentShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+            .contentShape(RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous))
             .background(backgroundColor)
             .overlay {
-                RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
+                RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous)
                     .stroke(borderColor, lineWidth: 1)
             }
-            .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous))
             .opacity(isEnabled ? (configuration.isPressed ? 0.84 : 1) : 0.52)
     }
 
     private var backgroundColor: Color {
         switch intent {
         case .danger: theme.colors.danger
-        case .primary: theme.colors.brandSolid
+        case .primary: theme.actionFill
         case .quiet: .clear
         case .secondary: theme.colors.surfaceMuted
         case .success: theme.colors.success
@@ -583,7 +583,7 @@ public struct LumenButtonStyle: ButtonStyle {
     private var borderColor: Color {
         switch intent {
         case .danger: theme.colors.danger
-        case .primary: theme.colors.brandSolid
+        case .primary: theme.actionFill
         case .quiet: .clear
         case .secondary: theme.colors.line
         case .success: theme.colors.success
@@ -593,10 +593,10 @@ public struct LumenButtonStyle: ButtonStyle {
     private var foregroundColor: Color {
         switch intent {
         case .danger: theme.colors.onDanger
-        case .primary: theme.colors.onBrand
+        case .primary: theme.actionForeground
         case .quiet: theme.colors.inkSoft
         case .secondary: theme.colors.ink
-        case .success: theme.colors.onBrand
+        case .success: theme.successForeground
         }
     }
 }
@@ -700,10 +700,10 @@ public struct LumenButton<Label: View>: View {
     private var foregroundColor: Color {
         switch intent {
         case .danger: theme.colors.onDanger
-        case .primary: theme.colors.onBrand
+        case .primary: theme.actionForeground
         case .quiet: theme.colors.inkSoft
         case .secondary: theme.colors.ink
-        case .success: theme.colors.onBrand
+        case .success: theme.successForeground
         }
     }
 }
@@ -871,10 +871,10 @@ public struct LumenTextField: View {
             .padding(.horizontal, LumenSpacing.md)
             .background(theme.colors.surface)
             .overlay {
-                RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
+                RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous)
                     .stroke(validationMessage == nil ? theme.colors.line : theme.colors.danger, lineWidth: 1)
             }
-            .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous))
             .opacity(isEnabled ? 1 : 0.52)
             .lumenAccessibilityHint(validationMessage)
             .accessibilityValue(Text(verbatim: text))
@@ -923,6 +923,13 @@ public struct LumenBadge: View {
 
     private var foregroundColor: Color {
         switch tone {
+        case .danger, .success, .warning: theme.statusText(toneColor)
+        case .accent, .neutral: toneColor
+        }
+    }
+
+    private var toneColor: Color {
+        switch tone {
         case .accent: theme.colors.accent
         case .danger: theme.colors.danger
         case .neutral: theme.colors.inkSoft
@@ -932,7 +939,7 @@ public struct LumenBadge: View {
     }
 
     private var backgroundColor: Color {
-        tone == .neutral ? theme.colors.surfaceMuted : foregroundColor.opacity(0.12)
+        tone == .neutral ? theme.colors.surfaceMuted : toneColor.opacity(0.12)
     }
 }
 

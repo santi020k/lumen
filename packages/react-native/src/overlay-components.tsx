@@ -31,6 +31,7 @@ import {
   resolveLumenMenuPosition
 } from './overlay-recipes.js'
 import { LumenButton } from './primitives.js'
+import { resolveStatusText } from './theme.js'
 import { useLumenTheme } from './theme-context.js'
 
 export interface LumenSafeAreaInsets {
@@ -532,7 +533,7 @@ export const LumenMenu = ({
               >
                 <Text
                   style={{
-                    color: item.destructive ? theme.colors.danger : theme.colors.ink,
+                    color: item.destructive ? resolveStatusText(theme, 'danger') : theme.colors.ink,
                     fontSize: theme.fontSizes.sm
                   }}
                 >

@@ -48,12 +48,12 @@ import '@santi020k/lumen-astro/styles/effects/glass.css'
 </section>
 ```
 
-Paper and Field are web CSS themes. Import either from the adapter already in the app.
+Paper and Field have optional web stylesheets. Import either from the adapter already in the app.
 For example, import `@santi020k/lumen-react/styles/themes/paper.css` and set
 `data-lumen-preset="paper"` on the article or application root. Switch the surrounding
 `data-theme` between `lumen-light` and `lumen-dark`, or set `data-lumen-scheme="dark"`
 on the preset itself. The same markup works for a form. Both use system fonts and solid
-surfaces. The Core preset builder and native adapters use the presets in the table above.
+surfaces. The Core preset builder accepts the three presets in the table above. Mobile adapters also expose Paper, Field and santi020k as named themes.
 
 The same attributes work on a React container and around registered Web Components. `glass`,
 `glass="subtle"` and `glass="strong"` retain their existing component contracts. Dense content and
@@ -147,6 +147,26 @@ mode before first paint. Update site selectors that currently match the plain `d
 Replace matching action, card and heading rules with the public components; keep routing, font
 loading, page compositions, print styles and product imagery in the website. Do not load a second
 root palette over Lumen. See the [web theme example](https://lumen.santi020k.com/docs/web#website-theme-title).
+
+## Named themes on mobile
+
+Paper pairs warm surfaces with serif titles. Field uses pine actions and rounded corners.
+The santi020k theme uses ink for filled primary actions and violet for emphasis and charts.
+In light mode status labels use ink on pale surfaces. Success buttons use a dark label in both schemes.
+Each has a light and a dark palette. Use a named theme at the root or give a single section its
+own theme. Let a child follow the parent scheme or pin its scheme for a reading view.
+The application owns the user's appearance preference.
+
+| Platform | Follow the system at the root | Pin a reading view to light |
+| --- | --- | --- |
+| React Native | Import `santi020kTheme` from `@santi020k/lumen-react-native/themes/santi020k` and pass `definition={santi020kTheme}` to `LumenProvider`. | Import `paperTheme` from the matching `/themes/paper` entry and wrap the view in `<LumenThemeScope definition={paperTheme} scheme="light">`. |
+| SwiftUI | Apply `.lumenThemeScope(.santi020k)` to the root. | Apply `.lumenThemeScope(.paper, scheme: .light)` to the reading view. |
+| Compose | Wrap the root in `LumenThemeScope(theme = LumenNamedThemes.Santi020k)`. | Wrap the reading view in `LumenThemeScope(theme = LumenNamedThemes.Paper, darkTheme = false)`. |
+
+For a product theme such as Harbor, define its light and dark colors in your app. The adapter
+READMEs show how to compose a typed definition and reuse it across screens:
+[React Native](../packages/react-native/README.md), [SwiftUI](../packages/swift/README.md) and
+[Compose](../packages/compose/README.md). Try the named themes in [Playground Settings](playgrounds.md#appearance-comparison).
 
 ## SwiftUI
 

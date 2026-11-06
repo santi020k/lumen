@@ -284,7 +284,7 @@ for (const count of [0, 1, v5Packages.length]) {
 
       assert.equal(v5Packages.length, 10);
 
-      assert.equal(v5Packages.find(entry => entry.name === '@santi020k/lumen-tokens')?.version, '4.0.1');
+      assert.equal(v5Packages.find(entry => entry.name === '@santi020k/lumen-tokens')?.version, '4.1.0');
 
       const lockfilePath = resolve(manifestPath, '..', 'package-lock.json');
 

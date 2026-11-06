@@ -317,6 +317,10 @@ export const LumenBanner = ({
   const theme = useLumenTheme()
   const colors = resolveLumenBannerColors(theme.colors, variant)
 
+  const dismissColor = variant === 'default' || variant === 'accent' ?
+    colors.accentColor :
+    theme.appearance?.statusText ?? colors.accentColor
+
   return (
     <View
       ref={ref}
@@ -383,7 +387,7 @@ export const LumenBanner = ({
           >
             <Text
               style={{
-                color: colors.accentColor,
+                color: dismissColor,
                 fontSize: theme.fontSizes.xs,
                 fontWeight: String(
                   theme.fontWeights.semibold

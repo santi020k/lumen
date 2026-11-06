@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Add Paper, Field and santi020k mobile themes, reusable custom definitions and local light/dark scopes across React Native, SwiftUI and Compose. Upgrade all three phone playgrounds with theme selection and a scoped note sheet.
+
 - Add the optional Astro editable-ticket recipe with synchronized views, keyboard editing, cancel and undo.
 
 - Default upgrade audits to the bundled release, attribute requested full CSS through Vite and Astro build reports (with an optional PostCSS import collector), and add editable feedback-board and responsive-navigation recipes.

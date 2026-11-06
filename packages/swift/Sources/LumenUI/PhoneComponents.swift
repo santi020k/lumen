@@ -498,10 +498,10 @@ public struct LumenPhoneInput: View {
             .frame(minHeight: 44, maxHeight: 44)
             .background(readOnly ? theme.colors.surfaceMuted : theme.colors.surface)
             .overlay {
-                RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
+                RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous)
                     .stroke(borderColor, lineWidth: 1)
             }
-            .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous))
         }
     }
 

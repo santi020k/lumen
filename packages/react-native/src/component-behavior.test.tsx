@@ -10,6 +10,8 @@ import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { LumenBrandGithubIconGraphic } from './static-icons/brand-github.generated.js'
 import { LumenSearchIconGraphic } from './static-icons/search.generated.js'
+import { paperTheme } from './themes/paper.js'
+import { santi020kTheme } from './themes/santi020k.js'
 import { LumenButtonGroup, LumenChip, LumenFieldGroup, LumenTextarea, LumenToast } from './additional-components.js'
 import { LumenAutocomplete, LumenInputOTP, LumenNumberField, LumenPasswordField } from './advanced-form-components.js'
 import { LumenBreadcrumb } from './breadcrumb-components.js'
@@ -26,7 +28,7 @@ import { LumenPhoneInput } from './phone-components.js'
 import { resolveLumenPhoneInputValue } from './phone-recipes.js'
 import { LumenNavigationBar } from './platform-components.js'
 import { LumenButton, LumenIcon, LumenIconButton, LumenText, LumenTextField } from './primitives.js'
-import { LumenProvider } from './provider.js'
+import { LumenProvider, LumenThemeScope } from './provider.js'
 import { LumenRating } from './rating-components.js'
 import { resolveLumenRating } from './rating-recipes.js'
 import { LumenCheckbox, LumenTabs } from './selection-components.js'
@@ -36,6 +38,7 @@ import { LumenBanner, LumenErrorState, LumenStatusBar } from './structured-compo
 import { LumenDataTable } from './table-components.js'
 import type { LumenTableRow } from './table-recipes.js'
 import { createLumenTheme } from './theme.js'
+import { useLumenTheme } from './theme-context.js'
 import { LumenTimeField, type LumenTimeFieldProps } from './time-components.js'
 import { LumenTimeline, LumenTimelineItem } from './timeline-components.js'
 import { LumenPicker, LumenRangeSlider, LumenSlider } from './value-components.js'
@@ -2886,4 +2889,71 @@ test.each([true, false])('media pinch-to-pan preserves the host-accepted zoom (a
   expect(change).not.toHaveBeenCalled()
   await dispatch('onResponderMove', { pageX: 175, pageY: 50, touches: [touch(175, 50)] })
   expect(change).toHaveBeenLastCalledWith({ zoom: accept ? 4 : 2, x: accept ? 1 / 12 : 0.25, y: 0 })
+})
+
+test('scopes follow the parent scheme or pin a sheet while a draft and sibling keep their owners', async () => {
+  const ThemeLabel = ({ name }: { name: string }) => {
+    const { colors, scheme } = useLumenTheme()
+
+    return <LumenText accessibilityLabel={`${name} ${scheme} ${colors.surface}`} />
+  }
+  const Fixture = () => {
+    const [dark, setDark] = useState(true)
+    const [draft, setDraft] = useState('')
+
+    return (
+      <LumenProvider scheme={dark ? 'dark' : 'light'}>
+        <LumenButton
+          accessibilityLabel="Change host theme"
+          onPress={() => {
+            setDark(!dark)
+          }}
+        >
+          Change host
+        </LumenButton>
+        <ThemeLabel name="Sibling" />
+        <LumenThemeScope definition={paperTheme}>
+          <ThemeLabel name="Inherited" />
+          <LumenThemeScope definition={paperTheme} scheme="light">
+            <LumenSheet onDismiss={() => undefined} title="Preview" visible>
+              <ThemeLabel name="Sheet" />
+              <LumenTextField accessibilityLabel="Draft" onChangeText={setDraft} value={draft} />
+            </LumenSheet>
+          </LumenThemeScope>
+        </LumenThemeScope>
+      </LumenProvider>
+    )
+  }
+  const root = await renderNative(<Fixture />)
+  const sheetLabel = `Sheet light ${paperTheme.light.surface}`
+
+  findByAccessibilityLabel(root, `Sibling dark ${createLumenTheme('dark').colors.surface}`)
+  findByAccessibilityLabel(root, `Inherited dark ${paperTheme.dark.surface}`)
+  findByAccessibilityLabel(root, sheetLabel)
+  await act(async () => {
+    callInputAction(readProp(findByAccessibilityLabel(root, 'Draft'), 'onChangeText'), 'Keep this note')
+    callAction(readProp(findByAccessibilityLabel(root, 'Change host theme'), 'onPress'), 'Missing theme toggle')
+    await Promise.resolve()
+  })
+  findByAccessibilityLabel(root, `Sibling light ${createLumenTheme('light').colors.surface}`)
+  findByAccessibilityLabel(root, `Inherited light ${paperTheme.light.surface}`)
+  findByAccessibilityLabel(root, sheetLabel)
+  expect(readProp(findByAccessibilityLabel(root, 'Draft'), 'value')).toBe('Keep this note')
+})
+
+test('branded status text stays legible while filled success buttons use their own foreground', async () => {
+  const root = await renderNative(
+    <LumenProvider definition={santi020kTheme} scheme="light">
+      <LumenButton intent="success"><LumenText accessibilityLabel="Saved">Saved</LumenText></LumenButton>
+      <LumenText accessibilityLabel="Status" tone="warning">Review changes</LumenText>
+      <LumenText accessibilityLabel="Validation" tone="danger">Enter a name</LumenText>
+    </LumenProvider>
+  )
+
+  expect(readProp(findByAccessibilityLabel(root, 'Saved'), 'style')).toContainEqual({
+    color: santi020kTheme.onSuccess.light
+  })
+  for (const label of ['Status', 'Validation']) {
+    expect(readProp(findByAccessibilityLabel(root, label), 'style')).toContainEqual({ color: santi020kTheme.light.ink })
+  }
 })

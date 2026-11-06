@@ -125,6 +125,7 @@ import {
   playgroundLumenVersion
 } from './playground-model'
 import { createPlaygroundTheme, isThemePreset, type ThemePreset, themePresetOptions } from './playground-theme'
+import { ThemeScopePreview } from './ThemeScopePreview'
 import { WorkspaceExample } from './WorkspaceExample'
 
 type ColorScheme = 'dark' | 'light' | 'system'
@@ -848,6 +849,15 @@ const ExamplesScreen = (): ReactElement => {
   )
 }
 
+const themeDescriptions: Record<ThemePreset, string> = {
+  lumen: 'Warm surfaces and cyan actions.',
+  studio: 'Neutral surfaces and monochrome controls.',
+  glass: 'Rounded controls and opaque surfaces.',
+  santi020k: 'Ink buttons and violet accents.',
+  paper: 'Ivory or espresso surfaces, burgundy accents and serif titles.',
+  field: 'Sage or forest surfaces and rounded controls.'
+}
+
 const SettingsScreen = ({
   onSchemeChange,
   onThemePresetChange,
@@ -894,8 +904,7 @@ const SettingsScreen = ({
             value={themePreset}
           />
           <LumenText variant="caption" tone="muted">
-            Normal keeps the classic Lumen look. Studio uses neutral surfaces. Glass uses rounded surfaces
-            with an opaque material fallback on React Native.
+            {themeDescriptions[themePreset]}
           </LumenText>
           <LumenSegmentedControl
             label="Playground appearance"
@@ -914,6 +923,8 @@ const SettingsScreen = ({
             <LumenBadge tone="neutral">{scheme.charAt(0).toUpperCase() + scheme.slice(1)}</LumenBadge>
           </View>
         </LumenCard>
+
+        <ThemeScopePreview />
 
         <LumenCard style={styles.section}>
           <LumenSectionHeader

@@ -334,7 +334,16 @@ public struct LumenChartSummary: Equatable, Sendable {
 
 extension LumenTheme {
     var chartColors: LumenChartColorPalette {
-        scheme == .dark ? LumenChartColors.dark : LumenChartColors.light
+        let base = scheme == .dark ? LumenChartColors.dark : LumenChartColors.light
+        guard let chartBrand = scheme == .dark ? named?.darkChartBrand : named?.lightChartBrand else { return base }
+        return LumenChartColorPalette(
+            axis: base.axis, grid: base.grid, reference: base.reference, selection: base.selection,
+            tooltipBackground: base.tooltipBackground, tooltipForeground: base.tooltipForeground,
+            sequentialLow: colors.brandSoft, sequentialMid: chartBrand, sequentialHigh: colors.brandSolid,
+            divergingNegative: base.divergingNegative, divergingMid: colors.surfaceStrong, divergingPositive: chartBrand,
+            series1: chartBrand, series2: colors.accent, series3: base.series3, series4: base.series4,
+            series5: base.series5, series6: base.series6, series7: base.series7, series8: base.series8
+        )
     }
 
     func chartColor(_ tone: LumenChartTone) -> Color {

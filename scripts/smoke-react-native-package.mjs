@@ -154,6 +154,7 @@ try {
 import {
   LumenButton,
   LumenProvider,
+  LumenThemeScope,
   LumenSurface,
   LumenText,
   LumenTextField,
@@ -165,6 +166,10 @@ import { LumenIcon as GraphicIcon, type LumenIconGraphicProps } from '@santi020k
 import { LumenSearchIconGraphic } from '@santi020k/lumen-react-native/icons/search'
 import { LumenBrandGithubIconGraphic } from '@santi020k/lumen-react-native/icons/brand-github'
 
+import { paperTheme } from '@santi020k/lumen-react-native/themes/paper'
+import { fieldTheme } from '@santi020k/lumen-react-native/themes/field'
+import { santi020kTheme } from '@santi020k/lumen-react-native/themes/santi020k'
+
 const SearchGraphic = ({ size }: LumenIconGraphicProps): ReactElement => <LumenText>{size}</LumenText>
 
 export function PackedConsumer(): ReactElement {
@@ -173,7 +178,10 @@ export function PackedConsumer(): ReactElement {
   const range: LumenDateRangeValue = { end: null, start: null }
 
   return (
-    <LumenProvider scheme="light">
+    <LumenProvider scheme="light" definition={santi020kTheme}>
+      <LumenThemeScope definition={enabled ? paperTheme : fieldTheme} scheme="dark">
+        <LumenText variant="title">Preview</LumenText>
+      </LumenThemeScope>
       <LumenSurface padding="md">
         <LumenText variant="title">Packed consumer {range.start?.toISOString()}</LumenText>
         <LumenTextField

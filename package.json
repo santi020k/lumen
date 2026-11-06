@@ -59,7 +59,7 @@
     "generate:platform-tokens": "node scripts/generate-platform-tokens.mjs",
     "generate:critical-web-css": "node scripts/generate-critical-web-css.mjs",
     "check:critical-web-css": "node scripts/generate-critical-web-css.mjs --check && node --test scripts/generate-critical-web-css.test.mjs",
-    "test:spacing-tokens": "node --test scripts/spacing-tokens.test.mjs scripts/theme-presets.test.mjs",
+    "test:spacing-tokens": "node --test scripts/spacing-tokens.test.mjs scripts/theme-presets.test.mjs scripts/named-themes.test.mjs",
     "check:platform-tokens": "node scripts/generate-platform-tokens.mjs --check",
     "generate:world-map-data": "node scripts/generate-world-map-data.mjs",
     "check:world-map-data": "node scripts/generate-world-map-data.mjs --check && node --test scripts/world-map-geometry.test.mjs",

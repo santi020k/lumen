@@ -51,7 +51,7 @@ public struct LumenMentions: View {
                 color: UIColor(theme.colors.ink), tint: UIColor(theme.colors.brandSolid),
                 keyboard: handleKey, commit: insert)
                 .frame(minHeight: 120).background(theme.colors.surface)
-            if !LumenMentionEngine.isSelectionValid(value) { Text(labels.invalid).foregroundStyle(theme.colors.danger) }
+            if !LumenMentionEngine.isSelectionValid(value) { Text(labels.invalid).foregroundStyle(theme.statusText(theme.colors.danger)) }
             if status == .loading { Text(labels.loading) }
             if status == .error { Text(labels.error) }
             if query != nil && matches.isEmpty { Text(labels.empty) }

@@ -449,7 +449,53 @@ Swift, and Xcode baselines, and use the
 
 ## Appearance presets
 
-Start with `LumenTheme(preset: .studio, scheme: .light)`. Surface and Card accept explicit `.glass` materials with accessibility fallbacks. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for surface dimensions and text styles.
+Use `.lumenThemeScope(.paper)`, `.lumenThemeScope(.field)`, or `.lumenThemeScope(.santi020k)` on a view.
+At the root the view follows the system. A nested scope follows the nearest Lumen theme. Pass
+`scheme: .light` or `.dark` to pin that subtree, including its controls. A `.lumenSheet` presented
+inside the scope takes its appearance from that scope. Apply the scope outside the presentation
+modifier. Apply the same scope explicitly inside a separately constructed window or presentation.
+
+```swift
+import LumenUI
+import SwiftUI
+
+struct ReadingNotes: View {
+    @State private var editing = false
+    @State private var draft = ""
+
+    var body: some View {
+        VStack {
+            LumenText("Reading notes", variant: .title)
+            LumenButton(action: { editing = true }) { Text("Edit note") }
+                .lumenSheet(isPresented: $editing, title: "Note") {
+                    LumenTextField("Draft", text: $draft)
+                }
+                .lumenThemeScope(.paper, scheme: .light)
+        }
+        .lumenThemeScope(.field)
+    }
+}
+```
+
+Paper uses a scalable serif title. Field supplies rounded corners. The santi020k theme gives primary
+buttons an ink fill and uses violet for links and charts. Its status labels in light mode use readable ink while icons and borders carry their status colors. Each named theme uses solid
+surfaces by default. Pick the existing Studio or Glass preset through
+`LumenTheme(preset: .studio, scheme: .light)`. Surface and Card also support explicitly selected
+glass material with accessibility fallbacks.
+
+Create an app theme from two typed palettes with `LumenNamedTheme(light:dark:)`, or derive it from an existing named theme. This Harbor example customizes Field’s accent in each scheme.
+Use this same value with `.lumenThemeScope(harbor)`, or supply the resolved theme to an app-owned
+window with `.lumenTheme(LumenTheme(harbor, scheme: .dark))`. Pass `applyTint: false` to retain
+application tint. A product that owns its title font can pass `textStyles:` to the initializer.
+
+```swift
+let harbor = LumenNamedTheme.field.overridingColors { palette, scheme in
+    palette.overriding(accent: scheme == .dark ? LumenColors.dark.brand : LumenColors.light.brand)
+}
+```
+
+See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md)
+for shared semantic roles and platform differences.
 
 ## Data visualization
 

@@ -5,6 +5,7 @@
   /* Scheme values inherit from the nearest light or dark boundary. */
   :where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"]) {
     --_paper-scheme: light;
+    /* BEGIN:generated-light */
     --_paper-canvas: 41 45% 92%;
     --_paper-surface: 44 63% 97%;
     --_paper-surface-muted: 39 32% 89%;
@@ -21,10 +22,12 @@
     --_paper-on-danger: 0 0% 100%;
     --_paper-success: 175 57% 25%;
     --_paper-warning: 32 82% 30%;
+    /* END:generated-light */
   }
 
   :where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"]) {
     --_paper-scheme: dark;
+    /* BEGIN:generated-dark */
     --_paper-canvas: 24 15% 10%;
     --_paper-surface: 25 17% 14%;
     --_paper-surface-muted: 25 14% 20%;
@@ -41,6 +44,7 @@
     --_paper-on-danger: 355 35% 12%;
     --_paper-success: 172 44% 68%;
     --_paper-warning: 39 80% 70%;
+    /* END:generated-dark */
   }
 
   /* Full CSS can set a base scheme on the same element as the preset. */
@@ -68,9 +72,11 @@
     --brand: var(--brand-solid);
     --ui-on-danger: var(--on-danger);
     --ui-font: system-ui, sans-serif;
+    /* BEGIN:generated-radii */
     --ui-radius-sm: 0.2rem;
     --ui-radius: 0.22rem;
     --ui-radius-lg: 0.22rem;
+    /* END:generated-radii */
   }
 }
 
