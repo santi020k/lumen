@@ -281,9 +281,11 @@ const structuredData = composeJsonLd(
 
     root.classList.toggle('dark', theme.mode === 'dark')
 
-    // During an Astro swap the incoming document has no computed styles yet.
+    // The canvas token already has its final color while the background is transitioning.
+    const canvas = getComputedStyle(document.documentElement).getPropertyValue('--canvas').trim()
+
     targetDocument.querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', getComputedStyle(document.documentElement).backgroundColor)
+      ?.setAttribute('content', `hsl(${canvas})`)
 
     syncThemeToggles(theme, targetDocument)
 
