@@ -805,6 +805,7 @@ pre:where(:not(.ui-code pre)) code {
 .docs-shell {
   --docs-anchor-navigation-fallback: 3.25rem;
   --docs-shell-inline-padding: clamp(1.25rem, 3vw, 3rem);
+  --docs-sticky-top: var(--docs-sticky-header-height, 10rem);
 
   position: relative;
   display: grid;
@@ -815,7 +816,7 @@ pre:where(:not(.ui-code pre)) code {
 }
 
 .docs-shell [id] {
-  scroll-margin-top: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + 1rem);
+  scroll-margin-top: calc(var(--docs-sticky-top) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + 1rem);
 }
 
 .docs-site-content:has(.docs-shell, .home) + .docs-site-footer {
@@ -1234,7 +1235,7 @@ pre:where(:not(.ui-code pre)) code {
   grid-template-columns: minmax(0, 1fr);
   position: sticky;
   z-index: 20;
-  top: var(--docs-sticky-header-height, 10rem);
+  top: var(--docs-sticky-top);
   display: grid;
   gap: 0.65rem;
   margin: -0.5rem calc(-1 * var(--docs-shell-inline-padding)) 1.5rem;
@@ -1317,6 +1318,7 @@ pre:where(:not(.ui-code pre)) code {
 @media (min-width: 64rem) {
   .docs-shell {
     --docs-anchor-navigation-fallback: 0px;
+    --docs-sticky-top: calc(var(--docs-sticky-header-height, 7.75rem) + 1rem);
 
     grid-template-columns: 16.25rem minmax(0, 1fr);
     align-items: start;
@@ -1324,7 +1326,7 @@ pre:where(:not(.ui-code pre)) code {
 
   .docs-sidebar {
     position: sticky;
-    top: calc(var(--docs-sticky-header-height, 7.75rem) + 1rem);
+    top: var(--docs-sticky-top);
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     overflow: visible;
