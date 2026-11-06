@@ -14,7 +14,8 @@ test.each(['astro', 'react', 'elements'] as const)('installs the complete media 
     expect(result.files).toContain(`src/lumen/media-workspace.${extension}`)
     expect(result.files).toContain('src/lumen/media-workspace.css')
     const stylesheet = await readFile(join(directory, 'src/lumen/media-workspace.css'), 'utf8')
-    expect(stylesheet).toContain(`@santi020k/lumen-${target}/styles/effects/glass.css`)
+    const stylePackage = target === 'elements' ? 'lumen-elements' : 'lumen-core'
+    expect(stylesheet).toContain(`@santi020k/${stylePackage}/styles/effects/glass.css`)
     expect(stylesheet.includes('/styles/themes/studio.css')).toBe(target === 'elements')
     expect(stylesheet).toContain('./media-workspace-layout.css')
     const layout = await readFile(join(directory, 'src/lumen/media-workspace-layout.css'), 'utf8')
