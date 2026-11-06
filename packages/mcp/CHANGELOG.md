@@ -4,6 +4,8 @@
 
 Keep Input discovery and versioned portable skill guidance aligned with the v5 package contracts.
 
+- Keep mobile article contents focus and disclosure cleanup when the shared runtime handles fragment navigation. Avoid a second scroll after enhanced navigation.
+
 ### Minor Changes
 
 - Add an explicit v5 migration contract and target-version audit evidence. `lumen migrate v5` keeps

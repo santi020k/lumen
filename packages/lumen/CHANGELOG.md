@@ -6,6 +6,10 @@
 
 Expose a Vite client build report for rendered audits and generate selective subscribe-form wrappers.
 
+- Keep mobile article contents focus and disclosure cleanup when the shared runtime handles fragment navigation. Avoid a second scroll after enhanced navigation.
+
+- Add an opt-in rendered audit text scale with clipped-control findings and documented measurement limits.
+
 ### Major Changes
 
 - Ship Lumen light and dark in selective CSS. Add Studio, santi020k, and glass independently with optional style imports. The full stylesheet includes every appearance.
