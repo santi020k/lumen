@@ -73,7 +73,10 @@ rows use their adjacent caption and keep independent state initialized from the 
 group of choice cards with a legend and exactly one highlighted option exports as a radio group.
 It preserves the option titles, descriptions and initial selection. A drawn
 progress track with a visible caption and percentage exports a labeled progress indicator. Review
-the inferred mapping and connect progress to the application. App actions are left for you to connect.
+the inferred mapping and connect progress to the application. Selecting the complete Onboarding form wires Continue to Preferences (step 3 of 4, 75%) once the
+workspace name and email are valid. Back returns to Workspace (50%) with the same field values, workspace
+choice, and product-updates preference. Back is disabled at the start of this local two-step export.
+Connect other button actions in the receiving application.
 
 Nested layouts preserve child order, row/column direction, matching native spacing tokens and
 directional padding. Only React Native emits wrapping. Review notes identify approximations,
