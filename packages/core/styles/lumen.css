@@ -1441,7 +1441,7 @@
 }
 
 .ui-illustration svg { display: block; height: auto; overflow: visible; width: 100%; }
-.ui-illustration :where(path, circle) { stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; vector-effect: non-scaling-stroke; }
+.ui-illustration :where(circle, line, path, polygon, polyline, rect) { stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; vector-effect: non-scaling-stroke; }
 .ui-illustration__wash { fill: hsl(var(--ui-illustration-color) / 0.1); stroke: none !important; }
 .ui-illustration--sm { --ui-illustration-size: 6rem; }
 .ui-illustration--lg { --ui-illustration-size: 11rem; }

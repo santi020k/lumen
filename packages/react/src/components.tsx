@@ -3165,6 +3165,12 @@ const renderIllustrationElement = (
     )
   }
 
+  if (element.kind === 'line') {
+    const [x1, y1, x2, y2] = element.points
+
+    return <line key={index} x1={x1} x2={x2} y1={y1} y2={y2} />
+  }
+
   const pointPairs: string[] = []
 
   for (let pointIndex = 0; pointIndex < element.points.length; pointIndex += 2) {

@@ -117,26 +117,14 @@ describe('component docs snippets', () => {
   })
 
   test('link documented Figma components to their exact design nodes', () => {
-    const linkedComponents = componentDocs.filter(component => component.figmaNodeId)
-
-    expect(linkedComponents.length).toBeGreaterThan(90)
     expect(getFigmaComponentUrl()).toBe(figmaLibraryUrl)
+    expect(new Set(componentDocs.map(component => component.name))).toEqual(new Set(lumenComponentNames))
+    expect(new Set(componentDocs.map(component => component.figmaNodeId)).size).toBe(lumenComponentNames.length)
 
-    for (const component of linkedComponents) {
-      const nodeId = component.figmaNodeId
-
-      expect(nodeId).toBeDefined()
-
-      if (!nodeId) throw new Error(`${component.name} is missing its Figma node ID`)
-
-      expect(getFigmaComponentUrl(component.figmaNodeId))
-        .toBe(`${figmaLibraryUrl}?node-id=${nodeId.replace(':', '-')}`)
-    }
-
-    for (const component of componentDocs) {
-      expect(
-        component.figmaNodeId ? component.figmaStatus : 'behavior-only', `${component.name} needs a linked Figma node or an explicit behavior-only status`
-      ).toBe(component.figmaStatus)
+    for (const { figmaNodeId } of componentDocs) {
+      expect(figmaNodeId).toMatch(/^\d+:\d+$/)
+      expect(getFigmaComponentUrl(figmaNodeId))
+        .toBe(`${figmaLibraryUrl}?node-id=${figmaNodeId.replace(':', '-')}`)
     }
   })
 

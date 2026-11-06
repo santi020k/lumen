@@ -84,10 +84,7 @@ const relatedComponents = relatedCollection?.names
   .filter(entry => entry !== undefined) ??
   []
 
-const figmaUrl = component.figmaNodeId ?
-  getFigmaComponentUrl(component.figmaNodeId) :
-  '/docs/figma'
-
+const figmaUrl = getFigmaComponentUrl(component.figmaNodeId)
 const componentNameParts = component.name.split(/(?<=[a-z])(?=[A-Z])/)
 const isImage = component.name === 'Image'
 
@@ -180,7 +177,7 @@ undefined}
             variant="outline"
           >
             <Icon decorative name="swatch-book" size="sm" />
-            {component.figmaNodeId ? 'View in Figma' : 'Figma behavior note'}
+            View in Figma
           </DocsActionLink>
         </div>
       </div>
@@ -201,9 +198,7 @@ undefined}
           <span><Icon decorative name="swatch-book" size="sm" /></span>
           <p>
             <small>Design source</small>
-            {component.figmaNodeId ?
-              <Link href={figmaUrl} rel="noopener noreferrer" target="_blank">Linked component node</Link> :
-              <Link href={figmaUrl}>Behavior-only contract</Link>}
+            <Link href={figmaUrl} rel="noopener noreferrer" target="_blank">Linked component node</Link>
           </p>
         </div>
       </div>
