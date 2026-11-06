@@ -54,39 +54,52 @@ const hasState = ({ fields, checks, choices }: NativeState) => fields > 0 || che
 type Button = Extract<NativeNode, { kind: 'button' }>
 
 const buttonAction = (button: Button, platform: 'tsx' | 'native') => {
-  if (!button.navigation) return '/* Connect action */'
+  if (!button.destinationStep) return '/* Connect action */'
 
-  const forward = button.navigation === 'preferences'
-
-  return platform === 'tsx' ? `setShowPreferences(${forward})` : `showPreferences = ${forward}`
+  return platform === 'tsx' ? `setOnboardingStep(${button.destinationStep})` : `onboardingStep = ${button.destinationStep}`
 }
 
 const buttonDisabled = (button: Button) => {
   if (button.disabled) return 'true'
 
-  return button.navigation === 'preferences' ? '!canContinue' : 'false'
+  return button.requiresWorkspace ? '!canContinue' : 'false'
 }
 
 const buttonEnabled = (button: Button) => {
   if (button.disabled) return 'false'
 
-  return button.navigation === 'preferences' ? 'canContinue' : 'true'
+  return button.requiresWorkspace ? 'canContinue' : 'true'
 }
 
 type RenderNode = (node: NativeNode) => string
 
 const renderPages = (root: NativeNode, flow: OnboardingFlow | null, render: RenderNode, platform: NativePlatform) => {
   const workspace = render(root)
+  const returnView = (view: string) => `return (\n${indent(view)}\n)`
 
-  if (!flow) return workspace
+  if (!flow) return platform === 'react-native' ? returnView(workspace) : workspace
 
   const preferences = render(flow.preferences)
+  const invite = render(flow.invite)
 
-  if (platform === 'react-native') return `showPreferences ? (\n${indent(preferences)}\n) : (\n${indent(workspace)}\n)`
+  if (platform === 'react-native') {
+    return block('switch (onboardingStep)', [
+      'case 3:',
+      indent(returnView(preferences)),
+      'case 4:',
+      indent(returnView(invite)),
+      'default:',
+      indent(returnView(workspace))
+    ].join('\n'))
+  }
 
-  const condition = platform === 'compose' ? 'if (showPreferences)' : 'if showPreferences'
+  if (platform === 'compose') {
+    return block('when (onboardingStep)', [block('3 ->', preferences), block('4 ->', invite), block('else ->', workspace)].join('\n'))
+  }
 
-  return `${block(condition, preferences)} else {\n${indent(workspace)}\n}`
+  return block('switch onboardingStep', [
+    'case 3:', indent(preferences), 'case 4:', indent(invite), 'default:', indent(workspace)
+  ].join('\n'))
 }
 
 const reactNative = (root: NativeNode, state: NativeState, flow: OnboardingFlow | null) => {
@@ -185,10 +198,10 @@ const reactNative = (root: NativeNode, state: NativeState, flow: OnboardingFlow 
     fieldStates(fields, i => `const [field${i}, setField${i}] = useState('')`),
     ...checks.map((checked, i) => `const [checked${i + 1}, setChecked${i + 1}] = useState(${checked})`),
     ...choices.map((value, i) => `const [choice${i + 1}, setChoice${i + 1}] = useState(${literal(value, 'tsx')})`),
-    ...(flow ? ['const [showPreferences, setShowPreferences] = useState(false)'] : []),
+    ...(flow ? ['const [onboardingStep, setOnboardingStep] = useState(2)'] : []),
     ...errors,
     ...(flow ? [`const canContinue = field${flow.workspaceField}.trim().length > 0 && field${flow.emailField}.length > 0 && !field${flow.emailField}Error`] : []),
-    `return (\n${indent(body)}\n)`
+    body
   ].filter(Boolean)
 
   return imports.join('\n') + '\n\n' + (errors.length ? `const emailPattern = new RegExp(${literal('^' + emailPattern + '$', 'tsx')})\n\n` : '') + block('export function LumenSelection()', statements.join('\n')) + '\n'
@@ -249,7 +262,7 @@ const swift = (root: NativeNode, { fields, checks, choices }: NativeState, flow:
   }
 
   const state = [
-    flow ? '@State private var showPreferences = false' : '',
+    flow ? '@State private var onboardingStep = 2' : '',
     fieldStates(fields, i => `@State private var field${i} = ""`),
     ...checks.map((checked, i) => `@State private var checked${i + 1} = ${checked}`),
     ...choices.map((value, i) => `@State private var choice${i + 1} = ${literal(value, 'swift')}`)
@@ -364,7 +377,7 @@ const compose = (root: NativeNode, form: NativeState, flow: OnboardingFlow | nul
   }
 
   const state = [
-    flow ? 'var showPreferences by rememberSaveable { mutableStateOf(false) }' : '',
+    flow ? 'var onboardingStep by rememberSaveable { mutableStateOf(2) }' : '',
     fieldStates(fields, i => `var field${i} by rememberSaveable { mutableStateOf("") }`),
     ...checks.map((checked, i) => `var checked${i + 1} by rememberSaveable { mutableStateOf(${checked}) }`),
     ...choices.map((value, i) => `var choice${i + 1} by rememberSaveable { mutableStateOf(${q(value)}) }`)

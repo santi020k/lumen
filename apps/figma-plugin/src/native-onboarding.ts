@@ -9,6 +9,7 @@ export interface OnboardingFlow {
   workspaceField: number
   emailField: number
   preferences: Stack
+  invite: Stack
 }
 
 const leaves = (node: NativeNode): NativeNode[] => node.kind === 'stack' ? node.children.flatMap(leaves) : [node]
@@ -25,7 +26,7 @@ const actionPair = (group: NativeNode) => {
 }
 
 const text = (content: string, variant: 'label' | 'title' | 'body'): NativeNode => ({ kind: 'text', content, variant, tone: 'default' })
-// The templates package identifies Workspace (2/4) and Preferences (3/4).
+// The templates package identifies Workspace (2/4), Preferences (3/4) and Invite (4/4).
 // Infer local navigation only for the complete selected form with its verified controls.
 const formParts = ['Field', 'Field', 'Onboarding choices', 'Onboarding checkbox', 'Onboarding progress', 'Onboarding actions']
 
@@ -66,28 +67,37 @@ export const bindOnboarding = (selection: DesignNode, root: NativeNode | null): 
   if (!fields || !controls || !pair) return null
 
   const { preference, meter } = controls
-  const returnButton: Button = { ...pair.back, navigation: 'workspace' }
+  const back: Button = { ...pair.back, destinationStep: 2 }
+  const next: Button = { ...pair.next, disabled: false, loading: false, destinationStep: 4 }
 
+  // Only the forward action on Workspace depends on valid fields.
   pair.back.disabled = true
 
-  pair.back.navigation = 'workspace'
+  pair.back.destinationStep = 2
 
-  pair.next.navigation = 'preferences'
+  pair.next.destinationStep = 3
+
+  pair.next.requiresWorkspace = true
+
+  const page = (step: 3 | 4, title: string, content: NativeNode[], buttons: Button[]): Stack => ({
+    ...root,
+    row: false,
+    wrap: false,
+    gap: 'md',
+    children: [
+      text(`Step ${step} of 4`, 'label'),
+      text(title, 'title'),
+      ...content,
+      text(meter.label, 'label'),
+      text(`${step * 25}%`, 'body'),
+      { ...meter, value: step * 25 },
+      ...buttons
+    ]
+  })
 
   return {
     ...fields,
-    preferences: { ...root,
-      row: false,
-      wrap: false,
-      gap: 'md',
-      children: [
-        text('Step 3 of 4', 'label'),
-        text('Preferences', 'title'),
-        preference,
-        text(meter.label, 'label'),
-        text('75%', 'body'),
-        { ...meter, value: 75 },
-        returnButton
-      ] }
+    preferences: page(3, 'Preferences', [preference], [back, next]),
+    invite: page(4, 'Invite', [text('Invite collaborators when you are ready.', 'body')], [{ ...back, destinationStep: 3 }])
   }
 }

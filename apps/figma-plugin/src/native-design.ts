@@ -28,7 +28,7 @@ const hasKey = <T extends string>(record: Record<T, unknown>, key: string): key 
 export type NativeNode =
   | { kind: 'stack', row: boolean, wrap: boolean, gap: Gap, padding: { side: Side, gap: Gap }[], children: NativeNode[] } |
   { kind: 'card', variant: 'muted' | 'default', title: string, body: string } |
-  { kind: 'button', label: string, intent: typeof intents[keyof typeof intents], size: Size, disabled: boolean, loading: boolean, navigation?: 'workspace' | 'preferences' } |
+  { kind: 'button', label: string, intent: typeof intents[keyof typeof intents], size: Size, disabled: boolean, loading: boolean, destinationStep?: 2 | 3 | 4, requiresWorkspace?: boolean } |
   { kind: 'badge', label: string, tone: typeof badges[keyof typeof badges] } |
   { kind: 'text', content: string, variant: 'title' | 'body' | 'label', tone: typeof tones[keyof typeof tones] } |
   { kind: 'radioGroup', index: number, label: string, options: NativeChoice[] } |
