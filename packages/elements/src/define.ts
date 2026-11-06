@@ -312,9 +312,7 @@ const validityMessageAttributes = [
 const toastTimers = new WeakMap<
   HTMLElement,
   {
-    cleanup: (() => void) | undefined
-    remaining: number
-    startedAt: number
+    cleanup?: (() => void) | undefined
     timer: ReturnType<typeof globalThis.setTimeout> | undefined
   }
 >()
@@ -4907,13 +4905,19 @@ const clearToastTimer = (toast: HTMLElement): void => {
 }
 
 const dismissToastElement = (toast: HTMLElement): void => {
+  if (toast.dataset.state === 'closed' && toastTimers.has(toast)) return
+
   clearToastTimer(toast)
 
   toast.dataset.state = 'closed'
 
-  globalThis.setTimeout(() => {
+  const timer = globalThis.setTimeout(() => {
+    toastTimers.delete(toast)
+
     toast.remove()
   }, toastCloseDelay)
+
+  toastTimers.set(toast, { timer })
 }
 
 const scheduleToastDismiss = (toast: HTMLElement, duration: number): void => {
@@ -5184,7 +5188,7 @@ export const LumenToast: ToastApi = {
 
     setToastContent(toast, { ...detail, id })
 
-    if (detail.duration !== undefined) {
+    if (detail.duration !== undefined && toast.dataset.state !== 'closed') {
       scheduleToastDismiss(toast, detail.duration)
     }
   }

@@ -46,3 +46,25 @@ describe('toast runtime boundary', () => {
     expect(toast?.dataset.state).toBe('closed')
   })
 })
+
+test('reopening a toast by ID cancels its pending removal', () => {
+  vi.useFakeTimers()
+  try {
+    initToasts(document)
+    const create = () => document.dispatchEvent(new CustomEvent('ui:toast', { detail: { id: 'retry-toast', title: 'Saving', duration: 0 } }))
+    const dismiss = () => document.dispatchEvent(new CustomEvent('ui:toast-dismiss', { detail: { id: 'retry-toast' } }))
+
+    create()
+    dismiss()
+    vi.advanceTimersByTime(100)
+    create()
+    vi.advanceTimersByTime(200)
+    expect(document.getElementById('retry-toast')?.dataset.state).toBe('open')
+    dismiss()
+    vi.advanceTimersByTime(240)
+    expect(document.getElementById('retry-toast')).toBeNull()
+  } finally {
+    vi.useRealTimers()
+    document.body.replaceChildren()
+  }
+})

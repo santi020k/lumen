@@ -36,6 +36,7 @@ Expose a standalone Input entry sharing its constructor and form behavior with t
 ### Patch Changes
 
 - Keep the selected upload and its filename when a drag-and-drop operation contains no files.
+  Reopening a toast by ID cancels its pending removal.
 
 - Preserve the public layer order when component styles load before Tailwind. Keep enhanced native controls hidden and component colors and borders above Tailwind base styles regardless of stylesheet chunk order.
 
