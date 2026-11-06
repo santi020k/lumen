@@ -46,13 +46,21 @@ const reactImports = (names: string[], selective: boolean) => {
 }
 
 const themeFunction = (appearance: Appearance) => {
-  const prefix = appearance.startsWith('santi020k-') ? 'santi020k-' : ''
+  const prefix = appearance.startsWith('santi020k-') ? '"santi020k-"' : 'mode === "light" || mode === "dark" ? current.slice(0, suffixStart) : ""'
 
   return `function toggleSelectionTheme() {
   const root = document.documentElement
-  const current = root.dataset.theme
-  const dark = current ? current === "dark" || current === "santi020k-dark" : root.classList.contains("dark") || window.matchMedia("(prefers-color-scheme: dark)").matches
-  root.dataset.theme = dark ? "${prefix}light" : "${prefix}dark"
+  const current = root.dataset.theme ?? ""
+  const suffixStart = current.lastIndexOf("-") + 1
+  const mode = current.slice(suffixStart)
+  const scheme = root.dataset.lumenScheme
+  const hasScheme = scheme === "light" || scheme === "dark"
+  const activeMode = hasScheme ? scheme : mode
+  const dark = activeMode === "dark" || (activeMode !== "light" && (root.classList.contains("dark") || window.matchMedia("(prefers-color-scheme: dark)").matches))
+  const next = dark ? "light" : "dark"
+  const prefix = ${prefix}
+  root.dataset.theme = prefix + next
+  if (hasScheme) root.dataset.lumenScheme = next
   root.classList.toggle("dark", !dark)
 }`
 }

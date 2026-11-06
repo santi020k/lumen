@@ -51,6 +51,19 @@ for (const platform of ['react', 'elements'] as const) {
       const toggle = page.getByRole(platform === 'elements' && !branded ? 'switch' : 'button', { name: 'Toggle color theme' })
       await toggle.press('Enter')
       await expect(html).toHaveAttribute('data-theme', branded ? 'santi020k-light' : 'dark')
+      if (platform === 'react' && !branded) {
+        for (const [initial, expected] of [['lumen-dark', 'lumen-light'], ['santi020k-light', 'santi020k-dark']] as const) {
+          await html.evaluate((root, theme) => { root.setAttribute('data-theme', theme); }, initial)
+          await toggle.press('Enter')
+          await expect(html).toHaveAttribute('data-theme', expected)
+          await toggle.press('Enter')
+          await expect(html).toHaveAttribute('data-theme', initial)
+        }
+        await html.evaluate(root => { root.setAttribute('data-lumen-scheme', 'dark'); })
+        await toggle.press('Enter')
+        await expect(html).toHaveAttribute('data-lumen-scheme', 'light')
+        await expect(html).toHaveAttribute('data-theme', 'santi020k-light')
+      }
       if (platform === 'elements') {
         expect(await page.locator('lumen-stack *').evaluateAll(nodes => nodes.filter(node => node.localName.startsWith('lumen-') && !node.matches(':defined')).map(node => node.localName))).toEqual([])
       }
