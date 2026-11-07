@@ -71,6 +71,24 @@ describe.each(['react-native', 'compose', 'swiftui-ios', 'swiftui-macos'] as con
     expect(invite).not.toContain('field2')
   })
 
+  test('validates the teammate address independently and connects its live hint', () => {
+    const { code } = analyze(form)
+    const error = code.split('\n').find(line => /(?:const|let|val) field3Error/u.test(line))
+    const binding = {
+      'react-native': 'errorMessage={field3Error}',
+      compose: 'errorMessage = field3Error',
+      'swiftui-ios': 'errorMessage: field3Error.map(LumenTextContent.verbatim)',
+      'swiftui-macos': 'errorMessage: field3Error.map(LumenTextContent.verbatim)'
+    }
+
+    expect(error).toContain('Enter a complete email address, such as teammate@example.com.')
+    expect(error).toMatch(/field3(?:\.length > 0|\.isNotEmpty\(\)|\.isEmpty)/u)
+    expect(error).toContain('254')
+    expect(error).not.toContain('field2')
+    expect(code.slice(code.indexOf('"Step 4 of 4"'))).toContain(binding[platform])
+    expect(code.split('\n').find(line => line.includes('canContinue ='))).not.toContain('field3')
+  })
+
   test('does not assign navigation to generic, incomplete or ambiguous selections', () => {
     const fakeNext = { ...button('Continue'), component: { key: 'foreign', name: 'Button', setKey: null } }
     for (const other of [
