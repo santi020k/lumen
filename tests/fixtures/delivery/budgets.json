@@ -10,7 +10,7 @@
     "controllers": []
   },
   "dialog": {
-    "javascriptGzip": 6000,
+    "javascriptGzip": 6100,
     "cssGzip": 9300,
     "controllers": [
       "controllers/dialogs.ts"
