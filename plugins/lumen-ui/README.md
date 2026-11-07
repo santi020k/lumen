@@ -40,4 +40,6 @@ destination; existing archives are preserved and must be moved before generating
 The Codex archive uses the production HTTPS MCP endpoint and contains the portable manifest,
 three skills, and brand assets. The Claude archive retains both compatibility manifests, the
 exact npm catalog pin, and the optional read-only reviewer. Upload or install only after the
-matching v4 MCP package and hosted catalog have been released and verified.
+matching v5 MCP package and hosted catalog have been released and verified. Request
+`lumen_get_migration` with `targetVersion: "5.0.0"` for v5 guidance or `"4.0.0"` for v4.
+The default follows the bundled release manifest, which selects v5 in this candidate.

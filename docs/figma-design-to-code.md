@@ -14,6 +14,15 @@ as untrusted data, and build the starter inside the receiving application. Nativ
 verified Card content and muted surfaces, and resolve semantic Stack gaps to native spacing tokens.
 Review findings identify Card treatments or density that still need work in the application.
 
+Follow **Setup → Design review → Handoff** and keep the generated app setup with the starter.
+Lumen 5 Astro components import their CSS automatically; mount `UIPrimitives` once when interactive
+primitives need it. React and Elements load the foundation and selected component CSS, plus optional
+appearance styles. React uses its behavior hooks; Elements registers the selected custom elements.
+Native targets use their provider or theme without browser CSS or runtime. See
+[selective installation](selective-installation.md) and the [v5 migration guide](migrating-v4-to-v5.md)
+before adapting the handoff to an existing app. Verify package availability separately from the
+exporter's bundled contract.
+
 ## Workflow
 
 1. Get the Figma URL for the frame or component to implement. Node-specific URLs
@@ -47,7 +56,7 @@ Common Figma pattern → Lumen component mappings:
 | Text input with placeholder | `Input` (with `Label`, or use `Field`) |
 | Input with leading/trailing icon or addon | `InputGroup` |
 | Multi-line text input | `Textarea` |
-| Dropdown with options | `Select` or `NativeSelect` |
+| Dropdown with options | `Select` (`NativeSelect` only for an explicit native picker requirement) |
 | Dropdown with free text filtering | `Combobox` or `Autocomplete` |
 | Small status pill | `Badge` |
 | User photo or initials circle | `Avatar` |

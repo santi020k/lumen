@@ -180,7 +180,7 @@ catalog does not require user authentication.
 | `lumen_diagnose` | Verify snapshot integrity and report web framework plus native platform coverage when testing a connection. |
 | `lumen_get_tokens` | Return canonical spacing dimensions and role aliases, semantic colors, glass tokens, and the theme attribute. |
 | `lumen_check_compatibility` | Compare resolved installed Lumen versions with the catalog; report mismatches without upgrading. |
-| `lumen_get_migration` | Read v4 (default) or explicit `targetVersion: "5.0.0"` contracts, separating compatibility reviews from optional adoption without changing files. |
+| `lumen_get_migration` | Read the bundled release's migration contract by default (v5 here), or explicitly select `targetVersion: "4.0.0"` or `"5.0.0"`. Separate compatibility reviews from optional adoption without changing files. |
 | `lumen_get_rules` | Return the Lumen agent rules from `llms.txt`. |
 
 Every tool returns both readable text and validated `structuredContent`.
@@ -211,7 +211,10 @@ in ChatGPT or Codex, then mention **@Lumen UI** in a request. The published plug
 read-only catalog and requires no separate Lumen account, API key, or local MCP configuration.
 
 The repository includes the plugin package in [`plugins/lumen-ui`](https://github.com/santi020k/lumen/tree/main/plugins/lumen-ui).
-It combines the portable `lumen-ui` skill with this MCP server for Codex, ChatGPT, and Claude Code.
+It combines the portable `lumen-ui`, `lumen-review` and `lumen-migrate` skills with this MCP server
+for Codex, ChatGPT, and Claude Code. Plugin 1.1.0 pins MCP 5.0.0 for local stdio installs; the pinned
+package must be published before distribution. Hosted catalog deployment and plugin directory
+approval are separate from local package validation.
 The public OpenAI Plugins Directory version uses a hosted Streamable HTTP endpoint; see the
 [publication record and checklist](https://github.com/santi020k/lumen/blob/main/docs/openai-plugin-submission.md) for deployment requirements, listing
 copy, annotation justifications, and reviewer test cases.

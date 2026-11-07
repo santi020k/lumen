@@ -269,7 +269,7 @@ const recipeItems: DocsSearchItem[] = [
       'Find the Lumen UI Library, Templates, and Playgrounds on Figma Community, and learn how design maps to code.',
     href: '/docs/figma',
     keywords: normalizeKeywords(
-      'figma community library templates playgrounds design files variables tokens color radius cover foundations components variants code connect handoff'
+      'figma community library v5 templates playgrounds design files variables tokens color radius cover foundations components variants code connect plugin export setup design review handoff astro react web components native swiftui compose'
     ),
     title: 'Lumen Figma library',
     type: 'Recipe'

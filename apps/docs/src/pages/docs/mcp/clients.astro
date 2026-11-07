@@ -35,6 +35,7 @@ const clientConfigurations = [
     <div class="mcp-client-notes">
       <p>Save the configuration in <code>.codex/config.toml</code> for Codex, <code>claude_desktop_config.json</code> for Claude Desktop, or <code>.cursor/mcp.json</code> for Cursor. For another stdio client, adapt the generic configuration to its server settings.</p>
       <p>Codex also supports the command <code>codex mcp add lumen -- npx -y {packageName}</code>.</p>
+      <p>These unpinned commands use the latest published catalog. Read <code>lumen_get_meta</code> and check installed package versions with <code>lumen_check_compatibility</code> before applying its contracts. Migration guidance defaults to the catalog's bundled release. Request <code>lumen_get_migration</code> with <code>targetVersion: "5.0.0"</code> or <code>targetVersion: "4.0.0"</code> to select a supported major explicitly.</p>
       <Callout title="Hosting the HTTP transport">
         Streamable HTTP supports local or self-hosted use, with safe response headers and bounded request rates. Public hosting must terminate TLS, set the exact allowed host, and configure authentication if the deployed data requires it.
       </Callout>
@@ -51,6 +52,7 @@ const clientConfigurations = [
           The plugin bundles the workflow skill and hosted, read-only public catalog, with no
           separate Lumen account, API key, or local server setup.
         </p>
+        <p>The repository's plugin 1.1.0 candidate bundles build, review and migration skills for the v5 catalog. Publishing the MCP package, deploying the hosted catalog and approving the directory update are separate steps; installing the published plugin does not establish v5 availability.</p>
       </div>
       <p>Try: “Find the right Lumen components for an accessible React settings screen.”</p>
       <DocsActionLink href={pluginUrl} target="_blank" rel="noopener noreferrer">
@@ -61,11 +63,12 @@ const clientConfigurations = [
     <Card as="section" class="mcp-file-card" aria-labelledby="claude-plugin-title" glass="subtle">
       <div>
         <Badge>Claude Code plugin</Badge>
-        <h2 id="claude-plugin-title">Install the skill and live catalog together</h2>
+        <h2 id="claude-plugin-title">Install the skills and pinned catalog together</h2>
         <p>
-          Add Lumen's repository marketplace, then install one plugin that bundles the portable
-          workflow skill with the latest published read-only MCP catalog.
+          Add Lumen's repository marketplace, then install one plugin that bundles the build,
+          review and migration skills with an exact read-only MCP catalog version.
         </p>
+        <p>Plugin 1.1.0 pins <code>@santi020k/lumen-mcp@5.0.0</code>. Use that candidate after the pinned package and marketplace revision are public; follow the guide for local candidate validation.</p>
       </div>
       <CodeBlock code={claudePluginInstall} lang="text" title="Claude Code" />
       <DocsActionLink href={claudePluginGuideUrl} target="_blank" rel="noopener noreferrer">
