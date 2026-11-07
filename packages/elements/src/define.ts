@@ -6141,6 +6141,7 @@ class LumenComboChartBehaviorElement extends LumenDataChartBehaviorElement {
 }
 
 abstract class LumenStructuredChartBehaviorElement extends LumenDatumChartElement {
+  #connected = false
   #valueFormatter: (value: number) => string = String
 
   get valueFormatter(): (value: number) => string {
@@ -6156,13 +6157,22 @@ abstract class LumenStructuredChartBehaviorElement extends LumenDatumChartElemen
   override connectedCallback() {
     super.connectedCallback()
 
+    this.#connected = true
+
     this.renderChart()
   }
 
   override attributeChangedCallback() {
     super.attributeChangedCallback()
 
-    if (this.isConnected) this.renderChart()
+    // Upgrade delivers initial attributes before connectedCallback, even when isConnected is true.
+    if (this.#connected && this.isConnected) this.renderChart()
+  }
+
+  override disconnectedCallback() {
+    this.#connected = false
+
+    super.disconnectedCallback()
   }
 
   protected abstract override renderChart(): void
