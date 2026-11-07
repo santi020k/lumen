@@ -35,6 +35,12 @@ test('validates built navigation routes and fragments without treating examples 
         <a href="/guide#%">Malformed anchor</a>
         <a href="/%">Malformed path</a>
       </nav>
+      <main>
+        <p><a href="/guide#caf%C3%A9">Article destination</a></p>
+        <p><a href="/article-missing">Broken article destination</a></p>
+        <p><a href="/guide#article-missing">Broken article fragment</a></p>
+        <div data-component-preview><a href="/example-content">Example content</a></div>
+      </main>
       <div data-playground-preview><nav><a href="/example">Example route</a></nav></div>
       <footer class="docs-site-footer"><a href="/footer-missing">Footer destination</a></footer>
     `)
@@ -46,6 +52,8 @@ test('validates built navigation routes and fragments without treating examples 
       'missing-navigation-fragment',
       'invalid-navigation-fragment',
       'invalid-navigation-url',
+      'missing-navigation-route',
+      'missing-navigation-fragment',
       'missing-navigation-route',
       'missing-navigation-fragment'
     ])

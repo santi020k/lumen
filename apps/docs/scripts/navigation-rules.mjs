@@ -19,7 +19,7 @@ const readNavigationDocument = async (directory, page) => {
   return {
     page,
     ids: new Set(Array.from(document.querySelectorAll('[id]'), element => element.id)),
-    links: Array.from(document.querySelectorAll('nav a[href], .docs-site-footer a[href]'))
+    links: Array.from(document.querySelectorAll('nav a[href], main a[href], .docs-site-footer a[href]'))
       .filter(anchor => !anchor.closest(previewSelector))
       .map(anchor => anchor.getAttribute('href') ?? '')
   }
@@ -62,12 +62,12 @@ const checkFragment = (destination, href, page, target) => {
   try {
     id = decodeURIComponent(destination.hash.slice(1))
   } catch {
-    return issueFor(page, 'invalid-navigation-fragment', `Invalid encoded navigation fragment: ${href}`)
+    return issueFor(page, 'invalid-navigation-fragment', `Invalid encoded internal-link fragment: ${href}`)
   }
 
   return target.ids.has(id) ?
     undefined :
-    issueFor(page, 'missing-navigation-fragment', `Navigation fragment has no rendered target: ${href}`)
+    issueFor(page, 'missing-navigation-fragment', `Internal-link fragment has no rendered target: ${href}`)
 }
 
 /**
@@ -82,7 +82,7 @@ const checkDestination = async (href, page, context) => {
   try {
     destination = new URL(href, page.canonical ?? `${context.origin}${page.route}`)
   } catch {
-    return issueFor(page, 'invalid-navigation-url', `Invalid navigation destination: ${href}`)
+    return issueFor(page, 'invalid-navigation-url', `Invalid internal-link destination: ${href}`)
   }
 
   if (destination.origin !== context.origin) return undefined
@@ -93,9 +93,9 @@ const checkDestination = async (href, page, context) => {
     try {
       return await isBuiltFile(context.directory, destination.pathname, context.assets) ?
         undefined :
-        issueFor(page, 'missing-navigation-route', `Navigation destination has no built page or file: ${href}`)
+        issueFor(page, 'missing-navigation-route', `Internal link has no built page or file: ${href}`)
     } catch {
-      return issueFor(page, 'invalid-navigation-url', `Invalid encoded navigation path: ${href}`)
+      return issueFor(page, 'invalid-navigation-url', `Invalid encoded internal-link path: ${href}`)
     }
   }
 
@@ -103,7 +103,7 @@ const checkDestination = async (href, page, context) => {
 }
 
 /**
- * Check rendered navigation and search destinations, including fragments and static downloads.
+ * Check rendered navigation, article, and search destinations, including fragments and downloads.
  * @type {import('@santi020k/og/audit').AuditSiteRule}
  */
 export const auditNavigationDestinations = async ({ directory, pages, siteUrl }) => {
