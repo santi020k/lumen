@@ -1,7 +1,9 @@
+import { queryScope } from '../scope.js'
+
 export const initGlassTracking = (scope: ParentNode): void => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-  for (const element of scope.querySelectorAll<HTMLElement>('[data-ui-glass-track]')) {
+  for (const element of queryScope(scope, '[data-ui-glass-track]')) {
     if (element.dataset.uiGlassBound === 'true') continue
 
     element.dataset.uiGlassBound = 'true'

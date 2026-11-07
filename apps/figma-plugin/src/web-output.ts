@@ -1,8 +1,9 @@
-import type { Appearance, WebPlatform, WebTarget } from './targets.js'
-import { layoutFor, needsGlassEffect } from './targets.js'
-import { kebab } from './web-markup.js'
+import { getComponentEntry, reactServerComponents } from '@santi020k/lumen-core/component-delivery'
+import { lumenComponentBehavior } from '@santi020k/lumen-core/components'
 
-const stylesheet = (appearance: Appearance) => appearance === 'glass' ? 'effects/glass' : `themes/${appearance.startsWith('santi020k-') ? 'santi020k' : appearance}`
+import type { Appearance, WebPlatform, WebTarget } from './targets.js'
+import { appearanceStylesheet, layoutFor, needsGlassEffect } from './targets.js'
+import { kebab } from './web-markup.js'
 
 const setupImports = (target: WebTarget, pkg: string, names: string[]) => {
   const css = target.version === '4.4.0' ?
@@ -10,34 +11,21 @@ const setupImports = (target: WebTarget, pkg: string, names: string[]) => {
     [
       'styles/foundation.css',
       ...names.map(name => `styles/components/${kebab(name)}.css`),
-      ...(target.appearance === 'project' ? [] : [`styles/${stylesheet(target.appearance)}.css`])
+      ...(target.appearance === 'project' ? [] : [`styles/${appearanceStylesheet(target.appearance)}.css`])
     ]
 
   return css.map(path => `import '${pkg}/${path}'`)
-}
-
-// Only these entries cover parts used in the Figma component catalog.
-const reactEntries: Readonly<Record<string, string>> = {
-  Button: 'button',
-  Card: 'card',
-  Field: 'field',
-  Input: 'input',
-  Label: 'label',
-  Dialog: 'dialog',
-  DialogHeader: 'dialog',
-  DialogTitle: 'dialog',
-  DialogBody: 'dialog',
-  DialogFooter: 'dialog',
-  DialogClose: 'dialog',
-  Kbd: 'kbd'
 }
 
 const reactImports = (names: string[], selective: boolean) => {
   const groups = new Map<string, string[]>()
 
   for (const name of names) {
-    const entry = selective ? reactEntries[name] : undefined
-    const path = entry ? `@santi020k/lumen-react/components/${entry}` : '@santi020k/lumen-react'
+    const entry = selective ? getComponentEntry(name, 'react') : undefined
+
+    const path = selective && reactServerComponents.includes(name) ?
+      '@santi020k/lumen-react/server' :
+      entry ?? '@santi020k/lumen-react'
 
     groups.set(path, [...(groups.get(path) ?? []), name])
   }
@@ -80,7 +68,10 @@ const astroOutput = ({ names, target, markup, usesGlass }: WebSource) => {
 
   if (target.version === '4.4.0' && names.length > 0) statements = [`import { ${names.join(', ')} } from '@santi020k/lumen-astro'`]
 
-  return { code: `---\n${statements.join('\n')}\n---\n\n<!-- Lumen Astro ${target.version} -->\n${markup}\n`, layout: layoutFor(target, usesGlass) }
+  const runtime = target.version === '4.4.0' || Object.entries(lumenComponentBehavior)
+    .some(([name, behavior]) => names.includes(name) && behavior.astro === 'ui-primitives')
+
+  return { code: `---\n${statements.join('\n')}\n---\n\n<!-- Lumen Astro ${target.version} -->\n${markup}\n`, layout: layoutFor(target, usesGlass, runtime) }
 }
 
 const reactSource = ({ names, target, markup, usesId, hasThemeToggle }: WebSource) => {
@@ -101,7 +92,8 @@ const reactSource = ({ names, target, markup, usesId, hasThemeToggle }: WebSourc
   ]
 
   // Indenting generated JSX with embedded data is safe because expressions encode newlines.
-  const code = ['\'use client\'', ...imports, ...(hasThemeToggle ? ['', themeFunction(target.appearance)] : []), '', 'export default function LumenSelection() {', ...body, '}', ''].join('\n')
+  const client = target.version === '4.4.0' || hooks.length > 0 || hasThemeToggle
+  const code = [...(client ? ['\'use client\''] : []), ...imports, ...(hasThemeToggle ? ['', themeFunction(target.appearance)] : []), '', 'export default function LumenSelection() {', ...body, '}', ''].join('\n')
 
   return code
 }
@@ -122,22 +114,16 @@ const addThemeSwitchBehavior = (setup: string[], appearance: Appearance) => {
   }
 }
 
-const granularElements = new Set(['Badge', 'Button', 'Card', 'Dialog', 'Input', 'Kbd', 'Label', 'Timeline'])
-
 const elementRegistrations = (names: string[], target: WebTarget, pkg: string) => {
   if (!names.length) return []
 
-  if (target.version === '5.0.0' && names.every(name => granularElements.has(name))) {
-    return [
-      ...names.map(name => `import { defineLumen${name} } from '${pkg}/components/${kebab(name)}'`),
-      '',
-      ...names.map(name => `defineLumen${name}()`)
-    ]
-  }
+  if (target.version === '4.4.0') return [`import { defineLumenElements } from '${pkg}/define'`, '', 'defineLumenElements()']
 
-  const register = target.version === '5.0.0' ? `defineLumenElements(${JSON.stringify(names)})` : 'defineLumenElements()'
-
-  return [`import { defineLumenElements } from '${pkg}/define'`, '', register]
+  return [
+    ...names.map(name => `import { Lumen${name}Element } from '${getComponentEntry(name, 'elements') ?? pkg}'`),
+    '',
+    ...names.map(name => `if (!customElements.get('lumen-${kebab(name)}')) customElements.define('lumen-${kebab(name)}', Lumen${name}Element)`)
+  ]
 }
 
 export const webOutput = (source: WebSource) => {

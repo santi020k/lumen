@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const bindTagGroups = (root: HTMLElement): void => {
   if (root.dataset.uiBound === 'true') return
 
@@ -20,5 +22,5 @@ const bindTagGroups = (root: HTMLElement): void => {
 }
 
 export const initTagGroups = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('.ui-tag-group, [data-ui-tag-group]')) bindTagGroups(root)
+  for (const root of queryScope(scope, '.ui-tag-group, [data-ui-tag-group]')) bindTagGroups(root)
 }

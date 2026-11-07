@@ -1,5 +1,7 @@
 import { createLumenKanbanMoveDetail } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 const kanbanColumnSelector = '[data-ui-kanban-column]'
 
 const bindKanbanBoards = (root: HTMLElement): void => {
@@ -242,5 +244,5 @@ const bindKanbanBoards = (root: HTMLElement): void => {
 }
 
 export const initKanbanBoards = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-kanban]')) bindKanbanBoards(root)
+  for (const root of queryScope(scope, '[data-ui-kanban]')) bindKanbanBoards(root)
 }

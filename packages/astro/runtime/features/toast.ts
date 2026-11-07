@@ -1,4 +1,5 @@
 import toastStyles from '../../styles/runtime/toast.css?url'
+import { queryScope } from '../scope.js'
 import { loadRuntimeStylesheet } from '../styles.js'
 
 import { nextRuntimeId } from './shared.js'
@@ -451,7 +452,7 @@ export const initToasts = (scope: ParentNode): void => {
     bindToastDocumentApi()
   }
 
-  for (const viewport of scope.querySelectorAll<HTMLElement>('[data-ui-toast-viewport]')) {
+  for (const viewport of queryScope(scope, '[data-ui-toast-viewport]')) {
     viewport.dataset.placement = getToastPlacement(viewport.dataset.placement)
 
     viewport.setAttribute('aria-live', viewport.getAttribute('aria-live') ?? 'polite')
@@ -459,7 +460,7 @@ export const initToasts = (scope: ParentNode): void => {
     viewport.setAttribute('aria-atomic', viewport.getAttribute('aria-atomic') ?? 'false')
   }
 
-  for (const toast of scope.querySelectorAll<HTMLElement>('[data-ui-toast], .ui-toast')) {
+  for (const toast of queryScope(scope, '[data-ui-toast], .ui-toast')) {
     if (toast.dataset.uiBound === 'true') continue
 
     toast.dataset.uiBound = 'true'

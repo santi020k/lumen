@@ -10,7 +10,7 @@ import { chromium } from '@playwright/test'
 
 import { checkAppearanceDelivery } from './check-appearance-delivery.mjs'
 import { captureStyleMatrix, compareStyleMatrix } from './check-component-css-rendering.mjs'
-import { checkColdInteractions, checkDialogViewport, checkDynamicToast, checkFailedChunkRecovery, checkNavigation } from './check-route-runtime.mjs'
+import { checkColdInteractions, checkDialogViewport, checkDynamicToast, checkFailedChunkRecovery, checkNavigation, checkScopedInitialization } from './check-route-runtime.mjs'
 
 const repo = fileURLToPath(new URL('../', import.meta.url))
 const astroDirectory = await realpath(resolve(process.env.LUMEN_DELIVERY_ASTRO_DIR ?? join(repo, 'packages/astro')))
@@ -236,6 +236,8 @@ try {
     await checkAppearanceDelivery(browser, repo)
 
     await checkColdInteractions(browser, origin, graph)
+
+    await checkScopedInitialization(browser, origin)
 
     await checkNavigation(browser, origin)
 

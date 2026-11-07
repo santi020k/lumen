@@ -24,7 +24,7 @@ Choose the framework and Lumen release used by your project. The offline selecto
 | 5.0.0 | 5.0.0 | 5.0.0 | 5.0.0 | Project, Paper, Field, Studio, Glass, santi020k (Light or Dark starting mode) |
 | 4.4.0 | 4.4.0 | 4.3.0 | 4.3.0 | Project, Studio, Glass, santi020k (Light or Dark starting mode) |
 
-Astro exports a component and a root layout with the progressive runtime. React exports a default TSX component and a setup module for its stylesheet imports. Web Components exports an HTML fragment and a browser module that registers its custom elements. Import the setup once in the receiving app. Lumen 5 loads the foundation, styles for the selected components, and optional appearance CSS. Lumen 4.4 uses the full adapter stylesheet. **Use project appearance** keeps your existing palette.
+Astro exports a component and a root layout, adding the progressive runtime when the selected components need it. React exports a default TSX component and a setup module for its stylesheet imports. Lumen 5 uses the React server entry for supported static primitives and adds a client boundary when the generated selection uses hooks or event handlers. Web Components exports an HTML fragment and a browser module that registers its selected constructors through the shared selective entries, including compound children. Components without a selective entry use the catalog. Import the setup once in the receiving app. Lumen 5 loads the foundation, styles for the selected components, and optional appearance CSS. Lumen 4.4 uses the full adapter stylesheet. **Use project appearance** keeps your existing palette.
 
 ## Build and try
 
@@ -77,7 +77,8 @@ It preserves the option titles, descriptions and initial selection. A drawn
 progress track with a visible caption and percentage exports a labeled progress indicator. Review
 the inferred mapping and connect progress to the application. Selecting the complete Onboarding form wires Continue to Preferences (step 3 of 4, 75%) once the
 workspace name and email are valid. Continue on Preferences opens Invite (step 4 of 4, 100%).
-Invite has its own teammate email field. The address stays in the draft when you return to Preferences
+Invite has its own teammate email field. An invalid address shows a format hint that clears as soon as
+the address is valid; an empty field has no format hint. The address stays in the draft when you return to Preferences
 and continue to Invite again. Back retraces those steps and preserves the workspace name, email, workspace choice and latest
 product-updates setting. Back is disabled on the initial Workspace step (50%).
 Connect other button actions in the receiving application.

@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const bindToggles = (toggle: HTMLButtonElement): void => {
   if (toggle.dataset.uiBound === 'true') return
 
@@ -21,5 +23,5 @@ const bindToggles = (toggle: HTMLButtonElement): void => {
 }
 
 export const initToggles = (scope: ParentNode): void => {
-  for (const toggle of scope.querySelectorAll<HTMLButtonElement>('[data-ui-toggle]')) bindToggles(toggle)
+  for (const toggle of queryScope(scope, '[data-ui-toggle]', 'button')) bindToggles(toggle)
 }

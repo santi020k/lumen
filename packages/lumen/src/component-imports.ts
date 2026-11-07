@@ -1,7 +1,7 @@
 import { lumenComponentNames } from '@santi020k/lumen-core'
+import { componentDeliveryEntries } from '@santi020k/lumen-core/component-delivery'
 import { createSourceFile, type ImportDeclaration, isImportDeclaration, isNamedImports, isStringLiteral, ScriptKind, ScriptTarget, type SourceFile, SyntaxKind } from 'typescript'
 
-import { componentDeliveryEntries } from './component-delivery.js'
 import { findMarkupTagEnd } from './v2-migration.js'
 
 const componentName = (name: string): string | undefined => {

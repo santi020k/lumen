@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { getFocusable, getLoopedIndex } from './shared.js'
 
 export const closeContextMenu = (menu: HTMLElement): void => {
@@ -98,5 +100,5 @@ const bindContextMenus = (target: HTMLElement): void => {
 }
 
 export const initContextMenus = (scope: ParentNode): void => {
-  for (const target of scope.querySelectorAll<HTMLElement>('[data-ui-context-menu-trigger]')) bindContextMenus(target)
+  for (const target of queryScope(scope, '[data-ui-context-menu-trigger]')) bindContextMenus(target)
 }

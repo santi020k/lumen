@@ -105,6 +105,11 @@ navigation keys wait for the required feature; native inputs and links retain th
 Enhancement is asynchronous in v5. After inserting new markup, await
 `window.LumenInitUiPrimitives(container)` in browser code before reading enhanced state. A successful
 initialization also dispatches `ui:ready` on `document`, with the initialized `scope` in its detail.
+The scope includes a matching root and its descendants. It can be an element, document fragment,
+or shadow root, including detached content prepared before insertion. Scoped initialization leaves
+sibling controls for their own initialization. Repeated interactions initialize their owning
+feature root, including the containing form or code block for compound controls. Dialog triggers
+also initialize their referenced dialog before opening it.
 A failed module does not prevent other available controllers from initializing. The returned promise
 rejects with an `AggregateError`; automatic initialization reports `ui:runtime-error` and a browser
 error. Keep native fallbacks and provide a reload path for unavailable deployment assets.

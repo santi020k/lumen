@@ -1,5 +1,7 @@
 import { bindLumenApprovalCard, bindLumenChartMotion, bindLumenMotionGroup, bindLumenTabIndicator, createLumenPromptComposerController, createLumenSpotlightController, type LumenWorkflowDuration } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 let bindings = new WeakMap<HTMLElement, () => void>()
 const roots = new Set<WeakRef<HTMLElement>>()
 
@@ -63,7 +65,7 @@ const bind = (root: HTMLElement): (() => void) => {
 export const initVisualInteractionControllers = (scope: ParentNode): void => {
   removeDetachedBindings()
 
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tab-indicator], [data-ui-chart-motion], [data-ui-motion-group], [data-ui-visual-effect="spotlight"], [data-ui-prompt-composer], [data-ui-approval-card]')) {
+  for (const root of queryScope(scope, '[data-ui-tab-indicator], [data-ui-chart-motion], [data-ui-motion-group], [data-ui-visual-effect="spotlight"], [data-ui-prompt-composer], [data-ui-approval-card]')) {
     if (bindings.has(root)) continue
 
     roots.add(new WeakRef(root))

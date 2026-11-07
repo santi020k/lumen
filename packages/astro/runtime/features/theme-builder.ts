@@ -1,5 +1,7 @@
 import { coerceThemePreset, createThemeBuilderTokens, exportThemeBuilderCss, exportThemeDesignTokens, exportThemeFigmaVariables, type LumenThemeTokens, lumenTokenNames } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 type ThemeBuilderExportFormat = 'css' | 'figma' | 'tokens'
 
 type ThemeBuilderMode = 'generated' | 'manual'
@@ -482,5 +484,5 @@ const bindThemeBuilders = (root: HTMLElement): void => {
 }
 
 export const initThemeBuilders = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-theme-builder]')) bindThemeBuilders(root)
+  for (const root of queryScope(scope, '[data-ui-theme-builder]')) bindThemeBuilders(root)
 }

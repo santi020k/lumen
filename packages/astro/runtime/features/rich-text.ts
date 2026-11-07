@@ -1,5 +1,7 @@
 import { executeLumenRichTextCommand, getLumenRichTextShortcut, isLumenRichTextToggleCommand, type LumenRichTextChangeDetail, type LumenRichTextCommandDetail } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 interface RichTextCommandDocument {
   execCommand?: (command: string, showUi?: boolean, value?: string) => boolean
   queryCommandState?: (command: string) => boolean
@@ -148,5 +150,5 @@ const bindRichTextEditors = (root: HTMLElement): void => {
 }
 
 export const initRichTextEditors = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-rich-text-editor]')) bindRichTextEditors(root)
+  for (const root of queryScope(scope, '[data-ui-rich-text-editor]')) bindRichTextEditors(root)
 }

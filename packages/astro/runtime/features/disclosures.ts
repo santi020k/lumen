@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { getFocusable, getLoopedIndex, getPanel, nextAnchorName, setOpen, supportsAnchoredPopovers } from './shared.js'
 
 const disclosureSelector = '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]'
@@ -140,5 +142,5 @@ const bindDisclosures = (root: HTMLElement): void => {
 }
 
 export const initDisclosures = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>(disclosureSelector)) bindDisclosures(root)
+  for (const root of queryScope(scope, disclosureSelector)) bindDisclosures(root)
 }

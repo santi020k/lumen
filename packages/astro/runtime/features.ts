@@ -3,6 +3,7 @@ import type { LumenRuntimeFeature } from './types.js'
 export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
   { name: 'forms',
     selector: '.ui-field, [data-ui-field], form[data-ui-form]',
+    interactionRoot: 'form[data-ui-form]',
     load: () => import('./features/forms.js').then(m => ({ init: scope => {
       m.initFields(scope)
 
@@ -114,6 +115,7 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     }  })) },
   { name: 'code',
     selector: '[data-ui-code], [data-ui-code-copy], [data-ui-copy-button]',
+    interactionRoot: '[data-ui-code]',
     load: () => import('./features/code.js').then(m => ({ init: scope => {
       m.initCodeRegions(scope)
 
@@ -277,7 +279,7 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
       m.initPhoneInputControllers(scope)
     }  })) },
   { name: 'dialogs',
-    selector: '[data-ui-dialog], [data-ui-alert-dialog], [data-ui-drawer], [data-ui-sheet], [data-ui-dialog-trigger], [data-ui-alert-dialog-trigger], [data-ui-drawer-trigger], [data-ui-sheet-trigger]',
+    selector: '[data-ui-dialog], [data-ui-alert-dialog], [data-ui-drawer], [data-ui-sheet], [data-ui-dialog-trigger], [data-ui-alert-dialog-trigger], [data-ui-drawer-trigger], [data-ui-sheet-trigger], [data-ui-dialog-close], [data-ui-alert-dialog-close], [data-ui-drawer-close], [data-ui-sheet-close]',
     load: () => import('./controllers/dialogs.js').then(m => ({ init: scope => {
       m.initDialogControllers(scope)
     }  })) },

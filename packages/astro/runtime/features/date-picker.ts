@@ -1,5 +1,7 @@
 import { connectLumenFloatingPanel, isLumenDateBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 import { getCalendarLocale, renderCalendar } from './calendar-shared.js'
 import { isOwnedByAnotherAdapter } from './shared.js'
 
@@ -281,5 +283,5 @@ const bindDatePickers = (root: HTMLElement): void => {
 }
 
 export const initDatePickers = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-date-picker]')) bindDatePickers(root)
+  for (const root of queryScope(scope, '[data-ui-date-picker]')) bindDatePickers(root)
 }

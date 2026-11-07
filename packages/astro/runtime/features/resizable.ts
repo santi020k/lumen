@@ -1,5 +1,7 @@
 import { getLumenDirectionalKey } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 const parseNumberList = (value: string | undefined, count: number, fallback: number): number[] => {
   const values = (value ?? '')
     .split(',')
@@ -218,5 +220,5 @@ const bindResizableGroups = (root: HTMLElement): void => {
 }
 
 export const initResizableGroups = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-resizable]')) bindResizableGroups(root)
+  for (const root of queryScope(scope, '[data-ui-resizable]')) bindResizableGroups(root)
 }

@@ -1,7 +1,8 @@
 import { constants } from 'node:fs'
 import { open } from 'node:fs/promises'
 
-import { componentCssName } from './component-delivery.js'
+import { componentCssName } from '@santi020k/lumen-core/component-delivery'
+
 import { isSafeRegistryComponentName } from './registry-component-name.js'
 import { lumenRegistry } from './registry-data.js'
 import { isSafeRegistryFilePath } from './registry-path.js'

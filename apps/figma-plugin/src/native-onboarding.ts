@@ -105,7 +105,7 @@ export const bindOnboarding = (
     placeholder: 'teammate@example.com',
     visibleLabel: true,
     helper: '',
-    emailError: undefined
+    emailError: 'Enter a complete email address, such as teammate@example.com.'
   }
 
   return {
