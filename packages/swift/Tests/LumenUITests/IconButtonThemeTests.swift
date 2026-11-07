@@ -10,10 +10,12 @@ func standaloneIconButtonStylesKeepNamedThemeIconsVisible() throws {
         for scheme in [LumenColorScheme.light, .dark] {
             let theme = LumenTheme(definition, scheme: scheme)
             let foreground = try #require(NSColor(theme.actionForeground).usingColorSpace(.sRGB))
-            for sharedIcon in [true, false] {
+            for lumenIcon in [true, false] {
                 let content = Button {} label: {
-                    if sharedIcon {
-                        LumenIcon(name: .plus, label: "Add")
+                    if lumenIcon {
+                        // Plain SwiftPM test runners may copy asset catalogs without compiling
+                        // them. A system symbol still exercises LumenIcon's foreground override.
+                        LumenIcon(systemName: "plus", label: "Add")
                     } else {
                         Image(systemName: "plus").accessibilityLabel("Add")
                     }
@@ -37,10 +39,10 @@ func standaloneIconButtonStylesKeepNamedThemeIconsVisible() throws {
                         if difference < 0.15 { foregroundPixels += 1 }
                     }
                 }
-                #expect(foregroundPixels > 10, "Missing primary icon foreground: \(name), \(scheme), shared icon \(sharedIcon)")
+                #expect(foregroundPixels > 10, "Missing primary icon foreground: \(name), \(scheme), Lumen icon \(lumenIcon)")
                 if let directory = ProcessInfo.processInfo.environment["LUMEN_THEME_RENDER_DIR"] {
                     let png = try #require(bitmap.representation(using: .png, properties: [:]))
-                    let filename = "icon-button-\(name)-\(scheme)-\(sharedIcon ? "lumen" : "system").png"
+                    let filename = "icon-button-\(name)-\(scheme)-\(lumenIcon ? "lumen" : "system").png"
                     try png.write(to: URL(fileURLWithPath: directory).appendingPathComponent(filename))
                 }
             }

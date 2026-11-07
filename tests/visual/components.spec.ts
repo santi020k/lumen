@@ -232,6 +232,10 @@ const interactiveScenarios: VisualScenario[] = [
 
       await expect(output).toHaveValue(/color-scheme: dark/)
       await expect(output).toHaveValue(/--brand: 212/)
+
+      // Keep the sticky docs chrome at the top of the full-page capture after editing.
+      await brandHue.blur()
+      await page.evaluate(() => { window.scrollTo({ top: 0, behavior: 'instant' }); })
     }
   },
   {
