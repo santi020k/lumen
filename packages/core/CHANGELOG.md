@@ -10,6 +10,10 @@
 
 ### Minor Changes
 
+- Move focus to local Anchor destinations consistently across web adapters without replacing native
+  hash scrolling or history. Preserve modified and canceled navigation and authored tab order,
+  use the rendering document in React and Elements, and prevent duplicate Astro runtime ownership.
+
 - Add an opt-in editorial Prose appearance across the web adapters, with a configurable reading measure, clearer section hierarchy, attributed quotations, and connected native figure captions. Keep authored HTML and component-owned figures intact, including Code and charts.
 
   Adopt the shared appearance in documentation migration/theme guides and expand the editorial article guide with semantic quotations and media.
@@ -54,6 +58,37 @@
   Clean up reveal observers on navigation, disconnection, and unmount.
 
 ### Patch Changes
+
+- Offer opt-in manual code-copy recovery consistently across the web adapters. React Code and
+  CodeTabs accept recoveryLabel; Elements accepts recovery-label and inherits it from code tabs.
+  Recovery preserves exact source in a labelled read-only field, selects on focus without taking
+  focus, survives transient feedback, and clears after successful retry or a tab change. Source
+  updates invalidate pending recovery in React and Elements. Astro recovery now has a visible
+  label and shared layout, including narrow screens and print output.
+
+  Give Elements block Code a block formatting context so pointer interaction and framing work in
+  WebKit. Astro's copy runtime leaves React- and Elements-owned controls to their own adapters,
+  avoiding duplicate clipboard operations on mixed-framework pages.
+
+- Support opt-in manual CopyButton recovery in React and Elements, matching Astro. Failed clipboard
+  requests retain the complete value in a labelled read-only field, without moving focus. Successful
+  retries clear recovery, and changed inputs or disconnected controls cannot restore stale results.
+
+  Hide manual clipboard recovery fields in print output across the web adapters.
+
+- Keep one owner for media borders and corners across AspectRatio, CoverImage, DeviceFrame,
+  ImageComparison, MediaViewport, and MediaThumbnail, including selective Image style imports.
+  Preserve component-owned figures, captions, media, and link focus geometry inside Prose. Keep
+  avatar, flag, attachment, and QRCode images from inheriting article corner rounding.
+
+  Give custom-element media frames and reading surfaces block layout, and replace the AspectRatio
+  docs' clipped Cards with actual media examples. Card retains visible interactive overflow.
+
+  Image wrappers pass radius and fit to native image children, and AspectRatio keeps picture media
+  sized to its frame even when Image styles load later. Explicit Image fitting remains available.
+
+- Keep focused SkipLink labels within narrow viewports, align them with reading direction, and
+  respect reduced motion. The docs site uses the shared component for its main content shortcut.
 
 - Use the theme’s foreground color on solid web badges so the label stays readable on light brand fills in dark mode.
 
@@ -113,7 +148,7 @@
 ### Minor Changes
 
 - [#103](https://github.com/santi020k/lumen/pull/103) [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05) Thanks [@santi020k](https://github.com/santi020k)! - Strengthen loading feedback across Astro, React, and Elements.
-  
+
   - Skeleton accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
     (`shimmer`, `pulse`, `none`). The default shimmer rectangle and its 1rem height are unchanged,
     but explicit heights and classes can now size placeholders below 1rem. Sizes accept pixels,
