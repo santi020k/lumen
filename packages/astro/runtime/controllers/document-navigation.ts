@@ -1,33 +1,13 @@
-import { activateLumenAnchor, decodeLumenAnchorFragment, getLumenActiveAnchorIndex } from '@santi020k/lumen-core'
+import { activateLumenAnchor, decodeLumenAnchorFragment, getLumenActiveAnchorIndex, getLumenScrollProgress } from '@santi020k/lumen-core'
 
 const anchors = new WeakMap<HTMLElement, () => void>()
 let observer: ResizeObserver | undefined
 const bars = () => document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')
 const getTarget = (root: HTMLElement) => document.getElementById(root.dataset.uiScrollProgressTarget ?? '')
-const clamp = (ratio: number) => Math.min(1, Math.max(0, ratio))
-
-const readProgress = (scroller: Element, target: HTMLElement | null): number => {
-  const height = scroller.clientHeight
-
-  if (!target) return clamp(scroller.scrollTop / Math.max(1, scroller.scrollHeight - height))
-
-  const rect = target.getBoundingClientRect()
-
-  if (!rect.height) return 0
-
-  if (rect.bottom <= height) return 1
-
-  const padding = getComputedStyle(scroller).scrollPaddingTop
-  let start = parseFloat(padding) || 0
-
-  if (padding.endsWith('%')) start *= height / 100
-
-  return clamp((start - rect.top) / Math.max(1, rect.height - height + start))
-}
 
 const updateProgress = (): void => {
   const scroller = document.scrollingElement ?? document.documentElement
-  const progress = Array.from(bars(), root => [root, readProgress(scroller, getTarget(root))] as const)
+  const progress = Array.from(bars(), root => [root, getLumenScrollProgress(scroller, getTarget(root))] as const)
 
   for (const [root, ratio] of progress) {
     const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
