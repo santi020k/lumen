@@ -282,6 +282,15 @@ const storeScreenshotNames = [
   "06-examples-dark.png",
 ];
 
+const androidScreenshotWidth = (await readFile(
+  join(androidStore, "Screenshots", `phone-${storeScreenshotNames[0]}`),
+)).readUInt32BE(16);
+
+assert.ok(
+  [1080, 2160].includes(androidScreenshotWidth),
+  "Android store screenshots must use a consistent 1080 or 2160 pixel width",
+);
+
 for (const name of storeScreenshotNames) {
   await assertPng(
     join(
@@ -313,8 +322,8 @@ for (const name of storeScreenshotNames) {
 
   await assertPng(
     join(androidStore, "Screenshots", `phone-${name}`),
-    2160,
-    3840,
+    androidScreenshotWidth,
+    androidScreenshotWidth * 16 / 9,
     2,
   );
 }

@@ -9,6 +9,14 @@ adb="${sdk_root}/platform-tools/adb"
 output_directory="${1:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/Store/Screenshots}"
 activity="com.santi020k.lumen.playground.compose/.MainActivity"
 package="com.santi020k.lumen.playground.compose"
+store_scale="${LUMEN_ANDROID_STORE_SCALE:-2}"
+case "${store_scale}" in
+  1|2) ;;
+  *) echo "LUMEN_ANDROID_STORE_SCALE must be 1 or 2." >&2; exit 1 ;;
+esac
+store_width="$((1080 * store_scale))"
+store_height="$((1920 * store_scale))"
+store_density="$((420 * store_scale))"
 capture_directory="$(mktemp -d "${TMPDIR:-/tmp}/lumen-android-store-screenshots.XXXXXX")"
 
 destinations=(home examples components components settings examples)
@@ -63,9 +71,9 @@ restore_display() {
 }
 trap restore_display EXIT
 
-# Render a genuine 9:16 store viewport at Google's maximum recommended long edge.
-${adb} shell wm size 2160x3840 >/dev/null
-${adb} shell wm density 840 >/dev/null
+# Preserve the same native layout at either supported 9:16 capture resolution.
+${adb} shell wm size "${store_width}x${store_height}" >/dev/null
+${adb} shell wm density "${store_density}" >/dev/null
 ${adb} shell input keyevent 224
 ${adb} shell wm dismiss-keyguard
 ${adb} shell settings put global sysui_demo_allowed 1
@@ -99,5 +107,5 @@ for screenshot_path in "${capture_directory}"/*.png; do
   mv "${screenshot_path}" "${output_directory}/"
 done
 
-printf 'Captured six 2160x3840 Google Play screenshots in %s.\n' "${output_directory}"
+printf 'Captured six %sx%s Google Play screenshots in %s.\n' "${store_width}" "${store_height}" "${output_directory}"
 printf 'Restoring display settings (%s; %s).\n' "${original_size}" "${original_density}"
