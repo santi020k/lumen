@@ -1,0 +1,63 @@
+---
+import { createElement } from 'react'
+import { renderToString } from 'react-dom/server'
+
+import '../../styles/global.css'
+
+import { Anchor, Button, Card, Container, Stack, Typography } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+import { Anchor as ReactAnchor } from '@santi020k/lumen-react'
+
+const adapters = ['astro', 'react', 'elements'] as const
+
+const itemsFor = (adapter: string) => [
+  { href: `#${adapter}-intro`, label: 'Introduction' },
+  { href: `#${adapter}-usage`, label: 'Usage' }
+]
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Anchor activation audit</title>
+    <script>
+      import { createElement } from 'react'
+      import { hydrateRoot } from 'react-dom/client'
+
+      import { defineLumenElements } from '@santi020k/lumen-elements'
+      import { Anchor } from '@santi020k/lumen-react'
+
+      defineLumenElements()
+
+      const root = document.getElementById('react-anchor')
+
+      if (root) hydrateRoot(root, createElement(Anchor, { items: [
+        { href: '#react-intro', label: 'Introduction' },
+        { href: '#react-usage', label: 'Usage' }
+      ] }))
+    </script>
+  </head>
+  <body>
+    <Container as="main"><Stack gap="section">
+      <Typography><h1>Anchor activation audit</h1></Typography>
+      {adapters.map(adapter => (
+        <Card id={`${adapter}-example`}>
+          <Typography><h2>{adapter} outline</h2></Typography>
+          {adapter === 'astro' && <Anchor items={itemsFor(adapter)} />}
+          {adapter === 'react' && <div id="react-anchor" set:html={renderToString(createElement(ReactAnchor, { items: itemsFor(adapter) }))} />}
+          {adapter === 'elements' && <lumen-anchor role="navigation" aria-label="Elements sections"><ol><li><a href="#elements-intro">Introduction</a></li><li><a href="#elements-usage">Usage</a></li></ol></lumen-anchor>}
+          <Typography><h3 id={`${adapter}-intro`}>Introduction</h3><p>Choose a section from the outline.</p></Typography>
+          <Typography><h3 id={`${adapter}-usage`}>Usage</h3><p>Keyboard focus should continue in this section.</p></Typography>
+          <Button id={`${adapter}-action`}>Continue from {adapter}</Button>
+        </Card>
+      ))}
+    </Stack></Container>
+    <UIPrimitives />
+  </body>
+</html>
+<style>
+  h3 { scroll-margin-block-start: 2rem; }
+  h3:focus-visible { outline: 2px solid hsl(var(--brand)); outline-offset: .25rem; }
+</style>

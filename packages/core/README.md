@@ -74,6 +74,11 @@ when a fragment is not valid URI encoding. Mixed percentage/length scroll paddin
 the browser once per computed value and viewport size; ordinary pixel and percentage values need
 no measurement node.
 
+`activateLumenAnchor(link, event)` focuses an ordinary local fragment destination in the link's
+own document and returns whether focus succeeded. Call it after click propagation so canceled
+navigation is respected. It preserves native scrolling/history and removes a temporary `tabindex`
+on blur. The adapters use this helper; most applications should use `Anchor`.
+
 Most consumers should install a framework package such as `@santi020k/lumen-astro`, `@santi020k/lumen-react`, or `@santi020k/lumen-elements`.
 
 The package exports `lumenColors` and `lumenGlass` for consumers that need to mirror Lumen theme

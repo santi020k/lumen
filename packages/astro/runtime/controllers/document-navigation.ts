@@ -1,4 +1,4 @@
-import { decodeLumenAnchorFragment, getLumenActiveAnchorIndex } from '@santi020k/lumen-core'
+import { activateLumenAnchor, decodeLumenAnchorFragment, getLumenActiveAnchorIndex } from '@santi020k/lumen-core'
 
 const anchors = new WeakMap<HTMLElement, () => void>()
 let observer: ResizeObserver | undefined
@@ -70,7 +70,7 @@ const bindRefresh = (doc: Document) => {
 
 const initAnchors = (scope: ParentNode): void => {
   for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
-    if (root.dataset.uiBound === 'true') continue
+    if (root.dataset.uiBound === 'true' || root.closest('[data-ui-owner], lumen-anchor')) continue
 
     root.dataset.uiBound = 'true'
 
@@ -105,8 +105,10 @@ const initAnchors = (scope: ParentNode): void => {
       if (active) setActive(active)
     }
 
-    for (const { link } of targets) link.addEventListener('click', () => {
-      setActive(link)
+    for (const { link } of targets) link.addEventListener('click', event => {
+      setTimeout(() => {
+        if (activateLumenAnchor(link, event)) setActive(link)
+      })
     })
 
     anchors.set(root, update)

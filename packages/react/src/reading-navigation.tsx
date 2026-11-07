@@ -3,7 +3,7 @@
 import type { ComponentPropsWithoutRef, ReactNode  } from 'react'
 import { useEffect, useRef  } from 'react'
 
-import { decodeLumenAnchorFragment, getLumenActiveAnchorIndex, getLumenScrollProgress  } from '@santi020k/lumen-core/anchor'
+import { activateLumenAnchor, decodeLumenAnchorFragment, getLumenActiveAnchorIndex, getLumenScrollProgress  } from '@santi020k/lumen-core/anchor'
 import { composeClassName } from '@santi020k/lumen-core/tokens'
 
 export interface ScrollProgressProps extends ComponentPropsWithoutRef<'div'> {
@@ -124,11 +124,16 @@ const createAnchorRef = () => {
 
     if (!root) return
 
+    const owner = root.ownerDocument
+    const view = owner.defaultView
+
+    if (!view) return
+
     const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
 
     const targets = links.flatMap(link => {
       const id = decodeLumenAnchorFragment(link.getAttribute('href')?.slice(1) ?? '')
-      const target = id ? document.getElementById(id) : null
+      const target = id ? owner.getElementById(id) : null
 
       return target ? [{ link, target }] : []
     })
@@ -136,7 +141,7 @@ const createAnchorRef = () => {
     if (!targets.length) return
 
     const headings = targets.map(({ target }) => target)
-    const abortController = new AbortController()
+    const abortController = new view.AbortController()
     let frame = 0
 
     const setActive = (active: HTMLAnchorElement) => {
@@ -165,23 +170,25 @@ const createAnchorRef = () => {
     const requestUpdate = () => {
       if (frame) return
 
-      frame = requestAnimationFrame(update)
+      frame = view.requestAnimationFrame(update)
     }
 
     for (const { link } of targets) {
-      link.addEventListener('click', () => {
-        setActive(link)
+      link.addEventListener('click', event => {
+        view.setTimeout(() => {
+          if (!abortController.signal.aborted && activateLumenAnchor(link, event)) setActive(link)
+        })
       }, {
         signal: abortController.signal
       })
     }
 
-    window.addEventListener('resize', requestUpdate, {
+    view.addEventListener('resize', requestUpdate, {
       passive: true,
       signal: abortController.signal
     })
 
-    window.addEventListener('scroll', requestUpdate, {
+    view.addEventListener('scroll', requestUpdate, {
       passive: true,
       signal: abortController.signal
     })
@@ -191,7 +198,7 @@ const createAnchorRef = () => {
     cleanup = () => {
       abortController.abort()
 
-      if (frame) cancelAnimationFrame(frame)
+      if (frame) view.cancelAnimationFrame(frame)
     }
   }
 }
@@ -212,6 +219,7 @@ export const Anchor = ({
       className={composeClassName('ui-anchor', className)}
       data-ui-anchor
       data-ui-anchor-offset={Math.max(0, activationOffset)}
+      data-ui-owner="react"
       ref={anchorRef}
       {...props}
     >

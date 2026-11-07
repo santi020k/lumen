@@ -7,6 +7,75 @@ export const decodeLumenAnchorFragment = (fragment: string): string => {
   }
 }
 
+const isOrdinaryAnchorClick = (event: MouseEvent): boolean => !event.defaultPrevented && event.button === 0 &&
+  !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey
+
+const usesCurrentBrowsingContext = (link: HTMLAnchorElement): boolean => {
+  const target = link.getAttribute('target') ??
+    link.ownerDocument.querySelector('base[target]')?.getAttribute('target') ?? ''
+
+  return link.isConnected && !link.hasAttribute('download') && (!target || target.toLowerCase() === '_self')
+}
+
+const hasCurrentDocumentURL = (link: HTMLAnchorElement, location: Location): boolean => {
+  try {
+    const destination = new URL(link.href)
+
+    return destination.origin === location.origin && destination.pathname === location.pathname &&
+      destination.search === location.search
+  } catch {
+    // A non-hierarchical base URL can leave a fragment unresolved.
+    return false
+  }
+}
+
+const getAnchorDestination = (link: HTMLAnchorElement): HTMLElement | null => {
+  const href = link.getAttribute('href') ?? ''
+  const owner = link.ownerDocument
+  const view = owner.defaultView
+
+  if (!view || !href.startsWith('#') || href.length === 1) return null
+
+  if (!hasCurrentDocumentURL(link, view.location)) return null
+
+  return owner.getElementById(decodeLumenAnchorFragment(href.slice(1)))
+}
+
+const focusAnchorDestination = (target: HTMLElement): boolean => {
+  const temporary = !target.hasAttribute('tabindex') && target.tabIndex < 0 && !target.isContentEditable
+
+  const cleanup = () => {
+    if (target.getAttribute('tabindex') === '-1') target.removeAttribute('tabindex')
+  }
+
+  if (temporary) {
+    target.setAttribute('tabindex', '-1')
+
+    target.addEventListener('blur', cleanup, { once: true })
+  }
+
+  target.focus({ preventScroll: true })
+
+  const focused = target.ownerDocument.activeElement === target
+
+  if (temporary && !focused) {
+    target.removeEventListener('blur', cleanup)
+
+    cleanup()
+  }
+
+  return focused
+}
+
+/** Focus an activated local destination without replacing native hash scrolling or history. */
+export const activateLumenAnchor = (link: HTMLAnchorElement, event: MouseEvent): boolean => {
+  if (!isOrdinaryAnchorClick(event) || !usesCurrentBrowsingContext(link)) return false
+
+  const target = getAnchorDestination(link)
+
+  return target ? focusAnchorDestination(target) : false
+}
+
 const measuredPadding = new WeakMap<Document, { key: string, value: number }>()
 
 const scrollLength = (value: string | undefined, basis: number): number => {

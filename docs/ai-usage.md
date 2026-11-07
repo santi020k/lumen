@@ -331,6 +331,11 @@ content, or `as="section"` for a labeled region. Do not use a semantic root sole
 Its visual variants are `default`, `accent`, and `glass`; reserve `accent` for featured metrics and
 keep glass selective.
 
+Activating an ordinary local link moves focus to its destination while preserving native hash
+scrolling and history. A heading receives temporary `tabindex="-1"`, removed on blur; authored
+tab order is preserved. Canceled clicks, modifier keys, downloads, and other browsing targets
+keep their normal behavior. Passive scrolling only updates the current link and never moves focus.
+
 For long reading surfaces, use `Anchor` for local section navigation and pass each item’s optional
 heading `depth`, `index`, and `description` when hierarchy matters. Anchor also respects root `scroll-padding-top` and heading `scroll-margin-top` after text resizing. Use `activationOffset` for fixed
 application headers. Use `ScrollProgress` for document position; keep `Progress` for

@@ -366,6 +366,11 @@ Its current link stays synchronized on click and scroll, including at the end of
 The activation line uses the greater of `activationOffset` and the root `scroll-padding-top` plus
 each heading's `scroll-margin-top`, with a one CSS pixel rounding tolerance. Styles are read live so
 text resizing and responsive headers keep native fragment links and the current section aligned.
+Activating an ordinary local link moves focus to its destination while preserving native hash
+scrolling and history. A heading receives temporary `tabindex="-1"`, removed on blur; authored
+tab order is preserved. Canceled clicks, modifier keys, downloads, and other browsing targets
+keep their normal behavior. Passive scrolling only updates the current link and never moves focus.
+
 `ScrollProgress` derives reading progress from the document and pins the indicator to the top or
 bottom viewport edge. Both use the single root `UIPrimitives` runtime.
 

@@ -1,4 +1,4 @@
-import { decodeLumenAnchorFragment, getLumenActiveAnchorIndex, getLumenScrollProgress  } from '@santi020k/lumen-core/anchor'
+import { activateLumenAnchor, decodeLumenAnchorFragment, getLumenActiveAnchorIndex, getLumenScrollProgress  } from '@santi020k/lumen-core/anchor'
 
 import { LumenElement } from './element-base.js'
 import { createLumenElementClass, defineLumenElement, type LumenCustomElementRegistry, type LumenElementConfig } from './element-base.js'
@@ -745,20 +745,29 @@ export class LumenDialogBehaviorElement extends LumenElement {
 export class LumenAnchorBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
   private frame = 0
+  private frameView: Window | null = null
 
   override connectedCallback() {
     super.connectedCallback()
 
-    this.abortController?.abort()
+    this.stopAnchorUpdates()
 
-    this.abortController = new AbortController()
+    const owner = this.ownerDocument
+    const view = owner.defaultView
 
+    if (!view) return
+
+    this.frameView = view
+
+    this.abortController = new view.AbortController()
+
+    const signal = this.abortController.signal
     const links = [...this.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
     const targets: { link: HTMLAnchorElement, target: HTMLElement }[] = []
 
     for (const link of links) {
       const id = decodeLumenAnchorFragment(link.getAttribute('href')?.slice(1) ?? '')
-      const target = id ? document.getElementById(id) : null
+      const target = id ? owner.getElementById(id) : null
 
       if (target) {
         targets.push({ link, target })
@@ -799,23 +808,25 @@ export class LumenAnchorBehaviorElement extends LumenElement {
     const requestUpdate = () => {
       if (this.frame) return
 
-      this.frame = requestAnimationFrame(update)
+      this.frame = view.requestAnimationFrame(update)
     }
 
     for (const { link } of targets) {
-      link.addEventListener('click', () => {
-        setActive(link)
+      link.addEventListener('click', event => {
+        view.setTimeout(() => {
+          if (!signal.aborted && activateLumenAnchor(link, event)) setActive(link)
+        })
       }, {
         signal: this.abortController.signal
       })
     }
 
-    window.addEventListener('resize', requestUpdate, {
+    view.addEventListener('resize', requestUpdate, {
       passive: true,
       signal: this.abortController.signal
     })
 
-    window.addEventListener('scroll', requestUpdate, {
+    view.addEventListener('scroll', requestUpdate, {
       passive: true,
       signal: this.abortController.signal
     })
@@ -824,13 +835,19 @@ export class LumenAnchorBehaviorElement extends LumenElement {
   }
 
   override disconnectedCallback() {
+    this.stopAnchorUpdates()
+  }
+
+  private stopAnchorUpdates() {
     this.abortController?.abort()
 
     this.abortController = undefined
 
-    if (this.frame) cancelAnimationFrame(this.frame)
+    if (this.frame) this.frameView?.cancelAnimationFrame(this.frame)
 
     this.frame = 0
+
+    this.frameView = null
   }
 }
 

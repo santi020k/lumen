@@ -2883,7 +2883,7 @@ const apiReferenceByComponent = {
   ],
   Anchor: [
     apiRow(
-      'items', 'Array<{ href, label, depth?, index?, description? }>', '[]', 'Defines compact or rich in-page navigation items with optional hierarchy and supporting content.'
+      'items', 'Array<{ href, label, depth?, index?, description? }>', '[]', 'Defines in-page navigation items with optional hierarchy and supporting content. Ordinary activation moves focus to the local destination while preserving native hash navigation.'
     ),
     apiRow(
       'activationOffset', 'number', '96', 'Minimum viewport-top activation offset in pixels. Native root scroll padding plus heading scroll margin can move the line lower; one CSS pixel of rounding is tolerated.'

@@ -316,6 +316,11 @@ the document without requiring a separate hook. The activation line uses the gre
 one CSS pixel rounding tolerance. Live styles keep enlarged text and responsive headers aligned
 with native fragment navigation. A page that cannot scroll keeps its first visible section current.
 
+Activating an ordinary local link moves focus to its destination while preserving native hash
+scrolling and history. A heading receives temporary `tabindex="-1"`, removed on blur; authored
+tab order is preserved. Canceled clicks, modifier keys, downloads, and other browsing targets
+keep their normal behavior. Passive scrolling only updates the current link and never moves focus.
+
 For article reading, `ScrollProgress targetId="article-id"` measures the selected content element.
 Omitting the prop or referencing a missing element retains document progress. Measurements refresh
 on scrolling, resize, and content reflow. The selective export is

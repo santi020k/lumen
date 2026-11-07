@@ -501,6 +501,11 @@ light-DOM structure, ARIA ownership, retry boundary, and verification guidance.
 heading `scroll-margin-top`, with one CSS pixel of rounding tolerance. It reads live styles for
 text resizing and responsive headers, and does not treat a non-scrolling page as the document end.
 
+Activating an ordinary local link moves focus to its destination while preserving native hash
+scrolling and history. A heading receives temporary `tabindex="-1"`, removed on blur; authored
+tab order is preserved. Canceled clicks, modifier keys, downloads, and other browsing targets
+keep their normal behavior. Passive scrolling only updates the current link and never moves focus.
+
 `lumen-pill` wraps long text within its available width. A `.ui-pill__count` child stays together;
 plain text labels do not need a wrapper. This reflow behavior is shared by Astro and React `Pill`.
 

@@ -1938,7 +1938,7 @@ describe('@santi020k/lumen-elements', () => {
     document.documentElement.style.removeProperty('scroll-padding-top')
   })
 
-  test('anchor navigation synchronizes the accessible current link', () => {
+  test('anchor navigation synchronizes the accessible current link', async () => {
     document.body.innerHTML = `
       <section id="intro"></section>
       <section id="api"></section>
@@ -1952,6 +1952,7 @@ describe('@santi020k/lumen-elements', () => {
       document.querySelectorAll<HTMLAnchorElement>('lumen-anchor a')
 
     links[1]?.click()
+    await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(links[0]?.dataset.active).toBe('false')
     expect(links[0]?.hasAttribute('aria-current')).toBe(false)
