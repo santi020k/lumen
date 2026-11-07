@@ -207,6 +207,8 @@ pnpm playground:android:capture-store
 
 The command temporarily configures a 2160×3840 9:16 viewport, captures six native Home, Examples,
 Components, and Settings screens in light and dark appearances, and restores the emulator display.
+Set `LUMEN_ANDROID_STORE_SCALE=1` for a native 1080×1920 capture when emulator graphics resources
+are constrained. The default scale of `2` preserves 2160×3840 output; both use the same layout density.
 
 ## Resources
 
