@@ -2508,7 +2508,7 @@ const apiReferenceByComponent = {
   ],
   SkipLink: [
     apiRow(
-      'href', 'fragment URL', 'required', 'Targets the main-content id that receives navigation after repeated controls are bypassed.'
+      'href', 'fragment URL', 'required', 'Points to the content ID that receives focus. Give a non-interactive target tabindex="-1" so it can receive native fragment focus.'
     )
   ],
   Spinner: [
@@ -3407,7 +3407,7 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
       'Use Drawer for navigation or filters that slide in, and Dialog for a centered task that demands focus.'
   },
   SkipLink: {
-    when: 'Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until a keyboard user focuses it.',
+    when: 'Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until focused. The label wraps in narrow viewports and the shortcut appears immediately with reduced motion.',
     distinction:
       'This is an accessibility shortcut, not visible navigation. Point its href to the main content target; the first Tab reveals the link, and activating it moves focus past the repeated navigation.'
   },

@@ -4,16 +4,18 @@
 .ui-skip-link {
   position: fixed;
   z-index: 100000;
-  top: 0.75rem;
-  left: 0.75rem;
+  inset-block-start: 0.75rem;
+  inset-inline-start: 0.75rem;
+  max-inline-size: calc(100% - 1.5rem);
   padding: 0.65rem 0.9rem;
   border-radius: var(--ui-radius-sm);
   background: hsl(var(--ink));
   color: hsl(var(--canvas));
   font-weight: 700;
   text-decoration: none;
+  overflow-wrap: anywhere;
   transform: translateY(calc(-100% - 1.5rem));
-  transition: transform 160ms ease;
+  transition: none;
 }
 }
 
@@ -40,5 +42,11 @@
 .ui-skip-link > a {
   color: inherit;
   text-decoration: inherit;
+}
+}
+
+@layer lumen.components {
+@media (prefers-reduced-motion: no-preference) {
+.ui-skip-link { transition: transform var(--ui-duration-fast) var(--ui-ease); }
 }
 }

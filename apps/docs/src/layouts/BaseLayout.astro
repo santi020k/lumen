@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions'
 
 import '../styles/global.css'
 
+import { SkipLink } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
 import MetadataHead from '@santi020k/og/astro/head'
 import {
@@ -210,7 +211,7 @@ const structuredData = composeJsonLd(
   </head>
   <body>
     <UIPrimitives />
-    <a class="docs-skip-link" href="#main-content">Skip to main content</a>
+    <SkipLink href="#main-content">Skip to main content</SkipLink>
     <SiteHeader />
     <div class="docs-site-content" id="main-content" tabindex="-1">
       <slot />

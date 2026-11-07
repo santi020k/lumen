@@ -111,7 +111,7 @@
       "Sheet": "c0175a4839040dc15254f698eaa043c8065a6f62d6f9058001b510faf10e9f72",
       "Sidebar": "a37a3cbd6622d4106e89b90d4cedd7acea07bf4068d46b4dfcdde27d61b0c545",
       "Skeleton": "c18e6caa7cb94fdf5f7ab44f87082e5d444287000333604a78715b2cc84e706e",
-      "SkipLink": "0afd5dec4bef072130aa7de167eac4b867ea6181438949674ddf934569660d1e",
+      "SkipLink": "31f23819b59bf66aff62de97773ee7986470b36ab2bdd0e264b98f0c3d50307f",
       "Slider": "0e5fee7836ce61a539f12b28bf29f66f5780d8ddf306631e97808c3992301684",
       "Sparkline": "5ffeed9f98f26de427f5d3288f48ac9bfd99874168221d68d13564dde46779f2",
       "Spinner": "76ba2165e33f320d03eb3defdaf68600289b61047897626d351ac62d6d225e31",
@@ -26414,7 +26414,7 @@
         {
           "attribute": "href",
           "defaultValue": "required",
-          "description": "Targets the main-content id that receives navigation after repeated controls are bypassed.",
+          "description": "Points to the content ID that receives focus. Give a non-interactive target tabindex=\"-1\" so it can receive native fragment focus.",
           "values": "fragment URL"
         },
         {
@@ -26510,7 +26510,7 @@
         "react": true
       },
       "guidance": {
-        "when": "Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until a keyboard user focuses it.",
+        "when": "Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until focused. The label wraps in narrow viewports and the shortcut appears immediately with reduced motion.",
         "distinction": "This is an accessibility shortcut, not visible navigation. Point its href to the main content target; the first Tab reveals the link, and activating it moves focus past the repeated navigation."
       },
       "kebab": "skip-link",
@@ -26519,6 +26519,7 @@
         "accessibility",
         "activating",
         "and",
+        "appears",
         "before",
         "bypass",
         "content",
@@ -26527,24 +26528,29 @@
         "first",
         "focus",
         "focusable",
-        "focuses",
+        "focused",
         "header",
         "hidden",
         "href",
+        "immediately",
         "its",
         "keyboard",
+        "label",
         "layout",
         "lets",
         "link",
         "main",
         "menu",
+        "motion",
         "move",
         "moves",
+        "narrow",
         "navigation",
         "not",
         "past",
         "place",
         "point",
+        "reduced",
         "repeated",
         "reveals",
         "root",
@@ -26557,10 +26563,12 @@
         "the",
         "this",
         "until",
-        "user",
         "users",
+        "viewports",
         "visible",
         "visually",
+        "with",
+        "wraps",
         "your"
       ],
       "name": "SkipLink",
@@ -46607,7 +46615,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <picture>\n      <source media=\"(prefers-color-scheme: dark)\" srcset=\"./docs/assets/readme/hero-dark.svg\">\n      <img src=\"./docs/assets/readme/hero-light.svg\" alt=\"Lumen UI — A shared language. Every interface.\" width=\"1200\" height=\"340\">\n    </picture>\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  <strong>Accessible primitives. Native authoring. Shared foundations.</strong><br>\n  An open-source UI system for Astro, React, Web Components, React Native, SwiftUI, and Jetpack Compose.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com/docs\">Documentation</a> ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a> ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Playgrounds</a> ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513\">Figma library</a> ·\n  <a href=\"https://lumen.santi020k.com/support\">Support</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/ci.yml\"><img alt=\"CI status on main\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&amp;style=flat-square&amp;label=CI\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL status\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"Published Astro package version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&amp;label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-036b8c?style=flat-square\"></a>\n</p>\n\n## One system, your framework\n\nBuild web and native interfaces with shared design tokens, accessible components, and each\nplatform's own authoring conventions. Astro is the reference implementation.\n\n<p>\n  <a href=\"https://lumen.santi020k.com/docs/web/playground\">\n    <img src=\"./apps/docs/src/assets/platforms/web.webp\" alt=\"A Lumen web workspace with navigation, metric cards, an interactive chart, and a task form\" width=\"1184\" height=\"802\">\n  </a>\n</p>\n\n*Real Lumen components with illustrative data. [Open the web playground →](https://lumen.santi020k.com/docs/web/playground)*\n\n## Start building\n\nChoose your framework, install its adapter, and follow the setup guide for styles and runtime.\n\n| Framework | Setup guide |\n| --- | --- |\n| **Astro** | [Astro quick start](https://lumen.santi020k.com/docs/frameworks/astro) |\n| **React** | [React quick start](https://lumen.santi020k.com/docs/frameworks/react) |\n| **Web Components** | [Elements quick start](https://lumen.santi020k.com/docs/frameworks/elements) |\n| **React Native** | [React Native guide](https://lumen.santi020k.com/docs/react-native) |\n| **SwiftUI** | [Apple guide](https://lumen.santi020k.com/docs/apple) |\n| **Jetpack Compose** | [Android guide](https://lumen.santi020k.com/docs/android) |\n\nAstro requires Astro 5+; React requires React 19+. See each guide for supported toolchains\nand complete configuration. Browse the [package directory](https://lumen.santi020k.com/docs/packages)\nfor tokens, icons, integrations, and focused native packages.\n\n> **Upgrading to Lumen 5?** Follow the [migration guide](https://lumen.santi020k.com/docs/migrations/v4-to-v5)\n> and [selective installation guide](docs/selective-installation.md). Package versions and store\n> builds follow their own release schedules; check availability before upgrading.\n\n## Explore the system\n\n| I want to… | Go to |\n| --- | --- |\n| Find a component and its API | [Component catalog](https://lumen.santi020k.com/docs/components) |\n| Try components, states, and themes | [Web playground](https://lumen.santi020k.com/docs/web/playground) |\n| Start from a complete product layout | [Dashboard and app templates](https://lumen.santi020k.com/templates) |\n| Customize colors and appearance | [Web themes](https://lumen.santi020k.com/docs/web/themes) · [Theme playground](https://lumen.santi020k.com/docs/theme-playground) |\n| Use Tailwind alongside Lumen | [Tailwind integration](https://lumen.santi020k.com/docs/web/tailwind) |\n| Build a real screen step by step | [Practical guides](https://lumen.santi020k.com/guides) |\n| Understand the shared foundations | [Tokens and platform contracts](https://lumen.santi020k.com/docs/foundations) |\n\n## Try it on native\n\n<table>\n  <tr>\n    <th>SwiftUI</th>\n    <th>Jetpack Compose</th>\n    <th>React Native</th>\n  </tr>\n  <tr>\n    <td><a href=\"https://lumen.santi020k.com/docs/apple/playground\"><img src=\"./apps/docs/src/assets/platforms/apple.webp\" alt=\"Native SwiftUI release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/android/playground\"><img src=\"./apps/docs/src/assets/platforms/android.webp\" alt=\"Native Compose release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/react-native/playground\"><img src=\"./apps/docs/src/assets/platforms/react-native.webp\" alt=\"Expo browser preview of the contributor profile example\" width=\"220\"></a></td>\n  </tr>\n  <tr>\n    <td>Native app capture</td>\n    <td>Native app capture</td>\n    <td>Expo browser preview</td>\n  </tr>\n</table>\n\nSee [capture provenance](apps/docs/src/assets/platforms/README.md) for sources and verification scope.\n\n[Apple App Store](https://apps.apple.com/app/id6805250815) ·\n[Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose) ·\n[React Native browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n\nFor local setup and source, see the [playground guide](docs/playgrounds.md).\nCheck [native compatibility](docs/native-compatibility.md) and\n[device validation evidence](docs/native-device-validation.md) for your target.\n\n## Build with AI and Figma\n\nGive your coding agent Lumen's component selection, composition, and verification guidance:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\n[Agent skill guide](https://lumen.santi020k.com/docs/ai-skill) ·\n[MCP catalog](https://lumen.santi020k.com/docs/mcp) ·\n[Lumen UI plugin for ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\n\nDesign with the [Figma community library](https://www.figma.com/community/file/1662337342676541513)\nand follow the [Figma integration guide](https://lumen.santi020k.com/docs/figma)\nfor variables and Code Connect. The [local Figma plugin](apps/figma-plugin/README.md) exports\nAstro, React and Web Components starters for Lumen releases 5.0.0 and 4.4.0. It also exports React Native and Compose 4.1.0 components and SwiftUI views for iPhone and Mac using the v5.0.0 Swift package.\n\n## Contribute and connect\n\nRead [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, workspace commands, tests, and release rules.\nThe [architecture guide](docs/cross-platform.md) explains package boundaries and platform responsibilities.\n\n[Feedback and support](https://lumen.santi020k.com/support) ·\n[Public roadmap](https://lumen.santi020k.com/support#roadmap) ·\n[Community showcase](https://lumen.santi020k.com/community) ·\n[Changelog](https://lumen.santi020k.com/changelog)\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n\nCreated and maintained by [Santiago Molina](https://santi020k.com).\n"
   },
   "meta": {
-    "catalogHash": "efaccd467d0a2713bbc77c052c644cd9c9d6db642f67ab52188a73d096155c2d",
+    "catalogHash": "21c59f3ccc1a4d58539f72f7ebd6eb431c8a89d5807d266226f60d8c5fc8c14b",
     "componentCount": 196,
     "nativeComponentCount": 125,
     "packages": [
