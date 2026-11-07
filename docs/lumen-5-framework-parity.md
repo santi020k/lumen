@@ -14,6 +14,7 @@ where they apply; native adapters retain platform controls and application-owned
 | Smaller consumer imports | Foundation plus component CSS, selective React entries and per-component Elements registrations | Existing focused native modules and React Native entries; no DOM runtime or CSS required |
 | Editorial Code, Prose and sticky first table columns | Matching public component options and shared styles | Web document presentation; native text, tables and host compositions retain their own contracts |
 | Code copy recovery and anchor focus handoff | Manual selection/retry recovery and shared local-anchor focus behavior, with adapter unit regressions | Browser clipboard denial and DOM anchor destinations are web contracts, not native APIs |
+| SkipLink viewport reflow | The shared generated stylesheet keeps the shortcut within the reading viewport | Native accessibility navigation retains platform focus conventions |
 | Media borders and clipping | Shared generated CSS lets the enclosing frame own the border and clipping | Native media layout retains platform-specific contracts; CSS border ownership does not apply |
 | Reveal visibility and reduced motion | Shared controller handles unreachable thresholds, keyboard focus and reduced motion | Native motion and accessibility conventions; no viewport observer contract |
 | Timeline, ThemeToggle and WorldMap styling parts | Matching public parts and shared styling | Native Timeline and application-owned theme preferences use platform APIs; native WorldMap is still a catalog gap |
@@ -30,11 +31,14 @@ The framework conformance suite includes real React and registered Elements host
 1440 pixels. It switches Paper and Field between inherited dark and explicitly pinned light/dark
 schemes under a santi020k dark parent. It checks retained progress state, keyboard dialog opening,
 dialog theme inheritance, Escape dismissal, focus restoration and horizontal overflow.
+Opening assertions require both the open state and focus inside the dialog: CSS visibility alone
+can precede the custom button's deferred keyboard activation during an overlay transition.
 
-Both framework browser configurations use the repository's cached build graph with two concurrent
-tasks and allow four minutes for clean package and Next.js builds, matching the accessibility suite's
-server startup budget. The previous implicit one-minute limit could terminate compilation before any
-browser assertion ran. Interaction timeouts and assertions remain unchanged.
+Both framework browser scripts run `prepare:frameworks` through the repository's cached build graph
+with two concurrent tasks before Playwright starts its server. Compilation no longer consumes the
+server's four-minute startup budget, following the accessibility suite's preparation pattern. The
+previous implicit one-minute limit could terminate compilation before any browser assertion ran.
+Interaction timeouts and assertions remain unchanged.
 
 Native appearance checks cover named palettes, semantic foregrounds, nested scopes and retained
 drafts. React Native's browser preview is useful for layout and keyboard checks; it is separate
@@ -51,7 +55,9 @@ The local audit uses Node 24.21.0 and pnpm 12.8.1. Completed checks include:
 | `pnpm run test:framework-visual` | Both React and Elements visual baselines passed unchanged |
 | React Native playground `test:appearance:web` | Six themes in light/dark at 320, 390 and 1440 pixels passed; checked retained drafts and the pinned Harbor sheet |
 | `swift test` | 152 tests passed, including rendered macOS appearance and accessibility layouts |
+| Apple playground `AdvancedInputTests/testPinnedHarborSheetRetainsDraftWhenAppAppearanceChanges` | Passed on iPhone 17 Pro / iOS 27.0 Simulator; verified the pinned Harbor scheme, retained draft and keyboard focus after dismissal |
 | Compose `./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication --no-daemon --max-workers=1 --warning-mode=all` | 150 phone and three Wear unit tests passed; both artifacts passed lint, API comparison, test-APK builds and local publication verification |
+| Compose `./gradlew :connectedDebugAndroidTest --no-daemon --max-workers=1` | All 104 phone instrumentation tests passed on a dedicated API 35 emulator, including accessibility and scoped-theme rendering |
 
 Android lint exposed an outdated Gradle wrapper. The audit updates it to the checksum-verified
 stable 9.9.0 release and regenerates the wrapper JAR. Android API baselines are unchanged. The

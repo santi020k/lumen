@@ -160,6 +160,12 @@ checkout. Set `LUMEN_A11Y_PORT` to an unused port when another suite is running.
 `pnpm exec playwright test -c playwright.a11y.config.ts` invocation, run `pnpm run prepare:a11y`
 first with the same port. Test assertions and timeouts remain unchanged.
 
+The framework conformance and visual scripts run `prepare:frameworks` before starting Playwright.
+This builds the Next.js consumer and its dependencies through Turbo with two concurrent tasks;
+compilation does not consume the preview server's startup budget. Run `pnpm run prepare:frameworks`
+first when invoking either framework Playwright configuration directly. Use separate
+`LUMEN_FRAMEWORK_CONFORMANCE_PORT` and `LUMEN_FRAMEWORK_VISUAL_PORT` values for concurrent checkouts.
+
 Dependency age exceptions must identify the exact reviewed package version. Use a temporary exact-version exception for an approved security fix that cannot wait for
 the normal 24-hour hold, then remove it once that hold expires. The
 `http-cache-semantics@4.3.0` exception was retired after 2026-10-05 02:56:06 UTC; its fixed

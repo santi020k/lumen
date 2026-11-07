@@ -54,7 +54,7 @@ export default defineConfig({
   },
   webServer: {
     timeout: 240_000,
-    command: `pnpm exec turbo run build --filter=@santi020k/lumen-next-smoke --concurrency=2 && node apps/next-smoke/node_modules/next/dist/bin/next start apps/next-smoke --hostname 127.0.0.1 --port ${port}`,
+    command: `node apps/next-smoke/node_modules/next/dist/bin/next start apps/next-smoke --hostname 127.0.0.1 --port ${port}`,
     gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
     reuseExistingServer: false,
     url: baseURL
