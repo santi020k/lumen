@@ -63,18 +63,45 @@ const exerciseFramework = async (root: Locator, scenario: FrameworkScenario) => 
   await expect(panel.getByRole('tabpanel', { name: 'Delivery' })).toBeVisible()
 }
 
-test('web playground switches and exercises each real framework adapter', async ({ page }) => {
-  await page.goto('/docs/web/playground')
+for (const width of [390, 1440]) {
+  for (const scheme of ['light', 'dark'] as const) {
+    test.describe(`web playground at ${width}px in ${scheme}`, () => {
+      test.use({
+        colorScheme: scheme,
+        hasTouch: width === 390,
+        isMobile: width === 390,
+        reducedMotion: 'reduce',
+        viewport: { height: 900, width }
+      })
 
-  const playground = page.locator('.web-framework-playground')
+      test('switches and exercises each real framework adapter', async ({ page }, testInfo) => {
+        const errors: string[] = []
+        page.on('pageerror', error => errors.push(error.message))
+        await page.addInitScript(mode => {
+          localStorage.setItem('lumen-theme', `lumen-${mode}`)
+        }, scheme)
+        await page.goto('/docs/web/playground')
 
-  await expect(playground).toBeVisible()
-  await expect(playground).toHaveAttribute('data-ready', 'true')
+        const playground = page.locator('.web-framework-playground')
 
-  for (const framework of frameworks) {
-    await exerciseFramework(playground, framework)
+        await expect(playground).toBeVisible()
+        await expect(playground).toHaveAttribute('data-ready', 'true')
+
+        for (const framework of frameworks) {
+          await exerciseFramework(playground, framework)
+          const dimensions = await page.evaluate(() => ({
+            viewport: innerWidth,
+            content: document.documentElement.scrollWidth
+          }))
+          expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport)
+          await playground.screenshot({ path: testInfo.outputPath(`${framework.id}-${width}-${scheme}.png`) })
+        }
+
+        expect(errors).toEqual([])
+      })
+    })
   }
-})
+}
 
 test('web playground loads optional framework runtimes only when selected', async ({ page }) => {
   await page.route('**/web-framework-playground.*.js', async route => {
