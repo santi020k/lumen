@@ -1,6 +1,6 @@
 # Homepage platform previews
 
-[Documentation app](../../../README.md) · [Root preview gallery](../../../../../README.md#see-lumen-in-action)
+[Documentation app](../../../README.md) · [Web preview](../../../../../README.md#one-system-your-framework) · [Native previews](../../../../../README.md#try-it-on-native)
 
 ## Capture sources
 

@@ -1218,7 +1218,7 @@ rechecked. Keyboard focus within a reveal and reduced motion bypass decorative h
 Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.
 
 The subscribe-form components have individual entries under `/components/button`, `/components/card`,
-`/components/input` and `/components/label`. See the [web quick start](../../README.md#react).
+`/components/input` and `/components/label`. See the [React quick start](https://lumen.santi020k.com/docs/frameworks/react).
 
 ### Selective form primitives
 

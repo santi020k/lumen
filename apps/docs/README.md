@@ -20,7 +20,8 @@ workspace packages. This is the reference app for component behavior, theming, a
 
 ## Run locally
 
-Use Node.js 22.22.2+, 24.15.0+, or 26+ and the pnpm version pinned in the root manifest.
+Use Node.js 22.23.4+, 24.15.0+, or 26+ and the pnpm version pinned in the root manifest,
+following the [workspace setup requirements](../../CONTRIBUTING.md#local-setup).
 From the repository root:
 
 ```bash
