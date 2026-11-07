@@ -18,8 +18,14 @@
   <a href="https://lumen.santi020k.com/docs">Documentation</a> ·
   <a href="https://lumen.santi020k.com/docs/components">Components</a> ·
   <a href="https://lumen.santi020k.com/#playgrounds">Playgrounds</a> ·
-  <a href="https://www.figma.com/community/file/1662337342676541513">Figma library</a> ·
   <a href="https://lumen.santi020k.com/support">Support</a>
+</p>
+
+<p align="center">
+  <strong>Figma Community</strong> ·
+  <a href="https://www.figma.com/community/file/1662337342676541513/lumen-ui-library-v5">Lumen UI Library</a> ·
+  <a href="https://www.figma.com/community/file/1700607667944072280/lumen-templates">Lumen Templates</a> ·
+  <a href="https://www.figma.com/community/file/1700608473577262170/lumen-playgrounds">Lumen Playgrounds</a>
 </p>
 
 <p align="center">
