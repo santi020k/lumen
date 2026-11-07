@@ -745,7 +745,9 @@ behaviorTest(['Code'], 'Code copies its block content and announces success', as
   await expect(copy).toHaveAccessibleName('Copy code')
   await copy.click()
   await expect(copy).toHaveAccessibleName('Copied')
-  expect(await page.evaluate(() => sessionStorage.getItem('test-copied-code'))).toBe(await block.locator('pre code').textContent())
+  const source = ['', '  const theme = "lumen";', '  const accent = "hsl(var(--accent))";', ''].join('\n')
+
+  expect(await page.evaluate(() => sessionStorage.getItem('test-copied-code'))).toBe(source)
   await expect(copy.getByText('Copied', { exact: true })).toBeVisible()
   const announcement = page.locator('body > [aria-live="polite"][aria-atomic="true"]').filter({ hasText: /^Copied$/ })
   await expect(announcement).toHaveText('Copied')

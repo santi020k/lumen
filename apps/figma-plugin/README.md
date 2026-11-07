@@ -152,6 +152,7 @@ To compile generated native code in this checkout, first build the React Native 
 the [native toolchains](../../docs/native-compatibility.md). Run from the repository root:
 
 ```bash
+pnpm --filter @santi020k/lumen-core run build
 pnpm exec turbo run build --filter=@santi020k/lumen-react-native
 pnpm --filter @santi020k/lumen-figma-plugin run verify:native react-native
 pnpm --filter @santi020k/lumen-figma-plugin run verify:native compose

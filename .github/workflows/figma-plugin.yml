@@ -67,6 +67,9 @@ jobs:
         with:
           node-version: 22.x
 
+      - name: Build Core for the export generator
+        run: pnpm --filter @santi020k/lumen-core run build
+
       - name: Build generated views in iPhone and Mac applications
         run: pnpm --filter @santi020k/lumen-figma-plugin run verify:native apple
 
@@ -91,6 +94,9 @@ jobs:
           cache: gradle
       - name: Install Android platform
         run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0"'
+      - name: Build Core for the export generator
+        run: pnpm --filter @santi020k/lumen-core run build
+
       - name: Build Compose APK and bundle the React Native component for both platforms
         run: |
           pnpm --filter @santi020k/lumen-figma-plugin run verify:native compose
