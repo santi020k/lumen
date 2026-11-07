@@ -2,9 +2,9 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
+import { componentDeliveryEntries, getComponentEntry } from '@santi020k/lumen-core/component-delivery'
 import { describe, expect, test } from 'vitest'
 
-import { componentDeliveryEntries, getComponentEntry } from './component-delivery.js'
 import { getDeliveryVersion } from './delivery-version.js'
 import { addLumenRegistryItem } from './installer.js'
 import { inspectLumenIntegration } from './integration-diagnostics.js'

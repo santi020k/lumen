@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Use the shared Core component delivery metadata when generating selective wrappers and checking their imports.
+
 - Add Paper, Field and santi020k mobile themes, reusable custom definitions and local light/dark scopes across React Native, SwiftUI and Compose. Upgrade all three phone playgrounds with theme selection and a scoped note sheet.
 - Correct selective style diagnostics for shared CSS exports, comments, Elements registration helpers, HTML entries and optional appearances. Include refreshed palettes and Swift icon switches in v5 consumer upgrade reports.
 

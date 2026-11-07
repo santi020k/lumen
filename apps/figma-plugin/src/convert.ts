@@ -264,7 +264,7 @@ export const analyzeSelection = (selection: DesignNode, target: ExportTarget = d
     'Use semantic tokens, public layout primitives, and the existing app conventions. Review responsive behavior rather than copying canvas coordinates.',
     ...(platform === 'astro' ?
       [
-        'Merge the layout setup below into the existing layout. Preserve document metadata and language, and mount UIPrimitives once.',
+        'Merge the layout setup below into the existing layout. Preserve document metadata and language. If the setup includes the runtime, mount UIPrimitives once.',
         target.version === '5.0.0' ?
           'Each Astro component loads its CSS. The project default needs no extra theme import. Load optional appearance CSS at the layout boundary. Await LumenInitUiPrimitives after inserting dynamic markup. Install the matching Lumen CLI separately only when using editable recipes or diagnostics.' :
           'Import the full adapter stylesheet once at the application boundary.'

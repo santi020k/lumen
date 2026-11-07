@@ -4,8 +4,8 @@ import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { lumenComponentNames } from '@santi020k/lumen-core'
+import { componentCssName, getComponentEntry } from '@santi020k/lumen-core/component-delivery'
 
-import { componentCssName, getComponentEntry } from './component-delivery.js'
 import {
   getLumenRegistryItem,
   type LumenRegistry,

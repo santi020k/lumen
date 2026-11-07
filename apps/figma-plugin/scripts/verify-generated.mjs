@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { mkdir, readFile, realpath, symlink, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
@@ -72,6 +73,21 @@ for (const version of versions) {
 
   await writeFile(join(fixture, 'src/Layout.astro'), settings.layout)
 
+  if (!legacy) {
+    const card = analyzeSelection(componentNode('Card', { Title: 'Static card', Body: 'Static content' }), target)
+
+    await writeFile(join(fixture, 'src/StaticCard.astro'), card.code)
+
+    await writeFile(join(fixture, 'src/StaticLayout.astro'), card.layout)
+
+    await writeFile(join(fixture, 'src/pages/static.astro'), `---
+import Card from '../StaticCard.astro'
+import Layout from '../StaticLayout.astro'
+---
+<Layout title="Static export"><main><Card /></main></Layout>
+`)
+  }
+
   await writeFile(join(fixture, 'package.json'), '{"name":"lumen-figma-verification","private":true,"type":"module"}\n')
 
   await writeFile(join(fixture, 'tsconfig.json'), '{"extends":"astro/tsconfigs/strictest","include":[".astro/types.d.ts","src/**/*"],"exclude":["dist"]}\n')
@@ -95,7 +111,22 @@ import Layout from '../Layout.astro'
     if (result.status !== 0) process.exit(result.status ?? 1)
   }
 
+  if (!legacy) {
+    const html = await readFile(join(fixture, 'dist/static/index.html'), 'utf8')
+
+    assert(!html.includes('<script'), 'Static Astro export must emit no JavaScript.')
+
+    await verifyWebConsumers({ version,
+      root,
+      fixture,
+      analyzeSelection,
+      linkDependency,
+      scenario: 'static',
+      selection: componentNode('Card', { Title: 'Static card', Body: 'Static content' }) })
+  }
+
   await verifyWebConsumers({ version,
+    scenario: '',
     root,
     fixture,
     analyzeSelection,

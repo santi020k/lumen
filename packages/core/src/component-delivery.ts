@@ -96,6 +96,39 @@ const elementsEntries: Readonly<Record<string, string>> = {
 
 export const componentDeliveryEntries = { react: reactEntries, elements: elementsEntries } as const
 
+/** Components exported by the React server entry, verified against its public exports. */
+export const reactServerComponents: readonly string[] = [
+  'AttachmentList',
+  'Badge',
+  'Card',
+  'CardContent',
+  'CardDescription',
+  'CardFooter',
+  'CardHeader',
+  'CardTitle',
+  'ChangeSummary',
+  'Container',
+  'DescriptionDetail',
+  'DescriptionItem',
+  'DescriptionTerm',
+  'DialogBody',
+  'DialogFooter',
+  'DialogHeader',
+  'DialogTitle',
+  'Direction',
+  'Grid',
+  'Input',
+  'Label',
+  'Progress',
+  'Separator',
+  'Skeleton',
+  'Spinner',
+  'Stack',
+  'Textarea',
+  'Typography',
+  'VisuallyHidden'
+]
+
 export const getComponentEntry = (name: string, target: 'elements' | 'react'): string | undefined => {
   const entries = componentDeliveryEntries[target]
   const entry = Object.hasOwn(entries, name) ? entries[name] : undefined

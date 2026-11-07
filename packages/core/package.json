@@ -139,6 +139,10 @@
     "./native-input": {
       "types": "./dist/native-input.d.ts",
       "import": "./dist/native-input.js"
+    },
+    "./component-delivery": {
+      "types": "./dist/component-delivery.d.ts",
+      "import": "./dist/component-delivery.js"
     }
   },
   "files": [

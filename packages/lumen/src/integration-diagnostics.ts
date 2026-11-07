@@ -10,9 +10,9 @@ import {
   type LumenStylingContract,
   lumenStylingContracts
 } from '@santi020k/lumen-core'
+import { componentCssName } from '@santi020k/lumen-core/component-delivery'
 import { createSourceFile, forEachChild, type ImportDeclaration, type ImportSpecifier, isForOfStatement, isImportDeclaration, isJsxAttribute, isNamedImports, isStringLiteral, type JsxAttribute, type Node, ScriptKind, ScriptTarget, type SourceFile, type Statement, SyntaxKind } from 'typescript'
 
-import { componentCssName } from './component-delivery.js'
 import { readComponentImports } from './component-imports.js'
 import { type DeliveryVersion, getDeliveryVersion } from './delivery-version.js'
 import { hasComponentCss } from './style-coverage.js'
