@@ -24,7 +24,9 @@ test('the article shortcut stays visible with enlarged RTL text and reduced moti
     document.documentElement.style.fontSize = '200%'
   })
 
-  const shortcut = page.getByRole('link', { name: 'Skip to article text', exact: true })
+  const shortcut = page.locator('a.ui-skip-link[href="#editorial-story"]')
+
+  await expect(shortcut).toHaveAccessibleName('Skip to article text')
 
   await shortcut.evaluate(element => {
     element.textContent = 'Skip to InternationalizationAndAccessibilityConfiguration'
