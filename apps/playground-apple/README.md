@@ -231,6 +231,11 @@ macOS requests Screen Recording permission the first time `screencapture` runs. 
 intentionally interactive so the script does not require Accessibility permission to control other
 applications.
 
+The v5 release kit includes six Mac store images, exported from the actual desktop app after
+verifying its bundled icons. Use the [release asset capture guide](../../docs/assets/releases/v5.0.0/README.md#regenerate)
+for the exact window size, raw filenames, proportional 16:10 crop, and provenance update command.
+The export removes native window chrome; it does not redraw application content.
+
 The repository also includes a standalone watchOS gallery. Capture every wearable component on a
 booted watch simulator with:
 

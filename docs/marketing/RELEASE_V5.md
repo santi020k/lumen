@@ -15,8 +15,9 @@ The kit contains a link-preview cover, a three-card carousel in square, portrait
 formats, and screenshots of the web workspace, web framework playground, theme studio, and React
 Native browser preview. Native screenshots must match the exact binary submitted to each store.
 
-Mac screenshot refresh remains pending: the local capture showed blank brand-image slots and a
-system sharing overlay. Existing Mac store images are excluded from the new inventory.
+The kit now includes six refreshed Mac screenshots with restored shared icon artwork. Home,
+Examples, Components, and Settings are captured from the corrected local bundle. Native window
+chrome is cropped out; the opaque 1280 × 800 images and their provenance are included in the inventory.
 
 ## Release announcement draft
 

@@ -328,35 +328,21 @@ for (const name of storeScreenshotNames) {
   );
 }
 
-await assertPng(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Store",
-    "macOS",
-    "Screenshots",
-    "mac-catalog-light.png",
-  ),
-  1280,
-  800,
-  2,
-);
-
-await assertPng(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Store",
-    "macOS",
-    "Screenshots",
-    "mac-catalog-dark.png",
-  ),
-  1280,
-  800,
-  2,
-);
+for (const filename of [
+  "mac-home-light.png",
+  "mac-examples-light.png",
+  "mac-catalog-light.png",
+  "mac-catalog-dark.png",
+  "mac-settings-light.png",
+  "mac-examples-dark.png",
+]) {
+  await assertPng(
+    join(repositoryRoot, "apps", "playground-apple", "Store", "macOS", "Screenshots", filename),
+    1280,
+    800,
+    2,
+  );
+}
 
 const appleInfo = await readFile(
   join(repositoryRoot, "apps", "playground-apple", "Supporting", "Info.plist"),

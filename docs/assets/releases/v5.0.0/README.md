@@ -1,6 +1,6 @@
 # Lumen UI 5 release assets
 
-Local release candidates prepared on November 6, 2026. Nothing in this directory is publication,
+Local release candidates prepared on November 6, 2026; Mac captures refreshed on November 7, 2026. Nothing in this directory is publication,
 store approval, or physical-device qualification evidence. Draft captions and the final handoff
 checklist live in [the release kit](../../../marketing/RELEASE_V5.md).
 
@@ -14,6 +14,7 @@ checklist live in [the release kit](../../../marketing/RELEASE_V5.md).
 | Portrait cards | `social/portrait-*.png` | 1080 × 1920 story or video source |
 | Landscape cards | `social/landscape-*.png` | 1920 × 1080 video source |
 | iPhone and iPad captures | `apps/playground-apple/Store/Screenshots/` from the repository root | Apple store candidates |
+| Mac captures | `apps/playground-apple/Store/macOS/Screenshots/` from the repository root | Six opaque 1280 × 800 Apple store candidates |
 | Medium iPhone captures | `apple-medium/` | Additional Apple phone size class |
 | Android captures | `apps/playground-android/Store/Screenshots/` from the repository root | Google Play candidates |
 | Android feature graphic | `apps/playground-android/Store/feature-graphic.png` from the repository root | 1024 × 500 Google Play feature graphic |
@@ -27,8 +28,8 @@ revision, capture timestamp, checksum, and alternative text.
 
 ## Capture boundaries
 
-All application sources in this preparation come from revision
-`c77c6aee8` on `release/v5.0.0`. Asset tooling and draft copy were added separately. Web screenshots
+Web, Expo, iPhone, iPad, and Android captures use revision `c77c6aee8` on `release/v5.0.0`.
+The Mac set uses `1b1e5a6b3`, which fixes the local app/resource bundle identifier collision. Asset tooling and draft copy were added separately. Web screenshots
 use Chromium with reduced motion and the Lumen light/dark preferences. React Native screenshots
 come from the locally built Expo web export at 390 × 844; they must not be submitted as native
 store screenshots. Metrics and profiles inside the examples are demonstration data.
@@ -38,10 +39,16 @@ Max, iPhone 18 Pro, and iPad Pro 13-inch (M5), all with iOS/iPadOS 27.0. The And
 Debug APK in an Android 15 / API 35 emulator at 1080 × 1920 with density 420. These are screenshot
 preparation builds, not distribution archives or evidence of physical-device qualification.
 
-The existing Mac store images are excluded from this release inventory. The local Mac build
-launches, but its captured window has blank brand-image slots and a system window-sharing overlay.
-Fresh Mac store images remain pending a clean capture from the final candidate; the older files
-under `apps/playground-apple/Store/macOS/Screenshots` must not be treated as refreshed v5 evidence.
+The six Mac images show Home, Examples, Components, and Settings, including light and dark
+Examples and Components. The local ad hoc signed Debug app runs on macOS 27.2. Shared icons are
+visible after scoping the local bundle identifier to the application target; the resource bundle
+retains its independent identity. The default App Store bundle identifier is unchanged.
+
+Raw Mac window captures are 2480 × 1636. Export crops the native title bar (including the system
+sharing indicator) and eight-point horizontal outer margins, then scales the remaining 16:10
+content proportionally to opaque 1280 × 800 PNGs. No application artwork is painted into the
+screenshots. The manifest records the original image hash, format, crop, source revision, and
+executable hash. Raw frames stay local verification evidence. These replace the older Mac images.
 
 The carousel uses actual application captures, proportional resizing, and the canonical light
 palette from `tokens/lumen.tokens.json`. The mark comes from `apps/docs/public/logo.svg`.
@@ -77,13 +84,28 @@ ANDROID_SERIAL=<task-owned-emulator> LUMEN_ANDROID_STORE_SCALE=1 pnpm playground
 The Apple script accepts `LUMEN_IPHONE_STORE_UDID` and `LUMEN_IPAD_STORE_UDID`. Its default phone set
 is the large 1320 × 2868 size. Apple's current guide also requests the medium Dynamic Island size;
 capture that class separately rather than resizing a large-phone image into a different layout.
-Mac screenshots must be exported at an accepted 16:10 size, without alpha.
+Mac screenshots use the separate procedure below.
 
 To regenerate the additional phone class, run the same Apple command with the medium phone UDID
 and a temporary output directory. Copy its six `iphone-*.png` files into `apple-medium/`; its iPad
 outputs duplicate the main tablet set and do not belong in that directory. This preparation reused
 the completed universal simulator build for the additional sizes and waited for stable rendered
 frames before exporting opaque PNGs. Update `native-captures.json` after recapture.
+
+For Mac, run `pnpm playground:mac:app` from a clean source commit and open the resulting local
+app bundle. Capture the live window at 1240 × 818 points on a 2× display, with Normal theme and
+the appropriate appearance. Use these raw filenames: `mac-home-light.png`, `mac-examples-light.png`,
+`mac-catalog-light.png`, `mac-catalog-dark.png`, `mac-settings-light.png`, and `mac-examples-dark.png`.
+Keep the pointer over the title bar and dismiss transient appearance feedback before capture.
+The image decoder detects the raw encoding; the capture API may return JPEG bytes.
+
+```bash
+node apps/docs/scripts/prepare-mac-release-screenshots.mjs /path/to/raw-captures \
+  "apps/playground-apple/.build/mac-app/Build/Products/Debug/Lumen Playground.app"
+```
+
+The export script rejects a different window size instead of distorting the layout. Keep the app
+build, raw captures, and clean source revision aligned; it records the current commit as provenance.
 
 After refreshing source screenshots, regenerate graphics and shared website previews, then verify:
 
@@ -100,7 +122,7 @@ does not establish store approval or replace interaction and accessibility testi
 
 The prepared images use Apple's accepted iPhone/iPad dimensions and Google's
 opaque 1024 × 500 feature graphic and portrait phone format. Requirements were checked on
-November 6, 2026 against [Apple's screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)
+November 6, 2026, with Mac dimensions rechecked on November 7, 2026, against [Apple's screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/)
 and [Google's preview asset guide](https://support.google.com/googleplay/android-developer/answer/9866151).
 
 Recheck the actual submission slots before upload; the release workflow and store review remain

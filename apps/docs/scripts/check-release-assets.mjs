@@ -16,7 +16,23 @@ assert.equal(captures.length, 16, 'Expected eight web/Expo captures in each appe
 
 assert.equal(artwork.length, 11, 'Expected nine carousel cards, a cover, and a feature graphic')
 
-assert.equal(nativeCaptures.length, 24, 'Expected six captures each for large iPhone, medium iPhone, iPad, and Android')
+assert.equal(nativeCaptures.length, 30, 'Expected six captures each for large iPhone, medium iPhone, iPad, Android, and Mac')
+
+const macCaptures = nativeCaptures.filter(capture => capture.file.includes('/macOS/Screenshots/'))
+
+assert.equal(macCaptures.length, 6, 'Expected a complete Mac capture set')
+
+for (const capture of macCaptures) {
+  assert.equal(capture.width, 1280, capture.file)
+
+  assert.equal(capture.height, 800, capture.file)
+
+  assert.match(capture.buildArtifactSha256, /^[a-f0-9]{64}$/)
+
+  assert.match(capture.rawSha256, /^[a-f0-9]{64}$/)
+
+  assert.ok(assets.some(asset => asset.file === capture.file), `Missing Mac inventory entry: ${capture.file}`)
+}
 
 assert.equal(new Set(assets.map(asset => asset.file)).size, assets.length, 'Duplicate asset paths')
 

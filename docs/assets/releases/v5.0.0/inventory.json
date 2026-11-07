@@ -353,6 +353,54 @@
       "sha256": "26a99d6cdcae17f894512d16448a365eeb68930bca95a4c9d6ade0a613488fb2"
     },
     {
+      "file": "apps/playground-apple/Store/macOS/Screenshots/mac-catalog-dark.png",
+      "bytes": 286351,
+      "width": 1280,
+      "height": 800,
+      "hasAlpha": false,
+      "sha256": "ac4c96a258f928a7fbcaee7eea05695a5eece4a2fd20daf41369d54f3918e584"
+    },
+    {
+      "file": "apps/playground-apple/Store/macOS/Screenshots/mac-catalog-light.png",
+      "bytes": 294623,
+      "width": 1280,
+      "height": 800,
+      "hasAlpha": false,
+      "sha256": "f7cdcc62ed0162575a8787ba7f1e0a58a1b7a8613aa5b86a5c9061ab16ba0059"
+    },
+    {
+      "file": "apps/playground-apple/Store/macOS/Screenshots/mac-examples-dark.png",
+      "bytes": 285188,
+      "width": 1280,
+      "height": 800,
+      "hasAlpha": false,
+      "sha256": "d33a1c7c9740ca89a9b92c561d5ebbcba9165a55b04d2b33a3b1c85d0a2509dd"
+    },
+    {
+      "file": "apps/playground-apple/Store/macOS/Screenshots/mac-examples-light.png",
+      "bytes": 293932,
+      "width": 1280,
+      "height": 800,
+      "hasAlpha": false,
+      "sha256": "fee593f1070351b4301ac149f3848b1a9adbf5b50a5695bebff7347228c4ca90"
+    },
+    {
+      "file": "apps/playground-apple/Store/macOS/Screenshots/mac-home-light.png",
+      "bytes": 310955,
+      "width": 1280,
+      "height": 800,
+      "hasAlpha": false,
+      "sha256": "5ab86bead2fd0524c359eebb48b08760a0d33204b8ab7086384cd803b8022afb"
+    },
+    {
+      "file": "apps/playground-apple/Store/macOS/Screenshots/mac-settings-light.png",
+      "bytes": 273031,
+      "width": 1280,
+      "height": 800,
+      "hasAlpha": false,
+      "sha256": "0c9072e032c4ae9090f5d9d59d4982f69ad806b4f8e50fbb905f6181a375c228"
+    },
+    {
       "file": "apps/playground-android/Store/Screenshots/phone-01-home-light.png",
       "bytes": 179667,
       "width": 1080,

@@ -104,6 +104,7 @@ const sources = [
   'docs/assets/releases/v5.0.0/apple-medium',
   'docs/assets/releases/v5.0.0/social',
   'apps/playground-apple/Store/Screenshots',
+  'apps/playground-apple/Store/macOS/Screenshots',
   'apps/playground-android/Store/Screenshots',
   'apps/playground-android/Store',
   'apps/docs/src/assets/platforms'
