@@ -53,6 +53,24 @@ describe.each(['react-native', 'compose', 'swiftui-ios', 'swiftui-macos'] as con
     expect(code).not.toContain('Connect action')
   })
 
+  test('keeps the teammate email in its own draft field outside the Invite step', () => {
+    const { code } = analyze(form)
+    const inviteStart = code.indexOf('"Step 4 of 4"')
+    const draft = code.slice(0, code.indexOf('canContinue ='))
+    const invite = code.slice(inviteStart, code.indexOf('"100%"', inviteStart))
+
+    expect(draft).toMatch(/(?:\[field3, setField3\] = useState|var field3 (?:=|by rememberSaveable))/u)
+    expect(invite).toContain('"Teammate email"')
+    const binding = {
+      'react-native': 'value={field3} onChangeText={setField3}',
+      compose: 'value = field3, onValueChange = { field3 = it }',
+      'swiftui-ios': 'text: $field3',
+      'swiftui-macos': 'text: $field3'
+    }
+    expect(invite).toContain(binding[platform])
+    expect(invite).not.toContain('field2')
+  })
+
   test('does not assign navigation to generic, incomplete or ambiguous selections', () => {
     const fakeNext = { ...button('Continue'), component: { key: 'foreign', name: 'Button', setKey: null } }
     for (const other of [

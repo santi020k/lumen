@@ -81,6 +81,7 @@ test('switches framework, downloads the selected starter and clears stale output
     await page.getByRole('combobox', { name: 'Target version' }).click()
     await page.getByRole('option', { name: `Lumen 4.4.0 · ${label} 4.3.0` }).click()
     await page.getByRole('button', { name: 'Inspect selection' }).click()
+    await page.getByRole('button', { name: 'Open handoff' }).click()
     const download = page.waitForEvent('download')
     await page.getByRole('button', { name: `Save ${label} starter` }).click()
     expect((await download).suggestedFilename()).toBe(`LumenSelection.${extension}`)
@@ -91,5 +92,7 @@ test('switches framework, downloads the selected starter and clears stale output
     expect((await setup).suggestedFilename()).toBe('lumen-setup.js')
     await page.getByRole('tab', { name: 'AI handoff' }).click()
     await expect(page.getByRole('tabpanel')).toContainText(`@santi020k/lumen-${pkg} 4.3.0`)
+    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Back to setup' }).click()
   }
 })

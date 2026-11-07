@@ -21,8 +21,8 @@ Choose the framework and Lumen release used by your project. The offline selecto
 
 | Lumen release | Astro adapter | React adapter | Web Components adapter | Appearance |
 | --- | --- | --- | --- | --- |
-| 5.0.0 | 5.0.0 | 5.0.0 | 5.0.0 | Project, Paper, Field, Studio, Glass, santi020k Light or Dark |
-| 4.4.0 | 4.4.0 | 4.3.0 | 4.3.0 | Project, Studio, Glass, santi020k Light or Dark |
+| 5.0.0 | 5.0.0 | 5.0.0 | 5.0.0 | Project, Paper, Field, Studio, Glass, santi020k (Light or Dark starting mode) |
+| 4.4.0 | 4.4.0 | 4.3.0 | 4.3.0 | Project, Studio, Glass, santi020k (Light or Dark starting mode) |
 
 Astro exports a component and a root layout with the progressive runtime. React exports a default TSX component and a setup module for its stylesheet imports. Web Components exports an HTML fragment and a browser module that registers its custom elements. Import the setup once in the receiving app. Lumen 5 loads the foundation, styles for the selected components, and optional appearance CSS. Lumen 4.4 uses the full adapter stylesheet. **Use project appearance** keeps your existing palette.
 
@@ -44,9 +44,9 @@ select one frame or component instance, and run **Lumen for Figma**.
 
 The panel follows the Figma editor’s light or dark theme. **Project appearance** applies to the exported starter.
 
-1. Choose the **Export target**. For web, choose the **Target version** and **Project appearance**. For native, check the supported adapter version, then **Inspect selection**.
-2. In **Design review**, check the verified count and the layers that need attention. **Project handoff** contains the generated files.
-3. Copy the setup for your framework and copy or save the starter and **AI handoff**. React and Web Components also offer **Save app setup**. Changing export settings clears the previous output.
+1. In **Setup**, choose the **Export target**. For web, choose the **Target version** and **Project appearance**. Choosing **santi020k** reveals **Starting mode**, with Light selected initially. For native, check the supported adapter version. Choose **Inspect selection**.
+2. In **Design review**, check the verified count and the layers that need attention. Choose **Open handoff** for the generated files. Use **Back to review** or **Back to setup** to revisit an earlier step.
+3. Copy the setup for your framework and copy or save the starter and **AI handoff**. React and Web Components also offer **Save app setup**. Returning to Setup preserves your settings and findings. Changing a setting or editing the Figma selection clears the previous output.
 4. Give the handoff to a coding agent working in the target repository. It directs the agent to
    check installed Lumen versions, retrieve component contracts, connect application behavior,
    and validate the rendered result.
@@ -77,7 +77,8 @@ It preserves the option titles, descriptions and initial selection. A drawn
 progress track with a visible caption and percentage exports a labeled progress indicator. Review
 the inferred mapping and connect progress to the application. Selecting the complete Onboarding form wires Continue to Preferences (step 3 of 4, 75%) once the
 workspace name and email are valid. Continue on Preferences opens Invite (step 4 of 4, 100%).
-Back retraces those steps and preserves the workspace name, email, workspace choice and latest
+Invite has its own teammate email field. The address stays in the draft when you return to Preferences
+and continue to Invite again. Back retraces those steps and preserves the workspace name, email, workspace choice and latest
 product-updates setting. Back is disabled on the initial Workspace step (50%).
 Connect other button actions in the receiving application.
 

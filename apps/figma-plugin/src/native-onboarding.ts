@@ -56,7 +56,9 @@ const preferencesControls = (root: Stack) => {
   return choices && preference && meter?.value === 50 ? { preference, meter } : null
 }
 
-export const bindOnboarding = (selection: DesignNode, root: NativeNode | null): OnboardingFlow | null => {
+export const bindOnboarding = (
+  selection: DesignNode, root: NativeNode | null, allocateField: () => number
+): OnboardingFlow | null => {
   if (!matchesTemplate(selection) || root?.kind !== 'stack' || root.children.length !== formParts.length) return null
 
   const fields = workspaceFields(root)
@@ -95,9 +97,20 @@ export const bindOnboarding = (selection: DesignNode, root: NativeNode | null): 
     ]
   })
 
+  const teammateEmail: NativeNode = {
+    kind: 'input',
+    index: allocateField(),
+    size: 'md',
+    label: 'Teammate email',
+    placeholder: 'teammate@example.com',
+    visibleLabel: true,
+    helper: '',
+    emailError: undefined
+  }
+
   return {
     ...fields,
     preferences: page(3, 'Preferences', [preference], [back, next]),
-    invite: page(4, 'Invite', [text('Invite collaborators when you are ready.', 'body')], [{ ...back, destinationStep: 3 }])
+    invite: page(4, 'Invite', [text('Invite collaborators when you are ready.', 'body'), teammateEmail], [{ ...back, destinationStep: 3 }])
   }
 }

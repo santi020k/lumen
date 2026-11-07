@@ -6,12 +6,14 @@ const appearanceOptions = {
   paper: 'Paper',
   field: 'Field',
   studio: 'Studio',
-  glass: 'Glass',
-  'santi020k-light': 'santi020k Light',
-  'santi020k-dark': 'santi020k Dark'
+  glass: 'Glass'
 } as const
 
-export type Appearance = keyof typeof appearanceOptions
+type BrandMode = 'santi020k-light' | 'santi020k-dark'
+
+export type Appearance = keyof typeof appearanceOptions | BrandMode
+
+export const isBrandMode = (value: unknown): value is BrandMode => value === 'santi020k-light' || value === 'santi020k-dark'
 
 export type WebPlatform = 'astro' | 'react' | 'elements'
 export const isWebPlatform = (value: unknown): value is WebPlatform => value === 'astro' || value === 'react' || value === 'elements'
@@ -66,8 +68,12 @@ export const nativeSetup = {
 
 export const isVersion = (value: unknown): value is LumenVersion => versions.some(version => version === value)
 
-export const supportsAppearance = (version: LumenVersion, value: unknown): value is Appearance => typeof value === 'string' && Object.hasOwn(appearanceOptions, value) &&
-  (version === '5.0.0' || (value !== 'paper' && value !== 'field'))
+export const supportsAppearance = (version: LumenVersion, value: unknown): value is Appearance => {
+  if (isBrandMode(value)) return true
+
+  return typeof value === 'string' && Object.hasOwn(appearanceOptions, value) &&
+    (version === '5.0.0' || (value !== 'paper' && value !== 'field'))
+}
 
 export const readTarget = (platform: unknown, version: unknown, appearance: unknown): ExportTarget | null => {
   const web = platform === undefined ? 'astro' : platform
@@ -85,9 +91,12 @@ export const readTarget = (platform: unknown, version: unknown, appearance: unkn
   return version === native.version && appearance === 'project' ? native : null
 }
 
-export const appearancesFor = (version: LumenVersion) => Object.entries(appearanceOptions)
-  .filter(([value]) => supportsAppearance(version, value))
-  .map(([value, label]) => ({ value, label }))
+export const appearancesFor = (version: LumenVersion) => [
+  ...Object.entries(appearanceOptions)
+    .filter(([value]) => supportsAppearance(version, value))
+    .map(([value, label]) => ({ value, label })),
+  { value: 'santi020k', label: 'santi020k' }
+]
 
 export const needsGlassEffect = (target: WebTarget, used: boolean) => used && target.version === '5.0.0' && target.appearance !== 'glass'
 

@@ -24,7 +24,7 @@ Select a frame in a design that uses the [Lumen UI library](https://www.figma.co
 
 **For native apps:** Export React Native, Jetpack Compose for Android, or SwiftUI for iPhone and Mac. Native starters include labeled fields, editable checkboxes, and nested layouts. They flag inferred progress indicators for review. React Native and Compose target adapter 4.1.0; SwiftUI targets v5.0.0.
 
-Choose your target, click **Inspect selection**, then copy or save the starter and setup instructions where offered. The optional AI handoff includes visible design text, component properties, and items to review. You connect actions, implement unsupported layers, and check accessibility in your app.
+Choose your target, click **Inspect selection**, review the findings, then choose **Open handoff** to copy or save the starter and setup instructions where offered. The optional AI handoff includes visible design text, component properties, and items to review. You connect actions, implement unsupported layers, and check accessibility in your app.
 
 The plugin runs offline. It does not call an AI model or send your design to Lumen. You choose whether to share an export.
 
