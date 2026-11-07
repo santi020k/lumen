@@ -103,7 +103,9 @@ for (const theme of ['lumen-light', 'lumen-dark']) {
 
         if (!bounds || !headerBounds) throw new Error('Missing sticky page bar bounds')
 
-        expect(Math.abs(bounds.y - headerBounds.y - headerBounds.height)).toBeLessThanOrEqual(1)
+        const headerGap = bounds.y - headerBounds.y - headerBounds.height
+
+        expect(Math.abs(headerGap - (width < 1024 ? 0 : 16))).toBeLessThanOrEqual(1)
 
         if (width < 1024) {
           expect(Math.abs(bounds.x)).toBeLessThanOrEqual(1)

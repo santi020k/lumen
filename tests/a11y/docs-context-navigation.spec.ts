@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test'
 
+import { openEnhancedPage, openPreview } from './open-preview.js'
+
 test('shared Select names its list from the visible label and activates with Space', async ({ page }) => {
-  await page.goto('/docs/components/select')
+  await openPreview(page, 'select')
 
   const preview = page.locator('.component-doc-preview')
   const trigger = preview.getByRole('combobox', { name: 'Framework', exact: true })
@@ -19,7 +21,7 @@ test('shared Select names its list from the visible label and activates with Spa
 
 for (const startOnOption of [false, true]) {
   test(`shared Select closes when Tab leaves its ${startOnOption ? 'option' : 'trigger'}`, async ({ page }) => {
-    await page.goto('/docs/components/select')
+    await openPreview(page, 'select')
 
     const preview = page.locator('.component-doc-preview')
     const trigger = preview.getByRole('combobox', { name: 'Framework', exact: true })
@@ -42,7 +44,7 @@ for (const startOnOption of [false, true]) {
 }
 
 test('shared Select keeps internal focus movement open and clears search for keyboard selection', async ({ page }) => {
-  await page.goto('/docs/components/select')
+  await openPreview(page, 'select')
 
   const preview = page.locator('.component-doc-preview')
   const trigger = preview.getByRole('combobox', { name: 'Framework', exact: true })
@@ -64,7 +66,7 @@ test('shared Select keeps internal focus movement open and clears search for key
 })
 
 test('documentation scope uses the shared keyboard picker and remembers navigation', async ({ page }) => {
-  await page.goto('/docs/web')
+  await openEnhancedPage(page, '/docs/web')
 
   const trigger = page.getByRole('combobox', { name: 'Browse documentation' })
 
@@ -94,7 +96,7 @@ test('documentation scope uses the shared keyboard picker and remembers navigati
 })
 
 test('documentation scope typeahead supports option names containing spaces', async ({ page }) => {
-  await page.goto('/docs/web')
+  await openEnhancedPage(page, '/docs/web')
   await page.getByRole('combobox', { name: 'Browse documentation' }).focus()
   await page.keyboard.type('React Native')
   await expect(page.getByRole('option', { name: 'React Native', exact: true })).toBeFocused()
@@ -112,7 +114,7 @@ test('documentation scope still navigates when browser storage is unavailable', 
     Storage.prototype.setItem = () => { throw new DOMException('Storage unavailable', 'SecurityError') }
     Storage.prototype.removeItem = () => { throw new DOMException('Storage unavailable', 'SecurityError') }
   })
-  await page.goto('/docs/web')
+  await openEnhancedPage(page, '/docs/web')
   await expect(page.getByRole('combobox', { name: 'Browse documentation' })).toHaveText('Web')
   await page.getByRole('combobox', { name: 'Browse documentation' }).click()
   await page.getByRole('option', { name: 'Apple', exact: true }).click()
@@ -150,7 +152,7 @@ for (const width of [320, 390, 896, 1440]) {
       await page.setViewportSize({ width, height: 900 })
       await page.addInitScript(value => { localStorage.setItem('lumen-theme', value) }, theme)
       await page.emulateMedia({ reducedMotion: 'reduce' })
-      await page.goto('/docs/foundations')
+      await openEnhancedPage(page, '/docs/foundations')
 
       const trigger = page.getByRole('combobox', { name: 'Browse documentation' })
       const label = trigger.locator('[data-ui-select-value]')
@@ -198,7 +200,7 @@ for (const width of [320, 390, 896, 1440]) {
 
 
 test('context navigation example demonstrates the styled Select menu', async ({ page }) => {
-  await page.goto('/docs/components/context-navigation')
+  await openPreview(page, 'context-navigation')
 
   const preview = page.locator('.component-doc-preview')
   const trigger = preview.getByRole('combobox', { name: 'Documentation for' })
@@ -217,7 +219,7 @@ test('context navigation example demonstrates the styled Select menu', async ({ 
 test('documentation scope scrolls within short windows and keeps keyboard options reachable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 430 })
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/docs/foundations')
+  await openEnhancedPage(page, '/docs/foundations')
 
   const trigger = page.getByRole('combobox', { name: 'Browse documentation' })
   const list = page.getByRole('listbox', { name: 'Browse documentation' })
