@@ -15,6 +15,7 @@
     "verify:generated": "node scripts/build.mjs && node scripts/verify-generated.mjs"
   },
   "dependencies": {
+    "@santi020k/lumen-core": "workspace:^",
     "@santi020k/lumen-react": "workspace:^",
     "react": "catalog:",
     "react-dom": "catalog:"

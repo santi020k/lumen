@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const bindCarousel = (root: HTMLElement): void => {
   if (root.dataset.uiBound === 'true') return
 
@@ -21,5 +23,5 @@ const bindCarousel = (root: HTMLElement): void => {
 }
 
 export const initCarousel = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-carousel]')) bindCarousel(root)
+  for (const root of queryScope(scope, '[data-ui-carousel]')) bindCarousel(root)
 }

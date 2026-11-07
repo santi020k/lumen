@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const bindPasswordFields = (root: HTMLElement): void => {
   if (root.dataset.uiPasswordBound === 'true') return
 
@@ -50,5 +52,5 @@ const bindPasswordFields = (root: HTMLElement): void => {
 }
 
 export const initPasswordFields = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-password-field]')) bindPasswordFields(root)
+  for (const root of queryScope(scope, '[data-ui-password-field]')) bindPasswordFields(root)
 }

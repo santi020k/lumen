@@ -1,13 +1,15 @@
 import { activateLumenAnchor, decodeLumenAnchorFragment, getLumenActiveAnchorIndex, getLumenScrollProgress } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 const anchors = new WeakMap<HTMLElement, () => void>()
 let observer: ResizeObserver | undefined
-const bars = () => document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')
+const bars = () => document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress][data-ui-bound="true"]')
 const getTarget = (root: HTMLElement) => document.getElementById(root.dataset.uiScrollProgressTarget ?? '')
 
-const updateProgress = (): void => {
+const updateProgress = (roots: Iterable<HTMLElement> = bars()): void => {
   const scroller = document.scrollingElement ?? document.documentElement
-  const progress = Array.from(bars(), root => [root, getLumenScrollProgress(scroller, getTarget(root))] as const)
+  const progress = Array.from(roots, root => [root, getLumenScrollProgress(scroller, getTarget(root))] as const)
 
   for (const [root, ratio] of progress) {
     const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
@@ -49,7 +51,7 @@ const bindRefresh = (doc: Document) => {
 }
 
 const initAnchors = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
+  for (const root of queryScope(scope, '[data-ui-anchor]')) {
     if (root.dataset.uiBound === 'true' || root.closest('[data-ui-owner], lumen-anchor')) continue
 
     root.dataset.uiBound = 'true'
@@ -99,12 +101,14 @@ const initAnchors = (scope: ParentNode): void => {
   }
 }
 
-const initScrollProgress = (): void => {
-  observer?.disconnect()
-
-  const roots = bars()
+const initScrollProgress = (scope: ParentNode): void => {
+  const roots = queryScope(scope, '[data-ui-scroll-progress]')
 
   if (!roots.length) return
+
+  updateProgress(roots)
+
+  observer?.disconnect()
 
   const refresh = bindRefresh(document)
 
@@ -113,7 +117,7 @@ const initScrollProgress = (): void => {
 
     observer.observe(document.body)
 
-    for (const root of roots) {
+    for (const root of bars()) {
       const target = getTarget(root)
 
       if (target) observer.observe(target)
@@ -126,5 +130,5 @@ const initScrollProgress = (): void => {
 export const initDocumentNavigationControllers = (scope: ParentNode): void => {
   initAnchors(scope)
 
-  initScrollProgress()
+  initScrollProgress(scope)
 }

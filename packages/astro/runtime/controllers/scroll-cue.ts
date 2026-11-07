@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 // cspell:words loadingdone
 interface ScrollCueBinding {
   cleanup: () => void
@@ -175,7 +177,7 @@ export const initScrollCues = (scope: ParentNode): void => {
 
   const added: ScrollCueBinding[] = []
 
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-scroll-cue]')) {
+  for (const root of queryScope(scope, '[data-ui-scroll-cue]')) {
     const binding = bindings.has(root) ? undefined : bindScrollCue(root)
 
     if (binding) added.push(binding)
@@ -190,7 +192,7 @@ export const initScrollCues = (scope: ParentNode): void => {
 export const refreshScrollCues = (scope: ParentNode): void => {
   const cues: ScrollCueBinding[] = []
 
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-scroll-cue]')) {
+  for (const root of queryScope(scope, '[data-ui-scroll-cue]')) {
     const binding = bindings.get(root)
 
     if (binding) cues.push(binding)

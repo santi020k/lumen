@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const bindTours = (root: HTMLElement): void => {
   if (root.dataset.uiBound === 'true') return
 
@@ -83,5 +85,5 @@ const bindTours = (root: HTMLElement): void => {
 }
 
 export const initTours = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tour]')) bindTours(root)
+  for (const root of queryScope(scope, '[data-ui-tour]')) bindTours(root)
 }

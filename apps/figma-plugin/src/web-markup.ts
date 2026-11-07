@@ -18,7 +18,7 @@ export const webMarkup = (platform: WebPlatform, add: (...names: string[]) => vo
     add(name)
 
     if (name === 'CardTitle') {
-      if (react) attributes += ' as="h2"'
+      if (!elements) attributes += ' as="h2"'
 
       if (elements) attributes += ' role="heading" aria-level="2"'
     }

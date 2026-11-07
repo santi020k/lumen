@@ -1,7 +1,9 @@
+import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { gzipSync } from 'node:zlib'
 
 import { build } from 'esbuild'
 
@@ -34,15 +36,33 @@ const verifiedAdapter = async (platform, pkg, legacy, expected) => {
   return adapter
 }
 
-export const verifyWebConsumers = async ({ version, root, fixture, selection, analyzeSelection, linkDependency }) => {
+const checkStaticExport = async (compiled, result, react, out) => {
+  const catalog = Object.keys(compiled.metafile.inputs)
+    .filter(path => /(?:lumen-|packages\/)(?:react|elements)\/dist\/(?:index|define)\.js$/u.test(path))
+
+  assert.deepEqual(catalog, [], 'Static exports must avoid the adapter catalog.')
+
+  if (react) assert(!result.code.includes('use client'), 'Static React exports must remain server-compatible.')
+  else {
+    const bytes = gzipSync(await readFile(join(out, 'app.js')), { level: 9 }).length
+
+    assert(bytes < 12_000, `Static Elements export exceeds its JavaScript budget: ${bytes} gzip bytes.`)
+
+    console.log(`Static Elements export: ${bytes} gzip JavaScript bytes.`)
+  }
+}
+
+export const verifyWebConsumers = async ({
+  version, root, fixture, selection, analyzeSelection, linkDependency, scenario
+}) => {
   for (const platform of ['react', 'elements']) {
     const legacy = version === '4.4.0'
     const pkg = `@santi020k/lumen-${platform}`
     const expected = legacy ? '4.3.0' : '5.0.0'
     const adapter = await verifiedAdapter(platform, pkg, legacy, expected)
-    const consumer = join(fixture, 'consumers', platform)
+    const consumer = join(fixture, 'consumers', platform, scenario)
     const modules = join(consumer, 'node_modules')
-    const out = join(fixture, 'dist', platform)
+    const out = join(fixture, 'dist', platform, scenario)
 
     await mkdir(out, { recursive: true })
 
@@ -73,7 +93,9 @@ createRoot(root).render(<LumenSelection />)
 
     await typecheck(consumer)
 
-    await build({ absWorkingDir: consumer, entryPoints: [entry], outfile: join(out, 'app.js'), bundle: true, format: 'esm', jsx: 'automatic', define: { 'process.env.NODE_ENV': '"production"' } })
+    const compiled = await build({ absWorkingDir: consumer, entryPoints: [entry], outfile: join(out, 'app.js'), bundle: true, format: 'esm', jsx: 'automatic', minify: scenario === 'static', metafile: true, define: { 'process.env.NODE_ENV': '"production"' } })
+
+    if (scenario === 'static') await checkStaticExport(compiled, result, react, out)
 
     await writeFile(join(out, 'index.html'), `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lumen ${platform} consumer</title><link rel="stylesheet" href="./app.css"></head><body><main>${react ? '<div id="root"></div>' : result.code}</main><script type="module" src="./app.js"></script></body></html>`)
 

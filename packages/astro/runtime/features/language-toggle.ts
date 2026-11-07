@@ -1,5 +1,7 @@
 import { formatLumenLanguageLabel, getLumenLocalePair, type LumenLocaleOption, normalizeLumenLocales } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 const isUnknownArray = (value: unknown): value is unknown[] => Array.isArray(value)
 
 const parseLanguageToggleLocales = (value: string | undefined): readonly LumenLocaleOption[] => {
@@ -107,5 +109,5 @@ const bindLanguageToggles = (control: HTMLButtonElement): void => {
 }
 
 export const initLanguageToggles = (scope: ParentNode): void => {
-  for (const control of scope.querySelectorAll<HTMLButtonElement>('[data-ui-language-toggle]')) bindLanguageToggles(control)
+  for (const control of queryScope(scope, '[data-ui-language-toggle]', 'button')) bindLanguageToggles(control)
 }

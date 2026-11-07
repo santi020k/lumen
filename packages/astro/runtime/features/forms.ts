@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 // cspell:words spinbutton
 import { nextRuntimeId } from './shared.js'
 
@@ -174,7 +176,7 @@ const bindFields = (root: HTMLElement): void => {
 }
 
 export const initFields = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('.ui-field, [data-ui-field]')) bindFields(root)
+  for (const root of queryScope(scope, '.ui-field, [data-ui-field]')) bindFields(root)
 }
 
 const formValidationDocuments = new WeakSet<Document>()
@@ -288,5 +290,5 @@ const bindForms = (form: HTMLFormElement): void => {
 }
 
 export const initForms = (scope: ParentNode): void => {
-  for (const form of scope.querySelectorAll<HTMLFormElement>('form[data-ui-form]')) bindForms(form)
+  for (const form of queryScope(scope, 'form[data-ui-form]', 'form')) bindForms(form)
 }

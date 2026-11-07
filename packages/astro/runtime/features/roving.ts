@@ -1,5 +1,7 @@
 import { getLumenDirectionalKey } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 import { getLoopedIndex } from './shared.js'
 
 export const initRovingGroups = (scope: ParentNode): void => {
@@ -10,7 +12,7 @@ export const initRovingGroups = (scope: ParentNode): void => {
     '[data-ui-toolbar]'
   ].join(', ')
 
-  for (const root of scope.querySelectorAll<HTMLElement>(groupSelector)) {
+  for (const root of queryScope(scope, groupSelector)) {
     if (root.dataset.uiBound === 'true') continue
 
     root.dataset.uiBound = 'true'

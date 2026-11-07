@@ -561,6 +561,11 @@ media loading, selection, adjustment algorithms, processing, export and persiste
 
 ## Resources
 
+The `@santi020k/lumen-core/component-delivery` entry provides `componentDeliveryEntries`,
+`getComponentEntry`, `componentCssName`, and `reactServerComponents` for tooling that generates
+adapter imports. The CLI and Figma exporter share this metadata. Entries describe verified exports
+in this release. A missing selective entry requires a catalog fallback.
+
 | Guide | What you will find |
 | --- | --- |
 | [Cross-platform architecture](https://github.com/santi020k/lumen/blob/main/docs/cross-platform.md) | Shared foundations, adapter boundaries, and support tiers. |

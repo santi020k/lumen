@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Share selective component delivery and React server export metadata through the component-delivery entry for CLI and Figma tooling.
+
 - Resolve built-in appearance presets against the nearest named or explicit light/dark boundary while retaining scheme-specific shadows and optional CSS delivery.
 
 - Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.

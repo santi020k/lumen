@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { getLoopedIndex, isOwnedByAnotherAdapter } from './shared.js'
 
 export const closeSelect = (root: HTMLElement): void => {
@@ -365,5 +367,5 @@ const bindSelects = (root: HTMLElement): void => {
 }
 
 export const initSelects = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-select]')) bindSelects(root)
+  for (const root of queryScope(scope, '[data-ui-select]')) bindSelects(root)
 }

@@ -659,6 +659,9 @@ importers:
 
   apps/figma-plugin:
     dependencies:
+      '@santi020k/lumen-core':
+        specifier: workspace:^
+        version: link:../../packages/core
       '@santi020k/lumen-react':
         specifier: workspace:^
         version: link:../../packages/react

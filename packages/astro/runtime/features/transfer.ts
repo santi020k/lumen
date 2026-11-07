@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const bindTransfers = (root: HTMLElement): void => {
   if (root.dataset.uiBound === 'true') return
 
@@ -53,5 +55,5 @@ const bindTransfers = (root: HTMLElement): void => {
 }
 
 export const initTransfers = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-transfer]')) bindTransfers(root)
+  for (const root of queryScope(scope, '[data-ui-transfer]')) bindTransfers(root)
 }

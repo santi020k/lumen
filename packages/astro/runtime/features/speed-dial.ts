@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { getLoopedIndex } from './shared.js'
 
 export const closeSpeedDial = (root: HTMLElement, restoreFocus = false): void => {
@@ -102,5 +104,5 @@ const bindSpeedDials = (root: HTMLElement): void => {
 }
 
 export const initSpeedDials = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-speed-dial]')) bindSpeedDials(root)
+  for (const root of queryScope(scope, '[data-ui-speed-dial]')) bindSpeedDials(root)
 }

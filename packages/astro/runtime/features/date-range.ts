@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const getRangeState = (start: string, end: string): string => {
   if (start && end) return 'complete'
 
@@ -51,5 +53,5 @@ const bindDateRangePickers = (root: HTMLElement): void => {
 }
 
 export const initDateRangePickers = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-date-range-picker]')) bindDateRangePickers(root)
+  for (const root of queryScope(scope, '[data-ui-date-range-picker]')) bindDateRangePickers(root)
 }
