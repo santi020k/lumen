@@ -180,7 +180,7 @@ catalog does not require user authentication.
 | `lumen_diagnose` | Verify snapshot integrity and report web framework plus native platform coverage when testing a connection. |
 | `lumen_get_tokens` | Return canonical spacing dimensions and role aliases, semantic colors, glass tokens, and the theme attribute. |
 | `lumen_check_compatibility` | Compare resolved installed Lumen versions with the catalog; report mismatches without upgrading. |
-| `lumen_get_migration` | Read v4 (default) or explicit `targetVersion: "5.0.0"` contracts, separating compatibility reviews from optional adoption without changing files. |
+| `lumen_get_migration` | Read the bundled release's migration contract by default (v5 here), or explicitly select `targetVersion: "4.0.0"` or `"5.0.0"`. Separate compatibility reviews from optional adoption without changing files. |
 | `lumen_get_rules` | Return the Lumen agent rules from `llms.txt`. |
 
 Every tool returns both readable text and validated `structuredContent`.

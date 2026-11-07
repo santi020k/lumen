@@ -213,7 +213,8 @@ wrappers. Both client manifests carry version 1.1.0. The local stdio configurati
 The candidate includes three skills (build, review, migration), fourteen read-only catalog tools,
 and an optional read-only Claude reviewer. It adds installed-version compatibility checks, v4 and v5
 migration discovery, concrete nested schemas, and English/Spanish search. Request
-`lumen_get_migration` with `targetVersion: "5.0.0"` for v5; its default remains v4. No hooks or new credentials
+`lumen_get_migration` with `targetVersion: "5.0.0"` for v5 or `"4.0.0"` for v4; the default follows
+the bundled release manifest (v5 in this candidate). No hooks or new credentials
 are required. The published 1.0.0 record above describes the previous release.
 
 Before submission, rerun strict schema/package validation, the actual agent benchmarks in
