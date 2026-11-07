@@ -9,7 +9,8 @@ import type { createReview } from './review.js'
 import type { NativePlatform } from './targets.js'
 
 // Only these observed library identities have native translations.
-export const nativeComponents = ['Button', 'Card', 'Badge', 'Input', 'Field', 'Stack', 'CardTitle', 'CardDescription', 'Eyebrow', 'Label', 'Checkbox', 'Progress'] as const satisfies readonly (ComponentName | NativeControl)[]
+type NativeComponent = 'Button' | 'Card' | 'Badge' | 'Input' | 'Field' | 'Stack' |
+  'CardTitle' | 'CardDescription' | 'Eyebrow' | 'Label' | 'Checkbox' | 'Progress'
 
 type Size = 'sm' | 'md' | 'lg'
 
@@ -262,7 +263,7 @@ export const nativeDesign = (selection: DesignNode, platform: NativePlatform, { 
       CardTitle: (n: DesignNode) => nativeText(n, 'title'),
       CardDescription: (n: DesignNode) => nativeText(n, 'body'),
       Eyebrow: (n: DesignNode) => nativeText(n, 'label')
-    } satisfies Record<Exclude<typeof nativeComponents[number], 'Field' | 'Input' | NativeControl>, Reader>
+    } satisfies Record<Exclude<NativeComponent, 'Field' | 'Input' | NativeControl>, Reader>
 
     if (!hasKey(renderers, component)) {
       issue(node, `${component} is a known Lumen component, but this target has no verified export for it.`, 'unsupported')
