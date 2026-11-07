@@ -1,4 +1,5 @@
 import { bindListBoxProxy } from '../controllers/list-box-proxy'
+import { queryScope } from '../scope.js'
 
 import { isOwnedByAnotherAdapter, nextRuntimeId } from './shared.js'
 
@@ -196,7 +197,7 @@ const bindListBoxes = (root: HTMLElement): void => {
 }
 
 export const initListBoxes = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-list-box]')) {
+  for (const root of queryScope(scope, '[data-ui-list-box]')) {
     listBoxResyncs.get(root)?.()
 
     bindListBoxes(root)

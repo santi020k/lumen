@@ -1,5 +1,7 @@
 import { getLumenDirectionalKey, parseLumenDate as parseCalendarDate } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 import { addCalendarDays, addCalendarMonths, compareCalendarDates, formatCalendarDate, formatCalendarMonth, getCalendarMax, getCalendarMin, isCalendarDateDisabled, isCalendarDisabled, isCalendarReadOnly, parseCalendarMonth, renderCalendar } from './calendar-shared.js'
 import { isOwnedByAnotherAdapter } from './shared.js'
 
@@ -193,5 +195,5 @@ const bindCalendars = (root: HTMLElement): void => {
 }
 
 export const initCalendars = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-calendar]')) bindCalendars(root)
+  for (const root of queryScope(scope, '[data-ui-calendar]')) bindCalendars(root)
 }

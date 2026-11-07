@@ -1,5 +1,7 @@
 import { createLumenChartActivationController } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 const controllers = new Map<HTMLElement, ReturnType<typeof createLumenChartActivationController>>()
 
 export const initChartActivationControllers = (scope: ParentNode): void => {
@@ -13,7 +15,7 @@ export const initChartActivationControllers = (scope: ParentNode): void => {
     controllers.delete(root)
   }
 
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-chart-activation]:not([data-ui-chart-adapter="react"]):not([data-ui-chart-adapter="elements"])')) {
+  for (const root of queryScope(scope, '[data-ui-chart-activation]:not([data-ui-chart-adapter="react"]):not([data-ui-chart-adapter="elements"])')) {
     if (!controllers.has(root)) {
       controllers.set(root, createLumenChartActivationController(root))
 

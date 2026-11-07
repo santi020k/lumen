@@ -684,6 +684,10 @@
           "import": "./dist/code.js",
           "types": "./dist/code.d.ts"
         },
+        "./component-delivery": {
+          "import": "./dist/component-delivery.js",
+          "types": "./dist/component-delivery.d.ts"
+        },
         "./components": {
           "import": "./dist/components.js",
           "types": "./dist/components.d.ts"

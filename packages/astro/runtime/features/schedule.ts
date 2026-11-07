@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const bindSchedules = (root: HTMLElement): void => {
   if (root.dataset.uiBound === 'true') return
 
@@ -59,5 +61,5 @@ const bindSchedules = (root: HTMLElement): void => {
 }
 
 export const initSchedules = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-schedule]')) bindSchedules(root)
+  for (const root of queryScope(scope, '[data-ui-schedule]')) bindSchedules(root)
 }

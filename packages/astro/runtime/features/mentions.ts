@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { getLoopedIndex } from './shared.js'
 
 const bindMentions = (root: HTMLElement): void => {
@@ -133,5 +135,5 @@ const bindMentions = (root: HTMLElement): void => {
 }
 
 export const initMentions = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-mentions]')) bindMentions(root)
+  for (const root of queryScope(scope, '[data-ui-mentions]')) bindMentions(root)
 }

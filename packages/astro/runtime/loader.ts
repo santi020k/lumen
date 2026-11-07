@@ -1,5 +1,6 @@
 import type { ToastApi } from './features/toast.js'
 import { runtimeFeatures } from './features.js'
+import { matchesScope } from './scope.js'
 import type { LumenRuntimeController, LumenRuntimeDismissal, LumenRuntimeFeature } from './types.js'
 
 const loaded = new Map<LumenRuntimeFeature, LumenRuntimeController>()
@@ -41,30 +42,34 @@ const loadFeature = (feature: LumenRuntimeFeature): Promise<LumenRuntimeControll
   return request
 }
 
-const matchesScope = (scope: ParentNode, selector: string): boolean => (
-  (scope instanceof Element && scope.matches(selector)) || scope.querySelector(selector) !== null
-)
+interface FeatureRequest {
+  feature: LumenRuntimeFeature
+  scope: ParentNode
+}
 
-const initializeFeatures = async (features: readonly LumenRuntimeFeature[], scope: ParentNode): Promise<void> => {
+const initializeFeatures = async (requests: readonly FeatureRequest[]): Promise<void> => {
   const revision = navigation
-  const results = await Promise.allSettled(features.map(loadFeature))
+
+  const results = await Promise.allSettled(requests.map(async ({ feature, scope }) => ({
+    controller: await loadFeature(feature), name: feature.name, scope
+  })))
 
   if (revision !== navigation) return
 
-  // Existing controllers inspect descendants; include an explicitly enhanced root as well.
-  const container = scope instanceof Element ? scope.parentNode ?? scope : scope
   const errors: unknown[] = []
 
-  for (const [index, result] of results.entries()) {
+  for (const result of results) {
     if (result.status === 'rejected') {
       errors.push(result.reason)
 
       continue
     }
 
-    result.value.init(container)
+    const { controller, name, scope } = result.value
 
-    if (features[index]?.name === 'toast') toastReady = true
+    controller.init(scope)
+
+    if (name === 'toast') toastReady = true
   }
 
   if (errors.length) throw new AggregateError(errors, 'Unable to load one or more Lumen controllers.')
@@ -75,7 +80,7 @@ export const initUiPrimitives = async (scope: ParentNode = document): Promise<vo
   const revision = navigation
   const features = runtimeFeatures.filter(feature => matchesScope(scope, feature.selector))
 
-  await initializeFeatures(features, scope)
+  await initializeFeatures(features.map(feature => ({ feature, scope })))
 
   if (revision === navigation) document.dispatchEvent(new CustomEvent('ui:ready', { detail: { scope } }))
 }
@@ -176,7 +181,7 @@ const replayedEvents = new WeakSet<Event>()
 const replayAfterLoad = (
   event: MouseEvent | KeyboardEvent,
   trigger: HTMLElement,
-  features: LumenRuntimeFeature[]
+  requests: FeatureRequest[]
 ): void => {
   event.preventDefault()
 
@@ -184,7 +189,7 @@ const replayAfterLoad = (
 
   const revision = navigation
 
-  void initializeFeatures(features, document).then(() => {
+  void initializeFeatures(requests).then(() => {
     if (revision === navigation && trigger.isConnected) {
       const replay = event instanceof KeyboardEvent ?
         new KeyboardEvent(event.type, event) :
@@ -202,12 +207,17 @@ const replayAfterLoad = (
 const prepareInteraction = (event: MouseEvent | KeyboardEvent, trigger: HTMLElement): void => {
   if (trigger.closest('[data-ui-owner]')) return
 
-  const needed = runtimeFeatures.filter(feature => trigger.closest(feature.selector) !== null)
+  const needed = runtimeFeatures.flatMap(feature => {
+    const scope = (feature.interactionRoot && trigger.closest(feature.interactionRoot)) ||
+      trigger.closest(feature.selector)
+
+    return scope ? [{ feature, scope }] : []
+  })
 
   if (!needed.length) return
 
-  if (needed.every(feature => loaded.has(feature))) {
-    for (const feature of needed) loaded.get(feature)?.init(document)
+  if (needed.every(({ feature }) => loaded.has(feature))) {
+    for (const { feature, scope } of needed) loaded.get(feature)?.init(scope)
 
     return
   }

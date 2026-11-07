@@ -1,6 +1,78 @@
 import assert from 'node:assert/strict'
 
 /** @param {import('@playwright/test').Browser} browser @param {string} origin */
+export const checkScopedInitialization = async (browser, origin) => {
+  const page = await browser.newPage()
+  const errors = []
+
+  page.on('pageerror', error => errors.push(error.message))
+
+  await page.goto(`${origin}/static-runtime/`)
+
+  await page.waitForLoadState('networkidle')
+
+  const state = await page.evaluate(async () => {
+    const toggle = document.createElement('button')
+
+    toggle.setAttribute('data-ui-toggle', '')
+
+    toggle.setAttribute('aria-pressed', 'false')
+
+    toggle.textContent = 'First scoped toggle'
+
+    await window.LumenInitUiPrimitives(toggle)
+
+    toggle.click()
+
+    const detached = toggle.getAttribute('aria-pressed')
+    const sibling = document.createElement('button')
+
+    sibling.setAttribute('data-ui-toggle', '')
+
+    sibling.setAttribute('aria-pressed', 'false')
+
+    sibling.textContent = 'Second scoped toggle'
+
+    document.body.append(toggle, sibling)
+
+    await window.LumenInitUiPrimitives(toggle)
+
+    toggle.click()
+
+    return { detached, first: toggle.getAttribute('aria-pressed'), sibling: sibling.dataset.uiBound ?? null }
+  })
+
+  assert.deepEqual(state, { detached: 'true', first: 'false', sibling: null })
+
+  await page.getByRole('button', { name: 'Second scoped toggle' }).click()
+
+  assert.equal(await page.getByRole('button', { name: 'Second scoped toggle' }).getAttribute('aria-pressed'), 'true')
+
+  await page.evaluate(() => {
+    document.body.insertAdjacentHTML('beforeend', '<button data-ui-dialog-trigger="scoped-dialog">Open dynamic dialog</button><dialog id="scoped-dialog" data-ui-dialog aria-label="Dynamic dialog"><button data-ui-dialog-close>Close dynamic dialog</button></dialog>')
+  })
+
+  const trigger = page.getByRole('button', { name: 'Open dynamic dialog' })
+  const dialog = page.getByRole('dialog', { name: 'Dynamic dialog' })
+
+  await trigger.click()
+
+  await dialog.waitFor({ state: 'visible' })
+
+  assert.equal(await dialog.getAttribute('aria-modal'), 'true')
+
+  await page.getByRole('button', { name: 'Close dynamic dialog' }).click()
+
+  await dialog.waitFor({ state: 'hidden' })
+
+  await page.waitForFunction(() => document.activeElement?.textContent === 'Open dynamic dialog')
+
+  assert.deepEqual(errors, [])
+
+  await page.close()
+}
+
+/** @param {import('@playwright/test').Browser} browser @param {string} origin */
 export const checkDialogViewport = async (browser, origin) => {
   for (const width of [390, 1280]) {
     const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' })

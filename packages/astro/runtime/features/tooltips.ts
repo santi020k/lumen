@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { nextAnchorName, nextRuntimeId, supportsAnchoredPopovers } from './shared.js'
 
 const bindTooltips = (root: HTMLElement): void => {
@@ -111,5 +113,5 @@ const bindTooltips = (root: HTMLElement): void => {
 }
 
 export const initTooltips = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('.ui-tooltip, [data-ui-tooltip]')) bindTooltips(root)
+  for (const root of queryScope(scope, '.ui-tooltip, [data-ui-tooltip]')) bindTooltips(root)
 }

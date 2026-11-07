@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { setOpen } from './shared.js'
 
 const bindTreeSelects = (root: HTMLElement): void => {
@@ -32,5 +34,5 @@ const bindTreeSelects = (root: HTMLElement): void => {
 }
 
 export const initTreeSelects = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tree-select]')) bindTreeSelects(root)
+  for (const root of queryScope(scope, '[data-ui-tree-select]')) bindTreeSelects(root)
 }

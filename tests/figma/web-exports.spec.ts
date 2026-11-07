@@ -1,5 +1,26 @@
 import { expect, test } from '@playwright/test'
 
+for (const platform of ['astro', 'react', 'elements'] as const) {
+  test(`static ${platform} export renders at mobile and desktop sizes`, async ({ page }) => {
+    const errors: string[] = []
+    page.on('pageerror', error => errors.push(error.message))
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto(`http://127.0.0.1:4762/${platform === 'astro' ? '' : platform + '/'}static/`)
+      await expect(page.getByRole('heading', { name: 'Static card' })).toBeVisible()
+      await expect(page.getByText('Static content')).toBeVisible()
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+      if (platform === 'astro') expect(await page.locator('script').count()).toBe(0)
+      if (platform === 'elements') {
+        expect(await page.locator('lumen-card, lumen-card *').evaluateAll(nodes => nodes
+          .filter(node => node.localName.startsWith('lumen-') && !node.matches(':defined'))
+          .map(node => node.localName))).toEqual([])
+      }
+    }
+    expect(errors).toEqual([])
+  })
+}
+
 for (const platform of ['react', 'elements'] as const) {
   for (const [version, port] of [['5.0.0', 4762], ['4.4.0', 4763]] as const) {
     test(`generated ${platform} export works with Lumen ${version}`, async ({ page }) => {

@@ -1,4 +1,5 @@
 import { initDataTableSorting } from '../controllers/data-table'
+import { queryScope } from '../scope.js'
 
 const getDataTableRows = (table: HTMLTableElement): HTMLTableRowElement[] => [
   ...(table.tBodies[0]?.rows ?? [])
@@ -163,5 +164,5 @@ const bindDataTables = (root: HTMLElement): void => {
 }
 
 export const initDataTables = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-datatable]')) bindDataTables(root)
+  for (const root of queryScope(scope, '[data-ui-datatable]')) bindDataTables(root)
 }
