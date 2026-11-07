@@ -22,7 +22,7 @@ for (const width of [390, 1440]) {
 
         expect(dimensions.content).toBeLessThanOrEqual(dimensions.available + 1)
         await expect(page.getByRole('table', { name: 'API reference', exact: true })).toBeVisible()
-        await expect(page.getByRole('group', { name: 'API reference', exact: true }).and(page.locator('[tabindex]')))
+        await expect(page.getByRole('region', { name: 'API reference', exact: true }).and(page.locator('[tabindex]')))
           .toHaveAttribute('tabindex', '0')
       })
     }
@@ -54,7 +54,7 @@ test('lets keyboard users scroll the API reference on a phone', async ({ page })
   await page.setViewportSize({ height: 900, width: 390 })
   await page.goto('/docs/components/input')
 
-  const table = page.getByRole('group', { name: 'API reference', exact: true }).and(page.locator('[tabindex]'))
+  const table = page.getByRole('region', { name: 'API reference', exact: true }).and(page.locator('[tabindex]'))
 
   await table.focus()
   await page.keyboard.press('ArrowRight')

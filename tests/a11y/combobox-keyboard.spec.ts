@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test'
 
+import { openPreview } from './open-preview.js'
+
 for (const width of [390, 1440]) {
   test(`Combobox keeps editing focus during option navigation at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 })
-    await page.goto('/docs/components/combobox')
+    await openPreview(page, 'combobox')
     const input = page.locator('.component-doc-preview input[role="combobox"]')
 
     await input.fill('rea')
@@ -24,7 +26,7 @@ for (const width of [390, 1440]) {
 }
 
 test('Combobox ignores composing keys and follows options added after initialization', async ({ page }) => {
-  await page.goto('/docs/components/combobox')
+  await openPreview(page, 'combobox')
   const root = page.locator('.component-doc-preview [data-ui-combobox]')
   const input = root.locator('input')
 
@@ -51,7 +53,7 @@ test('Combobox ignores composing keys and follows options added after initializa
 })
 
 test('Escape closes a Combobox before its containing dialog', async ({ page }) => {
-  await page.goto('/docs/components/combobox')
+  await openPreview(page, 'combobox')
   const root = page.locator('.component-doc-preview [data-ui-combobox]')
 
   await root.evaluate(element => {
@@ -74,7 +76,7 @@ test('Escape closes a Combobox before its containing dialog', async ({ page }) =
 })
 
 test('nested disclosures consume Escape once from either the trigger or the panel', async ({ page }) => {
-  await page.goto('/docs/components/combobox')
+  await openPreview(page, 'combobox')
   const root = page.locator('.component-doc-preview [data-ui-combobox]')
 
   await root.evaluate(async element => {
@@ -124,7 +126,7 @@ test('nested disclosures consume Escape once from either the trigger or the pane
 for (const width of [390, 1440]) {
   test(`Combobox selection preserves form and hidden options at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 })
-    await page.goto('/docs/components/combobox')
+    await openPreview(page, 'combobox')
     const root = page.locator('.component-doc-preview [data-ui-combobox]')
 
     await root.evaluate(element => {
@@ -164,7 +166,7 @@ for (const width of [390, 1440]) {
 }
 
 test('Combobox respects disabled fieldset ancestors and the first legend exception', async ({ page }) => {
-  await page.goto('/docs/components/combobox')
+  await openPreview(page, 'combobox')
   const root = page.locator('.component-doc-preview [data-ui-combobox]')
 
   await root.evaluate(element => {
@@ -204,7 +206,7 @@ test('Combobox respects disabled fieldset ancestors and the first legend excepti
 })
 
 test('Combobox observes form resets and disabled ancestors inside shadow DOM', async ({ page }) => {
-  await page.goto('/docs/components/combobox')
+  await openPreview(page, 'combobox')
   await page.locator('.component-doc-preview [data-ui-combobox]').evaluate(async element => {
     const host = document.createElement('div')
 
