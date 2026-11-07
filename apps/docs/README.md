@@ -20,7 +20,8 @@ workspace packages. This is the reference app for component behavior, theming, a
 
 ## Run locally
 
-Use Node.js 22.22.2+, 24.15.0+, or 26+ and the pnpm version pinned in the root manifest.
+Use Node.js 22.23.4+, 24.15.0+, or 26+ and the pnpm version pinned in the root manifest,
+following the [workspace setup requirements](../../CONTRIBUTING.md#local-setup).
 From the repository root:
 
 ```bash
@@ -51,6 +52,37 @@ Use the public Lumen primitive whenever an equivalent exists. Keep a working pre
 copyable example. Update navigation and search metadata with new routes; follow the
 [documentation contribution guide](../../CONTRIBUTING.md#documentation-and-guides).
 
+## Code examples
+
+`CodeBlock` composes the public editorial `Code` appearance with themed Shiki output. It
+previews the first 12 lines when an example exceeds 24 lines, using public `Collapsible` for a
+keyboard-accessible disclosure that works without JavaScript. Set `collapsible={false}` when
+an example needs to stay fully visible. Copying always uses the original complete source,
+independently of the preview, line numbers, and active syntax theme. If clipboard access fails,
+a selectable recovery field exposes the complete source without expanding or switching themes. Overflow hints appear only
+when horizontal scrolling is needed; printing expands the complete example.
+
+These patterns come from the santi020k v5 website. Shared Code owns the wrapping headers,
+stable touch targets, optional editorial presentation, localized clipboard feedback, and print
+styles. Preview thresholds and line numbers remain docs policy. Site branding and article-specific
+features stay with their application rather than becoming component defaults.
+
+## Reference tables
+
+`DocsReferenceTable` uses the public `Table` sticky first-column option to keep row identifiers
+visible during native horizontal scrolling. It retains native table headers and a named keyboard
+region, shows the overflow hint only when needed, follows RTL direction, and releases the pinned
+column for enlarged text and print output. The behavior comes from the santi020k v5 comparison
+tables; the library owns positioning while the docs retain their typography and column sizing.
+
+## Editorial reading surfaces
+
+Migration and theme guides opt into the public `Prose` editorial appearance. The editorial article
+guide demonstrates native quotations and figures with public Image, Code, Table, and Link
+components. Keep authored IDs, inline markup, captions, and citations in the document; avoid
+renderer-specific rewrites for a visual treatment. `--ui-prose-measure` controls paragraph width
+without narrowing technical examples or media. Code and chart figures retain their own contracts.
+
 ## Validate and build
 
 Run these commands from the repository root:
@@ -74,6 +106,25 @@ and release highlights invalidate cached HTML.
 For visual changes, run `pnpm run test:visual` and the affected interaction/accessibility suites.
 Check mobile and desktop, light and dark themes, keyboard navigation, and reduced motion.
 Use `pnpm run check:docs-performance` for the documented Lighthouse budgets.
+
+### SEO maintenance
+
+1. Review the Lumen Search Console property before choosing pages to improve. Compare equal
+   reporting periods and inspect queries and landing pages together; separate branded searches
+   from framework and component searches. Keep account reports out of this public repository.
+2. Check indexing reasons and representative URLs. Redirects, intentional `noindex` pages, and
+   canonical alternatives are expected exclusions. Confirm the sitemap's last successful read,
+   canonical destinations, and HTTP status before changing URLs or requesting validation.
+3. Write concise titles that identify the component or task. Describe the actual page content,
+   framework, and examples; preserve useful content and stable URLs. Social cards are generated
+   from the same metadata. Follow Google's [title guidance](https://developers.google.com/search/docs/appearance/title-link).
+4. Run the checks above. The SEO audit validates metadata, sitemap coverage, social cards, and
+   links in navigation, documentation content, and search results. Live component previews use
+   explicit preview containers so example destinations are excluded from site-link checks.
+5. After an authorized deployment, check canonical URLs, redirects, sitemap responses, and a
+   real 404 on the live site. Inspect priority pages in Search Console and compare clicks,
+   impressions, CTR, and query positions after a few weeks. Record the deployment date and
+   reporting windows; a passing local audit does not establish indexing or ranking gains.
 
 ## Preview assets and deployment
 

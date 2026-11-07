@@ -1,6 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
+import '../styles/foundation.css'
+import '../styles/components/segmented.css'
+
 import { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 type SegmentedOption = string | { disabled?: boolean, label: string, value: string }

@@ -1,0 +1,138 @@
+---
+import Button from '@santi020k/lumen-astro/components/Button'
+import Dialog from '@santi020k/lumen-astro/components/Dialog'
+import DialogClose from '@santi020k/lumen-astro/components/DialogClose'
+import DialogHeader from '@santi020k/lumen-astro/components/DialogHeader'
+import DialogTitle from '@santi020k/lumen-astro/components/DialogTitle'
+import Link from '@santi020k/lumen-astro/components/Link'
+import NavigationMenu from '@santi020k/lumen-astro/components/NavigationMenu'
+
+interface Props {
+  id: string
+  home: { label: string, href: string }
+  links: readonly { label: string, href: string, current?: boolean }[]
+  labels: { navigation: string, open: string, close: string }
+  presentation?: 'dialog' | 'disclosure'
+}
+
+const { id, home, links, labels, presentation = 'dialog' } = Astro.props
+---
+<lumen-recipe-navigation>
+  <header>
+    <Link href={home.href} data-navigation-home>{home.label}</Link>
+    <NavigationMenu class="desktop-links" aria-label={labels.navigation}>
+      {links.map(link => <Link href={link.href} aria-current={link.current ? 'page' : undefined}>{link.label}</Link>)}
+    </NavigationMenu>
+    {presentation === 'dialog' ?
+(
+<>
+      <Button hidden class="mobile-opener" data-ui-dialog-trigger={`${id}-menu`} aria-controls={`${id}-menu`} aria-haspopup="dialog">{labels.open}</Button>
+      <Dialog id={`${id}-menu`} aria-labelledby={`${id}-title`}>
+        <DialogHeader>
+          <DialogTitle id={`${id}-title`}>{labels.navigation}</DialogTitle>
+          <DialogClose>{labels.close}</DialogClose>
+        </DialogHeader>
+        <NavigationMenu aria-label={labels.navigation}>
+          {links.map(link => <Link href={link.href} aria-current={link.current ? 'page' : undefined}>{link.label}</Link>)}
+        </NavigationMenu>
+      </Dialog>
+      <NavigationMenu class="mobile-fallback" aria-label={labels.navigation}>
+        {links.map(link => <Link href={link.href} aria-current={link.current ? 'page' : undefined}>{link.label}</Link>)}
+      </NavigationMenu>
+    </>
+) :
+(
+<details class="mobile-disclosure">
+      <summary>{labels.open}</summary>
+      <NavigationMenu aria-label={labels.navigation}>
+        {links.map(link => <Link href={link.href} aria-current={link.current ? 'page' : undefined}>{link.label}</Link>)}
+      </NavigationMenu>
+    </details>
+)}
+  </header>
+</lumen-recipe-navigation>
+<script>
+  class ResponsiveNavigation extends HTMLElement {
+    connectedCallback() {
+      const lifetime = new AbortController()
+
+      this.dispose?.()
+
+      this.dispose = () => lifetime.abort()
+
+      this.querySelector('.mobile-opener')?.removeAttribute('hidden')
+
+      this.querySelector('.mobile-fallback')?.setAttribute('hidden', '')
+
+      const desktop = matchMedia('(min-width: 48rem)')
+      const dialog = this.querySelector('dialog')
+      const disclosure = this.querySelector('details')
+      const home = this.querySelector<HTMLAnchorElement>('[data-navigation-home]')
+
+      const close = (restore: boolean) => {
+        const open = dialog?.open || disclosure?.open
+
+        dialog?.close()
+
+        disclosure?.removeAttribute('open')
+
+        if (open && restore) requestAnimationFrame(() => {
+          if (this.isConnected) home?.focus()
+        })
+      }
+
+      desktop.addEventListener('change', () => {
+        if (desktop.matches) close(true)
+      }, { signal: lifetime.signal })
+
+      this.addEventListener('click', event => {
+        if (event.target instanceof Element && event.target.closest('a')) close(false)
+      }, { signal: lifetime.signal })
+
+      this.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && disclosure?.open) {
+          disclosure.open = false
+
+          disclosure.querySelector('summary')?.focus()
+        }
+      }, { signal: lifetime.signal })
+    }
+
+    private dispose?: () => void
+    disconnectedCallback() {
+      this.dispose?.()
+    }
+  }
+
+  if (!customElements.get('lumen-recipe-navigation')) customElements.define('lumen-recipe-navigation', ResponsiveNavigation)
+</script>
+<style>
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .desktop-links {
+    display: none;
+  }
+  summary {
+    cursor: pointer;
+    min-block-size: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+  summary:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+  @media (min-width: 48rem) {
+    .desktop-links {
+      display: flex;
+    }
+    .mobile-opener, .mobile-disclosure, .mobile-fallback {
+      display: none;
+    }
+  }
+</style>

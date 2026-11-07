@@ -34,6 +34,11 @@ individually. Keep foreground/background contrast valid in both light and dark m
 
 ## Composition Principles
 
+- The v5 selective foundation provides Lumen light and dark. From your web adapter, import
+  `styles/themes/paper.css` or `styles/themes/field.css` for the optional web reading palettes,
+  `styles/themes/studio.css` for Studio, `styles/themes/santi020k.css` for the docs palette and
+  branded Code, or `styles/effects/glass.css` for glass surfaces. Full `styles.css` includes every appearance.
+
 - For v4, choose `default`, `studio`, or `glass` through `data-lumen-preset` on a web theme
   boundary. Keep the light/dark scheme independent with `data-lumen-scheme`. Preset changes
   preserve application state. Retrieve the matching installed contract before using these

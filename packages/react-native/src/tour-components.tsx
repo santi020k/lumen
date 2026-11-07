@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, type RefObject, useEffect, useRef, useState } from 'react'
+import { type ComponentRef, type ReactElement, type ReactNode, type RefObject, useEffect, useRef, useState } from 'react'
 import { AccessibilityInfo, type HostInstance, Modal, Platform, Pressable, ScrollView, StyleSheet, type Text, useWindowDimensions, View, type ViewProps } from 'react-native'
 
 import { LumenButton, LumenText } from './primitives.js'
@@ -113,7 +113,7 @@ interface TourPanelProps {
   step: LumenTourStep | null
   status: string | null
   target: LumenTourRect | null
-  headingRef: RefObject<Text | null>
+  headingRef: RefObject<ComponentRef<typeof Text> | null>
   locked: boolean
   previous: number | null
   next: number | null
@@ -181,7 +181,7 @@ const TourScrim = ({ viewport, target, close }: TourScrimProps): ReactElement =>
 interface TourOverlayProps extends TourPanelProps {
   layout: LumenTourLayout | null
   viewport: LumenTourRect
-  modalRef: RefObject<View | null>
+  modalRef: RefObject<ComponentRef<typeof View> | null>
   onViewport: (rect: LumenTourRect) => void
   onOrigin: (origin: TourOrigin) => void
 }
@@ -241,12 +241,12 @@ const TourOverlay = ({
 
 export const LumenTour = (props: LumenTourProps): ReactElement => {
   const [viewport, setViewport] = useState<LumenTourRect>({ x: 0, y: 0, width: 0, height: 0 })
-  const rootRef = useRef<View | null>(null)
-  const modalRef = useRef<View | null>(null)
+  const rootRef = useRef<ComponentRef<typeof View> | null>(null)
+  const modalRef = useRef<ComponentRef<typeof View> | null>(null)
   const [origin, setOrigin] = useState<TourOrigin | null>(null)
   const [modalOrigin, setModalOrigin] = useState<TourOrigin | null>(null)
   const window = useWindowDimensions()
-  const headingRef = useRef<Text | null>(null)
+  const headingRef = useRef<ComponentRef<typeof Text> | null>(null)
   const wasOpenRef = useRef(false)
   const step = resolveLumenTourStep(props.steps, props.index)
   const status = tourStatus(props, step)

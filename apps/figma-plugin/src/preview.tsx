@@ -7,7 +7,7 @@ import { mountPanel } from './mount.js'
 let receive: ((message: PluginMessage) => void) | undefined
 
 mountPanel({
-  analyze: () => receive?.(resultMessage(analyzeSelection(settingsFixture))),
+  analyze: target => receive?.(resultMessage(analyzeSelection(settingsFixture, target))),
   subscribe: listener => {
     receive = listener
 

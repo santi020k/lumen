@@ -1,7 +1,7 @@
 import { type ReactElement, useState } from 'react'
 import { I18nManager, type ImageSourcePropType, View, type ViewProps, type ViewStyle } from 'react-native'
 
-import { formatLumenImageComparisonValue, type LumenImageComparisonMode, normalizeLumenImageComparisonMode } from '@santi020k/lumen-core'
+import { formatLumenImageComparisonValue, type LumenImageComparisonMode, normalizeLumenImageComparisonMode } from '@santi020k/lumen-core/image-comparison'
 
 import { LumenText } from './foundation-primitives.js'
 import { LumenImage, type LumenImageFit } from './media-components.js'

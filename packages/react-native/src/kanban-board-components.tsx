@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, useRef, useState } from 'react'
+import { type ComponentRef, type ReactElement, type ReactNode, useRef, useState } from 'react'
 import { PanResponder, ScrollView, View, type ViewProps } from 'react-native'
 
 import { type LumenKanbanCard, type LumenKanbanColumnData, LumenKanbanModel } from './kanban-recipes.js'
@@ -40,7 +40,7 @@ const contains = (bounds: BoardBounds, x: number, y: number): boolean => {
   return horizontal && vertical
 }
 
-const measure = (view: View | null, map: Map<string, BoardBounds>, id: string): void => {
+const measure = (view: ComponentRef<typeof View> | null, map: Map<string, BoardBounds>, id: string): void => {
   view?.measureInWindow((x, y, width, height) => map.set(id, { x, y, width, height }))
 }
 
@@ -48,7 +48,7 @@ const refresh = (layout: BoardLayout): void => {
   for (const update of layout.measures.values()) update()
 }
 
-const register = (view: View | null, layout: BoardLayout, kind: 'cards' | 'columns', id: string): void => {
+const register = (view: ComponentRef<typeof View> | null, layout: BoardLayout, kind: 'cards' | 'columns', id: string): void => {
   if (view === null) return
 
   const update = (): void => {
@@ -82,7 +82,7 @@ const BoardCard = ({ card, column, index, props, model, layout, blocked }: {
   blocked: boolean
 }): ReactElement => {
   const theme = useLumenTheme()
-  const ref = useRef<View>(null)
+  const ref = useRef<ComponentRef<typeof View>>(null)
   const [dragActive, setDragActive] = useState(false)
   const movable = !blocked && !card.disabled && !column.disabled
   const formatMove = props.formatMove ?? defaultMove
@@ -183,7 +183,7 @@ const BoardColumn = ({ column, props, model, layout, blocked }: {
   blocked: boolean
 }): ReactElement => {
   const theme = useLumenTheme()
-  const ref = useRef<View>(null)
+  const ref = useRef<ComponentRef<typeof View>>(null)
 
   return (
     <View

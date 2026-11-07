@@ -74,6 +74,11 @@ when a fragment is not valid URI encoding. Mixed percentage/length scroll paddin
 the browser once per computed value and viewport size; ordinary pixel and percentage values need
 no measurement node.
 
+`activateLumenAnchor(link, event)` focuses an ordinary local fragment destination in the link's
+own document and returns whether focus succeeded. Call it after click propagation so canceled
+navigation is respected. It preserves native scrolling/history and removes a temporary `tabindex`
+on blur. The adapters use this helper; most applications should use `Anchor`.
+
 Most consumers should install a framework package such as `@santi020k/lumen-astro`, `@santi020k/lumen-react`, or `@santi020k/lumen-elements`.
 
 The package exports `lumenColors` and `lumenGlass` for consumers that need to mirror Lumen theme
@@ -104,9 +109,21 @@ pnpm add @santi020k/lumen-core
 ```
 
 Core provides data and helpers; it does not register elements, render components, or load CSS.
-Use documented subpath exports such as `/charts`, `/phone`, and `/icon-data` for focused imports.
+Use documented subpath exports such as `/charts`, `/phone`, `/language`, `/native-input`, and
+`/icon-data` for focused imports. The chart entrypoint includes the shared bullet, comparison,
+heatmap, histogram, and waterfall helpers. `/native-input` provides decimal, numeric OTP, and time
+selection helpers without loading the root catalog.
 Image-comparison helpers use `/image-comparison`; DOM windowing uses
 `/virtual-list`, and data-renderer window calculations use `/virtual-window`.
+
+## Shared web styles
+
+The selective foundation ships Lumen light and dark. Add only the appearances you use from your adapter: `styles/themes/paper.css`, `styles/themes/field.css`, `styles/themes/studio.css`, `styles/themes/santi020k.css`, or `styles/effects/glass.css`. Full `styles.css` includes every appearance.
+
+Core publishes the generated web foundation, full stylesheet, and component CSS. Adapter exports
+forward these files without installing CLI tooling. `styles/manifest.json` records component style
+parts and dependencies. Contributors edit `packages/lumen/styles.css` and `registry/web-css.json`,
+then run `pnpm run generate:component-css`; generated files are never edited directly.
 
 ## Quick start
 
@@ -150,8 +167,8 @@ Use `createThemePreset('studio', { scheme: 'dark', overrides: { 'ui-radius': '0.
 
 ## Language Helpers
 
-The root entry exports the shared locale contract used by the Astro, React, and Elements language
-controls. `normalizeLumenLocales` trims labels and values, removes duplicate or invalid values, and
+The root entry and `/language` subpath export the shared locale contract used by the Astro, React,
+and Elements language controls. `normalizeLumenLocales` trims labels and values, removes duplicate or invalid values, and
 falls back to `lumenDefaultLocales`. `getLumenLocalePair` resolves the current locale and the next
 cyclic option, while `formatLumenLanguageLabel` fills the `{current}` and `{next}` placeholders in
 an accessible-label template.
@@ -544,6 +561,11 @@ media loading, selection, adjustment algorithms, processing, export and persiste
 
 ## Resources
 
+The `@santi020k/lumen-core/component-delivery` entry provides `componentDeliveryEntries`,
+`getComponentEntry`, `componentCssName`, and `reactServerComponents` for tooling that generates
+adapter imports. The CLI and Figma exporter share this metadata. Entries describe verified exports
+in this release. A missing selective entry requires a catalog fallback.
+
 | Guide | What you will find |
 | --- | --- |
 | [Cross-platform architecture](https://github.com/santi020k/lumen/blob/main/docs/cross-platform.md) | Shared foundations, adapter boundaries, and support tiers. |
@@ -554,3 +576,8 @@ media loading, selection, adjustment algorithms, processing, export and persiste
 
 Part of [Lumen UI](https://lumen.santi020k.com), created by [Santiago Molina](https://santi020k.com).
 Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); third-party artwork retains its own notices.
+
+The DOM-only `@santi020k/lumen-core/reveal` entry shares reveal threshold normalization and observer
+lifecycle across web adapters. `createLumenRevealController(element, { once, threshold })` returns a
+`destroy()` cleanup; use the framework components in application code. This helper is intentionally
+outside the root entry so native consumers do not traverse browser behavior.

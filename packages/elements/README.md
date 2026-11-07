@@ -77,18 +77,35 @@ its native meaning. See the [v4 migration guide](https://github.com/santi020k/lu
 
 ## Install
 
+Upgrading from v4? Follow the [v5 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v4-to-v5.md)
+for runtime changes and the [selective installation guide](https://github.com/santi020k/lumen/blob/main/docs/selective-installation.md)
+for optional component CSS, imports and editable recipes.
+
 ```bash
 pnpm add @santi020k/lumen-elements
 ```
 
-The adapter also exposes Lumen's discovery and diagnostics CLI:
+The v5 adapter contains runtime code and styles. Install the optional CLI separately for discovery,
+editable recipes, and diagnostics:
 
 ```bash
+pnpm add -D @santi020k/lumen
 pnpm exec lumen show Tabs
 pnpm exec lumen doctor
 ```
 
-Load the shared stylesheet once from your app entry or global CSS.
+Import the shared foundation once and component CSS where the component is used. Include styles for
+conditional and runtime-inserted content as well as the initial render.
+
+```tsx
+import "@santi020k/lumen-elements/styles/foundation.css";
+import "@santi020k/lumen-elements/styles/components/button.css";
+import "@santi020k/lumen-elements/styles/components/dialog.css";
+```
+
+The selective foundation ships Lumen light and dark. Add only the appearances you use from your adapter: `styles/themes/paper.css`, `styles/themes/field.css`, `styles/themes/studio.css`, `styles/themes/santi020k.css`, or `styles/effects/glass.css`. Full `styles.css` includes every appearance.
+
+The full stylesheet remains available as a convenient alternative:
 
 ```css
 @import "@santi020k/lumen-elements/styles.css";
@@ -101,6 +118,15 @@ complete stylesheet for the full element catalog.
 The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
 your preferred delivery path, or override `--ui-font` in application CSS.
+
+## Public styling parts
+
+Use the [shared styling contract](https://github.com/santi020k/lumen/blob/main/docs/styling-contract.md)
+for Timeline item tail/dot/content, ThemeToggle sun/moon icons, and WorldMap frame/zoom controls.
+ThemeToggle supports `--ui-theme-toggle-icon-size` independently of its control size.
+
+`defineLumenTimeline` from `components/timeline` decorates native `li` children, including a named
+`slot="dot"` child, and shares its constructor with complete registration.
 
 ## Appearance presets
 
@@ -339,6 +365,10 @@ serialized series and defaults to `variant="donut"`.
 
 ## Optimized images
 
+When composing `<lumen-image>` with a native `img` child, the image inherits the wrapper's `radius`
+and `fit`. Dedicated media frames own their shared corners; see the
+[frame styling contract](../../docs/styling-contract.md#frame-borders-and-corners).
+
 Image optimization belongs to the host framework or CDN. Keep its generated `picture`, `srcset`,
 and `sizes` output, and put Lumen's `ui-image` class on the final `img`. This works with optimized
 markup from Nuxt, SvelteKit, a CMS, an image CDN, or a static build pipeline without sending the
@@ -471,8 +501,28 @@ light-DOM structure, ARIA ownership, retry boundary, and verification guidance.
 heading `scroll-margin-top`, with one CSS pixel of rounding tolerance. It reads live styles for
 text resizing and responsive headers, and does not treat a non-scrolling page as the document end.
 
+Activating an ordinary local link moves focus to its destination while preserving native hash
+scrolling and history. A heading receives temporary `tabindex="-1"`, removed on blur; authored
+tab order is preserved. Canceled clicks, modifier keys, downloads, and other browsing targets
+keep their normal behavior. Passive scrolling only updates the current link and never moves focus.
+
 `lumen-pill` wraps long text within its available width. A `.ui-pill__count` child stays together;
 plain text labels do not need a wrapper. This reflow behavior is shared by Astro and React `Pill`.
+
+Pass a localized `recoveryLabel` to React `CopyButton`, or `recovery-label` to
+`lumen-copy-button`, to offer manual selection when clipboard access fails. The labelled read-only
+field retains the complete value after transient feedback resets, selects its text on focus, and
+clears after a successful retry. Changing the value, target selector, or recovery label clears stale
+recovery. Missing or invalid targets produce error feedback without an empty recovery field.
+
+```html
+<lumen-copy-button value="https://lumen.santi020k.com" recovery-label="Select and copy the link">
+  Copy link
+</lumen-copy-button>
+```
+
+Manual recovery renders beside the trigger in DOM order. Use a vertical Lumen `Stack` with
+`align="start"` for separate copy actions so a recovery field does not stretch neighboring buttons.
 
 ## Motion
 
@@ -497,6 +547,10 @@ at a visible label, or `aria-label` on the host. A native label's `for` pointing
 host does not name the internal input. Use the public `lumen-label` for visible label styling.
 Do not type a custom host as `HTMLInputElement` or `HTMLButtonElement`; use its exported element
 class and runtime narrowing when accessing element-specific methods.
+
+For article reading, `lumen-scroll-progress target-id="article-id"` measures only that content
+element. Omit the attribute for document progress. Missing targets retain document progress, and
+resize or content reflow refreshes the measurement.
 
 Use `lumen-dialog` as the behavior owner. Its public methods are `show(trigger?)` and `close()`,
 not `showModal()` on the custom host. A native `dialog` child is its documented modal contract:
@@ -570,7 +624,10 @@ copy button. Use `copy-label`, `copied-label`, and `error-label` for clipboard
 feedback, and `code-label` to name its keyboard-scrollable source region. The same
 labels can be placed on an enclosing `<lumen-code-tabs>`; child labels take
 precedence. Copy emits `ui:copy-success` or `ui:copy-error` and announces feedback
-in a live region. Clipboard failures leave the source available for manual copy.
+in a live region. Set `recovery-label="Select and copy the complete source"` to offer a
+visibly labelled read-only field after clipboard failure. It selects on focus without taking
+focus automatically. A successful retry, source update, tab change, disabling copy, or disconnect
+removes generated recovery UI. Omitting the label keeps feedback-only behavior.
 
 Unwrapped `pre` children receive `tabindex="0"` and region semantics while keeping
 authored accessible names. Generated names follow `code-label` updates and the current enclosing code tabs after reconnecting. Changing to `wrap="true"` removes only enhancer-added focus attributes.
@@ -910,3 +967,56 @@ The optional `tailwind.css` bridge (Lumen 4.3+) maps semantic colors to utilitie
 Use component props for behavior and utilities for local presentation. The standalone stylesheet
 does not require Tailwind. See the [Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind)
 for framework examples, source detection, and Preflight choices.
+
+## Reveal visibility safety
+
+`ScrollReveal` and `RevealGroup` preserve explicit thresholds (clamped to 0–1; the default is 0.15).
+An intersecting element waits until that ratio is reached. If its size or a clipping ancestor makes
+the threshold unreachable, it stays visible without animation. Resizing and enlarged text are
+rechecked. Keyboard focus within a reveal and reduced motion bypass decorative hiding immediately.
+Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.
+
+Use `defineLumenInput` from `@santi020k/lumen-elements/components/input` for a standalone
+form input. It shares its constructor with the full catalog. See the [Elements quick start](https://lumen.santi020k.com/docs/frameworks/elements).
+
+## Editorial code blocks
+
+Use `appearance="editorial"` on a block `Code` (or `<lumen-code>`) for a theme-aware
+code icon, wrapping header metadata, and visible copy feedback. The default appearance retains
+the window dots and icon-only copy control. Both appearances provide stable 44px copy targets.
+Existing copy labels also supply the visible editorial feedback, so localize them together:
+`copyLabel`, `copiedLabel`, and `errorLabel` in Astro/React; `copy-label`, `copied-label`, and
+`error-label` in Elements. Set a descriptive `codeLabel` (`code-label` in Elements) for each
+keyboard-scrollable example. Astro also supports `scrollCue` for an overflow-only reading hint.
+
+The docs compose public `Code` and `Collapsible` primitives to preview the first 12 lines of
+examples longer than 24 lines. Folding is application policy; clipboard content always remains
+the complete source. Pass the original `code` when supplying highlighted or preview content.
+
+## Anchored table row labels
+
+Set `stickyFirstColumn` on `Table` in Astro/React or `sticky-first-column="true"` on
+`<lumen-table>` to keep the first cell of each row visible during horizontal scrolling.
+Use `th scope="row"` for row identifiers and label the scroll region with `aria-label` or
+`aria-labelledby`, `role="region"`, and `tabindex="0"` (`tabIndex` in React). Astro's
+`scrollCue` option supplies the keyboard region and an overflow-only hint automatically.
+
+The first column follows writing direction, including RTL. It returns to normal flow in
+containers narrower than 12rem, in records layouts, and when printing, so enlarged text and
+printed data retain the available width. Keep column widths suitable for the content; avoid
+pinning an unusually wide description column.
+
+## Editorial prose
+
+Use `appearance="editorial"` on `Prose` (or `<lumen-prose>`) for long-form reading with
+clear section rhythm, attributed blockquotes, and connected native figure captions. The default
+appearance remains unchanged. The editorial surface keeps ordinary paragraphs and lists at a
+readable measure while media and technical blocks can use the available width. Override
+`--ui-prose-measure` on the root to set that measure (the default is `65ch`).
+
+Supply semantic HTML: keep heading IDs and inline formatting; place quoted paragraphs and an
+optional `footer`/`cite` inside `blockquote`; keep media and its `figcaption` together inside
+`figure`. Write image alternatives separately from captions and use the framework's public Image
+or optimized native image integration. Component-owned figures, including Code and charts,
+retain their own styling. Prose styles content; the application owns parsing, sanitization,
+heading IDs, captions, citations, and localization.

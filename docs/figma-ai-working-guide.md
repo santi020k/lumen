@@ -29,7 +29,7 @@ Before any Figma Plugin API write:
 4. Make the smallest coherent mutation.
 5. Query the changed nodes again and visually inspect representative instances.
 
-Do not create a new Figma file. Maintain the existing file above.
+Maintain canonical component and variable identities in the existing library. Build editable examples in the [Templates and Playgrounds companions](figma.md#design-files). Reuse linked library instances across files.
 
 ## Sources of truth
 
@@ -43,23 +43,17 @@ Use sources in this order:
 | Web theme variables                         | [`packages/lumen/styles.css`](../packages/lumen/styles.css)                                 |
 | Astro component appearance and behavior     | [`packages/astro`](../packages/astro)                                                       |
 | Shared component contracts and metadata     | [`packages/core`](../packages/core)                                                         |
-| santi020k theme values                      | `../website/src/styles/partials/tokens.css`                                                 |
+| santi020k theme values                      | Pinned `@santi020k/theme/site.css` and the generated Lumen theme stylesheet |
 | Figma integration and Code Connect          | [figma.md](figma.md), [`figma.config.json`](../figma.config.json), and [`figma/`](../figma) |
 | Brand voice and visual guidance             | [brand-guidelines.md](brand-guidelines.md)                                                  |
 
-Never assume the parent website tokens are unchanged because they matched during an earlier
-release. Read the parent file again whenever syncing the `santi020k` modes. If the parent project
-has intentionally changed, report the drift before rewriting a released Figma theme.
+Use the release branch's canonical tokens and resolved CSS for each theme and color scheme.
+Keep previously pinned website color modes compatible with existing frames. Compare the actual
+Figma variables and styled instances with the matching release source before changing the contract.
 
-The Lumen Figma `Light` and `Dark` modes follow the canonical cross-platform token document. The
-package stylesheet and docs app mirror those values, while named product themes override the same
-semantic roles at their theme boundary. Before changing color variables, compare the canonical
-tokens, registry contract, resolved deployed theme, and Figma. Do not update the contract and its
-source together merely to make a mismatch disappear.
+## First-release baseline
 
-## Release baseline
-
-The published release is clean at the following baseline:
+The first release had the following verified baseline:
 
 - 123 public component assets.
 - 36 hidden icon-support components named `__IconAsset/*`.
@@ -76,46 +70,43 @@ The published release is clean at the following baseline:
 - No visible detached solid paints.
 - No variables missing descriptions or `WEB` code syntax.
 
-After publication, the library panel reported `No changes`. The 123 public assets are the published
-baseline count; do not inflate that number with the 36 hidden icon components.
+After that publication, the library panel reported `No changes`. The historical count of
+123 public assets excludes the 36 hidden icon components.
 
-## Current maintenance state
+## Published v5 team library
 
-The canonical working file now contains 149 public component assets and 69 variables. The latest
-code-to-Figma sync adds `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`,
-`CheckboxGroup`, `ErrorSummary`, `FieldError`, `Form`, `ListBox`, `PasswordField`,
-`StatDescription`, `StatIcon`, `StatLabel`, `StatTrend`, `StatValue`, `Container`, `Stack`, `Grid`,
-and `VisuallyHidden`.
+On November 6, 2026, the Lumen project published the v5 team library. The source library
+reported **No changes**. Both [companion files](figma.md#design-files) had the team library
+enabled and reported **No updates available** with all pages selected.
 
-The same sync reconciles the current public APIs for existing assets: `Stat` exposes `Default`,
-`Accent`, `Bare`, and `Glass`; `Chart` exposes `Presentation=Default|Bare`; `BarChart` adds the same
-presentation axis; and `LineChart` exposes `Markers=None|Auto|All` plus
-`Presentation=Default|Bare`. Earlier working-file additions remain `Sparkline`, `BarChart`,
-`LineChart`, `PieChart`, and `ScrollProgress`, plus 20 `color/chart/*` variables. Treat the 123-asset
-figures above as the historical published baseline until the updated library is published through
-the Figma UI.
+- The catalog contains 196 registry families, six presentation sets and the preserved legacy Sonner asset.
+  All 203 assets imported into Templates with their expected keys, variant counts and public properties.
+- All 149 original asset IDs and 401 existing public property IDs were preserved.
+- The library has 301 variables across Color, Radius, Effects, Theme and Foundations.
+- The Analytics desktop frame resolved the expected canvas across six appearances in both schemes
+  without losing the tested Button and Card overrides. React Native, SwiftUI and Compose Settings
+  explicitly use Field and Dark from the published library.
+
+For future updates, compare the live catalog with the release registry. Publish the team library,
+accept applicable updates on all pages of both companions, and verify a new variable and component
+from a consuming file. Record Community publication separately.
+
+## Published v5 Community file
+
+On November 6, 2026, Santi020k updated the existing [Lumen UI Library v5 listing](https://www.figma.com/community/file/1662337342676541513/lumen-ui-library-v5).
+The published thumbnail shows the v5 cover. The description and Getting Started page link to the
+companion files. Following the public listing links while signed out exposed all six Templates
+pages and the Web, React Native, SwiftUI and Compose pages in Playgrounds.
 
 ## Page organization
 
 Keep the library ordered as follows:
 
-1. `Cover`
-2. `Getting Started`
-3. `Foundations`
-4. `Glass Components`
-5. `Icons`
-6. Page divider
-7. `Components`
-7. `Form Controls`
-8. `Content Primitives`
-9. `Navigation Primitives`
-10. `Data Display`
-11. `Overlays and Menus`
-12. `Selection and Dates`
-13. `Messaging and Layout`
-14. `Rich Content and Tools`
-15. Page divider
-16. `Utilities`
+1. Cover, Getting Started, Foundations, Themes.
+2. Glass Components and Icons.
+3. After the first divider: Components, Form Controls, Content Primitives, Navigation Primitives, Data Display and Charts & Maps.
+4. Overlays and Menus, Selection and Dates, Messaging and Layout, Rich Content and Tools, Media and AI Workflows.
+5. After the second divider: Utilities.
 
 New public components belong on the matching category page, inside the existing page frame and
 layout system. Do not leave new components loose outside the page frame. Keep headings, explanatory
@@ -134,34 +125,16 @@ Use:
 
 ### Collections
 
-`Color`
+- **Color** exposes public semantic roles. Light and Dark select the scheme. The two original
+  santi020k modes retain their stored color values for older designs.
+- **Theme** supplies Lumen, Studio, Paper, Field, santi020k and Glass values to the public roles.
+- **Radius**, **Effects** and **Foundations** hold dimensions, glass settings, fonts and shadow
+  geometry. Use the public roles on component layers. Keep a description, suitable scopes and
+  the matching web code syntax on every variable.
 
-- 46 semantic and supporting color variables.
-- Modes: `Light`, `Dark`, `santi020k Light`, and `santi020k Dark`.
-- Every variable must have a useful description.
-- Every variable must expose `WEB` syntax such as `var(--brand)`.
-- Use suitable scopes such as text fill, shape fill, stroke, or effect color; do not leave variables
-  on an unrestricted all-scopes setting without a reason.
-
-`Radius`
-
-- Four variables: `sm`, `md`, `lg`, and `full`.
-- Mode: `Value`.
-- `radius/full` must remain represented in the Foundations specimens.
-
-`Effects`
-
-- Three semantic shadow variables.
-- Modes: `Light` and `Dark`.
-
-### Theme ownership
-
-- `Light` and `Dark` are the Lumen theme and must match `tokens/lumen.tokens.json` and
-  `packages/lumen/styles.css`.
-- `santi020k Light` and `santi020k Dark` must be checked against the parent website tokens.
-- Do not alias Lumen Light to a santi020k mode or leave it on an older palette.
-- Show all four color modes in Foundations with comparable preview cards.
-- Test actual component instances in all four modes, not only color swatches.
+Set Theme and Color independently on the Themes page. Test both schemes for each appearance on
+real instances, check explicit nested modes and verify that editable overrides survive. Verify the
+two pinned colors separately. See [the file guide](figma.md#design-files) for designer instructions.
 
 The core Lumen semantic names are:
 
@@ -274,7 +247,7 @@ For any theme or shared component change:
 
 1. Create a temporary QA page or frame.
 2. Place actual component instances, not reconstructed lookalikes.
-3. Render the same grid in all four Color modes.
+3. Render the same grid in both schemes across the six Theme modes, then check historical pinned colors.
 4. Compare backgrounds, borders, primary text, muted text, brand actions, status colors, and danger
    surfaces.
 5. Inspect focus, disabled, hover, selected, and open states where available.
@@ -346,12 +319,12 @@ return {
 };
 ```
 
-Expected release result:
+Expected v5 team-release result:
 
 ```json
 {
-  "total": 159,
-  "public": 123,
+  "total": 239,
+  "public": 203,
   "hidden": 36,
   "missingDescriptions": [],
   "unusedProperties": []
@@ -378,7 +351,7 @@ Also audit:
 - `PageNode.backgrounds` cannot be bound to variables. Figma throws
   `page backgrounds cannot be bound to variables`. Set every library page background to the exact
   resolved `color/surface-muted` Light RGB value instead, and re-sync it whenever that token
-  changes. The canonical Light value is `#EFF2F5`.
+  changes.
 - Version-history snapshots and library publication must be completed through the Figma UI.
 - `figma.getNodeByIdAsync(id)` is file-wide. Calling it once for every page can produce duplicate
   audit output unless results are deduplicated.
@@ -392,10 +365,10 @@ Also audit:
 
 Before publishing:
 
-1. Confirm the public catalog is 123/123 against the registry.
+1. Compare public assets with the release registry. Account separately for any legacy, internal or behavior-only assets.
 2. Confirm no invalid assets, unused properties, missing descriptions, or duplicate names.
 3. Confirm all intended variables, styles, and assets are selected.
-4. Run four-mode visual QA.
+4. Run the theme and scheme visual checks above and capture each completed page.
 5. Run the repository validations below.
 6. Add concise release notes.
 
@@ -437,12 +410,9 @@ pnpm dlx @figma/code-connect@1.5.0 connect parse --config figma.config.json
 pnpm exec tsc -p figma/tsconfig.json
 ```
 
-The templates parse and typecheck at the first-release baseline. Live Code Connect publication is
-account-gated: Figma requires an Organization or Enterprise plan and a Dev or Full seat. A
-published component library alone does not remove that requirement.
-
-Do not treat this plan limitation as a broken template. Preserve the local mappings so they can be
-published immediately after the account is eligible.
+Recheck [Figma’s Code Connect requirements](https://developers.figma.com/docs/code-connect/quickstart-guide/)
+for the current plan and seat. Verify local mappings independently of Dev Mode publication.
+Validate published mappings on an instance after the team library receives its release update.
 
 ## Repository validation
 
@@ -480,7 +450,7 @@ Documentation-only changes do not need a changeset. User-visible package changes
 - [ ] Add only meaningful component properties.
 - [ ] Bind every non-variant property.
 - [ ] Add representative interactions when behavior benefits from a prototype.
-- [ ] Test representative instances in all four Color modes.
+- [ ] Test representative instances in both schemes for each theme, including nested scopes and legacy pins.
 - [ ] Check accessibility contrast, focus, and disabled states.
 - [ ] Run the structural Figma audit.
 - [ ] Run repository validation.

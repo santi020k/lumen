@@ -1,4 +1,4 @@
-import { type ReactElement, useRef, useState } from 'react'
+import { type ComponentRef, type ReactElement, useRef, useState } from 'react'
 import { View } from 'react-native'
 
 import { LumenButton, LumenCheckbox, LumenText, LumenTour, type LumenTourRect, type LumenTourStep } from '@santi020k/lumen-react-native'
@@ -18,7 +18,7 @@ export const TourParityExample = (): ReactElement => {
   const [readOnly, setReadOnly] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
-  const triggerRef = useRef<View | null>(null)
+  const triggerRef = useRef<ComponentRef<typeof View> | null>(null)
 
   return (
     <LumenTour

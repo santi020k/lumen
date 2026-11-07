@@ -1,0 +1,10 @@
+---
+import CodeTabs from '@santi020k/lumen-astro/components/CodeTabs'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+<h1>Code delivery</h1>
+<CodeTabs ariaLabel="Install command" scrollCue recoveryLabel="Select the command to copy" items={[
+  { value: 'pnpm', label: 'pnpm', language: 'sh', code: 'pnpm add @santi020k/lumen-astro' },
+  { value: 'npm', label: 'npm', language: 'sh', code: 'npm install @santi020k/lumen-astro' }
+]} />
+<UIPrimitives />

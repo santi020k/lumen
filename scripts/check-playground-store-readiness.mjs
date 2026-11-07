@@ -282,6 +282,15 @@ const storeScreenshotNames = [
   "06-examples-dark.png",
 ];
 
+const androidScreenshotWidth = (await readFile(
+  join(androidStore, "Screenshots", `phone-${storeScreenshotNames[0]}`),
+)).readUInt32BE(16);
+
+assert.ok(
+  [1080, 2160].includes(androidScreenshotWidth),
+  "Android store screenshots must use a consistent 1080 or 2160 pixel width",
+);
+
 for (const name of storeScreenshotNames) {
   await assertPng(
     join(
@@ -313,41 +322,27 @@ for (const name of storeScreenshotNames) {
 
   await assertPng(
     join(androidStore, "Screenshots", `phone-${name}`),
-    2160,
-    3840,
+    androidScreenshotWidth,
+    androidScreenshotWidth * 16 / 9,
     2,
   );
 }
 
-await assertPng(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Store",
-    "macOS",
-    "Screenshots",
-    "mac-catalog-light.png",
-  ),
-  1280,
-  800,
-  2,
-);
-
-await assertPng(
-  join(
-    repositoryRoot,
-    "apps",
-    "playground-apple",
-    "Store",
-    "macOS",
-    "Screenshots",
-    "mac-catalog-dark.png",
-  ),
-  1280,
-  800,
-  2,
-);
+for (const filename of [
+  "mac-home-light.png",
+  "mac-examples-light.png",
+  "mac-catalog-light.png",
+  "mac-catalog-dark.png",
+  "mac-settings-light.png",
+  "mac-examples-dark.png",
+]) {
+  await assertPng(
+    join(repositoryRoot, "apps", "playground-apple", "Store", "macOS", "Screenshots", filename),
+    1280,
+    800,
+    2,
+  );
+}
 
 const appleInfo = await readFile(
   join(repositoryRoot, "apps", "playground-apple", "Supporting", "Info.plist"),

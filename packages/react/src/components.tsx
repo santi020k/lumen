@@ -8,7 +8,6 @@ import type {
   ElementType,
   HTMLAttributes,
   KeyboardEvent,
-  MouseEvent as ReactMouseEvent,
   ReactNode,
   Ref,
   RefObject
@@ -46,11 +45,9 @@ import {
   createLumenRangeGeometry,
   createLumenScatterGeometry,
   createLumenScatterReferences,
-  decodeLumenAnchorFragment,
   formatLumenChartSummary,
   formatLumenLanguageLabel,
   formatLumenPhoneNumber,
-  getLumenActiveAnchorIndex,
   getLumenChartCategories,
   getLumenChartCategoryLabel,
   getLumenChartCategoryTicks,
@@ -104,13 +101,16 @@ import {
   tokenizeLumenCode
 } from '@santi020k/lumen-core'
 import { parseLumenDate as parseCalendarDate, resolveLumenDateLabels as resolveDateControlLabels, resolveLumenDateLocale as getCalendarLocale } from '@santi020k/lumen-core'
+import { createLumenRevealController, normalizeLumenRevealThreshold } from '@santi020k/lumen-core/reveal'
 import { renderSVG } from 'uqr'
 
 import { ChartInspection } from './chart-inspection.js'
 import { ChartInteraction, type ChartInteractionProps } from './chart-interaction.js'
 import { getChartPlotLabel } from './chart-label.js'
 import { createReactChartDatumAction, formatReactChartTableValue, type ReactChartDatumAction, readReactChartDatumActivation } from './chart-recipes.js'
+import { Button, type ButtonChildProps, type ButtonProps, type LumenGlassProp } from './editorial-controls.js'
 import { useFloatingPanel } from './floating-panel.js'
+import { Field, FieldError } from './form-primitives.js'
 import {
   type DialogOptions,
   type DropdownMenuController,
@@ -142,13 +142,18 @@ import {
   resolveReactPhoneInputCountry,
   resolveReactPhoneInputValue
 } from './phone-recipes.js'
+import { composeHandlers, glassClass, glassSurfaceClass, resolveSurface, type SurfaceProps } from './primitive-surface.js'
 import {
   Input,
   type InputProps,
-  Label
+  Label,
+  Textarea
 } from './server-components.js'
 import { useCopyFeedback } from './use-copy-feedback.js'
 
+export { Dialog, DialogBody, type DialogBodyProps, DialogClose, type DialogCloseProps, DialogFooter, type DialogFooterProps, DialogHeader, type DialogHeaderProps, type DialogProps, DialogTitle, type DialogTitleProps } from './dialog.js'
+export { Button, type ButtonProps, Collapsible, type CollapsibleProps, Empty, type EmptyProps, Kbd, type KbdProps, Link, type LinkProps, type LumenGlassProp, SearchField, type SearchFieldProps, SkipLink, type SkipLinkProps } from './editorial-controls.js'
+export { Anchor, type AnchorLink, type AnchorProps, ScrollProgress, type ScrollProgressProps } from './reading-navigation.js'
 export {
   Badge,
   type BadgeProps,
@@ -196,11 +201,6 @@ type AlertVariant = 'default' | 'destructive' | 'success' | 'warning'
 
 type AccordionVariant = 'default' | 'flush'
 
-type ButtonSize = 'default' | 'icon' | 'lg' | 'sm'
-
-type ButtonVariant =
-  'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
-
 type CodeTheme = 'auto' | 'lumen' | 'santi020k'
 
 type CodeVariant = 'block' | 'inline'
@@ -215,10 +215,6 @@ type MarkerVariant = 'danger' | 'default' | 'success' | 'warning'
 
 type Orientation = 'horizontal' | 'vertical'
 
-type SurfaceVariant = 'default' | 'glass'
-
-type EventHandler<Event> = (event: Event) => void
-
 const setRefValue = <Value,>(
   ref: Ref<Value> | undefined,
   value: Value | null
@@ -228,13 +224,6 @@ const setRefValue = <Value,>(
   } else if (ref) {
     ref.current = value
   }
-}
-
-export type LumenGlassProp = boolean | 'subtle' | 'strong'
-
-interface SurfaceProps {
-  'data-surface'?: SurfaceVariant
-  glass?: LumenGlassProp
 }
 
 export interface Option {
@@ -272,21 +261,6 @@ const renderLucideIcon = (name: string, className: string) => {
   return icon ? renderIconSvg(icon, className) : null
 }
 
-const resolveSurface = (glass?: LumenGlassProp): SurfaceVariant => glass ? 'glass' : 'default'
-
-const glassIntensityClass = (glass?: LumenGlassProp) => glass === 'subtle' ?
-  'ui-glass-subtle' :
-  glass === 'strong' && 'ui-glass-strong'
-
-const glassSurfaceClass = (
-  base: string,
-  glass?: LumenGlassProp
-) => resolveSurface(glass) === 'glass' &&
-  composeClassName(`${base}--glass`, glassIntensityClass(glass))
-
-const glassClass = (base: string, glass?: LumenGlassProp) => Boolean(glass) &&
-  composeClassName(`${base}--glass`, glassIntensityClass(glass))
-
 const normalizeOption = (option: SelectOption): Option => typeof option === 'string' ? { label: option, value: option } : option
 
 const toInputValue = (
@@ -296,16 +270,6 @@ const toInputValue = (
 
   return String(value)
 }
-
-const composeHandlers =
-  <Event,>(
-    userHandler: EventHandler<Event> | undefined,
-    lumenHandler: EventHandler<Event> | undefined
-  ) => (event: Event) => {
-    userHandler?.(event)
-
-    lumenHandler?.(event)
-  }
 
 type PrimitiveProps = ComponentPropsWithoutRef<'div'> & {
   [key: string]: unknown
@@ -548,98 +512,6 @@ export const Bubble = ({
     {...props}
   />
 )
-
-export interface ButtonProps extends ComponentPropsWithRef<'button'> {
-  asChild?: boolean
-  loading?: boolean
-  size?: ButtonSize
-  variant?: ButtonVariant
-}
-
-interface ButtonChildProps extends HTMLAttributes<HTMLElement> {
-  'data-slot'?: string
-  ref?: Ref<HTMLElement> | undefined
-}
-
-/* eslint-disable complexity -- The compatibility path resolves native, slotted, loading, size, and disabled states in one public component. */
-export const Button = ({
-  asChild = false,
-  children,
-  className,
-  disabled,
-  loading = false,
-  ref,
-  size = 'default',
-  type = 'button',
-  variant = 'default',
-  ...props
-}: ButtonProps) => {
-  const isDisabled = disabled === true || loading
-
-  const buttonClassName = composeClassName(
-    'ui-button', `ui-button--${variant}`, size === 'default' ? 'ui-button--default-size' : `ui-button--${size}`, isDisabled && 'ui-button--disabled', loading && 'ui-button--loading', className
-  )
-
-  if (asChild) {
-    const child = children
-
-    if (!isValidElement<ButtonChildProps>(child)) {
-      throw new TypeError(
-        'Button with asChild requires exactly one React element child.'
-      )
-    }
-
-    const ChildComponent = child.type
-
-    return (
-      <ChildComponent
-        {...child.props}
-        {...props}
-        aria-busy={loading ? true : undefined}
-        aria-disabled={isDisabled ? true : undefined}
-        className={composeClassName(buttonClassName, child.props.className)}
-        data-slot="button"
-        onClickCapture={isDisabled ?
-          (event: ReactMouseEvent<HTMLElement>) => {
-            event.preventDefault()
-
-            event.stopPropagation()
-          } :
-          props.onClickCapture ?? child.props.onClickCapture}
-        onKeyDownCapture={isDisabled ?
-          (event: KeyboardEvent<HTMLElement>) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault()
-
-              event.stopPropagation()
-            }
-          } :
-          props.onKeyDownCapture ?? child.props.onKeyDownCapture}
-        ref={ref as Ref<HTMLElement>}
-        tabIndex={isDisabled ? -1 : props.tabIndex ?? child.props.tabIndex}
-      >
-        {loading && <span aria-hidden="true" className="ui-spinner" />}
-        <span className="ui-button__content">{child.props.children}</span>
-      </ChildComponent>
-    )
-  }
-
-  return (
-    <button
-      aria-busy={loading || undefined}
-      className={buttonClassName}
-      data-slot="button"
-      disabled={isDisabled}
-      ref={ref}
-      type={type}
-      {...props}
-    >
-      {loading && <span aria-hidden="true" className="ui-spinner" />}
-      <span className="ui-button__content">{children}</span>
-    </button>
-  )
-}
-/* eslint-enable complexity */
 
 export type ButtonGroupProps = ComponentPropsWithoutRef<'div'>
 export const ButtonGroup = ({ className, ...props }: ButtonGroupProps) => (
@@ -2253,16 +2125,6 @@ export const ComboChart = ({
 }
 /* eslint-enable complexity */
 
-export type CheckboxProps = Omit<ComponentPropsWithRef<'input'>, 'type'>
-export const Checkbox = ({ className, ref, ...props }: CheckboxProps) => (
-  <input
-    className={composeClassName('ui-checkbox', className)}
-    ref={ref}
-    type="checkbox"
-    {...props}
-  />
-)
-
 export interface CheckboxGroupProps extends ComponentPropsWithRef<'fieldset'> {
   invalid?: boolean
   legend?: ReactNode
@@ -2292,20 +2154,13 @@ export const CheckboxGroup = ({
   </fieldset>
 )
 
-export type CollapsibleProps = ComponentPropsWithoutRef<'details'>
-export const Collapsible = ({ className, ...props }: CollapsibleProps) => (
-  <details
-    className={composeClassName('ui-collapsible', className)}
-    data-ui-collapsible
-    {...props}
-  />
-)
-
 export interface CodeProps extends ComponentPropsWithoutRef<'figure'> {
+  appearance?: 'default' | 'editorial'
   codeLabel?: string
   copyLabel?: string
   copiedLabel?: string
   errorLabel?: string
+  recoveryLabel?: string
   code?: string
   copy?: boolean
   highlighted?: boolean
@@ -2338,14 +2193,24 @@ const renderCodeChildren = (
   tokenizeLumenCode(code, language).map(renderCodeToken)
 
 interface CodeCopyLabels {
+  appearance: 'default' | 'editorial'
+  source: ReactNode
   code: string | undefined
   copyLabel: string
   copiedLabel: string
   errorLabel: string
+  recoveryLabel: string | undefined
 }
 
-const CodeCopyButton = ({ code, copyLabel, copiedLabel, errorLabel }: CodeCopyLabels) => {
-  const { accessibleLabel, handleClick, state } = useCopyFeedback({
+const CodeCopyButton = ({
+  appearance, code, copyLabel, copiedLabel, errorLabel, recoveryLabel, source
+}: CodeCopyLabels) => {
+  const tabs = use(TabsContext)
+  const recoveryKey = useMemo(() => [code, source, tabs?.value], [code, source, tabs?.value])
+
+  const { accessibleLabel, handleClick, recoveryValue, state } = useCopyFeedback({
+    recoveryLabel,
+    recoveryKey,
     copiedLabel,
     errorLabel,
     getValue: button => {
@@ -2371,10 +2236,28 @@ const CodeCopyButton = ({ code, copyLabel, copiedLabel, errorLabel }: CodeCopyLa
       >
         {renderLucideIcon('copy', 'ui-code__copy-icon')}
         {renderLucideIcon('check', 'ui-code__check-icon')}
+        {appearance === 'editorial' && <span className="ui-code__copy-text">{accessibleLabel}</span>}
       </button>
       <span aria-live="polite" className="ui-sr-only" role="status">
-        {state === 'idle' ? '' : accessibleLabel}
+        {state === 'idle' ? '' : `${accessibleLabel}${state === 'error' && recoveryValue !== undefined && recoveryLabel ? ` ${recoveryLabel}` : ''}`}
       </span>
+      {recoveryLabel && recoveryValue !== undefined && (
+        <label className="ui-code__recovery">
+          <span>{recoveryLabel}</span>
+          <Textarea
+            aria-label={recoveryLabel}
+            onClick={event => {
+              event.currentTarget.select()
+            }}
+            onFocus={event => {
+              event.currentTarget.select()
+            }}
+            readOnly
+            rows={3}
+            value={recoveryValue}
+          />
+        </label>
+      )}
     </>
   )
 }
@@ -2453,26 +2336,54 @@ interface CodeHeaderOptions extends CodeCopyLabels {
   language: string | undefined
 }
 
-const renderCodeHeader = ({ code, copy, copyLabel, copiedLabel, errorLabel, label, language }: CodeHeaderOptions) => {
+const renderCodeHeader = ({
+  appearance, code, copy, copyLabel, copiedLabel, errorLabel, recoveryLabel, label, language, source
+}: CodeHeaderOptions) => {
   if (!copy && !label && !language) return null
 
   return (
     <figcaption className="ui-code__header">
-      <span aria-hidden="true" className="ui-code__dots">
-        <span className="ui-code__dot ui-code__dot--red" />
-        <span className="ui-code__dot ui-code__dot--yellow" />
-        <span className="ui-code__dot ui-code__dot--green" />
+      <span
+        aria-hidden="true"
+        className={appearance === 'editorial' ?
+          'ui-code__symbol' :
+          'ui-code__dots'}
+      >
+        {appearance === 'editorial' ?
+          renderLucideIcon('code-xml', 'ui-code__symbol-icon') :
+          (
+            <>
+              <span className="ui-code__dot ui-code__dot--red" />
+              <span className="ui-code__dot ui-code__dot--yellow" />
+              <span className="ui-code__dot ui-code__dot--green" />
+            </>
+          )}
       </span>
       <span className="ui-code__meta">
         {language && <span className="ui-code__language">{language}</span>}
         {label && <span className="ui-code__label">{label}</span>}
       </span>
-      {copy && <CodeCopyButton code={code} copiedLabel={copiedLabel} copyLabel={copyLabel} errorLabel={errorLabel} />}
+      {copy && (
+        <CodeCopyButton
+          appearance={appearance}
+          code={code}
+          copiedLabel={copiedLabel}
+          copyLabel={copyLabel}
+          errorLabel={errorLabel}
+          recoveryLabel={recoveryLabel}
+          source={source}
+        />
+      )}
     </figcaption>
   )
 }
 
+const codeBlockClassName = (appearance: CodeProps['appearance'], wrap: boolean, className?: string) => composeClassName(
+  'ui-code ui-code--block', appearance === 'editorial' && 'ui-code--editorial', wrap && 'ui-code--wrap', className
+)
+
 export const Code = ({
+  appearance = 'default',
   children,
   className,
   code,
@@ -2481,6 +2392,7 @@ export const Code = ({
   copyLabel,
   copiedLabel,
   errorLabel,
+  recoveryLabel,
   highlighted = false,
   label,
   language,
@@ -2495,16 +2407,15 @@ export const Code = ({
   if (variant === 'block') {
     return (
       <figure
-        className={composeClassName(
-          'ui-code ui-code--block', wrap && 'ui-code--wrap', className
-        )}
+        className={codeBlockClassName(appearance, wrap, className)}
         data-code-theme={theme}
         data-language={language}
         data-slot="code"
         data-ui-code
+        data-ui-owner="react"
         {...props}
       >
-        {renderCodeHeader({ code, copy, ...labels, label, language })}
+        {renderCodeHeader({ appearance, code, copy, ...labels, recoveryLabel, label, language, source: children })}
         {highlighted ?
           (
             <HighlightedCode codeLabel={labels.codeLabel} wrap={wrap}>{children}</HighlightedCode>
@@ -2537,12 +2448,23 @@ export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {
   errorContent?: ReactNode
   errorLabel?: string
   label?: string
+  recoveryLabel?: string
   resetAfter?: number
   target?: string
   toast?: boolean
   value?: string
   variant?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
   size?: 'default' | 'icon' | 'lg' | 'sm'
+}
+
+const readCopyTarget = (target: HTMLElement | null): string | undefined => {
+  const view = target?.ownerDocument.defaultView
+
+  if (view && (target instanceof view.HTMLInputElement || target instanceof view.HTMLTextAreaElement)) {
+    return target.value
+  }
+
+  return target?.innerText ?? target?.textContent ?? undefined
 }
 
 const resolveCopyText = (
@@ -2554,12 +2476,48 @@ const resolveCopyText = (
 
   const targetElement = button.ownerDocument.querySelector<HTMLElement>(target)
 
-  return targetElement?.innerText ?? targetElement?.textContent ?? undefined
+  return readCopyTarget(targetElement)
 }
 
 const resolveCopyFeedback = (content: ReactNode | undefined, fallback: string): ReactNode => (
   content ?? fallback
 )
+
+interface CopyButtonRecoveryProps {
+  accessibleLabel: string
+  recoveryLabel: string | undefined
+  recoveryValue: string | undefined
+  state: ReturnType<typeof useCopyFeedback>['state']
+}
+
+const CopyButtonRecovery = ({ accessibleLabel, recoveryLabel, recoveryValue, state }: CopyButtonRecoveryProps) => {
+  if (!recoveryLabel) return null
+
+  return (
+    <>
+      <span aria-live="polite" className="ui-sr-only" role="status">
+        {state === 'idle' ? '' : `${accessibleLabel}${recoveryValue !== undefined ? ` ${recoveryLabel}` : ''}`}
+      </span>
+      {recoveryValue !== undefined && (
+        <label className="ui-copy-button__recovery">
+          <span>{recoveryLabel}</span>
+          <Textarea
+            aria-label={recoveryLabel}
+            onClick={event => {
+              event.currentTarget.select()
+            }}
+            onFocus={event => {
+              event.currentTarget.select()
+            }}
+            readOnly
+            rows={3}
+            value={recoveryValue}
+          />
+        </label>
+      )}
+    </>
+  )
+}
 
 export const CopyButton = ({
   children = 'Copy',
@@ -2570,6 +2528,7 @@ export const CopyButton = ({
   errorLabel = 'Could not copy to clipboard',
   label = 'Copy to clipboard',
   onClick,
+  recoveryLabel,
   resetAfter = 2000,
   size = 'default',
   target,
@@ -2578,9 +2537,13 @@ export const CopyButton = ({
   variant = 'outline',
   ...props
 }: CopyButtonProps) => {
-  const { accessibleLabel, handleClick, state } = useCopyFeedback({
+  const recoveryKey = useMemo(() => [target, value, recoveryLabel], [target, value, recoveryLabel])
+
+  const { accessibleLabel, handleClick, recoveryValue, state } = useCopyFeedback({
     copiedLabel,
     errorLabel,
+    recoveryKey,
+    recoveryLabel,
     getValue: button => resolveCopyText(button, target, value),
     label,
     onClick,
@@ -2589,25 +2552,34 @@ export const CopyButton = ({
   })
 
   return (
-    <Button
-      aria-label={accessibleLabel}
-      className={composeClassName('ui-copy-button', className)}
-      data-slot="copy-button"
-      data-state={state}
-      data-ui-copy-button
-      onClick={handleClick}
-      size={size}
-      variant={variant}
-      {...props}
-    >
-      <span aria-hidden="true" data-slot="copy-idle" hidden={state !== 'idle'}>{children}</span>
-      <span aria-hidden="true" data-slot="copy-copied" hidden={state !== 'copied'}>
-        {resolveCopyFeedback(copiedContent, copiedLabel)}
-      </span>
-      <span aria-hidden="true" data-slot="copy-error" hidden={state !== 'error'}>
-        {resolveCopyFeedback(errorContent, errorLabel)}
-      </span>
-    </Button>
+    <>
+      <Button
+        aria-label={accessibleLabel}
+        className={composeClassName('ui-copy-button', className)}
+        data-slot="copy-button"
+        data-state={state}
+        data-ui-copy-button
+        data-ui-owner="react"
+        onClick={handleClick}
+        size={size}
+        variant={variant}
+        {...props}
+      >
+        <span aria-hidden="true" data-slot="copy-idle" hidden={state !== 'idle'}>{children}</span>
+        <span aria-hidden="true" data-slot="copy-copied" hidden={state !== 'copied'}>
+          {resolveCopyFeedback(copiedContent, copiedLabel)}
+        </span>
+        <span aria-hidden="true" data-slot="copy-error" hidden={state !== 'error'}>
+          {resolveCopyFeedback(errorContent, errorLabel)}
+        </span>
+      </Button>
+      <CopyButtonRecovery
+        accessibleLabel={accessibleLabel}
+        recoveryLabel={recoveryLabel}
+        recoveryValue={recoveryValue}
+        state={state}
+      />
+    </>
   )
 }
 
@@ -2628,6 +2600,7 @@ export interface CodeTabsProps extends Omit<
   copyLabel?: string
   copiedLabel?: string
   errorLabel?: string
+  recoveryLabel?: string
   initialValue?: string
   items?: readonly CodeTabItem[]
   storageKey?: string
@@ -3114,92 +3087,6 @@ export const DateRangePicker = ({
   )
 }
 
-export type DialogProps = Omit<ComponentPropsWithoutRef<'dialog'>, 'open'> &
-  SurfaceProps &
-  Omit<DialogOptions, 'id'> & {
-    layout?: 'centered' | 'fullscreen'
-  }
-
-const DialogCloseContext = createContext<(() => void) | null>(null)
-
-export type DialogHeaderProps = ComponentPropsWithRef<'header'>
-export const DialogHeader = ({ className, ...props }: DialogHeaderProps) => (
-  <header {...props} className={composeClassName('ui-dialog-header', className)} data-slot="dialog-header" />
-)
-
-export type DialogTitleProps = ComponentPropsWithRef<'h2'> & { as?: 'h2' | 'h3' | 'h4' }
-export const DialogTitle = ({ as: Tag = 'h2', className, ...props }: DialogTitleProps) => (
-  <Tag {...props} className={composeClassName('ui-dialog-title', className)} data-slot="dialog-title" />
-)
-
-export type DialogBodyProps = ComponentPropsWithRef<'div'>
-export const DialogBody = ({ className, ...props }: DialogBodyProps) => (
-  <div {...props} className={composeClassName('ui-dialog-body', className)} data-slot="dialog-body" />
-)
-
-export type DialogFooterProps = ComponentPropsWithRef<'footer'>
-export const DialogFooter = ({ className, ...props }: DialogFooterProps) => (
-  <footer {...props} className={composeClassName('ui-dialog-footer', className)} data-slot="dialog-footer" />
-)
-
-export type DialogCloseProps = ButtonProps
-export const DialogClose = ({ className, onClick, ...props }: DialogCloseProps) => {
-  const close = use(DialogCloseContext)
-
-  return (
-    <Button
-      {...props}
-      className={composeClassName('ui-dialog-close', className)}
-      data-slot="dialog-close"
-      onClick={event => {
-        onClick?.(event)
-
-        if (event.defaultPrevented) return
-
-        if (close) close()
-        else event.currentTarget.closest('dialog')?.close()
-      }}
-    />
-  )
-}
-
-export const Dialog = ({
-  children,
-  className,
-  defaultOpen,
-  dismissOnEscape,
-  dismissOnOutsidePress,
-  glass = false,
-  layout = 'centered',
-  onCancel,
-  onClick,
-  onClose,
-  onOpenChange,
-  onPointerDown,
-  open,
-  ...props
-}: DialogProps) => {
-  const dialog = useDialog({ defaultOpen, dismissOnEscape, dismissOnOutsidePress, onOpenChange, open })
-
-  return (
-    <dialog
-      {...dialog.dialogProps}
-      {...props}
-      className={composeClassName(
-        'ui-dialog', layout === 'fullscreen' && 'ui-dialog--fullscreen', glassSurfaceClass('ui-dialog', glass), className
-      )}
-      data-layout={layout}
-      data-surface={resolveSurface(glass)}
-      onCancel={composeHandlers(onCancel, dialog.dialogProps.onCancel)}
-      onPointerDown={composeHandlers(onPointerDown, dialog.dialogProps.onPointerDown)}
-      onClick={composeHandlers(onClick, dialog.dialogProps.onClick)}
-      onClose={composeHandlers(onClose, dialog.dialogProps.onClose)}
-    >
-      <DialogCloseContext value={dialog.close}>{children}</DialogCloseContext>
-    </dialog>
-  )
-}
-
 export interface DrawerProps
   extends ComponentPropsWithoutRef<'dialog'>, SurfaceProps {}
 
@@ -3344,28 +3231,6 @@ export const DropdownMenuSeparator = ({
   />
 )
 
-export interface EmptyProps extends ComponentPropsWithoutRef<'section'> {
-  glass?: LumenGlassProp
-  variant?: 'compact' | 'default'
-}
-export const Empty = ({
-  className,
-  glass = false,
-  variant = 'default',
-  ...props
-}: EmptyProps) => (
-  <section
-    className={composeClassName(
-      'ui-empty',
-      variant === 'compact' && 'ui-empty--compact',
-      glassClass('ui-empty', glass),
-      className
-    )}
-    data-variant={variant}
-    {...props}
-  />
-)
-
 export interface IllustrationProps extends ComponentPropsWithoutRef<'span'> {
   label?: string
   size?: 'lg' | 'md' | 'sm'
@@ -3392,6 +3257,12 @@ const renderIllustrationElement = (
         y={element.y}
       />
     )
+  }
+
+  if (element.kind === 'line') {
+    const [x1, y1, x2, y2] = element.points
+
+    return <line key={index} x1={x1} x2={x2} y1={y1} y2={y2} />
   }
 
   const pointPairs: string[] = []
@@ -3696,64 +3567,6 @@ export const ErrorSummary = ({
         ))}
       </ul>
     </section>
-  )
-}
-
-export interface FieldProps extends ComponentPropsWithoutRef<'div'> {
-  controlId?: string
-  describedBy?: string
-  glass?: LumenGlassProp
-  invalid?: boolean
-}
-export const Field = ({
-  'aria-describedby': ariaDescribedby,
-  className,
-  controlId,
-  describedBy,
-  glass = false,
-  invalid = false,
-  ...props
-}: FieldProps) => {
-  const fieldDescribedBy =
-    [ariaDescribedby, describedBy].filter(Boolean).join(' ') || undefined
-
-  return (
-    <div
-      aria-describedby={ariaDescribedby}
-      className={composeClassName(
-        'ui-field', glassClass('ui-field', glass), className
-      )}
-      data-invalid={invalid ? 'true' : undefined}
-      data-ui-field
-      data-ui-field-control={controlId}
-      data-ui-field-describedby={fieldDescribedBy}
-      {...props}
-    />
-  )
-}
-
-export interface FieldErrorProps extends ComponentPropsWithoutRef<'p'> {
-  message?: ReactNode
-}
-
-export const FieldError = ({
-  children,
-  className,
-  hidden,
-  message,
-  ...props
-}: FieldErrorProps) => {
-  const content = message ?? children
-
-  return (
-    <p
-      className={composeClassName('ui-field-error', className)}
-      data-ui-field-error
-      hidden={hidden ?? !content}
-      {...props}
-    >
-      {content}
-    </p>
   )
 }
 
@@ -4098,11 +3911,6 @@ export const Item = ({ as = 'div', className, glass = false, ...props }: ItemPro
   'data-slot': 'item',
   ...props
 })
-
-export type KbdProps = ComponentPropsWithoutRef<'kbd'>
-export const Kbd = ({ className, ...props }: KbdProps) => (
-  <kbd className={composeClassName('ui-kbd', className)} {...props} />
-)
 
 export interface MarkerProps extends ComponentPropsWithoutRef<'span'> {
   variant?: MarkerVariant
@@ -5033,88 +4841,6 @@ export const ScrollArea = ({
   />
 )
 
-export interface ScrollProgressProps extends ComponentPropsWithoutRef<'div'> {
-  position?: 'bottom' | 'top'
-}
-export const ScrollProgress = ({
-  'aria-label': ariaLabel = 'Reading progress',
-  className,
-  position = 'top',
-  ...props
-}: ScrollProgressProps) => {
-  const rootRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const root = rootRef.current
-
-    if (!root) return
-
-    let frame = 0
-
-    const update = () => {
-      frame = 0
-
-      const scrollingElement =
-        document.scrollingElement ?? document.documentElement
-
-      const maximum =
-        scrollingElement.scrollHeight - scrollingElement.clientHeight
-
-      const percentage =
-        maximum > 0 ?
-          Math.min(
-            100, Math.max(0, (scrollingElement.scrollTop / maximum) * 100)
-          ) :
-          0
-
-      const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
-
-      root.setAttribute('aria-valuenow', `${Math.round(percentage)}`)
-
-      if (bar) bar.style.transform = `scaleX(${percentage / 100})`
-    }
-
-    const scheduleUpdate = () => {
-      if (frame) return
-
-      frame = window.requestAnimationFrame(update)
-    }
-
-    scheduleUpdate()
-
-    window.addEventListener('resize', scheduleUpdate, { passive: true })
-
-    window.addEventListener('scroll', scheduleUpdate, { passive: true })
-
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame)
-
-      window.removeEventListener('resize', scheduleUpdate)
-
-      window.removeEventListener('scroll', scheduleUpdate)
-    }
-  }, [])
-
-  return (
-    <div
-      aria-label={ariaLabel}
-      aria-valuemax={100}
-      aria-valuemin={0}
-      aria-valuenow={0}
-      className={composeClassName(
-        'ui-scroll-progress', position === 'bottom' && 'ui-scroll-progress--bottom', className
-      )}
-      data-position={position}
-      data-ui-scroll-progress
-      ref={rootRef}
-      role="progressbar"
-      {...props}
-    >
-      <span className="ui-scroll-progress__bar" />
-    </div>
-  )
-}
-
 export interface ScheduleProps extends ComponentPropsWithoutRef<'section'> {
   glass?: LumenGlassProp
 }
@@ -5128,21 +4854,6 @@ export const Schedule = ({
       'ui-schedule', glassClass('ui-schedule', glass), className
     )}
     data-ui-schedule
-    {...props}
-  />
-)
-
-export type SearchFieldProps = ComponentPropsWithRef<'input'>
-export const SearchField = ({
-  className,
-  ref,
-  type = 'search',
-  ...props
-}: SearchFieldProps) => (
-  <input
-    className={composeClassName('ui-input ui-search-field', className)}
-    ref={ref}
-    type={type}
     {...props}
   />
 )
@@ -6101,13 +5812,14 @@ export const Switch = ({
 )
 
 export interface TableProps extends ComponentPropsWithoutRef<'div'> {
+  stickyFirstColumn?: boolean
   glass?: LumenGlassProp
   layout?: 'records' | 'scroll'
 }
-export const Table = ({ className, glass = false, layout = 'scroll', ...props }: TableProps) => (
+export const Table = ({ className, glass = false, layout = 'scroll', stickyFirstColumn = false, ...props }: TableProps) => (
   <div
     className={composeClassName(
-      'ui-table-wrap', glassClass('ui-table-wrap', glass), layout === 'records' && 'ui-table-wrap--records', className
+      'ui-table-wrap', glassClass('ui-table-wrap', glass), layout === 'records' && 'ui-table-wrap--records', stickyFirstColumn && 'ui-table-wrap--sticky-column', className
     )}
     data-slot="table"
     {...props}
@@ -6204,6 +5916,7 @@ export const CodeTabs = ({
   copyLabel,
   copiedLabel,
   errorLabel,
+  recoveryLabel,
   initialValue,
   items = emptyCodeTabItems,
   storageKey,
@@ -6300,6 +6013,7 @@ export const CodeTabs = ({
           <Code
             code={item.code}
             copy={copy}
+            {...(recoveryLabel === undefined ? {} : { recoveryLabel })}
             {...labels}
             {...(item.language === undefined ?
               {} :
@@ -6570,38 +6284,6 @@ export const Image = <T extends ElementType = 'img'>({
   })
 }
 
-export type LinkProps = ComponentPropsWithRef<'a'> & {
-  newTab?: boolean
-  variant?: 'default' | 'inherit'
-}
-export const Link = ({
-  className,
-  newTab = false,
-  ref,
-  rel,
-  target,
-  variant = 'default',
-  ...props
-}: LinkProps) => (
-  <a
-    className={composeClassName(
-      'ui-link', variant === 'inherit' && 'ui-link--inherit', className
-    )}
-    data-slot="link"
-    data-variant={variant}
-    ref={ref}
-    rel={
-      newTab ?
-        [
-          ...new Set(`${rel ?? ''} noopener noreferrer`.trim().split(/\s+/))
-        ].join(' ') :
-        rel
-    }
-    target={newTab ? '_blank' : target}
-    {...props}
-  />
-)
-
 export type PillProps = ComponentPropsWithoutRef<'span'> & {
   count?: number | string
   href?: string
@@ -6648,14 +6330,15 @@ export const Pill = ({
     )
 }
 
-export type ProseProps = ComponentPropsWithoutRef<'div'>
-export const Prose = ({ className, ...props }: ProseProps) => (
-  <div className={composeClassName('ui-prose', className)} {...props} />
-)
-
-export type SkipLinkProps = ComponentPropsWithoutRef<'a'>
-export const SkipLink = ({ className, ...props }: SkipLinkProps) => (
-  <a className={composeClassName('ui-skip-link', className)} {...props} />
+export interface ProseProps extends ComponentPropsWithoutRef<'div'> {
+  appearance?: 'default' | 'editorial'
+}
+export const Prose = ({ appearance = 'default', className, ...props }: ProseProps) => (
+  <div
+    className={composeClassName('ui-prose', appearance === 'editorial' && 'ui-prose--editorial', className)}
+    data-slot="prose"
+    {...props}
+  />
 )
 
 export type ThemeToggleProps = ComponentPropsWithoutRef<'button'>
@@ -6671,8 +6354,8 @@ export const ThemeToggle = ({
     {...props}
   >
     <span className="ui-sr-only">Toggle color theme</span>
-    <Icon className="ui-theme-toggle__sun" name="sun" />
-    <Icon className="ui-theme-toggle__moon" name="moon" />
+    <Icon data-slot="theme-toggle-sun" className="ui-theme-toggle__sun" name="sun" />
+    <Icon data-slot="theme-toggle-moon" className="ui-theme-toggle__moon" name="moon" />
   </button>
 )
 
@@ -6852,34 +6535,7 @@ export const ScrollReveal = ({
 
     if (!root) return
 
-    root.dataset.uiScrollRevealBound = 'true'
-
-    if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      typeof IntersectionObserver === 'undefined'
-    ) {
-      root.classList.add('is-revealed')
-
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      entries => {
-        const entry = entries.at(-1)
-
-        if (!entry) return
-
-        root.classList.toggle('is-revealed', entry.isIntersecting)
-
-        if (entry.isIntersecting && once) observer.disconnect()
-      }, { threshold: Math.min(1, Math.max(0, threshold)) }
-    )
-
-    observer.observe(root)
-
-    return () => {
-      observer.disconnect()
-    }
+    return createLumenRevealController(root, { once, threshold }).destroy
   }, [once, threshold])
 
   return (
@@ -6888,7 +6544,7 @@ export const ScrollReveal = ({
         'ui-scroll-reveal', `ui-scroll-reveal-${animation}`, `ui-motion-duration-${duration}`, className
       )}
       data-ui-reveal-once={String(once)}
-      data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}
+      data-ui-reveal-threshold={normalizeLumenRevealThreshold(threshold)}
       data-ui-scroll-reveal
       ref={rootRef}
       style={
@@ -6928,40 +6584,13 @@ export const RevealGroup = ({
 
     if (!root) return
 
-    root.dataset.uiScrollRevealBound = 'true'
-
     for (const [index, child] of [...root.children].entries()) {
       if (child instanceof HTMLElement) {
         child.style.setProperty('--ui-reveal-index', String(index))
       }
     }
 
-    if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      typeof IntersectionObserver === 'undefined'
-    ) {
-      root.classList.add('is-revealed')
-
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      entries => {
-        const entry = entries.at(-1)
-
-        if (!entry) return
-
-        root.classList.toggle('is-revealed', entry.isIntersecting)
-
-        if (entry.isIntersecting && once) observer.disconnect()
-      }, { threshold: Math.min(1, Math.max(0, threshold)) }
-    )
-
-    observer.observe(root)
-
-    return () => {
-      observer.disconnect()
-    }
+    return createLumenRevealController(root, { once, threshold }).destroy
   }, [once, threshold])
 
   return (
@@ -6971,7 +6600,7 @@ export const RevealGroup = ({
       )}
       data-ui-reveal-group
       data-ui-reveal-once={String(once)}
-      data-ui-reveal-threshold={Math.min(1, Math.max(0, threshold))}
+      data-ui-reveal-threshold={normalizeLumenRevealThreshold(threshold)}
       ref={rootRef}
       style={
         {
@@ -7290,7 +6919,7 @@ export const Rating = ({
 
 export type TimelineProps = ComponentPropsWithoutRef<'ol'>
 export const Timeline = ({ className, ...props }: TimelineProps) => (
-  <ol className={composeClassName('ui-timeline', className)} {...props} />
+  <ol data-slot="timeline" className={composeClassName('ui-timeline', className)} {...props} />
 )
 
 export type TimelineItemProps = ComponentPropsWithoutRef<'li'> & {
@@ -7302,10 +6931,10 @@ export const TimelineItem = ({
   dot,
   ...props
 }: TimelineItemProps) => (
-  <li className={composeClassName('ui-timeline-item', className)} {...props}>
-    <div className="ui-timeline-item__tail" />
-    <div className="ui-timeline-item__dot">{dot}</div>
-    <div className="ui-timeline-item__content">{children}</div>
+  <li data-slot="timeline-item" className={composeClassName('ui-timeline-item', className)} {...props}>
+    <div data-slot="timeline-item-tail" className="ui-timeline-item__tail" />
+    <div data-slot="timeline-item-dot" className="ui-timeline-item__dot">{dot}</div>
+    <div data-slot="timeline-item-content" className="ui-timeline-item__content">{children}</div>
   </li>
 )
 
@@ -7412,7 +7041,7 @@ const getButtonLinkVariantClass = (
 
   if (variant === 'inline') return 'ui-button ui-button--inline'
 
-  return `ui-button ui-button--${variant} min-h-11 rounded-full border`
+  return `ui-button ui-button--${variant} min-h-11 rounded-[var(--ui-button-link-radius,9999px)] border`
 }
 
 export const ButtonLink = ({
@@ -7748,150 +7377,6 @@ export const Tour = ({
     </div>
   </div>
 )
-
-export interface AnchorLink {
-  description?: ReactNode
-  depth?: 1 | 2 | 3 | 4 | 5 | 6
-  href: string
-  index?: ReactNode
-  label: ReactNode
-}
-export interface AnchorProps extends ComponentPropsWithoutRef<'nav'> {
-  activationOffset?: number
-  items?: AnchorLink[]
-}
-
-const emptyAnchorLinks: AnchorLink[] = []
-
-const createAnchorRef = () => {
-  let cleanup: (() => void) | undefined
-
-  return (root: HTMLElement | null) => {
-    cleanup?.()
-
-    cleanup = undefined
-
-    if (!root) return
-
-    const links = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')]
-
-    const targets = links.flatMap(link => {
-      const id = decodeLumenAnchorFragment(link.getAttribute('href')?.slice(1) ?? '')
-      const target = id ? document.getElementById(id) : null
-
-      return target ? [{ link, target }] : []
-    })
-
-    if (!targets.length) return
-
-    const headings = targets.map(({ target }) => target)
-    const abortController = new AbortController()
-    let frame = 0
-
-    const setActive = (active: HTMLAnchorElement) => {
-      for (const link of links) {
-        const isActive = link === active
-
-        link.dataset.active = String(isActive)
-
-        if (isActive) {
-          link.setAttribute('aria-current', 'location')
-        } else {
-          link.removeAttribute('aria-current')
-        }
-      }
-    }
-
-    const update = () => {
-      frame = 0
-
-      const index = getLumenActiveAnchorIndex(headings, Number(root.dataset.uiAnchorOffset))
-      const active = targets[index]?.link
-
-      if (active) setActive(active)
-    }
-
-    const requestUpdate = () => {
-      if (frame) return
-
-      frame = requestAnimationFrame(update)
-    }
-
-    for (const { link } of targets) {
-      link.addEventListener('click', () => {
-        setActive(link)
-      }, {
-        signal: abortController.signal
-      })
-    }
-
-    window.addEventListener('resize', requestUpdate, {
-      passive: true,
-      signal: abortController.signal
-    })
-
-    window.addEventListener('scroll', requestUpdate, {
-      passive: true,
-      signal: abortController.signal
-    })
-
-    update()
-
-    cleanup = () => {
-      abortController.abort()
-
-      if (frame) cancelAnimationFrame(frame)
-    }
-  }
-}
-
-export const Anchor = ({
-  'aria-label': ariaLabel = 'On this page',
-  activationOffset = 96,
-  children,
-  className,
-  items = emptyAnchorLinks,
-  ...props
-}: AnchorProps) => {
-  const anchorRef = createAnchorRef()
-
-  return (
-    <nav
-      aria-label={ariaLabel}
-      className={composeClassName('ui-anchor', className)}
-      data-ui-anchor
-      data-ui-anchor-offset={Math.max(0, activationOffset)}
-      ref={anchorRef}
-      {...props}
-    >
-      {items.length > 0 && (
-        <ol>
-          {items.map((item, index) => (
-            <li key={item.href}>
-              <a
-                aria-current={index === 0 ? 'location' : undefined}
-                data-active={index === 0 ? 'true' : 'false'}
-                data-depth={item.depth}
-                href={item.href}
-              >
-                {item.index !== undefined && (
-                  <span className="ui-anchor__index">{item.index}</span>
-                )}
-                <span className="ui-anchor__content">
-                  <span className="ui-anchor__label">{item.label}</span>
-                  {item.description && (
-                    <span className="ui-anchor__description">{item.description}</span>
-                  )}
-                </span>
-              </a>
-            </li>
-          ))}
-        </ol>
-      )}
-      {children}
-    </nav>
-  )
-}
 
 export interface SegmentedProps extends Omit<
   ComponentPropsWithoutRef<'div'>,
@@ -8910,3 +8395,5 @@ export type DescriptionDetailProps = ComponentPropsWithRef<'dd'>
 export const DescriptionDetail = ({ className, ...props }: DescriptionDetailProps) => (
   <dd {...props} className={composeClassName('ui-description-detail', 'ui-descriptions__detail', className)} data-slot="description-detail" />
 )
+
+export { Checkbox, type CheckboxProps, Field, FieldError, type FieldErrorProps, type FieldProps } from './form-primitives.js'

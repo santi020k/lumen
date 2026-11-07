@@ -6,6 +6,9 @@ import {
   resolveLumenPhoneNumber
 } from '@santi020k/lumen-core'
 
+import { getScopeTarget } from '../relationships.js'
+import { queryScope } from '../scope.js'
+
 const phoneInputSelector = '[data-ui-phone-input]'
 const phoneCommits = new WeakMap<HTMLInputElement, () => void>()
 const resetRoots = new WeakSet<Node>()
@@ -86,7 +89,7 @@ const syncPhoneValidation = (
   descriptions: string[]
 ): void => {
   const errorMessage = getPhoneErrorMessage(root, phoneNumber)
-  const error = root.ownerDocument.getElementById(root.dataset.errorId ?? '')
+  const error = getScopeTarget(root, root.dataset.errorId ?? '')
   const describedBy = [...descriptions, ...(errorMessage && error ? [error.id] : [])].join(' ')
 
   if (describedBy) numberInput.setAttribute('aria-describedby', describedBy)
@@ -120,7 +123,7 @@ const syncPhoneCountry = (root: HTMLElement, phoneNumber: LumenPhoneNumber): voi
 }
 
 export const initPhoneInputControllers = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>(phoneInputSelector)) {
+  for (const root of queryScope(scope, phoneInputSelector)) {
     const countrySelect = root.querySelector<HTMLSelectElement>('.ui-phone-input__country')
     const numberInput = root.querySelector<HTMLInputElement>('.ui-phone-input__number')
 

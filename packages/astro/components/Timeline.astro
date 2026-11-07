@@ -1,6 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
+import '../styles/foundation.css'
+import '../styles/components/timeline.css'
+
 import { composeClassName } from '@santi020k/lumen-core'
 
 export type Props = HTMLAttributes<'ol'>
@@ -8,6 +11,6 @@ export type Props = HTMLAttributes<'ol'>
 const { class: className, ...props } = Astro.props
 ---
 
-<ol class={composeClassName('ui-timeline', className)} {...props}>
+<ol data-slot="timeline" class={composeClassName('ui-timeline', className)} {...props}>
   <slot />
 </ol>

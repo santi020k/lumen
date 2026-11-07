@@ -231,7 +231,7 @@ export {
   type LumenTextTone,
   type LumenTextVariant
 } from './primitives.js'
-export { LumenProvider, type LumenProviderProps } from './provider.js'
+export { LumenProvider, type LumenProviderProps, LumenThemeScope, type LumenThemeScopeProps } from './provider.js'
 export { LumenQRCode, type LumenQRCodeProps } from './qrcode-components.js'
 export { encodeLumenQRCode, type LumenQRCodeCorrection, lumenQRCodePath, type LumenQRCodeResult } from './qrcode-recipes.js'
 export { LumenRating, type LumenRatingProps } from './rating-components.js'
@@ -308,7 +308,7 @@ export {
   lumenLightTheme,
   type LumenSurfaceMaterial,
   type LumenTheme,
-  type LumenThemeOptions,
+  type LumenThemeDefinition, type LumenThemeOptions,
   type LumenThemePreset } from './theme.js'
 export { useLumenTheme } from './theme-context.js'
 export { LumenTimeline, LumenTimelineItem, type LumenTimelineItemProps, type LumenTimelineProps } from './timeline-components.js'
@@ -356,8 +356,9 @@ export {
   LumenSlider,
   type LumenSliderProps
 } from './value-components.js'
-export type { LumenComparisonDatum } from '@santi020k/lumen-core'
-export type { LumenBoxPlotDatum, LumenCalendarHeatmapDatum, LumenFunnelDatum } from '@santi020k/lumen-core'
+export type { LumenComparisonDatum } from '@santi020k/lumen-core/charts'
+export type { LumenBoxPlotDatum, LumenCalendarHeatmapDatum, LumenFunnelDatum } from '@santi020k/lumen-core/charts'
+export { type LumenMediaViewportValue } from '@santi020k/lumen-core/media-workspace'
 export {
   createEmptyLumenPhoneNumber,
   getLumenPhoneCountries,
@@ -366,5 +367,4 @@ export {
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber,
   resolveLumenPhoneNumber
-} from '@santi020k/lumen-core'
-export { type LumenMediaViewportValue } from '@santi020k/lumen-core/media-workspace'
+} from '@santi020k/lumen-core/phone'

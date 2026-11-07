@@ -83,3 +83,32 @@ test('enabled slotted controls keep consumer capture and bubble handlers', async
   expect(onClickCapture).toHaveBeenCalledOnce()
   expect(link.tabIndex).toBe(2)
 })
+
+test('forwards and clears refs on the rendered slotted and native controls', async () => {
+  const controls: { slotted: HTMLElement | null, native: HTMLButtonElement | null } = {
+    slotted: null, native: null
+  }
+  await act(async () => {
+    await Promise.resolve()
+    root.render(createElement('div', null, createElement(Button, {
+      asChild: true,
+      ref: (element: HTMLElement | null) => {
+        controls.slotted = element
+      }
+    }, createElement('a', { href: '/projects' }, 'Projects')), createElement(Button, {
+      ref: (element: HTMLButtonElement | null) => {
+        controls.native = element
+      }
+    }, 'Save')))
+  })
+  expect(controls.slotted).toBeInstanceOf(HTMLAnchorElement)
+  expect(controls.slotted).toBe(container.querySelector('a'))
+  expect(controls.native).toBeInstanceOf(HTMLButtonElement)
+  expect(controls.native).toBe(container.querySelector('button'))
+  await act(async () => {
+    await Promise.resolve()
+    root.render(null)
+  })
+  expect(controls.slotted).toBeNull()
+  expect(controls.native).toBeNull()
+})

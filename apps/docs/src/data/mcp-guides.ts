@@ -15,7 +15,7 @@ export const claudePluginInstall = `/plugin marketplace add santi020k/lumen
 
 export const tools = [
   ['lumen_check_compatibility', 'Compare resolved installed versions before applying catalog contracts.', 'git-compare-arrows'],
-  ['lumen_get_migration', 'Read v4 migration guidance and package-specific review decisions without changing files.', 'scroll-text'],
+  ['lumen_get_migration', 'Read guidance for the bundled release by default (v5 in this catalog), or select targetVersion: "4.0.0" or "5.0.0" explicitly, without changing files.', 'scroll-text'],
   [
     'lumen_list_components',
     'List every component with its framework availability and recipe membership. Filter by framework, recipe, or a name query.',

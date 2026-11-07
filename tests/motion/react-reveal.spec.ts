@@ -62,8 +62,10 @@ const openFixture = async (page: Page, width: number, scale: number, theme = 'li
   // Establish the scenario before first paint. Live root-style mutation can leave
   // WebKit's inherited colors and scrollable overflow stale during this audit.
   await page.goto(`${route}?theme=${theme}&textScale=${scale}`)
+  const reduced = await page.evaluate(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   for (const id of ids) {
-    await expect(target(page, id)).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
+    if (reduced) await expect(target(page, id)).not.toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
+    else await expect(target(page, id)).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
   }
   await expect(page.locator('html')).toHaveCSS('font-size', `${16 * scale}px`)
   await expect(page.locator('html')).toHaveCSS('color-scheme', theme)
@@ -130,11 +132,9 @@ for (const width of [390, 1440]) {
               element.scrollWidth <= element.clientWidth
           })).toBe(true)
           await page.locator('#end').scrollIntoViewIfNeeded()
-          if (id.startsWith('repeat')) {
-            await expect(target(page, id)).not.toHaveClass(/is-revealed/)
-          } else {
-            await expect(target(page, id)).toHaveClass(/is-revealed/)
-          }
+          // Keyboard access disables decorative hiding, including repeatable reveals.
+          await expect(target(page, id)).toHaveClass(/is-revealed/)
+          await expect(target(page, id)).not.toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
           await target(page, id).evaluate(element => { element.scrollIntoView({ block: 'start' }); })
           await checkVisible(page, id)
         }

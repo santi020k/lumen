@@ -125,6 +125,7 @@ import {
   playgroundLumenVersion
 } from './playground-model'
 import { createPlaygroundTheme, isThemePreset, type ThemePreset, themePresetOptions } from './playground-theme'
+import { ThemeScopePreview } from './ThemeScopePreview'
 import { WorkspaceExample } from './WorkspaceExample'
 
 type ColorScheme = 'dark' | 'light' | 'system'
@@ -848,6 +849,15 @@ const ExamplesScreen = (): ReactElement => {
   )
 }
 
+const themeDescriptions: Record<ThemePreset, string> = {
+  lumen: 'Warm surfaces and cyan actions.',
+  studio: 'Neutral surfaces and monochrome controls.',
+  glass: 'Rounded controls and opaque surfaces.',
+  santi020k: 'Ink buttons and violet accents.',
+  paper: 'Ivory or espresso surfaces, burgundy accents and serif titles.',
+  field: 'Sage or forest surfaces and rounded controls.'
+}
+
 const SettingsScreen = ({
   onSchemeChange,
   onThemePresetChange,
@@ -894,8 +904,7 @@ const SettingsScreen = ({
             value={themePreset}
           />
           <LumenText variant="caption" tone="muted">
-            Normal keeps the classic Lumen look. Studio uses neutral surfaces. Glass uses rounded surfaces
-            with an opaque material fallback on React Native.
+            {themeDescriptions[themePreset]}
           </LumenText>
           <LumenSegmentedControl
             label="Playground appearance"
@@ -914,6 +923,8 @@ const SettingsScreen = ({
             <LumenBadge tone="neutral">{scheme.charAt(0).toUpperCase() + scheme.slice(1)}</LumenBadge>
           </View>
         </LumenCard>
+
+        <ThemeScopePreview />
 
         <LumenCard style={styles.section}>
           <LumenSectionHeader
@@ -1084,6 +1095,7 @@ const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boo
     )}
     {isVisible('Waterfall chart') && (
       <LumenWaterfallChart
+        testID="component-waterfall-chart"
         label="Revenue movement"
         heading="Revenue movement"
         description="Opening balance to closing · USD, thousands"
@@ -1109,6 +1121,7 @@ const IntervalChartExamples = ({ isVisible }: { isVisible: (name: string) => boo
     )}
     {isVisible('Histogram') && (
       <LumenHistogram
+        testID="component-histogram"
         label="Response times"
         heading="Response time"
         description="Distribution of requests · milliseconds"
@@ -1520,6 +1533,7 @@ const Playground = ({
   return (
     <LumenSurface padding="none" radius="none" style={styles.screen} tone="canvas">
       <ScrollView
+        testID="component-preview"
         contentContainerStyle={getPlaygroundContentStyle(embedded)}
         keyboardShouldPersistTaps="handled"
         refreshControl={(

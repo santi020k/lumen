@@ -41,9 +41,10 @@ primary destinations are Home, Examples, Components, and Settings:
   effects respect Reduce Motion and a local reduction toggle; sheet presentation follows the system.
 - Components adds the shared six-category discovery structure to the searchable catalog while preserving the
   deterministic launch filters used by screenshot automation.
-- Settings offers Normal, Studio, Glass and santi020k themes alongside light/dark appearance,
-  Accessibility, Runtime localization, App and platform, and Privacy
-  and resources using native SwiftUI behavior.
+- Settings offers Normal, Studio, Glass, santi020k, Paper and Field with System, Light and Dark
+  appearance. Open **Harbor note** for a light preview of a custom theme, type a note and switch the app appearance
+  from the sheet. The draft persists while the playground is running. The settings also cover
+  accessibility, runtime localization, app information and privacy resources.
 
 > **Local candidate:** This checkout uses the Lumen 4 adapter. Search accepts component IDs and
 > supports filter reset. See the [v4 playground guide](../../docs/playgrounds.md#lumen-4-workspace)
@@ -87,6 +88,12 @@ ad hoc without requiring a development team. The local bundle identifier is sepa
 App Store app, so development builds do not replace it. Set `LUMEN_MAC_BUILD_PATH` to use a different
 build directory. A raw `swift run` executable remains useful for development but does not include
 application-bundle metadata or the Dock icon.
+
+The local identifier override is scoped to the Mac application target through
+`LUMEN_MAC_BUNDLE_IDENTIFIER`. Do not override `PRODUCT_BUNDLE_IDENTIFIER` globally: that also
+renames Swift package resource bundles, causing their asset catalogs to collide with the app's
+catalog and leaving shared icons blank. The build command verifies distinct identifiers before
+signing. The default App Store identifier remains unchanged.
 
 The Navigate menu supports **Command-1** through **Command-4** for Home, Examples, Components, and
 Settings. **Command-comma** opens Settings in the active playground window. The View menu provides
@@ -224,6 +231,11 @@ macOS requests Screen Recording permission the first time `screencapture` runs. 
 intentionally interactive so the script does not require Accessibility permission to control other
 applications.
 
+The v5 release kit includes six Mac store images, exported from the actual desktop app after
+verifying its bundled icons. Use the [release asset capture guide](../../docs/assets/releases/v5.0.0/README.md#regenerate)
+for the exact window size, raw filenames, proportional 16:10 crop, and provenance update command.
+The export removes native window chrome; it does not redraw application content.
+
 The repository also includes a standalone watchOS gallery. Capture every wearable component on a
 booted watch simulator with:
 
@@ -234,7 +246,9 @@ apps/playground-apple/scripts/capture-watch-component-screenshots.sh
 After iPhone, macOS, and watchOS evidence is current, run `pnpm run sync:native-captures` from the
 repository root to update the optimized documentation gallery.
 
-Pass `--dark` to launch either gallery in its deterministic dark appearance. Public App Store copy,
+Pass `--dark` to launch either gallery in its deterministic dark appearance. The Apple playground
+also accepts `--destination settings --theme paper` and the theme IDs `lumen`, `studio`, `glass`,
+`santi020k` and `field`. An unknown theme opens Normal. Public App Store copy,
 review notes, and phone, tablet, and Mac screenshot candidates live in `Store`; the opaque application
 icon is generated from the shared Lumen mark with `scripts/generate-app-icons.sh`. Follow
 [`docs/playground-publication.md`](../../docs/playground-publication.md) before building a signed

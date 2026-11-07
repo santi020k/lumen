@@ -188,3 +188,108 @@ test('refreshes inherited generated labels when reconnecting under another code-
     expect(code.querySelector('pre')?.getAttribute('aria-label')).toBe('Second source')
   })
 })
+
+test.each([true, false])('editorial Code preserves localized feedback when appearance changes (success: %s)', async success => {
+  const writeText = success ? vi.fn().mockResolvedValue(undefined) : vi.fn().mockRejectedValue(new Error('Unavailable'))
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  const { code, button } = renderCode()
+  code.setAttribute('appearance', 'editorial')
+  await vi.waitFor(() => {
+    expect(code.classList.contains('ui-code--editorial')).toBe(true)
+    expect(button.textContent).toBe('Copy snippet')
+  })
+  button.click()
+  await vi.waitFor(() => {
+    expect(button.textContent).toBe(success ? 'Snippet saved' : 'Select and copy manually.')
+  })
+  expect(writeText).toHaveBeenCalledWith('pnpm install')
+  code.removeAttribute('appearance')
+  await vi.waitFor(() => {
+    expect(button.querySelector('.ui-code__copy-text')).toBeNull()
+  })
+  code.setAttribute('appearance', 'editorial')
+  await vi.waitFor(() => {
+    expect(button.textContent).toBe(success ? 'Snippet saved' : 'Select and copy manually.')
+  })
+})
+
+test.each(['', 'const greeting = "¡Hola!";\nconsole.log(greeting)'])('manual recovery preserves %j without taking focus and clears on retry', async source => {
+  const writeText = vi.fn().mockRejectedValueOnce(new Error('Denied')).mockResolvedValue(undefined)
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  const { code, button } = renderCode()
+  const content = code.querySelector('code')
+  if (!content) throw new Error('Missing source')
+  content.textContent = source
+  code.setAttribute('recovery-label', 'Select this complete source')
+  button.focus()
+  button.click()
+  await vi.waitFor(() => {
+    expect(code.querySelector('textarea')?.value).toBe(source)
+  })
+  const field = code.querySelector('textarea')
+  if (!field) throw new Error('Missing recovery field')
+  expect(field.readOnly).toBe(true)
+  expect(document.activeElement).toBe(button)
+  field.focus()
+  expect(field.selectionEnd).toBe(source.length)
+  button.click()
+  await vi.waitFor(() => {
+    expect(button.dataset.state).toBe('copied')
+  })
+  expect(code.querySelector('textarea')).toBeNull()
+})
+
+test('manual recovery is opt-in and is removed when copy is disabled', async () => {
+  vi.stubGlobal('navigator', {})
+  const { code, button } = renderCode()
+  button.click()
+  await vi.waitFor(() => {
+    expect(button.dataset.state).toBe('error')
+  })
+  expect(code.querySelector('textarea')).toBeNull()
+  code.setAttribute('recovery-label', 'Copy manually')
+  button.click()
+  await vi.waitFor(() => {
+    expect(code.querySelector('textarea')).not.toBeNull()
+  })
+  code.removeAttribute('copy')
+  await vi.waitFor(() => {
+    expect(code.querySelector('textarea')).toBeNull()
+  })
+})
+
+test('code tabs inherit recovery labels and discard the previous panel recovery', async () => {
+  vi.stubGlobal('navigator', {})
+  const tabs = document.createElement('lumen-code-tabs')
+  tabs.setAttribute('recovery-label', 'Select active command')
+  tabs.innerHTML = '<div role="tablist"><button role="tab" data-value="one" aria-controls="recover-one">One</button><button role="tab" data-value="two" aria-controls="recover-two">Two</button></div><div id="recover-one" role="tabpanel"><lumen-code variant="block" copy><pre><code>one</code></pre></lumen-code></div><div id="recover-two" role="tabpanel" hidden><lumen-code variant="block" copy><pre><code>two</code></pre></lumen-code></div>'
+  document.body.append(tabs)
+  const copy = tabs.querySelector<HTMLButtonElement>('[data-ui-code-copy]')
+  if (!copy) throw new Error('Missing copy button')
+  copy.click()
+  await vi.waitFor(() => {
+    expect(tabs.querySelector('textarea')?.value).toBe('one')
+  })
+  expect(tabs.querySelector('textarea')?.getAttribute('aria-label')).toBe('Select active command')
+  const next = tabs.querySelectorAll<HTMLButtonElement>('[role="tab"]')[1]
+  if (!next) throw new Error('Missing next tab')
+  next.click()
+  expect(tabs.querySelector('textarea')).toBeNull()
+})
+
+test('a pending copy cannot expose the previous source after authored text changes', async () => {
+  let rejectCopy: ((reason: Error) => void) | undefined
+  vi.stubGlobal('navigator', { clipboard: { writeText: () => new Promise<never>((_resolve, reject) => {
+    rejectCopy = reject
+  }) } })
+  const { code, button } = renderCode()
+  code.setAttribute('recovery-label', 'Copy current source')
+  button.click()
+  const source = code.querySelector('code')
+  if (!source) throw new Error('Missing source')
+  source.textContent = 'updated source'
+  await Promise.resolve()
+  rejectCopy?.(new Error('Denied'))
+  await Promise.resolve()
+  expect(code.querySelector('textarea')).toBeNull()
+})

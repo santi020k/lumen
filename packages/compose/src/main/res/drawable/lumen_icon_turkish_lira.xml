@@ -7,21 +7,21 @@
     android:viewportHeight="24">
         <path
             android:fillColor="@android:color/transparent"
-            android:pathData="M15 4 5 9"
+            android:pathData="m14 10-8 4"
             android:strokeColor="#FF000000"
             android:strokeLineCap="round"
             android:strokeLineJoin="round"
             android:strokeWidth="2" />
         <path
             android:fillColor="@android:color/transparent"
-            android:pathData="m15 8.5-10 5"
+            android:pathData="M14 5 6 9"
             android:strokeColor="#FF000000"
             android:strokeLineCap="round"
             android:strokeLineJoin="round"
             android:strokeWidth="2" />
         <path
             android:fillColor="@android:color/transparent"
-            android:pathData="M18 12a9 9 0 0 1-9 9V3"
+            android:pathData="M18 12a8 8 0 01-7.003 7.937c-.547.07-.997-.385-.997-.937V4"
             android:strokeColor="#FF000000"
             android:strokeLineCap="round"
             android:strokeLineJoin="round"

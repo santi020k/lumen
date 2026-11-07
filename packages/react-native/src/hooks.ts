@@ -12,7 +12,7 @@ import {
   getLumenLocalePair,
   type LumenLocaleOption,
   normalizeLumenLocales
-} from '@santi020k/lumen-core'
+} from '@santi020k/lumen-core/language'
 
 import {
   createLumenHookToast,

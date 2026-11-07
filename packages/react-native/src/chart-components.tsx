@@ -58,7 +58,7 @@ import {
   resolveLumenChartLabels,
   resolveLumenChartTone,
   scaleLumenChartValue
-} from '@santi020k/lumen-core'
+} from '@santi020k/lumen-core/charts'
 
 import { useLumenChartLayout } from './chart-layout.js'
 import { LumenDisclosure } from './content-components.js'
@@ -76,7 +76,7 @@ export type {
   LumenHeatmapDatum,
   LumenHistogramBin,
   LumenRangeDatum,
-  LumenWaterfallDatum } from '@santi020k/lumen-core'
+  LumenWaterfallDatum } from '@santi020k/lumen-core/charts'
 
 interface LumenChartFrameProps extends Omit<ViewProps, 'children'> {
   children: ReactNode

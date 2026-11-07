@@ -31,9 +31,10 @@ privacy declarations, signed release candidates, staged testing, and production 
 ## Appearance comparison
 
 In the Apple, Compose and React Native phone playgrounds, open **Settings → Appearance**
-and choose **Normal**, **Studio** or **Glass**. The existing **santi020k** brand theme remains
-available. The selection updates the whole gallery without resetting navigation or example inputs;
-light and dark appearance stay independent. Preferences remain local to the current app session.
+and select **Normal**, **Studio**, **Glass**, **santi020k**, **Paper** or **Field**. Change the
+appearance separately to compare the same screen in light and dark. Try Paper's serif headings
+and small corners, Field's rounded controls, and the ink-colored action in santi020k.
+Open the scoped preview, enter a draft, then dismiss and reopen the sheet to check the draft.
 
 Studio uses PostLens-inspired neutral surfaces, monochrome actions and compact corners. Glass
 uses the shared rounded appearance. Apple Settings includes an explicit supporting material preview
@@ -41,7 +42,7 @@ with Reduce Transparency and increased-contrast fallbacks; Compose and React Nat
 material fallbacks. Dense content and status surfaces remain legible. See
 [appearance presets](appearance-presets.md) for the public theme APIs and customization options.
 
-The React Native web preview also accepts `?destination=settings&theme=studio` or `theme=glass`
+The React Native web preview also accepts `?destination=settings&theme=studio` or `theme=paper`, `theme=field` and `theme=glass`
 for reproducible appearance review. Existing `theme=lumen` and `theme=santi020k` links still work.
 With the React Native web preview running, verify keyboard selection, retained input and responsive
 layouts with `pnpm --filter @santi020k/lumen-playground-react-native test:appearance:web`.
@@ -96,7 +97,8 @@ corepack enable
 pnpm install
 ```
 
-Use Node.js 22.22.2+, 24.15.0+, or 26+, matching the private workspace tooling requirements. The Apple playground additionally needs macOS and Xcode. The Android
+Use the Node.js and pnpm versions in the [workspace setup requirements](../CONTRIBUTING.md#local-setup).
+The Apple playground additionally needs macOS and Xcode. The Android
 playground needs Android Studio, Android SDK 37, and JDK 21. The packed React Native Android smoke
 test also supports Android Studio's newer bundled JDK by enabling the native access required by
 Expo's CMake configuration step.
@@ -158,10 +160,9 @@ latest update on the `expo-go` branch:
 exp://u.expo.dev/669035f0-04c0-41cd-9ca6-73d99bdb7dce/branch/01a03c76-64c5-7c07-ba75-43f815735357
 ```
 
-The playground currently targets Expo SDK 57. Expo Go must support the same SDK to load it. As of
-August 2026, the public Expo Go store client targets SDK 54, so this link is not yet a reliable
-general-public installation path. Wait for SDK 57 support or create and validate a deliberately
-separate SDK 54 compatibility app before promoting it broadly.
+The playground targets Expo SDK 58. Expo Go must support the same SDK to load it. Verify the
+installed client supports SDK 58 before using or promoting this link; no public-client compatibility
+is established by this dependency upgrade. Native development and store builds must be rebuilt.
 
 After validating a new playground version, publish it from an authenticated Expo session:
 
@@ -171,6 +172,9 @@ pnpm --filter @santi020k/lumen-playground-react-native run publish:expo-go -- --
 
 The project is owned by the `santi020k` Expo account. Keep `runtimeVersion`, `updates.url`, and the
 EAS project identifier in `app.json`; the Expo Go launch link depends on that project and branch.
+Native builds and updates use the `fingerprint` runtime policy so SDK or native dependency changes
+receive a different runtime. Do not send the SDK 58 bundle to an older native build. See
+[Expo runtime version guidance](https://docs.expo.dev/eas-update/runtime-versions/).
 Run the app's `generate:assets` script whenever the shared Lumen playground icon artwork changes.
 
 ### Create an APK or store build
@@ -180,8 +184,8 @@ CLI version without installing it into the Expo app. Authenticate and connect th
 
 ```bash
 cd apps/playground-react-native
-pnpm dlx eas-cli@24.8.0 login
-pnpm dlx eas-cli@24.8.0 init
+pnpm dlx eas-cli@27.5.0 login
+pnpm dlx eas-cli@27.5.0 init
 ```
 
 After `eas init`, keep the generated EAS project identifier in `app.json`. Build a directly
@@ -207,7 +211,7 @@ production build.
 
 1. In Xcode, choose File → Add Package Dependencies.
 2. Paste `https://github.com/santi020k/lumen` into the search field.
-3. Choose Exact Version and enter `4.4.0`. Use Up to Next Major Version from `4.4.0` only when the
+3. Choose Exact Version and enter `5.0.0`. Use Up to Next Major Version from `5.0.0` only when the
    application intentionally accepts compatible updates; reserve `main` for local evaluation.
 4. Select the `LumenUI` product and add it to your application target.
 5. Add `import LumenUI` to the SwiftUI view that uses Lumen components.
@@ -319,7 +323,7 @@ link the platform package differently:
 - React Native installs `@santi020k/lumen-react-native` from npm and mounts one `LumenProvider`.
 - Apple applications add `https://github.com/santi020k/lumen` through Swift Package Manager and
   select the `LumenUI` product.
-- Android applications install `com.santi020k:lumen-compose:4.0.1` from Maven Central. The repository
+- Android applications install `com.santi020k:lumen-compose:4.1.0` from Maven Central. The repository
   playground intentionally references the local module so it can exercise unreleased changes.
 
 See the corresponding React Native, Apple, or Android documentation page for complete application

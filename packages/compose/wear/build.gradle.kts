@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.dokka-javadoc") version "2.2.0"
+    id("org.jetbrains.dokka-javadoc") version "2.3.0"
     id("maven-publish")
     id("signing")
 }

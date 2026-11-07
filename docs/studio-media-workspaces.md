@@ -10,7 +10,7 @@ opaque. Use glass selectively on a supporting tool rail.
 The `media-workspace` starter separates preview, inspector, supporting tools, ordered media and
 bottom controls. Its container layout stacks the inspector below the preview when available space
 is narrow. Controls wrap instead of shrinking touch targets. Import the installed
-`media-workspace.css` once at the application's style boundary.
+`media-workspace.css` once at the application's style boundary. With selective CSS, import your adapter's `styles/themes/studio.css` to use Studio on the host. The starter imports its glass tool rail styles.
 
 ```bash
 pnpm exec lumen add media-workspace --target astro

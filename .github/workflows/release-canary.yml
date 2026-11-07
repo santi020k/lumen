@@ -22,6 +22,17 @@ on:
       - "packages/**"
       - "tests/editorial/**"
       - "tests/fixtures/editorial/**"
+      - "tests/fixtures/portable-editorial/**"
+      - "tests/fixtures/product-workflows/**"
+      - "tests/fixtures/delivery/**"
+      - "tests/product-workflows/**"
+      - "tests/rendered-audit/**"
+      - "playwright.portable-editorial.config.ts"
+      - "playwright.product-workflows.config.ts"
+      - "playwright.rendered-audit.config.ts"
+      - "scripts/measure-route-delivery.mjs"
+      - "scripts/check-route-runtime.mjs"
+      - "scripts/check-component-css-rendering.mjs"
       - "playwright.editorial.config.ts"
       - "tests/motion/**"
       - "playwright.motion.config.ts"
@@ -30,6 +41,8 @@ on:
       - "registry/lumen-2-contract.json"
       - "registry/lumen-3-contract.json"
       - "registry/lumen-4-contract.json"
+      - "registry/lumen-5-contract.json"
+      - "scripts/generate-v5-migration.mjs"
       - "registry/web-api-baseline.json"
       - "registry/web-consumer-evidence.json"
       - "registry/swift-api-baseline.json"
@@ -137,14 +150,14 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
         with:
           node-version: 22.x
       - name: Check repository and dependency security before builds
         run: pnpm run ci:preflight
       - run: pnpm run check:release-manifest
       - run: node --test scripts/generate-release-manifest.test.mjs
-      - run: pnpm run check:web-api-baseline && pnpm run test:web-api-baseline
+      - run: pnpm run check:web-api-baseline && pnpm run test:web-api-baseline && pnpm run check:v5-migration
         if: needs.classify.outputs.web-contracts == 'true'
       - run: pnpm run check:web-consumer-evidence && pnpm run test:web-consumer-evidence
         if: needs.classify.outputs.web-contracts == 'true'
@@ -188,7 +201,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
         with:
           node-version: 22.x
           task-cache-path: .turbo/cache
@@ -225,11 +238,11 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
         with:
           node-version: 22.x
           install: false
-      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: temurin
           java-version: 21
@@ -263,12 +276,12 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
         with:
           node-version: 22.x
           task-cache-path: .turbo/cache
           task-cache-key: canary-react-native
-      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: temurin
           java-version: 21
@@ -306,7 +319,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
         with:
           node-version: 22.x
           task-cache-path: .turbo/cache
@@ -329,6 +342,15 @@ jobs:
       - name: Verify installed editorial recipes
         if: needs.classify.outputs.browser == 'true'
         run: pnpm run test:editorial --shard=${{ matrix.shard }}/2 --max-failures=1
+      - name: Check product workflow recipes
+        if: needs.classify.outputs.browser == 'true'
+        run: pnpm run test:product-workflows --shard=${{ matrix.shard }}/2 --max-failures=1
+      - name: Verify portable recipes and selective wrappers
+        if: needs.classify.outputs.browser == 'true'
+        run: pnpm run test:portable-editorial --shard=${{ matrix.shard }}/2 --max-failures=1
+      - name: Verify explicit rendered audits
+        if: needs.classify.outputs.browser == 'true'
+        run: pnpm run test:rendered-audit --shard=${{ matrix.shard }}/2 --max-failures=1
       - name: Verify release-candidate framework behavior
         if: matrix.shard == 1
         env:
@@ -336,10 +358,14 @@ jobs:
         run: pnpm run test:framework-conformance
       - name: Verify release-candidate primitive motion
         if: matrix.shard == 1
-        run: pnpm run test:motion
+        run: pnpm run test:motion && pnpm run check:route-delivery
+
+      - name: Measure packed selective subscribe forms
+        if: matrix.shard == 1
+        run: pnpm run measure:subscribe-form
       - name: Preserve browser failure diagnostics
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-browser-${{ matrix.shard }}
           path: test-results/

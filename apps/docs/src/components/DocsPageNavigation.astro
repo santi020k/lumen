@@ -93,10 +93,11 @@ const sections = normalizePageNavigation(items === false ? [] : items ?? [])
       frame = 0
 
       const bar = root.closest<HTMLElement>('.docs-mobile-navigation-bar')
+      const stickyBottom = bar && getComputedStyle(bar).position === 'sticky' ? bar.getBoundingClientRect().bottom : 0
 
       const activeId = getActivePageSection(
         sections.map(section => ({ id: section.id, top: section.target.getBoundingClientRect().top })),
-        (bar?.getBoundingClientRect().bottom ?? 0) + 24
+        stickyBottom + 24
       )
 
       for (const section of sections) {
@@ -205,11 +206,18 @@ const sections = normalizePageNavigation(items === false ? [] : items ?? [])
   @media (prefers-reduced-motion: reduce) { .docs-page-navigation :global(.docs-page-navigation__chevron) { transition: none; } }
   .docs-page-navigation__label { flex-shrink: 0; color: hsl(var(--ink)); font-weight: 800; }
   .docs-page-navigation__current { min-width: 0; overflow: hidden; color: hsl(var(--ink-soft)); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
-  .docs-page-navigation :global(.docs-page-navigation__panel) { position: absolute; z-index: 30; top: calc(100% + 0.5rem); left: 0; width: min(22rem, 100%); overflow: auto; max-height: min(55dvh, 26rem); margin: 0; padding: var(--ui-space-sm); border: 1px solid hsl(var(--line)); border-radius: 0.65rem; background: hsl(var(--surface)); box-shadow: 0 8px 24px hsl(var(--ink) / 0.1); overscroll-behavior: contain; }
+  .docs-page-navigation :global(.docs-page-navigation__panel) { position: absolute; z-index: 30; top: calc(100% + 0.5rem); inset-inline-start: 0; width: min(22rem, 100%); overflow: auto; max-height: min(55dvh, 26rem); margin: 0; padding: var(--ui-space-sm); border: 1px solid hsl(var(--line)); border-radius: 0.65rem; background: hsl(var(--surface)); box-shadow: 0 8px 24px hsl(var(--ink) / 0.1); overscroll-behavior: contain; }
   .docs-page-navigation ol { display: grid; gap: 0.25rem; margin: 0; padding: 0; list-style: none; }
   .docs-page-navigation li { min-width: 0; }
   .docs-page-navigation :global([data-docs-page-link]) { display: flex; align-items: center; min-height: 2.75rem; padding: 0.55rem 0.75rem; border-radius: 0.4rem; color: hsl(var(--ink-soft)); font-size: 0.8125rem; font-weight: 600; line-height: 1.5; text-decoration: none; }
   .docs-page-navigation :global([data-docs-page-link]:hover) { color: hsl(var(--ink)); background: hsl(var(--surface-muted)); }
   .docs-page-navigation :global([aria-current='location']) { color: hsl(var(--brand)); background: hsl(var(--brand-soft)); box-shadow: inset 3px 0 hsl(var(--brand)); }
   @media (max-width: 30rem) { .docs-page-navigation :global(.docs-page-navigation__disclosure > summary) { gap: var(--ui-space-sm); } .docs-page-navigation__current { font-size: 0.6875rem; } }
+  @container docs-viewport (max-width: 12rem) {
+    .docs-page-navigation { flex-basis: 100%; }
+    .docs-page-navigation :global(.docs-page-navigation__disclosure > summary) { grid-template-columns: minmax(0, 1fr) auto; width: 100%; }
+    .docs-page-navigation__label { overflow-wrap: anywhere; }
+    .docs-page-navigation__current { grid-row: 2; white-space: normal; overflow-wrap: anywhere; }
+    .docs-page-navigation :global(.docs-page-navigation__chevron) { grid-column: 2; grid-row: 1 / span 2; }
+  }
 </style>

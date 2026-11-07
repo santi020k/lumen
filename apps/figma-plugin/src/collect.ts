@@ -3,21 +3,35 @@ import type { DesignNode } from './model.js'
 const MAX_NODES = 1500
 const MAX_DEPTH = 40
 const MAX_TEXT = 100_000
+const componentOwner = (component: ComponentNode) => component.parent?.type === 'COMPONENT_SET' ? component.parent : component
+
+const propertyValues = (node: SceneNode): [string, string | boolean][] => {
+  if (node.type === 'INSTANCE') return Object.entries(node.componentProperties).map(([key, prop]) => [key, prop.value])
+
+  if (node.type !== 'COMPONENT') return []
+
+  // Figma documents this getter for component variants. Remove the exception when
+  // plugin-typings separates the deprecated instance getter from ComponentNode.
+  // eslint-disable-next-line @typescript-eslint/no-deprecated -- The instance path above uses componentProperties.
+  const variants = node.variantProperties
+
+  return Object.entries(componentOwner(node).componentPropertyDefinitions).map(([key, prop]) => [
+    key, prop.type === 'VARIANT' ? variants?.[key] ?? prop.defaultValue : prop.defaultValue
+  ])
+}
 
 const readProperties = (node: SceneNode, boundedText: (value: string) => string) => {
-  const properties: Record<string, string | boolean> = {}
+  const properties = new Map<string, string | boolean>()
 
-  if (node.type !== 'INSTANCE') return properties
-
-  for (const [key, property] of Object.entries(node.componentProperties)) {
+  for (const [key, value] of propertyValues(node)) {
     const name = key.split('#')[0] ?? key
 
-    if (Object.hasOwn(properties, name)) throw new Error('Component property names are ambiguous. Rename duplicate properties before exporting.')
+    if (properties.has(name)) throw new Error('Component property names are ambiguous. Rename duplicate properties before exporting.')
 
-    properties[name] = typeof property.value === 'string' ? boundedText(property.value) : property.value
+    properties.set(boundedText(name), typeof value === 'string' ? boundedText(value) : value)
   }
 
-  return properties
+  return Object.fromEntries(properties)
 }
 
 const readLayout = (node: SceneNode): DesignNode['layout'] => {
@@ -32,13 +46,13 @@ const readLayout = (node: SceneNode): DesignNode['layout'] => {
 }
 
 const readIdentity = async (node: SceneNode): Promise<DesignNode['component']> => {
-  if (node.type !== 'INSTANCE') return null
+  if (node.type !== 'INSTANCE' && node.type !== 'COMPONENT') return null
 
-  const main = await node.getMainComponentAsync()
+  const main = node.type === 'INSTANCE' ? await node.getMainComponentAsync() : node
 
   if (!main) return null
 
-  const owner = main.parent?.type === 'COMPONENT_SET' ? main.parent : main
+  const owner = componentOwner(main)
 
   return { key: main.key, setKey: owner.key, name: owner.name }
 }
@@ -94,7 +108,9 @@ export const collectSelection = async (node: SceneNode): Promise<DesignNode> => 
     return name
   }
 
-  const read = async (current: SceneNode, depth: number): Promise<DesignNode> => {
+  const read = async (selected: SceneNode, depth: number): Promise<DesignNode> => {
+    const current = selected.type === 'COMPONENT_SET' ? selected.defaultVariant : selected
+
     count += 1
 
     if (count > MAX_NODES || depth > MAX_DEPTH) throw new Error('This selection is too large or deeply nested. Select a smaller section (up to 1,500 layers).')
@@ -111,9 +127,9 @@ export const collectSelection = async (node: SceneNode): Promise<DesignNode> => 
     }
 
     return {
-      id: current.id,
-      name: boundedText(current.name),
-      type: current.type,
+      id: selected.id,
+      name: boundedText(selected.name),
+      type: selected.type,
       text: current.type === 'TEXT' ? boundedText(current.characters) : null,
       component,
       properties,

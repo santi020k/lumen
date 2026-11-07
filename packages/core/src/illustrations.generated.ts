@@ -151,6 +151,12 @@ const renderElement = (element: LumenIllustrationElement): string => {
     return `<rect height="${element.height}" rx="${element.radius}" width="${element.width}" x="${element.x}" y="${element.y}" />`
   }
 
+  if (element.kind === 'line') {
+    const [x1, y1, x2, y2] = element.points
+
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />`
+  }
+
   return `<${element.kind} points="${points(element.points)}" />`
 }
 

@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 
-import { cachedLumenThemes } from './lumen-shiki-themes'
+import { cachedLumenThemes, cachedSanti020kThemes } from './lumen-shiki-themes'
 
 const luminance = (hex: string): number => {
   const color = Number.parseInt(hex.slice(1), 16)
@@ -18,9 +18,12 @@ const luminance = (hex: string): number => {
   }, 0)
 }
 
-test.each(Object.entries(cachedLumenThemes))('%s syntax colors meet AA on their theme background', (_, theme) => {
+test.each([
+  ...Object.entries(cachedLumenThemes).map(([name, theme]) => [`Lumen ${name}`, theme] as const),
+  ...Object.entries(cachedSanti020kThemes).map(([name, theme]) => [`Santi020k ${name}`, theme] as const)
+])('%s syntax colors meet AA on their theme background', (_, theme) => {
   const background = luminance(theme.colors['editor.background'])
-  const colors = [theme.colors['editor.foreground'], ...theme.tokenColors.map(token => token.settings.foreground)]
+  const colors = [theme.colors['editor.foreground'], ...theme.tokenColors.flatMap(token => typeof token.settings.foreground === 'string' ? [token.settings.foreground] : [])]
 
   for (const color of colors) {
     const foreground = luminance(color)

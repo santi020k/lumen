@@ -260,7 +260,7 @@ actions. Never use real identity documents in demonstration data.
 
 ## Page and section headers
 
-Install `page-header` or `section-header` through the bundled CLI for Astro, React or Elements:
+Install `page-header` or `section-header` through the separately installed `@santi020k/lumen` CLI for Astro, React or Elements:
 
 ```bash
 pnpm exec lumen add page-header --target astro
@@ -488,3 +488,58 @@ financial calculations and the ledger remain outside the recipe.
 
 These operational recipes are React-specific. Their component foundations remain available to
 Astro and Elements; no React controller or TanStack dependency is introduced into those adapters.
+
+## Public feedback board
+
+Install the editable Astro composition with `lumen add feedback-board --target astro`.
+`FeedbackBoard` requires an instance `id` and translated `labels` for every visible message.
+It composes Card, Badge, Button, Select and labeled form fields. Mount UIPrimitives once in the
+layout. The sorting Select retains its native fallback.
+
+Import `initializeFeedbackBoard` from the installed `src/lumen/feedback-board.ts`. Pass the rendered
+section and application callbacks `load(sort, signal)`, `submit(FormData, signal)` and
+`vote(id, signal)`. Load returns public items with `id`, `title`, `description`, `status`, formatted
+`votes` and boolean `voted`. Validate network responses in these callbacks. Supply approved public
+records only. Labels, statuses, endpoints, authentication, moderation, vote identity and submission
+receipts belong to the application.
+
+```ts
+import { initializeFeedbackBoard } from './lumen/feedback-board'
+
+// Implement these callbacks in the application API adapter.
+import { loadPublicIdeas, submitFeedback, voteForIdea } from './feedback-api'
+
+const root = document.querySelector<HTMLElement>('#product-feedback')
+if (root) {
+  const dispose = initializeFeedbackBoard(root, {
+    load: loadPublicIdeas,
+    submit: submitFeedback,
+    vote: voteForIdea
+  })
+  document.addEventListener('astro:before-swap', dispose, { once: true })
+}
+```
+
+Initialize on each `astro:page-load` when using ClientRouter. Reinitializing the same section disposes
+its previous listeners. Submission stays disabled until callbacks are connected. Supply the named
+`fallback` slot with a contact or direct-feedback link for visitors using the page without JavaScript.
+Submission receipts and board refresh failures use separate status regions, so a successful write
+stays confirmed when refreshing fails. The recipe aborts replaced loads and ignores stale results, preserves form
+text, exposes failures with retry, serializes mutations, and returns focus to its status after a
+mutation. Aborting a request requires the application to reconcile uncertain submissions before
+retrying. The recipe performs a fresh load after a successful mutation. It supports multiple boards.
+
+## Responsive navigation
+
+Install `lumen add responsive-navigation --target astro`. Use the editable header with either
+`presentation="dialog"` or `presentation="disclosure"`. Supply an instance `id`, `home` link,
+`links` with optional `current`, and translated `labels.navigation`, `labels.open`, `labels.close`.
+The dialog composition uses the shared Lumen runtime. Its mobile links stay available until the
+recipe script loads. The disclosure uses the browser's native
+disclosure and Escape returns focus to its summary. Both close on link activation. When the 48rem
+breakpoint hides an open mobile control, focus moves to the visible home link. Edit the matching
+CSS and media query together when changing that breakpoint. Disconnecting the custom element
+removes its listeners during Astro navigation.
+
+Compose this header into the existing marketing-shell or docs-shell with the application's brand,
+search, language and theme controls. Desktop links retain ordinary browser keyboard navigation.

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { readdir, readFile, stat } from 'node:fs/promises'
-import { extname, join, relative, resolve, sep } from 'node:path'
+import { dirname, extname, join, relative, resolve, sep } from 'node:path'
 
 import {
   lumenComponentBehavior,
@@ -10,8 +10,12 @@ import {
   type LumenStylingContract,
   lumenStylingContracts
 } from '@santi020k/lumen-core'
-import { createSourceFile, forEachChild, type ImportDeclaration, type ImportSpecifier, isForOfStatement, isImportDeclaration, isNamedImports, isStringLiteral, type Node, ScriptKind, ScriptTarget, type Statement, SyntaxKind } from 'typescript'
+import { componentCssName } from '@santi020k/lumen-core/component-delivery'
+import { createSourceFile, forEachChild, type ImportDeclaration, type ImportSpecifier, isForOfStatement, isImportDeclaration, isJsxAttribute, isNamedImports, isStringLiteral, type JsxAttribute, type Node, ScriptKind, ScriptTarget, type SourceFile, type Statement, SyntaxKind } from 'typescript'
 
+import { readComponentImports } from './component-imports.js'
+import { type DeliveryVersion, getDeliveryVersion } from './delivery-version.js'
+import { hasComponentCss } from './style-coverage.js'
 import { findMarkupTagEnd, getMarkupStart } from './v2-migration.js'
 
 export type LumenDiagnosticSeverity = 'advisory' | 'error'
@@ -34,7 +38,7 @@ export interface LumenDiagnosticReport {
   runtimeComponents: string[]
 }
 
-const sourceExtensions = new Set(['.astro', '.css', '.js', '.jsx', '.mjs', '.ts', '.tsx'])
+const sourceExtensions = new Set(['.astro', '.html', '.htm', '.css', '.js', '.jsx', '.mjs', '.ts', '.tsx'])
 
 const ignoredDirectories = new Set([
   '.astro',
@@ -103,21 +107,6 @@ const discoverProject = async (root: string): Promise<DiscoveredProject> => {
   return { packageRoots, sourceFiles }
 }
 
-const importedNames = (source: string, packageName: string): string[] => {
-  const names: string[] = []
-  const pattern = new RegExp(`import\\s*\\{([\\s\\S]*?)\\}\\s*from\\s*['"]${packageName}['"]`, 'g')
-
-  for (const match of source.matchAll(pattern)) {
-    for (const entry of (match[1] ?? '').split(',')) {
-      const name = entry.trim().split(/\s+as\s+/u)[0]
-
-      if (name) names.push(name)
-    }
-  }
-
-  return names
-}
-
 const finding = (
   file: string,
   rule: string,
@@ -129,12 +118,14 @@ const finding = (
 type LumenFramework = 'astro' | 'elements' | 'react'
 
 interface SourceEntry {
+  imports: ReturnType<typeof readComponentImports>
   file: string
   source: string
 }
 
 interface ApplicationBoundary {
   dependencies: readonly string[]
+  deliveryVersions: Readonly<Record<LumenFramework, DeliveryVersion>>
   kind: 'application' | 'library' | 'workspace'
   packageName?: string
   root: string
@@ -153,7 +144,7 @@ interface PackageManifest {
   scripts?: Readonly<Record<string, string>>
 }
 
-const packageNamePattern = String.raw`@santi020k\/lumen-(?:astro|elements|react)(?:\/[^'"]*)?`
+const packageNamePattern = String.raw`@santi020k\/lumen(?:-(?:astro|elements|react|core))?(?:\/[^'"]*)?`
 
 const packageReferencePattern = new RegExp(
   String.raw`(?:^|\n)\s*(?:export|import)\s+(?:type\s+)?(?:[^'"\n]*?\s+from\s+)?['"]` +
@@ -173,11 +164,67 @@ const cssPackageReferencePattern = new RegExp(
 
 const layoutFilePattern = /(?:^|\/)(?:layouts?\/[^/]+|[^/]*layout[^/]*)\.astro$/iu
 
-const getPackageReferences = (source: string): string[] => [
-  ...source.matchAll(packageReferencePattern),
-  ...source.matchAll(dynamicPackageReferencePattern),
-  ...source.matchAll(cssPackageReferencePattern)
-].flatMap(match => match[1] ? [match[1]] : [])
+const commentEnding = (source: string, index: number): string | undefined => {
+  if (source.startsWith('/*', index)) return '*/'
+
+  if (source.startsWith('<!--', index)) return '-->'
+
+  if (source.startsWith('//', index)) return '\n'
+
+  return undefined
+}
+
+const withoutComments = (source: string): string => {
+  let result = ''
+  let quote = ''
+
+  for (let index = 0; index < source.length; index += 1) {
+    const char = source[index] ?? ''
+
+    if (quote) {
+      result += char
+
+      if (char === '\\') {
+        index += 1
+
+        result += source[index] ?? ''
+      } else if (char === quote) quote = ''
+
+      continue
+    }
+
+    if (['\'', '"', '`'].includes(char)) {
+      quote = char
+
+      result += char
+
+      continue
+    }
+
+    const close = commentEnding(source, index)
+
+    if (close) {
+      const end = source.indexOf(close, index + 2)
+      const finish = end < 0 ? source.length : end + close.length
+
+      result += source.slice(index, finish).replaceAll(/[^\n]/gu, ' ')
+
+      index = finish - 1
+    } else result += char
+  }
+
+  return result
+}
+
+const getPackageReferences = (input: string): string[] => {
+  const source = withoutComments(input)
+
+  return [
+    ...source.matchAll(packageReferencePattern),
+    ...source.matchAll(dynamicPackageReferencePattern),
+    ...source.matchAll(cssPackageReferencePattern)
+  ].flatMap(match => match[1] ? [match[1]] : [])
+}
 
 const packageFramework = (packageName: string): LumenFramework | undefined => {
   const framework = /^@santi020k\/lumen-(astro|elements|react)(?:\/|$)/u.exec(packageName)?.[1]
@@ -189,8 +236,7 @@ const packageFramework = (packageName: string): LumenFramework | undefined => {
 
 const getFrameworks = (sources: SourceEntry[]): LumenFramework[] => [
   ...new Set(sources.flatMap(item => getPackageReferences(item.source))
-    .filter(packageName => !packageName.endsWith('/styles.css') &&
-      !packageName.endsWith('/layers.css'))
+    .filter(packageName => !packageName.endsWith('.css'))
     .flatMap(packageName => {
       const framework = packageFramework(packageName)
 
@@ -291,6 +337,11 @@ const createBoundaries = async (
 
     return {
       dependencies,
+      deliveryVersions: {
+        astro: await getDeliveryVersion(boundaryRoot, '@santi020k/lumen-astro'),
+        elements: await getDeliveryVersion(boundaryRoot, '@santi020k/lumen-elements'),
+        react: await getDeliveryVersion(boundaryRoot, '@santi020k/lumen-react')
+      },
       kind: classifyBoundary(root, boundaryRoot, manifest, boundarySources, packageRoots.length),
       ...(manifest?.name ? { packageName: manifest.name } : {}),
       root: boundaryRoot,
@@ -350,7 +401,7 @@ const collectCompatibilityFindings = (
     ))
   }
 
-  if (importedNames(item.source, '@santi020k/lumen-astro').includes('UIPrimitives')) {
+  if (item.imports.astro.rootNames.includes('UIPrimitives')) {
     findings.push(finding(
       file,
       'removed-root-export',
@@ -362,12 +413,9 @@ const collectCompatibilityFindings = (
   return findings
 })
 
-const hasImportedPrimitive = (sources: SourceEntry[], names: readonly string[]): boolean => [
-  '@santi020k/lumen-astro',
-  '@santi020k/lumen-react'
-].some(packageName => sources.some(item => (
-  importedNames(item.source, packageName).some(name => names.includes(name))
-)))
+const hasImportedPrimitive = (sources: SourceEntry[], names: readonly string[]): boolean => sources.some(item => (
+  names.some(name => item.imports.astro.rootNames.includes(name) || item.imports.react.rootNames.includes(name))
+))
 
 interface DuplicatedBehaviorRule {
   detects: (source: string, sourceLower: string) => boolean
@@ -490,13 +538,13 @@ const collectDuplicatedBehaviorFindings = (
 
 const getCatalogFingerprint = (sources: SourceEntry[]): string => {
   const names = [...new Set(sources.flatMap(item => [
-    ...importedNames(item.source, '@santi020k/lumen-astro'),
-    ...importedNames(item.source, '@santi020k/lumen-react')
+    ...item.imports.astro.rootNames,
+    ...item.imports.react.rootNames
   ]))]
-    .filter(name => name in lumenComponentBehavior)
+    .filter((name): name is LumenComponentName => Object.hasOwn(lumenComponentBehavior, name))
     .sort()
 
-  const contracts = names.map(name => [name, lumenComponentBehavior[name as LumenComponentName]])
+  const contracts = names.map(name => [name, lumenComponentBehavior[name]])
 
   return createHash('sha256').update(JSON.stringify(contracts)).digest('hex')
 }
@@ -550,13 +598,23 @@ const componentNeedsAstroRuntime = (
 }
 
 const getRuntimeImports = (sources: SourceEntry[]): { file: string, name: string }[] => {
-  const imports = sources.flatMap(item => importedNames(item.source, '@santi020k/lumen-astro')
-    .map(name => ({ file: item.file, name })))
+  const importingSources = new Map<string, SourceEntry[]>()
 
-  return imports.filter(item => componentNeedsAstroRuntime(
-    item.name,
-    sources.filter(source => importedNames(source.source, '@santi020k/lumen-astro').includes(item.name))
-  ))
+  for (const item of sources) {
+    for (const name of item.imports.astro.components) {
+      const entries = importingSources.get(name)
+
+      if (entries) entries.push(item)
+      else importingSources.set(name, [item])
+    }
+  }
+
+  const required = new Set([...importingSources]
+    .filter(([name, entries]) => componentNeedsAstroRuntime(name, entries))
+    .map(([name]) => name))
+
+  return sources.flatMap(item => item.imports.astro.components.filter(name => required.has(name))
+    .map(name => ({ file: item.file, name })))
 }
 
 const getGlobalRuntimeBehaviors = (sources: SourceEntry[]): string[] => lumenGlobalBehaviors
@@ -872,6 +930,93 @@ const styleImportByFramework = {
   react: '@santi020k/lumen-react/styles.css'
 } as const
 
+const criticalStyleImport = (framework: LumenFramework): string => `@santi020k/lumen-${framework}/styles/critical.css`
+
+// Keep this coverage in sync with scripts/generate-critical-web-css.mjs.
+const criticalStyleComponents = new Set<string>([
+  'Alert',
+  'Badge',
+  'Button',
+  'Calendar',
+  'Card',
+  'Checkbox',
+  'Combobox',
+  'DataTable',
+  'DatePicker',
+  'DatePickerField',
+  'Dialog',
+  'Field',
+  'Input',
+  'Label',
+  'Progress',
+  'Select',
+  'Skeleton',
+  'Spinner',
+  'Table',
+  'Tabs',
+  'Textarea',
+  'Toast',
+  'Tooltip'
+])
+
+const localStylesheetImport = /(?:^|[;\n])\s*(?:import\s+|@import\s+(?:url\(\s*)?)['"](\.{1,2}\/[^'"\r\n]+\.css)['"]/gu
+
+const connectedStyleSources = (sources: SourceEntry[]): SourceEntry[] => {
+  const byPath = new Map(sources.map(item => [item.file, item]))
+  const visited = new Set(sources.filter(item => !item.file.endsWith('.css')))
+  const queue = [...visited]
+
+  for (const item of queue) {
+    for (const match of item.source.matchAll(localStylesheetImport)) {
+      const stylesheet = byPath.get(resolve(dirname(item.file), match[1] ?? ''))
+
+      if (!stylesheet || visited.has(stylesheet)) continue
+
+      visited.add(stylesheet)
+
+      queue.push(stylesheet)
+    }
+  }
+
+  return queue
+}
+
+const missingCriticalComponents = (sources: SourceEntry[], framework: LumenFramework): string[] => {
+  const names = framework === 'elements' ?
+    sources.flatMap(item => [...item.source.matchAll(/<lumen-([a-z][a-z0-9-]*)[\s/>]/gu)]
+      .map(match => componentByClassName.get(match[1] ?? ''))) :
+    sources.flatMap(item => item.imports[framework].components)
+
+  return [...new Set(names)].filter((name): name is string => Boolean(
+    name && Object.hasOwn(lumenComponentBehavior, name) && !criticalStyleComponents.has(name)
+  )).sort()
+}
+
+const collectCriticalStyleFindings = (
+  repositoryRoot: string,
+  boundary: ApplicationBoundary,
+  effectiveSources: SourceEntry[],
+  framework: LumenFramework
+): LumenDiagnosticFinding[] | undefined => {
+  const styleImport = criticalStyleImport(framework)
+
+  const entry = connectedStyleSources(boundary.sources)
+    .find(item => getPackageReferences(item.source).includes(styleImport))
+
+  if (!entry) return undefined
+
+  const missing = missingCriticalComponents(effectiveSources, framework)
+
+  return missing.length ?
+    [finding(
+      relative(repositoryRoot, entry.file),
+      'framework-critical-style-coverage',
+      `The ${framework} critical stylesheet does not cover these detected components: ${missing.join(', ')}.`,
+      `Replace ${styleImport} with ${styleImportByFramework[framework]} in the application stylesheet.`
+    )] :
+    []
+}
+
 const countOccurrences = (source: string, value: string): number => source.split(value).length - 1
 
 interface InternalSelectorContract {
@@ -880,6 +1025,11 @@ interface InternalSelectorContract {
 }
 
 const getInternalSelectorContract = (selector: string): InternalSelectorContract => {
+  const part = selector.replaceAll('__', '-')
+  const owner = lumenComponentNames.find(name => stylingContracts[name]?.parts.includes(part))
+
+  if (owner) return { component: owner, slot: part }
+
   const [componentClass = ''] = selector.split(/--|__/u, 1)
   const component = componentByClassName.get(componentClass)
 
@@ -948,7 +1098,12 @@ const collectCssFindings = (
   return boundary.sources.filter(item => item.file.endsWith('.css')).flatMap(item => {
     const layerIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["'][^"']*\/layers\.css["']/mu)
     const tailwindIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["']tailwindcss["']/mu)
-    const styleIndex = item.source.search(/^\s*@import\s+(?:url\(\s*)?["'][^"']*\/styles\.css["']/mu)
+
+    const styleIndexes = getPackageReferences(item.source)
+      .filter(path => path.includes('/styles/') || path.endsWith('/styles.css'))
+      .map(path => item.source.indexOf(path))
+
+    const styleIndex = styleIndexes.reduce((earliest, index) => earliest < 0 ? index : Math.min(earliest, index), -1)
     const findings: LumenDiagnosticFinding[] = []
 
     if (
@@ -957,7 +1112,7 @@ const collectCssFindings = (
       (layerIndex < 0 || !(layerIndex < tailwindIndex && tailwindIndex < styleIndex))
     ) {
       findings.push(finding(
-        relative(root, item.file), 'tailwind-layer-order', 'Tailwind and Lumen imports do not use the verified cascade order.', 'Import Lumen layers.css, then tailwindcss, then the matching Lumen styles.css.'
+        relative(root, item.file), 'tailwind-layer-order', 'Tailwind and Lumen imports do not use the verified cascade order.', 'Import Lumen layers.css, then tailwindcss, then the matching Lumen foundation/component CSS or full styles.css.'
       ))
     }
 
@@ -973,15 +1128,137 @@ const collectCssFindings = (
   })
 })
 
+const namedAppearance = (name: string, value: string): string | undefined => {
+  if (name === 'data-lumen-preset' && ['paper', 'field', 'studio', 'glass'].includes(value)) return value
+
+  if (name === 'data-theme' && value.startsWith('santi020k-')) return 'santi020k'
+
+  if (name === 'theme' && value === 'santi020k') return 'santi020k'
+
+  return undefined
+}
+
+const attributeAppearance = (attribute: JsxAttribute, parsed: SourceFile): string | undefined => {
+  const name = attribute.name.getText(parsed)
+
+  if (name === 'glass') return attribute.initializer?.getText(parsed).replaceAll(/\s/gu, '') === '{false}' ? undefined : 'glass'
+
+  if (!attribute.initializer || !isStringLiteral(attribute.initializer)) return undefined
+
+  return namedAppearance(name, attribute.initializer.text)
+}
+
+const withoutHtmlComments = (source: string): string => {
+  let result = ''
+  let cursor = 0
+
+  while (cursor < source.length) {
+    const start = source.indexOf('<!--', cursor)
+
+    if (start < 0) return result + source.slice(cursor)
+
+    const end = source.indexOf('-->', start + 4)
+    const finish = end < 0 ? source.length : end + 3
+
+    result += source.slice(cursor, start) + source.slice(start, finish).replaceAll(/[^\n]/gu, ' ')
+
+    cursor = finish
+  }
+
+  return result
+}
+
+const appearanceSignals = (entry: SourceEntry): string[] => {
+  if (!['.astro', '.tsx', '.jsx', '.js', '.html', '.htm'].includes(extname(entry.file))) return []
+
+  let parsed: SourceFile
+
+  try {
+    const markup = entry.source.slice(getMarkupStart(entry.source, entry.file))
+    const source = ['.astro', '.html', '.htm'].includes(extname(entry.file)) ? withoutHtmlComments(markup) : markup
+
+    parsed = createSourceFile('appearance.tsx', source, ScriptTarget.Latest, false, ScriptKind.TSX)
+  } catch (error: unknown) {
+    if (!(error instanceof RangeError)) throw error
+
+    return []
+  }
+
+  const found = new Set<string>()
+  const pending: Node[] = [parsed]
+
+  while (pending.length > 0) {
+    const node = pending.pop()
+
+    if (!node) continue
+
+    if (isJsxAttribute(node)) {
+      const appearance = attributeAppearance(node, parsed)
+
+      if (appearance) found.add(appearance)
+    }
+
+    node.forEachChild(child => {
+      pending.push(child)
+    })
+  }
+
+  return [...found]
+}
+
+const collectSelectiveStyleFindings = (
+  root: string, boundary: ApplicationBoundary, framework: LumenFramework
+): LumenDiagnosticFinding[] => {
+  const adapter = `@santi020k/lumen-${framework}`
+  const components = [...new Set(boundary.sources.flatMap(item => item.imports[framework].components))]
+  const references = new Set(boundary.sources.flatMap(item => getPackageReferences(item.source)))
+
+  const foundation = [adapter, '@santi020k/lumen', '@santi020k/lumen-core']
+    .some(packageName => references.has(`${packageName}/styles/foundation.css`))
+
+  const appearances = [...new Set(boundary.sources.flatMap(appearanceSignals))]
+
+  const appearancePaths = appearances.map(name => `styles/${name === 'glass' ? 'effects' : 'themes'}/${name}.css`)
+    .filter(path => ![adapter, '@santi020k/lumen', '@santi020k/lumen-core'].some(pkg => references.has(`${pkg}/${path}`)))
+    .map(path => `${adapter}/${path}`)
+
+  const automatic = framework === 'astro' && components.length > 0
+
+  const required = [
+    ...appearancePaths,
+    ...(!automatic && !foundation ? [`${adapter}/styles/foundation.css`] : []),
+    ...components.filter(name => !automatic && !hasComponentCss(name, references, framework))
+      .map(name => `${adapter}/styles/components/${componentCssName(name)}.css`)
+  ]
+
+  return required.map(path => finding(
+    relative(root, boundary.root) || '.',
+    'framework-style-missing',
+    `The v5 selective setup is missing ${path}.`,
+    framework === 'astro' ?
+      'Framework components import CSS automatically. For manual markup, import the foundation and matching component CSS.' :
+      'Import the foundation and required component CSS, use an installed lumen add wrapper, or choose full styles.css.'
+  ))
+}
+
 const collectFrameworkStyleFindings = (
   repositoryRoot: string,
   boundary: ApplicationBoundary,
-  frameworks: LumenFramework[]
+  frameworks: LumenFramework[],
+  selectiveSources: SourceEntry[] = boundary.sources
 ): LumenDiagnosticFinding[] => frameworks.flatMap(framework => {
   const styleImport = styleImportByFramework[framework]
-  const references = boundary.sources.filter(item => item.source.includes(styleImport))
+  const references = boundary.sources.filter(item => getPackageReferences(item.source).includes(styleImport))
+
+  if (references.length === 0 && boundary.deliveryVersions[framework] === 'v5') {
+    return collectSelectiveStyleFindings(repositoryRoot, { ...boundary, sources: selectiveSources }, framework)
+  }
 
   if (references.length === 0) {
+    const critical = collectCriticalStyleFindings(repositoryRoot, boundary, selectiveSources, framework)
+
+    if (critical) return critical
+
     return [finding(
       relative(repositoryRoot, boundary.root) || '.',
       'framework-style-missing',
@@ -1018,7 +1295,7 @@ const collectAdapterMismatchFindings = (
   frameworks: LumenFramework[]
 ): LumenDiagnosticFinding[] => {
   const adapters = (Object.entries(styleImportByFramework) as [LumenFramework, string][])
-    .flatMap(([framework, styleImport]) => boundary.sources.some(item => item.source.includes(styleImport)) ?
+    .flatMap(([framework, styleImport]) => boundary.sources.some(item => getPackageReferences(item.source).some(path => path.startsWith(styleImport.slice(0, -'styles.css'.length)) && path.endsWith('.css'))) ?
       [framework] :
       [])
 
@@ -1060,10 +1337,11 @@ export const inspectLumenIntegration = async (repository: string): Promise<Lumen
 
   const discovered = await discoverProject(root)
 
-  const sources = await Promise.all(discovered.sourceFiles.map(async file => ({
-    file,
-    source: await readFile(file, 'utf8')
-  })))
+  const sources = await Promise.all(discovered.sourceFiles.map(async file => {
+    const source = await readFile(file, 'utf8')
+
+    return { file, imports: readComponentImports(source, file), source }
+  }))
 
   const boundaries = await createBoundaries(root, discovered.packageRoots, sources)
   const applicationBoundaries = boundaries.filter(boundary => boundary.kind === 'application')
@@ -1097,7 +1375,7 @@ export const inspectLumenIntegration = async (repository: string): Promise<Lumen
     findings.push(
       ...collectDuplicatedBehaviorFindings(root, effectiveBoundary.sources),
       ...runtime.findings,
-      ...collectFrameworkStyleFindings(root, boundary, boundaryFrameworks),
+      ...collectFrameworkStyleFindings(root, boundary, boundaryFrameworks, effectiveBoundary.sources),
       ...collectAdapterMismatchFindings(root, boundary, boundaryFrameworks)
     )
   }
@@ -1129,44 +1407,37 @@ export const formatLumenDiagnostics = (report: LumenDiagnosticReport): string =>
 }
 
 export const createLumenSetup = (framework: 'astro' | 'elements' | 'react', tailwind = false): string => {
-  const setupByFramework = {
-    astro: {
-      styles: '@import "@santi020k/lumen-astro/styles.css";',
-      tailwind:
-        '@import "@santi020k/lumen-astro/layers.css";\n' +
-        '@import "tailwindcss";\n' +
-        '@import "@santi020k/lumen-astro/styles.css";\n' +
-        '@import "@santi020k/lumen-astro/tailwind.css";'
-    },
-    elements: {
-      styles: '@import "@santi020k/lumen-elements/styles.css";',
-      tailwind:
-        '@import "@santi020k/lumen-elements/layers.css";\n' +
-        '@import "tailwindcss";\n' +
-        '@import "@santi020k/lumen-elements/styles.css";\n' +
-        '@import "@santi020k/lumen-elements/tailwind.css";'
-    },
-    react: {
-      styles: '@import "@santi020k/lumen-react/styles.css";',
-      tailwind:
-        '@import "@santi020k/lumen-react/layers.css";\n' +
-        '@import "tailwindcss";\n' +
-        '@import "@santi020k/lumen-react/styles.css";\n' +
-        '@import "@santi020k/lumen-react/tailwind.css";'
-    }
-  } as const
+  const adapter = `@santi020k/lumen-${framework}`
+  const foundation = `@import "${adapter}/styles/foundation.css";`
 
-  const styles = tailwind ? setupByFramework[framework].tailwind : setupByFramework[framework].styles
+  const styles = tailwind ?
+    [
+      '@import "' + adapter + '/layers.css";',
+      '@import "tailwindcss";',
+      foundation,
+      '@import "' + adapter + '/tailwind.css";'
+    ].join('\n') :
+    foundation
 
   if (framework === 'astro') {
-    return `${styles}\n\n---\nimport UIPrimitives from '@santi020k/lumen-astro/runtime'\n---\n\n<UIPrimitives />`
+    const tailwindGuidance = tailwind ? `/* Global stylesheet, before importing the layout: */\n${styles}\n\n` : ''
+
+    return `${tailwindGuidance}---
+// Lumen v5 components import their foundation and component CSS automatically.
+// Static components need no runtime. Mount once for interactive components.
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+
+<UIPrimitives />
+<slot />
+
+<!-- For manually authored Lumen markup outside components, explicitly import foundation and its component CSS. -->`
   }
 
-  if (framework === 'elements') {
-    return `${styles}\n\n` +
-      'import { defineLumenElements } from \'@santi020k/lumen-elements/define\'\n\n' +
-      'defineLumenElements()'
-  }
+  return `${styles}
 
-  return styles
+/* Lumen v5: component wrappers installed by lumen add include their component CSS.
+   Elements wrappers register only their selected constructor.
+   If importing primitives directly, also import each required styles/components/<name>.css.
+   Full styles.css remains an explicit convenience alternative. */`
 }

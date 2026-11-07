@@ -50,13 +50,13 @@ describe('Lumen React Native foundations', () => {
     expect(Object.keys(lumenColorTokens.light)).toEqual(
       Object.keys(lumenColorTokens.dark)
     )
-    expect(lumenLightTheme.colors.brand).toBe('#0369A0')
-    expect(lumenDarkTheme.colors.brand).toBe('#29B4F5')
+    expect(lumenLightTheme.colors.brand).toBe('#0E6077')
+    expect(lumenDarkTheme.colors.brand).toBe('#90D9E0')
     expect(Object.keys(lumenChartColorTokens.light)).toEqual(
       Object.keys(lumenChartColorTokens.dark)
     )
-    expect(lumenLightTheme.chartColors.series1).toBe('#0369A0')
-    expect(lumenDarkTheme.chartColors.series1).toBe('#29B4F5')
+    expect(lumenLightTheme.chartColors.series1).toBe('#0E6077')
+    expect(lumenDarkTheme.chartColors.series1).toBe('#90D9E0')
   })
 
   test('creates a complete theme for the requested scheme', () => {
@@ -91,8 +91,8 @@ describe('Lumen React Native foundations', () => {
   })
 
   test('exposes the complete unique interface and brand icon catalog', () => {
-    expect(lumenIconNames).toHaveLength(2_437)
-    expect(new Set(lumenIconNames).size).toBe(2_437)
+    expect(lumenIconNames).toHaveLength(2_629)
+    expect(new Set(lumenIconNames).size).toBe(2_629)
     expect(lumenIconNames).toEqual(expect.arrayContaining(['bangladeshi-taka', 'layout-grid-circles', 'letters', 'printer-3d']))
     expect(lumenIconNames.filter(name => name.startsWith('brand:'))).toHaveLength(573)
     expect(lumenIconNames).toContain('search')

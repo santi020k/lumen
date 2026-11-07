@@ -49,8 +49,8 @@ Shared icons use `name="search"`; applications can instead pass graphic componen
 ### SwiftUI
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and choose **Exact Version** `4.4.0` for a reproducible
-production build. Use **Up to Next Major Version** from `4.4.0` only when the application accepts
+`https://github.com/santi020k/lumen`, and choose **Exact Version** `5.0.0` for a reproducible
+production build. Use **Up to Next Major Version** from `5.0.0` only when the application accepts
 compatible updates, and reserve `main` for local evaluation. Add the `LumenUI` product to the
 application target. The repository-root `Package.swift` is the public package entry point; no
 CocoaPod or npm package is involved.
@@ -61,12 +61,12 @@ Projects with their own Swift package manifest can declare the dependency direct
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "4.4.0"
+        exact: "5.0.0"
     )
 ]
 ```
 
-Use `from: "4.4.0"` instead of `exact: "4.4.0"` for a compatible-version policy. Commit
+Use `from: "5.0.0"` instead of `exact: "5.0.0"` for a compatible-version policy. Commit
 `Package.resolved` for application and CI builds and verify that its version and revision match the
 intended release tag. XcodeGen and other deterministic project generators should keep the package
 requirement in their checked-in configuration and regenerate project files from that source.
@@ -142,7 +142,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:4.0.1")
+    implementation("com.santi020k:lumen-compose:4.1.0")
 }
 ```
 
@@ -156,7 +156,7 @@ mapped Lumen values when the application needs them independently.
 
 ### Cross-platform icon catalog
 
-The native adapters include all 1,864 canonical interface icon names and all 573 namespaced Font
+The native adapters include all 2,056 canonical interface icon names and all 573 namespaced Font
 Awesome Free brand entries used by Lumen on the web. Use a semantic Lumen name when the artwork
 should remain consistent across the product:
 
@@ -200,7 +200,7 @@ contracts:
 
 ```kotlin
 dependencies {
-    implementation("com.santi020k:lumen-compose-wear:4.0.1")
+    implementation("com.santi020k:lumen-compose-wear:4.1.0")
 }
 ```
 

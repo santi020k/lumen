@@ -13,8 +13,7 @@ export interface ComponentDoc {
     'Layout' |
     'Navigation' |
     'Overlays'
-  figmaNodeId?: string
-  figmaStatus: 'behavior-only' | 'linked'
+  figmaNodeId: string
   glass?: boolean
   guidance?: ComponentGuidance
   keyboardInteractions?: KeyboardInteractionRow[]
@@ -116,21 +115,26 @@ const buildInstallCommands = (...packages: string[]): InstallCommand[] => packag
 const installCommands = buildInstallCommands('@santi020k/lumen-astro')
 
 const astroUsage = `---
-import { Button, Card, Input } from '@santi020k/lumen-astro'
+import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
 ---
 
 <Card>
-  <label for="email">Email</label>
+  <Label for="email">Email</Label>
   <Input id="email" type="email" placeholder="you@example.com" />
   <Button>Subscribe</Button>
 </Card>`
 
-const reactUsage = `import { Button, Card, Input } from '@santi020k/lumen-react'
+const reactUsage = `import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/card.css'
+import '@santi020k/lumen-react/styles/components/input.css'
+import '@santi020k/lumen-react/styles/components/label.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import { Button, Card, Input, Label } from '@santi020k/lumen-react'
 
 export function SubscribeForm() {
   return (
     <Card>
-      <label htmlFor="email">Email</label>
+      <Label htmlFor="email">Email</Label>
       <Input id="email" type="email" placeholder="you@example.com" />
       <Button>Subscribe</Button>
     </Card>
@@ -138,14 +142,19 @@ export function SubscribeForm() {
 }`
 
 const elementsUsage = `<script type="module">
+  import '@santi020k/lumen-elements/styles/foundation.css'
+  import '@santi020k/lumen-elements/styles/components/card.css'
+  import '@santi020k/lumen-elements/styles/components/label.css'
+  import '@santi020k/lumen-elements/styles/components/input.css'
+  import '@santi020k/lumen-elements/styles/components/button.css'
   import { defineLumenElements } from '@santi020k/lumen-elements/define'
 
-  defineLumenElements()
+  defineLumenElements(['Card', 'Label', 'Input', 'Button'])
 </script>
 
 <lumen-card>
-  <label for="email">Email</label>
-  <lumen-input id="email" type="email" placeholder="you@example.com"></lumen-input>
+  <lumen-label id="email-label">Email</lumen-label>
+  <lumen-input aria-labelledby="email-label" id="email" type="email" placeholder="you@example.com"></lumen-input>
   <lumen-button>Subscribe</lumen-button>
 </lumen-card>`
 
@@ -153,37 +162,23 @@ export const globalStyleSetups: GlobalStyleSetup[] = [
   {
     code: `@import "@santi020k/lumen-astro/layers.css";
 @import "tailwindcss";
-@import "@santi020k/lumen-astro/styles.css";
 @import "@santi020k/lumen-astro/tailwind.css";`,
-    description:
-      'Use the stylesheet exported by your framework package in your main CSS entry.',
+    description: 'Astro v5 components import their own CSS. Keep the layer order and optional Tailwind bridge in the shared entry.',
     label: 'Astro + Tailwind',
     lang: 'css'
   },
   {
-    code: `---
-import '@santi020k/lumen-astro/styles.css'
----
-
-<html lang="en">
-  <body>
-    <slot />
-  </body>
-</html>`,
-    description:
-      'Use this in an Astro root layout when you do not already have a shared CSS entry.',
-    label: 'Astro layout',
-    lang: 'astro'
+    code: `import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import { Button } from '@santi020k/lumen-react/components/button'`,
+    description: 'Load the foundation once and each used component stylesheet. Include conditional and compound content. Elements exposes the same CSS paths.',
+    label: 'Selective component CSS',
+    lang: 'ts'
   },
   {
-    code: `import '@santi020k/lumen-react/styles.css'
-
-import { createRoot } from 'react-dom/client'
-
-import { App } from './App'`,
-    description:
-      'Use this in a bundled app entry, such as main.tsx, main.ts, or client.ts.',
-    label: 'App entry',
+    code: 'import \'@santi020k/lumen-react/styles.css\'',
+    description: 'Full styles.css remains a supported convenience option in every adapter. Retain it during migration until every route has equivalent coverage.',
+    label: 'Full CSS alternative',
     lang: 'ts'
   }
 ]
@@ -214,30 +209,10 @@ document.documentElement.dataset.theme = nextTheme`,
     lang: 'ts'
   },
   {
-    code: `@import "@santi020k/lumen-astro/styles.css";
-
-:root[data-theme="santi020k-light"] {
-  color-scheme: light;
-  --canvas: 268 20% 98%;
-  --surface: 268 20% 100%;
-  --ink: 268 10% 20%;
-  --brand: 264 92% 47%;
-  --accent: 264 95% 57%;
-  /* ...override the remaining tokens */
-}
-
-:root[data-theme="santi020k-dark"] {
-  color-scheme: dark;
-  --canvas: 260 43% 8%;
-  --surface: 260 30% 12%;
-  --ink: 260 10% 88%;
-  --brand: 264 90% 58%;
-  --accent: 264 90% 68%;
-  /* ...override the remaining tokens */
-}`,
+    code: '@import "@santi020k/lumen-astro/styles/themes/santi020k.css";',
     description:
-      'These docs run santi020k-light and santi020k-dark, a custom theme family built on the same token contract. Copy the shape and adapt the values to your brand.',
-    label: 'Custom theme',
+      'Import the website appearance once, then set data-theme="santi020k-light" or data-theme="santi020k-dark" on html. Switch the docs theme family to santi020k to see the same card change.',
+    label: 'santi020k website theme',
     lang: 'css'
   }
 ]
@@ -326,26 +301,37 @@ const glassApiComponentNameSet = new Set<string>(glassComponentNames)
 export const figmaLibraryUrl =
   'https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9'
 
-const figmaNodeIdByComponent: Record<string, string> = {
+const figmaNodeIdByComponent = {
   Accordion: '461:51',
   Affix: '288:27',
   Agenda: '53:76',
   Alert: '14:44',
   AlertDialog: '45:23',
+  AmountField: '610:3326',
+  Anchor: '293:64',
   AnimatedLogo: '286:33',
+  AnimatedNumber: '438:72',
+  AnimatedPortrait: '300:36',
+  ApprovalCard: '608:118',
   AspectRatio: '41:51',
   Attachment: '41:68',
+  AttachmentList: '610:10',
+  AttachmentPreview: '610:133',
   Autocomplete: '48:45',
   Avatar: '14:30',
   BackToTop: '274:15',
+  Backdrop: '610:1609',
   Badge: '14:14',
   BarChart: '492:73',
+  BoxPlot: '610:5966',
   Breadcrumb: '67:67',
   Bubble: '41:29',
+  BulletChart: '610:6067',
   Button: '6:69',
   ButtonGroup: '67:43',
   ButtonLink: '280:39',
   Calendar: '48:261',
+  CalendarHeatmap: '610:4557',
   Callout: '281:4',
   Card: '14:27',
   CardContent: '506:29',
@@ -354,52 +340,87 @@ const figmaNodeIdByComponent: Record<string, string> = {
   CardHeader: '504:29',
   CardTitle: '504:32',
   Carousel: '53:56',
+  Cascader: '304:48',
+  ChangeSummary: '610:3391',
   Chart: '53:53',
+  ChartMotion: '610:6634',
   Checkbox: '15:6',
   CheckboxGroup: '512:213',
   Code: '53:28',
+  CodeTabs: '472:2',
   Collapsible: '67:36',
   ColorPicker: '42:15',
+  ComboChart: '610:4424',
   Combobox: '48:42',
   Command: '48:51',
   Container: '513:262',
   ContextMenu: '45:92',
+  ContextNavigation: '610:3055',
+  CopyButton: '610:3019',
+  CoverImage: '299:48',
   DataTable: '44:68',
   DatePicker: '48:264',
   DateRangePicker: '48:270',
+  DescriptionDetail: '610:3383',
+  DescriptionItem: '610:3366',
+  DescriptionTerm: '610:3377',
+  Descriptions: '297:97',
+  DeviceFrame: '610:773',
   Dialog: '45:12',
+  DialogBody: '610:3093',
+  DialogClose: '610:3121',
+  DialogFooter: '610:3104',
+  DialogHeader: '610:3078',
+  DialogTitle: '610:3087',
   Direction: '51:127',
   Drawer: '45:34',
   DropdownMenu: '45:82',
+  DumbbellChart: '610:6237',
   Empty: '41:40',
+  ErrorState: '610:3245',
   ErrorSummary: '509:5',
   Eyebrow: '253:6',
   Field: '14:22',
   FieldError: '508:5',
   FileUpload: '290:22',
+  FilterBar: '610:3427',
   FloatingBadge: '272:39',
   Form: '513:30',
   FormattedDate: '259:6',
+  FunnelChart: '610:5903',
   GradientDivider: '250:7',
+  Graphic: '610:1670',
   Grid: '513:350',
+  Heatmap: '610:3764',
+  Histogram: '610:6338',
   HoverCard: '45:67',
-  Icon: '216:6',
+  Icon: '236:21',
+  Illustration: '610:1696',
   Image: '261:7',
+  ImageComparison: '610:930',
   Input: '14:21',
   InputGroup: '42:6',
   InputOTP: '40:76',
   Item: '44:12',
+  KanbanBoard: '610:3249',
+  KanbanColumn: '610:3287',
   Kbd: '69:23',
   Label: '69:18',
   LanguageToggle: '279:23',
-  Link: '256:15',
   LineChart: '493:67',
+  Link: '256:15',
   ListBox: '513:98',
+  LollipopChart: '610:6156',
   Marker: '41:20',
+  MediaFilmstrip: '610:1223',
+  MediaThumbnail: '610:1219',
+  MediaViewport: '610:1145',
+  Mentions: '306:22',
   Menubar: '45:100',
   Message: '51:53',
   MessageScroller: '51:56',
   Meter: '267:28',
+  MotionGroup: '610:6696',
   NativeSelect: '40:36',
   NavigationMenu: '45:109',
   Note: '282:23',
@@ -410,12 +431,19 @@ const figmaNodeIdByComponent: Record<string, string> = {
   PhoneInput: '289:22',
   PieChart: '495:18',
   Pill: '271:36',
+  Popconfirm: '302:22',
   Popover: '45:61',
   Progress: '264:18',
+  PromptComposer: '608:176',
+  Prose: '295:4',
+  QRCode: '298:619',
   RadioGroup: '48:284',
+  RangeChart: '610:4321',
   Rating: '269:72',
   Resizable: '51:118',
+  RevealGroup: '439:179',
   RichTextEditor: '53:114',
+  ScatterChart: '610:3484',
   Schedule: '53:91',
   ScrollArea: '44:17',
   ScrollProgress: '496:32',
@@ -429,7 +457,9 @@ const figmaNodeIdByComponent: Record<string, string> = {
   Skeleton: '69:36',
   SkipLink: '276:13',
   Slider: '42:17',
+  SourceCitation: '608:180',
   Sparkline: '490:46',
+  SpeedDial: '294:84',
   Spinner: '69:64',
   Stack: '513:303',
   Stat: '513:161',
@@ -438,25 +468,37 @@ const figmaNodeIdByComponent: Record<string, string> = {
   StatLabel: '513:135',
   StatTrend: '513:151',
   StatValue: '513:137',
+  Stepper: '292:76',
+  StreamMessage: '608:231',
   Switch: '15:11',
   Table: '44:39',
-  Tabs: '15:12',
+  Tabs: '355:43',
   TagGroup: '48:298',
   Textarea: '40:16',
   ThemeBuilder: '53:126',
   ThemeToggle: '278:33',
   TimeField: '42:13',
+  Timeline: '296:4',
   Toast: '51:30',
+  ToastViewport: '610:3312',
   Toggle: '40:11',
   ToggleGroup: '67:52',
+  ToolActivity: '608:285',
+  Toolbar: '291:80',
   Tooltip: '45:73',
+  Tour: '301:26',
+  Transfer: '303:4',
   Tree: '51:130',
   TreeGrid: '51:143',
+  TreeSelect: '305:40',
   Typography: '53:10',
-  VisuallyHidden: '513:374',
   VirtualList: '44:24',
-  Watermark: '287:19'
-}
+  VisualEffect: '610:2971',
+  VisuallyHidden: '513:374',
+  WaterfallChart: '610:6492',
+  Watermark: '287:19',
+  WorldMap: '611:389'
+} as const satisfies Record<LumenComponentName, string>
 
 export const getFigmaComponentUrl = (nodeId?: string) => nodeId ?
   `${figmaLibraryUrl}?node-id=${nodeId.replace(':', '-')}` :
@@ -633,7 +675,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands,
     label: 'Astro',
     lang: 'astro',
-    note: 'With the stylesheet loaded globally, import components where you use them. Mount UIPrimitives once in your root layout only if you use interactive primitives; do not add it beside every component.',
+    note: 'V5 Astro components import their own CSS. Install @santi020k/lumen separately as a development dependency for CLI commands. Mount UIPrimitives once in your root layout only if you use interactive primitives; do not add it beside every component.',
     packageName: '@santi020k/lumen-astro',
     usage: astroUsage
   },
@@ -642,7 +684,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-react'),
     label: 'React',
     lang: 'tsx',
-    note: 'Install the React package, load its stylesheet once, then import primitives directly. React ships the same styled markup and data contract, including data-display, overlay, form, rich text, and schedule attributes; use hooks for behavior-heavy primitives.',
+    note: 'Install the runtime adapter; add @santi020k/lumen separately for the optional CLI. Load foundation and component CSS, or retain full styles.css. React ships the same styled markup and data contract, including data-display, overlay, form, rich text, and schedule attributes; use hooks for behavior-heavy primitives.',
     packageName: '@santi020k/lumen-react',
     usage: reactUsage
   },
@@ -651,7 +693,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the Elements package, load its stylesheet once, register Lumen elements, and use lumen-* tags anywhere HTML is valid. Behavior-backed elements include overlays, context menus, advanced selection, file upload, tours, mentions, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
+    note: 'Install the runtime adapter; add @santi020k/lumen separately for the optional CLI. Load foundation and component CSS and register each used element. This example imports the registration catalog and registers only the listed elements. Use public components/<name> registrations where available to reduce the dependency graph; registration scope alone does not prove selective JavaScript delivery.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }
@@ -687,14 +729,14 @@ export const frameworkPackages = [
 export const frameworkGuides = [
   {
     body: [
-      'Reference implementation for markup, props, standalone CSS, and progressive enhancement.',
+      'Reference implementation for markup, props, automatic component CSS, and selective progressive enhancement.',
+      'In v5, await LumenInitUiPrimitives(scope); ui:ready follows completion and ui:runtime-error reports failed enhancement.',
       'Mount UIPrimitives once in the root layout for interactive primitives and CustomEvents.',
       'Use lumen add Component or lumen add recipe-name --target astro when you want local .astro starter files.'
     ],
     code: `---
 import { Button, Card } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
-import '@santi020k/lumen-astro/styles.css'
 ---
 
 <UIPrimitives />
@@ -711,13 +753,12 @@ import '@santi020k/lumen-astro/styles.css'
       'Use React hooks such as useDialog, usePopover, useDropdownMenu, useContextMenu, useTabs, useSelect, useFormValidation, useCalendar, useInputOTP, useDateRangePicker, useRichTextEditor, useSchedule, useKanban, useResizable, useThemeBuilder, useThemeToggle, useToast, and useTooltip for behavior-heavy primitives.',
       'Use lumen add Component --target react or lumen add recipe-name --target react when you want local .tsx starter files.'
     ],
-    code: `import '@santi020k/lumen-react/styles.css'
-import { Button, Card, useDialog } from '@santi020k/lumen-react'
+    code: `import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import { Button } from '@santi020k/lumen-react/components/button'
 
 export function Actions() {
-  const dialog = useDialog()
-
-  return <Card><Button {...dialog.triggerProps}>Open</Button></Card>
+  return <Button type="submit">Save</Button>
 }`,
     id: 'react',
     lang: 'tsx',
@@ -732,10 +773,14 @@ export function Actions() {
       'Use lumen add Component --target elements or lumen add recipe-name --target elements when you want local Elements starter files.'
     ],
     code: `<script type="module">
-  import { defineLumenElements } from '@santi020k/lumen-elements/define'
-  import '@santi020k/lumen-elements/styles.css'
+  import '@santi020k/lumen-elements/styles/foundation.css'
+  import '@santi020k/lumen-elements/styles/components/card.css'
+  import '@santi020k/lumen-elements/styles/components/button.css'
+  import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+  import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
 
-  defineLumenElements()
+  defineLumenCard()
+  defineLumenButton()
 </script>
 
 <lumen-card><lumen-button>Save</lumen-button></lumen-card>`,
@@ -1234,6 +1279,7 @@ const apiReferenceByComponent = {
   ],
   AlertDialog: [...dialogTriggerApiRows('alert-dialog')],
   AspectRatio: [
+    apiRow('children / default slot', 'media content', '-', 'Frames image, picture, or video content and owns its corner clipping. Keep interactive cards outside the clipped frame.'),
     apiRow(
       'ratio', 'number | string', '"16 / 9"', 'Sets the preferred CSS aspect-ratio value; invalid values fall back to 16 / 9.'
     )
@@ -1510,6 +1556,12 @@ const apiReferenceByComponent = {
   ],
   Code: [
     apiRow(
+      'recoveryLabel', 'string', '-', 'Opts into a visibly labelled, read-only field with the complete source after clipboard failure. Focusing it selects the text; retrying successfully removes it.'
+    ),
+    apiRow(
+      'appearance', '"default" | "editorial"', '"default"', 'Editorial blocks use a code icon and visible localized copy feedback. Both appearances wrap metadata at narrow widths.'
+    ),
+    apiRow(
       'variant', '"inline" | "block"', '"inline"', 'Switches between inline code and a framed code block.'
     ),
     apiRow(
@@ -1536,6 +1588,9 @@ const apiReferenceByComponent = {
   ],
   CodeTabs: [
     apiRow(
+      'recoveryLabel', 'string', '-', 'Forwards manual-copy recovery to each code example and clears stale recovery when changing tabs. Elements uses recovery-label on lumen-code-tabs.'
+    ),
+    apiRow(
       'items', 'Array<{ code, label, language?, value }>', 'required', 'Defines the labelled code examples and their stable selection values.'
     ),
     apiRow(
@@ -1558,6 +1613,9 @@ const apiReferenceByComponent = {
     )
   ],
   CopyButton: [
+    apiRow(
+      'recoveryLabel', 'string', '-', 'Opts into a labelled, read-only manual copy field after clipboard failure. Recovery remains after feedback resets; a successful retry clears it. Elements uses recovery-label.'
+    ),
     apiRow(
       'value', 'string', '-', 'Copies the supplied arbitrary text without requiring code semantics.'
     ),
@@ -2286,6 +2344,9 @@ const apiReferenceByComponent = {
   ],
   Prose: [
     apiRow(
+      'appearance', '"default" | "editorial"', '"default"', 'Editorial reading rhythm, attributed quotations, and connected native figure captions. Preserves supplied markup and component-owned figures.'
+    ),
+    apiRow(
       'children', 'rendered Markdown, CMS, or long-form HTML', 'required', 'Applies readable measure and typographic rhythm without changing the supplied semantics.'
     )
   ],
@@ -2447,7 +2508,7 @@ const apiReferenceByComponent = {
   ],
   SkipLink: [
     apiRow(
-      'href', 'fragment URL', 'required', 'Targets the main-content id that receives navigation after repeated controls are bypassed.'
+      'href', 'fragment URL', 'required', 'Points to the content ID that receives focus. Give a non-interactive target tabindex="-1" so it can receive native fragment focus.'
     )
   ],
   Spinner: [
@@ -2513,6 +2574,9 @@ const apiReferenceByComponent = {
     apiRow('type', '"checkbox"', '"checkbox"', 'Fixed by the component.')
   ],
   Table: [
+    apiRow(
+      'stickyFirstColumn', 'boolean', 'false', 'Keeps row identifiers visible during horizontal scrolling. Uses logical positioning for RTL and releases the column in very narrow containers, record layouts, and print.'
+    ),
     apiRow('layout', '"scroll" | "records"', '"scroll"', 'Opt into labeled records below 48rem. Supply aria-hidden ui-table__label spans from the same column labels and preserve explicit table roles; see the responsive table recipe.'),
     apiRow(
       'children', 'caption, thead, tbody, and tfoot', 'required', 'Provides semantic native table structure inside the styled wrapper.'
@@ -2822,7 +2886,7 @@ const apiReferenceByComponent = {
   ],
   Anchor: [
     apiRow(
-      'items', 'Array<{ href, label, depth?, index?, description? }>', '[]', 'Defines compact or rich in-page navigation items with optional hierarchy and supporting content.'
+      'items', 'Array<{ href, label, depth?, index?, description? }>', '[]', 'Defines in-page navigation items with optional hierarchy and supporting content. Ordinary activation moves focus to the local destination while preserving native hash navigation.'
     ),
     apiRow(
       'activationOffset', 'number', '96', 'Minimum viewport-top activation offset in pixels. Native root scroll padding plus heading scroll margin can move the line lower; one CSS pixel of rounding is tolerated.'
@@ -3343,7 +3407,7 @@ const componentGuidanceByName: Partial<Record<string, ComponentGuidance>> = {
       'Use Drawer for navigation or filters that slide in, and Dialog for a centered task that demands focus.'
   },
   SkipLink: {
-    when: 'Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until a keyboard user focuses it.',
+    when: 'Place it as the first focusable element in your root layout, before repeated header, menu, or sidebar navigation. It stays visually hidden until focused. The label wraps in narrow viewports and the shortcut appears immediately with reduced motion.',
     distinction:
       'This is an accessibility shortcut, not visible navigation. Point its href to the main content target; the first Tab reveals the link, and activating it moves focus past the repeated navigation.'
   },
@@ -4679,10 +4743,7 @@ export const componentDocs: ComponentDoc[] = (
     ...apiReferenceByComponent[name],
     ...commonApiRows
   ],
-  ...(figmaNodeIdByComponent[name] ?
-    { figmaNodeId: figmaNodeIdByComponent[name] } :
-    {}),
-  figmaStatus: figmaNodeIdByComponent[name] ? 'linked' : 'behavior-only',
+  figmaNodeId: figmaNodeIdByComponent[name],
   glass: glassComponentNameSet.has(name),
   ...(componentGuidanceByName[name] ?
     { guidance: componentGuidanceByName[name] } :

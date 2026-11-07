@@ -12,15 +12,15 @@ export const documentedComponentCount = componentDocs.length
 export const primaryPageMetadata = {
   components: {
     badge: 'Components',
-    description: 'Browse all Lumen UI components with live previews and usage examples for Astro, React, and Elements.',
+    description: 'Explore accessible UI components for Astro, React, and Web Components. Try live examples and find installation, props, events, and keyboard guidance.',
     pathname: '/docs/components',
-    title: 'Components - Lumen UI'
+    title: 'UI Components for Astro, React & Web Components - Lumen UI'
   },
   docs: {
     badge: 'Docs',
-    description: 'Build accessible web and native interfaces with Lumen components, AI agent skills, and framework-specific API guidance.',
+    description: 'Set up Lumen UI for Astro, React, Web Components, React Native, SwiftUI, or Jetpack Compose. Explore component APIs, design tokens, and AI agent tools.',
     pathname: '/docs',
-    title: 'Documentation - Lumen UI'
+    title: 'UI Library Setup & API Documentation - Lumen UI'
   },
   home: {
     badge: 'Home',

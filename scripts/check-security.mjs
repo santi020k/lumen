@@ -5,11 +5,11 @@ import { createRequire } from 'node:module'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import { collectPatchedInstances, evaluateAudit, verifyBracesBehavior, verifyInstalledPatch, verifyPatchFiles, verifyZodBehavior } from './security-patches.mjs'
+import { collectPatchedInstances, evaluateAudit, verifyBracesBehavior, verifyInstalledPatch, verifyPatchFiles } from './security-patches.mjs'
 
 const root = resolve(import.meta.dirname, '..')
 const policies = JSON.parse(await readFile(resolve(root, 'registry/security-patches.json'), 'utf8'))
-const behaviorChecks = { braces: verifyBracesBehavior, zod: verifyZodBehavior }
+const behaviorChecks = { braces: verifyBracesBehavior }
 
 const runPnpm = arguments_ => {
   const result = spawnSync('pnpm', arguments_, {
@@ -61,7 +61,7 @@ try {
     console.log(`Verified ${policy.name}@${policy.version}: patch, installed resolution, ${installed.size} instance(s), and behavior.`)
   }
 
-  const audit = runPnpm(['audit', '--prod', '--json'])
+  const audit = runPnpm(['audit', '--json'])
   const result = evaluateAudit(JSON.parse(audit.stdout), audit.status, policies)
 
   for (const advisory of result.mitigated) console.log(`Patched finding: ${advisory.module_name} — ${advisory.url}`)
@@ -70,7 +70,7 @@ try {
 
   if (result.blocking.length > 0) throw new Error(`${result.blocking.length} unmitigated moderate-or-higher security finding(s)`)
 
-  console.log('Production dependency security checks passed.')
+  console.log('Workspace dependency security checks passed.')
 } catch (error) {
   console.error(error instanceof Error ? error.message : 'Security verification failed')
 

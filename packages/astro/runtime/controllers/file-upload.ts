@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const renderers = new WeakMap<HTMLInputElement, () => void>()
 const resetRoots = new WeakSet<Node>()
 
@@ -25,7 +27,7 @@ const bindResets = (input: HTMLInputElement): void => {
 }
 
 export const initFileUploadControllers = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-file-upload]')) {
+  for (const root of queryScope(scope, '[data-ui-file-upload]')) {
     const input = root.querySelector<HTMLInputElement>('[data-ui-file-upload-input]')
 
     if (!input) continue
@@ -77,11 +79,15 @@ export const initFileUploadControllers = (scope: ParentNode): void => {
 
       event.preventDefault()
 
-      if (event.dataTransfer) {
-        input.files = event.dataTransfer.files
+      if (!event.dataTransfer?.files.length) {
+        renderFiles()
 
-        input.dispatchEvent(new Event('change', { bubbles: true }))
+        return
       }
+
+      input.files = event.dataTransfer.files
+
+      input.dispatchEvent(new Event('change', { bubbles: true }))
     })
 
     renderFiles()

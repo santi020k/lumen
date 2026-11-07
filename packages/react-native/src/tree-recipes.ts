@@ -116,6 +116,9 @@ export class LumenTreeModel {
     let node = this.node(id)
 
     while (node) {
+      // Caller-owned nodes may have changed since validation. A valid path visits at most every ID once.
+      if (result.length >= this.#byId.size) return []
+
       result.push(node)
 
       node = node.parentId == null ? undefined : this.node(node.parentId)
@@ -134,6 +137,9 @@ export class LumenTreeModel {
       const entry = stack.pop()
 
       if (!entry) break
+
+      // Changing an ID can reconnect a child to its own indexed children.
+      if (result.length >= this.#byId.size) return []
 
       const children = this.childrenOf(entry.node.id)
 

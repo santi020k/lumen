@@ -19,9 +19,9 @@ export const lumenThemePresetDefinitions = {
     },
     "effects": {
       "light": {
-        "ui-shadow-sm": "0 1px 2px hsl(222 47% 11% / 0.06)",
-        "ui-shadow-md": "0 8px 24px hsl(222 47% 11% / 0.08)",
-        "ui-shadow-lg": "0 24px 64px hsl(222 47% 11% / 0.14)",
+        "ui-shadow-sm": "0 1px 2px hsl(190 22% 12% / 0.05)",
+        "ui-shadow-md": "0 4px 12px -3px hsl(190 22% 12% / 0.14)",
+        "ui-shadow-lg": "0 16px 40px -10px hsl(190 22% 12% / 0.2)",
         "glass-bg": "0 0% 100% / 0.55",
         "glass-bg-subtle": "0 0% 100% / 0.38",
         "glass-bg-strong": "0 0% 100% / 0.72",
@@ -37,9 +37,9 @@ export const lumenThemePresetDefinitions = {
         "glass-shadow": "0 1px 2px hsl(222 47% 11% / 0.08),\n    0 12px 32px hsl(222 47% 11% / 0.12),\n    0 32px 80px hsl(222 47% 11% / 0.14)"
       },
       "dark": {
-        "ui-shadow-sm": "0 1px 2px hsl(0 0% 0% / 0.18)",
-        "ui-shadow-md": "0 12px 32px hsl(0 0% 0% / 0.24)",
-        "ui-shadow-lg": "0 28px 80px hsl(0 0% 0% / 0.36)",
+        "ui-shadow-sm": "0 1px 2px hsl(0 0% 0% / 0.24)",
+        "ui-shadow-md": "0 4px 14px -3px hsl(0 0% 0% / 0.36)",
+        "ui-shadow-lg": "0 18px 44px -10px hsl(0 0% 0% / 0.48)",
         "glass-bg": "224 20% 13% / 0.78",
         "glass-bg-subtle": "224 20% 13% / 0.64",
         "glass-bg-strong": "224 20% 13% / 0.9",

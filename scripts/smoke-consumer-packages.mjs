@@ -4,6 +4,8 @@ import { access, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:f
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
+import { checkLegacyHookFormConsumer } from './react-hook-form-legacy-consumer.mjs'
+
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const temporaryRoot = await mkdtemp(join(tmpdir(), 'lumen-consumer-packages-'))
 const archiveDirectory = join(temporaryRoot, 'archives')
@@ -19,9 +21,10 @@ const packageDirectories = [
   { directory: 'icons-brand', name: '@santi020k/lumen-icons-brand' }
 ]
 
+const subscribeOnly = process.argv.includes('--subscribe-form')
 const requestedPackagesSource = process.env.LUMEN_RELEASE_PACKAGES
 
-const requestedPackages = requestedPackagesSource
+const requestedPackages = !subscribeOnly && requestedPackagesSource
   ? new Set(JSON.parse(requestedPackagesSource))
   : undefined
 
@@ -49,7 +52,70 @@ const run = (
   return result.stdout
 }
 
-try {
+const checkEditedButton = async () => {
+  const buttonArgs = ['node_modules/@santi020k/lumen/bin/lumen.mjs', 'add', 'Button', '--target', 'react']
+
+  run(process.execPath, buttonArgs, consumerDirectory)
+
+  const buttonFile = join(consumerDirectory, 'src/lumen/button.tsx')
+  const originalButton = await readFile(buttonFile, 'utf8')
+  const customButton = originalButton.replace('<LumenButton {...props}', '<LumenButton data-kind="checkout" {...props}')
+
+  assert.notEqual(customButton, originalButton)
+
+  await writeFile(buttonFile, customButton)
+
+  const review = spawnSync(process.execPath, [...buttonArgs, '--merge'], { cwd: consumerDirectory, encoding: 'utf8' })
+
+  assert.equal(review.status, 1, review.stderr)
+
+  assert.match(review.stdout, /--- local\/src\/lumen\/button\.tsx/)
+
+  assert.match(review.stdout, /\+\+\+ incoming\/src\/lumen\/button\.tsx/)
+
+  assert.equal(await readFile(buttonFile, 'utf8'), customButton)
+}
+
+const testCli = !requestedPackages || requestedPackages.has('@santi020k/lumen')
+const reactDependencies = ['react@19.2.3', 'react-dom@19.2.3']
+
+const consumerDependencies = subscribeOnly ? reactDependencies : [
+  ...reactDependencies,
+  '@hookform/resolvers@5.9.1',
+  '@types/node@26.6.4',
+  '@types/react@19.2.18',
+  '@types/react-dom@19.2.7',
+  'astro@7.3.5',
+  'jsdom@30.1.1',
+  'next@16.3.8',
+  'react-hook-form@7.89.0',
+  'typescript@6.0.3',
+  'yup@1.7.1',
+  'zod@4.6.7'
+]
+
+const checkAstroConsumer = async () => {
+  if (testCli) {
+    await writeFile(join(consumerDirectory, 'astro.config.mjs'),
+      "import { lumenBuildReport } from '@santi020k/lumen/vite/build-report'\n" +
+      "export default { vite: { plugins: [lumenBuildReport()] } }\n")
+  }
+
+  run(
+    process.execPath,
+    [join(consumerDirectory, 'node_modules', 'astro', 'bin', 'astro.mjs'), 'build'],
+    consumerDirectory
+  )
+
+  if (!testCli) return
+
+  const graph = JSON.parse(await readFile(join(consumerDirectory, '.cache/lumen/build-report.json'), 'utf8'))
+
+  assert.ok(graph.assets.some(asset => asset.imports.some(chain => chain.at(-1)?.startsWith('@santi020k/lumen-elements/'))),
+    'Astro client build must trace packed Elements imports')
+}
+
+const smoke = async () => {
   await Promise.all([
     mkdir(archiveDirectory, { recursive: true }),
     mkdir(join(consumerDirectory, 'src', 'app'), { recursive: true }),
@@ -57,8 +123,9 @@ try {
   ])
 
   const publishedPackageSpecs = []
+  const fixtures = subscribeOnly ? packageDirectories.filter(pkg => ['core', 'lumen', 'react', 'elements'].includes(pkg.directory)) : packageDirectories
 
-  for (const package_ of packageDirectories) {
+  for (const package_ of fixtures) {
     if (requestedPackages && !requestedPackages.has(package_.name)) {
       const manifest = JSON.parse(
         await readFile(join(repositoryRoot, 'packages', package_.directory, 'package.json'), 'utf8')
@@ -81,8 +148,8 @@ try {
     .map(name => join(archiveDirectory, name))
 
   const expectedArchiveCount = requestedPackages
-    ? packageDirectories.filter(package_ => requestedPackages.has(package_.name)).length
-    : packageDirectories.length
+    ? fixtures.filter(package_ => requestedPackages.has(package_.name)).length
+    : fixtures.length
 
   assert.equal(archives.length, expectedArchiveCount)
 
@@ -101,22 +168,18 @@ try {
       '--no-fund',
       ...archives,
       ...publishedPackageSpecs,
-      '@hookform/resolvers@5.9.1',
-      '@types/node@26.6.4',
-      '@types/react@19.2.18',
-      '@types/react-dom@19.2.7',
-      'astro@7.3.5',
-      'jsdom@30.1.1',
-      'next@16.3.8',
-      'react@19.2.3',
-      'react-dom@19.2.3',
-      'react-hook-form@7.89.0',
-      'typescript@6.0.3',
-      'yup@1.7.1',
-      'zod@4.6.7'
+      ...consumerDependencies
     ],
     consumerDirectory
   )
+
+  if (subscribeOnly) {
+    const { measureSubscribeForm } = await import('./measure-subscribe-form.mjs')
+
+    await measureSubscribeForm(consumerDirectory)
+
+    return
+  }
 
   await writeFile(
     join(consumerDirectory, 'smoke.mjs'),
@@ -422,13 +485,11 @@ export default function Page() {
 `
   )
 
+  if (testCli) await checkEditedButton()
+
   run(process.execPath, ['smoke.mjs'], consumerDirectory)
 
-  run(
-    process.execPath,
-    [join(consumerDirectory, 'node_modules', 'astro', 'bin', 'astro.mjs'), 'build'],
-    consumerDirectory
-  )
+  await checkAstroConsumer()
 
   run(
     process.execPath,
@@ -459,9 +520,15 @@ export default function Page() {
 
   assert.doesNotMatch(astroHtml, /data-ui-chart-datum=/)
 
+  await checkLegacyHookFormConsumer({ archives, temporaryRoot, run })
+
   process.stdout.write(
     'Packed Core, umbrella, React, React Hook Form, Elements, Astro, Next.js, and brand-icon packages passed clean-consumer smoke tests\n'
   )
+}
+
+try {
+  await smoke()
 } finally {
   await rm(temporaryRoot, { force: true, recursive: true })
 }

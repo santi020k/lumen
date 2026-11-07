@@ -24,7 +24,7 @@ const LumenBoldIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8" />
+      <Path d="M6 12h9a4 4 0 010 8H7a1 1 0 01-1-1V5a1 1 0 011-1h7a4 4 0 010 8" />
   </Svg>
 )
 

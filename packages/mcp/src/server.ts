@@ -325,10 +325,14 @@ export const createLumenServer = (): McpServer => {
   server.registerTool(
     'lumen_get_migration', {
       annotations: readOnlyAnnotations,
-      description: 'Read the v4 migration contract, affected packages and review guidance. Does not modify consumer code or versions.',
-      inputSchema: z.strictObject({ packageName: z.string().trim().min(1).max(160).optional() }),
+      description: 'Read the explicit v4 or v5 target contract, affected packages, compatibility reviews and optional adoption. Bundled guidance does not prove consumer compatibility or publication availability.',
+      inputSchema: z.strictObject({
+        packageName: z.string().trim().min(1).max(160).optional(),
+        targetVersion: z.enum(['4.0.0', '5.0.0']).optional()
+      }),
       outputSchema: z.strictObject({
         changes: z.array(z.strictObject({
+          classification: z.enum(['compatibility-review', 'adoption-opportunity']),
           currentContract: z.string().trim(),
           docs: z.array(z.string().trim()),
           id: z.string().trim(),
@@ -336,6 +340,8 @@ export const createLumenServer = (): McpServer => {
           packages: z.array(z.string().trim()),
           replacement: z.string().trim()
         })),
+        contractSource: z.string().trim(),
+        publication: z.string().trim().optional(),
         status: z.string().trim(),
         targetVersion: z.string().trim()
       })

@@ -2,8 +2,8 @@
 
 import { Badge, Card, Icon, Link, Prose } from '@santi020k/lumen-astro'
 
-import { Content as PreviousReleaseHighlights } from '../../../../docs/lumen-4.1.md'
-import { Content as ReleaseHighlights } from '../../../../docs/lumen-4.2.md'
+import { Content as Lumen41Highlights } from '../../../../docs/lumen-4.1.md'
+import { Content as Lumen42Highlights } from '../../../../docs/lumen-4.2.md'
 import changelogSource from '../../../../packages/lumen/CHANGELOG.md?raw'
 import DocsActionLink from '../components/DocsActionLink.astro'
 import DocsPageHero from '../components/DocsPageHero.astro'
@@ -71,7 +71,23 @@ const changelogUrl = 'https://github.com/santi020k/lumen/blob/main/packages/lume
       </Link>
     </div>
 
-    <Prose id="release-highlights"><ReleaseHighlights /><PreviousReleaseHighlights /></Prose>
+    <Prose id="release-highlights">
+      <h2>Lumen 5 highlights</h2>
+      <p>
+        Load component styles, Astro controllers, and framework entry points where you need them.
+        Full stylesheets and root imports remain available. Lumen 5 also adds editable recipes and
+        brings Paper, Field, and santi020k themes to React Native, SwiftUI, and Compose.
+      </p>
+      <p>
+        When upgrading from v4, install the umbrella package separately if you use the CLI, check
+        each package's target version, and await Astro initialization before interacting with newly
+        enhanced markup. The upgrade guide walks through previewing dependency changes and
+        verifying your application.
+      </p>
+      <p><Link href="/docs/migrations/v4-to-v5">Read the v4 to v5 upgrade guide</Link></p>
+      <Lumen42Highlights />
+      <Lumen41Highlights />
+    </Prose>
 
     <div class="changelog-releases" id="releases">
       {releases.map((release, releaseIndex) => (

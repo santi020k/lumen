@@ -78,7 +78,7 @@ test('Git scope includes both rename sides, deletions and unusual names from the
 })
 
 test('Figma plugin sources and browser regressions select browser coverage', () => {
-  for (const path of ['apps/figma-plugin/src/plugin.ts', 'tests/figma/plugin-beta.spec.ts']) {
+  for (const path of ['apps/figma-plugin/src/plugin.ts', 'tests/figma/plugin.spec.ts']) {
     const classification = classifyCiPaths([path])
 
     assert.equal(classification.playwright, true)
@@ -119,6 +119,36 @@ test('editorial consumer regressions select browser coverage', () => {
     assert.equal(classifyCiPaths([path]).playwright, true, path)
 
     assert.equal(classifyCanaryPaths([path]).browser, true, path)
+  }
+})
+
+test('product workflow consumer regressions select browser coverage', () => {
+  for (const path of [
+    'tests/product-workflows/workflows.spec.ts',
+    'tests/fixtures/product-workflows/index.astro.template',
+    'tests/fixtures/product-workflows/captions.vtt',
+    'packages/lumen/scripts/prepare-product-workflow-consumer.mjs',
+    'playwright.product-workflows.config.ts'
+  ]) {
+    assert.equal(classifyCiPaths([path]).playwright, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).browser, true, path)
+
+    assert.equal(classifyCiPaths([path]).apple, false, path)
+
+    assert.equal(classifyCiPaths([path]).android, false, path)
+  }
+})
+
+test('rendered audit regressions select browser coverage without native jobs', () => {
+  for (const path of ['tests/rendered-audit/audit.spec.ts', 'playwright.rendered-audit.config.ts']) {
+    assert.equal(classifyCiPaths([path]).playwright, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).browser, true, path)
+
+    assert.equal(classifyCiPaths([path]).apple, false, path)
+
+    assert.equal(classifyCiPaths([path]).android, false, path)
   }
 })
 
@@ -303,6 +333,7 @@ test('publish dry runs target only changed packages unless shared tooling change
     'scripts/check-bundle-size.test.mjs',
     'scripts/lib/bundle-size.mjs',
     'scripts/smoke-consumer-packages.mjs',
+    'scripts/react-hook-form-legacy-consumer.mjs',
     'scripts/classify-workflow-paths.mjs'
   ]) {
     assert.equal(classifyChangedNpmPackages([path]).length, 10, path)
@@ -383,5 +414,28 @@ test('bundle policy helpers and regression tests select builds and size checks',
     assert.equal(classification['bundle-size'], true, path)
 
     assert.equal(classification.compatibility, true, path)
+  }
+})
+
+
+test('v5 delivery and portable fixtures select browser coverage', () => {
+  for (const path of [
+    'tests/fixtures/portable-editorial/react-app.tsx.template',
+    'tests/fixtures/delivery/dialog.astro.template',
+    'scripts/measure-route-delivery.mjs',
+    'scripts/check-route-runtime.mjs',
+    'scripts/check-component-css-rendering.mjs'
+  ]) {
+    assert.equal(classifyCiPaths([path]).playwright, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).browser, true, path)
+  }
+})
+
+test('v5 contract sources select contract and MCP checks', () => {
+  for (const path of ['registry/lumen-5-contract.json', 'scripts/generate-v5-migration.mjs']) {
+    assert.equal(classifyCiPaths([path]).mcp, true, path)
+
+    assert.equal(classifyCanaryPaths([path]).web, true, path)
   }
 })

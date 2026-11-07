@@ -505,4 +505,37 @@ const resources = [
       gap: 0.75rem;
     }
   }
+
+  @container docs-viewport (max-width: 12rem) {
+    .docs-gateway-page {
+      grid-template-columns: minmax(0, 1fr);
+      overflow-wrap: anywhere;
+    }
+
+    .docs-platform-map li {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .docs-platform-map li small {
+      grid-column: 2;
+    }
+
+    .docs-platform-link :global(.docs-platform-card),
+    :global(.docs-foundations-feature),
+    :global(.docs-resource-card),
+    .docs-foundations-feature__system {
+      padding: min(1.5rem, 5vw);
+    }
+
+    :global(.docs-foundations-feature),
+    .docs-foundations-feature__copy,
+    .docs-foundations-feature__system {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .docs-foundations-feature__copy > :global(:is(.ui-badge, .ui-button-link)) {
+      max-inline-size: 100%;
+      white-space: normal;
+    }
+  }
 </style>

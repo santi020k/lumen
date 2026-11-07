@@ -705,11 +705,15 @@ test("Compose publication validates approved release contracts", () => {
 test("initial Compose publication verifies the shared release commit before credentials", () => {
   assertOrderedCommands(composeWorkflow, "Compose publication", [
     "fetch-depth: 0",
+    'if [[ "$GITHUB_REF" != "refs/tags/compose-v$LUMEN_COMPOSE_VERSION" ]]; then',
+    'git merge-base --is-ancestor "$GITHUB_SHA" origin/main',
     "name: Verify coordinated Lumen 2 revision",
     "node scripts/check-coordinated-release-revision.mjs",
     ' --candidate-ref "$GITHUB_SHA"',
     "name: Verify approved release candidate",
     "node scripts/check-approved-release-revision.mjs",
+    "refs/tags/v5.0.0^{commit}",
+    '--require-current-approval --candidate-ref "$GITHUB_SHA"',
     "name: Verify graduated Lumen 2 release",
     "node scripts/check-graduated-release-revision.mjs",
     "name: Validate publication credentials",

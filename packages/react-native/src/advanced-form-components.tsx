@@ -1,7 +1,7 @@
 import { type ReactElement, useState } from 'react'
 import { ScrollView, type TextInputProps, View } from 'react-native'
 
-import { isLumenDecimalInBounds, type LumenDecimalDraft, type LumenDecimalOptions, normalizeLumenNumericOTP, parseLumenDecimalDraft, stepLumenDecimalDraft } from '@santi020k/lumen-core'
+import { isLumenDecimalInBounds, type LumenDecimalDraft, type LumenDecimalOptions, normalizeLumenNumericOTP, parseLumenDecimalDraft, stepLumenDecimalDraft } from '@santi020k/lumen-core/native-input'
 
 import { LumenFieldGroup } from './additional-components.js'
 import { LumenButton, LumenText, LumenTextField } from './foundation-primitives.js'

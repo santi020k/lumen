@@ -942,6 +942,23 @@
   padding: clamp(1.4rem, 4vw, 2.5rem);
 }
 
+@media (width > 40rem) {
+  .template-onboarding__card .ui-stepper__step {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: 0.25rem;
+  }
+
+  .template-onboarding__card .ui-stepper__content {
+    grid-column: 1 / -1;
+    padding: 0;
+  }
+
+  .template-onboarding__card .ui-stepper__step:not(:last-child)::after {
+    grid-area: 1 / 2;
+  }
+}
+
 .template-onboarding__heading {
   margin-block: 2rem 1.5rem;
 }

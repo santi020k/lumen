@@ -2,12 +2,15 @@ import { isPluginMessage, isRecord } from './model.js'
 import { mountPanel } from './mount.js'
 
 mountPanel({
-  analyze: () => {
-    parent.postMessage({ pluginMessage: { type: 'analyze' } }, '*')
+  analyze: target => {
+    parent.postMessage({ pluginMessage: { type: 'analyze', ...target } }, '*')
   },
   subscribe: listener => {
     const receive = (event: MessageEvent<unknown>) => {
-      if (event.source !== parent || !isRecord(event.data)) return
+      // Desktop sends from the editor through a nested sandbox iframe.
+      const fromEditor = event.source === window.top && event.origin === 'https://www.figma.com'
+
+      if ((event.source !== parent && !fromEditor) || !isRecord(event.data)) return
 
       if (isPluginMessage(event.data.pluginMessage)) listener(event.data.pluginMessage)
     }

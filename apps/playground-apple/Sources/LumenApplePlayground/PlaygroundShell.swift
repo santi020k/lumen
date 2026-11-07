@@ -77,85 +77,41 @@ enum PlaygroundThemePreset: String, CaseIterable, Identifiable {
     case studio
     case glass
     case santi020k
+    case paper
+    case field
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
         case .lumen: "Normal"
-        case .studio: "Studio"
-        case .glass: "Glass"
-        case .santi020k: "santi020k"
+        case .santi020k: rawValue
+        default: rawValue.capitalized
         }
     }
 
     func theme(for scheme: LumenColorScheme) -> LumenTheme {
-        switch (self, scheme) {
-        case (.lumen, .light):
-            .light
-        case (.lumen, .dark):
-            .dark
-        case (.studio, _):
-            LumenTheme(preset: .studio, scheme: scheme)
-        case (.glass, _):
-            LumenTheme(preset: .glass, scheme: scheme)
-        case (.santi020k, .light):
-            LumenTheme(colors: Self.santi020kLight, scheme: .light)
-        case (.santi020k, .dark):
-            LumenTheme(colors: Self.santi020kDark, scheme: .dark)
+        switch self {
+        case .lumen: scheme == .dark ? .dark : .light
+        case .studio: LumenTheme(preset: .studio, scheme: scheme)
+        case .glass: LumenTheme(preset: .glass, scheme: scheme)
+        case .santi020k: LumenTheme(.santi020k, scheme: scheme)
+        case .paper: LumenTheme(.paper, scheme: scheme)
+        case .field: LumenTheme(.field, scheme: scheme)
         }
-    }
-
-    private static let santi020kLight = palette(
-        canvas: 0xFAF9FB, surface: 0xFFFFFF, surfaceMuted: 0xF5F3F7,
-        surfaceStrong: 0xE5E2E9, line: 0xD6D0DC, ink: 0x332E38,
-        inkSoft: 0x5B5463, inkMuted: 0x47434C, brand: 0x620AE6,
-        brandSolid: 0x5709CE, brandSoft: 0xEEE7F9, accent: 0x7D29FA,
-        success: 0x16A249, warning: 0xF59F0A, danger: 0xEF4343,
-        onDanger: 0x000000
-    )
-
-    private static let santi020kDark = palette(
-        canvas: 0x110C1D, surface: 0x1C1528, surfaceMuted: 0x231D30,
-        surfaceStrong: 0x322B40, line: 0x494158, ink: 0xDFDDE3,
-        inkSoft: 0xB6B2BD, inkMuted: 0x8D8896, brand: 0xA56EF7,
-        brandSolid: 0x6F16F3, brandSoft: 0x2A1943, accent: 0x9F64F7,
-        success: 0x21C45D, warning: 0xF6A823, danger: 0xF15B5B,
-        onDanger: 0x110C1D
-    )
-
-    private static func palette(
-        canvas: UInt32, surface: UInt32, surfaceMuted: UInt32, surfaceStrong: UInt32,
-        line: UInt32, ink: UInt32, inkSoft: UInt32, inkMuted: UInt32,
-        brand: UInt32, brandSolid: UInt32, brandSoft: UInt32, accent: UInt32,
-        success: UInt32, warning: UInt32, danger: UInt32, onDanger: UInt32
-    ) -> LumenColorPalette {
-        LumenColorPalette(
-            canvas: color(canvas), surface: color(surface), surfaceMuted: color(surfaceMuted),
-            surfaceStrong: color(surfaceStrong), line: color(line), ink: color(ink),
-            inkSoft: color(inkSoft), inkMuted: color(inkMuted), brand: color(brand),
-            brandSolid: color(brandSolid), brandSoft: color(brandSoft), onBrand: .white,
-            accent: color(accent), success: color(success), warning: color(warning),
-            danger: color(danger), onDanger: color(onDanger)
-        )
-    }
-
-    private static func color(_ value: UInt32) -> Color {
-        Color(
-            red: Double((value >> 16) & 0xFF) / 255,
-            green: Double((value >> 8) & 0xFF) / 255,
-            blue: Double(value & 0xFF) / 255
-        )
     }
 }
 
 struct PlaygroundLaunchConfiguration: Equatable {
     let componentFilter: String?
     let destination: PlaygroundDestination
+    let themePreset: PlaygroundThemePreset
     let forcesDarkAppearance: Bool
 
     init(arguments: [String]) {
         forcesDarkAppearance = arguments.contains("--dark")
+        let preset = arguments.firstIndex(of: "--theme").flatMap { arguments.dropFirst($0 + 1).first }
+        themePreset = preset.flatMap { PlaygroundThemePreset(rawValue: $0.lowercased()) } ?? .lumen
 
         if let index = arguments.firstIndex(of: "--component"),
            arguments.indices.contains(index + 1) {
@@ -191,6 +147,7 @@ struct PlaygroundRootView: View {
         let configuration = PlaygroundLaunchConfiguration(arguments: arguments)
         launchConfiguration = configuration
         _destination = State(initialValue: configuration.destination)
+        _themePreset = State(initialValue: configuration.themePreset)
         _themePreference = State(initialValue: configuration.forcesDarkAppearance ? .dark : .system)
     }
 
@@ -213,7 +170,6 @@ struct PlaygroundRootView: View {
             systemColorScheme = PlaygroundMacAppearance.scheme(for: appearance)
         }
         #endif
-        .tint(activeTheme.colors.brandSolid)
     }
 
     @ViewBuilder

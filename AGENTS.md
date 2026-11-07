@@ -30,6 +30,11 @@ and visual guidance.
   details belong in the matching framework package.
 - Treat `tokens/lumen.tokens.json` as the canonical native foundation source. Run
   `pnpm run generate:platform-tokens` after changing it and commit the generated adapter sources.
+- Paper and Field share colors and radii in the canonical token document’s `readingThemes` extension.
+  Regenerate platform tokens before component CSS when changing these themes.
+- The santi020k web and mobile palettes come from the pinned `@santi020k/theme/site.css`. After a palette
+  update, run `generate:platform-tokens`, `generate:critical-web-css`, and `generate:component-css`
+  and review the two santi020k modes in `registry/figma-theme-tokens.json`.
 - Treat `icons/lumen.icons.json` as the canonical shared native icon catalog and
   `icons/THIRD_PARTY_NOTICES.md` as its license source. Run `pnpm run generate:platform-icons` after
   changing either file and commit the generated native sources, resources, and package notices.
@@ -76,6 +81,12 @@ before release-oriented work or broad cross-package changes.
   `on-brand`, `accent`, `success`, `warning`, `danger`, and `on-danger`.
 - Standalone component CSS lives in `packages/astro/styles/lumen.css`. The docs app can layer its
   own theme tokens in `apps/docs/src/styles/global.css`.
+- Canonical shared CSS lives in `packages/lumen/styles.css` and the Paper and Field stylesheets it
+  imports from `packages/lumen/styles/themes/`; `registry/web-css.json` declares
+  component style dependencies, including dynamically inserted markup. Run
+  `pnpm run generate:component-css` after changing either source. Do not edit generated core or
+  adapter component styles. Astro imports them automatically; React and Elements import the shared
+  foundation once and the styles for their components.
 - Interactive Astro primitives should keep working without requiring Tailwind configuration from
   consumers.
 - Treat all library input as uncontrolled. Avoid backtracking-prone regular expressions and
@@ -101,7 +112,8 @@ before release-oriented work or broad cross-package changes.
 - Brand guidance lives only in [docs/brand-guidelines.md](docs/brand-guidelines.md).
 - Contributor workflow lives in [CONTRIBUTING.md](CONTRIBUTING.md).
 - The MCP server for AI agents lives in [packages/mcp](packages/mcp/README.md); regenerate its bundled
-  snapshot with `pnpm --filter @santi020k/lumen-mcp run generate` after changing components, tokens, or `llms.txt`.
+  snapshot with `pnpm --filter @santi020k/lumen-mcp run generate` after changing components, tokens,
+  the root `README.md`, `docs/ai-usage.md`, or `llms.txt`.
 - Figma workflows: implementing Figma designs with Lumen follows
   [docs/figma-design-to-code.md](docs/figma-design-to-code.md); token export to Figma lives in
   [docs/figma.md](docs/figma.md); reusable AI maintenance instructions for the library live in
@@ -157,6 +169,8 @@ level-one heading that violates this repository's Markdown rules. Maintain this 
   `pnpm run generate:plugin-package`, then `pnpm run check:plugin-package` after changing them.
 - `registry/lumen-4-contract.json` supplies the CLI migration data and MCP migration tool; run
   `pnpm run generate:v4-migration` and regenerate the MCP snapshot after changing it.
+- `registry/lumen-5-contract.json` supplies the v5 migration/adoption contract; run
+  `pnpm run generate:v5-migration` and regenerate the MCP snapshot after changing it.
 - Actual authenticated agent benchmarks are opt-in; see `docs/lumen-4-ai.md`. They are separate from
   deterministic CI and public publication evidence.
 

@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen",
-  "version": "4.4.0",
+  "version": "5.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -12,7 +12,8 @@
     "./styles/critical.css",
     "./styles/motion.css",
     "./styles/world-map.css",
-    "./tailwind.css"
+    "./tailwind.css",
+    "./styles/**/*.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -34,7 +35,18 @@
     "./package.json": "./package.json",
     "./styles/motion.css": "./styles/motion.css",
     "./styles/world-map.css": "./styles/world-map.css",
-    "./tailwind.css": "./tailwind.css"
+    "./tailwind.css": "./tailwind.css",
+    "./styles/foundation.css": "./styles/foundation.css",
+    "./styles/themes/studio.css": "./styles/themes/studio.css",
+    "./styles/themes/paper.css": "./styles/themes/paper.css",
+    "./styles/themes/field.css": "./styles/themes/field.css",
+    "./styles/themes/santi020k.css": "./styles/themes/santi020k.css",
+    "./styles/effects/glass.css": "./styles/effects/glass.css",
+    "./styles/components/*.css": "./styles/components/*.css",
+    "./vite/build-report": {
+      "types": "./dist/build-report-plugin.d.ts",
+      "import": "./dist/build-report-plugin.js"
+    }
   },
   "files": [
     "bin",
@@ -48,7 +60,8 @@
     "README.md",
     "LICENSE",
     "v4-migration.json",
-    "tailwind.css"
+    "tailwind.css",
+    "v5-migration.json"
   ],
   "bin": {
     "lumen": "./bin/lumen.mjs"
@@ -69,6 +82,8 @@
     "typescript": "catalog:"
   },
   "devDependencies": {
+    "@playwright/test": "catalog:",
+    "@santi020k/lumen-elements": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/semver": "catalog:",
@@ -77,13 +92,18 @@
     "jsdom": "catalog:",
     "react": "catalog:",
     "tailwindcss": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "vite": "catalog:"
   },
   "peerDependencies": {
-    "react": ">=19"
+    "react": ">=19",
+    "vite": "*"
   },
   "peerDependenciesMeta": {
     "react": {
+      "optional": true
+    },
+    "vite": {
       "optional": true
     }
   },

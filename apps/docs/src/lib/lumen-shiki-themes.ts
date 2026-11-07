@@ -87,7 +87,7 @@ const lumenShikiThemes = {
 
 export const cachedSanti020kThemes = {
   dark: santi020kShikiThemes.dark,
-  light: santi020kShikiThemes.light
+  light: santi020kShikiThemes.hcLight
 } as const
 
 export const cachedLumenThemes = {

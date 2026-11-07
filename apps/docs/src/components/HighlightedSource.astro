@@ -1,0 +1,80 @@
+---
+import type { CodeLanguage } from 'astro'
+
+import { Code as AstroCode } from 'astro:components'
+
+import { Code } from '@santi020k/lumen-astro'
+
+import { cachedLumenThemes, cachedSanti020kThemes } from '../lib/lumen-shiki-themes'
+
+interface Props {
+  code: string
+  codeLabel: string
+  lang: CodeLanguage
+}
+
+const { code, codeLabel, lang } = Astro.props
+
+const themes = {
+  ...cachedLumenThemes,
+  'santi-light': cachedSanti020kThemes.light,
+  'santi-dark': cachedSanti020kThemes.dark
+}
+---
+
+<Code class="docs-code-source" code={code} codeLabel={codeLabel} highlighted scrollCue variant="block">
+  <AstroCode aria-label={codeLabel} code={code} defaultColor={false} lang={lang} role="region" tabindex="0" themes={themes} />
+</Code>
+
+<style>
+  :global(.docs-code-source code) { counter-reset: code-line; }
+  :global(.docs-code-source .line)::before {
+    counter-increment: code-line;
+    content: counter(code-line) / "";
+    display: inline-block;
+    min-inline-size: 3ch;
+    margin-inline-end: 1rem;
+    border-inline-end: 1px solid hsl(var(--line));
+    padding-inline-end: 0.75rem;
+    color: hsl(var(--ink-soft));
+    font-size: 0.75rem;
+    text-align: end;
+    user-select: none;
+  }
+
+  :global(.docs-code-source) {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  :global(.docs-code-source pre) {
+    background: var(--shiki-light-bg, var(--ui-code-bg));
+  }
+
+  :global(:root:is([data-theme='dark'], [data-theme='lumen-dark'])) :global(.docs-code-source pre) {
+    background: var(--shiki-dark-bg, var(--ui-code-bg));
+  }
+
+  :global(:root[data-theme='santi020k-light'] .docs-code-source pre) {
+    background: var(--shiki-santi-light-bg, var(--ui-code-bg));
+  }
+
+  :global(:root[data-theme='santi020k-dark'] .docs-code-source pre) {
+    background: var(--shiki-santi-dark-bg, var(--ui-code-bg));
+  }
+
+  :global(:root[data-theme='santi020k-light'] .docs-code-source :is(code, code span)) {
+    color: var(--shiki-santi-light, var(--ui-code-fg));
+    font-style: var(--shiki-santi-light-font-style, normal);
+    font-weight: var(--shiki-santi-light-font-weight, inherit);
+    text-decoration: var(--shiki-santi-light-text-decoration, none);
+  }
+
+  :global(:root[data-theme='santi020k-dark'] .docs-code-source :is(code, code span)) {
+    color: var(--shiki-santi-dark, var(--shiki-santi-light, var(--ui-code-fg)));
+    font-style: var(--shiki-santi-dark-font-style, var(--shiki-santi-light-font-style, normal));
+    font-weight: var(--shiki-santi-dark-font-weight, var(--shiki-santi-light-font-weight, inherit));
+    text-decoration: var(--shiki-santi-dark-text-decoration, var(--shiki-santi-light-text-decoration, none));
+  }
+</style>

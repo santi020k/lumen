@@ -524,14 +524,25 @@ describe('getRecipe', () => {
     expect(search({ query: 'editorial', kind: 'recipe', framework: 'astro' }).data.results.map(item => item.name)).toContain('editorial')
   })
 
-  test.each(['article-reading', 'site-search-dialog', 'image-viewer'])('advertises %s only for Astro', name => {
+  test.each(['article-reading', 'site-search-dialog', 'image-viewer'])('advertises %s for each web adapter', name => {
+    for (const framework of ['astro', 'react', 'elements'] as const) {
+      const result = getRecipe({ name, framework })
+      expect(result.data.found).toBe(true)
+      expect(new Set(result.data.recipe?.frameworks)).toEqual(new Set(['astro', 'react', 'elements']))
+      expect(result.text).toContain('lumen add ' + name + ' --target ' + framework)
+    }
+  })
+
+  test.each(['code-example', 'share'])('exposes %s setup and dependency metadata', name => {
     const result = getRecipe({ name, framework: 'astro' })
 
     expect(result.data.recipe?.frameworks).toEqual(['astro'])
-    expect(result.text).toContain(`lumen add ${name} --target astro`)
-    for (const framework of ['react', 'elements'] as const) {
-      expect(getRecipe({ name, framework }).data.found).toBe(false)
-    }
+    expect(getRecipe({ name, framework: 'react' }).data.found).toBe(false)
+    expect(getRecipe({ name, framework: 'elements' }).data.found).toBe(false)
+    expect(result.data.recipe?.dependencies).toEqual(['@santi020k/lumen-astro'])
+    expect(result.data.recipe?.setup?.astro?.runtime).toBe('@santi020k/lumen-astro/runtime')
+    expect(result.text).toContain('## Setup')
+    expect(result.text).toContain('Install @santi020k/lumen-astro')
   })
 
   test('returns a structured domain error for unknown recipes', () => {

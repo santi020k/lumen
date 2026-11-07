@@ -1,0 +1,1723 @@
+{
+  "Accordion": {
+    "stylesheet": "styles/components/accordion.css",
+    "parts": [
+      "accordion"
+    ],
+    "dependencies": []
+  },
+  "Affix": {
+    "stylesheet": "styles/components/affix.css",
+    "parts": [
+      "affix"
+    ],
+    "dependencies": []
+  },
+  "Agenda": {
+    "stylesheet": "styles/components/agenda.css",
+    "parts": [
+      "agenda"
+    ],
+    "dependencies": []
+  },
+  "Alert": {
+    "stylesheet": "styles/components/alert.css",
+    "parts": [
+      "alert"
+    ],
+    "dependencies": []
+  },
+  "AlertDialog": {
+    "stylesheet": "styles/components/alert-dialog.css",
+    "parts": [
+      "dialog"
+    ],
+    "dependencies": []
+  },
+  "AmountField": {
+    "stylesheet": "styles/components/amount-field.css",
+    "parts": [
+      "input"
+    ],
+    "dependencies": []
+  },
+  "Anchor": {
+    "stylesheet": "styles/components/anchor.css",
+    "parts": [
+      "anchor"
+    ],
+    "dependencies": []
+  },
+  "AnimatedLogo": {
+    "stylesheet": "styles/components/animated-logo.css",
+    "parts": [
+      "animated-logo"
+    ],
+    "dependencies": []
+  },
+  "AnimatedNumber": {
+    "stylesheet": "styles/components/animated-number.css",
+    "parts": [
+      "animated-number"
+    ],
+    "dependencies": []
+  },
+  "AnimatedPortrait": {
+    "stylesheet": "styles/components/animated-portrait.css",
+    "parts": [
+      "animated-portrait"
+    ],
+    "dependencies": []
+  },
+  "ApprovalCard": {
+    "stylesheet": "styles/components/approval-card.css",
+    "parts": [
+      "card",
+      "stack",
+      "button",
+      "spinner",
+      "approval-card"
+    ],
+    "dependencies": [
+      "Button",
+      "Card",
+      "Stack"
+    ]
+  },
+  "AspectRatio": {
+    "stylesheet": "styles/components/aspect-ratio.css",
+    "parts": [
+      "aspect-ratio"
+    ],
+    "dependencies": []
+  },
+  "Attachment": {
+    "stylesheet": "styles/components/attachment.css",
+    "parts": [
+      "attachment"
+    ],
+    "dependencies": []
+  },
+  "AttachmentList": {
+    "stylesheet": "styles/components/attachment-list.css",
+    "parts": [
+      "attachment-list"
+    ],
+    "dependencies": []
+  },
+  "AttachmentPreview": {
+    "stylesheet": "styles/components/attachment-preview.css",
+    "parts": [
+      "attachment-preview"
+    ],
+    "dependencies": []
+  },
+  "Autocomplete": {
+    "stylesheet": "styles/components/autocomplete.css",
+    "parts": [
+      "input",
+      "autocomplete"
+    ],
+    "dependencies": []
+  },
+  "Avatar": {
+    "stylesheet": "styles/components/avatar.css",
+    "parts": [
+      "avatar"
+    ],
+    "dependencies": []
+  },
+  "BackToTop": {
+    "stylesheet": "styles/components/back-to-top.css",
+    "parts": [
+      "back-to-top"
+    ],
+    "dependencies": []
+  },
+  "Backdrop": {
+    "stylesheet": "styles/components/backdrop.css",
+    "parts": [
+      "backdrop"
+    ],
+    "dependencies": []
+  },
+  "Badge": {
+    "stylesheet": "styles/components/badge.css",
+    "parts": [
+      "badge"
+    ],
+    "dependencies": []
+  },
+  "BarChart": {
+    "stylesheet": "styles/components/bar-chart.css",
+    "parts": [
+      "button",
+      "spinner",
+      "chart",
+      "chart-tone",
+      "bar-chart"
+    ],
+    "dependencies": [
+      "Chart",
+      "ChartDatumActions"
+    ]
+  },
+  "BoxPlot": {
+    "stylesheet": "styles/components/box-plot.css",
+    "parts": [
+      "chart",
+      "bullet-chart",
+      "chart-tone",
+      "calendar-heatmap"
+    ],
+    "dependencies": [
+      "Chart"
+    ]
+  },
+  "Breadcrumb": {
+    "stylesheet": "styles/components/breadcrumb.css",
+    "parts": [
+      "breadcrumb"
+    ],
+    "dependencies": []
+  },
+  "Bubble": {
+    "stylesheet": "styles/components/bubble.css",
+    "parts": [
+      "bubble"
+    ],
+    "dependencies": []
+  },
+  "BulletChart": {
+    "stylesheet": "styles/components/bullet-chart.css",
+    "parts": [
+      "chart",
+      "bullet-chart",
+      "chart-tone"
+    ],
+    "dependencies": [
+      "Chart"
+    ]
+  },
+  "Button": {
+    "stylesheet": "styles/components/button.css",
+    "parts": [
+      "button",
+      "spinner"
+    ],
+    "dependencies": []
+  },
+  "ButtonGroup": {
+    "stylesheet": "styles/components/button-group.css",
+    "parts": [
+      "button-group"
+    ],
+    "dependencies": []
+  },
+  "ButtonLink": {
+    "stylesheet": "styles/components/button-link.css",
+    "parts": [
+      "button",
+      "icon"
+    ],
+    "dependencies": [
+      "Icon"
+    ]
+  },
+  "Calendar": {
+    "stylesheet": "styles/components/calendar.css",
+    "parts": [
+      "calendar"
+    ],
+    "dependencies": []
+  },
+  "CalendarHeatmap": {
+    "stylesheet": "styles/components/calendar-heatmap.css",
+    "parts": [
+      "chart",
+      "chart-tone",
+      "calendar-heatmap"
+    ],
+    "dependencies": [
+      "Chart"
+    ]
+  },
+  "Callout": {
+    "stylesheet": "styles/components/callout.css",
+    "parts": [
+      "callout"
+    ],
+    "dependencies": []
+  },
+  "Card": {
+    "stylesheet": "styles/components/card.css",
+    "parts": [
+      "card"
+    ],
+    "dependencies": []
+  },
+  "CardContent": {
+    "stylesheet": "styles/components/card-content.css",
+    "parts": [
+      "card"
+    ],
+    "dependencies": []
+  },
+  "CardDescription": {
+    "stylesheet": "styles/components/card-description.css",
+    "parts": [
+      "card"
+    ],
+    "dependencies": []
+  },
+  "CardFooter": {
+    "stylesheet": "styles/components/card-footer.css",
+    "parts": [
+      "card"
+    ],
+    "dependencies": []
+  },
+  "CardHeader": {
+    "stylesheet": "styles/components/card-header.css",
+    "parts": [
+      "card"
+    ],
+    "dependencies": []
+  },
+  "CardTitle": {
+    "stylesheet": "styles/components/card-title.css",
+    "parts": [
+      "card"
+    ],
+    "dependencies": []
+  },
+  "Carousel": {
+    "stylesheet": "styles/components/carousel.css",
+    "parts": [
+      "carousel"
+    ],
+    "dependencies": []
+  },
+  "Cascader": {
+    "stylesheet": "styles/components/cascader.css",
+    "parts": [
+      "select",
+      "cascader"
+    ],
+    "dependencies": []
+  },
+  "ChangeSummary": {
+    "stylesheet": "styles/components/change-summary.css",
+    "parts": [
+      "change-summary"
+    ],
+    "dependencies": []
+  },
+  "Chart": {
+    "stylesheet": "styles/components/chart.css",
+    "parts": [
+      "chart",
+      "chart-tone"
+    ],
+    "dependencies": []
+  },
+  "ChartDatumActions": {
+    "stylesheet": "styles/components/chart-datum-actions.css",
+    "parts": [
+      "button",
+      "spinner",
+      "chart"
+    ],
+    "dependencies": [
+      "Button"
+    ]
+  },
+  "ChartMotion": {
+    "stylesheet": "styles/components/chart-motion.css",
+    "parts": [],
+    "dependencies": []
+  },
+  "Checkbox": {
+    "stylesheet": "styles/components/checkbox.css",
+    "parts": [
+      "checkbox"
+    ],
+    "dependencies": []
+  },
+  "CheckboxGroup": {
+    "stylesheet": "styles/components/checkbox-group.css",
+    "parts": [
+      "checkbox-group"
+    ],
+    "dependencies": []
+  },
+  "Code": {
+    "stylesheet": "styles/components/code.css",
+    "parts": [
+      "textarea",
+      "icon",
+      "code"
+    ],
+    "dependencies": [
+      "Icon",
+      "Textarea"
+    ]
+  },
+  "CodeTabs": {
+    "stylesheet": "styles/components/code-tabs.css",
+    "parts": [
+      "textarea",
+      "icon",
+      "tabs",
+      "code"
+    ],
+    "dependencies": [
+      "Code",
+      "Tabs"
+    ]
+  },
+  "Collapsible": {
+    "stylesheet": "styles/components/collapsible.css",
+    "parts": [
+      "collapsible"
+    ],
+    "dependencies": []
+  },
+  "ColorPicker": {
+    "stylesheet": "styles/components/color-picker.css",
+    "parts": [
+      "color-picker"
+    ],
+    "dependencies": []
+  },
+  "ComboChart": {
+    "stylesheet": "styles/components/combo-chart.css",
+    "parts": [
+      "button",
+      "spinner",
+      "chart",
+      "line-chart",
+      "chart-tone",
+      "bar-chart"
+    ],
+    "dependencies": [
+      "Chart",
+      "ChartDatumActions"
+    ]
+  },
+  "Combobox": {
+    "stylesheet": "styles/components/combobox.css",
+    "parts": [
+      "input",
+      "label",
+      "combobox"
+    ],
+    "dependencies": []
+  },
+  "Command": {
+    "stylesheet": "styles/components/command.css",
+    "parts": [
+      "command"
+    ],
+    "dependencies": []
+  },
+  "Container": {
+    "stylesheet": "styles/components/container.css",
+    "parts": [
+      "container"
+    ],
+    "dependencies": []
+  },
+  "ContextMenu": {
+    "stylesheet": "styles/components/context-menu.css",
+    "parts": [
+      "menu"
+    ],
+    "dependencies": []
+  },
+  "ContextNavigation": {
+    "stylesheet": "styles/components/context-navigation.css",
+    "parts": [
+      "context-navigation"
+    ],
+    "dependencies": []
+  },
+  "CopyButton": {
+    "stylesheet": "styles/components/copy-button.css",
+    "parts": [
+      "button",
+      "textarea",
+      "copy-button"
+    ],
+    "dependencies": [
+      "Textarea"
+    ]
+  },
+  "CountryFlag": {
+    "stylesheet": "styles/components/country-flag.css",
+    "parts": [
+      "country-flag"
+    ],
+    "dependencies": []
+  },
+  "CoverImage": {
+    "stylesheet": "styles/components/cover-image.css",
+    "parts": [
+      "cover-image"
+    ],
+    "dependencies": []
+  },
+  "DataTable": {
+    "stylesheet": "styles/components/data-table.css",
+    "parts": [
+      "table",
+      "data-table"
+    ],
+    "dependencies": []
+  },
+  "DatePicker": {
+    "stylesheet": "styles/components/date-picker.css",
+    "parts": [
+      "input",
+      "date-picker",
+      "calendar"
+    ],
+    "dependencies": [
+      "Calendar"
+    ]
+  },
+  "DateRangePicker": {
+    "stylesheet": "styles/components/date-range-picker.css",
+    "parts": [
+      "date-range-picker"
+    ],
+    "dependencies": []
+  },
+  "DescriptionDetail": {
+    "stylesheet": "styles/components/description-detail.css",
+    "parts": [
+      "descriptions"
+    ],
+    "dependencies": []
+  },
+  "DescriptionItem": {
+    "stylesheet": "styles/components/description-item.css",
+    "parts": [
+      "descriptions"
+    ],
+    "dependencies": []
+  },
+  "DescriptionTerm": {
+    "stylesheet": "styles/components/description-term.css",
+    "parts": [
+      "descriptions"
+    ],
+    "dependencies": []
+  },
+  "Descriptions": {
+    "stylesheet": "styles/components/descriptions.css",
+    "parts": [
+      "descriptions"
+    ],
+    "dependencies": []
+  },
+  "DeviceFrame": {
+    "stylesheet": "styles/components/device-frame.css",
+    "parts": [
+      "device-frame"
+    ],
+    "dependencies": []
+  },
+  "Dialog": {
+    "stylesheet": "styles/components/dialog.css",
+    "parts": [
+      "dialog"
+    ],
+    "dependencies": []
+  },
+  "DialogBody": {
+    "stylesheet": "styles/components/dialog-body.css",
+    "parts": [
+      "dialog-body"
+    ],
+    "dependencies": []
+  },
+  "DialogClose": {
+    "stylesheet": "styles/components/dialog-close.css",
+    "parts": [
+      "button",
+      "spinner",
+      "dialog-close"
+    ],
+    "dependencies": [
+      "Button"
+    ]
+  },
+  "DialogFooter": {
+    "stylesheet": "styles/components/dialog-footer.css",
+    "parts": [
+      "dialog"
+    ],
+    "dependencies": []
+  },
+  "DialogHeader": {
+    "stylesheet": "styles/components/dialog-header.css",
+    "parts": [
+      "dialog-header"
+    ],
+    "dependencies": []
+  },
+  "DialogTitle": {
+    "stylesheet": "styles/components/dialog-title.css",
+    "parts": [
+      "dialog-title"
+    ],
+    "dependencies": []
+  },
+  "Direction": {
+    "stylesheet": "styles/components/direction.css",
+    "parts": [
+      "direction"
+    ],
+    "dependencies": []
+  },
+  "Drawer": {
+    "stylesheet": "styles/components/drawer.css",
+    "parts": [
+      "dialog"
+    ],
+    "dependencies": []
+  },
+  "DropdownMenu": {
+    "stylesheet": "styles/components/dropdown-menu.css",
+    "parts": [
+      "menu"
+    ],
+    "dependencies": []
+  },
+  "DropdownMenuContent": {
+    "stylesheet": "styles/components/dropdown-menu-content.css",
+    "parts": [
+      "menu"
+    ],
+    "dependencies": []
+  },
+  "DropdownMenuItem": {
+    "stylesheet": "styles/components/dropdown-menu-item.css",
+    "parts": [
+      "menu"
+    ],
+    "dependencies": []
+  },
+  "DropdownMenuSeparator": {
+    "stylesheet": "styles/components/dropdown-menu-separator.css",
+    "parts": [
+      "menu"
+    ],
+    "dependencies": []
+  },
+  "DropdownMenuTrigger": {
+    "stylesheet": "styles/components/dropdown-menu-trigger.css",
+    "parts": [
+      "button",
+      "menu"
+    ],
+    "dependencies": []
+  },
+  "DumbbellChart": {
+    "stylesheet": "styles/components/dumbbell-chart.css",
+    "parts": [
+      "chart",
+      "bullet-chart",
+      "comparison-chart",
+      "chart-tone"
+    ],
+    "dependencies": [
+      "Chart"
+    ]
+  },
+  "Empty": {
+    "stylesheet": "styles/components/empty.css",
+    "parts": [
+      "empty"
+    ],
+    "dependencies": []
+  },
+  "ErrorState": {
+    "stylesheet": "styles/components/error-state.css",
+    "parts": [
+      "illustration",
+      "error-state"
+    ],
+    "dependencies": [
+      "Illustration"
+    ]
+  },
+  "ErrorSummary": {
+    "stylesheet": "styles/components/error-summary.css",
+    "parts": [
+      "error-summary"
+    ],
+    "dependencies": []
+  },
+  "Eyebrow": {
+    "stylesheet": "styles/components/eyebrow.css",
+    "parts": [
+      "eyebrow"
+    ],
+    "dependencies": []
+  },
+  "Field": {
+    "stylesheet": "styles/components/field.css",
+    "parts": [
+      "field"
+    ],
+    "dependencies": []
+  },
+  "FieldError": {
+    "stylesheet": "styles/components/field-error.css",
+    "parts": [
+      "field-error"
+    ],
+    "dependencies": []
+  },
+  "FileUpload": {
+    "stylesheet": "styles/components/file-upload.css",
+    "parts": [
+      "file-upload"
+    ],
+    "dependencies": []
+  },
+  "FilterBar": {
+    "stylesheet": "styles/components/filter-bar.css",
+    "parts": [
+      "filter-bar"
+    ],
+    "dependencies": []
+  },
+  "FloatingBadge": {
+    "stylesheet": "styles/components/floating-badge.css",
+    "parts": [
+      "floating-badge"
+    ],
+    "dependencies": []
+  },
+  "Form": {
+    "stylesheet": "styles/components/form.css",
+    "parts": [
+      "form"
+    ],
+    "dependencies": []
+  },
+  "FormattedDate": {
+    "stylesheet": "styles/components/formatted-date.css",
+    "parts": [
+      "formatted-date"
+    ],
+    "dependencies": []
+  },
+  "FunnelChart": {
+    "stylesheet": "styles/components/funnel-chart.css",
+    "parts": [
+      "chart",
+      "chart-tone",
+      "calendar-heatmap"
+    ],
+    "dependencies": [
+      "Chart"
+    ]
+  },
+  "GradientDivider": {
+    "stylesheet": "styles/components/gradient-divider.css",
+    "parts": [
+      "gradient-divider"
+    ],
+    "dependencies": []
+  },
+  "Graphic": {
+    "stylesheet": "styles/components/graphic.css",
+    "parts": [
+      "graphic"
+    ],
+    "dependencies": []
+  },
+  "Grid": {
+    "stylesheet": "styles/components/grid.css",
+    "parts": [
+      "grid"
+    ],
+    "dependencies": []
+  },
+  "Heatmap": {
+    "stylesheet": "styles/components/heatmap.css",
+    "parts": [
+      "button",
+      "spinner",
+      "chart",
+      "line-chart",
+      "chart-tone"
+    ],
+    "dependencies": [
+      "Chart",
+      "ChartDatumActions"
+    ]
+  },
+  "Histogram": {
+    "stylesheet": "styles/components/histogram.css",
+    "parts": [
+      "chart",
+      "line-chart",
+      "chart-tone",
+      "bar-chart"
+    ],
+    "dependencies": [
+      "Chart"
+    ]
+  },
+  "HoverCard": {
+    "stylesheet": "styles/components/hover-card.css",
+    "parts": [
+      "hover-card"
+    ],
+    "dependencies": []
+  },
+  "Icon": {
+    "stylesheet": "styles/components/icon.css",
+    "parts": [
+      "icon"
+    ],
+    "dependencies": []
+  },
+  "Illustration": {
+    "stylesheet": "styles/components/illustration.css",
+    "parts": [
+      "illustration"
+    ],
+    "dependencies": []
+  },
+  "Image": {
+    "stylesheet": "styles/components/image.css",
+    "parts": [
+      "image"
+    ],
+    "dependencies": []
+  },
+  "ImageComparison": {
+    "stylesheet": "styles/components/image-comparison.css",
+    "parts": [
+      "image-comparison",
+      "slider"
+    ],
+    "dependencies": []
+  },
+  "Input": {
+    "stylesheet": "styles/components/input.css",
+    "parts": [
+      "input"
+    ],
+    "dependencies": []
+  },
+  "InputGroup": {
+    "stylesheet": "styles/components/input-group.css",
+    "parts": [
+      "input-group"
+    ],
+    "dependencies": []
+  },
+  "InputOTP": {
+    "stylesheet": "styles/components/input-otp.css",
+    "parts": [
+      "input-otp"
+    ],
+    "dependencies": []
+  },
+  "Item": {
+    "stylesheet": "styles/components/item.css",
+    "parts": [
+      "item"
+    ],
+    "dependencies": []
+  },
+  "KanbanBoard": {
+    "stylesheet": "styles/components/kanban-board.css",
+    "parts": [
+      "kanban",
+      "visually-hidden"
+    ],
+    "dependencies": [
+      "VisuallyHidden"
+    ]
+  },
+  "KanbanColumn": {
+    "stylesheet": "styles/components/kanban-column.css",
+    "parts": [
+      "kanban",
+      "visually-hidden"
+    ],
+    "dependencies": [
+      "VisuallyHidden"
+    ]
+  },
+  "Kbd": {
+    "stylesheet": "styles/components/kbd.css",
+    "parts": [
+      "kbd"
+    ],
+    "dependencies": []
+  },
+  "Label": {
+    "stylesheet": "styles/components/label.css",
+    "parts": [
+      "label"
+    ],
+    "dependencies": []
+  },
+  "LanguageToggle": {
+    "stylesheet": "styles/components/language-toggle.css",
+    "parts": [
+      "language-toggle"
+    ],
+    "dependencies": []
+  },
+  "LineChart": {
+    "stylesheet": "styles/components/line-chart.css",
+    "parts": [
+      "button",
+      "spinner",
+      "chart",
+      "line-chart",
+      "chart-tone"
+    ],
+    "dependencies": [
+      "Button",
+      "Chart",
+      "ChartDatumActions"
+    ]
+  },
+  "Link": {
+    "stylesheet": "styles/components/link.css",
+    "parts": [
+      "link"
+    ],
+    "dependencies": []
+  },
+  "ListBox": {
+    "stylesheet": "styles/components/list-box.css",
+    "parts": [
+      "label",
+      "list-box"
+    ],
+    "dependencies": []
+  },
+  "LollipopChart": {
+    "stylesheet": "styles/components/lollipop-chart.css",
+    "parts": [
+      "chart",
+      "bullet-chart",
+      "comparison-chart",
+      "chart-tone"
+    ],
+    "dependencies": [
+      "Chart"
+    ]
+  },
+  "Marker": {
+    "stylesheet": "styles/components/marker.css",
+    "parts": [
+      "marker"
+    ],
+    "dependencies": []
+  },
+  "MediaFilmstrip": {
+    "stylesheet": "styles/components/media-filmstrip.css",
+    "parts": [
+      "media-filmstrip"
+    ],
+    "dependencies": []
+  },
+  "MediaThumbnail": {
+    "stylesheet": "styles/components/media-thumbnail.css",
+    "parts": [
+      "button",
+      "spinner",
+      "media-thumbnail"
+    ],
+    "dependencies": [
+      "Button"
+    ]
+  },
+  "MediaViewport": {
+    "stylesheet": "styles/components/media-viewport.css",
+    "parts": [
+      "button",
+      "spinner",
+      "media-viewport"
+    ],
+    "dependencies": [
+      "Button"
+    ]
+  },
+  "Mentions": {
+    "stylesheet": "styles/components/mentions.css",
+    "parts": [
+      "textarea",
+      "mentions"
+    ],
+    "dependencies": []
+  },
+  "Menubar": {
+    "stylesheet": "styles/components/menubar.css",
+    "parts": [
+      "menubar"
+    ],
+    "dependencies": []
+  },
+  "Message": {
+    "stylesheet": "styles/components/message.css",
+    "parts": [
+      "message"
+    ],
+    "dependencies": []
+  },
+  "MessageScroller": {
+    "stylesheet": "styles/components/message-scroller.css",
+    "parts": [
+      "message-scroller"
+    ],
+    "dependencies": []
+  },
+  "Meter": {
+    "stylesheet": "styles/components/meter.css",
+    "parts": [
+      "meter"
+    ],
+    "dependencies": []
+  },
+  "MotionGroup": {
+    "stylesheet": "styles/components/motion-group.css",
+    "parts": [
+      "motion-group"
+    ],
+    "dependencies": []
+  },
+  "NativeSelect": {
+    "stylesheet": "styles/components/native-select.css",
+    "parts": [
+      "select"
+    ],
+    "dependencies": []
+  },
+  "NavigationMenu": {
+    "stylesheet": "styles/components/navigation-menu.css",
+    "parts": [
+      "navigation-menu"
+    ],
+    "dependencies": []
+  },
+  "Note": {
+    "stylesheet": "styles/components/note.css",
+    "parts": [
+      "note"
+    ],
+    "dependencies": []
+  },
+  "NumberField": {
+    "stylesheet": "styles/components/number-field.css",
+    "parts": [
+      "input",
+      "number-field"
+    ],
+    "dependencies": []
+  },
+  "Pagination": {
+    "stylesheet": "styles/components/pagination.css",
+    "parts": [
+      "pagination"
+    ],
+    "dependencies": []
+  },
+  "Particles": {
+    "stylesheet": "styles/components/particles.css",
+    "parts": [
+      "particles"
+    ],
+    "dependencies": []
+  },
+  "PasswordField": {
+    "stylesheet": "styles/components/password-field.css",
+    "parts": [
+      "button",
+      "field",
+      "spinner",
+      "input",
+      "label",
+      "field-error",
+      "password-field"
+    ],
+    "dependencies": [
+      "Button",
+      "Field",
+      "FieldError",
+      "Input",
+      "Label"
+    ]
+  },
+  "PhoneInput": {
+    "stylesheet": "styles/components/phone-input.css",
+    "parts": [
+      "input",
+      "select",
+      "input-group",
+      "country-flag",
+      "phone-input"
+    ],
+    "dependencies": [
+      "CountryFlag"
+    ]
+  },
+  "PhoneNumber": {
+    "stylesheet": "styles/components/phone-number.css",
+    "parts": [
+      "country-flag",
+      "phone-number"
+    ],
+    "dependencies": [
+      "CountryFlag"
+    ]
+  },
+  "PieChart": {
+    "stylesheet": "styles/components/pie-chart.css",
+    "parts": [
+      "button",
+      "spinner",
+      "chart",
+      "chart-tone",
+      "pie-chart"
+    ],
+    "dependencies": [
+      "Chart",
+      "ChartDatumActions"
+    ]
+  },
+  "Pill": {
+    "stylesheet": "styles/components/pill.css",
+    "parts": [
+      "pill"
+    ],
+    "dependencies": []
+  },
+  "Popconfirm": {
+    "stylesheet": "styles/components/popconfirm.css",
+    "parts": [
+      "button",
+      "popover",
+      "popconfirm"
+    ],
+    "dependencies": []
+  },
+  "Popover": {
+    "stylesheet": "styles/components/popover.css",
+    "parts": [
+      "popover"
+    ],
+    "dependencies": []
+  },
+  "PopoverPanel": {
+    "stylesheet": "styles/components/popover-panel.css",
+    "parts": [
+      "popover"
+    ],
+    "dependencies": []
+  },
+  "PopoverTrigger": {
+    "stylesheet": "styles/components/popover-trigger.css",
+    "parts": [
+      "button"
+    ],
+    "dependencies": []
+  },
+  "Progress": {
+    "stylesheet": "styles/components/progress.css",
+    "parts": [
+      "progress"
+    ],
+    "dependencies": []
+  },
+  "PromptComposer": {
+    "stylesheet": "styles/components/prompt-composer.css",
+    "parts": [
+      "stack",
+      "button",
+      "spinner",
+      "textarea",
+      "label",
+      "form"
+    ],
+    "dependencies": [
+      "Button",
+      "Form",
+      "Label",
+      "Stack",
+      "Textarea"
+    ]
+  },
+  "Prose": {
+    "stylesheet": "styles/components/prose.css",
+    "parts": [
+      "prose"
+    ],
+    "dependencies": []
+  },
+  "QRCode": {
+    "stylesheet": "styles/components/qr-code.css",
+    "parts": [
+      "qr-code"
+    ],
+    "dependencies": []
+  },
+  "RadioGroup": {
+    "stylesheet": "styles/components/radio-group.css",
+    "parts": [
+      "radio-group"
+    ],
+    "dependencies": []
+  },
+  "RangeChart": {
+    "stylesheet": "styles/components/range-chart.css",
+    "parts": [
+      "button",
+      "spinner",
+      "chart",
+      "line-chart",
+      "chart-tone"
+    ],
+    "dependencies": [
+      "Chart",
+      "ChartDatumActions"
+    ]
+  },
+  "Rating": {
+    "stylesheet": "styles/components/rating.css",
+    "parts": [
+      "icon",
+      "rating"
+    ],
+    "dependencies": [
+      "Icon"
+    ]
+  },
+  "Resizable": {
+    "stylesheet": "styles/components/resizable.css",
+    "parts": [
+      "resizable"
+    ],
+    "dependencies": []
+  },
+  "RevealGroup": {
+    "stylesheet": "styles/components/reveal-group.css",
+    "parts": [
+      "reveal-group"
+    ],
+    "dependencies": []
+  },
+  "RichTextEditor": {
+    "stylesheet": "styles/components/rich-text-editor.css",
+    "parts": [
+      "rich-text-editor"
+    ],
+    "dependencies": []
+  },
+  "ScatterChart": {
+    "stylesheet": "styles/components/scatter-chart.css",
+    "parts": [
+      "button",
+      "spinner",
+      "chart",
+      "line-chart",
+      "chart-tone"
+    ],
+    "dependencies": [
+      "Chart",
+      "ChartDatumActions"
+    ]
+  },
+  "Schedule": {
+    "stylesheet": "styles/components/schedule.css",
+    "parts": [
+      "schedule"
+    ],
+    "dependencies": []
+  },
+  "ScrollArea": {
+    "stylesheet": "styles/components/scroll-area.css",
+    "parts": [
+      "scroll-area"
+    ],
+    "dependencies": []
+  },
+  "ScrollProgress": {
+    "stylesheet": "styles/components/scroll-progress.css",
+    "parts": [
+      "scroll-progress"
+    ],
+    "dependencies": []
+  },
+  "ScrollReveal": {
+    "stylesheet": "styles/components/scroll-reveal.css",
+    "parts": [
+      "scroll-reveal"
+    ],
+    "dependencies": []
+  },
+  "SearchField": {
+    "stylesheet": "styles/components/search-field.css",
+    "parts": [
+      "input",
+      "search-field"
+    ],
+    "dependencies": []
+  },
+  "Segmented": {
+    "stylesheet": "styles/components/segmented.css",
+    "parts": [
+      "segmented"
+    ],
+    "dependencies": []
+  },
+  "Select": {
+    "stylesheet": "styles/components/select.css",
+    "parts": [
+      "select"
+    ],
+    "dependencies": []
+  },
+  "Separator": {
+    "stylesheet": "styles/components/separator.css",
+    "parts": [
+      "separator"
+    ],
+    "dependencies": []
+  },
+  "Sheet": {
+    "stylesheet": "styles/components/sheet.css",
+    "parts": [
+      "dialog"
+    ],
+    "dependencies": []
+  },
+  "Sidebar": {
+    "stylesheet": "styles/components/sidebar.css",
+    "parts": [
+      "sidebar"
+    ],
+    "dependencies": []
+  },
+  "Skeleton": {
+    "stylesheet": "styles/components/skeleton.css",
+    "parts": [
+      "skeleton"
+    ],
+    "dependencies": []
+  },
+  "SkipLink": {
+    "stylesheet": "styles/components/skip-link.css",
+    "parts": [
+      "skip-link"
+    ],
+    "dependencies": []
+  },
+  "Slider": {
+    "stylesheet": "styles/components/slider.css",
+    "parts": [
+      "slider"
+    ],
+    "dependencies": []
+  },
+  "SourceCitation": {
+    "stylesheet": "styles/components/source-citation.css",
+    "parts": [
+      "link",
+      "source-citation"
+    ],
+    "dependencies": [
+      "Link"
+    ]
+  },
+  "Sparkline": {
+    "stylesheet": "styles/components/sparkline.css",
+    "parts": [
+      "sparkline",
+      "chart-tone"
+    ],
+    "dependencies": []
+  },
+  "SpeedDial": {
+    "stylesheet": "styles/components/speed-dial.css",
+    "parts": [
+      "icon",
+      "speed-dial"
+    ],
+    "dependencies": [
+      "Icon"
+    ]
+  },
+  "Spinner": {
+    "stylesheet": "styles/components/spinner.css",
+    "parts": [
+      "spinner"
+    ],
+    "dependencies": []
+  },
+  "Stack": {
+    "stylesheet": "styles/components/stack.css",
+    "parts": [
+      "stack"
+    ],
+    "dependencies": []
+  },
+  "Stat": {
+    "stylesheet": "styles/components/stat.css",
+    "parts": [
+      "stat",
+      "stat-value",
+      "stat-label"
+    ],
+    "dependencies": []
+  },
+  "StatDescription": {
+    "stylesheet": "styles/components/stat-description.css",
+    "parts": [
+      "stat-description"
+    ],
+    "dependencies": []
+  },
+  "StatIcon": {
+    "stylesheet": "styles/components/stat-icon.css",
+    "parts": [
+      "stat-icon"
+    ],
+    "dependencies": []
+  },
+  "StatLabel": {
+    "stylesheet": "styles/components/stat-label.css",
+    "parts": [
+      "stat-label"
+    ],
+    "dependencies": []
+  },
+  "StatTrend": {
+    "stylesheet": "styles/components/stat-trend.css",
+    "parts": [
+      "stat-trend"
+    ],
+    "dependencies": []
+  },
+  "StatValue": {
+    "stylesheet": "styles/components/stat-value.css",
+    "parts": [
+      "stat-value"
+    ],
+    "dependencies": []
+  },
+  "Stepper": {
+    "stylesheet": "styles/components/stepper.css",
+    "parts": [
+      "stepper"
+    ],
+    "dependencies": []
+  },
+  "StreamMessage": {
+    "stylesheet": "styles/components/stream-message.css",
+    "parts": [
+      "stack",
+      "prose",
+      "message",
+      "stream-message"
+    ],
+    "dependencies": [
+      "Message",
+      "Prose",
+      "Stack"
+    ]
+  },
+  "Switch": {
+    "stylesheet": "styles/components/switch.css",
+    "parts": [
+      "switch"
+    ],
+    "dependencies": []
+  },
+  "Table": {
+    "stylesheet": "styles/components/table.css",
+    "parts": [
+      "icon",
+      "table"
+    ],
+    "dependencies": [
+      "Icon"
+    ]
+  },
+  "Tabs": {
+    "stylesheet": "styles/components/tabs.css",
+    "parts": [
+      "tabs"
+    ],
+    "dependencies": []
+  },
+  "TabsList": {
+    "stylesheet": "styles/components/tabs-list.css",
+    "parts": [
+      "tabs"
+    ],
+    "dependencies": [
+      "Tabs"
+    ]
+  },
+  "TabsPanel": {
+    "stylesheet": "styles/components/tabs-panel.css",
+    "parts": [
+      "tabs"
+    ],
+    "dependencies": [
+      "Tabs"
+    ]
+  },
+  "TabsTrigger": {
+    "stylesheet": "styles/components/tabs-trigger.css",
+    "parts": [
+      "tabs"
+    ],
+    "dependencies": [
+      "Tabs"
+    ]
+  },
+  "TagGroup": {
+    "stylesheet": "styles/components/tag-group.css",
+    "parts": [
+      "tag-group"
+    ],
+    "dependencies": []
+  },
+  "Textarea": {
+    "stylesheet": "styles/components/textarea.css",
+    "parts": [
+      "textarea"
+    ],
+    "dependencies": []
+  },
+  "ThemeBuilder": {
+    "stylesheet": "styles/components/theme-builder.css",
+    "parts": [
+      "theme-builder"
+    ],
+    "dependencies": []
+  },
+  "ThemeToggle": {
+    "stylesheet": "styles/components/theme-toggle.css",
+    "parts": [
+      "icon",
+      "theme-toggle"
+    ],
+    "dependencies": [
+      "Icon"
+    ]
+  },
+  "TimeField": {
+    "stylesheet": "styles/components/time-field.css",
+    "parts": [
+      "input",
+      "time-field"
+    ],
+    "dependencies": []
+  },
+  "Timeline": {
+    "stylesheet": "styles/components/timeline.css",
+    "parts": [
+      "timeline",
+      "timeline-item"
+    ],
+    "dependencies": [
+      "TimelineItem"
+    ]
+  },
+  "TimelineItem": {
+    "stylesheet": "styles/components/timeline-item.css",
+    "parts": [
+      "timeline-item"
+    ],
+    "dependencies": []
+  },
+  "Toast": {
+    "stylesheet": "styles/components/toast.css",
+    "parts": [
+      "button",
+      "spinner",
+      "toast"
+    ],
+    "dependencies": [
+      "Button"
+    ]
+  },
+  "ToastViewport": {
+    "stylesheet": "styles/components/toast-viewport.css",
+    "parts": [
+      "button",
+      "spinner",
+      "toast",
+      "tvp"
+    ],
+    "dependencies": [
+      "Toast"
+    ]
+  },
+  "Toggle": {
+    "stylesheet": "styles/components/toggle.css",
+    "parts": [
+      "toggle"
+    ],
+    "dependencies": []
+  },
+  "ToggleGroup": {
+    "stylesheet": "styles/components/toggle-group.css",
+    "parts": [
+      "toggle-group"
+    ],
+    "dependencies": []
+  },
+  "ToolActivity": {
+    "stylesheet": "styles/components/tool-activity.css",
+    "parts": [
+      "stack",
+      "collapsible",
+      "tool-activity"
+    ],
+    "dependencies": [
+      "Collapsible",
+      "Stack"
+    ]
+  },
+  "Toolbar": {
+    "stylesheet": "styles/components/toolbar.css",
+    "parts": [
+      "toolbar"
+    ],
+    "dependencies": []
+  },
+  "Tooltip": {
+    "stylesheet": "styles/components/tooltip.css",
+    "parts": [
+      "tooltip"
+    ],
+    "dependencies": []
+  },
+  "TooltipContent": {
+    "stylesheet": "styles/components/tooltip-content.css",
+    "parts": [
+      "tooltip"
+    ],
+    "dependencies": [
+      "Tooltip"
+    ]
+  },
+  "Tour": {
+    "stylesheet": "styles/components/tour.css",
+    "parts": [
+      "button",
+      "tour"
+    ],
+    "dependencies": []
+  },
+  "Transfer": {
+    "stylesheet": "styles/components/transfer.css",
+    "parts": [
+      "button",
+      "icon",
+      "checkbox",
+      "transfer"
+    ],
+    "dependencies": [
+      "Icon"
+    ]
+  },
+  "Tree": {
+    "stylesheet": "styles/components/tree.css",
+    "parts": [
+      "tree"
+    ],
+    "dependencies": []
+  },
+  "TreeGrid": {
+    "stylesheet": "styles/components/tree-grid.css",
+    "parts": [
+      "tree-grid"
+    ],
+    "dependencies": []
+  },
+  "TreeSelect": {
+    "stylesheet": "styles/components/tree-select.css",
+    "parts": [
+      "select",
+      "tree-select"
+    ],
+    "dependencies": []
+  },
+  "Typography": {
+    "stylesheet": "styles/components/typography.css",
+    "parts": [
+      "typography"
+    ],
+    "dependencies": []
+  },
+  "VirtualList": {
+    "stylesheet": "styles/components/virtual-list.css",
+    "parts": [
+      "virtual-list"
+    ],
+    "dependencies": []
+  },
+  "VisualEffect": {
+    "stylesheet": "styles/components/visual-effect.css",
+    "parts": [
+      "visual-effect"
+    ],
+    "dependencies": []
+  },
+  "VisuallyHidden": {
+    "stylesheet": "styles/components/visually-hidden.css",
+    "parts": [
+      "visually-hidden"
+    ],
+    "dependencies": []
+  },
+  "WaterfallChart": {
+    "stylesheet": "styles/components/waterfall-chart.css",
+    "parts": [
+      "chart",
+      "line-chart",
+      "chart-tone",
+      "bar-chart"
+    ],
+    "dependencies": [
+      "Chart"
+    ]
+  },
+  "Watermark": {
+    "stylesheet": "styles/components/watermark.css",
+    "parts": [
+      "watermark"
+    ],
+    "dependencies": []
+  },
+  "WorldMap": {
+    "stylesheet": "styles/components/world-map.css",
+    "parts": [
+      "world-map",
+      "button",
+      "spinner",
+      "select"
+    ],
+    "dependencies": [
+      "Button"
+    ]
+  }
+}

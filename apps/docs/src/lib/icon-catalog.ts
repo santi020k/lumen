@@ -37,30 +37,45 @@ export const filterIconEntries = (entries: readonly IconEntry[], raw: string): I
   return entries.filter(entry => entry.terms.toLowerCase().includes(query))
 }
 
+const allowedSvgTags = new Set(['svg', 'g', 'path', 'circle', 'rect', 'polyline', 'polygon', 'line', 'ellipse'])
+const allowedSvgAttributes = new Set(['key', 'aria-hidden', 'focusable', 'class', 'xmlns', 'viewBox', 'width', 'height', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'cx', 'cy', 'r', 'rx', 'ry', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'points', 'fill-rule', 'clip-rule', 'transform'])
+
+const validateSvgElement = (element: Element): void => {
+  if (element.namespaceURI !== 'http://www.w3.org/2000/svg' || !allowedSvgTags.has(element.localName)) {
+    throw new Error('Invalid icon SVG element.')
+  }
+
+  for (const attribute of element.attributes) {
+    if (!allowedSvgAttributes.has(attribute.name) || attribute.value.toLowerCase().includes('url(')) {
+      throw new Error('Invalid icon SVG attribute.')
+    }
+  }
+}
+
 // Only inert SVG geometry from the generated catalog may enter the document.
 export const createCatalogSvg = (source: string): SVGSVGElement => {
   const parsed = new DOMParser().parseFromString(source, 'image/svg+xml')
   const root = parsed.documentElement
-  const tags = new Set(['svg', 'g', 'path', 'circle', 'rect', 'polyline', 'polygon', 'line', 'ellipse'])
-  const attributes = new Set(['key', 'aria-hidden', 'focusable', 'class', 'xmlns', 'viewBox', 'width', 'height', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'd', 'cx', 'cy', 'r', 'rx', 'ry', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'points', 'fill-rule', 'clip-rule', 'transform'])
 
   if (root.localName !== 'svg') throw new Error('Invalid icon SVG.')
 
-  for (const element of [root, ...root.querySelectorAll('*')]) {
-    if (element.namespaceURI !== 'http://www.w3.org/2000/svg' || !tags.has(element.localName)) {
-      throw new Error('Invalid icon SVG element.')
-    }
+  const walker = parsed.createTreeWalker(root, NodeFilter.SHOW_ELEMENT)
+  let element: Element | null = root
 
-    for (const attribute of element.attributes) {
-      if (!attributes.has(attribute.name) || attribute.value.toLowerCase().includes('url(')) {
-        throw new Error('Invalid icon SVG attribute.')
-      }
-    }
+  while (element) {
+    validateSvgElement(element)
+
+    const next = walker.nextNode()
+
+    if (next !== null && !(next instanceof Element)) throw new Error('Invalid icon SVG element.')
+
+    element = next
   }
 
-  const imported = document.importNode(root, true)
+  // The parsed document is disposable; transfer the validated tree without cloning it.
+  const icon = document.adoptNode(root)
 
-  if (!(imported instanceof SVGSVGElement)) throw new Error('Invalid icon SVG root.')
+  if (!(icon instanceof SVGSVGElement)) throw new Error('Invalid icon SVG root.')
 
-  return imported
+  return icon
 }

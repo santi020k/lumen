@@ -1,8 +1,27 @@
 version: "0.2"
 language: en
 words:
+  - bcpkix
+  - bcprov
+  - bouncycastle
+  - buildscript
+  - classpaths
+  - databind
+  - emnapi
+  - fasterxml
+  - javalite
+  - jdom
+  - jsoup
+  - Automator
+  - Emirati
+  - katex
+  - requestfinished
+  - requestfailed
+  - blockedbyclient
+  - WEBVTT
   - minmax
   - Komori
+  - Tinos
   - domcontentloaded
   - noindex
   - imac
@@ -71,6 +90,8 @@ words:
   - Preparación
   - compilación
   - conector
+  - conin
+  - conout
   - controles
   - elegida
   - eventos

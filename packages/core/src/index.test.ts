@@ -794,10 +794,10 @@ describe('lumen theme tokens', () => {
     expect(lumenDarkTheme).toBe('dark')
     expect(lumenLightTheme).toBe('light')
     expect(lumenColors.brand).toMatch(/^\d+ \d+% \d+%$/)
-    expect(lumenColors.brand).toBe('201 96% 32%')
-    expect(lumenDarkColors.brand).toBe('199 91% 56%')
-    expect(lumenColorTokens.light.brand).toBe('#0369A0')
-    expect(lumenColorTokens.dark.brand).toBe('#29B4F5')
+    expect(lumenColors.brand).toBe('193 79% 26%')
+    expect(lumenDarkColors.brand).toBe('185 56% 72%')
+    expect(lumenColorTokens.light.brand).toBe('#0E6077')
+    expect(lumenColorTokens.dark.brand).toBe('#90D9E0')
     expect(lumenSpacing.lg).toBe(16)
     expect(lumenGlass.blur).toBe('22px')
     expect(lumenGlass.bg).toContain('/')
@@ -813,6 +813,21 @@ describe('lumen theme tokens', () => {
     expect(lumenRadius.base).toBe('0.625rem')
     expect(lumenMotion.ease).toContain('cubic-bezier')
   })
+
+  test.each([['light', lumenColors], ['dark', lumenDarkColors]] as const)(
+    'keeps default text, selected options and solid actions readable in %s mode',
+    (_scheme, colors) => {
+      for (const surface of ['canvas', 'surface', 'surfaceMuted', 'surfaceStrong'] as const) {
+        for (const text of ['ink', 'inkSoft', 'inkMuted', 'brand', 'accent'] as const) {
+          expect(getContrastRatio(colors[text], colors[surface]), `${text} on ${surface}`).toBeGreaterThanOrEqual(4.5)
+        }
+      }
+
+      for (const [text, surface] of [['brand', 'brandSoft'], ['onBrand', 'brandSolid'], ['onDanger', 'danger']] as const) {
+        expect(getContrastRatio(colors[text], colors[surface]), `${text} on ${surface}`).toBeGreaterThanOrEqual(4.5)
+      }
+    }
+  )
 
   test('composes class names from truthy values only', () => {
     expect(composeClassName('ui-button', false, null, undefined, 'ui-button--default')).toBe(

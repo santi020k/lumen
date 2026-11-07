@@ -44,12 +44,12 @@ const { setups } = Astro.props
             "
             >{install.label}
             </p>
-            <CodeBlock code={install.command} lang="bash" />
+            <CodeBlock code={install.command} codeLabel={`${setup.label} ${install.label} installation command`} lang="bash" />
           </div>
         ))}
       </div>
       <p class="text-sm/7 text-ink-soft">{setup.note}</p>
-      <CodeBlock code={setup.usage} lang={setup.lang} />
+      <CodeBlock code={setup.usage} codeLabel={`${setup.label} component usage example`} lang={setup.lang} />
     </section>
   ))}
 </Tabs>

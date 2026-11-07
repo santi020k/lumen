@@ -1,12 +1,14 @@
 ---
 import '@santi020k/lumen-templates/styles.css'
 
+import { Link } from '@santi020k/lumen-astro'
 import {
   getLumenTemplate,
   type TemplateSlug,
   templateSlugs } from '@santi020k/lumen-templates'
 import TemplateRenderer from '@santi020k/lumen-templates/TemplateRenderer.astro'
 
+import FigmaCommunityLink from '../../components/FigmaCommunityLink.astro'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 
 export const getStaticPaths = () => templateSlugs.map(slug => ({ params: { slug } }))
@@ -24,4 +26,11 @@ if (!template) {
   title={`${template.name} — Lumen templates`}
 >
   <TemplateRenderer {slug} />
+  <nav
+    aria-label="Template resources"
+    class="mx-auto flex max-w-7xl flex-wrap items-center gap-4 px-5 py-6"
+  >
+    <Link href="/templates">All templates</Link>
+    <FigmaCommunityLink file="templates" />
+  </nav>
 </BaseLayout>

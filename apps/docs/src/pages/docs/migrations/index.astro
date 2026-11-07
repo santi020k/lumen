@@ -6,8 +6,8 @@ import DocsLayout from '../../../layouts/DocsLayout.astro'
 ---
 
 <DocsLayout
-  description="Upgrade between Lumen major versions with verified API changes, dependency updates, and rollback guidance."
-  title="Migration guides - Lumen UI"
+  description="Upgrade the Lumen UI component library between major versions. Follow version-by-version API changes, package updates, verification steps, and rollback guidance."
+  title="UI Library Version Upgrade & Migration Guides - Lumen UI"
 >
   <Stack gap="section">
     <DocsPageHero
@@ -16,6 +16,14 @@ import DocsLayout from '../../../layouts/DocsLayout.astro'
       eyebrow="Migration guides"
       title="Upgrade Lumen with a clear path."
     />
+    <Card>
+      <CardHeader>
+        <Badge class="w-fit" variant="outline">Lumen 5</Badge>
+        <CardTitle as="h2">Lumen 4 → Lumen 5</CardTitle>
+        <CardDescription>Install the CLI separately, await Astro enhancement, and adopt component CSS and editable recipes at your own pace.</CardDescription>
+      </CardHeader>
+      <CardContent><Link href="/docs/migrations/v4-to-v5">Read the v4 → v5 guide</Link></CardContent>
+    </Card>
     <Card>
       <CardHeader>
         <CardTitle as="h2">Lumen 1 → Lumen 2</CardTitle>

@@ -43,8 +43,8 @@ const articleHref = `#${encodeURIComponent(articleId)}`
       super()
 
       this.addEventListener('click', event => {
-        if (!(event.target instanceof Element) || event.button !== 0 ||
-          event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return
+        if (event.defaultPrevented || !(event.target instanceof Element) || event.button !== 0 ||
+          [event.altKey, event.ctrlKey, event.metaKey, event.shiftKey].some(Boolean)) return
 
         const link = event.target.closest<HTMLAnchorElement>('.chapter-disclosure a[href^="#"]')
 
@@ -56,7 +56,7 @@ const articleHref = `#${encodeURIComponent(articleId)}`
         if (!disclosure || !destinationId) return
 
         window.setTimeout(() => {
-          if (event.defaultPrevented || !this.isConnected) return
+          if (!this.isConnected) return
 
           // The recipe generated this encoded fragment from a caller-owned heading ID.
           const heading = document.getElementById(decodeURIComponent(destinationId))
@@ -73,7 +73,8 @@ const articleHref = `#${encodeURIComponent(articleId)}`
 
           heading.focus({ preventScroll: true })
 
-          heading.scrollIntoView({ block: 'start' })
+          // The Anchor runtime may have already handled the fragment scroll.
+          if (!event.defaultPrevented) heading.scrollIntoView({ block: 'start' })
         }, 0)
       })
     }
@@ -104,6 +105,23 @@ const articleHref = `#${encodeURIComponent(articleId)}`
   .chapter-disclosure > summary {
     min-block-size: 2.75rem;
     padding-block: 0.65rem;
+    border-block-end: 1px solid transparent;
+  }
+
+  .chapter-disclosure > summary:focus-visible {
+    outline-offset: -3px;
+  }
+
+  .chapter-disclosure[open] > summary {
+    margin-block-end: var(--ui-space-sm);
+    border-block-end-color: hsl(var(--line));
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  .chapter-disclosure :global(a) {
+    min-block-size: 2.75rem;
+    align-items: center;
   }
 
   :where(.article-text) :global(:where(h2, h3, h4, h5, h6)) {
@@ -145,5 +163,12 @@ const articleHref = `#${encodeURIComponent(articleId)}`
     .chapter-disclosure {
       display: none;
     }
+  }
+
+  @media print {
+    .article-reading { display: block; }
+    .article-reading .chapter-rail,
+    .article-reading .chapter-disclosure,
+    .article-reading .article-progress { display: none; }
   }
 </style>

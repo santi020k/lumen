@@ -73,8 +73,8 @@ by the widget target.
 ## Install
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and use **Exact Version** `4.4.0` for a reproducible production
-build. Choose **Up to Next Major Version** from `4.4.0` when the application intentionally accepts
+`https://github.com/santi020k/lumen`, and use **Exact Version** `5.0.0` for a reproducible production
+build. Choose **Up to Next Major Version** from `5.0.0` when the application intentionally accepts
 compatible Lumen updates. Reserve the `main` branch for local evaluation. Add the `LumenUI` product
 to your application target. The package manifest lives at the repository root, so the Git
 dependency works directly; no npm package, CocoaPod, or copied source is required.
@@ -85,7 +85,7 @@ For a project managed with `Package.swift`, add the package and product explicit
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "4.4.0"
+        exact: "5.0.0"
     )
 ],
 targets: [
@@ -98,11 +98,11 @@ targets: [
 ]
 ```
 
-Use `.package(url: "https://github.com/santi020k/lumen", from: "4.4.0")` instead when the
+Use `.package(url: "https://github.com/santi020k/lumen", from: "5.0.0")` instead when the
 application's update policy accepts later compatible releases. Commit `Package.resolved` for
-applications, generated Xcode projects, and CI builds, then verify its `version` is `4.4.0` and its
-`revision` matches the `v4.4.0` tag before shipping. XcodeGen projects use the same policy in
-`project.yml` with `version: 4.4.0` for compatible updates or `exactVersion: 4.4.0` for an exact
+applications, generated Xcode projects, and CI builds, then verify its `version` is `5.0.0` and its
+`revision` matches the `v5.0.0` tag before shipping. XcodeGen projects use the same policy in
+`project.yml` with `version: 5.0.0` for compatible updates or `exactVersion: 5.0.0` for an exact
 pin. Deterministic project generators should declare the requirement in their checked-in source
 and regenerate the project instead of patching the generated `.xcodeproj`.
 
@@ -449,7 +449,53 @@ Swift, and Xcode baselines, and use the
 
 ## Appearance presets
 
-Start with `LumenTheme(preset: .studio, scheme: .light)`. Surface and Card accept explicit `.glass` materials with accessibility fallbacks. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for surface dimensions and text styles.
+Use `.lumenThemeScope(.paper)`, `.lumenThemeScope(.field)`, or `.lumenThemeScope(.santi020k)` on a view.
+At the root the view follows the system. A nested scope follows the nearest Lumen theme. Pass
+`scheme: .light` or `.dark` to pin that subtree, including its controls. A `.lumenSheet` presented
+inside the scope takes its appearance from that scope. Apply the scope outside the presentation
+modifier. Apply the same scope explicitly inside a separately constructed window or presentation.
+
+```swift
+import LumenUI
+import SwiftUI
+
+struct ReadingNotes: View {
+    @State private var editing = false
+    @State private var draft = ""
+
+    var body: some View {
+        VStack {
+            LumenText("Reading notes", variant: .title)
+            LumenButton(action: { editing = true }) { Text("Edit note") }
+                .lumenSheet(isPresented: $editing, title: "Note") {
+                    LumenTextField("Draft", text: $draft)
+                }
+                .lumenThemeScope(.paper, scheme: .light)
+        }
+        .lumenThemeScope(.field)
+    }
+}
+```
+
+Paper uses a scalable serif title. Field supplies rounded corners. The santi020k theme gives primary
+buttons an ink fill and uses violet for links and charts. Its status labels in light mode use readable ink while icons and borders carry their status colors. Each named theme uses solid
+surfaces by default. Pick the existing Studio or Glass preset through
+`LumenTheme(preset: .studio, scheme: .light)`. Surface and Card also support explicitly selected
+glass material with accessibility fallbacks.
+
+Create an app theme from two typed palettes with `LumenNamedTheme(light:dark:)`, or derive it from an existing named theme. This Harbor example customizes Field’s accent in each scheme.
+Use this same value with `.lumenThemeScope(harbor)`, or supply the resolved theme to an app-owned
+window with `.lumenTheme(LumenTheme(harbor, scheme: .dark))`. Pass `applyTint: false` to retain
+application tint. A product that owns its title font can pass `textStyles:` to the initializer.
+
+```swift
+let harbor = LumenNamedTheme.field.overridingColors { palette, scheme in
+    palette.overriding(accent: scheme == .dark ? LumenColors.dark.brand : LumenColors.light.brand)
+}
+```
+
+See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md)
+for shared semantic roles and platform differences.
 
 ## Data visualization
 

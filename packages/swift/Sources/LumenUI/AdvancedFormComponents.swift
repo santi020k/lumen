@@ -15,8 +15,8 @@ private struct LumenAdvancedInputStyle: ViewModifier {
             .padding(.vertical, LumenSpacing.sm)
             .frame(minHeight: 44)
             .background(theme.colors.surface)
-            .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm))
-            .overlay(RoundedRectangle(cornerRadius: LumenRadius.sm).stroke(error == nil ? theme.colors.line : theme.colors.danger))
+            .clipShape(RoundedRectangle(cornerRadius: theme.controlRadius))
+            .overlay(RoundedRectangle(cornerRadius: theme.controlRadius).stroke(error == nil ? theme.colors.line : theme.colors.danger))
             .accessibilityLabel(Text(verbatim: label))
             .lumenAccessibilityHint(error.map(LumenTextContent.verbatim))
     }

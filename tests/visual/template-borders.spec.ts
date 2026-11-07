@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 for (const width of [390, 1440]) {
   for (const theme of ['light', 'dark', 'santi020k-light', 'santi020k-dark']) {
-    test(`template preview shares framed edges (${width}, ${theme})`, async ({ page }) => {
+    test(`template preview shares framed edges (${width}, ${theme})`, async ({ browserName, page }) => {
       await page.setViewportSize({ width, height: 1000 })
       await page.emulateMedia({ reducedMotion: 'reduce' })
       await page.goto('/templates')
@@ -45,8 +45,9 @@ for (const width of [390, 1440]) {
           expect(Math.abs(imageBox.width - headerBox.width)).toBeLessThan(1)
         }
         await preview.focus()
-        await page.keyboard.press('Shift+Tab')
-        await page.keyboard.press('Tab')
+        // Safari uses Option+Tab to include links in keyboard navigation.
+        await page.keyboard.press(browserName === 'webkit' ? 'Alt+Shift+Tab' : 'Shift+Tab')
+        await page.keyboard.press(browserName === 'webkit' ? 'Alt+Tab' : 'Tab')
         await expect(preview).toBeFocused()
         await expect(preview).toHaveCSS('outline-width', '2px')
       }

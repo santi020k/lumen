@@ -78,7 +78,7 @@ public struct LumenFieldGroup<Content: View>: View {
                     .font(.callout.weight(.semibold))
                     .foregroundStyle(theme.colors.ink)
                 if required {
-                    Text("*").foregroundStyle(theme.colors.danger).accessibilityLabel("Required")
+                    Text("*").foregroundStyle(theme.statusText(theme.colors.danger)).accessibilityLabel("Required")
                 }
             }
             if let description {
@@ -90,7 +90,7 @@ public struct LumenFieldGroup<Content: View>: View {
             if let errorMessage {
                 errorMessage.text
                     .font(.caption)
-                    .foregroundStyle(theme.colors.danger)
+                    .foregroundStyle(theme.statusText(theme.colors.danger))
                     .accessibilityAddTraits(.updatesFrequently)
             }
         }
@@ -196,13 +196,13 @@ public struct LumenTextarea: View {
                 .padding(LumenSpacing.sm)
                 .background(theme.colors.surface)
                 .overlay {
-                    RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous)
+                    RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous)
                         .stroke(errorMessage == nil ? theme.colors.line : theme.colors.danger, lineWidth: 1)
                 }
-                .clipShape(RoundedRectangle(cornerRadius: LumenRadius.sm, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: theme.controlRadius, style: .continuous))
                 .opacity(isEnabled ? 1 : 0.52)
             if let errorMessage {
-                errorMessage.text.font(.caption).foregroundStyle(theme.colors.danger)
+                errorMessage.text.font(.caption).foregroundStyle(theme.statusText(theme.colors.danger))
             } else if let description {
                 description.text.font(.caption).foregroundStyle(theme.colors.inkMuted)
             }
@@ -309,7 +309,7 @@ public struct LumenToast<Actions: View>: View {
     public var body: some View {
         HStack(spacing: LumenSpacing.md) {
             VStack(alignment: .leading, spacing: LumenSpacing.xs) {
-                Text(title).font(.callout.weight(.semibold)).foregroundStyle(accentColor)
+                Text(title).font(.callout.weight(.semibold)).foregroundStyle(titleColor)
                 if let description {
                     Text(description).font(.caption).foregroundStyle(theme.colors.inkSoft)
                 }
@@ -336,6 +336,13 @@ public struct LumenToast<Actions: View>: View {
         .clipShape(RoundedRectangle(cornerRadius: LumenRadius.md, style: .continuous))
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.updatesFrequently)
+    }
+
+    private var titleColor: Color {
+        switch variant {
+        case .destructive, .success, .warning: theme.statusText(accentColor)
+        case .default, .accent: accentColor
+        }
     }
 
     private var accentColor: Color {

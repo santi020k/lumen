@@ -1,0 +1,88 @@
+@layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities;
+
+@layer lumen.tokens {
+  /* Scheme values inherit from the nearest light or dark boundary. */
+  :where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"]) {
+    --_paper-scheme: light;
+    /* BEGIN:generated-light */
+    --_paper-canvas: 41 45% 92%;
+    --_paper-surface: 44 63% 97%;
+    --_paper-surface-muted: 39 32% 89%;
+    --_paper-surface-strong: 36 25% 81%;
+    --_paper-line: 32 15% 48%;
+    --_paper-ink: 23 26% 15%;
+    --_paper-ink-soft: 25 16% 33%;
+    --_paper-ink-muted: 25 13% 39%;
+    --_paper-brand-solid: 354 43% 34%;
+    --_paper-brand-soft: 354 29% 90%;
+    --_paper-on-brand: 0 0% 100%;
+    --_paper-accent: 25 65% 33%;
+    --_paper-danger: 3 75% 36%;
+    --_paper-on-danger: 0 0% 100%;
+    --_paper-success: 175 57% 25%;
+    --_paper-warning: 32 82% 30%;
+    /* END:generated-light */
+  }
+
+  :where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"]) {
+    --_paper-scheme: dark;
+    /* BEGIN:generated-dark */
+    --_paper-canvas: 24 15% 10%;
+    --_paper-surface: 25 17% 14%;
+    --_paper-surface-muted: 25 14% 20%;
+    --_paper-surface-strong: 25 13% 26%;
+    --_paper-line: 30 15% 52%;
+    --_paper-ink: 41 45% 91%;
+    --_paper-ink-soft: 34 22% 72%;
+    --_paper-ink-muted: 33 18% 65%;
+    --_paper-brand-solid: 8 58% 74%;
+    --_paper-brand-soft: 355 26% 23%;
+    --_paper-on-brand: 356 33% 14%;
+    --_paper-accent: 32 63% 70%;
+    --_paper-danger: 5 89% 75%;
+    --_paper-on-danger: 355 35% 12%;
+    --_paper-success: 172 44% 68%;
+    --_paper-warning: 39 80% 70%;
+    /* END:generated-dark */
+  }
+
+  /* Full CSS can set a base scheme on the same element as the preset. */
+  [data-lumen-preset="paper"],
+  :root[data-lumen-preset="paper"],
+  :root[data-theme][data-lumen-preset="paper"],
+  [data-theme][data-lumen-preset="paper"] {
+    color-scheme: var(--_paper-scheme);
+    --canvas: var(--_paper-canvas);
+    --surface: var(--_paper-surface);
+    --surface-muted: var(--_paper-surface-muted);
+    --surface-strong: var(--_paper-surface-strong);
+    --line: var(--_paper-line);
+    --ink: var(--_paper-ink);
+    --ink-soft: var(--_paper-ink-soft);
+    --ink-muted: var(--_paper-ink-muted);
+    --brand-solid: var(--_paper-brand-solid);
+    --brand-soft: var(--_paper-brand-soft);
+    --on-brand: var(--_paper-on-brand);
+    --accent: var(--_paper-accent);
+    --danger: var(--_paper-danger);
+    --on-danger: var(--_paper-on-danger);
+    --success: var(--_paper-success);
+    --warning: var(--_paper-warning);
+    --brand: var(--brand-solid);
+    --ui-on-danger: var(--on-danger);
+    --ui-font: system-ui, sans-serif;
+    /* BEGIN:generated-radii */
+    --ui-radius-sm: 0.2rem;
+    --ui-radius: 0.22rem;
+    --ui-radius-lg: 0.22rem;
+    /* END:generated-radii */
+  }
+}
+
+@layer lumen.components {
+  @scope ([data-lumen-preset="paper"]) to ([data-lumen-preset]) {
+    :where(.ui-prose, .ui-typography) :is(h1, h2, h3, h4, h5, h6) {
+      font-family: Georgia, "Times New Roman", serif;
+    }
+  }
+}

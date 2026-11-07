@@ -1,5 +1,14 @@
 # @santi020k/lumen-react-hook-form
 
+## 4.0.2
+
+### Patch Changes
+
+- Extend the React adapter peer range to Lumen 5 while preserving Lumen 4 support. Packed consumers validate strict peer resolution, types, and rendered form values against both families.
+
+- Updated dependencies [`1487f80`, `8ba0ca5`, `3e1d507`, `23d5ef6`, `b328b53`, `94cf634`, `d4cb325`]:
+  - @santi020k/lumen-react@5.0.0
+
 ## 4.0.1
 
 ### Patch Changes

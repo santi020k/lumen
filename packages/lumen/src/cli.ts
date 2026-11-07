@@ -68,7 +68,7 @@ let conflict: 'error' | 'merge' | 'skip' = 'skip'
 
 const getRolloutArguments = (): { repositories: string[], targetVersion?: string } => {
   const values: string[] = []
-  const optionsWithValues = new Set(['--exclude', '--report'])
+  const optionsWithValues = new Set(['--exclude', '--manifest', '--report'])
 
   for (let index = 1; index < args.length; index += 1) {
     const value = args[index]
@@ -206,11 +206,16 @@ const formatAddResult = async (itemName: string, registry: LumenRegistry) => {
     target: getAddTarget(targetValue, targetProvided)
   })
 
+  const heading = result.dryRun ? 'Would add' : 'Added'
+
+  if (result.conflicts.length) process.exitCode = 1
+
   return [
-    `${result.dryRun ? 'Would add' : 'Added'} ${result.item.name}`,
+    `${result.conflicts.length ? 'Review conflicts for' : heading} ${result.item.name}`,
     ...result.added.map(file => `- ${file}`),
     ...result.merged.map(file => `- merged existing ${file}`),
-    ...result.skipped.map(file => `- skipped existing ${file}`)
+    ...result.skipped.map(file => `- skipped existing ${file}`),
+    ...result.conflicts.map(({ path, diff }) => `- preserved edited ${path}\n${diff}`)
   ].join('\n')
 }
 
@@ -262,26 +267,28 @@ const help = [
   '  lumen install          Print install commands',
   '  lumen audit-tokens     Report incompatible semantic color custom properties',
   '  lumen audit-theme <json>  Check named semantic palettes and text contrast',
+  '  lumen audit-rendered <url>  Audit an explicit local route with the project Playwright tool',
   '  lumen audit-consumer   Review versions, local patches and Lumen CSS overrides',
   '  lumen doctor           Inspect styles, adapters, runtime mounts, and selector usage',
   '  lumen doctor-native    Inspect native versions, package pins, and theme placement',
   '  lumen init             Print canonical framework setup without changing files',
   '  lumen rollout [version] [repositories...]  Inventory or upgrade pnpm consumers',
-  '  lumen migrate v2|v3|v4 Preview source migrations and manual review findings',
-  '  --dependencies        Include coordinated pnpm upgrades for v3/v4 migrations',
+  '  lumen migrate v2|v3|v4|v5 Preview source migrations and manual review findings',
+  '  --dependencies        Include coordinated pnpm upgrades for v3/v4/v5 migrations',
   '',
   'Options:',
   '  --cwd <path>           Target directory for lumen add',
   '  --dry-run              Print files without writing them',
   '  --fail-on-conflict     Exit if a target recipe file already exists',
   '  --force                Overwrite existing recipe files',
-  '  --merge                Merge recipe files with existing files',
+  '  --merge                Preserve edited files and show local-to-incoming diffs',
   '  --registry <source>    Load list/show data from a local or remote registry JSON file',
   '  --registry-token <key> Use a bearer token for private remote registries',
   '  --target <framework>   Generate wrappers or recipe starters for astro, react, or elements',
   '  --framework <name>     Select astro, react, or elements for lumen init',
   '  --tailwind             Include the verified Tailwind cascade setup in lumen init',
   '  --json                 Print lumen doctor output as JSON',
+  '  --version <semver>    Explicit target for audit-consumer (default bundled release)',
   '  --manifest <path>      Use a specific cross-platform release manifest',
   '  --apply                Apply a rollout or supported migration (migrations default to dry-run)',
   '  --allow-dirty          Allow rollout after recording an uncommitted baseline',
@@ -293,6 +300,17 @@ const help = [
 
 // eslint-disable-next-line complexity -- Command dispatch keeps CLI exit behavior and output in one place.
 const run = async () => {
+  if (command === 'audit-rendered') {
+    const { runRenderedAuditCommand } = await import('./rendered-audit.js')
+    const result = await runRenderedAuditCommand(args.slice(1), cwd ?? process.cwd())
+
+    process.exitCode = result.exitCode
+
+    process.stdout.write(result.output + '\n')
+
+    return
+  }
+
   let output = help
 
   const registry = registrySource ?
@@ -301,7 +319,16 @@ const run = async () => {
 
   switch (command) {
     case 'audit-consumer': {
-      const report = await inspectLumenConsumerUpgrade(cwd ?? name ?? process.cwd())
+      const versionIndex = args.indexOf('--version')
+      const auditVersion = versionIndex >= 0 ? args[versionIndex + 1] : undefined
+
+      if (versionIndex >= 0 && (!auditVersion || auditVersion.startsWith('--'))) throw new Error('audit-consumer --version requires an exact semantic version.')
+
+      const repository = cwd ?? (name && !name.startsWith('--') ? name : process.cwd())
+
+      if (manifestIndex >= 0 && (!manifestPath || manifestPath.startsWith('--'))) throw new Error('Provide a path after --manifest.')
+
+      const report = await inspectLumenConsumerUpgrade(repository, auditVersion, manifestPath)
 
       output = json ? JSON.stringify(report, undefined, 2) : formatLumenConsumerUpgradeAudit(report)
 
@@ -389,7 +416,7 @@ const run = async () => {
     }
 
     case 'migrate': {
-      if (name !== 'v2' && name !== 'v3' && name !== 'v4') throw new Error('Missing or invalid migration. Use lumen migrate v2, v3 or v4.')
+      if (name !== 'v2' && name !== 'v3' && name !== 'v4' && name !== 'v5') throw new Error('Missing or invalid migration. Use lumen migrate v2, v3, v4 or v5.')
 
       if (applyRollout && dryRun) throw new Error('Choose either --dry-run or --apply for lumen migrate.')
 
@@ -418,12 +445,15 @@ const run = async () => {
     }
 
     case 'rollout': {
+      if (manifestIndex >= 0 && (!manifestPath || manifestPath.startsWith('--'))) throw new Error('Provide a path after --manifest.')
+
       const rollout = getRolloutArguments()
 
       const report = await runConsumerRollout({
         allowDirty,
         apply: applyRollout,
         exclude: excludeValues,
+        ...(manifestPath ? { manifestPath } : {}),
         ...(reportPath ? { report: reportPath } : {}),
         repositories: rollout.repositories,
         ...(rollout.targetVersion ? { targetVersion: rollout.targetVersion } : {}),

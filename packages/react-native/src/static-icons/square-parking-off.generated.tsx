@@ -24,11 +24,11 @@ const LumenSquareParkingOffIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M3.6 3.6A2 2 0 0 1 5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-.59 1.41" />
-      <Path d="M3 8.7V19a2 2 0 0 0 2 2h10.3" />
-      <Path d="m2 2 20 20" />
-      <Path d="M13 13a3 3 0 1 0 0-6H9v2" />
-      <Path d="M9 17v-2.3" />
+      <Path d="M12 12h1a2 2 0 000-4H9.5a.5.5 0 00-.5.5V9" />
+      <Path d="M15.343 21H5a2 2 0 01-2-2V8.657" />
+      <Path d="M22 22 2 2" />
+      <Path d="M3.586 3.586A2 2 0 015 3h14a2 2 0 012 2v14a2 2 0 01-.586 1.414" />
+      <Path d="M9 14.657V16" />
   </Svg>
 )
 

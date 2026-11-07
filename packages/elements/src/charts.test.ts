@@ -113,6 +113,47 @@ test.each(['lumen-lollipop-chart', 'lumen-dumbbell-chart'])('%s honors escaped l
   expect(element.querySelector('[data-ui-chart-summary]')?.textContent).not.toContain('interpretation')
 })
 
+test.each(['upgrade', 'template'])('calendar renders once when connected through %s and keeps synchronous updates', mode => {
+  const tagName = `lumen-calendar-heatmap-${mode}-test`
+  class CalendarFixture extends LumenCalendarHeatmapElement {}
+
+  if (mode === 'template') customElements.define(tagName, CalendarFixture)
+
+  const template = document.createElement('template')
+  template.innerHTML = `<${tagName} start-date="2026-01-04" end-date="2026-01-06" week-starts-on="1"
+    heading="Daily activity" data='[{"date":"2026-01-04","value":0},{"date":"2026-01-06","value":4}]'></${tagName}>`
+  const element = template.content.firstElementChild
+  if (!(element instanceof HTMLElement)) throw new Error('Missing calendar fixture')
+
+  // Observe whole-chart replacements, including work done during custom-element upgrade.
+  const observer = new MutationObserver(() => {})
+  observer.observe(element, { childList: true })
+  try {
+    document.body.append(template.content)
+    if (mode === 'upgrade') customElements.define(tagName, CalendarFixture)
+    if (!(element instanceof CalendarFixture)) throw new Error('Calendar was not upgraded')
+
+    expect(observer.takeRecords()).toHaveLength(1)
+    expect(element.querySelectorAll('tbody tr')).toHaveLength(3)
+    expect(element.querySelector('tbody tr')?.textContent).toBe('2026-01-040')
+
+    element.weekStartsOn = 0
+    expect(observer.takeRecords()).toHaveLength(1)
+    expect(element.querySelector('svg text')?.textContent).toBe('Sun')
+
+    element.remove()
+    element.data = [{ date: '2026-01-04', value: 8 }]
+    element.setAttribute('heading', 'Updated activity')
+    expect(observer.takeRecords()).toHaveLength(0)
+    document.body.append(element)
+    expect(observer.takeRecords()).toHaveLength(1)
+    expect(element.querySelector('tbody tr')?.textContent).toBe('2026-01-048')
+    expect(element.querySelector('.ui-chart__heading')?.textContent).toContain('Updated activity')
+  } finally {
+    observer.disconnect()
+  }
+})
+
 test('calendar custom element exposes UTC dates, zero, localized weekdays and missing measurements', () => {
   const element = chart('lumen-calendar-heatmap', {
     'start-date': '2026-01-04',

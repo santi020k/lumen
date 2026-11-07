@@ -1,5 +1,131 @@
 # @santi020k/lumen-astro
 
+## 5.0.0
+
+- Limit outside click and Escape dismissal to initialized Astro controls, respecting ownership by
+  other adapters and preserving dismissal for Astro controls inside shadow roots.
+
+- Scope runtime initialization to the requested root and descendants, including detached controls and fragments. Keep repeat interactions local and initialize dynamic dialog targets before opening them.
+
+- Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
+
+### Major Changes
+
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, Paper, Field, and glass independently with optional style imports. Paper and Field support light and dark reading surfaces and forms. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions, and shared website colors from `@santi020k/theme/site.css` with increased-contrast support.
+
+- Load Astro controllers by the features present on each page instead of shipping the interactive
+  catalog with every runtime mount. Preserve delayed first clicks, keyboard navigation, native
+  fallbacks, synchronized code tabs, and Astro navigation cleanup.
+
+  Enhancement now returns a promise. Await `window.LumenInitUiPrimitives(scope)` or listen for
+  `ui:ready` before inspecting enhanced DOM. The first programmatic toast operation may render
+  asynchronously while returning its stable ID immediately. Failed automatic loads dispatch
+  `ui:runtime-error`; available controllers still initialize.
+
+- Deliver shared foundation and component CSS through the existing packages. Astro components now
+  import their own styles automatically; React and Elements can import `styles/foundation.css` once
+  and `styles/components/<kebab-name>.css` where needed. Full and critical styles remain supported.
+  Icon defaults use low specificity so component state and sizes survive shared CSS chunk ordering.
+  Generated style dependencies include manual-copy recovery and dynamically created toasts.
+
+  Web adapters no longer install the umbrella CLI or expose its binary. Install `@santi020k/lumen`
+  as a development dependency to continue using `lumen add`, discovery, and diagnostics. Runtime styles
+  resolve through Core, so adapters no longer require the umbrella package or its TypeScript tooling.
+
+### Minor Changes
+
+- Add an opt-in editorial Code appearance with a code icon and visible localized copy feedback. Make block headers wrap at narrow widths and keep copy targets at least 44px without scaling on press. Improve code printing and adopt compact, expandable examples with exact-source copying and overflow hints in the documentation.
+
+- Add an opt-in editorial Prose appearance across the web adapters, with a configurable reading measure, clearer section hierarchy, attributed quotations, and connected native figure captions. Keep authored HTML and component-owned figures intact, including Code and charts.
+
+  Adopt the shared appearance in documentation migration/theme guides and expand the editorial article guide with semantic quotations and media.
+
+  The editable article-reading recipes print article text without contents controls or reading progress.
+
+- Refine editorial Code headers with deliberate metadata hierarchy, a restrained surface, and a distinct copy control that adapts to narrow containers.
+
+  Add opt-in sticky first columns to Table across web adapters. Row identifiers remain visible during horizontal scrolling, respect RTL, and return to normal flow in narrow containers, records layouts, and print. Documentation reference tables adopt this mode with named keyboard regions and overflow-only reading hints.
+
+  Documentation code examples expose complete-source manual recovery when clipboard access fails.
+
+- Expose matching stable Timeline item, ThemeToggle icon, and WorldMap frame/control parts across web
+  adapters. ThemeToggle accepts `--ui-theme-toggle-icon-size`. Elements Timeline decorates native list
+  items without replacing their content or listeners and provides a selective registration entry.
+  Empty Elements ThemeToggle controls receive accessible default icons and reconnect without duplicate
+  click handlers. Doctor guidance recognizes the same shared styling contract.
+  Elements SkipLink reveals its host when the native child receives focus and preserves link contrast.
+
+### Patch Changes
+
+- Move focus to local Anchor destinations consistently across web adapters without replacing native
+  hash scrolling or history. Preserve modified and canceled navigation and authored tab order,
+  use the rendering document in React and Elements, and prevent duplicate Astro runtime ownership.
+
+- Offer opt-in manual code-copy recovery consistently across the web adapters. React Code and
+  CodeTabs accept recoveryLabel; Elements accepts recovery-label and inherits it from code tabs.
+  Recovery preserves exact source in a labelled read-only field, selects on focus without taking
+  focus, survives transient feedback, and clears after successful retry or a tab change. Source
+  updates invalidate pending recovery in React and Elements. Astro recovery now has a visible
+  label and shared layout, including narrow screens and print output.
+
+  Give Elements block Code a block formatting context so pointer interaction and framing work in
+  WebKit. Astro's copy runtime leaves React- and Elements-owned controls to their own adapters,
+  avoiding duplicate clipboard operations on mixed-framework pages.
+
+- Support opt-in manual CopyButton recovery in React and Elements, matching Astro. Failed clipboard
+  requests retain the complete value in a labelled read-only field, without moving focus. Successful
+  retries clear recovery, and changed inputs or disconnected controls cannot restore stale results.
+
+  Hide manual clipboard recovery fields in print output across the web adapters.
+
+- Keep one owner for media borders and corners across AspectRatio, CoverImage, DeviceFrame,
+  ImageComparison, MediaViewport, and MediaThumbnail, including selective Image style imports.
+  Preserve component-owned figures, captions, media, and link focus geometry inside Prose. Keep
+  avatar, flag, attachment, and QRCode images from inheriting article corner rounding.
+
+  Give custom-element media frames and reading surfaces block layout, and replace the AspectRatio
+  docs' clipped Cards with actual media examples. Card retains visible interactive overflow.
+
+  Image wrappers pass radius and fit to native image children, and AspectRatio keeps picture media
+  sized to its frame even when Image styles load later. Explicit Image fitting remains available.
+
+- Keep focused SkipLink labels within narrow viewports, align them with reading direction, and
+  respect reduced motion. The docs site uses the shared component for its main content shortcut.
+
+- Resolve compound control references within detached and shadow DOM trees. Keep tab panels,
+  dialogs, menus, field descriptions and phone errors associated with their own controls; retain
+  shadow popover outside-click dismissal and keyboard focus. Retry initialization when a context
+  menu or native document anchor destination arrives later.
+
+- Preserve public Image radius props inside default and editorial Prose. Generic article image rounding no longer overrides `radius="none"` or other explicit Image radii, so a figure can own its outer border and corner clipping without rounded gaps between the image and its caption.
+
+- Keep the selected upload and its filename when a drag-and-drop operation contains no files.
+  Reopening a toast by ID cancels its pending removal.
+
+- Preserve the public layer order when component styles load before Tailwind. Keep enhanced native controls hidden and component colors and borders above Tailwind base styles regardless of stylesheet chunk order.
+
+- Preserve React Select ownership when the Astro runtime initializes or observes the same page.
+  Expose the existing adapter ownership marker through useSelect root props and exclude those roots
+  from Astro Select initialization and outside dismissal. Keep native Astro Select enhancement intact.
+
+- Honor explicit reveal thresholds across web adapters. Keep tall or clipped content visible when its
+  threshold cannot be reached, and bypass decorative hiding for keyboard focus and reduced motion.
+  Clean up reveal observers on navigation, disconnection, and unmount.
+
+- Clear the native dialog's opposing horizontal inset when centering dialogs and alert dialogs.
+  RTL layouts with enlarged text now keep dialog content and close controls inside the viewport.
+
+- Retain lazily requested toast CSS across Astro client navigation and keep its loader outside the
+  initial runtime bundle. Deduplicate WorldMap element creation to keep new styling parts within the
+  existing bundle budget.
+
+- Keep synchronized code tabs from moving the document while overflow cues settle. Measure initial
+  cues together, refresh selected panels synchronously, avoid scrolling an already visible tab, and
+  preserve keyboard focus without a second native scroll. Share font-completion observation per
+  document and release listeners during navigation.
+- Updated dependencies [`1487f80`, `94d13ff`, `73a4b13`, `8ba0ca5`, `3e1d507`, `23d5ef6`, `94cf634`, `d4cb325`]:
+  - @santi020k/lumen-core@5.0.0
+
 ## 4.4.0
 
 ### Minor Changes
@@ -57,7 +183,7 @@
 ### Minor Changes
 
 - [#103](https://github.com/santi020k/lumen/pull/103) [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05) Thanks [@santi020k](https://github.com/santi020k)! - Strengthen loading feedback across Astro, React, and Elements.
-  
+
   - Skeleton accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
     (`shimmer`, `pulse`, `none`). The default shimmer rectangle and its 1rem height are unchanged,
     but explicit heights and classes can now size placeholders below 1rem. Sizes accept pixels,
@@ -88,7 +214,7 @@
   while consumer overrides stay explicit.
 
 - [#103](https://github.com/santi020k/lumen/pull/103) [`936a640`](https://github.com/santi020k/lumen/commit/936a640b6ec1f9d635f9bb9bee878471996dcab1) Thanks [@santi020k](https://github.com/santi020k)! - Fix DatePicker state when applications load values and provide validation feedback.
-  
+
   - React reopens the calendar on the current selected month without preventing month navigation.
   - The visible trigger mirrors consumer `aria-invalid`, `aria-describedby`, and `aria-errormessage`
     attributes. Astro and Elements also respond when these native input attributes change.

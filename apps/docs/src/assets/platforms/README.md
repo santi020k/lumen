@@ -1,6 +1,6 @@
 # Homepage platform previews
 
-[Documentation app](../../../README.md) · [Root preview gallery](../../../../../README.md#see-lumen-in-action)
+[Documentation app](../../../README.md) · [Web preview](../../../../../README.md#one-system-your-framework) · [Native previews](../../../../../README.md#try-it-on-native)
 
 ## Capture sources
 
@@ -8,7 +8,7 @@ These WebP images show real Lumen interfaces. Keep each capture at its original 
 the homepage displays the complete image without a cover crop or a fading overlay.
 
 - `web.webp`: the homepage `HomeWorkbench` canvas, captured in the Lumen light theme at a
-  1440 px viewport. Only the canvas bounds are captured (1184 × 802 px).
+  1440 px viewport. Only the canvas bounds are captured (1184 × 790 px).
 - `react-native.webp`: the local Expo browser preview at
   `/native-previews/react-native-live/index.html?destination=examples&pattern=profile`, captured
   at 390 × 844 px. The caption explicitly identifies this as a browser preview.
@@ -19,8 +19,10 @@ the homepage displays the complete image without a cover crop or a fading overla
 
 ## Provenance and refresh
 
-The web and React Native screenshots were captured from the local v4 candidate on October 3, 2026.
-The native images reuse the committed store captures; they do not establish v4 device qualification.
+The web, React Native, and native screenshots were refreshed for the local v5 candidate on
+November 6, 2026. Exact source revisions and capture environments are recorded in the
+[v5 asset kit](../../../../../docs/assets/releases/v5.0.0/README.md).
+Native images reuse current simulator/emulator store captures; they do not establish device qualification.
 All images use WebP quality 88, generated with the docs app's existing Sharp dependency. Refresh
 them from these sources when the showcased compositions change. Do not recreate native controls
 in HTML or generate illustrative replacements for product screenshots.

@@ -21,6 +21,8 @@ dependencyResolutionManagement {
     }
 }
 
+apply(from = "../../packages/compose/gradle/security-dependencies.gradle")
+
 rootProject.name = "lumen-android-playground"
 include(":app")
 include(":wear")

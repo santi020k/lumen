@@ -1,0 +1,79 @@
+---
+
+/* cspell:ignore rehype */
+import { Link, Table } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../components/CodeBlock.astro'
+import pluginSource from '../../examples/markdown-tables/rehype-readable-tables.ts?raw'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const setup = `// astro.config.ts — with Astro's rehype Markdown pipeline
+import { defineConfig } from 'astro/config'
+import { rehypeReadableTables } from './src/plugins/rehype-readable-tables'
+
+export default defineConfig({
+  markdown: {
+    rehypePlugins: [[rehypeReadableTables, {
+      cue: 'Scroll horizontally to compare'
+    }]]
+  }
+})`
+
+const layout = `---
+// ArticleLayout.astro — generated Markdown needs explicit stylesheet imports.
+import '@santi020k/lumen-astro/styles/foundation.css'
+import '@santi020k/lumen-astro/styles/components/table.css'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+<main><slot /></main>
+<UIPrimitives />`
+---
+
+<DocsLayout title="Make Markdown tables readable - Lumen UI" description="Give generated Markdown tables captions, keyboard scrolling, and localized overflow cues with an editable rehype integration.">
+  <header class="docs-section space-y-4">
+    <h1>Make Markdown tables readable</h1>
+    <p>A comparison table can outgrow a phone or an enlarged text column. Keep its native headings and caption, then give the reader a named region they can scroll with the keyboard.</p>
+    <p>This example follows the table integration used by santi020k.com v5. The application owns Markdown compilation and labels. Lumen supplies table styles and the overflow controller.</p>
+  </header>
+
+  <section class="docs-section space-y-4" aria-labelledby="table-preview">
+    <h2 id="table-preview">Try a wide comparison</h2>
+    <p>Focus the table region and use the arrow keys. At a narrow width, the overflow hint appears after enhancement. Disable JavaScript to check the native scrolling fallback.</p>
+    <Table scrollCue="Scroll horizontally to compare" aria-label="Article delivery choices">
+      <table class="example-comparison">
+        <caption>Article delivery choices</caption>
+        <thead><tr><th scope="col">Content</th><th scope="col">Initial page</th><th scope="col">After interaction</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Article text</th><td>Semantic headings and complete prose</td><td>Native fragment navigation</td></tr>
+          <tr><th scope="row">Wide comparison</th><td>Caption, column headings, and keyboard scroll region</td><td>Overflow hint when the table exceeds its container</td></tr>
+          <tr><th scope="row">Code examples</th><td>Complete source with readable fallback</td><td>Copy feedback and synchronized tabs</td></tr>
+        </tbody>
+      </table>
+    </Table>
+    <p>This live preview uses the public <Link href="/docs/components/table">Table component</Link>. The transform below creates its documented scroll surface around tables emitted by Markdown.</p>
+  </section>
+
+  <section class="docs-section space-y-4" aria-labelledby="copy-plugin">
+    <h2 id="copy-plugin">Copy the editable transform</h2>
+    <p>Save this file as <code>src/plugins/rehype-readable-tables.ts</code>. It preserves the original table and caption, wraps each table once, and accepts translated labels. Write a useful caption in your content when supported by the Markdown renderer. Tables without captions receive numbered region names.</p>
+    <CodeBlock code={pluginSource} lang="typescript" title="rehype-readable-tables.ts" />
+    <p>Run this after plugins that create tables and before HTML serialization. Keep your Markdown renderer's sanitization policy. This transform operates on parsed nodes and adds no HTML parsing or sanitization.</p>
+    <CodeBlock code={setup} lang="typescript" title="Register the rehype plugin" />
+    <p>The setup uses Astro's rehype pipeline. If an application selects a custom Markdown processor, register an equivalent transform through that processor's documented AST API.</p>
+  </section>
+
+  <section class="docs-section space-y-4" aria-labelledby="load-table-styles">
+    <h2 id="load-table-styles">Load styles and the shared runtime</h2>
+    <p>Import the foundation and table CSS in the article layout because generated Markdown does not pass through an Astro component. Mount the shared runtime once in the root layout. Omit a second runtime here if the root already supplies it.</p>
+    <CodeBlock code={layout} lang="astro" title="Selective article setup" />
+    <p>Without JavaScript, the caption and complete table remain readable in a focusable scroll region. The cue starts hidden and appears only when the runtime observes overflow. Check the built page at 320px, at 200% text, in both themes, and with keyboard navigation.</p>
+    <p>Continue with <Link href="/guides/build-an-editorial-article">Build an editorial article</Link> to combine the table with contents navigation and code examples.</p>
+  </section>
+</DocsLayout>
+
+<style>
+  p code { overflow-wrap: anywhere; white-space: normal; }
+  .example-comparison { min-inline-size: 36rem; }
+  .example-comparison :is(th, td) { padding: 0.75rem 1rem; text-align: start; vertical-align: top; }
+  .example-comparison caption { padding: 0.75rem 1rem; text-align: start; color: hsl(var(--ink)); }
+</style>

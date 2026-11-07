@@ -1,5 +1,121 @@
 # @santi020k/lumen-core
 
+## 5.0.0
+
+- Share selective component delivery and React server export metadata through the component-delivery entry for CLI and Figma tooling.
+
+- Resolve built-in appearance presets against the nearest named or explicit light/dark boundary while retaining scheme-specific shadows and optional CSS delivery.
+
+- Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
+
+### Minor Changes
+
+- Move focus to local Anchor destinations consistently across web adapters without replacing native
+  hash scrolling or history. Preserve modified and canceled navigation and authored tab order,
+  use the rendering document in React and Elements, and prevent duplicate Astro runtime ownership.
+
+- Add an opt-in editorial Prose appearance across the web adapters, with a configurable reading measure, clearer section hierarchy, attributed quotations, and connected native figure captions. Keep authored HTML and component-owned figures intact, including Code and charts.
+
+  Adopt the shared appearance in documentation migration/theme guides and expand the editorial article guide with semantic quotations and media.
+
+  The editable article-reading recipes print article text without contents controls or reading progress.
+
+- Ship Lumen light and dark in selective CSS. Add Studio, santi020k, Paper, Field, and glass independently with optional style imports. Paper and Field support light and dark reading surfaces and forms. The full stylesheet includes every appearance. The santi020k web theme includes the website’s editorial type, section spacing, paper cards, ink actions, and shared website colors from `@santi020k/theme/site.css` with increased-contrast support.
+
+- Preserve ThemeBuilder code typography and PromptComposer spacing when primitive styles load after compound styles.
+
+- Improve success badge text contrast in both themes and branded code-token contrast while retaining semantic colors.
+
+- Refresh the Lucide catalog while preserving legacy static web exports through canonical aliases. Upgrade compatible stable runtime dependencies and regenerate phone metadata.
+
+- Deliver shared foundation and component CSS through the existing packages. Astro components now
+  import their own styles automatically; React and Elements can import `styles/foundation.css` once
+  and `styles/components/<kebab-name>.css` where needed. Full and critical styles remain supported.
+  Icon defaults use low specificity so component state and sizes survive shared CSS chunk ordering.
+  Generated style dependencies include manual-copy recovery and dynamically created toasts.
+
+  Web adapters no longer install the umbrella CLI or expose its binary. Install `@santi020k/lumen`
+  as a development dependency to continue using `lumen add`, discovery, and diagnostics. Runtime styles
+  resolve through Core, so adapters no longer require the umbrella package or its TypeScript tooling.
+
+- Expose focused locale and native-input helpers and complete the chart helper entrypoint. Keep React Native imports on these entrypoints to avoid loading the unrelated web icon lookup catalog in native bundles.
+
+- Expose selective reading, search, and dialog controls without importing the full adapter catalog. Full and selective Elements registrations share constructors. Add article-scoped reading progress to React and Elements.
+
+  Narrow per-control entries keep implementation helpers private, and the core loading helpers have a lightweight public subpath.
+
+  Keep focus inside an Elements native dialog when a delayed close event arrives after reopening it.
+
+- Expose matching stable Timeline item, ThemeToggle icon, and WorldMap frame/control parts across web
+  adapters. ThemeToggle accepts `--ui-theme-toggle-icon-size`. Elements Timeline decorates native list
+  items without replacing their content or listeners and provides a selective registration entry.
+  Empty Elements ThemeToggle controls receive accessible default icons and reconnect without duplicate
+  click handlers. Doctor guidance recognizes the same shared styling contract.
+  Elements SkipLink reveals its host when the native child receives focus and preserves link contrast.
+
+- Honor explicit reveal thresholds across web adapters. Keep tall or clipped content visible when its
+  threshold cannot be reached, and bypass decorative hiding for keyboard focus and reduced motion.
+  Skip layout measurements in offscreen, browser-skipped content until it renders.
+  Clean up reveal observers on navigation, disconnection, and unmount.
+
+### Patch Changes
+
+- Add four Lucide icons: Circle Fading Check, Opacity, Package Pen, and Package Question Mark.
+
+- Offer opt-in manual code-copy recovery consistently across the web adapters. React Code and
+  CodeTabs accept recoveryLabel; Elements accepts recovery-label and inherits it from code tabs.
+  Recovery preserves exact source in a labelled read-only field, selects on focus without taking
+  focus, survives transient feedback, and clears after successful retry or a tab change. Source
+  updates invalidate pending recovery in React and Elements. Astro recovery now has a visible
+  label and shared layout, including narrow screens and print output.
+
+  Give Elements block Code a block formatting context so pointer interaction and framing work in
+  WebKit. Astro's copy runtime leaves React- and Elements-owned controls to their own adapters,
+  avoiding duplicate clipboard operations on mixed-framework pages.
+
+- Support opt-in manual CopyButton recovery in React and Elements, matching Astro. Failed clipboard
+  requests retain the complete value in a labelled read-only field, without moving focus. Successful
+  retries clear recovery, and changed inputs or disconnected controls cannot restore stale results.
+
+  Hide manual clipboard recovery fields in print output across the web adapters.
+
+- Keep one owner for media borders and corners across AspectRatio, CoverImage, DeviceFrame,
+  ImageComparison, MediaViewport, and MediaThumbnail, including selective Image style imports.
+  Preserve component-owned figures, captions, media, and link focus geometry inside Prose. Keep
+  avatar, flag, attachment, and QRCode images from inheriting article corner rounding.
+
+  Give custom-element media frames and reading surfaces block layout, and replace the AspectRatio
+  docs' clipped Cards with actual media examples. Card retains visible interactive overflow.
+
+  Image wrappers pass radius and fit to native image children, and AspectRatio keeps picture media
+  sized to its frame even when Image styles load later. Explicit Image fitting remains available.
+
+- Keep focused SkipLink labels within narrow viewports, align them with reading direction, and
+  respect reduced motion. The docs site uses the shared component for its main content shortcut.
+
+- Use the theme’s foreground color on solid web badges so the label stays readable on light brand fills in dark mode.
+
+- Add an opt-in editorial Code appearance with a code icon and visible localized copy feedback. Make block headers wrap at narrow widths and keep copy targets at least 44px without scaling on press. Improve code printing and adopt compact, expandable examples with exact-source copying and overflow hints in the documentation.
+
+- Restore the outlines and diagonal strokes of the empty, success, error, and offline illustrations across the web adapters.
+
+- Preserve public Image radius props inside default and editorial Prose. Generic article image rounding no longer overrides `radius="none"` or other explicit Image radii, so a figure can own its outer border and corner clipping without rounded gaps between the image and its caption.
+
+- Keep destructive web alerts and toasts readable on their tinted surfaces in light and dark themes.
+
+- Refine editorial Code headers with deliberate metadata hierarchy, a restrained surface, and a distinct copy control that adapts to narrow containers.
+
+  Add opt-in sticky first columns to Table across web adapters. Row identifiers remain visible during horizontal scrolling, respect RTL, and return to normal flow in narrow containers, records layouts, and print. Documentation reference tables adopt this mode with named keyboard regions and overflow-only reading hints.
+
+  Documentation code examples expose complete-source manual recovery when clipboard access fails.
+
+- Keep compact PhoneInput sizing when shared Input styles load later in another component chunk.
+
+- Preserve the public layer order when component styles load before Tailwind. Keep enhanced native controls hidden and component colors and borders above Tailwind base styles regardless of stylesheet chunk order.
+
+- Clear the native dialog's opposing horizontal inset when centering dialogs and alert dialogs.
+  RTL layouts with enlarged text now keep dialog content and close controls inside the viewport.
+
 ## 4.4.0
 
 ### Minor Changes
@@ -35,7 +151,7 @@
 ### Minor Changes
 
 - [#103](https://github.com/santi020k/lumen/pull/103) [`960b62b`](https://github.com/santi020k/lumen/commit/960b62bdd6f663029e8f43041fb375df3f84bf05) Thanks [@santi020k](https://github.com/santi020k)! - Strengthen loading feedback across Astro, React, and Elements.
-  
+
   - Skeleton accepts `shape` (`rectangle`, `text`, `circle`), `width`, `height`, and `animation`
     (`shimmer`, `pulse`, `none`). The default shimmer rectangle and its 1rem height are unchanged,
     but explicit heights and classes can now size placeholders below 1rem. Sizes accept pixels,

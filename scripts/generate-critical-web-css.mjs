@@ -3,6 +3,8 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
+import { readCssNodes } from './lib/css-source.mjs'
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const check = process.argv.includes('--check')
 const sourcePath = path.join(root, 'packages/lumen/styles.css')
@@ -42,139 +44,27 @@ const criticalSelectors = [
   '.ui-tooltip'
 ]
 
-const findStringEnd = (source, start, end) => {
-  const quote = source[start]
-
-  for (let index = start + 1; index < end; index += 1) {
-    const character = source[index]
-
-    if (character === '\\') index += 1
-    else if (character === quote) return index
-  }
-
-  throw new Error('Unterminated CSS string.')
-}
-
-const findCommentEnd = (source, start) => {
-  const commentEnd = source.indexOf('*/', start + 2)
-
-  if (commentEnd < 0) throw new Error('Unterminated CSS comment.')
-
-  return commentEnd + 1
-}
-
-const findOpeningBrace = (source, start, end) => {
-  for (let index = start; index < end; index += 1) {
-    const character = source[index]
-    const next = source[index + 1]
-
-    if (character === '"' || character === "'") index = findStringEnd(source, index, end)
-
-    if (character === '/' && next === '*') {
-      index = findCommentEnd(source, index)
-    }
-
-    if (character === ';') return { index, statement: true }
-
-    if (character === '{') return { index, statement: false }
-  }
-
-  return null
-}
-
-const findClosingBrace = (source, opening, end) => {
-  let depth = 1
-
-  for (let index = opening + 1; index < end; index += 1) {
-    const character = source[index]
-    const next = source[index + 1]
-
-    if (character === '"' || character === "'") index = findStringEnd(source, index, end)
-
-    if (character === '/' && next === '*') {
-      index = findCommentEnd(source, index)
-    }
-
-    if (character === '{') depth += 1
-
-    if (character === '}') depth -= 1
-
-    if (depth === 0) return index
-  }
-
-  throw new Error('Unterminated CSS block.')
-}
-
-const skipTrivia = (source, start, end) => {
-  let index = start
-
-  while (index < end) {
-    if (/\s/u.test(source[index])) {
-      index += 1
-
-      continue
-    }
-
-    if (source[index] === '/' && source[index + 1] === '*') {
-      index = findCommentEnd(source, index) + 1
-
-      continue
-    }
-
-    break
-  }
-
-  return index
-}
-
-const selectCriticalRules = (source, start = 0, end = source.length) => {
-  const renderCriticalBlock = (header, nodeStart, opening, closing) => {
-    if (header === '@layer lumen.tokens' || header === '@layer lumen.base') {
-      return source.slice(nodeStart, closing + 1).trim()
-    }
-
-    if (header.startsWith('@')) {
-      const nested = selectCriticalRules(source, opening + 1, closing)
-
-      return nested ? `${header} {\n${nested}\n}` : ''
-    }
-
-    return criticalSelectors.some(selector => header.includes(selector)) ?
-      source.slice(nodeStart, closing + 1).trim() :
-      ''
-  }
-
+const selectCriticalRules = source => {
   const selected = []
-  let cursor = start
 
-  while (cursor < end) {
-    const nodeStart = skipTrivia(source, cursor, end)
+  for (const node of readCssNodes(source)) {
+    const { header, body, text } = node
 
-    if (nodeStart >= end) break
-
-    const opening = findOpeningBrace(source, nodeStart, end)
-
-    if (!opening) break
-
-    const header = source.slice(nodeStart, opening.index).trim()
-
-    if (opening.statement) {
+    if (body === null) {
       if (header.startsWith('@layer ')) selected.push(`${header};`)
 
-      cursor = opening.index + 1
-
       continue
     }
 
-    const closing = findClosingBrace(source, opening.index, end)
+    if (header === '@layer lumen.tokens' || header === '@layer lumen.base') {
+      selected.push(text.trim())
+    } else if (header.startsWith('@')) {
+      const nested = selectCriticalRules(body)
 
-    const criticalBlock = renderCriticalBlock(
-      header, nodeStart, opening.index, closing
-    )
-
-    if (criticalBlock) selected.push(criticalBlock)
-
-    cursor = closing + 1
+      if (nested) selected.push(`${header} {\n${nested}\n}`)
+    } else if (criticalSelectors.some(selector => header.includes(selector))) {
+      selected.push(text.trim())
+    }
   }
 
   return selected.join('\n\n')

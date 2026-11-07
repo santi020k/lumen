@@ -1,19 +1,52 @@
 # Interactive editorial recipes
 
+The existing Astro recipes also support React and Elements in Lumen 5. Install the CLI
+separately with `pnpm add -D @santi020k/lumen`, then install the selected runtime adapter.
+Use `--target react` or `--target elements` with each recipe command below.
+
+Import `@santi020k/lumen-react/styles/foundation.css` or
+`@santi020k/lumen-elements/styles/foundation.css` once in the application. Each copied recipe
+imports its selective component CSS and local CSS. The TypeScript entry requires a bundler
+with CSS import support. React applications also install the adapter's React peer dependencies.
+
+React recipes use named exports. `ArticleReading` accepts the Astro props plus `children`.
+`SiteSearchDialog` accepts `id`, `fallbackHref`, translated `labels`, optional `shortcut`, and
+a stable `search(query, signal)` provider returning `SiteSearchResult[]` synchronously or as a
+promise. `ImageViewer` accepts `id`, `href`, `title`, an `image` React node, optional `caption`,
+`ratio`, `locale`, and translated labels. Use these recipes within a React client boundary.
+Server rendering retains reading content and direct destination links, and modal controls
+activate after hydration.
+
+Elements installs an HTML fragment and TypeScript entry per recipe. Adapt the IDs, content,
+labels, media, and fallback destinations before inserting the fragment. Import the entry once
+to register its required primitives and recipe element. After mounting search, call
+`setSiteSearchProvider('site-search', search)` from the copied `site-search-dialog.ts` entry.
+The provider receives an AbortSignal for each request. Provider replacement cancels an older
+request and refreshes the query when the dialog is open.
+
+Both adapters cancel searches after dismissal, replacement, or unmount, and discard stale
+results from providers that ignore cancellation. The application owns requests, response
+validation, ranking, routing, content, and persistence. HTTP(S) result destinations retain native
+modified-link activation. Image attempts defer loading until opening, release stale listeners
+after retry or disconnection, and offer recovery after load failure. Reading progress measures
+the article and follows content reflow. Elements listeners and observers reconnect on remount.
+Native fragments, disclosures, and direct destination links remain available without JavaScript.
+
 Install the recipes you need in an Astro app:
 
 ```sh
-pnpm add @santi020k/lumen @santi020k/lumen-astro
+pnpm add -D @santi020k/lumen
+pnpm add @santi020k/lumen-astro
 pnpm exec lumen add article-reading --target astro
 pnpm exec lumen add site-search-dialog --target astro
 pnpm exec lumen add image-viewer --target astro
 ```
 
-These recipes arrive in Lumen 4.4.0. To try them before publication, use the built local CLI
-with `node packages/lumen/bin/lumen.mjs add <recipe> --target astro --cwd /path/to/your/project`.
+The Astro recipes were introduced in Lumen 4.4.0; the portable adapters arrive in Lumen 5.
+To try a prepared release, use the built local CLI with `node packages/lumen/bin/lumen.mjs add <recipe> --target astro --cwd /path/to/your/project`.
 
-The installer copies editable source into `src/lumen/`. Import
-`@santi020k/lumen-astro/styles.css` and mount `UIPrimitives` once in your app layout. Each
+The installer copies editable source into `src/lumen/`. Astro components import their required
+styles automatically. Mount `UIPrimitives` once in your app layout. Each
 instance needs unique IDs in the document. Supply translated labels where needed.
 
 ## Article reading
@@ -41,7 +74,8 @@ const chapters = [
 ```
 
 The desktop rail and mobile disclosure share the same heading data and preserve native fragment
-links. The runtime closes the mobile disclosure when a chapter is activated and moves focus to
+links. On phones, the summary and chapter list share one bordered surface, with room to tap
+each chapter link. The runtime closes the mobile disclosure when a chapter is activated and moves focus to
 its heading. The skip link targets the article itself, and the progress indicator stays visible
 while the article is in view. Set `--article-reading-sticky-offset` to clear a sticky site header, and use
 `--article-reading-heading-offset` if your headings need more room beyond the document's

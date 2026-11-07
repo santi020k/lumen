@@ -1,7 +1,7 @@
 # Figma Integration
 
-Lumen connects Figma and code through semantic theme tokens, Code Connect mappings, and a beta
-plugin for inspecting a selection and preparing an Astro handoff.
+Lumen connects Figma and code through semantic theme tokens, Code Connect mappings, and an offline
+plugin for inspecting a selection and preparing a web or native handoff.
 
 For the reverse direction — implementing Figma designs with Lumen components — see
 [figma-design-to-code.md](figma-design-to-code.md) and the machine-readable mapping in
@@ -10,68 +10,52 @@ For the reverse direction — implementing Figma designs with Lumen components �
 AI agents maintaining the library itself should follow the reusable
 [Figma AI working guide](figma-ai-working-guide.md).
 
-## Figma plugin — Beta
+## Figma plugin
 
-**Lumen for Figma is a beta version.** The development plugin recognizes six canonical Lumen
-components, generates an Astro starter, and prepares a structured AI handoff. It runs locally with
-no network access; AI generation and project validation happen in the user's existing coding agent.
-Generated code, responsive behavior, unsupported layers, and application actions require review.
+Lumen for Figma 1.1.0 exports an Astro component, React TSX component or Web Components HTML fragment with its app setup and structured handoff. Select Lumen **5.0.0** for selective styles and optional appearances or **4.4.0** for full adapter CSS. The 4.4.0 release uses Astro 4.4.0 and the published React and Elements 4.3.0 adapters. The plugin matches 21 components by library key, including controls, editorial content, timelines and reveal groups. Review detached instances, custom layers, responsive behavior and application actions before integration.
 
-The beta supports Button, Input, Field, Card, Tabs, and Dialog. Its generated starter targets
-`@santi020k/lumen-astro` v4; compare the exact version in the handoff with the installed package
-before integrating it. The plugin's own beta version is separate from Lumen's package version.
+React Native
+and Android Compose use the 4.1.0 adapters. Choose iPhone or Mac for the v5.0.0 Swift package.
+Native exports support linked components including labels and checkboxes, text and nested layouts. Unmapped components and
+custom layers stay in the handoff with review findings.
 
-Select one frame or component instance from the canonical library, choose **Inspect selection**,
-review the findings, and copy or save the **Astro starter** or **AI handoff**. Load the Astro
-stylesheet and `UIPrimitives` once at the application boundary, then connect application behavior
-and verify keyboard interaction and responsive layouts. Exports contain the selected design's
-visible text and component data; review them before sharing with an external coding agent.
+The seven export targets share a three-step flow: **Setup → Design review → Handoff**. Select one
+frame or instance, choose the target, installed version and project appearance in Setup, then choose
+**Inspect selection**. Review the findings before choosing **Open handoff**. Copy the framework setup
+alongside the starter. Changing the selection or export settings clears the previous output.
+The plugin runs offline; review selected text before sharing it with an agent. See
+[setup, component coverage and version compatibility](../apps/figma-plugin/README.md).
 
-See the [plugin setup and limitations](../apps/figma-plugin/README.md). The beta is available as a
-repository development build, not a published Figma Community plugin. The Community links
-below open the published design files.
+Plugin 1.1.0 remains a local candidate. Its bundled version choices do not establish npm, Maven or
+Swift tag availability. The design files, Figma plugin, AI plugin and framework packages have
+separate publication steps; the [AI client guide](https://lumen.santi020k.com/docs/mcp/clients)
+covers the ChatGPT, Codex and Claude Code plugin.
 
-GitHub Actions prepares tested beta ZIPs with source revisions and checksums. See the
-[Community publishing guide](../apps/figma-plugin/README.md#figma-community-publication) for the
-remaining Figma desktop registration, host verification, and submission steps.
+GitHub Actions prepares the versioned ZIP, revision and checksum for desktop verification. Community submission and installation verification follow the [publication checklist](../apps/figma-plugin/README.md#figma-community-publication). The Community links below open the three design files.
 
-The v4 packages and public documentation must be live and verified before the plugin is submitted
-to Figma Community. Figma review is separate from the Lumen release. After approval and a verified
-public install, the documentation will link to the actual plugin listing while retaining its Beta
-label and supported-component limits.
+## Design files
 
-## Figma Library File
+Open a Community listing to get your own copy, or use the working file to inspect the source.
 
 | Community resource | What you can do | Working file |
 | --- | --- | --- |
-| [Lumen UI Library](https://www.figma.com/community/file/1662337342676541513) | Explore reusable components, variables and [theme specimens](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9?node-id=600-3). | [Library source](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) |
+| [Lumen UI Library v5](https://www.figma.com/community/file/1662337342676541513/lumen-ui-library-v5) | Explore reusable components, variables and [theme specimens](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9?node-id=600-3). | [Library source](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) |
 | [Lumen Templates](https://www.figma.com/community/file/1700607667944072280) | Adapt one of six desktop and mobile layouts from the [template gallery](https://lumen.santi020k.com/templates). | [Templates source](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3) |
 | [Lumen Playgrounds](https://www.figma.com/community/file/1700608473577262170) | Compare web and native screens with the [running playgrounds](playgrounds.md). | [Playgrounds source](https://www.figma.com/design/G0NjJ4eAci1013PaLmseXI) |
 
 The [Community artwork](../apps/docs/src/assets/figma-community/README.md) contains each cover and its four gallery screenshots.
 
-### Lumen v4 library snapshot
+Set **Theme** on a frame to Lumen, Studio, Paper, Field, santi020k or Glass. Set **Color** to
+Light or Dark. Child instances inherit both choices. Set either control on a nested frame for a
+local appearance. The existing santi020k Light and Dark **Color** modes retain their pinned colors
+for older designs. For a new branded frame, choose santi020k under **Theme** to get its colors,
+type and corner treatments together.
 
-The Lumen Figma library lives at
-[Lumen UI Library](https://www.figma.com/design/luQW2pTQ3jGGxSFPAAsfa9) (file key
-`luQW2pTQ3jGGxSFPAAsfa9`). The v4 snapshot contained 128 public component assets and 69 local
-variables across three collections:
-
-- `Color`: 62 semantic and supporting variables in `Light`, `Dark`, `santi020k Light`, and
-  `santi020k Dark` modes.
-- `Radius`: four values (`sm`, `md`, `lg`, and `full`).
-- `Effects`: three semantic shadow variables in `Light` and `Dark` modes.
-
-That snapshot also included 38 text styles, 8 effect styles, and dedicated Cover, Getting Started,
-Foundations, Glass Components, Icons, component-category, and Utilities pages. The canonical design
-file and Lumen's runtime CSS both use Montserrat for interface and documentation text. Cascadia Mono
-remains reserved for the small amount of code-style text.
-
-Variables carry Web code syntax (`var(--token)`). The `Light` and `Dark` modes match the Lumen
-product overrides in `apps/docs/src/styles/global.css`; `packages/lumen/styles.css` provides the
-reusable package fallback and is not the source for those Figma modes. The `santi020k Light` and
-`santi020k Dark` modes mirror the parent website project. Component fills, strokes, radii, and
-effects bind to those variables so switching modes does not require detached color overrides.
+The variables expose web CSS names in Dev Mode. The [appearance guide](appearance-presets.md)
+documents the matching runtime choices and component-level glass treatment. Paper reading headings
+use Tinos in Figma as a substitute for the web serif fallback. The
+[base and website token contract](../registry/figma-theme-tokens.json) covers four named palettes.
+Check Studio, Paper, Field, Glass and component-specific roles against the resolved release CSS.
 
 The component catalog includes editable text, boolean, instance-swap, and variant properties where
 the code API has a meaningful match. `Button`, for example, provides 24 `Variant` x `Size`
@@ -81,11 +65,8 @@ props, so `Variant=Destructive, Size=Sm` corresponds to
 prototype transitions for toggles, disclosures, tabs, selection controls, menus, theme controls,
 and reveal behavior.
 
-The data-visualization family includes the general `Chart` asset plus dedicated `Sparkline`,
-`BarChart`, `LineChart`, and `PieChart` assets. `ScrollProgress` lives on the Utilities page. These
-assets use the 20 `color/chart/*` variables for categorical, sequential, diverging, axis, grid,
-reference, selection, and tooltip
-roles and have been checked in all four Color modes.
+Chart components share categorical series, sequential and diverging scales, axis, grid,
+reference, selection and tooltip roles. Use the semantic variables when adapting a chart.
 
 ## Theme Tokens
 
@@ -160,7 +141,7 @@ pnpm dlx @figma/code-connect connect parse --config figma.config.json
 ```
 
 Publishing the mappings requires the Figma components to be published as a team library and the
-account to have a Dev or Full seat on an Organization or Enterprise plan. Once those prerequisites
+account to have an eligible Dev or Full seat under the current [Code Connect requirements](https://developers.figma.com/docs/code-connect/quickstart-guide/). Once those prerequisites
 are available, run the official Code Connect publish command and verify each mapping from an
 instance in Dev Mode.
 

@@ -1,0 +1,57 @@
+---
+import { createElement } from 'react'
+import { renderToString } from 'react-dom/server'
+
+import '../../styles/global.css'
+
+import { CodeTabs, Container, Stack } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+import { CodeTabs as ReactCodeTabs } from '@santi020k/lumen-react'
+
+const items = [
+  { value: 'pnpm', label: 'pnpm', code: 'pnpm add @santi020k/lumen-astro\n# Complete source: ¡Hola!' },
+  { value: 'npm', label: 'npm', code: 'npm install @santi020k/lumen-astro' }
+]
+
+const reactMarkup = renderToString(createElement(ReactCodeTabs, { items, recoveryLabel: 'Select the complete source' }))
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Code recovery audit</title>
+    <script>
+      import { createElement } from 'react'
+      import { hydrateRoot } from 'react-dom/client'
+
+      import { defineLumenElements } from '@santi020k/lumen-elements'
+      import { CodeTabs } from '@santi020k/lumen-react'
+
+      defineLumenElements()
+
+      const root = document.getElementById('react-code')
+
+      if (root) hydrateRoot(root, createElement(CodeTabs, {
+        items: [
+          { value: 'pnpm', label: 'pnpm', code: 'pnpm add @santi020k/lumen-astro\n# Complete source: ¡Hola!' },
+          { value: 'npm', label: 'npm', code: 'npm install @santi020k/lumen-astro' }
+        ],
+recoveryLabel: 'Select the complete source'
+      }))
+</script>
+  </head>
+  <body>
+    <Container as="main"><Stack gap="section">
+      <h1>Code recovery audit</h1>
+      <CodeTabs id="astro-code" items={items} recoveryLabel="Select the complete source" />
+      <div id="react-code" set:html={reactMarkup} />
+      <lumen-code-tabs id="elements-code" recovery-label="Select the complete source">
+        <div role="tablist" aria-label="Commands"><button role="tab" data-value="pnpm" aria-controls="elements-pnpm">pnpm</button><button role="tab" data-value="npm" aria-controls="elements-npm">npm</button></div>
+        {items.map(item => <div id={`elements-${item.value}`} role="tabpanel" hidden={item.value !== 'pnpm'}><lumen-code variant="block" copy><pre><code>{item.code}</code></pre></lumen-code></div>)}
+      </lumen-code-tabs>
+    </Stack></Container>
+    <UIPrimitives />
+  </body>
+</html>

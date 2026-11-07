@@ -48,7 +48,7 @@ public struct LumenBreadcrumb: View {
                         Button {
                             if isEnabled && !item.isDisabled { onNavigate(item.id) }
                         } label: {
-                            Text(item.label).foregroundStyle(theme.colors.brandSolid)
+                            Text(item.label).foregroundStyle(theme.linkForeground)
                                 .frame(minWidth: 44, minHeight: 44)
                                 .padding(.horizontal, LumenSpacing.sm)
                                 .contentShape(Rectangle())

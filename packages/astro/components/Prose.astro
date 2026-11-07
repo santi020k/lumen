@@ -1,25 +1,32 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
+import '../styles/foundation.css'
+import '../styles/components/prose.css'
+
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends HTMLAttributes<'div'> {
+  appearance?: 'default' | 'editorial'
   class?: string | null
   className?: string
 }
 
 const {
+  appearance = 'default',
   class: classProp = '',
   className = '',
   ...rest
 } = Astro.props
 
 const { classList, passthrough } = resolveLumenAstroProps(rest, [
-  'ui-prose'
+  'ui-prose',
+  appearance === 'editorial' && 'ui-prose--editorial'
 ], classProp, className)
 ---
 
 <div
+  data-slot="prose"
   class:list={classList}
   {...passthrough}
 >

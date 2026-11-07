@@ -1,6 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
+import '../styles/foundation.css'
+import '../styles/components/input.css'
+
 import { type LumenControlVisualSize, resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends Omit<HTMLAttributes<'input'>, 'size'> {

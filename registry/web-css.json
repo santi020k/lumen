@@ -1,0 +1,1431 @@
+{
+  "version": 1,
+  "description": "Canonical CSS parts and public component dependencies for selective web styles. Keep adapter-specific runtime and markup dependencies represented here.",
+  "components": {
+    "Accordion": {
+      "parts": [
+        "accordion"
+      ],
+      "dependencies": []
+    },
+    "Affix": {
+      "parts": [
+        "affix"
+      ],
+      "dependencies": []
+    },
+    "Agenda": {
+      "parts": [
+        "agenda"
+      ],
+      "dependencies": []
+    },
+    "Alert": {
+      "parts": [
+        "alert"
+      ],
+      "dependencies": []
+    },
+    "AlertDialog": {
+      "parts": [
+        "alert-dialog",
+        "dialog"
+      ],
+      "dependencies": []
+    },
+    "AmountField": {
+      "parts": [
+        "amount-field",
+        "input"
+      ],
+      "dependencies": []
+    },
+    "Anchor": {
+      "parts": [
+        "anchor"
+      ],
+      "dependencies": []
+    },
+    "AnimatedLogo": {
+      "parts": [
+        "animated-logo"
+      ],
+      "dependencies": []
+    },
+    "AnimatedNumber": {
+      "parts": [
+        "animated-number"
+      ],
+      "dependencies": []
+    },
+    "AnimatedPortrait": {
+      "parts": [
+        "animated-portrait"
+      ],
+      "dependencies": []
+    },
+    "ApprovalCard": {
+      "parts": [
+        "approval-card"
+      ],
+      "dependencies": [
+        "Button",
+        "Card",
+        "Stack"
+      ]
+    },
+    "AspectRatio": {
+      "parts": [
+        "aspect-ratio"
+      ],
+      "dependencies": []
+    },
+    "Attachment": {
+      "parts": [
+        "attachment"
+      ],
+      "dependencies": []
+    },
+    "AttachmentList": {
+      "parts": [
+        "attachment-list"
+      ],
+      "dependencies": []
+    },
+    "AttachmentPreview": {
+      "parts": [
+        "attachment-preview"
+      ],
+      "dependencies": []
+    },
+    "Autocomplete": {
+      "parts": [
+        "autocomplete",
+        "input"
+      ],
+      "dependencies": []
+    },
+    "Avatar": {
+      "parts": [
+        "avatar"
+      ],
+      "dependencies": []
+    },
+    "BackToTop": {
+      "parts": [
+        "back-to-top"
+      ],
+      "dependencies": []
+    },
+    "Backdrop": {
+      "parts": [
+        "backdrop"
+      ],
+      "dependencies": []
+    },
+    "Badge": {
+      "parts": [
+        "badge"
+      ],
+      "dependencies": []
+    },
+    "BarChart": {
+      "parts": [
+        "bar-chart",
+        "chart"
+      ],
+      "dependencies": [
+        "Chart",
+        "ChartDatumActions"
+      ]
+    },
+    "BoxPlot": {
+      "parts": [
+        "box-plot",
+        "bullet-chart",
+        "chart"
+      ],
+      "dependencies": [
+        "Chart"
+      ]
+    },
+    "Breadcrumb": {
+      "parts": [
+        "breadcrumb"
+      ],
+      "dependencies": []
+    },
+    "Bubble": {
+      "parts": [
+        "bubble"
+      ],
+      "dependencies": []
+    },
+    "BulletChart": {
+      "parts": [
+        "bullet-chart",
+        "chart"
+      ],
+      "dependencies": [
+        "Chart"
+      ]
+    },
+    "Button": {
+      "parts": [
+        "button",
+        "spinner"
+      ],
+      "dependencies": []
+    },
+    "ButtonGroup": {
+      "parts": [
+        "button-group"
+      ],
+      "dependencies": []
+    },
+    "ButtonLink": {
+      "parts": [
+        "button"
+      ],
+      "dependencies": [
+        "Icon"
+      ]
+    },
+    "Calendar": {
+      "parts": [
+        "calendar"
+      ],
+      "dependencies": []
+    },
+    "CalendarHeatmap": {
+      "parts": [
+        "calendar-heatmap",
+        "chart"
+      ],
+      "dependencies": [
+        "Chart"
+      ]
+    },
+    "Callout": {
+      "parts": [
+        "callout"
+      ],
+      "dependencies": []
+    },
+    "Card": {
+      "parts": [
+        "card"
+      ],
+      "dependencies": []
+    },
+    "CardContent": {
+      "parts": [
+        "card"
+      ],
+      "dependencies": []
+    },
+    "CardDescription": {
+      "parts": [
+        "card"
+      ],
+      "dependencies": []
+    },
+    "CardFooter": {
+      "parts": [
+        "card"
+      ],
+      "dependencies": []
+    },
+    "CardHeader": {
+      "parts": [
+        "card"
+      ],
+      "dependencies": []
+    },
+    "CardTitle": {
+      "parts": [
+        "card"
+      ],
+      "dependencies": []
+    },
+    "Carousel": {
+      "parts": [
+        "carousel"
+      ],
+      "dependencies": []
+    },
+    "Cascader": {
+      "parts": [
+        "cascader",
+        "select"
+      ],
+      "dependencies": []
+    },
+    "ChangeSummary": {
+      "parts": [
+        "change-summary"
+      ],
+      "dependencies": []
+    },
+    "Chart": {
+      "parts": [
+        "chart",
+        "chart-tone"
+      ],
+      "dependencies": []
+    },
+    "ChartDatumActions": {
+      "parts": [
+        "chart"
+      ],
+      "dependencies": [
+        "Button"
+      ]
+    },
+    "ChartMotion": {
+      "parts": [],
+      "dependencies": []
+    },
+    "Checkbox": {
+      "parts": [
+        "checkbox"
+      ],
+      "dependencies": []
+    },
+    "CheckboxGroup": {
+      "parts": [
+        "checkbox-group"
+      ],
+      "dependencies": []
+    },
+    "Code": {
+      "parts": [
+        "code"
+      ],
+      "dependencies": [
+        "Icon",
+        "Textarea"
+      ]
+    },
+    "CodeTabs": {
+      "parts": [
+        "tabs"
+      ],
+      "dependencies": [
+        "Code",
+        "Tabs"
+      ]
+    },
+    "Collapsible": {
+      "parts": [
+        "collapsible"
+      ],
+      "dependencies": []
+    },
+    "ColorPicker": {
+      "parts": [
+        "color-picker"
+      ],
+      "dependencies": []
+    },
+    "ComboChart": {
+      "parts": [
+        "bar-chart",
+        "chart",
+        "combo-chart",
+        "line-chart"
+      ],
+      "dependencies": [
+        "Chart",
+        "ChartDatumActions"
+      ]
+    },
+    "Combobox": {
+      "parts": [
+        "combobox",
+        "input",
+        "label"
+      ],
+      "dependencies": []
+    },
+    "Command": {
+      "parts": [
+        "command"
+      ],
+      "dependencies": []
+    },
+    "Container": {
+      "parts": [
+        "container"
+      ],
+      "dependencies": []
+    },
+    "ContextMenu": {
+      "parts": [
+        "menu"
+      ],
+      "dependencies": []
+    },
+    "ContextNavigation": {
+      "parts": [
+        "context-navigation"
+      ],
+      "dependencies": []
+    },
+    "CopyButton": {
+      "parts": [
+        "button",
+        "copy-button"
+      ],
+      "dependencies": [
+        "Textarea"
+      ]
+    },
+    "CountryFlag": {
+      "parts": [
+        "country-flag"
+      ],
+      "dependencies": []
+    },
+    "CoverImage": {
+      "parts": [
+        "cover-image"
+      ],
+      "dependencies": []
+    },
+    "DataTable": {
+      "parts": [
+        "data-table",
+        "table"
+      ],
+      "dependencies": []
+    },
+    "DatePicker": {
+      "parts": [
+        "date-picker",
+        "input"
+      ],
+      "dependencies": [
+        "Calendar"
+      ]
+    },
+    "DateRangePicker": {
+      "parts": [
+        "date-range-picker"
+      ],
+      "dependencies": []
+    },
+    "DescriptionDetail": {
+      "parts": [
+        "descriptions"
+      ],
+      "dependencies": []
+    },
+    "DescriptionItem": {
+      "parts": [
+        "descriptions"
+      ],
+      "dependencies": []
+    },
+    "DescriptionTerm": {
+      "parts": [
+        "descriptions"
+      ],
+      "dependencies": []
+    },
+    "Descriptions": {
+      "parts": [
+        "descriptions"
+      ],
+      "dependencies": []
+    },
+    "DeviceFrame": {
+      "parts": [
+        "device-frame"
+      ],
+      "dependencies": []
+    },
+    "Dialog": {
+      "parts": [
+        "dialog"
+      ],
+      "dependencies": []
+    },
+    "DialogBody": {
+      "parts": [
+        "dialog-body"
+      ],
+      "dependencies": []
+    },
+    "DialogClose": {
+      "parts": [
+        "dialog-close"
+      ],
+      "dependencies": [
+        "Button"
+      ]
+    },
+    "DialogFooter": {
+      "parts": [
+        "dialog"
+      ],
+      "dependencies": []
+    },
+    "DialogHeader": {
+      "parts": [
+        "dialog-header"
+      ],
+      "dependencies": []
+    },
+    "DialogTitle": {
+      "parts": [
+        "dialog-title"
+      ],
+      "dependencies": []
+    },
+    "Direction": {
+      "parts": [
+        "direction"
+      ],
+      "dependencies": []
+    },
+    "Drawer": {
+      "parts": [
+        "drawer"
+      ],
+      "dependencies": []
+    },
+    "DropdownMenu": {
+      "parts": [
+        "menu"
+      ],
+      "dependencies": []
+    },
+    "DropdownMenuContent": {
+      "parts": [
+        "menu"
+      ],
+      "dependencies": []
+    },
+    "DropdownMenuItem": {
+      "parts": [
+        "menu"
+      ],
+      "dependencies": []
+    },
+    "DropdownMenuSeparator": {
+      "parts": [
+        "menu"
+      ],
+      "dependencies": []
+    },
+    "DropdownMenuTrigger": {
+      "parts": [
+        "button",
+        "menu"
+      ],
+      "dependencies": []
+    },
+    "DumbbellChart": {
+      "parts": [
+        "bullet-chart",
+        "chart",
+        "comparison-chart"
+      ],
+      "dependencies": [
+        "Chart"
+      ]
+    },
+    "Empty": {
+      "parts": [
+        "empty"
+      ],
+      "dependencies": []
+    },
+    "ErrorState": {
+      "parts": [
+        "error-state"
+      ],
+      "dependencies": [
+        "Illustration"
+      ]
+    },
+    "ErrorSummary": {
+      "parts": [
+        "error-summary"
+      ],
+      "dependencies": []
+    },
+    "Eyebrow": {
+      "parts": [
+        "eyebrow"
+      ],
+      "dependencies": []
+    },
+    "Field": {
+      "parts": [
+        "field"
+      ],
+      "dependencies": []
+    },
+    "FieldError": {
+      "parts": [
+        "field-error"
+      ],
+      "dependencies": []
+    },
+    "FileUpload": {
+      "parts": [
+        "file-upload"
+      ],
+      "dependencies": []
+    },
+    "FilterBar": {
+      "parts": [
+        "filter-bar"
+      ],
+      "dependencies": []
+    },
+    "FloatingBadge": {
+      "parts": [
+        "floating-badge"
+      ],
+      "dependencies": []
+    },
+    "Form": {
+      "parts": [
+        "form"
+      ],
+      "dependencies": []
+    },
+    "FormattedDate": {
+      "parts": [
+        "formatted-date"
+      ],
+      "dependencies": []
+    },
+    "FunnelChart": {
+      "parts": [
+        "chart",
+        "funnel-chart"
+      ],
+      "dependencies": [
+        "Chart"
+      ]
+    },
+    "GradientDivider": {
+      "parts": [
+        "gradient-divider"
+      ],
+      "dependencies": []
+    },
+    "Graphic": {
+      "parts": [
+        "graphic"
+      ],
+      "dependencies": []
+    },
+    "Grid": {
+      "parts": [
+        "grid"
+      ],
+      "dependencies": []
+    },
+    "Heatmap": {
+      "parts": [
+        "chart",
+        "heatmap"
+      ],
+      "dependencies": [
+        "Chart",
+        "ChartDatumActions"
+      ]
+    },
+    "Histogram": {
+      "parts": [
+        "bar-chart",
+        "chart",
+        "histogram",
+        "waterfall-chart"
+      ],
+      "dependencies": [
+        "Chart"
+      ]
+    },
+    "HoverCard": {
+      "parts": [
+        "hover-card"
+      ],
+      "dependencies": []
+    },
+    "Icon": {
+      "parts": [
+        "icon"
+      ],
+      "dependencies": []
+    },
+    "Illustration": {
+      "parts": [
+        "illustration"
+      ],
+      "dependencies": []
+    },
+    "Image": {
+      "parts": [
+        "image"
+      ],
+      "dependencies": []
+    },
+    "ImageComparison": {
+      "parts": [
+        "image-comparison",
+        "slider"
+      ],
+      "dependencies": []
+    },
+    "Input": {
+      "parts": [
+        "input"
+      ],
+      "dependencies": []
+    },
+    "InputGroup": {
+      "parts": [
+        "input-group"
+      ],
+      "dependencies": []
+    },
+    "InputOTP": {
+      "parts": [
+        "input-otp"
+      ],
+      "dependencies": []
+    },
+    "Item": {
+      "parts": [
+        "item"
+      ],
+      "dependencies": []
+    },
+    "KanbanBoard": {
+      "parts": [
+        "kanban"
+      ],
+      "dependencies": [
+        "VisuallyHidden"
+      ]
+    },
+    "KanbanColumn": {
+      "parts": [
+        "kanban"
+      ],
+      "dependencies": [
+        "VisuallyHidden"
+      ]
+    },
+    "Kbd": {
+      "parts": [
+        "kbd"
+      ],
+      "dependencies": []
+    },
+    "Label": {
+      "parts": [
+        "label"
+      ],
+      "dependencies": []
+    },
+    "LanguageToggle": {
+      "parts": [
+        "language-toggle"
+      ],
+      "dependencies": []
+    },
+    "LineChart": {
+      "parts": [
+        "chart",
+        "line-chart"
+      ],
+      "dependencies": [
+        "Button",
+        "Chart",
+        "ChartDatumActions"
+      ]
+    },
+    "Link": {
+      "parts": [
+        "link"
+      ],
+      "dependencies": []
+    },
+    "ListBox": {
+      "parts": [
+        "label",
+        "list-box"
+      ],
+      "dependencies": []
+    },
+    "LollipopChart": {
+      "parts": [
+        "bullet-chart",
+        "chart",
+        "comparison-chart"
+      ],
+      "dependencies": [
+        "Chart"
+      ]
+    },
+    "Marker": {
+      "parts": [
+        "marker"
+      ],
+      "dependencies": []
+    },
+    "MediaFilmstrip": {
+      "parts": [
+        "media-filmstrip"
+      ],
+      "dependencies": []
+    },
+    "MediaThumbnail": {
+      "parts": [
+        "media-thumbnail"
+      ],
+      "dependencies": [
+        "Button"
+      ]
+    },
+    "MediaViewport": {
+      "parts": [
+        "media-viewport"
+      ],
+      "dependencies": [
+        "Button"
+      ]
+    },
+    "Mentions": {
+      "parts": [
+        "mentions",
+        "textarea"
+      ],
+      "dependencies": []
+    },
+    "Menubar": {
+      "parts": [
+        "menubar"
+      ],
+      "dependencies": []
+    },
+    "Message": {
+      "parts": [
+        "message"
+      ],
+      "dependencies": []
+    },
+    "MessageScroller": {
+      "parts": [
+        "message-scroller"
+      ],
+      "dependencies": []
+    },
+    "Meter": {
+      "parts": [
+        "meter"
+      ],
+      "dependencies": []
+    },
+    "MotionGroup": {
+      "parts": [
+        "motion-group"
+      ],
+      "dependencies": []
+    },
+    "NativeSelect": {
+      "parts": [
+        "select"
+      ],
+      "dependencies": []
+    },
+    "NavigationMenu": {
+      "parts": [
+        "navigation-menu"
+      ],
+      "dependencies": []
+    },
+    "Note": {
+      "parts": [
+        "note"
+      ],
+      "dependencies": []
+    },
+    "NumberField": {
+      "parts": [
+        "input",
+        "number-field"
+      ],
+      "dependencies": []
+    },
+    "Pagination": {
+      "parts": [
+        "pagination"
+      ],
+      "dependencies": []
+    },
+    "Particles": {
+      "parts": [
+        "particles"
+      ],
+      "dependencies": []
+    },
+    "PasswordField": {
+      "parts": [
+        "field",
+        "password-field"
+      ],
+      "dependencies": [
+        "Button",
+        "Field",
+        "FieldError",
+        "Input",
+        "Label"
+      ]
+    },
+    "PhoneInput": {
+      "parts": [
+        "input",
+        "input-group",
+        "phone-input",
+        "select"
+      ],
+      "dependencies": [
+        "CountryFlag"
+      ]
+    },
+    "PhoneNumber": {
+      "parts": [
+        "phone-number"
+      ],
+      "dependencies": [
+        "CountryFlag"
+      ]
+    },
+    "PieChart": {
+      "parts": [
+        "chart",
+        "pie-chart"
+      ],
+      "dependencies": [
+        "Chart",
+        "ChartDatumActions"
+      ]
+    },
+    "Pill": {
+      "parts": [
+        "pill"
+      ],
+      "dependencies": []
+    },
+    "Popconfirm": {
+      "parts": [
+        "button",
+        "popconfirm",
+        "popover"
+      ],
+      "dependencies": []
+    },
+    "Popover": {
+      "parts": [
+        "popover"
+      ],
+      "dependencies": []
+    },
+    "PopoverPanel": {
+      "parts": [
+        "popover"
+      ],
+      "dependencies": []
+    },
+    "PopoverTrigger": {
+      "parts": [
+        "button"
+      ],
+      "dependencies": []
+    },
+    "Progress": {
+      "parts": [
+        "progress"
+      ],
+      "dependencies": []
+    },
+    "PromptComposer": {
+      "parts": [
+        "prompt-composer"
+      ],
+      "dependencies": [
+        "Button",
+        "Form",
+        "Label",
+        "Stack",
+        "Textarea"
+      ]
+    },
+    "Prose": {
+      "parts": [
+        "prose"
+      ],
+      "dependencies": []
+    },
+    "QRCode": {
+      "parts": [
+        "qr-code"
+      ],
+      "dependencies": []
+    },
+    "RadioGroup": {
+      "parts": [
+        "radio-group"
+      ],
+      "dependencies": []
+    },
+    "RangeChart": {
+      "parts": [
+        "chart",
+        "range-chart"
+      ],
+      "dependencies": [
+        "Chart",
+        "ChartDatumActions"
+      ]
+    },
+    "Rating": {
+      "parts": [
+        "rating"
+      ],
+      "dependencies": [
+        "Icon"
+      ]
+    },
+    "Resizable": {
+      "parts": [
+        "resizable"
+      ],
+      "dependencies": []
+    },
+    "RevealGroup": {
+      "parts": [
+        "reveal-group"
+      ],
+      "dependencies": []
+    },
+    "RichTextEditor": {
+      "parts": [
+        "rich-text-editor"
+      ],
+      "dependencies": []
+    },
+    "ScatterChart": {
+      "parts": [
+        "chart",
+        "scatter-chart"
+      ],
+      "dependencies": [
+        "Chart",
+        "ChartDatumActions"
+      ]
+    },
+    "Schedule": {
+      "parts": [
+        "schedule"
+      ],
+      "dependencies": []
+    },
+    "ScrollArea": {
+      "parts": [
+        "scroll-area"
+      ],
+      "dependencies": []
+    },
+    "ScrollProgress": {
+      "parts": [
+        "scroll-progress"
+      ],
+      "dependencies": []
+    },
+    "ScrollReveal": {
+      "parts": [
+        "scroll-reveal"
+      ],
+      "dependencies": []
+    },
+    "SearchField": {
+      "parts": [
+        "input",
+        "search-field"
+      ],
+      "dependencies": []
+    },
+    "Segmented": {
+      "parts": [
+        "segmented"
+      ],
+      "dependencies": []
+    },
+    "Select": {
+      "parts": [
+        "select"
+      ],
+      "dependencies": []
+    },
+    "Separator": {
+      "parts": [
+        "separator"
+      ],
+      "dependencies": []
+    },
+    "Sheet": {
+      "parts": [
+        "sheet"
+      ],
+      "dependencies": []
+    },
+    "Sidebar": {
+      "parts": [
+        "sidebar"
+      ],
+      "dependencies": []
+    },
+    "Skeleton": {
+      "parts": [
+        "skeleton"
+      ],
+      "dependencies": []
+    },
+    "SkipLink": {
+      "parts": [
+        "skip-link"
+      ],
+      "dependencies": []
+    },
+    "Slider": {
+      "parts": [
+        "slider"
+      ],
+      "dependencies": []
+    },
+    "SourceCitation": {
+      "parts": [
+        "source-citation"
+      ],
+      "dependencies": [
+        "Link"
+      ]
+    },
+    "Sparkline": {
+      "parts": [
+        "chart-tone",
+        "sparkline"
+      ],
+      "dependencies": []
+    },
+    "SpeedDial": {
+      "parts": [
+        "icon",
+        "speed-dial"
+      ],
+      "dependencies": [
+        "Icon"
+      ]
+    },
+    "Spinner": {
+      "parts": [
+        "spinner"
+      ],
+      "dependencies": []
+    },
+    "Stack": {
+      "parts": [
+        "stack"
+      ],
+      "dependencies": []
+    },
+    "Stat": {
+      "parts": [
+        "stat",
+        "stat-label",
+        "stat-value"
+      ],
+      "dependencies": []
+    },
+    "StatDescription": {
+      "parts": [
+        "stat-description"
+      ],
+      "dependencies": []
+    },
+    "StatIcon": {
+      "parts": [
+        "stat-icon"
+      ],
+      "dependencies": []
+    },
+    "StatLabel": {
+      "parts": [
+        "stat-label"
+      ],
+      "dependencies": []
+    },
+    "StatTrend": {
+      "parts": [
+        "stat-trend"
+      ],
+      "dependencies": []
+    },
+    "StatValue": {
+      "parts": [
+        "stat-value"
+      ],
+      "dependencies": []
+    },
+    "Stepper": {
+      "parts": [
+        "stepper"
+      ],
+      "dependencies": []
+    },
+    "StreamMessage": {
+      "parts": [
+        "stream-message"
+      ],
+      "dependencies": [
+        "Message",
+        "Prose",
+        "Stack"
+      ]
+    },
+    "Switch": {
+      "parts": [
+        "switch"
+      ],
+      "dependencies": []
+    },
+    "Table": {
+      "parts": [
+        "table"
+      ],
+      "dependencies": [
+        "Icon"
+      ]
+    },
+    "Tabs": {
+      "parts": [
+        "tabs"
+      ],
+      "dependencies": []
+    },
+    "TabsList": {
+      "parts": [],
+      "dependencies": [
+        "Tabs"
+      ]
+    },
+    "TabsPanel": {
+      "parts": [],
+      "dependencies": [
+        "Tabs"
+      ]
+    },
+    "TabsTrigger": {
+      "parts": [],
+      "dependencies": [
+        "Tabs"
+      ]
+    },
+    "TagGroup": {
+      "parts": [
+        "tag-group"
+      ],
+      "dependencies": []
+    },
+    "Textarea": {
+      "parts": [
+        "textarea"
+      ],
+      "dependencies": []
+    },
+    "ThemeBuilder": {
+      "parts": [
+        "theme-builder"
+      ],
+      "dependencies": []
+    },
+    "ThemeToggle": {
+      "parts": [
+        "theme-toggle"
+      ],
+      "dependencies": [
+        "Icon"
+      ]
+    },
+    "TimeField": {
+      "parts": [
+        "input",
+        "time-field"
+      ],
+      "dependencies": []
+    },
+    "Timeline": {
+      "parts": [
+        "timeline"
+      ],
+      "dependencies": [
+        "TimelineItem"
+      ]
+    },
+    "TimelineItem": {
+      "parts": [
+        "timeline-item"
+      ],
+      "dependencies": []
+    },
+    "Toast": {
+      "parts": [
+        "toast"
+      ],
+      "dependencies": [
+        "Button"
+      ]
+    },
+    "ToastViewport": {
+      "parts": [
+        "tvp"
+      ],
+      "dependencies": [
+        "Toast"
+      ]
+    },
+    "Toggle": {
+      "parts": [
+        "toggle"
+      ],
+      "dependencies": []
+    },
+    "ToggleGroup": {
+      "parts": [
+        "toggle-group"
+      ],
+      "dependencies": []
+    },
+    "ToolActivity": {
+      "parts": [
+        "tool-activity"
+      ],
+      "dependencies": [
+        "Collapsible",
+        "Stack"
+      ]
+    },
+    "Toolbar": {
+      "parts": [
+        "toolbar"
+      ],
+      "dependencies": []
+    },
+    "Tooltip": {
+      "parts": [
+        "tooltip"
+      ],
+      "dependencies": []
+    },
+    "TooltipContent": {
+      "parts": [],
+      "dependencies": [
+        "Tooltip"
+      ]
+    },
+    "Tour": {
+      "parts": [
+        "button",
+        "tour"
+      ],
+      "dependencies": []
+    },
+    "Transfer": {
+      "parts": [
+        "button",
+        "checkbox",
+        "transfer"
+      ],
+      "dependencies": [
+        "Icon"
+      ]
+    },
+    "Tree": {
+      "parts": [
+        "tree"
+      ],
+      "dependencies": []
+    },
+    "TreeGrid": {
+      "parts": [
+        "tree-grid"
+      ],
+      "dependencies": []
+    },
+    "TreeSelect": {
+      "parts": [
+        "select",
+        "tree-select"
+      ],
+      "dependencies": []
+    },
+    "Typography": {
+      "parts": [
+        "typography"
+      ],
+      "dependencies": []
+    },
+    "VirtualList": {
+      "parts": [
+        "virtual-list"
+      ],
+      "dependencies": []
+    },
+    "VisualEffect": {
+      "parts": [
+        "visual-effect"
+      ],
+      "dependencies": []
+    },
+    "VisuallyHidden": {
+      "parts": [
+        "visually-hidden"
+      ],
+      "dependencies": []
+    },
+    "WaterfallChart": {
+      "parts": [
+        "bar-chart",
+        "chart",
+        "waterfall-chart"
+      ],
+      "dependencies": [
+        "Chart"
+      ]
+    },
+    "Watermark": {
+      "parts": [
+        "watermark"
+      ],
+      "dependencies": []
+    },
+    "WorldMap": {
+      "parts": [
+        "select",
+        "world-map"
+      ],
+      "dependencies": [
+        "Button"
+      ]
+    }
+  }
+}

@@ -204,15 +204,17 @@ updates, deletes, sends, publishes, enqueues, logs user content, or changes exte
 - Once publication is confirmed, replace the under-review notice in the README and documentation
   site with the public directory link.
 
-## Next candidate: plugin 1.1.0 and Lumen 4
+## Next candidate: plugin 1.1.0 and Lumen 5
 
 The local candidate uses portable `plugin.json` and `mcp.json` manifests and generated Codex/Claude
 wrappers. Both client manifests carry version 1.1.0. The local stdio configuration pins
-`@santi020k/lumen-mcp@4.4.0`; publish that package before distributing the plugin update.
+`@santi020k/lumen-mcp@5.0.0`; publish that package before distributing the plugin update.
 
 The candidate includes three skills (build, review, migration), fourteen read-only catalog tools,
-and an optional read-only Claude reviewer. It adds installed-version compatibility checks, v4
-migration discovery, concrete nested schemas, and English/Spanish search. No hooks or new credentials
+and an optional read-only Claude reviewer. It adds installed-version compatibility checks, v4 and v5
+migration discovery, concrete nested schemas, and English/Spanish search. Request
+`lumen_get_migration` with `targetVersion: "5.0.0"` for v5 or `"4.0.0"` for v4; the default follows
+the bundled release manifest (v5 in this candidate). No hooks or new credentials
 are required. The published 1.0.0 record above describes the previous release.
 
 Before submission, rerun strict schema/package validation, the actual agent benchmarks in
@@ -227,9 +229,12 @@ agents and local compatibility files. The command also produces a Claude archive
 checks. Archive generation validates snapshots first, includes only explicit plugin assets, and
 preserves existing output. It requires the system `zip` executable.
 
-Before uploading, verify the deployed catalog reports 4.2.0 and exposes all fourteen tools,
-including `lumen_check_compatibility` and `lumen_get_migration`. Check both a matching v4 consumer
-and an older consumer: the latter must use installed contracts without silently upgrading.
+Before uploading, verify the deployed catalog reports the candidate MCP version (5.0.0) and matches
+the released snapshot hash. Check all fourteen tools, including `lumen_check_compatibility` and
+`lumen_get_migration` with an explicit v5 target. Check both a consumer matching the
+[release manifest](../registry/release-manifest.json) and an older consumer: the latter must use
+installed contracts without silently upgrading. Native and companion packages have independent
+versions; do not assign 5.0.0 to the entire package family.
 
 ## Automated catalog rollout
 

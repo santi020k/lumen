@@ -204,7 +204,7 @@ test('Calendar navigates after adoption while attribute updates preserve focused
 
 test('Tooltip opens with generated IDs unique in its owning iframe document', async ({ page }) => {
   await page.goto('/internal/date-controls')
-  const result = await page.evaluate(() => {
+  const result = await page.evaluate(async () => {
     const iframe = document.createElement('iframe')
     document.body.append(iframe)
     const destination = iframe.contentDocument
@@ -220,9 +220,9 @@ test('Tooltip opens with generated IDs unique in its owning iframe document', as
     root.innerHTML = '<button type="button">Help</button><span role="tooltip">Explanation</span>'
     destination.body.append(root)
     const initialize: unknown = Reflect.get(window, 'LumenInitUiPrimitives')
-    const isInitializer = (value: unknown): value is (scope: ParentNode) => void => typeof value === 'function'
+    const isInitializer = (value: unknown): value is (scope: ParentNode) => Promise<void> => typeof value === 'function'
     if (!isInitializer(initialize)) throw new Error('Missing public runtime initialization')
-    initialize(destination)
+    await initialize(destination)
     const tooltip = root.querySelector('[role="tooltip"]')
     const id = tooltip?.id
     if (!id) throw new Error('Missing generated tooltip ID')
@@ -292,11 +292,11 @@ test('ImageComparison follows reassigned and adopted form resets without canceli
     if (!destination) throw new Error('Missing destination document')
 
     destination.body.append(destination.adoptNode(form))
-    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => void }).LumenInitUiPrimitives
+    const initialize = (window as Window & { LumenInitUiPrimitives?: (scope: ParentNode) => Promise<void> }).LumenInitUiPrimitives
 
     if (!initialize) throw new Error('Missing initializer')
 
-    initialize(destination)
+    await initialize(destination)
     await new Promise(resolve => setTimeout(resolve, 0))
     return { reset, canceled }
   })

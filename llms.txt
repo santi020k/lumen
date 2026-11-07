@@ -6,9 +6,19 @@ Use these files first when generating, reviewing, or migrating apps that use Lum
 
 - README.md: public overview and package strategy.
 - docs/ai-usage.md: AI-focused setup, package selection, and component selection.
+- docs/migrating-v4-to-v5.md: runtime-only adapters, async Astro readiness, independently versioned dependencies and consumer recovery.
+- docs/selective-installation.md: component CSS, verified exports, editable wrappers and catalog fallbacks.
+- docs/product-workflow-recipes.md: editable video, code and sharing compositions with application-owned content.
+- docs/interactive-editorial-recipes.md: portable reading, search and image-viewer recipes.
+- docs/rendered-audit.md: explicit local browser diagnostics with caller-owned Playwright.
+- docs/figma.md: v5 Community design files, theme controls, Code Connect and the local Figma export plugin.
+- docs/figma-design-to-code.md: translate design semantics into verified Lumen contracts and framework setup.
+- docs/claude-code-plugin.md: build, review and migration skills with a version-pinned read-only MCP catalog.
 - https://lumen.santi020k.com/guides/build-ui-with-ai: tested Astro and React adoption example with a reusable prompt.
 - docs/ai-efficiency.md: reproducible AI token measurement, quality checks, and limits on efficiency claims.
-- skills/lumen-ui/SKILL.md: portable Agent Skill for building, reviewing, and theming Lumen interfaces.
+- skills/lumen-ui/SKILL.md: portable Agent Skill for building and theming Lumen interfaces.
+- skills/lumen-review/SKILL.md: audit existing Lumen interfaces against their installed contracts.
+- skills/lumen-migrate/SKILL.md: plan and verify explicitly requested version upgrades.
 - docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.
 - registry/lumen.registry.json: installable component, recipe, and documentation manifest.
 - packages/core/src/components.ts: authoritative shared component catalog.
@@ -22,13 +32,12 @@ Install the portable Lumen Agent Skill:
 npx skills add santi020k/lumen --skill lumen-ui
 ```
 
-Default usage:
+Lumen 5 Astro usage (components import their CSS automatically; v4 consumers retain full styles):
 
 ```astro
 ---
 import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
 import UIPrimitives from '@santi020k/lumen-astro/runtime'
-import '@santi020k/lumen-astro/styles.css'
 ---
 
 <UIPrimitives />
@@ -38,6 +47,12 @@ import '@santi020k/lumen-astro/styles.css'
   <Button>Subscribe</Button>
 </Card>
 ```
+
+Install the optional @santi020k/lumen CLI separately as a development dependency in v5. React and
+Elements import styles/foundation.css once plus styles/components/<component>.css. Full styles.css
+includes all appearances. For selective styles, import styles/themes/paper.css, styles/themes/field.css, styles/themes/studio.css, styles/themes/santi020k.css,
+or styles/effects/glass.css from the web adapter when using that appearance. Use only public selective JavaScript exports; catalog fallbacks may traverse more
+modules. Include styles and registration for conditional content, compound children and runtime markup.
 
 Rules for agents:
 
@@ -50,12 +65,12 @@ Rules for agents:
 - Keep server-paginated DataTable rows in server order with `sortMode="manual"`, controlled `sort` and `onSortChange`. Apply sorting before pagination in the application backend. Use Dialog dismissal policies for pending workflows.
 - Chart X identities must be unique. Use `xLabel` for abbreviated axes, `formatCategory` for full details, and explicit null gaps for missing observations. Read docs/data-visualization.md.
 - Use ImageComparison for before/after media with matching dimensions, alternative text and a visible localized control label. See docs/image-comparison.md for adapter contracts.
-- Read docs/migrating-to-lumen.md before upgrading to v4, especially date-trigger IDs, loading buttons, hidden semantics, copy feedback and native initializer changes.
+- Read the guide for each major crossed: docs/migrating-v3-to-v4.md and docs/migrating-v4-to-v5.md. Preserve consumer patches until equivalent behavior is verified.
 - Do not require Tailwind configuration for Lumen components.
 - Give each outer edge one border and radius owner. Flush images inside rounded frames use Image radius="none"; Image defaults to radius="lg". Use one divider at shared edges, account for padding on inset curves, and check phone/desktop corners and keyboard focus in both themes. Keep artwork clipping scoped so it does not cut off focus rings or overlays. See docs/ai-usage.md for styling rules.
 - Use public tokens: canvas, surface, surface-muted, surface-strong, line, ink, ink-soft, ink-muted, brand, brand-solid, brand-soft, on-brand, accent, success, warning, danger, on-danger.
 - Default to `Select` for web product option lists and `Combobox` for searchable choices. Use `NativeSelect` only for an explicit browser or platform picker requirement. Keep native fallbacks and verify the enhanced list with the matching framework behavior enabled.
-- Mount `UIPrimitives` once for interactive Astro primitives.
+- Mount `UIPrimitives` once for interactive Astro primitives. In v5, await LumenInitUiPrimitives(scope); ui:ready follows completion and ui:runtime-error reports failed automatic enhancement. Toast creation returns an ID before async rendering.
 - Use `glass` for glass surfaces. The obsolete overlay `surface="glass"` alias is removed.
 - Treat schedule, data collection, rich text, theme builder, and advanced fields as supported surfaces with progressively enhanced behavior.
 - Use `lumen list`, `lumen show <component>`, and `lumen add <component>` for individually addressable registry components; component names also resolve from kebab-case aliases such as `data-table`.
@@ -79,8 +94,10 @@ Rules for agents:
 
 Before using MCP contracts, call lumen_check_compatibility with resolved installed Lumen versions.
 If versions differ, use installed public types and package README or a matching MCP package.
-Never silently upgrade an application. For an explicit v4 upgrade, read lumen_get_migration and
-preview lumen migrate v4 --dry-run --json; review dependency updates and application workarounds.
+Never silently upgrade an application. For a v5 upgrade, request lumen_get_migration with
+targetVersion:"5.0.0" and preview lumen migrate v5 --dry-run --json. V5 does not rewrite source;
+dependency apply is opt-in and follows individual bundled release-manifest versions. For a v4
+upgrade, use the v4 contract and preview command separately. Review all consumer workarounds.
 
 - [React form workflows](docs/powerful-forms.md): optional dependent validation, edit tracking, steps, repeatable rows, and async checks.
 

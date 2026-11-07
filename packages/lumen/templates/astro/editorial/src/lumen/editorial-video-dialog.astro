@@ -1,5 +1,13 @@
 ---
-import { Button, ButtonLink, Dialog, DialogBody, DialogTitle, Icon, Link } from '@santi020k/lumen-astro'
+import Button from '@santi020k/lumen-astro/components/Button'
+import ButtonLink from '@santi020k/lumen-astro/components/ButtonLink'
+import Collapsible from '@santi020k/lumen-astro/components/Collapsible'
+import Dialog from '@santi020k/lumen-astro/components/Dialog'
+import DialogBody from '@santi020k/lumen-astro/components/DialogBody'
+import DialogHeader from '@santi020k/lumen-astro/components/DialogHeader'
+import DialogTitle from '@santi020k/lumen-astro/components/DialogTitle'
+import Icon from '@santi020k/lumen-astro/components/Icon'
+import Link from '@santi020k/lumen-astro/components/Link'
 
 interface Props {
   id: string
@@ -11,12 +19,20 @@ interface Props {
   fileLabel: string
   errorLabel: string
   transcriptLabel: string
+  loadingLabel?: string
+  retryLabel?: string
+  captions?: readonly {
+    src: string
+    language: string
+    label: string
+    default?: boolean
+  }[]
 }
 
-const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, transcriptLabel } = Astro.props
+const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, transcriptLabel, loadingLabel = 'Loading video…', retryLabel = 'Retry video', captions = [] } = Astro.props
 ---
 
-<lumen-editorial-video data-src={src} data-poster={poster}>
+<lumen-editorial-video data-src={src} data-poster={poster} data-loading-label={loadingLabel}>
   <slot name="artwork" />
   <ButtonLink class="editorial-video__control" data-video-fallback href={src} variant="secondary">{playLabel}</ButtonLink>
   <Button
@@ -30,25 +46,35 @@ const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, tr
     <Icon aria-hidden="true" name="play" />
     <span>{playLabel}</span>
   </Button>
-  {Astro.slots.has('transcript') && <details><summary>{transcriptLabel}</summary><slot name="transcript" /></details>}
+  {Astro.slots.has('transcript') && <Collapsible data-video-transcript><summary>{transcriptLabel}</summary><slot name="transcript" /></Collapsible>}
+  <template data-video-tracks>
+    {captions.map(track => <track kind="captions" src={track.src} srclang={track.language} label={track.label} default={track.default} />)}
+    <slot name="tracks" />
+  </template>
   <Dialog aria-labelledby={`${id}-title`} id={id}>
-    <DialogBody class="editorial-video__body">
-      <div class="editorial-video__heading">
+    <DialogHeader class="editorial-video__heading">
         <DialogTitle id={`${id}-title`}>{title}</DialogTitle>
         <form method="dialog">
           <Button autofocus class="editorial-video__control" type="submit" variant="outline">{closeLabel}</Button>
         </form>
-      </div>
-      <video aria-label={title} controls playsinline preload="metadata">
-        <slot name="tracks" />
-      </video>
+    </DialogHeader>
+    <DialogBody class="editorial-video__body">
+      <video aria-label={title} controls playsinline preload="none" tabindex="0"></video>
       <p data-video-error={errorLabel} role="status"></p>
-      <Link href={src}>{fileLabel}</Link>
+      <Button data-video-retry hidden variant="outline">{retryLabel}</Button>
+      <Link data-video-file href={src}>{fileLabel}</Link>
     </DialogBody>
   </Dialog>
 </lumen-editorial-video>
 
 <script>
+  const moveTranscript = (root: HTMLElement) => {
+    const transcript = root.querySelector<HTMLElement>('[data-video-transcript]')
+    const file = root.querySelector('[data-video-file]')
+
+    if (transcript && file) file.before(transcript)
+  }
+
   class LumenEditorialVideo extends HTMLElement {
     #listeners?: AbortController
     #video?: HTMLVideoElement
@@ -59,11 +85,13 @@ const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, tr
       const trigger = this.querySelector<HTMLButtonElement>('[data-video-open]')
       const fallback = this.querySelector<HTMLElement>('[data-video-fallback]')
       const error = this.querySelector<HTMLElement>('[data-video-error]')
+      const retry = this.querySelector<HTMLButtonElement>('[data-video-retry]')
+      const tracks = this.querySelector<HTMLTemplateElement>('[data-video-tracks]')
       const src = this.dataset.src
 
-      if (!dialog || !video || !trigger || !fallback || !error || !src || typeof dialog.showModal !== 'function') return
+      if (!dialog || !video || !trigger || !fallback || !error || !retry || !tracks || !src || typeof dialog.showModal !== 'function') return
 
-      this.#listeners?.abort()
+      this.disconnectedCallback()
 
       this.#listeners = new AbortController()
 
@@ -71,21 +99,45 @@ const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, tr
 
       const { signal } = this.#listeners
 
+      const load = () => {
+        error.textContent = this.dataset.loadingLabel ?? ''
+
+        retry.hidden = true
+
+        video.replaceChildren(document.importNode(tracks.content, true))
+
+        if (this.dataset.poster) video.poster = this.dataset.poster
+
+        video.src = src
+
+        video.load()
+      }
+
+      const pause = () => video.pause()
+
       trigger.addEventListener('click', () => {
         if (dialog.open) return
 
         dialog.showModal()
 
-        if (!video.hasAttribute('src') || video.error) {
-          error.textContent = ''
-
-          if (this.dataset.poster) video.poster = this.dataset.poster
-
-          video.src = src
-
-          video.load()
-        }
+        if (!video.hasAttribute('src') || video.error) load()
       }, { signal })
+
+      retry.addEventListener('click', () => {
+        load()
+
+        video.focus({ preventScroll: true })
+      }, { signal })
+
+      video.addEventListener('loadedmetadata', () => {
+ error.textContent = ''
+}, { signal })
+
+      document.addEventListener('astro:before-swap', pause, { signal })
+
+      window.addEventListener('pagehide', pause, { signal })
+
+      moveTranscript(this)
 
       dialog.addEventListener('close', () => {
         if (dialog.open) return
@@ -97,6 +149,8 @@ const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, tr
 
       video.addEventListener('error', () => {
         error.textContent = error.dataset.videoError ?? ''
+
+        retry.hidden = false
       }, { signal })
 
       trigger.hidden = false
@@ -126,6 +180,7 @@ const { id, title, src, poster, playLabel, closeLabel, fileLabel, errorLabel, tr
   .editorial-video__body { display: grid; gap: 1rem; min-inline-size: 0; }
   .editorial-video__heading { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 0.75rem; }
   video { inline-size: 100%; max-block-size: 55dvh; background: hsl(var(--surface-strong)); }
+  [data-video-retry][hidden] { display: none; }
   details { margin-block-start: 0.75rem; }
   summary { cursor: pointer; }
 </style>

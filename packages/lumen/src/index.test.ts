@@ -72,22 +72,25 @@ describe('@santi020k/lumen umbrella package', () => {
     expect(lumenPackages.some(pkg => pkg.packageName === lumen.packageName)).toBe(true)
   })
 
-  test('exposes the Lumen CLI through every web adapter', async () => {
+  test('keeps web adapters independent of CLI tooling', async () => {
     for (const adapter of ['astro', 'elements', 'react']) {
       const adapterRoot = new URL(`../../${adapter}/`, import.meta.url)
       const packageJson = JSON.parse(
         await readFile(new URL('package.json', adapterRoot), 'utf8')
-      ) as { bin?: Record<string, string> }
+      ) as { bin?: Record<string, string>, dependencies: Record<string, string> }
 
-      expect(packageJson.bin?.lumen).toBe('./bin/lumen.mjs')
-      await expect(readFile(new URL('bin/lumen.mjs', adapterRoot), 'utf8'))
-        .resolves.toContain('import \'@santi020k/lumen/cli\'')
+      expect(packageJson.bin).toBeUndefined()
+      expect(packageJson.dependencies['@santi020k/lumen']).toBeUndefined()
+      expect(packageJson.dependencies.typescript).toBeUndefined()
+      expect(packageJson.dependencies['@santi020k/lumen-core']).toBe('workspace:^')
     }
   })
 
   test('exports registry recipes and components for product surfaces', () => {
     expect(lumenRegistry.items.map(item => item.name)).toEqual([
       'editorial',
+      'share',
+      'code-example',
       'article-reading',
       'site-search-dialog',
       'image-viewer',
@@ -125,7 +128,10 @@ describe('@santi020k/lumen umbrella package', () => {
       'feature-preview',
       'guided-onboarding',
       'command-center',
-      'media-workspace'
+      'media-workspace',
+      'feedback-board',
+      'responsive-navigation',
+      'editable-ticket'
     ])
 
     expect(getLumenRegistryItem('scheduler')).toMatchObject({
@@ -203,7 +209,7 @@ describe('@santi020k/lumen umbrella package', () => {
       const source = await readFile(join(cwd, 'src/lumen/data-table.astro'), 'utf8')
 
       expect(result.added).toEqual(['src/lumen/data-table.astro'])
-      expect(source).toContain('import { DataTable as LumenDataTable } from \'@santi020k/lumen-astro\'')
+      expect(source).toContain('import LumenDataTable from \'@santi020k/lumen-astro/components/DataTable.astro\'')
       expect(source).toContain('<LumenDataTable {...props}>')
 
       await writeFile(join(cwd, 'src/lumen/data-table.astro'), 'custom', 'utf8')
@@ -228,12 +234,12 @@ describe('@santi020k/lumen umbrella package', () => {
       const elementsSource = await readFile(join(cwd, 'src/lumen/button.ts'), 'utf8')
 
       expect(react.added).toEqual(['src/lumen/button.tsx'])
-      expect(reactSource).toContain('import { Button as LumenButton } from \'@santi020k/lumen-react\'')
+      expect(reactSource).toContain('import { Button as LumenButton } from \'@santi020k/lumen-react/components/button\'')
       expect(reactSource).toContain('export type ButtonProps = ComponentPropsWithoutRef<typeof LumenButton>')
       expect(reactSource).toContain('export const Button = (props: ButtonProps) => <LumenButton {...props} />')
 
       expect(elements.added).toEqual(['src/lumen/button.ts'])
-      expect(elementsSource).toContain('import {\n  defineLumenElements,\n  LumenButtonElement\n} from \'@santi020k/lumen-elements\'')
+      expect(elementsSource).toContain('import { LumenButtonElement } from \'@santi020k/lumen-elements/components/button\'')
       expect(elementsSource).toContain('export const buttonTagName = \'lumen-button\' as const')
       expect(elementsSource).toContain('\'lumen-button\': InstanceType<typeof LumenButtonElement>')
     } finally {
@@ -631,7 +637,7 @@ describe('@santi020k/lumen umbrella package', () => {
     }
   })
 
-  test('merges registry recipes with existing files', async () => {
+  test('supports a caller-supplied merge resolver', async () => {
     const cwd = await mkdtemp(join(tmpdir(), 'lumen-merge-'))
 
     try {
@@ -642,6 +648,7 @@ describe('@santi020k/lumen umbrella package', () => {
 
       const result = await addLumenRegistryItem('custom', {
         conflict: 'merge',
+        merge: ({ existing, incoming }) => existing + incoming,
         cwd,
         registry: {
           description: 'Test registry',
@@ -663,7 +670,6 @@ describe('@santi020k/lumen umbrella package', () => {
       expect(result.added).toEqual([])
       expect(result.merged).toEqual(['src/lumen/custom.astro'])
       expect(source).toContain('Existing')
-      expect(source).toContain('Lumen merge: src/lumen/custom.astro')
       expect(source).toContain('Incoming')
     } finally {
       await rm(cwd, { force: true, recursive: true })

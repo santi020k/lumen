@@ -1,0 +1,70 @@
+{
+  "artwork": [
+    {
+      "file": "docs/assets/releases/v5.0.0/social/square-01-modular-web.png",
+      "width": 1080,
+      "height": 1080,
+      "alt": "Lumen UI 5: Build what your page needs. A real web workspace shows navigation, metric cards, a chart, and a task form."
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/square-02-native-playgrounds.png",
+      "width": 1080,
+      "height": 1080,
+      "alt": "Native Lumen playground release examples: SwiftUI in light mode beside Jetpack Compose in dark mode, captured from local builds."
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/square-03-shared-themes.png",
+      "width": 1080,
+      "height": 1080,
+      "alt": "React Native Expo browser previews show Paper theme settings and a dark contributor profile. These are browser renders."
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/portrait-01-modular-web.png",
+      "width": 1080,
+      "height": 1920,
+      "alt": "Lumen UI 5: Build what your page needs. A real web workspace shows navigation, metric cards, a chart, and a task form."
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/portrait-02-native-playgrounds.png",
+      "width": 1080,
+      "height": 1920,
+      "alt": "Native Lumen playground release examples: SwiftUI in light mode beside Jetpack Compose in dark mode, captured from local builds."
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/portrait-03-shared-themes.png",
+      "width": 1080,
+      "height": 1920,
+      "alt": "React Native Expo browser previews show Paper theme settings and a dark contributor profile. These are browser renders."
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/landscape-01-modular-web.png",
+      "width": 1920,
+      "height": 1080,
+      "alt": "Lumen UI 5: Build what your page needs. A real web workspace shows navigation, metric cards, a chart, and a task form."
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/landscape-02-native-playgrounds.png",
+      "width": 1920,
+      "height": 1080,
+      "alt": "Native Lumen playground release examples: SwiftUI in light mode beside Jetpack Compose in dark mode, captured from local builds."
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/landscape-03-shared-themes.png",
+      "width": 1920,
+      "height": 1080,
+      "alt": "React Native Expo browser previews show Paper theme settings and a dark contributor profile. These are browser renders."
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/release-cover-1200x630.png",
+      "width": 1200,
+      "height": 630,
+      "alt": "Lumen UI 5: modular delivery and editable recipes, beside a real Lumen web workspace."
+    },
+    {
+      "file": "apps/playground-android/Store/feature-graphic.png",
+      "width": 1024,
+      "height": 500,
+      "alt": "Lumen Playground with a native Compose release example in dark mode."
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+  "captures": [
+    {
+      "file": "screenshots/web-workspace-light.webp",
+      "route": "/",
+      "selector": ".home-workbench",
+      "mode": "light",
+      "alt": "Lumen web workspace with navigation, metrics, activity chart, and task form.",
+      "width": 1184,
+      "height": 790,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:24:30.013Z",
+      "renderer": "Astro / Chromium"
+    },
+    {
+      "file": "screenshots/web-mobile-light.webp",
+      "route": "/",
+      "selector": ".home-workbench",
+      "mode": "light",
+      "alt": "Lumen workspace arranged for a narrow mobile browser.",
+      "width": 358,
+      "height": 669,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:24:33.017Z",
+      "renderer": "Astro / Chromium"
+    },
+    {
+      "file": "screenshots/web-frameworks-light.webp",
+      "route": "/docs/web/playground",
+      "selector": ".web-framework-playground__workbench",
+      "mode": "light",
+      "alt": "Live Astro playground with release readiness and behavior tabs.",
+      "width": 1037,
+      "height": 664,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:24:36.867Z",
+      "renderer": "Astro / Chromium"
+    },
+    {
+      "file": "screenshots/web-react-interaction-light.webp",
+      "route": "/docs/web/playground",
+      "selector": ".web-framework-playground__workbench",
+      "mode": "light",
+      "alt": "React playground after advancing the interactive release example to 76 percent.",
+      "width": 1037,
+      "height": 664,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:24:43.306Z",
+      "renderer": "React / Chromium"
+    },
+    {
+      "file": "screenshots/web-elements-interaction-light.webp",
+      "route": "/docs/web/playground",
+      "selector": ".web-framework-playground__workbench",
+      "mode": "light",
+      "alt": "Web Components playground after advancing the release example to 80 percent.",
+      "width": 1037,
+      "height": 664,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:24:45.666Z",
+      "renderer": "Web Components / Chromium"
+    },
+    {
+      "file": "screenshots/theme-studio-light.webp",
+      "route": "/docs/theme-playground",
+      "selector": "#theme-workbench",
+      "mode": "light",
+      "alt": "Theme studio with color inputs, a live component preview, and token export controls.",
+      "width": 1037,
+      "height": 3242,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:24:54.036Z",
+      "renderer": "Astro / Chromium"
+    },
+    {
+      "file": "screenshots/react-native-profile-light.webp",
+      "route": "/native-previews/react-native-live/index.html?destination=examples&pattern=profile&scheme=light",
+      "selector": null,
+      "mode": "light",
+      "alt": "React Native contributor profile example rendered in an Expo browser preview.",
+      "width": 390,
+      "height": 844,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:24:55.231Z",
+      "renderer": "Expo web / Chromium"
+    },
+    {
+      "file": "screenshots/react-native-settings-light.webp",
+      "route": "/native-previews/react-native-live/index.html?destination=settings&theme=paper&scheme=light",
+      "selector": null,
+      "mode": "light",
+      "alt": "React Native settings with the Paper theme rendered in an Expo browser preview.",
+      "width": 390,
+      "height": 844,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:24:55.927Z",
+      "renderer": "Expo web / Chromium"
+    },
+    {
+      "file": "screenshots/web-workspace-dark.webp",
+      "route": "/",
+      "selector": ".home-workbench",
+      "mode": "dark",
+      "alt": "Lumen web workspace with navigation, metrics, activity chart, and task form.",
+      "width": 1184,
+      "height": 790,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:25:05.325Z",
+      "renderer": "Astro / Chromium"
+    },
+    {
+      "file": "screenshots/web-mobile-dark.webp",
+      "route": "/",
+      "selector": ".home-workbench",
+      "mode": "dark",
+      "alt": "Lumen workspace arranged for a narrow mobile browser.",
+      "width": 358,
+      "height": 669,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:25:08.985Z",
+      "renderer": "Astro / Chromium"
+    },
+    {
+      "file": "screenshots/web-frameworks-dark.webp",
+      "route": "/docs/web/playground",
+      "selector": ".web-framework-playground__workbench",
+      "mode": "dark",
+      "alt": "Live Astro playground with release readiness and behavior tabs.",
+      "width": 1037,
+      "height": 664,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:25:12.367Z",
+      "renderer": "Astro / Chromium"
+    },
+    {
+      "file": "screenshots/web-react-interaction-dark.webp",
+      "route": "/docs/web/playground",
+      "selector": ".web-framework-playground__workbench",
+      "mode": "dark",
+      "alt": "React playground after advancing the interactive release example to 76 percent.",
+      "width": 1037,
+      "height": 664,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:25:15.140Z",
+      "renderer": "React / Chromium"
+    },
+    {
+      "file": "screenshots/web-elements-interaction-dark.webp",
+      "route": "/docs/web/playground",
+      "selector": ".web-framework-playground__workbench",
+      "mode": "dark",
+      "alt": "Web Components playground after advancing the release example to 80 percent.",
+      "width": 1037,
+      "height": 664,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:25:17.730Z",
+      "renderer": "Web Components / Chromium"
+    },
+    {
+      "file": "screenshots/theme-studio-dark.webp",
+      "route": "/docs/theme-playground",
+      "selector": "#theme-workbench",
+      "mode": "dark",
+      "alt": "Theme studio with color inputs, a live component preview, and token export controls.",
+      "width": 1037,
+      "height": 3242,
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:25:26.542Z",
+      "renderer": "Astro / Chromium"
+    },
+    {
+      "file": "screenshots/react-native-profile-dark.webp",
+      "route": "/native-previews/react-native-live/index.html?destination=examples&pattern=profile&scheme=dark",
+      "selector": null,
+      "mode": "dark",
+      "alt": "React Native contributor profile example rendered in an Expo browser preview.",
+      "width": 390,
+      "height": 844,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:25:30.607Z",
+      "renderer": "Expo web / Chromium"
+    },
+    {
+      "file": "screenshots/react-native-settings-dark.webp",
+      "route": "/native-previews/react-native-live/index.html?destination=settings&theme=paper&scheme=dark",
+      "selector": null,
+      "mode": "dark",
+      "alt": "React Native settings with the Paper theme rendered in an Expo browser preview.",
+      "width": 390,
+      "height": 844,
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sourceRevision": "c77c6aee831172e38451196baf3e9e0004b5b2e3",
+      "capturedAt": "2026-11-07T04:25:31.406Z",
+      "renderer": "Expo web / Chromium"
+    }
+  ]
+}

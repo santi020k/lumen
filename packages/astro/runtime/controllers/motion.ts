@@ -1,5 +1,9 @@
+import { createLumenRevealController } from '@santi020k/lumen-core/reveal'
+
+import { queryScope } from '../scope.js'
+
 const initBackToTopButtons = (scope: ParentNode): void => {
-  for (const button of scope.querySelectorAll<HTMLButtonElement>('[data-ui-back-to-top]')) {
+  for (const button of queryScope(scope, '[data-ui-back-to-top]', 'button')) {
     if (button.dataset.uiBound === 'true') continue
 
     button.dataset.uiBound = 'true'
@@ -13,49 +17,31 @@ const initBackToTopButtons = (scope: ParentNode): void => {
   }
 }
 
-const initScrollReveals = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>(
-    '[data-ui-scroll-reveal], [data-ui-reveal-group]'
-  )) {
-    if (root.dataset.uiScrollRevealBound === 'true') continue
+const revealControllers = new Map<HTMLElement, { destroy: () => void }>()
 
-    root.dataset.uiScrollRevealBound = 'true'
+const initScrollReveals = (scope: ParentNode): void => {
+  for (const root of queryScope(scope, '[data-ui-scroll-reveal], [data-ui-reveal-group]')) {
+    if (revealControllers.has(root) || root.dataset.uiScrollRevealBound === 'true') continue
 
     if (root.matches('[data-ui-reveal-group]')) {
       for (const [index, child] of [...root.children].entries()) {
-        if (child instanceof HTMLElement) {
-          child.style.setProperty('--ui-reveal-index', String(index))
-        }
+        if (child instanceof HTMLElement) child.style.setProperty('--ui-reveal-index', String(index))
       }
     }
 
-    if (
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      typeof IntersectionObserver === 'undefined'
-    ) {
-      root.classList.add('is-revealed')
+    const raw = root.dataset.uiRevealThreshold
 
-      continue
-    }
-
-    const once = root.dataset.uiRevealOnce !== 'false'
-
-    const threshold = Math.min(
-      1, Math.max(0, Number(root.dataset.uiRevealThreshold) || 0)
-    )
-
-    const observer = new IntersectionObserver(entries => {
-      const entry = entries.at(-1)
-
-      if (!entry) return
-
-      root.classList.toggle('is-revealed', entry.isIntersecting)
-
-      if (entry.isIntersecting && once) observer.disconnect()
-    }, { threshold })
-
-    observer.observe(root)
+    revealControllers.set(root, createLumenRevealController(root, {
+      once: root.dataset.uiRevealOnce !== 'false',
+      ...(raw === undefined ? {} : { threshold: Number(raw) })
+    }))
   }
+}
+
+export const cleanupMotionControllers = (): void => {
+  for (const controller of revealControllers.values()) controller.destroy()
+
+  revealControllers.clear()
 }
 
 const createNumberFormatter = (root: HTMLElement): ((value: number) => string) => {
@@ -72,7 +58,7 @@ const createNumberFormatter = (root: HTMLElement): ((value: number) => string) =
 }
 
 const initAnimatedNumbers = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-animated-number]')) {
+  for (const root of queryScope(scope, '[data-ui-animated-number]')) {
     if (root.dataset.uiBound === 'true') continue
 
     const output = root.querySelector<HTMLElement>('[data-ui-animated-number-output]')

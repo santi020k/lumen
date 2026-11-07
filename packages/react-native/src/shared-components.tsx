@@ -64,7 +64,7 @@ export const LumenCard = ({
   ...props
 }: LumenCardProps): ReactElement => {
   const theme = useLumenTheme()
-  const isDisabled = disabled === true
+  const isDisabled = disabled
   const interactive = Boolean(onPress ?? onLongPress)
   const colors = resolveLumenCardColors(theme.colors, variant)
 
@@ -143,7 +143,7 @@ export const LumenAlert = ({
   ...props
 }: LumenAlertProps): ReactElement => {
   const theme = useLumenTheme()
-  const colors = resolveLumenAlertColors(theme.colors, variant)
+  const colors = resolveLumenAlertColors(theme.colors, variant, theme.appearance?.statusText)
 
   return (
     <View

@@ -1,0 +1,80 @@
+@layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities;
+
+@layer lumen.tokens {
+  /* Scheme values inherit from the nearest light or dark boundary. */
+  :where(:root, [data-theme="light"], [data-theme$="-light"], [data-lumen-scheme="light"]) {
+    --_field-scheme: light;
+    /* BEGIN:generated-light */
+    --_field-canvas: 104 18% 90%;
+    --_field-surface: 92 30% 97%;
+    --_field-surface-muted: 102 17% 87%;
+    --_field-surface-strong: 110 15% 80%;
+    --_field-line: 125 9% 45%;
+    --_field-ink: 144 23% 15%;
+    --_field-ink-soft: 134 15% 33%;
+    --_field-ink-muted: 134 12% 37%;
+    --_field-brand-solid: 148 38% 27%;
+    --_field-brand-soft: 128 22% 87%;
+    --_field-on-brand: 0 0% 100%;
+    --_field-accent: 26 58% 36%;
+    --_field-danger: 3 75% 36%;
+    --_field-on-danger: 0 0% 100%;
+    --_field-success: 175 57% 25%;
+    --_field-warning: 32 82% 30%;
+    /* END:generated-light */
+  }
+
+  :where(:is([data-theme="dark"], [data-theme$="-dark"]):not([data-lumen-scheme="light"]), [data-lumen-scheme="dark"]) {
+    --_field-scheme: dark;
+    /* BEGIN:generated-dark */
+    --_field-canvas: 152 18% 9%;
+    --_field-surface: 147 20% 13%;
+    --_field-surface-muted: 147 14% 19%;
+    --_field-surface-strong: 145 13% 25%;
+    --_field-line: 130 13% 50%;
+    --_field-ink: 89 22% 91%;
+    --_field-ink-soft: 102 18% 72%;
+    --_field-ink-muted: 109 14% 65%;
+    --_field-brand-solid: 132 34% 72%;
+    --_field-brand-soft: 146 25% 23%;
+    --_field-on-brand: 147 29% 13%;
+    --_field-accent: 32 66% 72%;
+    --_field-danger: 5 89% 75%;
+    --_field-on-danger: 355 35% 12%;
+    --_field-success: 172 44% 68%;
+    --_field-warning: 39 80% 70%;
+    /* END:generated-dark */
+  }
+
+  /* Full CSS can set a base scheme on the same element as the preset. */
+  [data-lumen-preset="field"],
+  :root[data-lumen-preset="field"],
+  :root[data-theme][data-lumen-preset="field"],
+  [data-theme][data-lumen-preset="field"] {
+    color-scheme: var(--_field-scheme);
+    --canvas: var(--_field-canvas);
+    --surface: var(--_field-surface);
+    --surface-muted: var(--_field-surface-muted);
+    --surface-strong: var(--_field-surface-strong);
+    --line: var(--_field-line);
+    --ink: var(--_field-ink);
+    --ink-soft: var(--_field-ink-soft);
+    --ink-muted: var(--_field-ink-muted);
+    --brand-solid: var(--_field-brand-solid);
+    --brand-soft: var(--_field-brand-soft);
+    --on-brand: var(--_field-on-brand);
+    --accent: var(--_field-accent);
+    --danger: var(--_field-danger);
+    --on-danger: var(--_field-on-danger);
+    --success: var(--_field-success);
+    --warning: var(--_field-warning);
+    --brand: var(--brand-solid);
+    --ui-on-danger: var(--on-danger);
+    --ui-font: system-ui, sans-serif;
+    /* BEGIN:generated-radii */
+    --ui-radius-sm: 0.65rem;
+    --ui-radius: 0.85rem;
+    --ui-radius-lg: 1.05rem;
+    /* END:generated-radii */
+  }
+}

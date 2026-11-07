@@ -115,3 +115,29 @@ test('viewer defers the request, retries a failure, and supports keyboard zoom a
   await page.keyboard.press('Escape')
   await expect(trigger).toBeFocused()
 })
+
+test('mobile contents completes focus after enhanced fragment navigation', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 })
+  await page.goto('/interactive/')
+  await page.evaluate(() => {
+    document.addEventListener('click', event => {
+      if (!(event.target instanceof Element)) return
+      const link = event.target.closest<HTMLAnchorElement>('.chapter-disclosure a[href^="#"]')
+      if (!link) return
+      // Model a router that owns fragment navigation after the recipe's click handler.
+      event.preventDefault()
+      history.replaceState(null, '', link.hash)
+    })
+  })
+  const disclosure = page.locator('.chapter-disclosure')
+  const summary = disclosure.locator('summary')
+  const chapter = disclosure.getByRole('link', { name: 'Settings reference' })
+
+  await summary.press('Enter')
+  await expect(summary).not.toHaveCSS('border-block-end-color', 'rgba(0, 0, 0, 0)')
+  await expect.poll(() => chapter.evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44)
+  await chapter.press('Enter')
+  await expect(disclosure).not.toHaveAttribute('open')
+  await expect(page.getByRole('heading', { name: 'Settings reference' })).toBeFocused()
+  await expect(page).toHaveURL(url => url.hash === chapterFragment)
+})

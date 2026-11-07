@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, useRef, useState } from 'react'
+import { type ComponentRef, type ReactElement, type ReactNode, useRef, useState } from 'react'
 import { PanResponder, View, type ViewProps } from 'react-native'
 
 import { type LumenKanbanCard, type LumenKanbanColumnData, LumenKanbanModel } from './kanban-recipes.js'
@@ -58,7 +58,7 @@ const updateColumn = (props: LumenKanbanColumnProps, cardId: string, position: n
   if (next) props.onColumnChange(next)
 }
 
-const register = (view: View | null, layout: ColumnLayout, id: string): void => {
+const register = (view: ComponentRef<typeof View> | null, layout: ColumnLayout, id: string): void => {
   if (!view) return
 
   const update = (): void => {
@@ -95,7 +95,7 @@ const ColumnCard = ({ props, card, index, layout }: {
   layout: ColumnLayout
 }): ReactElement => {
   const theme = useLumenTheme()
-  const ref = useRef<View>(null)
+  const ref = useRef<ComponentRef<typeof View>>(null)
   const [dragActive, setDragActive] = useState(false)
   const disabled = blockedColumn(props) || card.disabled === true
   const model = new LumenKanbanModel([props.column])
@@ -183,7 +183,7 @@ const columnFull = function (column: LumenKanbanColumnData): boolean {
 
 export const LumenKanbanColumn = (props: LumenKanbanColumnProps): ReactElement => {
   const theme = useLumenTheme()
-  const ref = useRef<View>(null)
+  const ref = useRef<ComponentRef<typeof View>>(null)
   const [layout] = useState<ColumnLayout>(() => ({ bounds: new Map(), measure: new Map() }))
   const model = new LumenKanbanModel([props.column])
   const status = columnStatus(props, model.valid)

@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
 
 import { validateLumen4Contract, validateLumen4ContractReferences } from "./check-lumen-4-contract.mjs";
+import { validateLumen5Contract } from "./generate-v5-migration.mjs";
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
 
@@ -100,6 +101,8 @@ if (major === 4) {
   assert.deepEqual(failures, [], `Lumen 4 contract validation failed:\n${failures.join("\n")}`);
 }
 
+if (major === 5) await validateLumen5Contract(contract, repository);
+
 assert.match(
   contract.approval?.reviewedRevision ?? "",
   /^[\da-f]{40}$/i,
@@ -182,8 +185,10 @@ const changedFiles = runGit(
   .filter(Boolean)
   .sort();
 
-const migrationMirrors = major === 4 ? [
-  { path: "packages/lumen/v4-migration.json", bundled: false },
+const migrationField = major === 5 ? "migrationV5" : "migration";
+
+const migrationMirrors = [4, 5].includes(major) ? [
+  { path: `packages/lumen/v${major}-migration.json`, bundled: false },
   { path: "packages/mcp/data/lumen-data.json", bundled: true },
 ] : [];
 
@@ -233,15 +238,15 @@ for (const mirror of migrationMirrors) {
   const reviewed = JSON.parse(runGit(["show", `${reviewedRevision}:${mirror.path}`], "Could not read reviewed migration mirror"));
   const candidate = JSON.parse(runGit(["show", `${candidateRevision}:${mirror.path}`], "Could not read candidate migration mirror"));
 
-  assert.deepEqual(mirror.bundled ? reviewed.migration : reviewed, reviewedContract,
+  assert.deepEqual(mirror.bundled ? reviewed[migrationField] : reviewed, reviewedContract,
     "Reviewed migration mirrors must match the reviewed contract");
 
-  assert.deepEqual(mirror.bundled ? candidate.migration : candidate, contract,
+  assert.deepEqual(mirror.bundled ? candidate[migrationField] : candidate, contract,
     "Candidate migration mirrors must match the approved contract");
 
   const neutral = structuredClone(candidate);
 
-  if (mirror.bundled) neutral.migration = approvalNeutralContract;
+  if (mirror.bundled) neutral[migrationField] = approvalNeutralContract;
   else {
     neutral.status = "draft";
 

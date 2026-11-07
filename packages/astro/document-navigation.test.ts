@@ -97,7 +97,7 @@ test('marks the final section current at the bottom of a scrollable page', () =>
   expect(last?.getAttribute('aria-current')).toBe('location')
 })
 
-test('isolates malformed fragments while enhancing valid links and scroll progress', () => {
+test('isolates malformed fragments while enhancing valid links and scroll progress', async () => {
   fixture(1000)
   const nav = document.querySelector('nav')
   if (!nav) throw new Error('Expected navigation fixture')
@@ -112,9 +112,49 @@ test('isolates malformed fragments while enhancing valid links and scroll progre
     initDocumentNavigationControllers(document)
   }).not.toThrow()
   nav.querySelector<HTMLAnchorElement>('[href="#100%"]')?.click()
+  await new Promise(resolve => setTimeout(resolve, 0))
   expect(nav.querySelector('[href="#100%"]')?.getAttribute('aria-current')).toBe('location')
   nav.querySelector<HTMLAnchorElement>('[href="#caf%C3%A9"]')?.click()
+  await new Promise(resolve => setTimeout(resolve, 0))
   expect(nav.querySelector('[href="#caf%C3%A9"]')?.getAttribute('aria-current')).toBe('location')
   for (const frame of frames) frame(0)
   expect(document.querySelector('[data-ui-scroll-progress]')?.getAttribute('aria-valuenow')).toBe('0')
+})
+
+test('Anchor focuses only uncanceled activation and leaves passive updates alone', async () => {
+  fixture(2400)
+  initDocumentNavigationControllers(document)
+  const link = document.querySelector<HTMLAnchorElement>('a[href="#last"]')
+  const target = document.getElementById('last')
+  if (!link || !target) throw new Error('Expected anchor fixture')
+  link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(document.activeElement).toBe(target)
+  target.blur()
+  const cancel = (event: Event) => {
+    event.preventDefault()
+  }
+  document.body.addEventListener('click', cancel, { once: true })
+  link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+  await new Promise(resolve => setTimeout(resolve, 0))
+  expect(document.activeElement).not.toBe(target)
+  window.dispatchEvent(new Event('scroll'))
+  expect(document.activeElement).not.toBe(target)
+})
+
+test('Astro leaves React and custom element Anchor ownership alone', () => {
+  document.body.innerHTML = '<nav data-ui-anchor data-ui-owner="react"><a href="#heading">React</a></nav><lumen-anchor data-ui-anchor><a href="#heading">Elements</a></lumen-anchor><h2 id="heading">Heading</h2>'
+  initDocumentNavigationControllers(document)
+  expect(document.querySelector('[data-ui-bound]')).toBeNull()
+})
+
+test('initializes scroll progress only inside its scope', () => {
+  const markup = '<div data-ui-scroll-progress><span class="ui-scroll-progress__bar"></span></div>'
+  document.body.innerHTML = markup + markup
+  const [first, second] = document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')
+  if (!first || !second) throw new Error('Missing progress controls')
+
+  initDocumentNavigationControllers(first)
+  expect(first.dataset.uiBound).toBe('true')
+  expect(second.dataset.uiBound).toBeUndefined()
 })

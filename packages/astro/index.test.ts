@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 
 import { lumenComponentNames } from '@santi020k/lumen-core'
 import { describe, expect, test } from 'vitest'
@@ -9,6 +9,21 @@ import { normalizeAstroActionErrors } from './forms.js'
 
 const packageRoot = new URL('.', import.meta.url)
 const sharedStylesUrl = new URL('../lumen/styles.css', packageRoot)
+
+// Existing source-contract checks follow the implementation across module boundaries.
+const runtimeSource = (async (): Promise<string> => {
+  const directory = new URL('./runtime/features/', packageRoot)
+  const features = (await readdir(directory)).filter(name => name.endsWith('.ts')).sort()
+  const files = [
+    new URL('./runtime/UIPrimitives.astro', packageRoot),
+    new URL('./runtime/features.ts', packageRoot),
+    new URL('./runtime/loader.ts', packageRoot),
+    ...features.map(name => new URL(name, directory))
+  ]
+
+  return (await Promise.all(files.map(file => readFile(file, 'utf8')))).join('\n')
+})()
+const readRuntimeSource = (): Promise<string> => runtimeSource
 
 describe('@santi020k/lumen-astro package surface', () => {
   test('ships one Astro component file per shared component name', async () => {
@@ -84,7 +99,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./components/DropdownMenuContent.astro', packageRoot), 'utf8'),
       readFile(new URL('./index.ts', packageRoot), 'utf8'),
       readFile(new URL('./components/DropdownMenuItem.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(new URL('./components/DropdownMenuSeparator.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/DropdownMenuTrigger.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
@@ -162,11 +177,11 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(packageJson.exports['./styles.css']).toBe('./styles/lumen.css')
 
     await expect(
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+      readRuntimeSource()
     ).resolves.toContain('<script>')
     await expect(
       readFile(new URL('./styles/lumen.css', packageRoot), 'utf8')
-    ).resolves.toContain('@import "@santi020k/lumen/styles.css"')
+    ).resolves.toContain('@import "@santi020k/lumen-core/styles.css"')
     await expect(readFile(sharedStylesUrl, 'utf8')).resolves.toContain(
       '.ui-button'
     )
@@ -223,7 +238,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./runtime/controllers/phone-input.ts', packageRoot), 'utf8'),
       readFile(new URL('./components/PhoneInput.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/PieChart.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+      readRuntimeSource()
     ])
 
     expect(pie).toContain('data: series.data.filter(datum => datum.y !== null')
@@ -246,7 +261,7 @@ describe('@santi020k/lumen-astro package surface', () => {
   test('loads dialog behavior only when an overlay contract is present', async () => {
     const [dialogController, runtime] = await Promise.all([
       readFile(new URL('./runtime/controllers/dialogs.ts', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+      readRuntimeSource()
     ])
 
     expect(runtime).toContain('import(\'./controllers/dialogs.js\')')
@@ -264,7 +279,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(
         new URL('./runtime/controllers/document-navigation.ts', packageRoot), 'utf8'
       ),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+      readRuntimeSource()
     ])
 
     expect(runtime).toContain('import(\'./controllers/document-navigation.js\')')
@@ -395,7 +410,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./components/Item.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Progress.astro', packageRoot), 'utf8'),
       readFile(new URL('./runtime/controllers/progress.ts', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+      readRuntimeSource()
     ])
 
     expect(copyButton).toContain('data-ui-copy-button')
@@ -650,7 +665,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       ),
       readFile(new URL('./runtime/controllers/motion.ts', packageRoot), 'utf8'),
       readFile(new URL('./components/RevealGroup.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(new URL('./components/ScrollReveal.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
     ])
@@ -713,7 +728,7 @@ describe('@santi020k/lumen-astro package surface', () => {
         new URL('./components/LanguageToggle.astro', packageRoot), 'utf8'
       ),
       readFile(new URL('./components/Particles.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(new URL('./components/ScrollReveal.astro', packageRoot), 'utf8'),
       readFile(sharedStylesUrl, 'utf8')
     ])
@@ -736,7 +751,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       'storedValue ?? control.dataset.uiLanguageInitialValue ?? documentValue'
     )
     expect(runtime).toContain(
-      'orientation === \'vertical\' ? [\'ArrowDown\'] : [getLumenDirectionalKey(tab, \'ArrowRight\')]'
+      'vertical ? [\'ArrowDown\'] : [getLumenDirectionalKey(tab, \'ArrowRight\')]'
     )
     expect(particles).toContain('<div')
     expect(particles).not.toContain('<lumen-particles')
@@ -775,14 +790,14 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(styles).toContain('.ui-sr-only')
     expect(styles).toContain('[data-theme$="-dark"]')
     expect(styles).toContain('[data-theme="lumen-light"]')
-    expect(styles).toContain('--brand: 201 96% 32%')
+    expect(styles).toContain('--brand: 193 79% 26%')
   })
 
   test('ships Select as a progressively enhanced listbox distinct from NativeSelect', async () => {
     const [select, nativeSelect, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Select.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/NativeSelect.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -807,7 +822,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(
         new URL('./components/PasswordField.astro', packageRoot), 'utf8'
       ),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+      readRuntimeSource()
     ])
 
     expect(passwordField).toContain('data-ui-password-toggle')
@@ -852,7 +867,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(
         new URL('../../apps/docs/src/examples/NativeSelect.astro', packageRoot), 'utf8'
       ),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+      readRuntimeSource()
     ])
 
     expect(avatar).toContain('Astro.slots.has(\'default\')')
@@ -886,7 +901,7 @@ describe('@santi020k/lumen-astro package surface', () => {
   test('ships Resizable as an enhanced split panel with accessible handles', async () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Resizable.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -909,7 +924,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./components/KanbanBoard.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/KanbanColumn.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Empty.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -922,13 +937,10 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain('cancelable: true')
     expect(runtime).toContain('input: \'keyboard\' | \'pointer\'')
 
-    const kanbanRuntime = runtime.slice(
-      runtime.indexOf('const initKanbanBoards'),
-      runtime.indexOf('const initTreeCollections')
-    )
+    const kanbanRuntime = await readFile(new URL('./runtime/features/kanban.ts', packageRoot), 'utf8')
 
     expect(kanbanRuntime.indexOf('handle.draggable = true')).toBeLessThan(
-      kanbanRuntime.indexOf('if (root.dataset.uiKanbanBound === \'true\') continue')
+      kanbanRuntime.indexOf('if (root.dataset.uiKanbanBound === \'true\') return')
     )
     expect(kanbanRuntime).toContain(
       'column?.closest<HTMLElement>(\'[data-ui-kanban]\') === root'
@@ -940,7 +952,7 @@ describe('@santi020k/lumen-astro package surface', () => {
   test('ships InputOTP as a native input enhanced into segments', async () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/InputOTP.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -964,7 +976,7 @@ describe('@santi020k/lumen-astro package surface', () => {
   test('ships Calendar as a form-backed ARIA grid with runtime month navigation', async () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Calendar.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -988,7 +1000,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(runtime).toContain(
       'input.dispatchEvent(new Event(\'change\', { bubbles: true }))'
     )
-    expect(runtime).toContain('event.key !== \'PageDown\'')
+    expect(runtime).toContain('\'PageDown\', \'PageUp\'].includes(event.key)')
     expect(runtime).toContain('new Intl.DateTimeFormat(locale')
     expect(styles).toContain('.ui-calendar__nav')
     expect(styles).toContain('.ui-calendar td[aria-selected="true"]')
@@ -997,7 +1009,7 @@ describe('@santi020k/lumen-astro package surface', () => {
   test('enhances DatePicker into a custom Calendar disclosure', async () => {
     const [component, runtime, styles] = await Promise.all([
       readFile(new URL('./components/DatePicker.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -1023,7 +1035,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(
         new URL('./components/DateRangePicker.astro', packageRoot), 'utf8'
       ),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -1042,7 +1054,7 @@ describe('@santi020k/lumen-astro package surface', () => {
   test('ships DataTable as a static table enhanced with sorting and selection', async () => {
     const [component, runtime, styles, sorting] = await Promise.all([
       readFile(new URL('./components/DataTable.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8'),
       readFile(new URL('./runtime/controllers/data-table.ts', packageRoot), 'utf8')
     ])
@@ -1073,7 +1085,7 @@ describe('@santi020k/lumen-astro package surface', () => {
       readFile(new URL('./components/AspectRatio.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Avatar.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/Field.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+      readRuntimeSource()
     ])
 
     expect(aspectRatio).toContain('ratio?: number | string')
@@ -1089,7 +1101,7 @@ describe('@santi020k/lumen-astro package surface', () => {
 
   test('enhances native form validation through Field error slots', async () => {
     const [runtime, styles] = await Promise.all([
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -1113,7 +1125,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     const [toast, toastViewport, runtime, styles] = await Promise.all([
       readFile(new URL('./components/Toast.astro', packageRoot), 'utf8'),
       readFile(new URL('./components/ToastViewport.astro', packageRoot), 'utf8'),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8'),
+      readRuntimeSource(),
       readFile(sharedStylesUrl, 'utf8')
     ])
 
@@ -1122,7 +1134,7 @@ describe('@santi020k/lumen-astro package surface', () => {
     expect(toastViewport).toContain('placement?:')
     expect(toastViewport).toContain('maxCount?: number')
     expect(toastViewport).toContain('data-ui-toast-viewport')
-    expect(runtime).toContain('type ToastApi =')
+    expect(runtime).toContain('interface ToastApi')
     expect(runtime).toContain('create: createToast')
     expect(runtime).toContain('dismiss: dismissToastById')
     expect(runtime).toContain('update: updateToast')
@@ -1185,7 +1197,7 @@ describe('@santi020k/lumen-astro package surface', () => {
           '../../apps/docs/src/examples/glass/ThemeBuilder.astro', packageRoot
         ), 'utf8'
       ),
-      readFile(new URL('./runtime/UIPrimitives.astro', packageRoot), 'utf8')
+      readRuntimeSource()
     ])
 
     expect(example).toContain('data-ui-theme-target')

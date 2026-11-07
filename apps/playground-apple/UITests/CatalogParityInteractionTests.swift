@@ -158,6 +158,15 @@ final class CatalogParityInteractionTests: XCTestCase {
     }
 
     @MainActor
+    func testKanbanBoardCaptureMatchesDocumentation() {
+        let app = launch("Kanban board", dark: false)
+        let board = app.descendants(matching: .any).matching(identifier: "Project board").firstMatch
+        reveal(board, app: app)
+        capture(app, name: "kanban-board-light-ready")
+        app.terminate()
+    }
+
+    @MainActor
     func testKanbanColumnCaptureMatchesDocumentation() {
         let app = launch("Kanban column", dark: false)
         let column = app.staticTexts["To do"].firstMatch

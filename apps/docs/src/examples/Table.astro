@@ -2,15 +2,15 @@
 import { Table } from '@santi020k/lumen-astro'
 ---
 
-<Table>
+<Table aria-label="Package support" role="region" stickyFirstColumn tabindex="0">
   <table>
     <thead>
-      <tr><th>Package</th><th>Target</th><th>Status</th></tr>
+      <tr><th scope="col">Package</th><th scope="col">Target</th><th scope="col">Status</th></tr>
     </thead>
     <tbody>
-      <tr><td>@santi020k/lumen-astro</td><td>Astro</td><td>Stable</td></tr>
-      <tr><td>@santi020k/lumen-react</td><td>React</td><td>Stable</td></tr>
-      <tr><td>@santi020k/lumen-elements</td><td>Custom elements</td><td>Stable</td></tr>
+      <tr><th scope="row">@santi020k/lumen-astro</th><td>Astro</td><td>Stable</td></tr>
+      <tr><th scope="row">@santi020k/lumen-react</th><td>React</td><td>Stable</td></tr>
+      <tr><th scope="row">@santi020k/lumen-elements</th><td>Custom elements</td><td>Stable</td></tr>
     </tbody>
   </table>
 </Table>

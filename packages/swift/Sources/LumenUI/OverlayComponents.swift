@@ -99,6 +99,7 @@ public extension View {
 
 private struct LumenSheetModifier<SheetContent: View, Actions: View>: ViewModifier {
     @Binding var isPresented: Bool
+    @Environment(\.lumenScopedScheme) var scopedScheme
 
     let actions: Actions
     let description: LumenTextContent?
@@ -117,6 +118,11 @@ private struct LumenSheetModifier<SheetContent: View, Actions: View>: ViewModifi
                 sheetContent: sheetContent,
                 actions: actions
             )
+            .background {
+                if let scopedScheme {
+                    Color.clear.preferredColorScheme(scopedScheme)
+                }
+            }
             .interactiveDismissDisabled(!dismissible)
         }
     }

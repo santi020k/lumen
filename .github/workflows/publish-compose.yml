@@ -47,12 +47,16 @@ jobs:
             exit 1
           fi
 
+          if [[ "$GITHUB_REF" != "refs/tags/compose-v$LUMEN_COMPOSE_VERSION" ]]; then
+            echo "Run Compose publication from the immutable compose-v$LUMEN_COMPOSE_VERSION tag." >&2
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "The Compose release tag must point to a commit on main." >&2
+            exit 1
+          fi
+
           if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
-            tag_version="${GITHUB_REF_NAME#compose-v}"
-            if [[ "$tag_version" != "$LUMEN_COMPOSE_VERSION" ]]; then
-              echo "Tag version $tag_version does not match canonical Compose version $LUMEN_COMPOSE_VERSION." >&2
-              exit 1
-            fi
             PUBLISHING_TYPE="AUTOMATIC"
           else
             PUBLISHING_TYPE="$REQUESTED_PUBLISHING_TYPE"
@@ -68,10 +72,15 @@ jobs:
           --candidate-ref "$GITHUB_SHA"
 
       - name: Verify approved release candidate
-        run: >-
-          node scripts/check-approved-release-revision.mjs
-          --version "$LUMEN_COMPOSE_VERSION"
-          --candidate-ref "$GITHUB_SHA"
+        run: |
+          node scripts/check-approved-release-revision.mjs \
+            --version "$LUMEN_COMPOSE_VERSION" --candidate-ref "$GITHUB_SHA"
+          umbrella_version="$(node -p "require('./packages/lumen/package.json').version")"
+          if [[ "$umbrella_version" == "5.0.0" ]]; then
+            test "$(git rev-parse 'refs/tags/v5.0.0^{commit}')" = "$GITHUB_SHA"
+            node scripts/check-approved-release-revision.mjs \
+              --require-current-approval --candidate-ref "$GITHUB_SHA"
+          fi
 
       - name: Verify graduated Lumen 2 release
         run: node scripts/check-graduated-release-revision.mjs
@@ -107,7 +116,7 @@ jobs:
           done
 
       - name: Setup Java
-        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: temurin
           java-version: 21

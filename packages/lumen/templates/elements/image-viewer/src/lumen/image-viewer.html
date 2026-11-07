@@ -1,0 +1,18 @@
+<!-- Import image-viewer.ts and foundation.css once. Supply your image, caption, labels, and unique IDs. -->
+<lumen-recipe-elements-image-viewer data-loading="Loading image…" data-failure="The image could not be loaded.">
+  <lumen-link class="image-viewer-fallback"><a href="/illustration.svg">View larger image</a></lumen-link>
+  <lumen-button class="image-viewer-trigger" data-ui-dialog-trigger="image-viewer-owner" aria-controls="image-viewer-dialog" aria-haspopup="dialog" hidden>View larger image</lumen-button>
+  <lumen-dialog id="image-viewer-owner" data-native-dialog>
+    <dialog id="image-viewer-dialog" class="portable-dialog image-viewer-dialog" aria-labelledby="image-viewer-title">
+      <lumen-dialog-header class="image-viewer-header"><lumen-dialog-title><h2 id="image-viewer-title">Illustration</h2></lumen-dialog-title><lumen-button data-ui-dialog-close>Close</lumen-button></lumen-dialog-header>
+      <lumen-dialog-body>
+        <p data-image-status role="status"></p>
+        <lumen-button data-image-retry hidden>Retry</lumen-button>
+        <div data-image-viewport hidden><lumen-media-viewport label="Inspect illustration" ratio="1.5"><div data-image-mount></div></lumen-media-viewport></div>
+        <p>The consumer supplies this caption.</p>
+        <lumen-link><a href="/illustration.svg">Open original image</a></lumen-link>
+      </lumen-dialog-body>
+    </dialog>
+  </lumen-dialog>
+  <template data-image-template><img src="/illustration.svg" width="960" height="640" alt="An illustration of the workflow"></template>
+</lumen-recipe-elements-image-viewer>

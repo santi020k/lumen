@@ -117,26 +117,14 @@ describe('component docs snippets', () => {
   })
 
   test('link documented Figma components to their exact design nodes', () => {
-    const linkedComponents = componentDocs.filter(component => component.figmaNodeId)
-
-    expect(linkedComponents.length).toBeGreaterThan(90)
     expect(getFigmaComponentUrl()).toBe(figmaLibraryUrl)
+    expect(new Set(componentDocs.map(component => component.name))).toEqual(new Set(lumenComponentNames))
+    expect(new Set(componentDocs.map(component => component.figmaNodeId)).size).toBe(lumenComponentNames.length)
 
-    for (const component of linkedComponents) {
-      const nodeId = component.figmaNodeId
-
-      expect(nodeId).toBeDefined()
-
-      if (!nodeId) throw new Error(`${component.name} is missing its Figma node ID`)
-
-      expect(getFigmaComponentUrl(component.figmaNodeId))
-        .toBe(`${figmaLibraryUrl}?node-id=${nodeId.replace(':', '-')}`)
-    }
-
-    for (const component of componentDocs) {
-      expect(
-        component.figmaNodeId ? component.figmaStatus : 'behavior-only', `${component.name} needs a linked Figma node or an explicit behavior-only status`
-      ).toBe(component.figmaStatus)
+    for (const { figmaNodeId } of componentDocs) {
+      expect(figmaNodeId).toMatch(/^\d+:\d+$/)
+      expect(getFigmaComponentUrl(figmaNodeId))
+        .toBe(`${figmaLibraryUrl}?node-id=${figmaNodeId.replace(':', '-')}`)
     }
   })
 
@@ -302,21 +290,24 @@ import { Button, Dialog } from '@santi020k/lumen-astro'
     expect(astroSnippet).not.toContain('UIPrimitives')
   })
 
-  test('documents the stylesheet as a one-time global setup', () => {
-    expect(globalStyleSetups.map(setup => setup.label)).toEqual(['Astro + Tailwind', 'Astro layout', 'App entry'])
+  test('documents automatic Astro CSS, selective styles and the full CSS alternative', () => {
+    expect(globalStyleSetups.map(setup => setup.label)).toEqual(['Astro + Tailwind', 'Selective component CSS', 'Full CSS alternative'])
     const styleSetupCode = globalStyleSetups.map(setup => setup.code).join('\n')
 
-    expect(styleSetupCode).toContain('@santi020k/lumen-astro/styles.css')
+    expect(styleSetupCode).toContain('@santi020k/lumen-react/styles/foundation.css')
+    expect(styleSetupCode).toContain('@santi020k/lumen-react/styles/components/button.css')
+    expect(globalStyleSetups[0]?.code).not.toContain('/styles.css')
     expect(styleSetupCode).toContain('@santi020k/lumen-react/styles.css')
   })
 
   test('documents built-in and example theme setup', () => {
     const themeExamples = themeSetups.map(setup => `${setup.description}\n${setup.code}`).join('\n')
 
-    expect(themeSetups.map(setup => setup.label)).toEqual(['Default themes', 'Runtime switch', 'Custom theme'])
+    expect(themeSetups.map(setup => setup.label)).toEqual(['Default themes', 'Runtime switch', 'santi020k website theme'])
     expect(themeExamples).toContain('data-theme')
     expect(themeExamples).toContain('light')
     expect(themeExamples).toContain('dark')
+    expect(themeExamples).toContain('styles/themes/santi020k.css')
     expect(themeExamples).toContain('santi020k-light')
     expect(themeExamples).toContain('santi020k-dark')
   })

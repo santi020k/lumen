@@ -2,6 +2,8 @@ import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { namedThemeOutputs } from './lib/named-themes.mjs'
+import { syncSanti020kSiteColors } from './lib/santi020k-site-colors.mjs'
 import { generateSpacingCss, parseSpacingTokens } from './lib/spacing-tokens.mjs'
 import { generatePresetCss, generatePresetKotlin, generatePresetSwift, generatePresetTypeScript, readThemePresets } from './lib/theme-presets.mjs'
 
@@ -706,11 +708,12 @@ const main = async () => {
     : spacedStyles.slice(0, presetStart) + presetCss + spacedStyles.slice(presetEnd + presetEndMarker.length)
 
   const outputs = [
+    ...await namedThemeOutputs(presetSource, repoRoot),
     ['packages/core/src/theme-presets.generated.ts', generatePresetTypeScript(presets)],
-    ['packages/react-native/src/theme-presets.generated.ts', generatePresetTypeScript(presets)],
+    ['packages/react-native/src/theme-presets.generated.ts', generatePresetTypeScript(presets, { native: true })],
     ['packages/swift/Sources/LumenUI/ThemePresets.generated.swift', generatePresetSwift(presetSource, presets)],
     ['packages/compose/src/main/kotlin/com/santi020k/lumen/ThemePresets.generated.kt', generatePresetKotlin(presetSource, presets)],
-    ['packages/lumen/styles.css', presetStyles],
+    ['packages/lumen/styles.css', await syncSanti020kSiteColors(presetStyles)],
     ['packages/tokens/lumen.tokens.json', canonicalSource],
     ['packages/core/src/foundations.generated.ts', generateTypeScript(tokens)],
     ['packages/react-native/src/tokens.generated.ts', generateTypeScript(tokens)],

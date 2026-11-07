@@ -61,7 +61,8 @@ describe('docs search ranking', () => {
   test.each([
     ['migration v1 v2', '/docs/migrations/v1-to-v2'],
     ['migration v2 v3', '/docs/migrations/v2-to-v3'],
-    ['migration v3 v4', '/docs/migrations/v3-to-v4']
+    ['migration v3 v4', '/docs/migrations/v3-to-v4'],
+    ['migration v4 v5', '/docs/migrations/v4-to-v5']
   ])('finds the upgrade guide for %s', (query, href) => {
     expect(getMatchedSearchItems(docsSearchIndex, query).some(result => result.href === href)).toBe(true)
   })

@@ -45,7 +45,7 @@ const readPublishedPackages = (source) => {
   }).sort((left, right) => left.name.localeCompare(right.name));
 };
 
-if (!["2.0.0", "3.0.0", "4.0.0"].includes(version)) {
+if (!["2.0.0", "3.0.0", "4.0.0", "5.0.0"].includes(version)) {
   if (auditPackagesMode) {
     process.stdout.write(`${JSON.stringify(readPublishedPackages(publishedPackagesSource || "[]"))}\n`);
 
@@ -72,7 +72,7 @@ assert.equal(
   "The release manifest version must match the published Lumen version",
 );
 
-const expectedPackages = Object.entries(
+let expectedPackages = Object.entries(
   releaseManifest.release?.npm?.packages ?? {},
 )
   .map(([name, metadata]) => ({ name, version: metadata.version }))
@@ -83,12 +83,39 @@ assert.ok(
   "The release manifest must list the coordinated npm package family",
 );
 
-for (const entry of expectedPackages) {
-  assert.equal(
-    entry.version,
-    version,
-    `${entry.name} must be coordinated at ${version} in the release manifest`,
-  );
+if (version === "5.0.0") {
+  const contract = JSON.parse(await readFile(resolve(
+    repositoryRoot, readArgument("--contract") ?? "registry/lumen-5-contract.json",
+  ), "utf8"));
+
+  assert.equal(contract.targetVersion, version, "The publication contract must match the release version");
+
+  assert.ok(contract.npmPublicationVersions && typeof contract.npmPublicationVersions === "object" &&
+    !Array.isArray(contract.npmPublicationVersions), "The v5 contract must define its publication set");
+
+  expectedPackages = Object.entries(contract.npmPublicationVersions)
+    .map(([name, packageVersion]) => ({ name, version: packageVersion }))
+    .sort((left, right) => left.name.localeCompare(right.name));
+
+  assert.ok(expectedPackages.length > 0, "The v5 publication set must not be empty");
+
+  assert.equal(contract.npmPublicationVersions["@santi020k/lumen"], version,
+    "The v5 publication set must include the umbrella release");
+
+  for (const entry of expectedPackages) {
+    assert.match(entry.version, /^\d+\.\d+\.\d+$/u, `${entry.name} requires an exact stable publication version`);
+
+    assert.equal(releaseManifest.release.npm.packages[entry.name]?.version, entry.version,
+      `${entry.name} must match the reviewed v5 publication version in the release manifest`);
+  }
+} else {
+  for (const entry of expectedPackages) {
+    assert.equal(
+      entry.version,
+      version,
+      `${entry.name} must be coordinated at ${version} in the release manifest`,
+    );
+  }
 }
 
 if (auditPackagesMode) {

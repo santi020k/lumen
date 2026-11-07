@@ -1,6 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
+import '../styles/foundation.css'
+import '../styles/components/theme-toggle.css'
+
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 import Icon from './Icon.astro'
@@ -45,11 +48,13 @@ const { classList, passthrough } = resolveLumenAstroProps(rest, [
   <Icon
     aria-hidden="true"
     class="ui-theme-toggle__sun"
+    data-slot="theme-toggle-sun"
     name="sun"
   />
   <Icon
     aria-hidden="true"
     class="ui-theme-toggle__moon"
+    data-slot="theme-toggle-moon"
     name="moon"
   />
 </button>

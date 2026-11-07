@@ -12,6 +12,24 @@ The exported `lumenStylingContracts` record in `@santi020k/lumen-core` is author
 listed hook has `stability: "stable"` and is shared by Astro, React, and Elements. `lumen doctor`
 uses the same record when it audits consumer CSS.
 
+## Frame borders and corners
+
+Assign an outer border and corner clipping to one frame. AspectRatio, CoverImage, DeviceFrame,
+ImageComparison, MediaViewport, and the media part of MediaThumbnail flatten their media's inner
+corners. This includes optimized `picture` content and public Image children, regardless of the
+order selective component styles load. Set the outer frame's geometry rather than adding another
+rounded border to flush media. Standalone Image still owns its `radius` prop. Image wrappers
+pass their radius and fit to a native `img` child. AspectRatio fills optimized picture content
+without replacing an Image child’s explicit fit mode.
+
+Card keeps overflow visible for focus rings and overlays. Put clipped media inside a dedicated
+frame; do not clip an entire interactive Card. Keep padded, independently bordered surfaces inset.
+
+Prose preserves the borders, spacing, captions, and media corners of Lumen figure components.
+Editorial figure framing applies to authored article figures. Use `Image radius="none"` inside
+those native figures so the article frame owns the shared image/caption edge. Prose's native-link
+focus treatment does not replace public Link or ButtonLink geometry.
+
 ## Foundational variables
 
 | Component | Stable custom properties |
@@ -25,7 +43,7 @@ uses the same record when it audits consumer CSS.
 | Sidebar | `--ui-sidebar-gap`, `--ui-sidebar-padding`, `--ui-sidebar-width` |
 | Stat | `--ui-stat-gap`, `--ui-stat-padding` |
 | Table | `--ui-table-cell-padding` |
-| ThemeToggle | `--ui-theme-toggle-size` |
+| ThemeToggle | `--ui-theme-toggle-size`, `--ui-theme-toggle-icon-size` |
 
 `CopyButton` exposes stable `copy-idle`, `copy-copied`, and `copy-error` parts
 for visible state presentation. `Code` also exposes its documented color variables, including `--ui-code-bg`, `--ui-code-border`,
@@ -39,6 +57,17 @@ The foundational roots use `data-slot="button"`, `button-link`, `card`, `code`, 
 Card additionally exposes `card-header`, `card-title`, `card-description`, `card-content`, and
 `card-footer`. ContextNavigation exposes `context-navigation-context`. Stat exposes `stat-label`,
 `stat-value`, `stat-description`, `stat-icon`, and `stat-trend`.
+
+Timeline exposes `timeline`, `timeline-item`, `timeline-item-tail`, `timeline-item-dot`, and
+`timeline-item-content`. Astro and React expose item parts through `TimelineItem`; Elements decorates
+native `li` children of `lumen-timeline`, preserving their DOM nodes and an optional `slot="dot"`
+child. `defineLumenTimeline` from `@santi020k/lumen-elements/components/timeline` registers the
+same constructor as full registration. Import `styles/components/timeline.css` with the foundation.
+
+ThemeToggle's default icons expose `theme-toggle-sun` and `theme-toggle-moon`; Elements retains
+consumer-supplied content and supplies the icon pair when empty. WorldMap exposes `world-map`,
+`world-map-frame`, and `world-map-zoom-controls` (when zoom controls are enabled). These hooks let
+consumers adjust presentation without replacing interaction markup or targeting private classes.
 
 ```css
 [data-slot="card"] {

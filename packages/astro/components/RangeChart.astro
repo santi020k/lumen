@@ -1,6 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
+import '../styles/foundation.css'
+import '../styles/components/range-chart.css'
+
 import { createLumenRangeDatumActivation, createLumenRangeGeometry, getLumenChartCategoryTicks, getLumenChartTicks, getLumenChartToneClassName, type LumenChartLabels, type LumenChartTone, type LumenRangeDatum, resolveLumenChartLabels, scaleLumenChartValue } from '@santi020k/lumen-core'
 
 import { createChartDatumAction } from '../runtime/chart-actions'

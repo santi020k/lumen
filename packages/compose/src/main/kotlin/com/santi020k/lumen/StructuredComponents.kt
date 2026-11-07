@@ -114,6 +114,12 @@ internal fun lumenStatusBarIconName(tone: LumenMetricTone): LumenIconName = when
     LumenMetricTone.Warning -> LumenIconName.TriangleAlert
 }
 
+@Composable
+internal fun LumenBannerVariant.textColor(accent: Color): Color = when (this) {
+    LumenBannerVariant.Destructive, LumenBannerVariant.Success, LumenBannerVariant.Warning -> lumenStatusTextColor(accent)
+    else -> accent
+}
+
 fun lumenBannerPalette(
     colors: LumenColorPalette,
     variant: LumenBannerVariant
@@ -360,7 +366,7 @@ fun LumenBanner(
                         }
                         actions?.invoke()
                         if (onDismiss != null) {
-                            TextButton(onClick = onDismiss) { Text(dismissLabel, color = palette.accent) }
+                            TextButton(onClick = onDismiss) { Text(dismissLabel, color = variant.textColor(palette.accent)) }
                         }
                     }
                 } else {
@@ -372,7 +378,7 @@ fun LumenBanner(
                         Box(modifier = Modifier.weight(1f)) { message() }
                         actions?.invoke()
                         if (onDismiss != null) {
-                            TextButton(onClick = onDismiss) { Text(dismissLabel, color = palette.accent) }
+                            TextButton(onClick = onDismiss) { Text(dismissLabel, color = variant.textColor(palette.accent)) }
                         }
                     }
                 }

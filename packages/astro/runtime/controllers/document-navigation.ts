@@ -1,33 +1,15 @@
-import { decodeLumenAnchorFragment, getLumenActiveAnchorIndex } from '@santi020k/lumen-core'
+import { activateLumenAnchor, decodeLumenAnchorFragment, getLumenActiveAnchorIndex, getLumenScrollProgress } from '@santi020k/lumen-core'
+
+import { queryScope } from '../scope.js'
 
 const anchors = new WeakMap<HTMLElement, () => void>()
 let observer: ResizeObserver | undefined
-const bars = () => document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')
-const getTarget = (root: HTMLElement) => document.getElementById(root.dataset.uiScrollProgressTarget ?? '')
-const clamp = (ratio: number) => Math.min(1, Math.max(0, ratio))
+const bars = () => document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress][data-ui-bound="true"]')
+const getTarget = (root: HTMLElement) => root.ownerDocument.getElementById(root.dataset.uiScrollProgressTarget ?? '')
 
-const readProgress = (scroller: Element, target: HTMLElement | null): number => {
-  const height = scroller.clientHeight
-
-  if (!target) return clamp(scroller.scrollTop / Math.max(1, scroller.scrollHeight - height))
-
-  const rect = target.getBoundingClientRect()
-
-  if (!rect.height) return 0
-
-  if (rect.bottom <= height) return 1
-
-  const padding = getComputedStyle(scroller).scrollPaddingTop
-  let start = parseFloat(padding) || 0
-
-  if (padding.endsWith('%')) start *= height / 100
-
-  return clamp((start - rect.top) / Math.max(1, rect.height - height + start))
-}
-
-const updateProgress = (): void => {
+const updateProgress = (roots: Iterable<HTMLElement> = bars()): void => {
   const scroller = document.scrollingElement ?? document.documentElement
-  const progress = Array.from(bars(), root => [root, readProgress(scroller, getTarget(root))] as const)
+  const progress = Array.from(roots, root => [root, getLumenScrollProgress(scroller, getTarget(root))] as const)
 
   for (const [root, ratio] of progress) {
     const bar = root.querySelector<HTMLElement>('.ui-scroll-progress__bar')
@@ -69,10 +51,8 @@ const bindRefresh = (doc: Document) => {
 }
 
 const initAnchors = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-anchor]')) {
-    if (root.dataset.uiBound === 'true') continue
-
-    root.dataset.uiBound = 'true'
+  for (const root of queryScope(scope, '[data-ui-anchor]')) {
+    if (root.dataset.uiBound === 'true' || root.closest('[data-ui-owner], lumen-anchor')) continue
 
     const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
 
@@ -84,6 +64,8 @@ const initAnchors = (scope: ParentNode): void => {
     })
 
     if (!targets.length) continue
+
+    root.dataset.uiBound = 'true'
 
     const headings = targets.map(({ target }) => target)
 
@@ -105,8 +87,10 @@ const initAnchors = (scope: ParentNode): void => {
       if (active) setActive(active)
     }
 
-    for (const { link } of targets) link.addEventListener('click', () => {
-      setActive(link)
+    for (const { link } of targets) link.addEventListener('click', event => {
+      setTimeout(() => {
+        if (activateLumenAnchor(link, event)) setActive(link)
+      })
     })
 
     anchors.set(root, update)
@@ -117,12 +101,14 @@ const initAnchors = (scope: ParentNode): void => {
   }
 }
 
-const initScrollProgress = (): void => {
-  observer?.disconnect()
-
-  const roots = bars()
+const initScrollProgress = (scope: ParentNode): void => {
+  const roots = queryScope(scope, '[data-ui-scroll-progress]')
 
   if (!roots.length) return
+
+  updateProgress(roots)
+
+  observer?.disconnect()
 
   const refresh = bindRefresh(document)
 
@@ -131,7 +117,7 @@ const initScrollProgress = (): void => {
 
     observer.observe(document.body)
 
-    for (const root of roots) {
+    for (const root of bars()) {
       const target = getTarget(root)
 
       if (target) observer.observe(target)
@@ -144,5 +130,5 @@ const initScrollProgress = (): void => {
 export const initDocumentNavigationControllers = (scope: ParentNode): void => {
   initAnchors(scope)
 
-  initScrollProgress()
+  initScrollProgress(scope)
 }

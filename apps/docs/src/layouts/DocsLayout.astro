@@ -35,7 +35,7 @@ if (currentPath === '/changelog') navigationLabel = 'Changelog'
 
 ---
 
-<BaseLayout breadcrumbs={getDocsBreadcrumbs(currentPath, title, breadcrumbs)} description={description} title={title}>
+<BaseLayout skipTargetId="docs-main-content" breadcrumbs={getDocsBreadcrumbs(currentPath, title, breadcrumbs)} description={description} title={title}>
   <div class="docs-shell">
     <div class="docs-shell__wash" aria-hidden="true"></div>
     <aside
@@ -55,7 +55,7 @@ if (currentPath === '/changelog') navigationLabel = 'Changelog'
 
       <DocsNavigation currentPath={currentPath} platform={activePlatform} />
     </aside>
-    <main class="docs-content">
+    <main class="docs-content" id="docs-main-content" tabindex="-1">
       <div class="docs-mobile-navigation-bar" data-docs-page-bar>
         <div class="docs-mobile-navigation-bar__header">
           <span>{navigationLabel}</span>

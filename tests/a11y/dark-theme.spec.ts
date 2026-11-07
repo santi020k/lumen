@@ -46,6 +46,16 @@ const openDocsPage = async (page: Page, path: string, theme: DarkTheme) => {
 
       return label && getComputedStyle(label).color !== 'rgb(26, 17, 39)'
     })
+    // Descendant inherited-color transitions can finish after explicitly colored labels,
+    // even with the reduced-motion duration. Audit the settled preview without changing its colors.
+    await page.waitForFunction(() => {
+      const preview = document.querySelector('#theme-playground-preview')
+
+      return preview?.getAnimations({ subtree: true }).every(animation => (
+        animation.effect?.getComputedTiming().iterations === Infinity ||
+        (!animation.pending && animation.playState !== 'running')
+      ))
+    })
     await page.keyboard.press('Tab')
   }
 }

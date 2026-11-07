@@ -29,7 +29,7 @@ const readManifest = async root => {
   const manifest = JSON.parse(builtManifest.toString('utf8'))
 
   if (manifest.main !== 'code.js' || manifest.ui !== 'ui.html' || manifest.networkAccess?.allowedDomains?.join() !== 'none') {
-    throw new Error('The beta package must contain code.js, ui.html, and no network access.')
+    throw new Error('The plugin package must contain code.js, ui.html, and no network access.')
   }
 
   if (manifest.id !== undefined && (typeof manifest.id !== 'string' || !/^\d+$/u.test(manifest.id))) {

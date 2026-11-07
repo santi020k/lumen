@@ -1,5 +1,7 @@
 ---
 name: lumen-ui
+metadata:
+  guidance-version: "5.1.0"
 description: Build or restyle product interfaces with Lumen UI for Astro, React, Web Components, React Native, SwiftUI, or Jetpack Compose. Use for implementation requests using Lumen packages, components, or tokens, including accessible interfaces composed from Lumen primitives. Use lumen-review for requested audits and lumen-migrate for version upgrades.
 ---
 
@@ -46,8 +48,9 @@ Treat Astro as the reference surface, while following the user's existing stack.
    [Elements](references/elements.md), [React Native / Expo](references/react-native.md),
    [SwiftUI](references/swiftui.md), or [Compose](references/compose.md).
    Keep Tailwind optional, use public named imports, and retain state in the host application.
-6. Implement with Lumen components and platform-native semantics. Import a stylesheet once only for
-   web targets. Preserve the app's state, navigation, data, and domain logic.
+6. Implement with Lumen components and platform-native semantics. Follow the installed version's
+   style contract: v5 Astro imports component CSS automatically; React/Elements load the foundation
+   once and selected component CSS. Full styles.css remains supported. Preserve the app's state, navigation, data, and domain logic.
 7. Customize through Lumen tokens and public props. Read
    [references/design-system.md](references/design-system.md) when theming, polishing, or reviewing
    visual quality.
@@ -64,8 +67,11 @@ Treat Astro as the reference surface, while following the user's existing stack.
   focus, and mobile layout with the matching framework runtime enabled.
 - Prefer Astro only for a new project with no requested framework; do not migrate an existing app
   merely because Astro is the reference implementation.
-- Load the matching package stylesheet once at the app boundary for web targets; native adapters do
-  not use CSS.
+- Match CSS setup to the installed major version. For v5, prefer component CSS; keep full styles.css
+  for existing setup or deliberate catalog-wide use. Native adapters do not use CSS.
+- Install the optional @santi020k/lumen CLI separately as a development dependency in v5.
+- Use verified public granular exports where available. Catalog fallbacks may traverse more code;
+  measure built and requested assets before claiming that a route loads only its components.
 - Mount `UIPrimitives` once in an Astro root layout when interactive primitives are present.
 - Use React behavior hooks for behavior-heavy React primitives; do not mount the Astro runtime.
 - Register Lumen custom elements once before using `lumen-*` elements.

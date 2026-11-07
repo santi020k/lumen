@@ -72,32 +72,68 @@ its native meaning. See the [v4 migration guide](https://github.com/santi020k/lu
 
 ## Install
 
+Upgrading from v4? Follow the [v5 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v4-to-v5.md)
+for runtime changes and the [selective installation guide](https://github.com/santi020k/lumen/blob/main/docs/selective-installation.md)
+for optional component CSS, imports and editable recipes.
+
 Requires Astro 5 or newer in the consuming application.
 
 ```bash
 pnpm add @santi020k/lumen-astro
 ```
 
-The adapter also exposes Lumen's discovery and diagnostics CLI:
+The v5 adapter contains runtime code and styles. Install the optional CLI separately for discovery,
+editable recipes, and diagnostics:
 
 ```bash
+pnpm add -D @santi020k/lumen
 pnpm exec lumen show Tabs
 pnpm exec lumen doctor
 ```
 
-Import the CSS once in your root layout and mount `UIPrimitives` once in that same app shell if you
+Astro components import their own styles and shared foundations automatically in v5. Mount
+`UIPrimitives` once in the app shell if you
 use interactive components such as dialogs, menus, popovers, tabs, carousels, toggles, command
 lists, or toasts. Do not add `UIPrimitives` beside each component instance; one root include
 enhances all matching Lumen markup on the page.
+
+The runtime loads controllers only for features present in the page. Static components do not need
+it. The loader shares in-flight module requests, initializes controllers in dependency order, and
+cleans up navigation-sensitive controllers before an Astro page swap. Cold button clicks and
+navigation keys wait for the required feature; native inputs and links retain their browser fallback.
+
+Enhancement is asynchronous in v5. After inserting new markup, await
+`window.LumenInitUiPrimitives(container)` in browser code before reading enhanced state. A successful
+initialization also dispatches `ui:ready` on `document`, with the initialized `scope` in its detail.
+The scope includes a matching root and its descendants. It can be an element, document fragment,
+or shadow root, including detached content prepared before insertion. Scoped initialization leaves
+sibling controls for their own initialization. Repeated interactions initialize their owning
+feature root, including the containing form or code block for compound controls. Dialog triggers
+also initialize their referenced dialog before opening it.
+Compound control IDs resolve within their owning DOM tree, so shadow content does not select
+an unrelated document element with the same ID. Initialized shadow popovers retain outside-click
+dismissal. Document navigation and Anchor links retain native document-fragment URL semantics.
+A failed module does not prevent other available controllers from initializing. The returned promise
+rejects with an `AggregateError`; automatic initialization reports `ui:runtime-error` and a browser
+error. Keep native fallbacks and provide a reload path for unavailable deployment assets.
+
+`window.LumenToast` remains available when no toast markup exists. Its first operation loads the toast
+controller; `create` returns a stable ID immediately, and rendering follows asynchronously. Mount a
+`ToastViewport` and await initialization if an application needs the controller ready in advance.
+
+
+The selective foundation ships Lumen light and dark. Add only the appearances you use from your adapter: `styles/themes/paper.css`, `styles/themes/field.css`, `styles/themes/studio.css`, `styles/themes/santi020k.css`, or `styles/effects/glass.css`. Full `styles.css` includes every appearance.
+
+The full stylesheet remains available for legacy setup or application-generated markup:
 
 ```css
 @import "@santi020k/lumen-astro/styles.css";
 ```
 
 Applications using the essential forms, feedback, tabs, dialogs, calendar, and data-table surface
-can instead load `@santi020k/lumen-astro/styles/critical.css`. The generated entry is about 50 KiB
-raw versus 170 KiB for the complete catalog; switch to `styles.css` when using components outside
-that documented critical set.
+can instead load `@santi020k/lumen-astro/styles/critical.css`. The generated entry includes shared foundations and the documented critical components;
+switch to `styles.css` when using components outside that set. Measure the built route rather than
+assuming source stylesheet size equals transferred bytes.
 
 The stylesheet defaults `--ui-font` to `"Montserrat", "Avenir Next", "Segoe UI", sans-serif`.
 It declares the family stack but does not bundle or load font files. Load Montserrat once through
@@ -158,7 +194,15 @@ contains `PhoneInput`; pages without the component do not evaluate or download t
 <PhoneInput countryValue="CO" locale="en-US" name="hospitalPhone" />
 ```
 
+## Public styling parts
+
+Use the [shared styling contract](https://github.com/santi020k/lumen/blob/main/docs/styling-contract.md)
+for Timeline item tail/dot/content, ThemeToggle sun/moon icons, and WorldMap frame/zoom controls.
+ThemeToggle supports `--ui-theme-toggle-icon-size` independently of its control size.
+
 ## Appearance presets
+
+Import `@santi020k/lumen-astro/styles/themes/santi020k.css` once and set `data-theme="santi020k-light"` or `data-theme="santi020k-dark"` on `html` for the website appearance. Card, Eyebrow and ButtonLink then use the shared editorial styling.
 
 Set `data-lumen-preset="studio"` and an optional `data-lumen-scheme="light|dark"` on the application root. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for Default, Studio, Glass and scoped customization.
 
@@ -330,6 +374,11 @@ Its current link stays synchronized on click and scroll, including at the end of
 The activation line uses the greater of `activationOffset` and the root `scroll-padding-top` plus
 each heading's `scroll-margin-top`, with a one CSS pixel rounding tolerance. Styles are read live so
 text resizing and responsive headers keep native fragment links and the current section aligned.
+Activating an ordinary local link moves focus to its destination while preserving native hash
+scrolling and history. A heading receives temporary `tabindex="-1"`, removed on blur; authored
+tab order is preserved. Canceled clicks, modifier keys, downloads, and other browsing targets
+keep their normal behavior. Passive scrolling only updates the current link and never moves focus.
+
 `ScrollProgress` derives reading progress from the document and pins the indicator to the top or
 bottom viewport edge. Both use the single root `UIPrimitives` runtime.
 
@@ -375,6 +424,9 @@ non-code content `Code` semantics.
   <span slot="error">Copy failed</span>
 </CopyButton>
 ```
+
+Manual recovery renders beside the trigger in DOM order. Use a vertical Lumen `Stack` with
+`align="start"` for separate copy actions so a recovery field does not stretch neighboring buttons.
 
 `CopyButton` accepts the same presentation `variant` and `size` vocabulary as `Button`. Its stable
 `copy-idle`, `copy-copied`, and `copy-error` slots keep visible feedback in
@@ -588,7 +640,10 @@ See [consumer workflows](https://github.com/santi020k/lumen/blob/main/docs/consu
 success/error feedback; `codeLabel` names the keyboard-focusable region for an
 unwrapped code block. A denied or unavailable clipboard reports the error label
 and keeps the source available for manual selection. `CodeTabs` forwards these
-labels to each code example.
+labels to each code example. Set `recoveryLabel="Select and copy the complete source"`
+to show a labelled read-only field after clipboard failure. It contains the complete source,
+selects on focus, and stays available after button feedback clears. Successful copying or
+changing tabs removes it. Recovery never takes focus automatically.
 
 `Code` with `highlighted` enhances the supplied `pre` when the Astro runtime loads.
 For keyboard scrolling before JavaScript loads, give that `pre` `tabindex="0"`,
@@ -890,3 +945,53 @@ Licensed under [MIT](https://github.com/santi020k/lumen/blob/main/LICENSE); thir
 - Set `fallbackFormat="webp"` on `CoverImage` to generate an AVIF source with a WebP fallback. Omit the prop to keep the default picture formats.
 
 Mount `UIPrimitives` once to enable the reading and clipboard controls.
+
+## Reveal visibility safety
+
+`ScrollReveal` and `RevealGroup` preserve explicit thresholds (clamped to 0–1; the default is 0.15).
+An intersecting element waits until that ratio is reached. If its size or a clipping ancestor makes
+the threshold unreachable, it stays visible without animation. Resizing and enlarged text are
+rechecked. Keyboard focus within a reveal and reduced motion bypass decorative hiding immediately.
+Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.
+
+## Editorial code blocks
+
+Use `appearance="editorial"` on a block `Code` (or `<lumen-code>`) for a theme-aware
+code icon, wrapping header metadata, and visible copy feedback. The default appearance retains
+the window dots and icon-only copy control. Both appearances provide stable 44px copy targets.
+Existing copy labels also supply the visible editorial feedback, so localize them together:
+`copyLabel`, `copiedLabel`, and `errorLabel` in Astro/React; `copy-label`, `copied-label`, and
+`error-label` in Elements. Set a descriptive `codeLabel` (`code-label` in Elements) for each
+keyboard-scrollable example. Astro also supports `scrollCue` for an overflow-only reading hint.
+
+The docs compose public `Code` and `Collapsible` primitives to preview the first 12 lines of
+examples longer than 24 lines. Folding is application policy; clipboard content always remains
+the complete source. Pass the original `code` when supplying highlighted or preview content.
+
+## Anchored table row labels
+
+Set `stickyFirstColumn` on `Table` in Astro/React or `sticky-first-column="true"` on
+`<lumen-table>` to keep the first cell of each row visible during horizontal scrolling.
+Use `th scope="row"` for row identifiers and label the scroll region with `aria-label` or
+`aria-labelledby`, `role="region"`, and `tabindex="0"` (`tabIndex` in React). Astro's
+`scrollCue` option supplies the keyboard region and an overflow-only hint automatically.
+
+The first column follows writing direction, including RTL. It returns to normal flow in
+containers narrower than 12rem, in records layouts, and when printing, so enlarged text and
+printed data retain the available width. Keep column widths suitable for the content; avoid
+pinning an unusually wide description column.
+
+## Editorial prose
+
+Use `appearance="editorial"` on `Prose` (or `<lumen-prose>`) for long-form reading with
+clear section rhythm, attributed blockquotes, and connected native figure captions. The default
+appearance remains unchanged. The editorial surface keeps ordinary paragraphs and lists at a
+readable measure while media and technical blocks can use the available width. Override
+`--ui-prose-measure` on the root to set that measure (the default is `65ch`).
+
+Supply semantic HTML: keep heading IDs and inline formatting; place quoted paragraphs and an
+optional `footer`/`cite` inside `blockquote`; keep media and its `figcaption` together inside
+`figure`. Write image alternatives separately from captions and use the framework's public Image
+or optimized native image integration. Component-owned figures, including Code and charts,
+retain their own styling. Prose styles content; the application owns parsing, sanitization,
+heading IDs, captions, citations, and localization.

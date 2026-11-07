@@ -1,0 +1,13 @@
+---
+import { ButtonLink } from '@santi020k/lumen-astro'
+
+import { figmaCommunityFiles } from '../data/community'
+
+interface Props {
+  file: 'playgrounds' | 'templates'
+}
+
+const { file } = Astro.props
+---
+
+<ButtonLink href={figmaCommunityFiles[file]} newTab showArrow variant="secondary">Open in Figma</ButtonLink>

@@ -1,5 +1,50 @@
 import { expect, test } from '@playwright/test'
 
+for (const direction of ['ltr', 'rtl']) {
+  test(`docs overview reflows at 320px with 200% text in ${direction}`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 900 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await page.goto('/docs')
+    await page.evaluate(value => {
+      document.documentElement.dir = value
+      document.documentElement.style.fontSize = '200%'
+    }, direction)
+    await page.evaluate(() => document.fonts.ready)
+
+    const hero = page.locator('.docs-page-hero')
+    const heading = hero.getByRole('heading', { level: 1 })
+    const summary = page.locator('[data-docs-page-navigation] summary')
+    const browse = page.getByRole('button', { name: 'Browse all documentation' })
+
+    for (const text of [heading, hero.getByText('Lumen documentation', { exact: true }), summary, page.locator('#foundations-title')]) {
+      expect(await text.evaluate(element => {
+        const bounds = element.getBoundingClientRect()
+        const range = document.createRange()
+
+        range.selectNodeContents(element)
+
+        return bounds.left >= 0 && bounds.right <= innerWidth &&
+          Array.from(range.getClientRects()).every(rect => rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1)
+      })).toBe(true)
+    }
+
+    const summaryBounds = await summary.boundingBox()
+    const browseBounds = await browse.boundingBox()
+
+    if (!summaryBounds || !browseBounds) throw new Error('Missing docs navigation controls')
+
+    expect(summaryBounds.y + summaryBounds.height).toBeLessThanOrEqual(browseBounds.y)
+
+    await summary.press('Enter')
+    const menu = page.getByRole('navigation', { name: 'On this page', exact: true })
+    await expect(menu).toBeVisible()
+    await menu.getByRole('link', { name: 'Start with the platform' }).press('Enter')
+    await expect(page.locator('#platforms')).toBeFocused()
+    await expect(page.locator('#platforms-title')).toBeInViewport()
+    await expect(menu).toBeHidden()
+  })
+}
+
 for (const width of [320, 390, 768, 1440]) {
   test(`page menu stays compact and aligned with its trigger at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 })
@@ -103,7 +148,9 @@ for (const theme of ['lumen-light', 'lumen-dark']) {
 
         if (!bounds || !headerBounds) throw new Error('Missing sticky page bar bounds')
 
-        expect(Math.abs(bounds.y - headerBounds.y - headerBounds.height)).toBeLessThanOrEqual(1)
+        const expectedGap = width < 1024 ? 0 : 16
+
+        expect(Math.abs(bounds.y - headerBounds.y - headerBounds.height - expectedGap)).toBeLessThanOrEqual(1)
 
         if (width < 1024) {
           expect(Math.abs(bounds.x)).toBeLessThanOrEqual(1)

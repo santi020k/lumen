@@ -5,11 +5,7 @@ import type { LumenComponentName } from '../../packages/core/src/components.js'
 import { verifyAstroChartActivation } from './chart-activation.js'
 import { runtimeBehaviorComponentNames } from './component-coverage.js'
 import { verifyFocusNavigation } from './focus-navigation.js'
-
-const openPreview = async (page: Page, slug: string) => {
-  await page.goto(`/docs/components/${slug}`)
-  await expect(page.locator('.component-doc-preview')).toBeVisible()
-}
+import { openPreview } from './open-preview.js'
 
 type BehaviorTestBody = (fixtures: { page: Page }) => Promise<void>
 
@@ -359,8 +355,12 @@ behaviorTest(['Toast', 'ToastViewport'], 'Toast creates a live notification in t
   await expect(toast).toContainText('The latest version is now live.')
 })
 
-const invokeLumenInitUiPrimitives = (page: Page): Promise<void> => page.evaluate(() => {
-  (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives?.()
+const invokeLumenInitUiPrimitives = (page: Page): Promise<void> => page.evaluate(async () => {
+  const initialize = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
+
+  if (!initialize) throw new Error('Expected runtime initializer')
+
+  await initialize()
 })
 
 test('Toast binds static markup added after the initial runtime pass without duplicating per-toast dismissal', async ({ page }) => {
@@ -731,17 +731,26 @@ behaviorTest(['Code'], 'Code copies its block content and announces success', as
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
-      value: { writeText: () => Promise.resolve() }
+      value: { writeText: (value: string) => {
+        sessionStorage.setItem('test-copied-code', value)
+        return Promise.resolve()
+      } }
     })
   })
   await openPreview(page, 'code')
 
-  const copy = page.locator('.component-doc-preview [data-ui-code-copy]').first()
+  const block = page.locator('.component-doc-preview [data-ui-code]').filter({ hasText: 'theme.ts' })
+  const copy = block.getByRole('button')
 
-  await expect(copy).toHaveAttribute('aria-label', 'Copy code to clipboard')
+  await expect(copy).toHaveAccessibleName('Copy code')
   await copy.click()
-  await expect(copy).toHaveAttribute('aria-label', 'Code copied to clipboard')
-  await expect(page.getByText('Code copied to clipboard', { exact: true })).toBeAttached()
+  await expect(copy).toHaveAccessibleName('Copied')
+  const source = ['', '  const theme = "lumen";', '  const accent = "hsl(var(--accent))";', ''].join('\n')
+
+  expect(await page.evaluate(() => sessionStorage.getItem('test-copied-code'))).toBe(source)
+  await expect(copy.getByText('Copied', { exact: true })).toBeVisible()
+  const announcement = page.locator('body > [aria-live="polite"][aria-atomic="true"]').filter({ hasText: /^Copied$/ })
+  await expect(announcement).toHaveText('Copied')
 })
 
 behaviorTest(['Command'], 'Command filters actions from its search input', async ({ page }) => {
@@ -948,6 +957,7 @@ behaviorTest(['ThemeBuilder'], 'ThemeBuilder updates its exported CSS when token
 
   await expect(builder).toHaveAttribute('data-ui-theme-builder-bound', 'true')
   await hue.fill('212')
+  await expect(output).toHaveValue(/^:root \{\n {2}color-scheme: (light|dark);/)
   await expect(output).toHaveValue(/--brand: 212/)
 })
 
@@ -1126,8 +1136,10 @@ behaviorTest(['ScrollReveal'], 'ScrollReveal becomes visible when reduced motion
 
   const reveal = page.locator('.component-doc-preview [data-ui-scroll-reveal]')
 
-  await expect(reveal).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
+  await expect(reveal).not.toHaveAttribute('data-ui-scroll-reveal-bound')
   await expect(reveal).toHaveClass(/is-revealed/)
+  await expect(reveal).toBeVisible()
+  await expect(reveal).toHaveCSS('opacity', '1')
 })
 
 behaviorTest(['Toolbar'], 'Toolbar provides roving keyboard focus to its controls', async ({ page }) => {
@@ -1274,7 +1286,10 @@ behaviorTest(['RevealGroup'], 'RevealGroup reveals all children immediately with
   const group = page.locator('.component-doc-preview [data-ui-reveal-group]')
 
   await expect(group).toHaveJSProperty('tagName', 'UL')
-  await expect(group).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
+  await expect(group).not.toHaveAttribute('data-ui-scroll-reveal-bound')
+  await expect(group).toBeVisible()
+  await expect(group.locator(':scope > *').nth(2)).toBeVisible()
+  await expect(group.locator(':scope > *').nth(2)).toHaveCSS('opacity', '1')
   await expect(group).toHaveClass(/is-revealed/)
   await expect(group.locator(':scope > *').nth(2)).toHaveCSS('--ui-reveal-index', '2')
 })
@@ -1472,8 +1487,8 @@ test('enhanced forms retain validation when adopted and reinitialized in another
   await page.goto('/internal/interaction-regressions')
   await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
   await page.getByRole('button', { name: 'Submit external field' }).click()
-  const result = await page.evaluate(() => {
-    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+  const result = await page.evaluate(async () => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
     const form = document.querySelector<HTMLFormElement>('#external-form')
     const control = document.querySelector<HTMLInputElement>('#external-field')
     const field = control?.closest<HTMLElement>('[data-ui-field], .ui-field')
@@ -1488,8 +1503,8 @@ test('enhanced forms retain validation when adopted and reinitialized in another
     const destination = frame.contentDocument
     if (!destination) throw new Error('Missing adoption document')
     destination.body.append(destination.adoptNode(form), destination.adoptNode(field))
-    init(destination)
-    init(destination)
+    await init(destination)
+    await init(destination)
     control.value = 'Corrected'
     control.focus()
     control.blur()
@@ -1499,7 +1514,7 @@ test('enhanced forms retain validation when adopted and reinitialized in another
     control.blur()
     const rejected = control.getAttribute('aria-invalid') === 'true' && !error.hidden
     document.body.append(document.adoptNode(form), document.adoptNode(field))
-    init(document)
+    await init(document)
     control.value = 'Returned'
     control.focus()
     control.blur()
@@ -1512,8 +1527,8 @@ test('enhanced forms retain validation when adopted and reinitialized in another
 test('iframe-origin enhanced forms validate after adoption into the host document', async ({ page }) => {
   await page.goto('/internal/interaction-regressions')
   await expect(page.locator('#external-form')).toHaveAttribute('data-ui-form-bound', 'true')
-  const result = await page.evaluate(() => {
-    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => void }).LumenInitUiPrimitives
+  const result = await page.evaluate(async () => {
+    const init = (window as Window & { LumenInitUiPrimitives?: (scope?: ParentNode) => Promise<void> }).LumenInitUiPrimitives
     const createFixture = () => {
       const sourceForm = document.querySelector<HTMLFormElement>('#external-form')
       const sourceField = document.querySelector<HTMLInputElement>('#external-field')?.closest<HTMLElement>('[data-ui-field], .ui-field')
@@ -1535,10 +1550,10 @@ test('iframe-origin enhanced forms validate after adoption into the host documen
     const { source, form, control, field, error } = createFixture()
     if (!init) throw new Error('Missing form initializer')
     delete form.dataset.uiFormBound
-    init(source)
+    await init(source)
     document.body.append(document.adoptNode(form), document.adoptNode(field))
-    init(document)
-    init(document)
+    await init(document)
+    await init(document)
     let invalid = 0
     let valid = 0
     form.addEventListener('ui:invalid', () => { invalid += 1 })

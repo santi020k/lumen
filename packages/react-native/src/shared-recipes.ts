@@ -26,18 +26,19 @@ export const resolveLumenSurfaceRadius = (
 
 export const resolveLumenAlertColors = (
   colors: LumenTheme['colors'],
-  variant: LumenAlertVariant
+  variant: LumenAlertVariant,
+  statusText?: string
 ) => {
   if (variant === 'destructive') {
-    return { backgroundColor: `${colors.danger}14`, borderColor: `${colors.danger}5C`, color: colors.danger }
+    return { backgroundColor: `${colors.danger}14`, borderColor: `${colors.danger}5C`, color: statusText ?? colors.danger }
   }
 
   if (variant === 'success') {
-    return { backgroundColor: `${colors.success}14`, borderColor: `${colors.success}5C`, color: colors.success }
+    return { backgroundColor: `${colors.success}14`, borderColor: `${colors.success}5C`, color: statusText ?? colors.success }
   }
 
   if (variant === 'warning') {
-    return { backgroundColor: `${colors.warning}1A`, borderColor: `${colors.warning}6B`, color: colors.warning }
+    return { backgroundColor: `${colors.warning}1A`, borderColor: `${colors.warning}6B`, color: statusText ?? colors.warning }
   }
 
   return { backgroundColor: colors.surface, borderColor: colors.line, color: colors.ink }

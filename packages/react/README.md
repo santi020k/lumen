@@ -73,7 +73,7 @@
 </details>
 
 React components and behavior hooks for Lumen UI, using the shared standalone stylesheet.
-Start with one CSS import, then compose public primitives in your existing React application.
+Load the foundation and selected component CSS, or retain the full stylesheet convenience option.
 
 See the [shared web form contracts](https://github.com/santi020k/lumen/blob/main/docs/form-controls.md) for value ownership, reset,
 submission, disabled state, and event behavior.
@@ -84,20 +84,37 @@ its native meaning. See the [v4 migration guide](https://github.com/santi020k/lu
 
 ## Install
 
+Upgrading from v4? Follow the [v5 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v4-to-v5.md)
+for runtime changes and the [selective installation guide](https://github.com/santi020k/lumen/blob/main/docs/selective-installation.md)
+for optional component CSS, imports and editable recipes.
+
 Requires React 19 or newer in the consuming application.
 
 ```bash
 pnpm add @santi020k/lumen-react
 ```
 
-The adapter also exposes Lumen's discovery and diagnostics CLI:
+The v5 adapter contains runtime code and styles. Install the optional CLI separately for discovery,
+editable recipes, and diagnostics:
 
 ```bash
+pnpm add -D @santi020k/lumen
 pnpm exec lumen show Tabs
 pnpm exec lumen doctor
 ```
 
-Load the shared stylesheet once from your app entry or global CSS.
+Import the shared foundation once and component CSS where the component is used. Include styles for
+conditional and runtime-inserted content as well as the initial render.
+
+```tsx
+import "@santi020k/lumen-react/styles/foundation.css";
+import "@santi020k/lumen-react/styles/components/button.css";
+import "@santi020k/lumen-react/styles/components/dialog.css";
+```
+
+The selective foundation ships Lumen light and dark. Add only the appearances you use from your adapter: `styles/themes/paper.css`, `styles/themes/field.css`, `styles/themes/studio.css`, `styles/themes/santi020k.css`, or `styles/effects/glass.css`. Full `styles.css` includes every appearance.
+
+The full stylesheet remains available as a convenient alternative:
 
 ```tsx
 import "@santi020k/lumen-react/styles.css";
@@ -132,6 +149,12 @@ These entries use the same implementation and types as root imports. Interactive
 `use client` for React Server Component consumers. A smaller module graph does not guarantee a
 smaller final bundle: a bundler can already remove unused root exports. Run the repository's
 `pnpm run measure:selective-imports` benchmark for the measured comparison.
+
+## Public styling parts
+
+Use the [shared styling contract](https://github.com/santi020k/lumen/blob/main/docs/styling-contract.md)
+for Timeline item tail/dot/content, ThemeToggle sun/moon icons, and WorldMap frame/zoom controls.
+ThemeToggle supports `--ui-theme-toggle-icon-size` independently of its control size.
 
 ## Appearance presets
 
@@ -293,6 +316,16 @@ the document without requiring a separate hook. The activation line uses the gre
 one CSS pixel rounding tolerance. Live styles keep enlarged text and responsive headers aligned
 with native fragment navigation. A page that cannot scroll keeps its first visible section current.
 
+Activating an ordinary local link moves focus to its destination while preserving native hash
+scrolling and history. A heading receives temporary `tabindex="-1"`, removed on blur; authored
+tab order is preserved. Canceled clicks, modifier keys, downloads, and other browsing targets
+keep their normal behavior. Passive scrolling only updates the current link and never moves focus.
+
+For article reading, `ScrollProgress targetId="article-id"` measures the selected content element.
+Omitting the prop or referencing a missing element retains document progress. Measurements refresh
+on scrolling, resize, and content reflow. The selective export is
+`@santi020k/lumen-react/components/scroll-progress`.
+
 ```tsx
 import { Anchor, ScrollProgress } from '@santi020k/lumen-react'
 
@@ -309,6 +342,7 @@ either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
 ```tsx
 <CopyButton
   copiedContent="Link copied"
+  recoveryLabel="Select and copy the link"
   size="sm"
   value="https://lumen.santi020k.com"
   variant="default"
@@ -322,9 +356,18 @@ either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
 customize its visible feedback while the localized label props remain the accessible announcement.
 Stable `data-slot` hooks expose the idle, copied, and error parts.
 
+Manual recovery renders beside the trigger in DOM order. Use a vertical Lumen `Stack` with
+`align="start"` for separate copy actions so a recovery field does not stretch neighboring buttons.
+
 Wrap React copy actions in `ToastProvider` to display their optional toast feedback. Target selectors
 resolve in the clicked button's owning document, including iframe portals. Updating a closing or moved
 toast reapplies the destination viewport limit without dismissing toasts in another placement.
+
+Pass a localized `recoveryLabel` to React `CopyButton`, or `recovery-label` to
+`lumen-copy-button`, to offer manual selection when clipboard access fails. The labelled read-only
+field retains the complete value after transient feedback resets, selects its text on focus, and
+clears after a successful retry. Changing the value, target selector, or recovery label clears stale
+recovery. Missing or invalid targets produce error feedback without an empty recovery field.
 
 ## Data visualization
 
@@ -361,7 +404,8 @@ const series = [{
 
 ## Next.js and server components
 
-React DatePicker, Calendar (including custom `useCalendar` roots), and InputOTP render
+React Select (including custom `useSelect` roots), DatePicker, Calendar (including custom
+`useCalendar` roots), InputOTP, and ListBox render
 `data-ui-owner="react"`. The Astro runtime and Elements enhancers skip owned roots, so React islands
 keep their ids, labels, and state on pages that also load those runtimes.
 
@@ -1164,3 +1208,72 @@ The optional `tailwind.css` bridge (Lumen 4.3+) maps semantic colors to utilitie
 Use component props for behavior and utilities for local presentation. The standalone stylesheet
 does not require Tailwind. See the [Tailwind guide](https://lumen.santi020k.com/docs/web/tailwind)
 for framework examples, source detection, and Preflight choices.
+
+## Reveal visibility safety
+
+`ScrollReveal` and `RevealGroup` preserve explicit thresholds (clamped to 0–1; the default is 0.15).
+An intersecting element waits until that ratio is reached. If its size or a clipping ancestor makes
+the threshold unreachable, it stays visible without animation. Resizing and enlarged text are
+rechecked. Keyboard focus within a reveal and reduced motion bypass decorative hiding immediately.
+Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.
+
+The subscribe-form components have individual entries under `/components/button`, `/components/card`,
+`/components/input` and `/components/label`. See the [React quick start](https://lumen.santi020k.com/docs/frameworks/react).
+
+### Selective form primitives
+
+`components/field` exports Field and FieldError with their prop types; `components/checkbox` exports
+Checkbox and CheckboxProps. These entries share the catalog implementations and preserve native
+form values, refs, error visibility and glass styling. Import the foundation and matching `field.css`,
+`field-error.css`, and `checkbox.css` component styles used by the form. They support server rendering
+without pulling the interactive catalog into the module graph.
+
+## Editorial code blocks
+
+Use `appearance="editorial"` on a block `Code` (or `<lumen-code>`) for a theme-aware
+code icon, wrapping header metadata, and visible copy feedback. The default appearance retains
+the window dots and icon-only copy control. Both appearances provide stable 44px copy targets.
+Existing copy labels also supply the visible editorial feedback, so localize them together:
+`copyLabel`, `copiedLabel`, and `errorLabel` in Astro/React; `copy-label`, `copied-label`, and
+`error-label` in Elements. Set a descriptive `codeLabel` (`code-label` in Elements) for each
+keyboard-scrollable example. Astro also supports `scrollCue` for an overflow-only reading hint.
+
+The docs compose public `Code` and `Collapsible` primitives to preview the first 12 lines of
+examples longer than 24 lines. Folding is application policy; clipboard content always remains
+the complete source. Pass the original `code` when supplying highlighted or preview content.
+
+## Anchored table row labels
+
+Set `stickyFirstColumn` on `Table` in Astro/React or `sticky-first-column="true"` on
+`<lumen-table>` to keep the first cell of each row visible during horizontal scrolling.
+Use `th scope="row"` for row identifiers and label the scroll region with `aria-label` or
+`aria-labelledby`, `role="region"`, and `tabindex="0"` (`tabIndex` in React). Astro's
+`scrollCue` option supplies the keyboard region and an overflow-only hint automatically.
+
+The first column follows writing direction, including RTL. It returns to normal flow in
+containers narrower than 12rem, in records layouts, and when printing, so enlarged text and
+printed data retain the available width. Keep column widths suitable for the content; avoid
+pinning an unusually wide description column.
+
+## Editorial prose
+
+Use `appearance="editorial"` on `Prose` (or `<lumen-prose>`) for long-form reading with
+clear section rhythm, attributed blockquotes, and connected native figure captions. The default
+appearance remains unchanged. The editorial surface keeps ordinary paragraphs and lists at a
+readable measure while media and technical blocks can use the available width. Override
+`--ui-prose-measure` on the root to set that measure (the default is `65ch`).
+
+Supply semantic HTML: keep heading IDs and inline formatting; place quoted paragraphs and an
+optional `footer`/`cite` inside `blockquote`; keep media and its `figcaption` together inside
+`figure`. Write image alternatives separately from captions and use the framework's public Image
+or optimized native image integration. Component-owned figures, including Code and charts,
+retain their own styling. Prose styles content; the application owns parsing, sanitization,
+heading IDs, captions, citations, and localization.
+
+### Manual code-copy recovery
+
+Pass `recoveryLabel="Select and copy the complete source"` to `Code` or `CodeTabs`
+to show a labelled read-only field when clipboard access fails. It contains the exact source,
+including empty strings, and selects its contents on focus. Recovery does not take focus and
+remains available after transient feedback resets. A successful retry, source update, or tab
+change removes it. Omit the prop to keep the existing feedback-only behavior.
