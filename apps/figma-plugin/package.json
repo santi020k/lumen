@@ -1,8 +1,8 @@
 {
   "name": "@santi020k/lumen-figma-plugin",
-  "version": "0.1.0-beta.1",
+  "version": "1.1.0",
   "private": true,
-  "description": "Beta Figma plugin for Lumen component analysis and Astro AI handoff.",
+  "description": "Offline Figma plugin for versioned Lumen web and native starters and design handoff.",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
@@ -11,9 +11,11 @@
     "package": "node scripts/build.mjs && node scripts/package.mjs",
     "test": "vitest run --config ../../vitest.config.ts --project figma-plugin && node --test scripts/package.test.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.plugin.json --noEmit",
-    "verify:generated": "node scripts/verify-generated.mjs"
+    "verify:native": "node scripts/verify-native.mjs",
+    "verify:generated": "node scripts/build.mjs && node scripts/verify-generated.mjs"
   },
   "dependencies": {
+    "@santi020k/lumen-core": "workspace:^",
     "@santi020k/lumen-react": "workspace:^",
     "react": "catalog:",
     "react-dom": "catalog:"
@@ -22,9 +24,13 @@
     "@astrojs/compiler": "catalog:",
     "@figma/plugin-typings": "catalog:",
     "@santi020k/lumen-astro": "workspace:^",
+    "@santi020k/lumen-elements": "workspace:^",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "esbuild": "catalog:",
+    "lumen-astro-v4": "catalog:",
+    "lumen-elements-v4": "catalog:",
+    "lumen-react-v4": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"

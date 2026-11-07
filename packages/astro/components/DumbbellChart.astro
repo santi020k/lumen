@@ -1,6 +1,9 @@
 ---
 import type { ComponentProps } from 'astro/types'
 
+import '../styles/foundation.css'
+import '../styles/components/dumbbell-chart.css'
+
 import ComparisonChart from '../internal/ComparisonChart.astro'
 
 type Props = Omit<ComponentProps<typeof ComparisonChart>, 'paired'>

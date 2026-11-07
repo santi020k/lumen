@@ -1,0 +1,7 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: system-ui, sans-serif; }
+main, body > header, #app > header, body > footer, #app > footer { max-inline-size: 72rem; margin-inline: auto; padding: 1rem; overflow-wrap: anywhere; }
+body > header, #app > header, main { display: grid; gap: 1rem; }
+body > header > lumen-button, #app > header > button { justify-self: start; }
+.outside { min-block-size: 50rem; padding-block: 2rem; }
+.chapter { min-block-size: 40rem; }

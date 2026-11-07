@@ -11,7 +11,7 @@ func themePresets() {
     let lumenLight = PlaygroundThemePreset.lumen.theme(for: .light)
     let lumenDark = PlaygroundThemePreset.lumen.theme(for: .dark)
 
-    #expect(PlaygroundThemePreset.allCases.map(\.title) == ["Normal", "Studio", "Glass", "santi020k"])
+    #expect(PlaygroundThemePreset.allCases.map(\.title) == ["Normal", "Studio", "Glass", "santi020k", "Paper", "Field"])
     #expect(lumenLight.scheme == .light)
     #expect(lumenLight.colors.brand == LumenColors.light.brand)
     #expect(lumenLight.colors.canvas == LumenColors.light.canvas)
@@ -24,6 +24,15 @@ func themePresets() {
 
 @Suite("Playground launch configuration")
 struct PlaygroundLaunchConfigurationTests {
+    @Test("selects named themes for captures and falls back for unknown choices")
+    func launchThemes() {
+        for preset in PlaygroundThemePreset.allCases {
+            #expect(PlaygroundLaunchConfiguration(arguments: ["--theme", preset.rawValue]).themePreset == preset)
+        }
+        #expect(PlaygroundLaunchConfiguration(arguments: ["--theme", "retired"]).themePreset == .lumen)
+        #expect(PlaygroundLaunchConfiguration(arguments: ["--theme"]).themePreset == .lumen)
+    }
+
     @Test("parses a deterministic component filter")
     func componentFilter() {
         let configuration = PlaygroundLaunchConfiguration(

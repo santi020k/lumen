@@ -3,7 +3,7 @@ import {
   type LumenPhoneCountryOptions,
   type LumenPhoneNumber,
   resolveLumenPhoneNumber
-} from '@santi020k/lumen-core'
+} from '@santi020k/lumen-core/phone'
 
 export const resolveLumenPhoneInputValue = (
   countries: readonly LumenPhoneCountry[],

@@ -51,6 +51,37 @@ Use the public Lumen primitive whenever an equivalent exists. Keep a working pre
 copyable example. Update navigation and search metadata with new routes; follow the
 [documentation contribution guide](../../CONTRIBUTING.md#documentation-and-guides).
 
+## Code examples
+
+`CodeBlock` composes the public editorial `Code` appearance with themed Shiki output. It
+previews the first 12 lines when an example exceeds 24 lines, using public `Collapsible` for a
+keyboard-accessible disclosure that works without JavaScript. Set `collapsible={false}` when
+an example needs to stay fully visible. Copying always uses the original complete source,
+independently of the preview, line numbers, and active syntax theme. If clipboard access fails,
+a selectable recovery field exposes the complete source without expanding or switching themes. Overflow hints appear only
+when horizontal scrolling is needed; printing expands the complete example.
+
+These patterns come from the santi020k v5 website. Shared Code owns the wrapping headers,
+stable touch targets, optional editorial presentation, localized clipboard feedback, and print
+styles. Preview thresholds and line numbers remain docs policy. Site branding and article-specific
+features stay with their application rather than becoming component defaults.
+
+## Reference tables
+
+`DocsReferenceTable` uses the public `Table` sticky first-column option to keep row identifiers
+visible during native horizontal scrolling. It retains native table headers and a named keyboard
+region, shows the overflow hint only when needed, follows RTL direction, and releases the pinned
+column for enlarged text and print output. The behavior comes from the santi020k v5 comparison
+tables; the library owns positioning while the docs retain their typography and column sizing.
+
+## Editorial reading surfaces
+
+Migration and theme guides opt into the public `Prose` editorial appearance. The editorial article
+guide demonstrates native quotations and figures with public Image, Code, Table, and Link
+components. Keep authored IDs, inline markup, captions, and citations in the document; avoid
+renderer-specific rewrites for a visual treatment. `--ui-prose-measure` controls paragraph width
+without narrowing technical examples or media. Code and chart figures retain their own contracts.
+
 ## Validate and build
 
 Run these commands from the repository root:

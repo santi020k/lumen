@@ -23,10 +23,12 @@ import {
   RevealGroup,
   ScrollReveal,
   Stack,
-  Stat } from '@santi020k/lumen-astro'
+  Stat,
+  Table } from '@santi020k/lumen-astro'
 
 import androidPlaygroundPreview from '../../../playground-android/Store/Screenshots/phone-04-components-dark.png'
 import applePlaygroundPreview from '../../../playground-apple/Store/Screenshots/iphone-02-examples-light.png'
+import FigmaCommunityLink from '../components/FigmaCommunityLink.astro'
 import HomePlatformShowcase from '../components/HomePlatformShowcase.astro'
 import HomeWorkbench from '../components/HomeWorkbench.astro'
 import { frameworkSetups } from '../data/docs'
@@ -90,11 +92,21 @@ const principles = [
     title: 'The accessible path is the default path.'
   },
   {
-    description: 'Interactive Astro primitives use a tiny progressive-enhancement layer, not an app runtime.',
+    description: 'Astro loads component styles and requests the controllers used by the page.',
     icon: 'zap',
-    metric: '~4 KB',
-    title: 'Keep the interaction. Lose the weight.'
+    metric: 'Per route',
+    title: 'Load the components your page uses.'
   }
+] as const
+
+const deliverySnapshot = 'b328b53f'
+const deliverySource = `https://github.com/santi020k/lumen/tree/${deliverySnapshot}/tests/fixtures/delivery`
+const deliveryEvidence = 'https://github.com/santi020k/lumen/blob/b3c9194b/docs/import-and-icon-performance.md#november-5-2026-astro-route-delivery'
+
+const deliveryRoutes = [
+  { label: 'Static Card and Button', fixture: 'static', icon: 'layout-template', description: 'Content without a controller', javascript: '0 B', css: '7,025 B' },
+  { label: 'Dialog', fixture: 'dialog', icon: 'panels-top-left', description: 'One interactive primitive', javascript: '5,448 B', css: '8,705 B' },
+  { label: 'Code tabs with scroll cues', fixture: 'code', icon: 'code', description: 'A composed interactive example', javascript: '9,638 B', css: '8,071 B' }
 ] as const
 
 const categories = [
@@ -268,6 +280,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
               Launch web playground
             </ButtonLink>
             <ButtonLink href="#playground-apps" variant="inline">Get the native apps</ButtonLink>
+            <FigmaCommunityLink file="playgrounds" />
           </div>
           <p class="home-playgrounds__assurance">
             <Icon decorative name="circle-check" size="sm" />
@@ -541,6 +554,88 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
           </Card>
         ))}
       </RevealGroup>
+    </section>
+
+    <section class="home-section home-container home-delivery" aria-labelledby="delivery-title">
+      <div class="home-section__head home-section__head--split">
+        <div>
+          <Eyebrow>Measured Astro delivery</Eyebrow>
+          <h2 id="delivery-title">See what a page loads.</h2>
+        </div>
+        <div class="home-section__aside">
+          <p>Compare static content, a dialog, and code tabs using the same built fixture app.</p>
+          <ButtonLink href={deliveryEvidence} showArrow variant="inline">Read the measurement method</ButtonLink>
+        </div>
+      </div>
+      <Card class="home-delivery__panel">
+        <div class="home-delivery__snapshot">
+          <div class="home-delivery__snapshot-label">
+            <Badge variant="outline">V5 candidate</Badge>
+            <span>Route delivery snapshot</span>
+          </div>
+          <p><time datetime="2026-11-05">November 5, 2026</time><span aria-hidden="true"> / </span>gzip bytes</p>
+        </div>
+        <Table class="home-delivery__table" layout="records">
+          <table role="table" aria-describedby="delivery-context">
+            <caption class="home-delivery__caption">Astro route asset measurements, V5 candidate snapshot, November 5, 2026, in gzip bytes</caption>
+            <thead role="rowgroup">
+              <tr role="row">
+                <th scope="col" role="columnheader">Route fixture</th>
+                <th scope="col" role="columnheader">Initial JavaScript</th>
+                <th scope="col" role="columnheader">Initial CSS</th>
+                <th scope="col" role="columnheader">First interaction</th>
+              </tr>
+            </thead>
+            <tbody role="rowgroup">
+              {deliveryRoutes.map(route => (
+                <tr role="row">
+                  <th scope="row" role="rowheader">
+                    <div class="home-delivery__fixture">
+                      <span class="home-delivery__icon"><Icon name={route.icon} /></span>
+                      <div>
+                        <Link href={`${deliverySource}/${route.fixture}.astro.template`}>{route.label}</Link>
+                        <span class="home-delivery__description">{route.description}</span>
+                      </div>
+                    </div>
+                  </th>
+                  <td role="cell">
+                    <span class="ui-table__label" aria-hidden="true">Initial JavaScript</span>
+                    <span class:list={['home-delivery__value', { 'home-delivery__value--zero': route.fixture === 'static' }]}>{route.javascript}</span>
+                  </td>
+                  <td role="cell">
+                    <span class="ui-table__label" aria-hidden="true">Initial CSS</span>
+                    <span class="home-delivery__value">{route.css}</span>
+                  </td>
+                  <td role="cell" class="home-delivery__interaction">
+                    <span class="ui-table__label" aria-hidden="true">Added on first interaction</span>
+                    {route.fixture === 'static' ?
+(
+<span class="home-delivery__na">No interaction</span>
+) :
+(
+<><span class="home-delivery__value">0 B</span><span class="
+  home-delivery__description
+"
+                                               >additional assets</span></>
+)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Table>
+        <div class="home-delivery__context" id="delivery-context">
+          <div>
+            <h3>How it’s measured</h3>
+            <p>Cold Chromium loads with selective CSS and CSS inlining disabled. Assets are individually compressed with gzip level 9.</p>
+          </div>
+          <div>
+            <h3>Read it in context</h3>
+            <p>The static fixture omits the root runtime. Shared chunks and app setup affect the result. These local fixture sizes describe this candidate snapshot at revision{' '}
+              <Link href={`https://github.com/santi020k/lumen/commit/${deliverySnapshot}`}>{deliverySnapshot}</Link>.</p>
+          </div>
+        </div>
+      </Card>
     </section>
 
     <section class="home-principles">
@@ -1134,6 +1229,176 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
     .home-use-case:hover .home-use-case__phone {
       transform: translateY(-.45rem) rotate(1.5deg);
     }
+  }
+
+  .home-delivery :global(.home-delivery__panel) {
+    margin-top: var(--home-content-gap);
+    padding: 0;
+    overflow: hidden;
+    box-shadow: none;
+    background: hsl(var(--surface));
+  }
+
+  .home-delivery__snapshot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid hsl(var(--line));
+  }
+
+  .home-delivery__snapshot-label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .75rem;
+    color: hsl(var(--ink));
+    font-size: .875rem;
+    font-weight: 650;
+  }
+
+  .home-delivery__snapshot p {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: .75rem;
+  }
+
+  .home-delivery__snapshot p > span { padding-inline: .5rem; }
+
+  .home-delivery :global(.home-delivery__table) {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    --ui-table-cell-padding: 1.5rem;
+  }
+
+  .home-delivery__caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .home-delivery thead {
+    background: hsl(var(--surface-muted) / .5);
+  }
+
+  .home-delivery thead th {
+    padding-block: .875rem;
+    color: hsl(var(--ink-soft));
+    font-size: .75rem;
+    font-weight: 600;
+  }
+
+  .home-delivery th:not(:first-child),
+  .home-delivery td { text-align: end; }
+
+  .home-delivery tbody tr:last-child > * { border-bottom: 0; }
+
+  .home-delivery__fixture {
+    display: flex;
+    align-items: center;
+    gap: .875rem;
+    text-align: start;
+  }
+
+  .home-delivery__fixture :global(.ui-link) {
+    color: hsl(var(--ink));
+    font-weight: 650;
+  }
+
+  .home-delivery__fixture :global(.ui-link:hover) { color: hsl(var(--brand)); }
+
+  .home-delivery__icon {
+    display: grid;
+    flex: 0 0 auto;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border: 1px solid hsl(var(--line));
+    border-radius: var(--ui-radius);
+    background: hsl(var(--surface-muted) / .5);
+    color: hsl(var(--brand));
+  }
+
+  .home-delivery__description {
+    display: block;
+    margin-top: .25rem;
+    color: hsl(var(--ink-soft));
+    font-size: .75rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .home-delivery__value {
+    color: hsl(var(--ink));
+    font-size: 1.125rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .home-delivery__value--zero { color: hsl(var(--brand)); }
+
+  .home-delivery__na {
+    color: hsl(var(--ink-soft));
+    font-size: .8125rem;
+  }
+
+  .home-delivery__context {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 1.5rem 3rem;
+    border-top: 1px solid hsl(var(--line));
+    background: hsl(var(--surface-muted) / .35);
+    padding: 1.5rem;
+  }
+
+  .home-delivery__context h3 {
+    margin: 0 0 .5rem;
+    color: hsl(var(--ink));
+    font-size: .75rem;
+    font-weight: 650;
+  }
+
+  .home-delivery__context p {
+    margin: 0;
+    color: hsl(var(--ink-soft));
+    font-size: .75rem;
+    line-height: 1.75;
+  }
+
+  @media (max-width: 48rem) {
+    .home-delivery__snapshot,
+    .home-delivery__context { padding: 1.25rem; }
+
+    .home-delivery tbody th {
+      grid-column: 1 / -1;
+      border: 0;
+      padding: 0;
+    }
+
+    .home-delivery td { text-align: start; }
+
+    .home-delivery .home-delivery__interaction {
+      display: flex;
+      grid-column: 1 / -1;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: .5rem;
+      border-top: 1px solid hsl(var(--line) / .6);
+      padding-top: .75rem;
+    }
+
+    .home-delivery__interaction .home-delivery__description { display: none; }
+
+    .home-delivery__interaction .home-delivery__value { font-size: .875rem; }
+
+    .home-delivery__context { grid-template-columns: 1fr; }
   }
 
   .home-principles {

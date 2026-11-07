@@ -27,7 +27,8 @@ const targetPackages = [
 const platformPrompts = [
   {
     code: `Use $lumen-ui to build an accessible account settings screen in this Astro app.
-Use public Lumen components, load the stylesheet once, and mount UIPrimitives once at the root.`,
+Use public Lumen components and mount UIPrimitives once at the root.
+For Lumen 5, components load their CSS automatically; preserve the full stylesheet on older versions.`,
     label: 'Astro',
     value: 'astro'
   },

@@ -31,6 +31,12 @@ export interface LumenRegistryComponent {
 }
 
 export interface LumenRegistryItem {
+  dependencies?: readonly string[]
+  setup?: Readonly<Partial<Record<'astro' | 'react' | 'elements', {
+    dependencies?: readonly string[]
+    runtime?: string
+    instructions: readonly string[]
+  }>>>
   components?: readonly string[]
   files?: readonly (LumenRegistryFile | string)[]
   name: string

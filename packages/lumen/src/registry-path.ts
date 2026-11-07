@@ -1,15 +1,31 @@
-import { isAbsolute } from 'node:path'
+const windowsDeviceNames = new Set([
+  'aux',
+  'con',
+  'conin$',
+  'conout$',
+  'nul',
+  'prn',
+  ...Array.from('123456789¹²³', digit => 'com' + digit),
+  ...Array.from('123456789¹²³', digit => 'lpt' + digit)
+])
 
-const windowsAbsolutePath = /^[A-Za-z]:[\\/]/
+const isPortableSegment = (segment: string): boolean => {
+  if (!segment || segment.endsWith('.') || segment.endsWith(' ')) return false
+
+  const [stem] = segment.split('.', 1)
+
+  return !windowsDeviceNames.has((stem ?? '').trimEnd().toLowerCase())
+}
 
 export const isSafeRegistryFilePath = (path: string): boolean => {
-  if (!path || path.includes('\0') || path.includes('\\')) return false
+  // Reject drive prefixes, alternate data streams, device aliases and control characters on every host.
+  if (/[<>:"|?*\\]/u.test(path)) return false
 
-  if (isAbsolute(path) || windowsAbsolutePath.test(path)) return false
+  for (const character of path) {
+    if (character.charCodeAt(0) < 32) return false
+  }
 
-  const segments = path.split('/')
-
-  return segments.every(segment => segment !== '' && segment !== '.' && segment !== '..')
+  return path.split('/').every(isPortableSegment)
 }
 
 export const assertSafeRegistryFilePath = (path: string): void => {

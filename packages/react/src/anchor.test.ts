@@ -43,3 +43,52 @@ test.each([
   })))
   expect(container.querySelector('[aria-current="location"]')?.getAttribute('href')).toBe(expected)
 })
+
+test('Anchor hands focus to a destination and respects cancellation after bubbling', async () => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
+  document.body.innerHTML = '<div id="root"></div><h2 id="heading">Heading</h2>'
+  const container = document.getElementById('root')
+  const target = document.getElementById('heading')
+  if (!container || !target) throw new Error('Expected anchor fixture')
+  root = createRoot(container)
+  act(() => root?.render(createElement(Anchor, { items: [{ href: '#heading', label: 'Heading' }] })))
+  const link = container.querySelector('a')
+  if (!link) throw new Error('Expected anchor link')
+  await act(async () => {
+    link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(document.activeElement).toBe(target)
+  target.blur()
+  document.body.addEventListener('click', event => {
+    event.preventDefault()
+  }, { once: true })
+  await act(async () => {
+    link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(document.activeElement).not.toBe(target)
+  expect(container.querySelector('nav')?.dataset.uiOwner).toBe('react')
+})
+
+test('Anchor uses the rendering document for headings and listeners', async () => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
+  const iframe = document.createElement('iframe')
+  document.body.append(iframe)
+  const owner = iframe.contentDocument
+  if (!owner) throw new Error('Expected frame document')
+  owner.head.innerHTML = '<base href="about:blank">'
+  owner.body.innerHTML = '<div id="root"></div><h2 id="heading">Frame heading</h2>'
+  const container = owner.getElementById('root')
+  const target = owner.getElementById('heading')
+  if (!container || !target) throw new Error('Expected frame fixture')
+  root = createRoot(container)
+  act(() => root?.render(createElement(Anchor, { items: [{ href: '#heading', label: 'Heading' }] })))
+  const link = container.querySelector('a')
+  if (!link) throw new Error('Expected frame link')
+  await act(async () => {
+    link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+  expect(owner.activeElement).toBe(target)
+})

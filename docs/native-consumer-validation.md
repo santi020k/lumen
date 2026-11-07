@@ -161,7 +161,7 @@ warning.
 The package-candidate guard also packs the local React Native package, installs the tarball without
 legacy peer resolution into a clean temporary consumer at the supported Expo peer versions, verifies
 the published files and peer metadata, and compiles representative component usage under strict
-TypeScript. Separate native guards install the same packed artifact in a clean Expo 57 consumer,
+TypeScript. Separate native guards install the same packed artifact in a clean Expo 58 consumer,
 exercise controlled Picker and Slider state plus Gauge output, generate native projects, and require
 an Android debug APK and an unsigned iOS Simulator application from Gradle and Xcode respectively.
 The public-release guard preserves the historical fixture for 0.5.x, before those controls entered

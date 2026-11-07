@@ -25,7 +25,7 @@ the bundled stdio command. Submission copy, test cases, and the release checklis
 [`docs/openai-plugin-submission.md`](../../docs/openai-plugin-submission.md).
 
 Claude Code users can add this repository as the `lumen` marketplace and install
-`lumen-ui@lumen`. The package pins `@santi020k/lumen-mcp@4.4.0` so both clients receive the same catalog contract. Plugin 1.1.0 is a local candidate until the pinned MCP package is published and the directory update is approved. See the
+`lumen-ui@lumen`. The package pins `@santi020k/lumen-mcp@5.0.0` so both clients receive the same catalog contract. Plugin 1.1.0 is a local candidate until the pinned MCP package is published and the directory update is approved. See the
 [`Claude Code plugin guide`](../../docs/claude-code-plugin.md) for installation, validation, and
 community-marketplace submission steps.
 
@@ -40,4 +40,6 @@ destination; existing archives are preserved and must be moved before generating
 The Codex archive uses the production HTTPS MCP endpoint and contains the portable manifest,
 three skills, and brand assets. The Claude archive retains both compatibility manifests, the
 exact npm catalog pin, and the optional read-only reviewer. Upload or install only after the
-matching v4 MCP package and hosted catalog have been released and verified.
+matching v5 MCP package and hosted catalog have been released and verified. Request
+`lumen_get_migration` with `targetVersion: "5.0.0"` for v5 guidance or `"4.0.0"` for v4.
+The default follows the bundled release manifest, which selects v5 in this candidate.

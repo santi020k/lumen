@@ -1,0 +1,101 @@
+---
+import Button from '@santi020k/lumen-astro/components/Button'
+import Card from '@santi020k/lumen-astro/components/Card'
+import CardDescription from '@santi020k/lumen-astro/components/CardDescription'
+import CardHeader from '@santi020k/lumen-astro/components/CardHeader'
+import CardTitle from '@santi020k/lumen-astro/components/CardTitle'
+import Container from '@santi020k/lumen-astro/components/Container'
+import Field from '@santi020k/lumen-astro/components/Field'
+import FieldError from '@santi020k/lumen-astro/components/FieldError'
+import Form from '@santi020k/lumen-astro/components/Form'
+import Input from '@santi020k/lumen-astro/components/Input'
+import Label from '@santi020k/lumen-astro/components/Label'
+import Link from '@santi020k/lumen-astro/components/Link'
+import Prose from '@santi020k/lumen-astro/components/Prose'
+import Stack from '@santi020k/lumen-astro/components/Stack'
+
+interface Props { preset: 'paper' | 'field' }
+
+const { preset } = Astro.props
+---
+<!doctype html>
+<html lang="en" data-theme="lumen-light" data-lumen-preset={preset}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Reading room · Lumen theme fixture</title>
+  </head>
+  <body>
+    <Container as="main" size="sm">
+      <Stack gap="group">
+        <Card as="article" aria-labelledby="article-title">
+          <CardDescription as="p">Design journal · Field notes</CardDescription>
+          <Prose>
+            <h1 id="article-title">The art of finding your way</h1>
+            <p>At the fork, a small arrow points uphill. A walker can see it before the paths divide. A second marker just beyond the turn confirms the choice.</p>
+            <h2>After the turn</h2>
+            <p>A good sign answers two questions. Which way do I go? How will I know I took the right path?</p>
+            <p><Link href="#reading-list">Save this article to a reading list</Link></p>
+          </Prose>
+        </Card>
+        <Card as="section" id="reading-list" aria-labelledby="list-title">
+          <CardHeader>
+            <CardTitle id="list-title" as="h2">Reading list</CardTitle>
+            <CardDescription as="p">Choose a list for this article.</CardDescription>
+          </CardHeader>
+          <Form id="save-form" enhance={false} aria-labelledby="list-title">
+            <Stack gap="group">
+              <Field controlId="list-name">
+                <Label for="list-name">List name</Label>
+                <Input id="list-name" name="list" required placeholder="Weekend reads" />
+                <FieldError id="list-error">Enter a list name.</FieldError>
+              </Field>
+              <Stack direction="horizontal"><Button type="submit">Save article</Button></Stack>
+              <span role="status"></span>
+            </Stack>
+          </Form>
+        </Card>
+      </Stack>
+    </Container>
+  </body>
+</html>
+<style>
+  article h1 { font-size: clamp(1.85rem, 5vw, 2.75rem); line-height: 1.1; }
+  article h2 { font-size: 1.3rem; }
+  body { margin: 0; padding-block: var(--ui-space-section); background: hsl(var(--canvas)); color: hsl(var(--ink)); font-family: var(--ui-font); }
+</style>
+<script>
+  const form = document.querySelector<HTMLFormElement>('#save-form')
+  const input = form?.querySelector<HTMLInputElement>('#list-name')
+  const error = form?.querySelector<HTMLElement>('#list-error')
+  const status = form?.querySelector<HTMLElement>('[role="status"]')
+
+  if (form && input && error && status) {
+    input.addEventListener('invalid', () => {
+      input.setAttribute('aria-invalid', 'true')
+
+      input.setAttribute('aria-describedby', error.id)
+
+      error.hidden = false
+
+      status.textContent = ''
+    })
+
+    input.addEventListener('input', () => {
+      input.removeAttribute('aria-invalid')
+
+      input.removeAttribute('aria-describedby')
+
+      error.hidden = true
+
+      status.textContent = ''
+    })
+
+    form.addEventListener('submit', event => {
+      event.preventDefault()
+
+      status.textContent = `Saved to ${input.value}.`
+    })
+  }
+</script>

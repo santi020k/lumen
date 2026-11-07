@@ -6,9 +6,8 @@ import {
   type ElementType
 } from 'react'
 
+import type { LumenControlVisualSize } from '@santi020k/lumen-core'
 import {
-  composeClassName,
-  type LumenControlVisualSize,
   type LumenSkeletonAnimation,
   type LumenSkeletonShape,
   type LumenSkeletonSize,
@@ -17,7 +16,10 @@ import {
   resolveLumenSkeletonAnimation,
   resolveLumenSkeletonShape,
   resolveLumenSkeletonSize
-} from '@santi020k/lumen-core'
+} from '@santi020k/lumen-core/loading'
+import { composeClassName } from '@santi020k/lumen-core/tokens'
+
+export { Label, type LabelProps } from './label.js'
 
 export type LumenGlassProp = boolean | 'strong' | 'subtle'
 
@@ -260,12 +262,6 @@ export const Input = ({
     type={type}
     {...props}
   />
-)
-
-export type LabelProps = ComponentPropsWithRef<'label'>
-
-export const Label = ({ className, ...props }: LabelProps) => (
-  <label className={composeClassName('ui-label', className)} {...props} />
 )
 
 type Orientation = 'horizontal' | 'vertical'

@@ -89,7 +89,7 @@ fun LumenCard(
         modifier = modifier.then(interactionModifier),
         color = palette.background,
         contentColor = colors.ink,
-        shape = RoundedCornerShape(radius.value * theme.appearance.radiusScale),
+        shape = RoundedCornerShape(radius.scoped(theme.appearance.radiusScale)),
         border = androidx.compose.foundation.BorderStroke(theme.appearance.borderWidth.dp, palette.border)
     ) {
         Box(modifier = Modifier.padding(padding.value * theme.appearance.spacingScale)) {
@@ -144,8 +144,8 @@ fun LumenAlert(
     Surface(
         modifier = modifier,
         color = palette.background,
-        contentColor = palette.foreground,
-        shape = RoundedCornerShape(LumenRadius.Md),
+        contentColor = if (variant == LumenAlertVariant.Default) palette.foreground else lumenStatusTextColor(palette.foreground),
+        shape = RoundedCornerShape(LumenSurfaceRadius.Md.scoped()),
         border = androidx.compose.foundation.BorderStroke(1.dp, palette.border)
     ) {
         Box(

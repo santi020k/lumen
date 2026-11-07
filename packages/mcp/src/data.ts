@@ -57,6 +57,21 @@ export interface LumenComponentSnapshot {
   }[]
 }
 
+interface LumenMigrationContract {
+  changes: {
+    currentContract: string
+    docs: string[]
+    id: string
+    kind?: 'adoption' | 'breaking'
+    migration: string
+    packages: string[]
+    replacement: string
+  }[]
+  publication?: string
+  status: string
+  targetVersion: string
+}
+
 export interface LumenData {
   catalogManifest: LumenCatalogManifest
   components: LumenComponentSnapshot[]
@@ -75,18 +90,8 @@ export interface LumenData {
     schemaVersion: number
     serverVersion: string
   }
-  migration: {
-    changes: {
-      currentContract: string
-      docs: string[]
-      id: string
-      migration: string
-      packages: string[]
-      replacement: string
-    }[]
-    status: string
-    targetVersion: string
-  }
+  migration: LumenMigrationContract
+  migrationV5: LumenMigrationContract
   nativeComponents: LumenNativeComponentSnapshot[]
   nativeSources: Record<LumenNativePlatform, Record<string, string>>
   recipes: LumenRecipeSnapshot[]
@@ -208,6 +213,9 @@ export interface LumenFrameworkSnapshot {
 }
 
 export interface LumenRecipeSnapshot {
+  dependencies?: string[]
+  setup?: Partial<Record<'astro' | 'react' | 'elements', { dependencies?: string[], runtime?: string, instructions: string[] }>>
+
   categories: string[]
   components?: string[]
   description: string

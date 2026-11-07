@@ -96,7 +96,13 @@ Editor layouts, whole-unit amount fields, and asynchronous workflows remain cons
 - [VirtualList data mode](virtual-list-data.md) provides bounded rendering of large fixed-height
   collections, with stable keys, total scroll extent and retained keyboard focus.
 
-## After Lumen 4
+## Lumen 5
+
+The [Lumen 5 plan](lumen-5-plan.md) prioritizes modular delivery within the existing packages,
+editable recipes, consumer regression fixes, and measured route-level CSS and JavaScript costs.
+It records the approved direction, current measurements, P0/P1/P2 scope, and acceptance criteria.
+
+## Continuing work
 
 - Continue moving independent Astro behaviors behind selector-gated controller chunks while
   preserving the single `UIPrimitives` mounting API.

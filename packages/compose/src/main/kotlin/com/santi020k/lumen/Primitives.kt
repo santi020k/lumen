@@ -39,11 +39,13 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+private val defaultHeadlineFamily = androidx.compose.material3.Typography().headlineSmall.fontFamily
 private val LocalLumenControlInheritsContentColor = staticCompositionLocalOf { false }
 
 enum class LumenTextTone {
@@ -71,18 +73,24 @@ fun LumenText(
 ) {
     val theme = LocalLumenTheme.current
     val color = when (tone) {
-        LumenTextTone.Danger -> theme.colors.danger
+        LumenTextTone.Danger -> lumenStatusTextColor(theme.colors.danger)
         LumenTextTone.Default -> if (LocalLumenControlInheritsContentColor.current) LocalContentColor.current else theme.colors.ink
         LumenTextTone.Muted -> theme.colors.inkMuted
         LumenTextTone.Soft -> theme.colors.inkSoft
-        LumenTextTone.Success -> theme.colors.success
-        LumenTextTone.Warning -> theme.colors.warning
+        LumenTextTone.Success -> lumenStatusTextColor(theme.colors.success)
+        LumenTextTone.Warning -> lumenStatusTextColor(theme.colors.warning)
     }
     val style = when (variant) {
         LumenTextVariant.Body -> MaterialTheme.typography.bodyLarge
         LumenTextVariant.Caption -> MaterialTheme.typography.bodySmall
         LumenTextVariant.Label -> MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
-        LumenTextVariant.Title -> MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+        LumenTextVariant.Title -> MaterialTheme.typography.headlineSmall.let { headline ->
+            headline.copy(
+                fontFamily = if (LocalLumenNamedTheme.current?.serifHeadings == true &&
+                    headline.fontFamily == defaultHeadlineFamily) FontFamily.Serif else headline.fontFamily,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 
     Text(text = text, modifier = modifier, color = color, style = style)
@@ -133,7 +141,7 @@ fun LumenSurface(
     Surface(
         modifier = modifier,
         color = color,
-        shape = RoundedCornerShape(radius.value * theme.appearance.radiusScale)
+        shape = RoundedCornerShape(radius.scoped(theme.appearance.radiusScale))
     ) {
         androidx.compose.foundation.layout.Box(
             modifier = Modifier.padding(padding.value * theme.appearance.spacingScale),
@@ -222,7 +230,7 @@ fun LumenIconButton(
 ) {
     val palette = buttonPalette(LocalLumenTheme.current.colors, intent)
     val metrics = LumenIconButtonMetrics.resolve(size)
-    val shape = RoundedCornerShape(LumenRadius.Sm)
+    val shape = RoundedCornerShape(LumenSurfaceRadius.Sm.scoped())
 
     IconButton(
         onClick = onClick,
@@ -259,7 +267,7 @@ fun LumenIconButton(
 ) {
     val palette = buttonPalette(LocalLumenTheme.current.colors, intent)
     val metrics = LumenIconButtonMetrics.resolve(size)
-    val shape = RoundedCornerShape(LumenRadius.Sm)
+    val shape = RoundedCornerShape(LumenSurfaceRadius.Sm.scoped())
 
     IconButton(
         onClick = onClick,
@@ -304,15 +312,24 @@ private data class LumenButtonPalette(
     val foreground: Color
 )
 
+@Composable
 private fun buttonPalette(
     colors: LumenColorPalette,
     intent: LumenButtonIntent
 ): LumenButtonPalette = when (intent) {
     LumenButtonIntent.Danger -> LumenButtonPalette(colors.danger, colors.danger, colors.onDanger)
-    LumenButtonIntent.Primary -> LumenButtonPalette(colors.brandSolid, colors.brandSolid, colors.onBrand)
+    LumenButtonIntent.Primary -> if (LocalLumenNamedTheme.current?.inkActions == true) {
+        LumenButtonPalette(colors.ink, colors.ink, colors.surface)
+    } else {
+        LumenButtonPalette(colors.brandSolid, colors.brandSolid, colors.onBrand)
+    }
     LumenButtonIntent.Quiet -> LumenButtonPalette(Color.Transparent, Color.Transparent, colors.inkSoft)
     LumenButtonIntent.Secondary -> LumenButtonPalette(colors.surfaceMuted, colors.line, colors.ink)
-    LumenButtonIntent.Success -> LumenButtonPalette(colors.success, colors.success, colors.onBrand)
+    LumenButtonIntent.Success -> {
+        val named = LocalLumenNamedTheme.current
+        val foreground = if (LocalLumenTheme.current.isDark) named?.darkOnSuccess else named?.lightOnSuccess
+        LumenButtonPalette(colors.success, colors.success, foreground ?: colors.onBrand)
+    }
 }
 
 internal fun lumenDisabledButtonContainerColor(background: Color): Color =
@@ -343,7 +360,7 @@ fun LumenButton(
             .then(semanticsModifier)
             .defaultMinSize(minHeight = metrics.minHeight),
         enabled = enabled && !loading,
-        shape = RoundedCornerShape(LumenRadius.Sm),
+        shape = RoundedCornerShape(LumenSurfaceRadius.Sm.scoped()),
         border = BorderStroke(1.dp, palette.border),
         colors = ButtonDefaults.buttonColors(
             containerColor = palette.background,
@@ -405,7 +422,7 @@ fun LumenTextField(
         label = { Text(label) },
         supportingText = errorMessage?.let { message -> ({ Text(message) }) },
         visualTransformation = visualTransformation,
-        shape = RoundedCornerShape(LumenRadius.Sm),
+        shape = RoundedCornerShape(LumenSurfaceRadius.Sm.scoped()),
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = colors.surface,
             unfocusedContainerColor = colors.surface,
@@ -414,6 +431,8 @@ fun LumenTextField(
             unfocusedTextColor = colors.ink,
             focusedBorderColor = colors.brand,
             unfocusedBorderColor = colors.line,
+            errorLabelColor = lumenStatusTextColor(Color.Unspecified),
+            errorSupportingTextColor = lumenStatusTextColor(Color.Unspecified),
             errorBorderColor = colors.danger,
             cursorColor = colors.brand
         )
@@ -454,7 +473,10 @@ fun LumenBadge(
     Surface(
         modifier = modifier,
         color = background,
-        contentColor = foreground,
+        contentColor = when (tone) {
+            LumenBadgeTone.Danger, LumenBadgeTone.Success, LumenBadgeTone.Warning -> lumenStatusTextColor(foreground)
+            else -> foreground
+        },
         shape = RoundedCornerShape(LumenRadius.Full)
     ) {
         Text(

@@ -3,7 +3,8 @@
 Use this guide when an AI agent is building an app with Lumen or updating examples that teach
 another agent how to use the library.
 
-Lumen 4 is released. See the [v4.2 highlights](lumen-4.2.md) and use the
+For Lumen 5, read the [migration guide](migrating-v4-to-v5.md) and
+[selective installation](selective-installation.md). Use the
 [release manifest](../registry/release-manifest.json) for each package's version; companion packages
 do not all share the umbrella version. The public plugin and hosted MCP describe their deployed
 snapshot, which can differ from this checkout. Inspect snapshot metadata before using its contracts.
@@ -38,6 +39,35 @@ framework-selection, component-composition, theming, accessibility, and verifica
 Use it by naming `$lumen-ui` in a prompt, or let a compatible agent trigger it from Lumen-specific
 requests.
 
+The portable skill records its guidance revision in `metadata.guidance-version` in `SKILL.md`.
+An unstamped installation predates versioned guidance. For a manager-tracked global skill, run
+`npx skills check -g` and refresh only Lumen with `npx skills update lumen-ui -g`. Use `-p` for
+a project install. The configured source determines which revision the manager offers.
+
+For a manual copy or release candidate, compare the whole skill with the intended Lumen checkout,
+including its framework references. For example, from the checkout:
+
+```bash
+installed_skill="$HOME/.codex/skills/lumen-ui"
+git diff --no-index --stat -- skills/lumen-ui "$installed_skill"
+```
+
+Exit 1 identifies differences and exit 0 means the files match. Use the path your agent
+actually loaded. Modern manager installations can live under `~/.agents/skills` while an
+older manual copy still lives under `~/.codex/skills`. For a manual directory, review local
+edits and replace that exact copy from the checkout, keeping the original outside skill discovery:
+
+```bash
+skill_backup="$HOME/lumen-ui-backup"
+mkdir "$skill_backup" && mv "$installed_skill" "$skill_backup/lumen-ui" && cp -R skills/lumen-ui "$installed_skill"
+git diff --no-index --stat -- skills/lumen-ui "$installed_skill"
+```
+
+For a manager-owned installation, use the manager instead. Run
+`npx skills add . --skill lumen-ui --agent codex -g` from the intended checkout, or omit `-g`
+and supply its absolute path from a project directory. The adapter installed in the application
+determines which CSS instructions apply.
+
 The skill and MCP server complement each other: the skill explains how to work, while
 `@santi020k/lumen-mcp` supplies structured catalog search, framework-specific contracts, recipes,
 source, tokens, resources, and rules.
@@ -65,26 +95,27 @@ should not opt into a consumer-only policy.
 
 Use the framework requested by the user. Every adapter shares the same Lumen foundation.
 
-| App Target                 | Install                                                                | Import Components From                       | Load Styles From                       |
+| App Target                 | Install                                                                | Import Components From                       | Style setup                       |
 | -------------------------- | ---------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------- |
-| Astro                      | `@santi020k/lumen-astro`                                               | `@santi020k/lumen-astro`                     | `@santi020k/lumen-astro/styles.css`    |
-| React                      | `@santi020k/lumen-react`                                               | `@santi020k/lumen-react`                     | `@santi020k/lumen-react/styles.css`    |
+| Astro                      | `@santi020k/lumen-astro`                                               | `@santi020k/lumen-astro`                     | Automatic component CSS in v5    |
+| React                      | `@santi020k/lumen-react`                                               | `@santi020k/lumen-react`                     | Foundation + component CSS, or full `styles.css`    |
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
-| Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | `@santi020k/lumen-elements/styles.css` |
+| Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | Foundation + component CSS, or full `styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
-| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `4.4.0`  | `LumenUI`                                    | Not applicable                         |
-| Android / Compose          | Maven Central `com.santi020k:lumen-compose:4.0.1`                       | `com.santi020k.lumen`                        | Not applicable                         |
-| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:4.0.1`                  | `com.santi020k.lumen`                        | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `5.0.0`  | `LumenUI`                                    | Not applicable                         |
+| Android / Compose          | Maven Central `com.santi020k:lumen-compose:4.1.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
+| Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:4.1.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |
 | Optional web brand icons   | `@santi020k/lumen-icons-brand`                                         | Register once, then use the framework `Icon` | Uses framework styles                  |
 
 Each framework package includes the shared foundation. Install `@santi020k/lumen` separately only
-when you need its framework-neutral CLI or registry metadata.
+as a development dependency when you need its framework-neutral CLI or registry metadata. Web
+adapters do not install the `lumen` command in v5.
 
 For React Native, mount one `LumenProvider` near the app root. For SwiftUI, attach the `LumenUI`
 Swift Package product to the application target, use an exact or compatible release-version rule,
 and apply `.lumenTheme(...)` near the root. For Compose, install
-`com.santi020k:lumen-compose:4.0.1` from Maven Central and wrap content in `LumenTheme`. Native
+`com.santi020k:lumen-compose:4.1.0` from Maven Central and wrap content in `LumenTheme`. Native
 adapters do not load CSS or the Astro runtime.
 
 React Native can use ordinary React hooks and platform-neutral application hooks. Import native
@@ -95,7 +126,7 @@ import DOM-dependent hooks from `@santi020k/lumen-react` into a native bundle. S
 in an application workspace package and keep the Lumen rendering adapter at each app boundary.
 
 For watchOS, use the focused `LumenWatch*` contracts from the same Swift package. For Wear OS,
-install `com.santi020k:lumen-compose-wear:4.0.1` and wrap wearable content in `LumenWearTheme`
+install `com.santi020k:lumen-compose-wear:4.1.0` and wrap wearable content in `LumenWearTheme`
 inside the application-owned Wear Material theme. Keep complications, tiles, rotary input,
 Always On behavior, haptics, synchronization, navigation, and health or safety logic app-owned.
 
@@ -163,6 +194,13 @@ Initialize the document in the head before paint; unavailable storage must not p
 The owner's click handler updates the document and the toggle's `aria-pressed` state, and persists
 inside a guarded storage write. Use a server-rendered theme when the application already has one.
 A controlled Lumen toggle does not read storage or change that state itself.
+
+For links and generated text, use `CopyButton recoveryLabel="Select and copy the complete value"`
+(`recovery-label` in Elements) when manual recovery is useful. A failed clipboard request exposes a
+labelled read-only field without moving focus from the trigger. Recovery stays available after the
+button feedback resets; a successful retry removes it. Keep the recovery label localized. Place
+separate copy actions in a vertical `Stack align="start"` so recovery stays beside its trigger in
+reading order without stretching other buttons.
 
 For commands generated from a form, point `CopyButton` at the current output element. It reads the
 latest text when clicked, so the application only updates the output rather than managing clipboard
@@ -236,7 +274,12 @@ local repository, and programmatic examples.
 
 ## Minimal Setup
 
-Import the stylesheet once in the app's global CSS, root layout, or app entry.
+In v5, Astro components import their own CSS and shared foundation automatically. React and Elements
+import `styles/foundation.css` once, then `styles/components/<kebab-name>.css` with each component.
+Include styles for conditional content and application-generated markup. The full stylesheet remains
+a supported convenience option in all web adapters, as shown below. Each independent Lumen CSS entry
+establishes the same public layer order, so an automatically loaded component chunk can precede
+Tailwind without putting its base reset above Lumen controls.
 
 This section applies to web targets. Native adapters use their provider or theme APIs instead of a
 stylesheet.
@@ -294,6 +337,11 @@ import { Button, Card, Input, Label } from '@santi020k/lumen-astro'
 content, or `as="section"` for a labeled region. Do not use a semantic root solely for styling.
 Its visual variants are `default`, `accent`, and `glass`; reserve `accent` for featured metrics and
 keep glass selective.
+
+Activating an ordinary local link moves focus to its destination while preserving native hash
+scrolling and history. A heading receives temporary `tabindex="-1"`, removed on blur; authored
+tab order is preserved. Canceled clicks, modifier keys, downloads, and other browsing targets
+keep their normal behavior. Passive scrolling only updates the current link and never moves focus.
 
 For long reading surfaces, use `Anchor` for local section navigation and pass each item’s optional
 heading `depth`, `index`, and `description` when hierarchy matters. Anchor also respects root `scroll-padding-top` and heading `scroll-margin-top` after text resizing. Use `activationOffset` for fixed
@@ -587,9 +635,8 @@ uses these CustomEvents:
 ## Registry Helper
 
 `@santi020k/lumen` exports typed component, recipe, and documentation metadata from
-`@santi020k/lumen/registry`. The umbrella package and every web adapter expose the same small
-`lumen` binary, so projects that install Astro, React, or Elements can use discovery and diagnostics
-without another direct dependency. Individual components are addressable by name, including
+`@santi020k/lumen/registry`. Install the optional `@santi020k/lumen` development dependency for its small
+`lumen` binary. Web adapters do not install CLI tooling in v5. Individual components are addressable by name, including
 kebab-case aliases such as `data-table`:
 
 ```bash
@@ -668,7 +715,12 @@ attributes, and accessible markup.
   let the frame own the border and corner clipping; remove child rounding with supported props.
   For example, use `<Image radius="none" ... />` below a framed header: `Image` defaults to
   `radius="lg"`, which otherwise leaves rounded gaps at the shared edge. Keep standalone image
-  rounding when appropriate.
+  rounding when appropriate. Prose preserves the public Image radius prop; its generic media
+  rounding applies only to unstyled article images.
+- Dedicated media frames (AspectRatio, CoverImage, DeviceFrame, ImageComparison, MediaViewport,
+  and MediaThumbnail) own clipping and flatten flush media corners, including public Image and
+  optimized picture children. Keep interactive cards outside those frames. See the
+  [frame styling contract](styling-contract.md#frame-borders-and-corners).
 - Use a single divider between header and body rather than overlapping full borders. Inset
   surfaces with padding may have their own radius; account for the inset so their curves align.
   Clip artwork at its frame, not an entire interactive surface where focus rings or overlays
@@ -762,19 +814,32 @@ focus on option buttons. The DOM adapters match both option labels and values.
 
 ## Appearance presets
 
-Choose `default`, `studio` or `glass` at the theme boundary. See [appearance presets](appearance-presets.md) for exact framework APIs. Studio follows the neutral PostLens look. Glass remains explicit per supporting surface; React Native and Compose retain solid fallbacks without adding blur dependencies. Customize semantic colors, typography and surface dimensions through public theme APIs.
+The selective foundation ships Lumen light and dark. Add only the appearances you use from your adapter: `styles/themes/paper.css`, `styles/themes/field.css`, `styles/themes/studio.css`, `styles/themes/santi020k.css`, or `styles/effects/glass.css`. Full `styles.css` includes every appearance. Set `data-lumen-preset="paper"` or `"field"` for the optional web palettes. See [appearance presets](appearance-presets.md) for exact framework APIs. Studio follows the neutral PostLens look. Glass remains explicit per supporting surface; React Native and Compose retain solid fallbacks without adding blur dependencies. Customize semantic colors, typography and surface dimensions through public theme APIs.
+
+For a native reading screen, scope Paper to the view through the adapter's public named theme.
+Field and santi020k follow the same pattern. Use the React Native theme subpath for the selected
+definition. Keep preferred scheme and persisted theme selection in the app.
+See the [mobile examples](appearance-presets.md#named-themes-on-mobile).
 
 ## Version-aware build, review, and migration
 
 The portable skills are `lumen-ui` for implementation, `lumen-review` for a read-only audit, and
 `lumen-migrate` for an explicitly requested upgrade. Their canonical sources live under `skills/`;
 `pnpm run generate:plugin-package` produces the client snapshots. Both client manifests use plugin
-1.1.0 and pin the v4 catalog. This candidate is not proof of publication or directory approval.
+1.1.0 and pin the v5 catalog. The source manifests do not establish registry availability or directory approval.
 
 Before applying MCP contracts, call `lumen_check_compatibility` with resolved versions from installed
 metadata or native lock files. A manifest range is not an installed version. When versions differ,
 inspect installed public types and README or use a matching MCP package. Do not silently upgrade.
 Search supports English and Spanish queries with framework and platform filters.
+
+For a v5 upgrade, request `lumen_get_migration` with `targetVersion: "5.0.0"`, then run
+`lumen migrate v5 --dry-run --json` from the matching CLI. V5 performs no source rewrites;
+`--dependencies --apply` opts into dependency changes through the existing pnpm workflow.
+The bundled release manifest supplies each package's version, including companions still on v4.
+Await `window.LumenInitUiPrimitives(scope)` before using newly enhanced Astro markup. Keep full
+CSS and local patches until selective setup passes equivalent route and interaction checks.
+See [the v5 migration guide](migrating-v4-to-v5.md) for commands, failure recovery and rollback.
 
 For a v4 upgrade, read `lumen_get_migration` and preview `lumen migrate v4 --dry-run --json` locally.
 `--apply` rewrites only known static SDK import paths in JavaScript and TypeScript. It preserves
@@ -810,3 +875,13 @@ owner; keep schemas, financial policy, requests, authorization, and draft storag
 For photo and media editors, install the `media-workspace` recipe and follow
 [Studio media workspaces](studio-media-workspaces.md). Reuse public media controls; keep
 image processing, storage and export in the consumer application.
+
+## Manual code-copy recovery
+
+For documentation and generated commands, set `recoveryLabel="Select and copy the complete source"`
+on `Code` or `CodeTabs` in Astro and React. Elements accepts `recovery-label` on `lumen-code` or
+its enclosing `lumen-code-tabs`. Clipboard failure then exposes the complete text in a labelled,
+read-only field that selects on focus. Recovery never takes focus automatically, stays usable
+after transient feedback resets, and clears on a successful retry or a tab change. This is opt-in;
+keep `errorLabel` useful when no recovery field is requested. Supply `code` when highlighted or
+folded previews do not contain the full source.

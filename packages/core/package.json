@@ -1,12 +1,14 @@
 {
   "name": "@santi020k/lumen-core",
-  "version": "4.4.0",
+  "version": "5.0.0",
   "publishConfig": {
     "access": "public"
   },
   "description": "Shared tokens, metadata, and behavior helpers for Lumen UI packages.",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./styles/**/*.css"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -103,6 +105,44 @@
     "./media-viewport": {
       "types": "./dist/media-viewport.d.ts",
       "import": "./dist/media-viewport.js"
+    },
+    "./styles/foundation.css": "./styles/foundation.css",
+    "./styles/themes/studio.css": "./styles/themes/studio.css",
+    "./styles/themes/paper.css": "./styles/themes/paper.css",
+    "./styles/themes/field.css": "./styles/themes/field.css",
+    "./styles/themes/santi020k.css": "./styles/themes/santi020k.css",
+    "./styles/effects/glass.css": "./styles/effects/glass.css",
+    "./styles/components/*.css": "./styles/components/*.css",
+    "./styles.css": "./styles/lumen.css",
+    "./styles/manifest.json": "./styles/manifest.json",
+    "./styles/critical.css": "./styles/critical.css",
+    "./styles/motion.css": "./styles/motion.css",
+    "./styles/world-map.css": "./styles/world-map.css",
+    "./layers.css": "./styles/layers.css",
+    "./tailwind.css": "./styles/tailwind.css",
+    "./anchor": {
+      "types": "./dist/anchor.d.ts",
+      "import": "./dist/anchor.js"
+    },
+    "./loading": {
+      "types": "./dist/loading.d.ts",
+      "import": "./dist/loading.js"
+    },
+    "./reveal": {
+      "types": "./dist/reveal.d.ts",
+      "import": "./dist/reveal.js"
+    },
+    "./language": {
+      "types": "./dist/language.d.ts",
+      "import": "./dist/language.js"
+    },
+    "./native-input": {
+      "types": "./dist/native-input.d.ts",
+      "import": "./dist/native-input.js"
+    },
+    "./component-delivery": {
+      "types": "./dist/component-delivery.d.ts",
+      "import": "./dist/component-delivery.js"
     }
   },
   "files": [
@@ -110,7 +150,8 @@
     "README.md",
     "LICENSE",
     "PHONE_FLAG_LICENSE.txt",
-    "THIRD_PARTY_NOTICES.md"
+    "THIRD_PARTY_NOTICES.md",
+    "styles"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

@@ -70,10 +70,10 @@ public struct LumenCard<Content: View>: View {
             .padding(padding.value * theme.appearance.spacingScale)
             .modifier(LumenSurfaceBackground(color: backgroundColor, material: variant == .default ? material : .solid))
             .overlay {
-                RoundedRectangle(cornerRadius: radius.value * theme.appearance.radiusScale, style: .continuous)
+                RoundedRectangle(cornerRadius: theme.surfaceRadius(radius), style: .continuous)
                     .stroke(borderColor, lineWidth: theme.appearance.borderWidth)
             }
-            .clipShape(RoundedRectangle(cornerRadius: radius.value * theme.appearance.radiusScale, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: theme.surfaceRadius(radius), style: .continuous))
     }
 
     private var accentColor: Color? {
@@ -161,7 +161,7 @@ public struct LumenAlert<Content: View>: View {
     }
 
     private var foregroundColor: Color {
-        variant == .default ? theme.colors.ink : accentColor
+        variant == .default ? theme.colors.ink : theme.statusText(accentColor)
     }
 }
 

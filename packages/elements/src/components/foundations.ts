@@ -1,4 +1,4 @@
-import { resolveLumenLoadingSemantics, resolveLumenSkeletonSize } from '@santi020k/lumen-core'
+import { resolveLumenLoadingSemantics, resolveLumenSkeletonSize } from '@santi020k/lumen-core/loading'
 
 import {
   createLumenElementClass,
@@ -405,4 +405,8 @@ export const defineLumenFoundations = (
   for (const definition of foundationDefinitions) {
     defineLumenElement(definition.config, definition.element, registry)
   }
+}
+
+export const defineLumenLabel = (registry?: LumenCustomElementRegistry): void => {
+  defineLumenElement(label.config, label.element, registry)
 }

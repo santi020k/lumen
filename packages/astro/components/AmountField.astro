@@ -1,6 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
+import '../styles/foundation.css'
+import '../styles/components/amount-field.css'
+
 import { formatLumenAmountDraft, getLumenAmountValue, type LumenAmountOptions, resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 interface Props extends Omit<HTMLAttributes<'input'>, 'value' | 'type' | 'min' | 'max' | 'step'>, LumenAmountOptions {

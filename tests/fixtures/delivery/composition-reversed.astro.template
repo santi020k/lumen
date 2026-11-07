@@ -1,0 +1,57 @@
+---
+import SpeedDial from '@santi020k/lumen-astro/components/SpeedDial'
+import Table from '@santi020k/lumen-astro/components/Table'
+import Separator from '@santi020k/lumen-astro/components/Separator'
+import Collapsible from '@santi020k/lumen-astro/components/Collapsible'
+import Avatar from '@santi020k/lumen-astro/components/Avatar'
+import Skeleton from '@santi020k/lumen-astro/components/Skeleton'
+import Progress from '@santi020k/lumen-astro/components/Progress'
+import NativeSelect from '@santi020k/lumen-astro/components/NativeSelect'
+import Textarea from '@santi020k/lumen-astro/components/Textarea'
+import Switch from '@santi020k/lumen-astro/components/Switch'
+import Checkbox from '@santi020k/lumen-astro/components/Checkbox'
+import FieldError from '@santi020k/lumen-astro/components/FieldError'
+import Field from '@santi020k/lumen-astro/components/Field'
+import Label from '@santi020k/lumen-astro/components/Label'
+import Input from '@santi020k/lumen-astro/components/Input'
+import InputGroup from '@santi020k/lumen-astro/components/InputGroup'
+import Typography from '@santi020k/lumen-astro/components/Typography'
+import Code from '@santi020k/lumen-astro/components/Code'
+import TimelineItem from '@santi020k/lumen-astro/components/TimelineItem'
+import Timeline from '@santi020k/lumen-astro/components/Timeline'
+import ThemeToggle from '@santi020k/lumen-astro/components/ThemeToggle'
+import Icon from '@santi020k/lumen-astro/components/Icon'
+import Alert from '@santi020k/lumen-astro/components/Alert'
+import Badge from '@santi020k/lumen-astro/components/Badge'
+import ButtonLink from '@santi020k/lumen-astro/components/ButtonLink'
+import Button from '@santi020k/lumen-astro/components/Button'
+import CardFooter from '@santi020k/lumen-astro/components/CardFooter'
+import CardContent from '@santi020k/lumen-astro/components/CardContent'
+import CardDescription from '@santi020k/lumen-astro/components/CardDescription'
+import CardTitle from '@santi020k/lumen-astro/components/CardTitle'
+import CardHeader from '@santi020k/lumen-astro/components/CardHeader'
+import Card from '@santi020k/lumen-astro/components/Card'
+import Grid from '@santi020k/lumen-astro/components/Grid'
+import Stack from '@santi020k/lumen-astro/components/Stack'
+---
+
+<h1>Component composition</h1>
+<Stack gap="group">
+  <Card>
+    <CardHeader><CardTitle>Delivery sample</CardTitle><CardDescription>Shared composition</CardDescription></CardHeader>
+    <CardContent><Badge variant="outline">Ready</Badge><Avatar alt="Sample author" fallback="SA" /><Alert>Saved successfully</Alert></CardContent>
+    <CardFooter><Button><Icon name="check" />Save</Button><ButtonLink href="#details">Read more</ButtonLink></CardFooter>
+  </Card>
+  <Grid><ThemeToggle /><Code variant="block" code="const greeting = 'Hello'" copy label="Example" /><Icon name="copy" /></Grid>
+  <Typography><h2 id="details">Details</h2><p>Keep <strong>semantic structure</strong> and <code>readable examples</code>.</p></Typography>
+  <Timeline><TimelineItem><p>First milestone</p></TimelineItem><TimelineItem><Icon slot="dot" name="check" />Second milestone</TimelineItem></Timeline>
+  <Field><Label for="sample-input">Email</Label><InputGroup><Icon name="mail" /><Input id="sample-input" value="sample@example.test" /><Button>Send</Button></InputGroup><FieldError>Example data only.</FieldError></Field>
+  <Checkbox checked aria-label="Selected item" /><Switch checked aria-label="Enabled option" />
+  <Textarea aria-label="Notes">Sample notes</Textarea>
+  <NativeSelect aria-label="Location"><option>Colombia</option><option>Japan</option></NativeSelect>
+  <Progress value={65} aria-label="Progress" /><Skeleton animation="none" width="60%" height={20} />
+  <Collapsible open><summary>More detail</summary><p>Expanded content</p></Collapsible>
+  <Separator />
+  <Table><table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody><tr><td>Sample</td><td>Ready</td></tr></tbody></table></Table>
+  <SpeedDial defaultOpen actions={[{ label: 'Copy', icon: 'copy' }, { label: 'Save', icon: 'check' }]} />
+</Stack>

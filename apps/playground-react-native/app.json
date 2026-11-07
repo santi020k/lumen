@@ -48,7 +48,7 @@
     },
     "owner": "santi020k",
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "fingerprint"
     },
     "updates": {
       "url": "https://u.expo.dev/669035f0-04c0-41cd-9ca6-73d99bdb7dce"
@@ -58,7 +58,6 @@
         "expo-build-properties",
         {
           "ios": {
-            "enableSceneSupport": true,
             "buildReactNativeFromSource": true,
             "usePrecompiledModules": false
           }

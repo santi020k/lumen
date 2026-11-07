@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-react",
-  "version": "4.3.0",
+  "version": "5.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -11,7 +11,8 @@
     "./styles.css",
     "./styles/critical.css",
     "./styles/data-table-view.css",
-    "./tailwind.css"
+    "./tailwind.css",
+    "./styles/**/*.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -110,10 +111,76 @@
       "types": "./dist/media-selection.d.ts",
       "import": "./dist/media-selection.js"
     },
-    "./tailwind.css": "./tailwind.css"
+    "./tailwind.css": "./tailwind.css",
+    "./styles/foundation.css": "./styles/foundation.css",
+    "./styles/themes/studio.css": "./styles/themes/studio.css",
+    "./styles/themes/paper.css": "./styles/themes/paper.css",
+    "./styles/themes/field.css": "./styles/themes/field.css",
+    "./styles/themes/santi020k.css": "./styles/themes/santi020k.css",
+    "./styles/effects/glass.css": "./styles/effects/glass.css",
+    "./styles/components/*.css": "./styles/components/*.css",
+    "./components/button": {
+      "types": "./dist/entries/button.d.ts",
+      "import": "./dist/entries/button.js"
+    },
+    "./components/collapsible": {
+      "types": "./dist/entries/collapsible.d.ts",
+      "import": "./dist/entries/collapsible.js"
+    },
+    "./components/empty": {
+      "types": "./dist/entries/empty.d.ts",
+      "import": "./dist/entries/empty.js"
+    },
+    "./components/kbd": {
+      "types": "./dist/entries/kbd.d.ts",
+      "import": "./dist/entries/kbd.js"
+    },
+    "./components/search-field": {
+      "types": "./dist/entries/search-field.d.ts",
+      "import": "./dist/entries/search-field.js"
+    },
+    "./components/link": {
+      "types": "./dist/entries/link.d.ts",
+      "import": "./dist/entries/link.js"
+    },
+    "./components/skip-link": {
+      "types": "./dist/entries/skip-link.d.ts",
+      "import": "./dist/entries/skip-link.js"
+    },
+    "./components/label": {
+      "types": "./dist/entries/label.d.ts",
+      "import": "./dist/entries/label.js"
+    },
+    "./components/dialog": {
+      "types": "./dist/entries/dialog.d.ts",
+      "import": "./dist/entries/dialog.js"
+    },
+    "./components/anchor": {
+      "types": "./dist/entries/anchor.d.ts",
+      "import": "./dist/entries/anchor.js"
+    },
+    "./components/scroll-progress": {
+      "types": "./dist/entries/scroll-progress.d.ts",
+      "import": "./dist/entries/scroll-progress.js"
+    },
+    "./components/card": {
+      "types": "./dist/entries/card.d.ts",
+      "import": "./dist/entries/card.js"
+    },
+    "./components/input": {
+      "types": "./dist/entries/input.d.ts",
+      "import": "./dist/entries/input.js"
+    },
+    "./components/field": {
+      "types": "./dist/entries/field.d.ts",
+      "import": "./dist/entries/field.js"
+    },
+    "./components/checkbox": {
+      "types": "./dist/entries/checkbox.d.ts",
+      "import": "./dist/entries/checkbox.js"
+    }
   },
   "files": [
-    "bin",
     "dist",
     "layers.css",
     "styles.css",
@@ -122,9 +189,6 @@
     "LICENSE",
     "tailwind.css"
   ],
-  "bin": {
-    "lumen": "./bin/lumen.mjs"
-  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/minify-build.mjs",
     "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
@@ -137,7 +201,6 @@
     "measure:selective-imports": "node scripts/measure-selective-imports.mjs"
   },
   "dependencies": {
-    "@santi020k/lumen": "workspace:^",
     "@santi020k/lumen-core": "workspace:^",
     "@tanstack/react-table": "catalog:",
     "uqr": "catalog:"

@@ -6,7 +6,9 @@ This guide explains how to adopt Lumen incrementally.
 
 ## 1. Setup
 
-Install the package for your framework. It includes the shared stylesheet.
+Install the runtime package for your framework. In v5, Astro components load their own styles;
+React and Elements use a shared foundation and the styles for selected components. The full
+stylesheet remains available for incremental adoption.
 
 For Astro projects:
 
@@ -14,7 +16,11 @@ For Astro projects:
 pnpm add @santi020k/lumen-astro
 ```
 
-Import the stylesheet globally in your main layout or Tailwind CSS entry:
+For the CLI commands in this guide, install `@santi020k/lumen` separately as a development
+dependency. Web adapters do not provide the command in v5.
+
+Astro component CSS is automatic. To retain the full stylesheet during an incremental migration
+with Tailwind, use this shared entry; Tailwind itself remains optional:
 
 ```css
 @import "@santi020k/lumen-astro/layers.css";
@@ -88,8 +94,12 @@ Use the guide for your starting version:
 - [Lumen 3 → 4](migrating-v3-to-v4.md): spacing changes,
   component behavior, native signatures, and consumer verification.
 
+- [Lumen 4 → 5](migrating-v4-to-v5.md): runtime-only adapters, async Astro readiness,
+  modular delivery, and editable recipes. Verify target availability in your configured registry.
+
 When skipping major versions, complete and verify each step in order. The `lumen migrate v2`
-command migrates v1 contracts to v2; it does not automate either later upgrade.
+command migrates v1 contracts to v2. The v3/v4 commands have their own supported transforms;
+`lumen migrate v5` reports review and adoption guidance without rewriting source.
 
 ### Migrating from version 3 to version 4
 

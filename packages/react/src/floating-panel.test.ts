@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, type DropdownMenuP
 let container: HTMLDivElement
 let root: Root
 let triggerBounds: DOMRect
+let popoverStyles: HTMLStyleElement
 const nativeShow = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'showPopover')
 const nativeHide = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'hidePopover')
 const nativeViewport = Object.getOwnPropertyDescriptor(window, 'visualViewport')
@@ -36,6 +37,10 @@ const click = (selector: string) => run(() => {
 })
 
 beforeEach(() => {
+  // jsdom has popover UA styles but no top-layer API; model the mock's visible state.
+  popoverStyles = document.createElement('style')
+  popoverStyles.textContent = '[popover][data-native-open="true"] { display: block !important; }'
+  document.head.append(popoverStyles)
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true)
   viewport = Object.assign(new EventTarget(), { width: 400, height: 300, offsetLeft: 0, offsetTop: 0 })
   Object.defineProperty(window, 'visualViewport', { configurable: true, value: viewport })
@@ -66,6 +71,7 @@ afterEach(async () => {
     root.unmount()
   })
   container.remove()
+  popoverStyles.remove()
   for (const [key, descriptor] of [['showPopover', nativeShow], ['hidePopover', nativeHide]] as const) {
     if (descriptor) Object.defineProperty(HTMLElement.prototype, key, descriptor)
     else Reflect.deleteProperty(HTMLElement.prototype, key)

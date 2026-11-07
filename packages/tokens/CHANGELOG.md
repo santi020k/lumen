@@ -1,5 +1,15 @@
 # @santi020k/lumen-tokens
 
+## 4.1.0
+
+### Minor Changes
+
+- Share light and dark colors, native radii and editorial heading preferences for Paper and Field in the reading theme extension.
+
+### Patch Changes
+
+- Refresh the default light and dark palettes with warm paper surfaces, charcoal, and deep cyan actions. Chart accents and text roles follow the same palette across platforms.
+
 ## 4.0.0
 
 ### Minor Changes

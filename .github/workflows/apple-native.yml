@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 1
       - name: Verify stable Apple toolchain
         run: apps/playground-apple/scripts/check-app-store-toolchain.sh
-      - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+      - uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
         with:
           node-version: 22.x
       - name: Restore Swift build cache
@@ -59,7 +59,7 @@ jobs:
         run: apps/playground-apple/ci_scripts/run-native-checks.sh "${{ matrix.check }}"
       - name: Keep failure evidence
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: apple-${{ matrix.check }}-failure
           path: |
@@ -81,7 +81,7 @@ jobs:
           fetch-depth: 1
       - name: Verify stable Apple toolchain
         run: apps/playground-apple/scripts/check-app-store-toolchain.sh
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.x
       - name: Build app and native Tour test bundle once
@@ -94,7 +94,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO build-for-testing
           node .github/scripts/apple-capture-products.mjs record "$RUNNER_TEMP/capture-build/Build/Products"
           tar -czf "$RUNNER_TEMP/capture-products.tar.gz" -C "$RUNNER_TEMP/capture-build/Build/Products" .
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: apple-capture-products
           path: ${{ runner.temp }}/capture-products.tar.gz
@@ -120,10 +120,10 @@ jobs:
           fetch-depth: 1
       - name: Verify stable Apple toolchain
         run: apps/playground-apple/scripts/check-app-store-toolchain.sh
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.2.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.x
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: apple-capture-products
           path: ${{ runner.temp }}/capture-download
@@ -149,7 +149,7 @@ jobs:
           CI_XCODE_CLOUD=1 apps/playground-apple/scripts/capture-component-screenshots.sh \
             apps/playground-apple/Screenshots "${components[@]}"
       - name: Upload native captures
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: apple-captures-${{ matrix.shard }}
           path: apps/playground-apple/Screenshots/*.png
@@ -159,7 +159,7 @@ jobs:
 
       - name: Keep native capture failure evidence
         if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: apple-capture-failure-${{ matrix.shard }}
           path: apps/playground-apple/Screenshots
@@ -180,10 +180,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 1
-      - uses: santi020k/quality/actions/setup-pnpm@ffa37774f75b2b8e761fe3d71e7046cdb6694a69 # v1
+      - uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
         with:
           node-version: 22.x
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: apple-captures-*
           merge-multiple: true

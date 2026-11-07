@@ -19,6 +19,7 @@
   "exclude": [
     "cloudflare/dist",
     "dist",
-    "node_modules"
+    "node_modules",
+    "public/native-previews/react-native-live"
   ]
 }

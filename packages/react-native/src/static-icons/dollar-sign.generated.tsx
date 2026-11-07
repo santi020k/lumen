@@ -4,7 +4,7 @@
  */
 
 import type { ReactElement } from 'react'
-import { Line, Path, Svg } from 'react-native-svg'
+import { Path, Svg } from 'react-native-svg'
 
 import type { LumenIconGraphicProps } from '../icon-primitives.js'
 
@@ -24,8 +24,8 @@ const LumenDollarSignIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Line x1="12" x2="12" y1="2" y2="22" />
-      <Path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+      <Path d="M12 3v18" />
+      <Path d="M17 5H9.5a1 1 0 000 7h5a1 1 0 010 7H6" />
   </Svg>
 )
 

@@ -93,8 +93,8 @@ export const LumenStaticIconButton = ({
   ...props
 }: LumenStaticIconButtonProps): ReactElement => {
   const theme = useLumenTheme()
-  const isDisabled = disabled === true
-  const colors = resolveLumenButtonColors(theme.colors, intent)
+  const isDisabled = disabled
+  const colors = resolveLumenButtonColors(theme.colors, intent, theme.appearance)
   const metrics = resolveLumenIconButtonSize(size)
 
   return (

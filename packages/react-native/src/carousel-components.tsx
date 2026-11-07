@@ -1,4 +1,4 @@
-import { type ReactElement, type ReactNode, useEffect, useRef, useState } from 'react'
+import { type ComponentRef, type ReactElement, type ReactNode, useEffect, useRef, useState } from 'react'
 import { type LayoutChangeEvent, type NativeScrollEvent, type NativeSyntheticEvent,
   Platform, Pressable, ScrollView, View, type ViewProps } from 'react-native'
 
@@ -45,7 +45,7 @@ export const LumenCarousel = ({ label, slides, index, onIndexChange, renderSlide
   const state = resolveLumenCarousel(slides, index)
   const [width, setWidth] = useState(0)
   const [settled, setSettled] = useState(0)
-  const viewportRef = useRef<ScrollView>(null)
+  const viewportRef = useRef<ComponentRef<typeof ScrollView>>(null)
   const validSlides = state.status === 'ready' ? slides : []
   const ids = JSON.stringify(validSlides.map(slide => slide.id))
   const validHeight = Number.isFinite(height) && height > 0 && height <= 4096

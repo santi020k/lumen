@@ -2,4 +2,4 @@
  * Standalone stylesheet entry for React consumers.
  * Import once with: import "@santi020k/lumen-react/styles.css"
  */
-@import "@santi020k/lumen/styles.css";
+@import "@santi020k/lumen-core/styles.css";

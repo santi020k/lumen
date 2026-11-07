@@ -1,165 +1,251 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import '@santi020k/lumen-react/styles.css'
+import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/badge.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import '@santi020k/lumen-react/styles/components/card.css'
+import '@santi020k/lumen-react/styles/components/code-tabs.css'
+import '@santi020k/lumen-react/styles/components/label.css'
+import '@santi020k/lumen-react/styles/components/select.css'
+import '@santi020k/lumen-react/styles/components/stack.css'
+import '@santi020k/lumen-react/styles/components/eyebrow.css'
+import '@santi020k/lumen-react/styles/components/field.css'
+import '@santi020k/lumen-react/styles/components/icon.css'
+import '@santi020k/lumen-react/styles/components/image.css'
+import '@santi020k/lumen-react/styles/components/link.css'
+import '@santi020k/lumen-react/styles/components/scroll-area.css'
+import '@santi020k/lumen-react/styles/components/radio-group.css'
+import '@santi020k/lumen-react/styles/components/stepper.css'
 import './styles.css'
 
-import { Badge, Button, Card, CodeTabs, Stack } from '@santi020k/lumen-react'
+import { Button, Card, Eyebrow, Image, Link, Stepper } from '@santi020k/lumen-react'
+import { ArrowRight, ArrowUpRight, CircleAlert, Frame, Icon, Info, ScanSearch, SlidersHorizontal } from '@santi020k/lumen-react/icons'
 
+import pluginIcon from '../community/assets/icon.png'
+
+import { DesignReview, ProjectHandoff } from './export-result.js'
+import { ExportSettings } from './export-settings.js'
 import type { PluginBridge, PluginResult } from './model.js'
+import { SelectionArt } from './selection-art.js'
+import type { ExportTarget } from './targets.js'
+import { appearancesFor, defaultTarget, isBrandMode, isNativeTarget, platforms } from './targets.js'
 
-const download = (contents: string, name: string) => {
-  const url = URL.createObjectURL(new Blob([contents], { type: 'text/plain;charset=utf-8' }))
-  const anchor = document.createElement('a')
+const stages = ['Setup', 'Review', 'Handoff']
 
-  anchor.href = url
+type InspectorStep = { page: 'setup', result: PluginResult | null } | { page: 'review' | 'handoff', result: PluginResult }
 
-  anchor.download = name
+const initialStep: InspectorStep = { page: 'setup', result: null }
+const stepIndex = { setup: 0, review: 1, handoff: 2 }
 
-  anchor.click()
+interface SelectionSummaryProps {
+  step: InspectorStep
+  selection: string | null
+  target: ExportTarget
+}
 
-  URL.revokeObjectURL(url)
+const appearanceName = (target: ExportTarget) => {
+  if (isBrandMode(target.appearance)) return `santi020k ${target.appearance === 'santi020k-dark' ? 'Dark' : 'Light'}`
+
+  if (isNativeTarget(target)) return 'Project appearance'
+
+  return appearancesFor(target.version).find(option => option.value === target.appearance)?.label
+}
+
+const SelectionSummary = ({ step, selection, target }: SelectionSummaryProps) => {
+  if (step.page !== 'setup') {
+    return (
+      <div className="result-context">
+        <Icon icon={Frame} size="sm" />
+        <strong>{selection ?? step.result.selectionName}</strong>
+        <span className="context-details">
+          {platforms[step.result.target].label}
+          {' · '}
+          {step.result.lumenVersion}
+          {' · '}
+          {appearanceName(target)}
+        </span>
+      </div>
+    )
+  }
+
+  const platform = target.platform ?? 'astro'
+
+  return (
+    <Card
+      aria-labelledby="selection-title"
+      as="section"
+      className="selection-card"
+      data-theme="dark"
+    >
+      <div className="selection-copy">
+        <Eyebrow>
+          <Icon icon={Frame} size="sm" />
+          Selected design
+        </Eyebrow>
+        <h2 id="selection-title">{selection ?? 'Nothing selected'}</h2>
+        <p>
+          {selection ? `Ready to inspect for ${platforms[platform].label}.` : 'Select one frame or component to begin.'}
+        </p>
+      </div>
+      <SelectionArt />
+    </Card>
+  )
 }
 
 export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: boolean }) => {
+  const [target, setTarget] = useState<ExportTarget>(defaultTarget)
   const [selection, setSelection] = useState<string | null>(null)
-  const [result, setResult] = useState<PluginResult | null>(null)
+  const [step, setStep] = useState<InspectorStep>(initialStep)
+  const [handoffVisited, setHandoffVisited] = useState(false)
+  const setupHeadingRef = useRef<HTMLHeadingElement>(null)
+  const reviewHeadingRef = useRef<HTMLHeadingElement>(null)
+  const handoffHeadingRef = useRef<HTMLHeadingElement>(null)
+  const { result } = step
+  const previousPageRef = useRef(step.page)
   const [busy, setBusy] = useState(false)
   const [status, setStatus] = useState('Select one frame or component in Figma.')
   const [failed, setFailed] = useState(false)
 
+  useEffect(() => {
+    if (previousPageRef.current !== step.page) {
+      const heading = { setup: setupHeadingRef, review: reviewHeadingRef, handoff: handoffHeadingRef }[step.page]
+
+      heading.current?.focus()
+    }
+
+    previousPageRef.current = step.page
+  }, [step.page])
+
   useEffect(() => bridge.subscribe(message => {
-    setBusy(false)
+    if (message.type !== 'selection') setBusy(false)
 
     setFailed(message.type === 'error')
+
+    setHandoffVisited(false)
 
     if (message.type === 'selection') {
       setSelection(message.name)
 
-      setResult(null)
+      setStep(initialStep)
 
       setStatus(message.name ? 'Ready to inspect this selection.' : 'Select one frame or component in Figma.')
     } else if (message.type === 'result') {
-      setResult(message.result)
+      setStep({ page: 'review', result: message.result })
 
-      setStatus('Analysis ready. Review the findings before using the starter.')
+      setStatus(message.result.code ? 'Analysis ready. Review the findings before using the starter.' : 'No supported components in this selection. Review the handoff for details.')
     } else {
-      setResult(null)
+      setStep(initialStep)
 
       setStatus(message.message)
     }
   }), [bridge])
 
-  const findings = result ? result.findings : []
-  const verified = findings.filter(finding => finding.status === 'verified').length
-  const review = findings.filter(finding => finding.status !== 'verified')
+  const changeTarget = (next: ExportTarget) => {
+    setTarget(next)
+
+    setHandoffVisited(false)
+
+    setStep(initialStep)
+
+    setFailed(false)
+
+    setStatus(selection ? 'Inspect the selection to export with these settings.' : 'Select one frame or component in Figma.')
+  }
+
+  const inspect = () => {
+    if (step.result) {
+      setStep({ page: 'review', result: step.result })
+
+      return
+    }
+
+    setBusy(true)
+
+    setFailed(false)
+
+    setStatus('Inspecting component identities and design properties…')
+
+    bridge.analyze(target)
+  }
+
+  const action = step.result ? { icon: ArrowRight, label: 'View design review' } : { icon: ScanSearch, label: 'Inspect selection' }
 
   return (
     <main className="plugin-panel">
       <header className="plugin-header">
-        <div className="plugin-wordmark">
-          Lumen
-          <Badge variant="outline">Beta</Badge>
-        </div>
+        <Image alt="" height={36} loading="eager" radius="none" src={pluginIcon} width={36} />
         <h1>
-          From your canvas
-          <br />
-          to your components.
+          Lumen
+          {' '}
+          <span>for Figma</span>
         </h1>
-        <p>Inspect a Lumen design and prepare an Astro starter for your coding agent.</p>
+        <span className="offline-label">Runs locally</span>
       </header>
-      {preview && <p className="preview-note">Local preview · Synthetic settings screen. No Figma file is connected.</p>}
-      <Card className="selection-card">
-        <p className="eyebrow">Selected design</p>
-        <h2>{selection ?? 'Nothing selected'}</h2>
-        <p className="selection-meta">Astro · 6 supported Lumen components</p>
-        <Button
-          disabled={!selection || busy}
-          loading={busy}
-          onClick={() => {
-            setBusy(true)
-
-            setFailed(false)
-
-            setResult(null)
-
-            setStatus('Inspecting component identities and design properties…')
-
-            bridge.analyze()
-          }}
+      <SelectionSummary selection={selection} step={step} target={target} />
+      <Stepper aria-label="Export progress" className="flow-steps" currentStep={stepIndex[step.page]} steps={stages} />
+      {step.page === 'setup' && (
+        <Card
+          aria-labelledby="settings-title"
+          as="section"
+          className="settings-card"
         >
-          Inspect selection
-        </Button>
-      </Card>
-      <p aria-live="polite" className={failed ? 'status status-error' : 'status'} role="status">{status}</p>
+          <h2 id="settings-title" ref={setupHeadingRef} tabIndex={-1}>
+            <Icon icon={SlidersHorizontal} />
+            Export settings
+          </h2>
+          <ExportSettings busy={busy} changeTarget={changeTarget} target={target} />
+          <Button
+            disabled={!selection || busy}
+            loading={busy}
+            onClick={inspect}
+          >
+            <Icon icon={action.icon} />
+            {action.label}
+          </Button>
+          <p className="status" data-error={failed} role="status">
+            <Icon icon={failed ? CircleAlert : Info} size="sm" />
+            {status}
+          </p>
+        </Card>
+      )}
       {result && (
-        <Stack gap="lg">
-          <section aria-labelledby="findings-title">
-            <div className="section-heading">
-              <h2 id="findings-title">Design review</h2>
-              <Badge variant="outline">
-                {verified}
-                {' '}
-                verified
-              </Badge>
-            </div>
-            <p className="review-intro">
-              Lumen
-              {' '}
-              {result.lumenVersion}
-              {' '}
-              ·
-              {' '}
-              {review.length}
-              {' '}
-              items to review
-            </p>
-            {review.length > 0 && (
-              <ul className="findings">
-                {review.map(finding => (
-                  <li key={`${finding.nodeId}-${finding.message}`}>
-                    <strong>{finding.name}</strong>
-                    <span>{finding.message}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-          <section aria-labelledby="handoff-title">
-            <h2 id="handoff-title">Take it into your project</h2>
-            <p className="review-intro">Give the AI handoff to your coding agent. It contains the design context, starter, and checks to run.</p>
-            <CodeTabs
-              ariaLabel="Conversion output"
-              className="conversion-code"
-              items={[
-                { value: 'astro', label: 'Astro starter', code: result.code, language: 'html' },
-                { value: 'handoff', label: 'AI handoff', code: result.handoff, language: 'text' }
-              ]}
+        <>
+          <div hidden={step.page !== 'review'}>
+            <DesignReview
+              headingRef={reviewHeadingRef}
+              onBack={() => {
+                setStep({ page: 'setup', result })
+              }}
+              onNext={() => {
+                setHandoffVisited(true)
+
+                setStep({ page: 'handoff', result })
+              }}
+              result={result}
             />
-            <Stack className="download-actions" direction="horizontal" gap="sm" wrap>
-              <Button
-                onClick={() => {
-                  download(result.handoff, 'lumen-figma-handoff.md')
+          </div>
+          {handoffVisited && (
+            <div hidden={step.page !== 'handoff'}>
+              <ProjectHandoff
+                headingRef={handoffHeadingRef}
+                onBack={() => {
+                  setStep({ page: 'review', result })
                 }}
-                size="sm"
-              >
-                Save AI handoff
-              </Button>
-              <Button
-                onClick={() => {
-                  download(result.code, 'LumenSelection.astro')
-                }}
-                size="sm"
-                variant="outline"
-              >
-                Save Astro starter
-              </Button>
-            </Stack>
-          </section>
-        </Stack>
+                result={result}
+              />
+            </div>
+          )}
+        </>
       )}
       <footer className="plugin-footer">
-        <p>Beta · Generated output needs review. Analysis stays in Figma; sharing the handoff is your choice.</p>
-        <a href="https://santi020k.com" rel="noopener noreferrer" target="_blank">By santi020k</a>
+        {preview && <p className="preview-note">Local preview · Synthetic settings screen. No Figma file is connected.</p>}
+        <div className="footer-row">
+          <p>Review design text before sharing a handoff.</p>
+          <Link href="https://santi020k.com" newTab>
+            By santi020k
+            <Icon icon={ArrowUpRight} size="sm" />
+          </Link>
+        </div>
       </footer>
     </main>
   )

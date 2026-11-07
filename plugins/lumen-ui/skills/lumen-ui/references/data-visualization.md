@@ -43,7 +43,9 @@ availability; native component names and data types can differ from web names.
 - Localize chart-owned labels and formatters as well as surrounding copy. Use semantic chart tokens
   and verify narrow layouts, keyboard inspection, and the data disclosure where supported.
 
-Web charts ship in the existing adapter packages; load the complete `styles.css` once. Astro needs
+Web charts ship in the existing adapter packages. V5 Astro charts import their CSS automatically;
+React and Elements need the foundation and matching chart CSS, or the full `styles.css` alternative.
+Keep full CSS for older adapters. Astro needs
 `UIPrimitives` for interactive LineChart enhancement; static plots and tables remain usable without
 it. React owns its interaction. Elements needs public element registration and typed properties for
 structured data and formatters. In React Server Components apps, keep formatter functions in a

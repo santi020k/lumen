@@ -1,4 +1,5 @@
-export type ComponentName = 'Button' | 'Card' | 'Dialog' | 'Field' | 'Input' | 'Tabs'
+import type { ExportTarget, Platform } from './targets.js'
+import { isPlatform, readTarget } from './targets.js'
 
 export interface DesignNode {
   id: string
@@ -22,9 +23,10 @@ export interface Finding {
 
 export interface Analysis {
   schemaVersion: 1
-  status: 'beta'
-  target: 'astro'
-  lumenVersion: string
+  status: 'stable'
+  target: Platform
+  lumenVersion: ExportTarget['version']
+  layout: string
   selection: DesignNode
   findings: Finding[]
   code: string
@@ -36,10 +38,10 @@ export type PluginMessage =
   { type: 'result', result: PluginResult } |
   { type: 'error', message: string }
 
-export type PluginResult = Pick<Analysis, 'code' | 'handoff' | 'findings' | 'lumenVersion'> & { selectionName: string }
+export type PluginResult = Pick<Analysis, 'target' | 'code' | 'layout' | 'handoff' | 'findings' | 'lumenVersion'> & { selectionName: string }
 
 export interface PluginBridge {
-  analyze: () => void
+  analyze: (target: ExportTarget) => void
   subscribe: (listener: (message: PluginMessage) => void) => () => void
 }
 
@@ -52,7 +54,7 @@ const isFinding = (value: unknown): value is Finding => isRecord(value) &&
 
 const isResult = (value: unknown): value is PluginResult => isRecord(value) &&
   typeof value.code === 'string' && typeof value.handoff === 'string' &&
-  typeof value.selectionName === 'string' && typeof value.lumenVersion === 'string' &&
+  typeof value.selectionName === 'string' && isPlatform(value.target) && readTarget(value.target, value.lumenVersion, 'project') !== null && typeof value.layout === 'string' &&
   Array.isArray(value.findings) && value.findings.length <= 10_000 &&
   value.findings.every(isFinding)
 
@@ -68,8 +70,10 @@ export const isPluginMessage = (value: unknown): value is PluginMessage => {
 
 export const resultMessage = (analysis: Analysis): PluginMessage => ({ type: 'result',
   result: {
+    target: analysis.target,
     code: analysis.code,
     handoff: analysis.handoff,
+    layout: analysis.layout,
     findings: analysis.findings,
     lumenVersion: analysis.lumenVersion,
     selectionName: analysis.selection.name

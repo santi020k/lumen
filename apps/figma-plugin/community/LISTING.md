@@ -1,69 +1,51 @@
-# Lumen for Figma — Beta listing materials
+# Lumen for Figma listing materials
 
-These are prepared listing materials, not a published Community listing. Registration and Figma
-desktop verification remain pending. Publish only after the v4 web packages and documentation are
-live and verified, following the [publication workflow](../README.md#figma-community-publication).
+These are prepared listing materials, not a published Community listing. Use the [reviewer walkthrough](#reviewer-walkthrough) on the approved candidate.
+Publish only after the target packages and documentation are live and verified, following the [publication workflow](../README.md#figma-community-publication).
 
 ## Listing fields
 
 | Field | Prepared value |
 | --- | --- |
-| Name | Lumen for Figma · Beta |
-| Tagline | Turn Lumen Figma components into an Astro starter and AI handoff. |
+| Name | Lumen for Figma |
+| Tagline | Export Lumen designs to web and native code. |
 | Category | Software development |
 | Support | <https://lumen.santi020k.com/support> |
 | Documentation | <https://lumen.santi020k.com/docs/figma> |
+| Privacy | <https://lumen.santi020k.com/privacy#figma-plugin> |
+| Publish as | Santi020k Individual creator · [@santi020k](https://www.figma.com/@santi020k) |
 | Author | [santi020k](https://santi020k.com) |
 
 ## Description to paste
 
-**Beta version · Astro only.** Bring your Lumen designs into your codebase using real Lumen
-components.
+Select a frame in a design that uses the [Lumen UI library](https://www.figma.com/community/file/1662337342676541513). Lumen for Figma identifies linked components, shows which layers need work, and exports a starter you can edit.
 
-Select a frame or component instance, inspect the design, and export an Astro starter or a structured
-handoff for your coding agent. The plugin recognizes verified instances from the canonical Lumen
-Figma library and highlights items that need your review.
+**For the web:** Export Astro, React TSX, or HTML with Lumen Web Components. Choose Lumen 5.0.0 or 4.4.0 and the appearance used by your project. The plugin recognizes 21 components. Lumen 4.4 uses Astro 4.4.0 and React or Elements 4.3.0.
 
-**Supported components:** Button, Input, Field, Card, Tabs, and Dialog.
+**For native apps:** Export React Native, Jetpack Compose for Android, or SwiftUI for iPhone and Mac. Native starters include labeled fields, editable checkboxes, and nested layouts. In the Lumen onboarding template, Back and Continue retain the entered name, email and workspace choices. They flag inferred progress indicators for review. React Native and Compose target adapter 4.1.0; SwiftUI targets v5.0.0.
 
-**What you get:**
+Choose your target, click **Inspect selection**, review the findings, then choose **Open handoff** to copy or save the starter and setup instructions where offered. The optional AI handoff includes visible design text, component properties, and items to review. You connect actions, implement unsupported layers, and check accessibility in your app.
 
-- An Astro component starter using `@santi020k/lumen-astro`.
-- An AI handoff containing the selected design's structure, visible text, component properties,
-  starter code, and checks for your coding agent.
-- Review notes for unsupported layers, detached instances, and properties requiring attention.
+The plugin runs offline. It does not call an AI model or send your design to Lumen. You choose whether to share an export.
 
-**Getting started:**
+[Setup and documentation](https://lumen.santi020k.com/docs/figma) · [Support](https://lumen.santi020k.com/support) · [Privacy](https://lumen.santi020k.com/privacy#figma-plugin) · Built by [santi020k](https://santi020k.com).
 
-1. Open a design using the Lumen UI Figma library.
-2. Select one frame or component instance and choose **Inspect selection**.
-3. Review the findings, then copy or save the **Astro starter** or **AI handoff**.
-4. Use the handoff with your coding agent to connect application behavior and verify the result.
+## Reviewer walkthrough
 
-**Beta limits:** Output is a starting point, not a complete application or a promise of visual
-equivalence. Review layout, responsive behavior, accessibility, custom overrides, and action logic.
-Detached components, copied libraries, and unsupported layers require manual implementation. Exports
-target Lumen Astro v4; verify the version installed in your project.
-
-The plugin runs locally without network access, model API keys, a separate plugin account, or
-telemetry. It does not call an AI model. You decide whether to share an exported handoff with your
-coding agent; exports include the selected design's visible text and component data.
-
-Documentation and setup: <https://lumen.santi020k.com/docs/figma>
-
-Questions and feedback: <https://lumen.santi020k.com/support>
-
-Built by [santi020k](https://santi020k.com).
+1. Open [Lumen Templates on Community](https://www.figma.com/community/file/1700607667944072280) and choose **Open in Figma** to get an editable copy. On **Auth & Onboarding**, expand **Desktop / 1440 px** and select the **Onboarding form** inside **Onboarding card**. The [original frame](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3/Lumen-Templates?node-id=5-834) shows the selection.
+2. Choose **React**, **Lumen 4.4.0**, and **Inspect selection**. Expect a TSX starter with the two linked Inputs, **Back** and **Continue** Buttons, and setup for the React 4.3.0 adapter.
+3. Switch to **Web Components** and **Lumen 5.0.0**, then inspect again. Expect an HTML starter and an app setup module. Select **iPhone · SwiftUI** and inspect again to see a SwiftUI view for the same onboarding form.
+4. Deselect the frame. The panel should clear the previous result and ask you to select one frame or component. No sign-in to Lumen, network permission, or AI service is required.
 
 ## Images
 
 | Asset | Dimensions | Suggested alt text |
 | --- | --- | --- |
 | [Icon](assets/icon.png) | 128 × 128 PNG | Lumen UI monogram with a warm point of light. |
-| [Cover](assets/thumbnail.png) | 1920 × 1080 PNG | Lumen for Figma Beta: inspect six supported components and export an Astro starter or AI handoff. |
+| [Cover](assets/thumbnail.png) | 1920 × 1080 PNG | Lumen for Figma: inspect canonical components and export web or native code or AI handoff. |
 
 The cover is a feature illustration, not a screenshot or evidence of Figma host verification. Both
-images reuse the canonical Lumen logo paths. Keep the Beta label visible. Add a real Figma screenshot
+images reuse the canonical Lumen logo paths. Add a real Figma screenshot
 only after the development plugin has been registered and tested with a representative design.
 
 Regenerate the tracked publishing assets from the repository root using the existing
@@ -81,10 +63,10 @@ The source artwork and font license live in `apps/docs/public/`; the composition
 Use these factual statements when completing Figma's current disclosure form; verify each question
 at submission time rather than treating this as a completed or approved disclosure.
 
-| Topic | Current beta behavior |
+| Topic | Plugin behavior |
 | --- | --- |
 | Design access | Reads the selected visible structure, text, component identities/properties, layout values, and paint-variable names. |
-| Design changes | Does not alter the selection. Adds document-level relaunch metadata. |
+| Design changes | Does not alter the selection. Adds document-level relaunch metadata only when registered with Figma. |
 | Network | Manifest declares no network access. No design data is sent to a server by the plugin. |
 | AI processing | No model runs inside the plugin. The user chooses an external coding agent and what to share. |
 | Storage | No Lumen server storage or telemetry. Copied or downloaded exports are managed by the user. |
@@ -94,12 +76,11 @@ at submission time rather than treating this as a completed or approved disclosu
 ## Remaining publication steps
 
 Follow the [publication checklist](../README.md#figma-community-publication) in order. The checklist
-covers registration and real Figma testing before launch, the public v4 package/documentation gate,
+covers registration and real Figma testing before launch, the public target package/documentation gate,
 submission of the approved candidate, and verification and documentation updates after approval.
 
-The current materials do not establish a registered plugin ID, completed host verification, a
+Listing materials alone do not establish a registered plugin ID, completed host verification, a
 submitted review, or an approved Community listing. Record those outcomes with the exact candidate
-revision and checksum in the release PR as they happen. Figma review does not block the Lumen v4
-package release; keep the plugin's development-beta status until public installation is verified.
+revision and checksum in the release PR as they happen. Verify public installation after approval before adding a Community plugin link.
 
 Figma's requirements are documented in its [classic plugin publication guide](https://help.figma.com/hc/en-us/articles/360042293394-Publish-classic-plugins-to-the-Figma-Community).

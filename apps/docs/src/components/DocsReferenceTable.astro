@@ -13,7 +13,9 @@ const { columns, labelledBy, rows } = Astro.props
 <Table
   aria-labelledby={labelledBy}
   class="docs-reference-table"
-  role="group"
+  role="region"
+  scrollCue
+  stickyFirstColumn
   tabindex="0"
 >
   <table aria-labelledby={labelledBy}>
@@ -49,8 +51,9 @@ const { columns, labelledBy, rows } = Astro.props
   table {
     width: 100%;
     min-width: 36rem;
-    border-collapse: collapse;
-    text-align: left;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: start;
     font-size: 0.875rem;
     line-height: 1.5;
   }
@@ -74,15 +77,20 @@ const { columns, labelledBy, rows } = Astro.props
     text-transform: uppercase;
   }
 
-  tbody tr {
-    border-top: 1px solid hsl(var(--line));
-  }
-
   tbody th {
     width: 22%;
     color: hsl(var(--ink));
     font-family: var(--font-mono);
     font-size: 0.75rem;
+  }
+
+  @media (max-width: 47.999rem) {
+    th, td { min-inline-size: 12ch; }
+  }
+
+  @media print {
+    table { min-width: 0; }
+    th, td { min-inline-size: 0; }
   }
 
   td {

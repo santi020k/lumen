@@ -29,11 +29,11 @@ if (!guide || !setup) {
     </Breadcrumb>
 
     <DocsPageHero
-      description="The reference implementation for Lumen UI, with the complete component catalog, standalone CSS, and a tiny progressive-enhancement runtime."
+      description="The reference implementation for Lumen UI, with the complete component catalog, automatic component CSS, and controllers that load on demand."
       eyebrow="Framework guide"
       stats={[
         { label: 'Surface', value: 'Full' },
-        { label: 'Runtime', value: '~4 KB' },
+        { label: 'Runtime', value: 'On demand' },
         { label: 'Package', value: 'Astro' }
       ]}
       title={guide.title}
@@ -93,7 +93,9 @@ if (!guide || !setup) {
           Interactive components like Dialogs, Popovers, Tabs, and Selects rely on a lightweight,
           vanilla JavaScript runtime. Mount <code>&lt;UIPrimitives /&gt;</code> once in your Astro
           root layout to wire up keyboard navigation, focus trapping, and disclosure state
-          globally.
+          for matching components. In v5, controllers load on demand and initialization is asynchronous.
+          Await <code>window.LumenInitUiPrimitives(scope)</code> for application-created markup;
+          <code>ui:ready</code> follows completion and <code>ui:runtime-error</code> reports failures.
         </p>
       </div>
       <CodeBlock code={guide.code} lang={guide.lang} />

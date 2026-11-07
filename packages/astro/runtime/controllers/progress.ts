@@ -1,5 +1,7 @@
 import { normalizeLumenProgress } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 interface ProgressChangeDetail {
   max?: number | undefined
   value?: number | undefined
@@ -40,7 +42,7 @@ const updateProgress = (
 }
 
 export const initProgress = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-progress]')) {
+  for (const root of queryScope(scope, '[data-ui-progress]')) {
     if (root.dataset.uiProgressBound === 'true') continue
 
     root.dataset.uiProgressBound = 'true'

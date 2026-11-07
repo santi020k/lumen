@@ -107,23 +107,39 @@ lumen init --framework astro --tailwind
 lumen migrate v2 --dry-run
 lumen migrate v3 --dry-run
 lumen migrate v4 --dry-run
+lumen migrate v5 --dry-run
 ```
 
+Lumen 5 wrappers use verified selective component entries and their required CSS. Elements wrappers
+register only the selected constructor. Unavailable selective entries carry a catalog-fallback
+comment. See [selective installation](../../docs/selective-installation.md) for automatic Astro CSS,
+manual markup setup, source doctor version evidence, and the full stylesheet convenience option.
+For selective styles, add Paper, Field, Studio, santi020k or glass using the [appearance imports](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md#web).
+
 Use `lumen add <component>` for a local Astro wrapper, `--target react` for a React wrapper, or
-`--target elements` for a custom-elements starter. Recipe availability varies by family; the editorial family supports Astro. With `--conflict error`, existing target files are checked before any recipe
-files are written; runtime write failures can still require cleanup.
+`--target elements` for a custom-elements starter. Recipe availability varies by family; the editorial family supports Astro. With `--fail-on-conflict`, existing target files are checked before any recipe
+files are written. Use `--merge` to add missing files and review a diff for each edited file.
+Edited files are preserved and the CLI exits 1 on conflicts. Add `--dry-run` to preview the whole install.
 
 Complete product recipes are also bundled for `analytics-dashboard`, `saas-admin`,
 `commerce-dashboard`, `project-workspace`, `auth-onboarding`, `docs-shell`, `marketing-shell`,
 `dashboard-shell`, and `validated-form`.
 
 External registry manifests are treated as untrusted input. Inline recipe files must use unique,
-relative forward-slash paths and cannot traverse outside the selected `--cwd` or write through a
-symbolic-link path segment. `loadLumenRegistry` bounds local and remote manifests to 5 MiB by
+relative forward-slash paths with portable filenames. Paths must remain distinct when normalized to NFC
+and converted to lowercase. Windows device names, alternate data streams,
+and trailing spaces or periods are rejected on every host. Inline sources take precedence over bundled recipes of the same name.
+Only a matching packaged catalog entry can select a bundled template. The installer checks all
+destinations before writing, including paths used as both files and directories. It rejects symbolic
+links and special files, and refuses to merge or overwrite a file with multiple hard links. `loadLumenRegistry` bounds local and remote manifests to 5 MiB by
 default; programmatic consumers can set `maxBytes` and `timeoutMs` for tighter deployment limits.
 Component wrapper names must be ASCII identifiers containing letters, digits, or underscores,
 starting with a letter or underscore, and cannot be reserved module keywords. Invalid names are
 rejected before generating or writing any wrapper; recipe names retain their existing format.
+
+For Vite 8 and Astro client builds, `@santi020k/lumen/vite/build-report` exports the optional
+`lumenBuildReport()` plugin. Pass its build report to `lumen audit-rendered --build-report` to see
+the modules and import chains associated with requested scripts. See the [rendered audit guide](../../docs/rendered-audit.md).
 
 Run `lumen doctor` to check adapter/style agreement, duplicate stylesheet entrypoints, Tailwind
 layer order, Astro runtime mounts, and fragile internal selector dependencies. In a workspace,
@@ -172,6 +188,14 @@ apply retains rollout's exact package-manager and dirty-worktree guards; `--allo
 Installs run before source rewrites; a failed dependency command stops source apply. Run the
 consumer's completion gate after both phases. Source-only migration works without a package manifest
 or package-manager requirement. Native Swift/Maven pins remain application-owned.
+
+Run `lumen migrate v5` to review the v4-to-v5 contract without automatic source rewrites. With
+`--dependencies`, the bundled release manifest supplies each npm package's own target version;
+companion packages and tokens can retain their v4 versions. Catalogs, package-manager update
+arguments, release-age exceptions, lockfile verification, and the consumer audit use that same map.
+An explicit v5 target must match the bundled manifest; native Swift/Maven pins remain application-owned.
+See the [v4-to-v5 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v4-to-v5.md)
+for the upgrade sequence, asynchronous Astro initialization, optional selective delivery and recovery.
 
 V4 apply records output fingerprints in `.lumen/migrations-v4.json`. Commit that ledger with the
 source changes: repeated applies skip migrated files, and later edits to them require manual review.
@@ -229,11 +253,22 @@ After committing an intentional baseline in each consumer, apply the upgrade ser
 lumen rollout 0.2.0 ../site ../dashboard --apply --report ./lumen-rollout.json
 ```
 
-The command preserves `catalog:` indirection and pinned/caret range style, temporarily admits the
-new release through `minimumReleaseAgeExclude`, runs installs through Corepack from each consumer
-root, removes obsolete Lumen release-age exceptions, verifies the unified resolved version, and
-runs available framework checks, builds, and browser scripts. It refuses dirty repositories,
-missing exact pnpm declarations, and unsupported Node runtimes unless `--allow-dirty` is explicit.
+For v5, rollout always uses the CLI's bundled npm package targets. For a pre-v5 release, supply
+its manifest to use the historical package map and report Swift and Compose separately:
+
+```bash
+git show v4.2.0:registry/release-manifest.json > /tmp/lumen-4.2-release.json
+lumen rollout 4.2.0 ../site --manifest /tmp/lumen-4.2-release.json --dry-run
+```
+
+Historical manifest rollout preserves compatible ranges, named catalog references, and the consumer's
+release-age policy. It refuses to downgrade a newer declared minimum or locked resolution. Apply
+runs pnpm through Corepack, verifies a frozen install and the requested graph, and runs available
+framework checks. Use `lumen doctor-native` to inspect consumer-native pins.
+
+A pre-v5 target without a manifest uses the historical uniform-package rollout, which
+updates pinned/caret ranges and refreshes existing release-age exceptions. Both modes require an
+exact pnpm declaration and a supported Node runtime. `--allow-dirty` permits a dirty worktree.
 
 ## Consumer upgrade and theme audits
 
@@ -244,9 +279,15 @@ lumen add validated-form --target react
 lumen add operational-records --target react
 ```
 
+The audit defaults to the bundled release manifest. Pass `--version 4.0.0` for an explicit historical
+review. MCP migration discovery follows the same default and accepts an explicit target.
+
 The consumer audit reports declared and resolved versions, patch configuration and `ui-*` CSS
 review signals without rewriting files. Selectors are advisory customization review signals.
-Version migration previews include the same audit when the consumer has a manifest.
+It defaults to the bundled release. Use `--version <version> --manifest <path>` for a historical
+release map. A stale transitive umbrella can require a pnpm resolution update even when direct
+adapter versions already match. Version migration previews report source and customization review.
+Use `rollout` to review adoption of a specific release.
 
 The theme file maps scope names to complete semantic-token objects, such as
 `{ "light": { "canvas": "0 0% 100%", "ink": "0 0% 0%", ... } }`. Supply every semantic color
@@ -284,6 +325,8 @@ do not need it; React consumers should follow the React adapter's existing insta
 Choose Default, Studio or Glass with `data-lumen-preset` on a scoped web container.
 Use the [appearance guide](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for semantic overrides,
 ThemeBuilder controls and native fallbacks. The Studio preset uses PostLens as its visual reference.
+For the santi020k website’s editorial cards and ink-colored actions, import
+`styles/themes/santi020k.css` and select `santi020k-light` or `santi020k-dark` on the document root.
 
 ## Preview a v4 migration
 
@@ -304,6 +347,22 @@ so its apply ledger fingerprints the final source and repeat runs do not rewrite
 SDK import edits remain limited to `.ts`, `.js`, and `.mjs`; this restriction does not disable the
 separate documented JSX/Astro spacing migration. The JSON report includes installed package
 versions and explicit SDK dependency-review findings.
+
+## Rendered route audit
+
+Add `--text-scale 200` to check root-relative enlarged text and clipped controls.
+Use `lumen audit-rendered <local-url> --cwd <project> --json` for explicit loopback layout,
+console, and asset-request inspection through the target project's existing Playwright tool.
+Supply exact asset expectations to classify known Lumen files. See the
+[rendered audit guide](../../docs/rendered-audit.md) for setup, redirect policy, and exit codes.
+
+## Product workflow recipes
+
+Install the CLI separately from the Astro runtime adapter, then use
+`lumen add code-example --target astro`, `lumen add share --target astro`, or
+`lumen add editorial --target astro`. The [workflow guide](../../docs/product-workflow-recipes.md)
+covers video, captions, long highlighted examples, and sharing. Recipe registry entries expose
+dependencies and per-framework setup instructions, including the runtime module where needed.
 
 ## Editorial recipes
 

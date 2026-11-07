@@ -1,0 +1,40 @@
+import { useState } from 'react'
+import { Button } from '@santi020k/lumen-react/components/button'
+import { ArticleReading } from './react/article-reading'
+import { ImageViewer } from './react/image-viewer'
+import { SiteSearchDialog, type SiteSearchResult } from './react/site-search-dialog'
+
+const search = async (query: string, signal: AbortSignal): Promise<readonly SiteSearchResult[]> => {
+  const output = document.querySelector('[data-aborts]')
+  signal.addEventListener('abort', () => {
+    if (output) output.textContent = String(Number(output.textContent) + 1)
+  }, { once: true })
+  // Deliberately ignore cancellation in this fixture's transport to exercise stale-result guards.
+  const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+  if (!response.ok) throw new Error('Search unavailable')
+  const value: unknown = await response.json()
+  if (!Array.isArray(value)) throw new Error('Invalid search response')
+  return value.map((row: unknown) => {
+    if (!row || typeof row !== 'object' || !('href' in row) || !('title' in row) ||
+      typeof row.href !== 'string' || typeof row.title !== 'string') throw new Error('Invalid search result')
+    return { href: row.href, title: row.title }
+  })
+}
+
+export const App = () => {
+  const [generation, setGeneration] = useState(0)
+  return <>
+    <header><h1>Portable editorial consumer</h1><Button data-remount onClick={() => setGeneration(value => value + 1)}>Remount recipes</Button><output data-aborts>0</output></header>
+    <main key={generation}>
+      <SiteSearchDialog id="portable-search" fallbackHref="/search/" search={search} />
+      <ImageViewer id="portable-image" title="Workflow illustration" href="/preview.svg" image={<img src="/preview.svg" alt="Two connected stages" width="960" height="640" />} caption={<p>Consumer-owned caption.</p>} />
+      <div className="outside">Before the article.</div>
+      <ArticleReading articleId="portable-article" chapters={[{ id: 'first-chapter', label: 'First chapter' }, { id: 'second-chapter', label: 'Second chapter' }]}>
+        <h2 id="first-chapter">First chapter</h2><div className="chapter">First chapter content.</div>
+        <h2 id="second-chapter">Second chapter</h2><div className="chapter">Second chapter content.</div>
+      </ArticleReading>
+      <div className="outside">After the article.</div>
+    </main>
+    <footer><a href="https://santi020k.com">Santiago Molina</a></footer>
+  </>
+}

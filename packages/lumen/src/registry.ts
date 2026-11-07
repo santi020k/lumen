@@ -1,4 +1,7 @@
-import { readFile, stat } from 'node:fs/promises'
+import { constants } from 'node:fs'
+import { open } from 'node:fs/promises'
+
+import { componentCssName } from '@santi020k/lumen-core/component-delivery'
 
 import { isSafeRegistryComponentName } from './registry-component-name.js'
 import { lumenRegistry } from './registry-data.js'
@@ -61,7 +64,8 @@ export const getLumenRegistryItem = (
 
   return (
     entries.find(item => item.name === name) ??
-    entries.find(item => normalizeRegistryEntryName(item.name) === normalizedName)
+    entries.find(item => normalizeRegistryEntryName(item.name) === normalizedName) ??
+    entries.find(item => item.type === 'component' && componentCssName(item.name) === normalizedName)
   )
 }
 
@@ -82,7 +86,41 @@ const isRegistryFile = (value: unknown): value is LumenRegistryFile | string => 
 const isString = (entry: unknown): entry is string => typeof entry === 'string'
 const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(isString)
 const isRegistryFileArray = (value: unknown): boolean => Array.isArray(value) && value.every(isRegistryFile)
+
+const isRecipeDependencies = (value: unknown): boolean => (
+  isStringArray(value) && value.every(dependency => dependency.length > 0)
+)
+
+const isRecipeSetupValue = (value: unknown): boolean => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+
+  const setup = value as { dependencies?: unknown, runtime?: unknown, instructions?: unknown }
+
+  return Object.keys(value).every(key => ['dependencies', 'runtime', 'instructions'].includes(key)) &&
+    isRecipeDependencies(setup.instructions) &&
+    (setup.dependencies === undefined || isRecipeDependencies(setup.dependencies)) &&
+    (setup.runtime === undefined || (typeof setup.runtime === 'string' && setup.runtime.length > 0))
+}
+
+const isRecipeSetup = (value: unknown): boolean => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+
+  const candidate = value as Record<string, unknown>
+
+  return Object.entries(candidate).every(([framework, setup]) => ['astro', 'react', 'elements'].includes(framework) && isRecipeSetupValue(setup))
+}
+
+const isRecipeMetadata = (item: Partial<LumenRegistryItem>): boolean => (
+  (item.dependencies === undefined || isRecipeDependencies(item.dependencies)) &&
+  (item.setup === undefined || isRecipeSetup(item.setup))
+)
+
 const registryItemTypes = new Set(['component-set', 'documentation', 'recipe'])
+
+const isRegistryItemIdentity = (item: Partial<LumenRegistryItem>): boolean => (
+  typeof item.name === 'string' && item.name.trim().length > 0 &&
+  typeof item.type === 'string' && registryItemTypes.has(item.type)
+)
 
 const isRegistryItem = (value: unknown): value is LumenRegistryItem => {
   if (!value || typeof value !== 'object') return false
@@ -90,9 +128,8 @@ const isRegistryItem = (value: unknown): value is LumenRegistryItem => {
   const item = value as Partial<LumenRegistryItem>
 
   return (
-    typeof item.name === 'string' && item.name.trim().length > 0 &&
-    typeof item.type === 'string' &&
-    registryItemTypes.has(item.type) &&
+    isRegistryItemIdentity(item) &&
+    isRecipeMetadata(item) &&
     (item.components === undefined || isStringArray(item.components)) &&
     (item.files === undefined || isRegistryFileArray(item.files))
   )
@@ -220,13 +257,36 @@ const fetchRegistrySource = async (
 }
 
 const readRegistrySource = async (source: string | URL, maxBytes: number): Promise<string> => {
-  const details = await stat(source)
+  const handle = await open(source, constants.O_RDONLY | constants.O_NONBLOCK)
 
-  if (details.size > maxBytes) {
-    throw new Error(`Lumen registry exceeds the ${maxBytes} byte limit.`)
+  try {
+    const details = await handle.stat()
+
+    if (!details.isFile()) throw new Error('Expected a regular file for the local Lumen registry.')
+
+    const limitError = () => new Error(`Lumen registry exceeds the ${maxBytes} byte limit.`)
+
+    if (details.size > maxBytes) throw limitError()
+
+    // The file can grow after stat, and some virtual files report a zero size.
+    const chunks: Buffer[] = []
+    let total = 0
+
+    for (;;) {
+      const buffer = Buffer.allocUnsafe(Math.min(65536, maxBytes - total + 1))
+      const { bytesRead } = await handle.read(buffer)
+
+      if (bytesRead === 0) return Buffer.concat(chunks, total).toString('utf8')
+
+      total += bytesRead
+
+      if (total > maxBytes) throw limitError()
+
+      chunks.push(buffer.subarray(0, bytesRead))
+    }
+  } finally {
+    await handle.close()
   }
-
-  return readFile(source, 'utf8')
 }
 
 export const loadLumenRegistry = async (

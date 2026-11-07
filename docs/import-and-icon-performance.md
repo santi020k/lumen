@@ -9,12 +9,116 @@ pnpm run measure:react-icons
 pnpm run measure:react-server
 pnpm run measure:elements-registration
 pnpm run measure:selective-imports
+pnpm run measure:route-delivery
+pnpm run check:route-delivery
 ```
 
 The Astro and React commands default to three builds per scenario and report median wall time,
 output bytes, and their raw samples as JSON. Set `LUMEN_BENCHMARK_ITERATIONS` to increase the sample
 count. The Elements command builds the package once and compares complete-catalog registration with
 an explicit Card, Input, and Button set through the same minified browser bundler.
+
+## Packed subscribe-form quick start
+
+Run `pnpm run measure:subscribe-form` with Chromium installed. The fixture extracts the React and
+Elements examples from the [selective installation guide](selective-installation.md#consumer-form-measurement), installs packed Lumen packages, and builds each
+example twice with Vite. Only the imports change between the catalog and granular cases. Each run
+opens a cold browser page, fills the email control and records requested JS and CSS response bodies.
+Gzip totals compress each response locally at level 9; React totals include React and React DOM.
+
+| Adapter | Traversed modules, catalog → granular | Requested JS + CSS gzip, catalog → granular |
+| --- | ---: | ---: |
+| React | 2,364 → 35 | 66,564 → 66,564 B |
+| Elements | 2,217 → 22 | 509,741 → 14,110 B |
+
+These November 6, 2026 measurements use candidate fce87932. The React fixture also includes Field, FieldError and Checkbox. These are development measurements on packed candidates. React's improvement is in the build graph.
+Both Elements costs fell. The fixture checks for an unexpected catalog import and compares the module
+counts on every run. Granular builds allow 45 modules and 75,000 gzip bytes for React or 20,000 for
+Elements. Actual route requests on a consumer app depend on its bundler and shared chunks.
+
+## November 5, 2026 Astro route delivery
+
+The modular candidate (`b328b53f`) is measured against published v4.4.0 (`fc264ae2`) using the same six cold
+Chromium routes, Node 22.23.4, pnpm 12.8.1, and Astro 7.3.5. Each row sums requested assets,
+compressed individually with gzip level 9. CSS inlining is disabled so the stylesheet totals include
+all styles. These are local fixture bytes, not production traffic or measured network transfer.
+
+| Route | v4 JS gzip | v5 JS gzip | v4 CSS gzip | v5 CSS gzip |
+| --- | ---: | ---: | ---: | ---: |
+| Static Card/Button, no runtime | 0 B | 0 B | 35,620 B | 7,025 B |
+| Static Card/Button, root runtime | 35,300 B | 4,763 B | 36,026 B | 7,472 B |
+| Dialog | 35,985 B | 5,448 B | 36,026 B | 8,705 B |
+| CodeTabs with scroll cues | 35,300 B | 9,638 B | 36,026 B | 8,071 B |
+| Form, Field, Input, Select | 35,300 B | 8,734 B | 36,026 B | 6,501 B |
+| Calendar | 35,300 B | 8,768 B | 36,026 B | 6,132 B |
+
+No additional assets were requested during the measured first interaction. Simple routes contain no
+phone, map, rich-text, or scheduler controller. Dynamic toasts separately load their controller and
+stylesheet when first requested, including when the initial page has no toast markup.
+
+`measure:route-delivery` defaults to selective CSS and writes `.cache/route-delivery/candidate/report.json`.
+Use `LUMEN_DELIVERY_CSS=full` for full-catalog setup. `check:route-delivery` enforces byte budgets and
+allowed controller lists, delayed first clicks and native Enter/Space activation, Astro client
+navigation, failed-chunk reload recovery, and deferred dynamic toast styling. The default fixtures
+exercise a multi-route build; shared chunk composition can change these totals in another app.
+
+Pass `--render` to capture computed properties and screenshots for seven routes, including composed
+components in forward/reversed import order, across mobile/desktop themes and mobile RTL at 200% text.
+Set `LUMEN_DELIVERY_COMPARE` to a previous fixture directory to require identical styles and pixels.
+Archived source is selected through `LUMEN_DELIVERY_ASTRO_DIR`, with a separate `LUMEN_DELIVERY_LABEL`.
+A v4 baseline needs its archived shared stylesheet as well as its Astro sources. Keep the same
+consumer markup, shared behavior builds, and toolchain when comparing revisions.
+
+Run delivery budgets with `--check` and the rendering comparison separately with `--render`.
+The latter adds composition routes, which changes shared chunk composition. All 35 rendering
+comparisons match the v4 baseline. Navigation checks include a dynamically created toast before
+and after an Astro page swap, retaining its stylesheet without another download.
+
+## Optional appearance CSS in v5
+
+With Node 22.23.4, Astro 7.4.5 and the same six cold routes, the base Card/Button page
+requested 5,180 gzip bytes of CSS, down from 7,025 at `b3c9194b` (1,845 bytes or 26.3%).
+Uncompressed CSS went from 36,421 to 18,218 bytes. Both builds requested zero JavaScript for
+this route. The dialog went from 8,705 to 6,975 gzip bytes and CodeTabs from 8,069 to 6,065.
+The static fixture has a 5,500-byte gzip budget. These totals apply to selective imports.
+
+## November 5, 2026 production installation footprint
+
+Ten empty projects compared published Core/Astro/CLI 4.4.0 and React/Elements 4.3.0 with fresh packs
+from candidate `dba0dbfa`. Node 22.23.4, pnpm 12.8.1, external dependency versions, and security
+policies were identical. Production-only installs disabled scripts and automatic peer installation;
+host frameworks and optional peers are excluded, so this is not a complete application measurement.
+
+| Direct package | Production packages | Installed content MB | Compressed tarballs MB |
+| --- | ---: | ---: | ---: |
+| Core | 3 → 3 | 41.98 → 42.76 | 5.46 → 5.59 |
+| Astro | 8 → 5 | 68.30 → 43.63 | 10.39 → 5.78 |
+| React | 13 → 10 | 69.80 → 45.07 | 10.71 → 6.08 |
+| Elements | 7 → 4 | 68.09 → 43.38 | 10.35 → 5.72 |
+| CLI | 6 → 6 | 67.55 → 68.51 | 10.22 → 10.39 |
+
+MB means 1,000,000 bytes. Installed content is logical regular-file bytes, excluding links, store
+metadata, and allocated-disk overhead. Tarballs are distinct compressed package lengths; network
+traffic depends on caching. Each adapter removes the umbrella CLI, TypeScript, and semver, saving
+about 35% of installed content in this snapshot. Generated component CSS adds files and increases
+Core and CLI sizes. Later layer-order headers add small CSS costs; these exact installation figures
+belong to `dba0dbfa`, not every later candidate. Browser bytes are measured separately above.
+
+All ten installs and exact export-target checks passed. Intentionally omitted host peers produced
+the expected peer diagnostics. Installed-consumer behavior is covered by separate browser and
+server-boundary checks.
+
+## November 5, 2026 React Native import graph
+
+The navigation fixture previously traversed web icon metadata through Core's root entry. Focused
+public Core entries keep that metadata outside native imports. With the same Hermes toolchain,
+the root-navigation bundle changed from 6,639,170 to 4,412,414 bytes (about 33.5%). The unchanged
+6,291,456-byte budget and all three canonical native import fixtures pass. This measures that
+fixture's bundle, not application startup, memory, or every native consumer.
+
+The earlier barrel regression below no longer reproduces at v4.4.0: root and component imports each
+emit 684 bytes for Card/Button/Icon, or 287 bytes without Icon, across three builds. Prefer granular
+imports for predictable dependency graphs, while measuring output before claiming browser savings.
 
 ## July 30, 2026 baseline
 
@@ -28,10 +132,8 @@ per-component imports.
 | Root with Icon | 913 ms | 127.0 MB | 80,323 B |
 | Root without Icon | 1,306 ms | 129.3 MB | 79,926 B |
 
-The repeated output difference is material: the root barrel currently causes the Astro runtime
-asset to be emitted even when the selected primitives are static. Prefer root imports for
-convenience in runtime-heavy applications, but prefer the documented per-component paths for small
-static pages and large catalogs until barrel tree-shaking removes this output difference.
+At this historical baseline, the root barrel caused the Astro runtime asset to be emitted even
+when the selected primitives were static. The November measurement above supersedes this behavior.
 
 The 397-byte Astro output delta is the rendered icon SVG, not a server-side Lucide registry bundle.
 

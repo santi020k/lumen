@@ -72,8 +72,8 @@ export interface PlatformGuide {
   title: string
 }
 
-const lumenComposeCoordinate = 'com.santi020k:lumen-compose:4.0.1'
-const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:4.0.1'
+const lumenComposeCoordinate = 'com.santi020k:lumen-compose:4.1.0'
+const lumenComposeWearCoordinate = 'com.santi020k:lumen-compose-wear:4.1.0'
 const nativeComponentNames = (platform: 'android' | 'apple' | 'react-native'): string[] => getNativeComponentsForPlatform(platform).map(component => component.name)
 
 export const platformGuides: PlatformGuide[] = [
@@ -288,8 +288,23 @@ pnpm playground:react-native`,
       'Use Lumen foundations and native primitives in React Native without depending on CSS, DOM behavior, or the web runtime.',
     theme: {
       description:
-        'LumenProvider follows the device appearance by default. Pass light or dark when an in-app preference should override the system, and keep the provider near the application root so every screen receives the same semantic colors and foundation values.',
+        'Choose a theme and an appearance separately. LumenProvider follows the device by default. A LumenThemeScope can inherit that scheme or pin a single screen to light or dark.',
       examples: [
+        {
+          code: `import { LumenProvider, LumenThemeScope } from '@santi020k/lumen-react-native'
+import { paperTheme } from '@santi020k/lumen-react-native/themes/paper'
+import { santi020kTheme } from '@santi020k/lumen-react-native/themes/santi020k'
+
+<LumenProvider definition={santi020kTheme} scheme="system">
+  <Navigation />
+  <LumenThemeScope definition={paperTheme} scheme="light">
+    <Article />
+  </LumenThemeScope>
+</LumenProvider>`,
+          label: 'Named themes',
+          language: 'tsx',
+          value: 'named'
+        },
         {
           code: `<LumenProvider scheme="system">
   <AppNavigation />
@@ -329,7 +344,7 @@ return (
 https://github.com/santi020k/lumen
 
 # Dependency Rule
-Exact Version: 4.4.0
+Exact Version: 5.0.0
 
 # Add this product to your application target
 LumenUI`,
@@ -342,7 +357,7 @@ LumenUI`,
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "4.4.0"
+        exact: "5.0.0"
     )
 ],
 targets: [
@@ -384,7 +399,7 @@ struct ExampleApp: App {
     href: '/docs/apple',
     id: 'apple',
     installNote:
-      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 4.4.0 for reproducible builds, and attach the LumenUI product to your application target.',
+      'LumenUI installs through Swift Package Manager; no npm package, CocoaPod, or copied source is required. Add the repository URL, pin exact version 5.0.0 for reproducible builds, and attach the LumenUI product to your application target.',
     label: 'Apple / SwiftUI',
     packageName: 'LumenUI',
     playgroundCommands: [
@@ -441,7 +456,7 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
     setupSteps: [
       {
         description:
-          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 4.4.0 for reproducible builds. Use a compatible-version rule only when the application accepts compatible updates.',
+          'In Xcode, choose File → Add Package Dependencies, paste the repository URL, and pin exact version 5.0.0 for reproducible builds. Use a compatible-version rule only when the application accepts compatible updates.',
         title: 'Add the Swift package'
       },
       {
@@ -475,8 +490,20 @@ swift run --package-path apps/playground-apple LumenApplePlayground`,
       'Share a Lumen design language across iPhone, iPad, Mac, Apple TV, and Apple Watch while keeping SwiftUI behavior native.',
     theme: {
       description:
-        'Apply one built-in Lumen theme to the root content view. The modifier shares semantic colors through the SwiftUI environment and sets the matching preferred color scheme for native controls, sheets, and system surfaces.',
+        'Apply a named theme at the root to follow the system. A nested scope can pin one reading view to light or dark. Use the root modifier when the app owns the window appearance.',
       examples: [
+        {
+          code: `import LumenUI
+
+VStack {
+    AppNavigation()
+    ArticleView().lumenThemeScope(.paper, scheme: .light)
+}
+.lumenThemeScope(.santi020k)`,
+          label: 'Named themes',
+          language: 'swift',
+          value: 'named'
+        },
         {
           code: `WindowGroup {
     AppRoot()
@@ -653,8 +680,22 @@ pnpm playground:android:build`,
       'Use the shared Lumen foundations through Jetpack Compose and Material 3 while preserving Android interaction and accessibility conventions.',
     theme: {
       description:
-        'LumenTheme follows the device appearance by default and maps Lumen semantic colors into Material 3. Pass darkTheme explicitly only when the application offers its own saved appearance preference.',
+        'Use a named theme at the app root to follow the device. Inside it, a theme scope inherits the nearest scheme or pins a single screen. LumenTheme also accepts your own Material colors, typography and shapes.',
       examples: [
+        {
+          code: `import com.santi020k.lumen.LumenNamedThemes
+import com.santi020k.lumen.LumenThemeScope
+
+LumenThemeScope(theme = LumenNamedThemes.Santi020k) {
+    AppNavigation()
+    LumenThemeScope(theme = LumenNamedThemes.Paper, darkTheme = false) {
+        Article()
+    }
+}`,
+          label: 'Named themes',
+          language: 'kotlin',
+          value: 'named'
+        },
         {
           code: `LumenTheme {
     AppNavigation()

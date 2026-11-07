@@ -5,12 +5,16 @@ import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 
-import { migrationMarkdownLinks } from './src/lib/migration-markdown'
+import { cachedLumenThemes } from './src/lib/lumen-shiki-themes'
+import { repositoryMarkdownLinks } from './src/lib/repository-markdown'
 
 export default defineConfig({
   // CI measures application layout without the development toolbar's overlay.
   devToolbar: { enabled: !process.env.CI },
-  markdown: { processor: satteri({ mdastPlugins: [migrationMarkdownLinks] }) },
+  markdown: {
+    processor: satteri({ mdastPlugins: [repositoryMarkdownLinks] }),
+    shikiConfig: { theme: cachedLumenThemes.dark }
+  },
   integrations: [sitemap({
     filter: page => {
       const { pathname } = new URL(page)

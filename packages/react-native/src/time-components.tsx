@@ -2,7 +2,7 @@ import { type ChangeEvent, createElement, type ReactElement, useEffect, useLayou
 import { Platform } from 'react-native'
 
 import { DateTimePickerAndroid, type DateTimePickerChangeEvent } from '@react-native-community/datetimepicker'
-import { isLumenTimeInBounds, isLumenTimeSelection, type LumenTimeSelection } from '@santi020k/lumen-core'
+import { isLumenTimeInBounds, isLumenTimeSelection, type LumenTimeSelection } from '@santi020k/lumen-core/native-input'
 
 import { LumenFieldGroup } from './additional-components.js'
 import { LumenButton, LumenText } from './foundation-primitives.js'

@@ -24,9 +24,9 @@ const LumenTurkishLiraIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M15 4 5 9" />
-      <Path d="m15 8.5-10 5" />
-      <Path d="M18 12a9 9 0 0 1-9 9V3" />
+      <Path d="m14 10-8 4" />
+      <Path d="M14 5 6 9" />
+      <Path d="M18 12a8 8 0 01-7.003 7.937c-.547.07-.997-.385-.997-.937V4" />
   </Svg>
 )
 

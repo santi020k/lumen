@@ -105,11 +105,24 @@ export const nativeComponentOutputSchema = z.union([
   z.strictObject({ component: nativeComponentSchema, found: z.literal(true) }),
   missingSchema
 ])
+
+const recipeSetupSchema = z.strictObject({
+  dependencies: stringsSchema.optional(),
+  runtime: textSchema.optional(),
+  instructions: stringsSchema
+})
+
 export const recipeOutputSchema = z.union([
   z.strictObject({
     found: z.literal(true),
     recipe: z.strictObject({
       categories: stringsSchema,
+      dependencies: stringsSchema.optional(),
+      setup: z.strictObject({
+        astro: recipeSetupSchema.optional(),
+        react: recipeSetupSchema.optional(),
+        elements: recipeSetupSchema.optional()
+      }).optional(),
       components: stringsSchema.optional(),
       description: textSchema,
       examples: z.strictObject({

@@ -24,11 +24,9 @@ const LumenNepaliRupeeIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M18 16.173 A4.74 4.74 0 0 0 13.496 8.005" />
-      <Path d="M4 3 L20 3" />
-      <Path d="M5 13 L13.5 21" />
-      <Path d="M5 13 L9 13" />
-      <Path d="M8 13 C15.5 13 14.667 3 8 3" />
+      <Path d="m14 20-8-8h4c5.333 0 5.333-8 0-8" />
+      <Path d="M14 8c4.078 0 5.038 4.678 2.88 6.88" />
+      <Path d="M6 4h12" />
   </Svg>
 )
 

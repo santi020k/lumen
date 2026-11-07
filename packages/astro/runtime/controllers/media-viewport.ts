@@ -1,9 +1,11 @@
 import { bindLumenMediaViewport, normalizeLumenMediaViewport, syncLumenMediaViewport } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 const bindings = new WeakMap<HTMLElement, { document: Document, cleanup: () => void }>()
 
 export const initMediaViewportControllers = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-media-viewport]')) {
+  for (const root of queryScope(scope, '[data-ui-media-viewport]')) {
     const previous = bindings.get(root)
 
     if (previous?.document === root.ownerDocument) continue

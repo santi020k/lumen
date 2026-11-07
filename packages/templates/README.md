@@ -33,7 +33,8 @@ renderer. It powers the documentation and template showcase; it is not published
 
 ## Use templates in an application
 
-Install the public Lumen adapter for your framework, then copy a recipe through its bundled CLI:
+Install the public Lumen adapter for your framework and the optional `@santi020k/lumen` development
+dependency, then copy an editable recipe through its CLI:
 
 ```bash
 pnpm add @santi020k/lumen-astro

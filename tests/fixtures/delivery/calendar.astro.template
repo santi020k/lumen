@@ -1,0 +1,7 @@
+---
+import Calendar from '@santi020k/lumen-astro/components/Calendar'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+---
+<h1>Calendar delivery</h1>
+<Calendar name="date" value="2026-11-05" month="2026-11" locale="en-US" />
+<UIPrimitives />

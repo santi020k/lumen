@@ -41,9 +41,10 @@ primary destinations are Home, Examples, Components, and Settings:
   effects respect Reduce Motion and a local reduction toggle; sheet presentation follows the system.
 - Components adds the shared six-category discovery structure to the searchable catalog while preserving the
   deterministic launch filters used by screenshot automation.
-- Settings offers Normal, Studio, Glass and santi020k themes alongside light/dark appearance,
-  Accessibility, Runtime localization, App and platform, and Privacy
-  and resources using native SwiftUI behavior.
+- Settings offers Normal, Studio, Glass, santi020k, Paper and Field with System, Light and Dark
+  appearance. Open **Harbor note** for a light preview of a custom theme, type a note and switch the app appearance
+  from the sheet. The draft persists while the playground is running. The settings also cover
+  accessibility, runtime localization, app information and privacy resources.
 
 > **Local candidate:** This checkout uses the Lumen 4 adapter. Search accepts component IDs and
 > supports filter reset. See the [v4 playground guide](../../docs/playgrounds.md#lumen-4-workspace)
@@ -234,7 +235,9 @@ apps/playground-apple/scripts/capture-watch-component-screenshots.sh
 After iPhone, macOS, and watchOS evidence is current, run `pnpm run sync:native-captures` from the
 repository root to update the optimized documentation gallery.
 
-Pass `--dark` to launch either gallery in its deterministic dark appearance. Public App Store copy,
+Pass `--dark` to launch either gallery in its deterministic dark appearance. The Apple playground
+also accepts `--destination settings --theme paper` and the theme IDs `lumen`, `studio`, `glass`,
+`santi020k` and `field`. An unknown theme opens Normal. Public App Store copy,
 review notes, and phone, tablet, and Mac screenshot candidates live in `Store`; the opaque application
 icon is generated from the shared Lumen mark with `scripts/generate-app-icons.sh`. Follow
 [`docs/playground-publication.md`](../../docs/playground-publication.md) before building a signed

@@ -933,11 +933,14 @@ const loadWorkspaceFiles = async p => ({
   nativeDocsSource: await readIfExists(p('apps/docs/src/data/native-components.ts')),
   elementsSource: [
     await readIfExists(p('packages/elements/src/define.ts')),
+    await readIfExists(p('packages/elements/src/editorial-behaviors.ts')),
+    await readIfExists(p('packages/elements/src/components/timeline.ts')),
     await readIfExists(p('packages/elements/src/consumer-behaviors.ts')),
     await readIfExists(p('packages/elements/src/components/foundations.ts')),
     await readIfExists(p('packages/elements/src/components/badge.ts')),
     await readIfExists(p('packages/elements/src/components/button.ts')),
     await readIfExists(p('packages/elements/src/components/card.ts')),
+    await readIfExists(p('packages/elements/src/components/input.ts')),
     await readIfExists(p('packages/elements/src/components/combobox.ts')),
     await readIfExists(p('packages/elements/src/components/device-frame.ts')),
     await readIfExists(p('packages/elements/src/components/image-comparison.ts')),
@@ -955,6 +958,11 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/react/src/attachments.tsx')),
     await readIfExists(p('packages/react/src/amount-field.tsx')),
     await readIfExists(p('packages/react/src/components.tsx')),
+    await readIfExists(p('packages/react/src/form-primitives.tsx')),
+    await readIfExists(p('packages/react/src/editorial-controls.tsx')),
+    await readIfExists(p('packages/react/src/dialog.tsx')),
+    await readIfExists(p('packages/react/src/reading-navigation.tsx')),
+    await readIfExists(p('packages/react/src/label.tsx')),
     await readIfExists(p('packages/react/src/interval-charts.tsx')),
     await readIfExists(p('packages/react/src/bullet-chart.tsx')),
     await readIfExists(p('packages/react/src/comparison-chart.tsx')),
@@ -1410,6 +1418,7 @@ const main = async () => {
     }))
 
   const migration = JSON.parse(await readFile(join(repoRoot, 'registry/lumen-4-contract.json'), 'utf8'))
+  const migrationV5 = JSON.parse(await readFile(join(repoRoot, 'registry/lumen-5-contract.json'), 'utf8'))
   const docs = { aiUsage, readme }
 
   const tokens = {
@@ -1456,6 +1465,7 @@ const main = async () => {
     components,
     docs,
     migration,
+    migrationV5,
     nativeComponents,
     nativeSources,
     recipes,
@@ -1523,6 +1533,7 @@ const main = async () => {
       serverVersion: packageJson.version
     },
     migration,
+    migrationV5,
     nativeComponents,
     nativeSources,
     recipes,

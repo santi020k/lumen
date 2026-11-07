@@ -12,6 +12,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 enum class LumenSurfaceMaterial { Solid, Glass }
 
@@ -40,6 +42,70 @@ data class LumenThemeValues(
             LumenThemeValues(colors = preset.colors(isDark), isDark = isDark, appearance = preset.appearance)
     }
 }
+
+/** Small, medium and large corner radii in density-independent pixels. */
+@Immutable
+data class LumenThemeRadii(val sm: Float, val md: Float, val lg: Float) {
+    init {
+        require(listOf(sm, md, lg).all { it.isFinite() && it >= 0 })
+    }
+}
+
+/** A portable pair of palettes plus the optional treatments applied by [LumenThemeScope]. */
+@Immutable
+data class LumenNamedTheme(
+    val light: LumenColorPalette,
+    val dark: LumenColorPalette,
+    val radii: LumenThemeRadii? = null,
+    val serifHeadings: Boolean = false,
+    val inkActions: Boolean = false,
+    val lightChartBrand: Color? = null,
+    val darkChartBrand: Color? = null,
+    val lightOnSuccess: Color? = null,
+    val darkOnSuccess: Color? = null,
+    val lightStatusText: Color? = null,
+    val darkStatusText: Color? = null
+) {
+    internal fun values(isDark: Boolean): LumenThemeValues {
+        val colors = if (isDark) dark else light
+        val charts = if (isDark) LumenChartColors.Dark else LumenChartColors.Light
+        val chartBrand = if (isDark) darkChartBrand else lightChartBrand
+        return LumenThemeValues(
+            colors = colors,
+            isDark = isDark,
+            chartColors = if (chartBrand == null) charts else charts.copy(
+                series1 = chartBrand,
+                series2 = colors.accent,
+                divergingPositive = chartBrand,
+                divergingMid = colors.surfaceStrong,
+                sequentialHigh = colors.brandSolid,
+                sequentialMid = chartBrand,
+                sequentialLow = colors.brandSoft
+            )
+        )
+    }
+}
+
+private val LocalLumenParentScheme = staticCompositionLocalOf<Boolean?> { null }
+internal val LocalLumenNamedTheme = staticCompositionLocalOf<LumenNamedTheme?> { null }
+
+@Composable
+internal fun lumenStatusTextColor(fallback: Color): Color {
+    val named = LocalLumenNamedTheme.current
+    return (if (LocalLumenTheme.current.isDark) named?.darkStatusText else named?.lightStatusText) ?: fallback
+}
+
+internal fun LumenSurfaceRadius.inTheme(radii: LumenThemeRadii?, scale: Float): Dp = when {
+    radii == null -> value * scale
+    this == LumenSurfaceRadius.Sm -> radii.sm.dp * scale
+    this == LumenSurfaceRadius.Md -> radii.md.dp * scale
+    this == LumenSurfaceRadius.Lg -> radii.lg.dp * scale
+    else -> value * scale
+}
+
+@Composable
+internal fun LumenSurfaceRadius.scoped(scale: Float = 1f): Dp =
+    inTheme(LocalLumenNamedTheme.current?.radii, scale)
 
 @Immutable
 data class LumenMaterialColorOverrides(
@@ -145,18 +211,41 @@ fun LumenTheme(
     preset: LumenThemePreset = LumenThemePreset.Default,
     content: @Composable () -> Unit
 ) {
-    val defaultValues = LumenThemeValues.preset(preset, darkTheme)
-    val resolvedValues = values ?: materialColorScheme?.let { colorScheme ->
-        LumenThemeValues(
-            colors = colorScheme.toLumenColorPalette(defaultValues.colors, materialColorOverrides),
-            isDark = darkTheme,
-            appearance = defaultValues.appearance
-        )
-    } ?: defaultValues
-    val resolvedColorScheme = materialColorScheme
-        ?: resolvedValues.colors.toMaterialColorScheme(resolvedValues.isDark)
+    LumenThemeScope(
+        theme = null, darkTheme = darkTheme, values = values,
+        materialColorScheme = materialColorScheme, materialColorOverrides = materialColorOverrides,
+        typography = typography, shapes = shapes, preset = preset, content = content
+    )
+}
 
-    CompositionLocalProvider(LocalLumenTheme provides resolvedValues) {
+/** Applies a named theme to an application or subtree. A nested scope follows the parent scheme. */
+@Composable
+fun LumenThemeScope(
+    theme: LumenNamedTheme?,
+    darkTheme: Boolean? = null,
+    values: LumenThemeValues? = null,
+    materialColorScheme: ColorScheme? = null,
+    materialColorOverrides: LumenMaterialColorOverrides = LumenMaterialColorOverrides(),
+    typography: Typography = MaterialTheme.typography,
+    shapes: Shapes = MaterialTheme.shapes,
+    preset: LumenThemePreset = LumenThemePreset.Default,
+    content: @Composable () -> Unit
+) {
+    val scheme = darkTheme ?: LocalLumenParentScheme.current ?: isSystemInDarkTheme()
+    val defaultValues = theme?.values(scheme) ?: LumenThemeValues.preset(preset, scheme)
+    val resolvedValues = values ?: materialColorScheme?.let { colorScheme ->
+        defaultValues.copy(colors = colorScheme.toLumenColorPalette(defaultValues.colors, materialColorOverrides))
+    } ?: defaultValues
+    val resolvedColorScheme = materialColorScheme ?: resolvedValues.colors.run {
+        val base = toMaterialColorScheme(resolvedValues.isDark)
+        if (theme == null) base else base.copy(primary = brandSolid, onPrimary = onBrand)
+    }
+
+    CompositionLocalProvider(
+        LocalLumenTheme provides resolvedValues,
+        LocalLumenParentScheme provides resolvedValues.isDark,
+        LocalLumenNamedTheme provides theme
+    ) {
         MaterialTheme(
             colorScheme = resolvedColorScheme,
             typography = typography,

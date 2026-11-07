@@ -1,6 +1,9 @@
 ---
 import type { HTMLAttributes } from 'astro/types'
 
+import '../styles/foundation.css'
+import '../styles/components/heatmap.css'
+
 import { createLumenHeatmapDatumActivation, createLumenHeatmapModel, getLumenHeatmapColor, type LumenChartLabels, type LumenHeatmapDatum, type LumenHeatmapOptions, resolveLumenChartLabels } from '@santi020k/lumen-core'
 
 import { createChartDatumAction } from '../runtime/chart-actions'

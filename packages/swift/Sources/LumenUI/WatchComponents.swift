@@ -84,13 +84,21 @@ public struct LumenWatchActionButton<Label: View>: View {
         self.label = label()
     }
 
+    private var foregroundColor: Color {
+        switch tone {
+        case .danger: theme.colors.onDanger
+        case .success: theme.successForeground
+        default: theme.colors.onBrand
+        }
+    }
+
     public var body: some View {
         let metrics = LumenWatchActionMetrics.resolve(dimension: dimension, ringWidth: 4)
         let color = lumenWatchColor(theme.colors, tone: tone)
 
         Button(action: action) {
             label
-                .foregroundStyle(tone == .danger ? theme.colors.onDanger : theme.colors.onBrand)
+                .foregroundStyle(foregroundColor)
                 .frame(width: metrics.dimension, height: metrics.dimension)
                 .background(color.opacity(enabled ? 1 : 0.48), in: Circle())
                 .shadow(color: isLuminanceReduced ? .clear : color.opacity(0.38), radius: 7)

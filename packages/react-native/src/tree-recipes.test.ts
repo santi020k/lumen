@@ -27,6 +27,30 @@ describe('tree hierarchy', () => {
     expect([...model.togglingSelection('x', new Set(['missing']))]).toEqual(['missing'])
     expect([...model.togglingExpansion('d', new Set())]).toEqual([])
   })
+  test('bounds traversal when caller-owned nodes change after validation', () => {
+    const child = { id: 'child', label: 'Child', parentId: 'root' }
+    const model = new LumenTreeModel([{ id: 'root', label: 'Root' }, child])
+
+    expect(model.valid).toBe(true)
+    // Fail deterministically if a regression follows a cycle forever.
+    const change = (key: 'id' | 'parentId', value: string): void => {
+      let reads = 0
+
+      Object.defineProperty(child, key, {
+        get() {
+          if (++reads > 12) throw new Error('Repeated tree traversal')
+
+          return value
+        }
+      })
+    }
+
+    change('parentId', 'child')
+    expect(model.path('child')).toEqual([])
+    change('id', 'root')
+    expect(model.visibleRows(new Set(['root']))).toEqual([])
+  })
+
   test('handles adversarial wide and deep graphs without call-stack or argument limits', () => {
     const wide: LumenTreeNode[] = [{ id: 'r', label: 'Root' }]
     const deep: LumenTreeNode[] = []

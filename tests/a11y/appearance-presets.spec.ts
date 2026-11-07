@@ -95,7 +95,7 @@ test('scoped CSS presets reset palettes and remain opaque without explicit glass
   await expect(parent).toHaveCSS('--brand', '0 0% 96%')
   await expect(parent).toHaveCSS('--ui-shadow-md', 'none')
   const child = parent.locator('[data-lumen-preset="default"]')
-  await expect(child).toHaveCSS('--brand', '201 96% 32%')
+  await expect(child).toHaveCSS('--brand', '193 79% 26%')
   expect(await child.evaluate(element => getComputedStyle(element).getPropertyValue('--ui-shadow-md'))).not.toBe('none')
 })
 
@@ -106,4 +106,56 @@ test('Studio preview stays within a narrow mobile viewport', async ({ page }) =>
   const dimensions = await page.evaluate(() => ({ width: innerWidth, content: document.documentElement.scrollWidth }))
   expect(dimensions.content).toBeLessThanOrEqual(dimensions.width + 1)
   await expect(page.locator('#studio-reference-title')).toBeVisible()
+})
+
+for (const scheme of ['light', 'dark'] as const) {
+  test(`website theme keeps editorial actions readable at a narrow width in ${scheme}`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.emulateMedia({ contrast: 'no-preference', reducedMotion: 'reduce' })
+    await page.addInitScript(mode => { localStorage.setItem('lumen-theme', `santi020k-${mode}`); }, scheme)
+    await page.goto('/docs/web#website-theme-title')
+
+    const card = page.getByRole('article', { name: 'One component library, three web frameworks.' })
+    const primary = card.getByRole('link', { name: 'Read the case study' })
+    const secondary = card.getByRole('link', { name: 'Explore components' })
+
+    await expect(card).toHaveCSS('border-bottom-right-radius', '8px')
+    const standardLine = await card.evaluate(element => getComputedStyle(element).getPropertyValue('--line').trim())
+    await page.emulateMedia({ contrast: 'more' })
+    await expect(card).not.toHaveCSS('--line', standardLine)
+    const highContrastLine = await card.evaluate(element => getComputedStyle(element).getPropertyValue('--ink-soft').trim())
+    await expect(card).toHaveCSS('--line', highContrastLine)
+    await expect(primary).toHaveCSS('border-radius', '12px')
+    await expect(primary).toHaveCSS('min-height', '44px')
+    await primary.focus()
+    await page.keyboard.press('Tab')
+    await expect(secondary).toBeFocused()
+    await expect(secondary).toHaveCSS('outline-style', 'solid')
+    expect(await card.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true)
+  })
+}
+
+test('the default Badge label stays readable when the brand fill changes theme', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/docs/components/badge')
+  const badge = page.locator('.ui-badge--default').filter({ hasText: /^Pro plan$/u }).first()
+  await expect(badge).toBeVisible()
+  await badge.scrollIntoViewIfNeeded()
+  await page.addScriptTag({ path: 'packages/elements/node_modules/axe-core/axe.min.js' })
+
+  for (const preset of ['studio', 'paper', 'field']) {
+    for (const scheme of ['light', 'dark']) {
+      await badge.evaluate((element, appearance) => {
+        element.id = 'badge-contrast-probe'
+        element.setAttribute('data-lumen-preset', appearance.preset)
+        element.setAttribute('data-lumen-scheme', appearance.scheme)
+      }, { preset, scheme })
+      await expect(badge).toHaveCSS('color-scheme', scheme)
+      await badge.evaluate(async element => {
+        await Promise.all(element.getAnimations().map(animation => animation.finished))
+      })
+      const violations: unknown = await page.evaluate('axe.run("#badge-contrast-probe", { runOnly: ["color-contrast"] }).then(result => result.violations)')
+      expect(violations, `${preset} ${scheme}`).toEqual([])
+    }
+  }
 })

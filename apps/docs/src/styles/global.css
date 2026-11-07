@@ -1,9 +1,10 @@
 @import "@santi020k/lumen/layers.css";
 @import "tailwindcss";
-@import "./fonts.css";
 @import "@santi020k/lumen/styles.css";
 @import "@santi020k/lumen/tailwind.css";
 @import "@santi020k/theme/typography.css";
+@import "./fonts.css";
+@import "../../public/examples/themes/harbor.css";
 
 @source "../../../../packages/astro/components";
 @source "../../../../packages/react/src";
@@ -18,73 +19,18 @@
   --lumen-logo-dot: 38 92% 50%;
 }
 
-:root[data-theme="santi020k-light"] {
-  color-scheme: light;
-  --app-font-sans: var(--santi020k-font-sans);
-  --app-font-display: var(--santi020k-font-display);
-  --theme-bg: 268 20% 98%;
-  --canvas: 268 20% 98%;
-  --surface: 268 20% 100%;
-  --surface-muted: 268 20% 96%;
-  --surface-strong: 268 15% 90%;
-  --line: 268 15% 84%;
-  --ink: 268 10% 20%;
-  --ink-soft: 268 8% 36%;
-  --ink-muted: 268 6% 28%;
-  --brand: 264 92% 47%;
-  --brand-solid: 264 92% 42%;
-  --brand-soft: 264 60% 94%;
-  --accent: 264 95% 57%;
-  --glow: 264 95% 70%;
-  --success: 142 76% 36%;
-  --warning: 38 92% 50%;
-  --danger: 0 84% 60%;
-}
-
+:root[data-theme="santi020k-light"],
 :root[data-theme="santi020k-dark"] {
-  color-scheme: dark;
-  --app-font-sans: var(--santi020k-font-sans);
-  --app-font-display: var(--santi020k-font-display);
-  --theme-bg: 260 43% 8%;
-  --canvas: 260 43% 8%;
-  --surface: 260 30% 12%;
-  --surface-muted: 260 25% 15%;
-  --surface-strong: 260 20% 21%;
-  --line: 260 15% 30%;
-  --ink: 260 10% 88%;
-  --ink-soft: 260 8% 72%;
-  --ink-muted: 260 6% 56%;
-  --brand: 264 90% 70%;
-  --brand-solid: 264 90% 52%;
-  --brand-soft: 264 45% 18%;
-  --accent: 264 90% 68%;
-  --glow: 270 90% 60%;
-  --success: 142 71% 45%;
-  --warning: 38 92% 55%;
-  --danger: 0 84% 65%;
-  --glass-bg: 260 22% 12% / 0.78;
-  --glass-bg-subtle: 260 22% 12% / 0.64;
-  --glass-bg-strong: 260 22% 12% / 0.9;
-  --glass-border: 260 28% 88% / 0.24;
-  --glass-highlight: 260 36% 96% / 0.1;
-  --glass-brightness: 1;
-  --glass-edge: 260 40% 98% / 0.24;
-  --glass-edge-soft: 260 40% 98% / 0.08;
-  --glass-shade: 260 45% 3% / 0.34;
-  --glass-refraction: 264 95% 70% / 0.12;
-  --glass-shadow:
-    0 1px 2px hsl(0 0% 0% / 0.32),
-    0 16px 40px hsl(0 0% 0% / 0.36),
-    0 40px 96px hsl(0 0% 0% / 0.4);
+  --theme-bg: var(--canvas);
+  --glow: var(--accent);
 }
 
-:root,
+:root:not([data-theme]),
 :root[data-theme="light"],
 :root[data-theme="lumen-light"] {
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --theme-bg: var(--canvas);
-  --ink-muted: 215 14% 35%;
   --glow: 38 92% 50%;
 }
 
@@ -93,8 +39,13 @@
   --app-font-sans: var(--santi020k-font-sans, "Montserrat", "Avenir Next", "Segoe UI", sans-serif);
   --app-font-display: var(--santi020k-font-display, "Montserrat", "Avenir Next", sans-serif);
   --theme-bg: var(--canvas);
-  --ink-muted: 216 10% 72%;
-  --glow: 199 91% 56%;
+  --glow: var(--brand);
+}
+
+:root[data-lumen-preset] {
+  --app-font-sans: var(--ui-font);
+  --app-font-display: var(--ui-font);
+  --glow: var(--accent);
 }
 
 @theme {
@@ -671,6 +622,9 @@ body {
 
 .docs-site-footer__statement-copy {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
   gap: 1rem;
 }
 
@@ -851,6 +805,7 @@ pre:where(:not(.ui-code pre)) code {
 .docs-shell {
   --docs-anchor-navigation-fallback: 3.25rem;
   --docs-shell-inline-padding: clamp(1.25rem, 3vw, 3rem);
+  --docs-sticky-top: var(--docs-sticky-header-height, 10rem);
 
   position: relative;
   display: grid;
@@ -861,7 +816,7 @@ pre:where(:not(.ui-code pre)) code {
 }
 
 .docs-shell [id] {
-  scroll-margin-top: calc(var(--docs-sticky-header-height, 10rem) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + 1rem);
+  scroll-margin-top: calc(var(--docs-sticky-top) + var(--docs-sticky-navigation-height, var(--docs-anchor-navigation-fallback)) + 1rem);
 }
 
 .docs-site-content:has(.docs-shell, .home) + .docs-site-footer {
@@ -1277,9 +1232,10 @@ pre:where(:not(.ui-code pre)) code {
 }
 
 .docs-mobile-navigation-bar {
+  grid-template-columns: minmax(0, 1fr);
   position: sticky;
   z-index: 20;
-  top: var(--docs-sticky-header-height, 10rem);
+  top: var(--docs-sticky-top);
   display: grid;
   gap: 0.65rem;
   margin: -0.5rem calc(-1 * var(--docs-shell-inline-padding)) 1.5rem;
@@ -1292,12 +1248,15 @@ pre:where(:not(.ui-code pre)) code {
 
 .docs-mobile-navigation-bar__header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
 }
 
 .docs-mobile-navigation-bar__header > span {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
   color: hsl(var(--ink-muted));
   font-size: 0.68rem;
   font-weight: 900;
@@ -1359,6 +1318,7 @@ pre:where(:not(.ui-code pre)) code {
 @media (min-width: 64rem) {
   .docs-shell {
     --docs-anchor-navigation-fallback: 0px;
+    --docs-sticky-top: calc(var(--docs-sticky-header-height, 7.75rem) + 1rem);
 
     grid-template-columns: 16.25rem minmax(0, 1fr);
     align-items: start;
@@ -1366,7 +1326,7 @@ pre:where(:not(.ui-code pre)) code {
 
   .docs-sidebar {
     position: sticky;
-    top: calc(var(--docs-sticky-header-height, 7.75rem) + 1rem);
+    top: var(--docs-sticky-top);
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     overflow: visible;
@@ -2358,27 +2318,6 @@ pre:where(:not(.ui-code pre)) code {
   overflow-wrap: anywhere;
 }
 
-.docs-theme-feature {
-  display: grid;
-  gap: 1.25rem;
-  min-width: 0;
-  padding: 1.25rem;
-}
-
-.docs-theme-feature__intro {
-  display: grid;
-  gap: 0.75rem;
-  align-content: start;
-  max-width: 28rem;
-}
-
-@media (min-width: 1024px) {
-  .docs-theme-feature {
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    align-items: start;
-  }
-}
-
 .docs-code-panel pre {
   max-height: 24rem;
 }
@@ -2463,7 +2402,7 @@ pre:where(:not(.ui-code pre)) code {
 @media (max-width: 900px) {
   .docs-site-footer__statement,
   .docs-site-footer__directory {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
   }
 
@@ -2484,7 +2423,7 @@ pre:where(:not(.ui-code pre)) code {
   }
 
   .docs-site-footer__nav {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
     row-gap: 2.5rem;
   }
 
@@ -2499,6 +2438,8 @@ pre:where(:not(.ui-code pre)) code {
 
   .docs-site-footer__actions .ui-button-link {
     width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .docs-site-footer__meta {
@@ -2588,6 +2529,7 @@ pre:where(:not(.ui-code pre)) code {
   right: 0;
   left: auto;
   width: 12rem;
+  max-height: min(24rem, 50dvh);
   margin-top: 0.2rem;
   padding: 0.375rem;
   border-radius: var(--ui-radius);
@@ -2718,4 +2660,25 @@ pre:where(:not(.ui-code pre)) code {
   overflow-x: auto;
   padding: 1rem;
   border-radius: var(--ui-radius);
+}
+
+@media (max-width: 840px) {
+  .docs-header-actions {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    max-inline-size: 100%;
+  }
+
+  .docs-theme-controls {
+    flex-wrap: wrap;
+    min-inline-size: 0;
+  }
+
+  .docs-theme-picker {
+    max-inline-size: 100%;
+  }
+
+  .docs-theme-select.ui-select-field {
+    max-inline-size: 100%;
+  }
 }

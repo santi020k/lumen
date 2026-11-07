@@ -24,10 +24,10 @@ const LumenMusic4IconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M9 18V5l12-2v13" />
-      <Path d="m9 9 12-2" />
-      <Circle cx="6" cy="18" r="3" />
+      <Path d="M21 16V3a1 1 0 0 0-1.28-.96l-10 2.917a1 1 0 0 0-.72.96V19" />
+      <Path d="M21 6 9 9.5" />
       <Circle cx="18" cy="16" r="3" />
+      <Circle cx="6" cy="19" r="3" />
   </Svg>
 )
 

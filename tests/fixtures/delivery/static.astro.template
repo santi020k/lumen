@@ -1,0 +1,5 @@
+---
+import Button from '@santi020k/lumen-astro/components/Button'
+import Card from '@santi020k/lumen-astro/components/Card'
+---
+<Card><h1>Static controls</h1><Button>Continue</Button></Card>

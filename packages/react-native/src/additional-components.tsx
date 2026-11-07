@@ -23,6 +23,7 @@ import {
   resolveLumenValidationHint
 } from './recipes.js'
 import { type LumenAlertVariant, resolveLumenAlertColors } from './shared-recipes.js'
+import { resolveStatusText } from './theme.js'
 import { useLumenTheme } from './theme-context.js'
 
 const resolveOptional = <Value,>(value: Value | undefined, fallback: Value): Value => value ?? fallback
@@ -67,7 +68,7 @@ export const LumenToast = ({
   ...props
 }: LumenToastProps): ReactElement => {
   const theme = useLumenTheme()
-  const colors = resolveLumenAlertColors(theme.colors, variant)
+  const colors = resolveLumenAlertColors(theme.colors, variant, theme.appearance?.statusText)
 
   useLumenAccessibilityAnnouncement([title, description].filter(Boolean).join('. '), 'polite')
 
@@ -163,7 +164,7 @@ export const LumenTextarea = ({
 
   const supportingColor = resolveTextareaBorderColor(
     errorMessage,
-    theme.colors.danger,
+    resolveStatusText(theme, 'danger'),
     theme.colors.inkMuted
   )
 
@@ -243,7 +244,7 @@ export const LumenChip = ({
   ...props
 }: LumenChipProps): ReactElement => {
   const theme = useLumenTheme()
-  const isDisabled = disabled === true
+  const isDisabled = disabled
 
   const content = (
     <>
@@ -398,7 +399,7 @@ export const LumenFieldGroup = ({
               accessibilityLiveRegion="polite"
               accessibilityRole="alert"
               nativeID={errorId}
-              style={{ color: theme.colors.danger, fontSize: theme.fontSizes.xs }}
+              style={{ color: resolveStatusText(theme, 'danger'), fontSize: theme.fontSizes.xs }}
             >
               {errorMessage}
             </Text>

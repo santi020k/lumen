@@ -1,4 +1,8 @@
+import { createRequire } from 'node:module'
+
 import { expect, test } from '@playwright/test'
+
+const axePath = createRequire(new URL('../../packages/elements/package.json', import.meta.url)).resolve('axe-core/axe.min.js')
 
 const templateSlugs = [
   'editorial',
@@ -189,3 +193,38 @@ test('six gallery families form complete desktop rows', async ({ page }) => {
   expect(last.width).toBeCloseTo(previous.width, 0)
   expect(last.x).toBeGreaterThan(previous.x)
 })
+
+for (const width of [320, 942, 1440]) {
+  test(`onboarding shows each complete step inside its allotted space at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/templates/auth-onboarding')
+    await page.evaluate(() => document.fonts.ready)
+
+    const steps = page.getByRole('list', { name: 'Account setup progress' })
+    await expect(steps.locator('.ui-stepper__title')).toHaveText(['Account', 'Workspace', 'Preferences', 'Invite'])
+    const clipped = await steps.getByRole('listitem').evaluateAll(items => items.flatMap(item => {
+      const title = item.querySelector('.ui-stepper__title')
+      if (!title) throw new Error('Each step must display its title.')
+      const range = document.createRange()
+      range.selectNodeContents(title)
+      const bounds = item.getBoundingClientRect()
+      const rect = range.getBoundingClientRect()
+      const fits = range.getClientRects().length === 1 && rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1
+      return fits ? [] : [title.textContent]
+    }))
+    expect(clipped).toEqual([])
+  })
+}
+
+for (const scheme of ['light', 'dark']) {
+  test(`onboarding validation copy passes contrast checks in ${scheme} mode`, async ({ page }) => {
+    await page.goto('/templates/auth-onboarding')
+    await page.evaluate(theme => { document.documentElement.dataset.theme = theme }, scheme)
+    await expect(page.locator('.ui-alert--destructive')).toHaveCount(2)
+    await page.addScriptTag({ path: axePath })
+    const failures: unknown = await page.evaluate(
+      'axe.run(".ui-alert--destructive", { runOnly: ["color-contrast"] }).then(report => ({ violations: report.violations, incomplete: report.incomplete }))'
+    )
+    expect(failures).toEqual({ violations: [], incomplete: [] })
+  })
+}

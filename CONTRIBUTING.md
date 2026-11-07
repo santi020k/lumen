@@ -15,10 +15,19 @@ Accepted ideas link to implementation issues on the [public roadmap](https://lum
 Follow the [community feedback workflow](docs/community-feedback.md) when reviewing feedback, linking work,
 and recording the release that ships an improvement. Votes inform priorities without promising delivery.
 
+## Community themes
+
+Start with the [web theme authoring guide](docs/community-web-themes.md). A community theme can ship independently of Lumen. Authors own the stylesheet, compatibility notes, license and release cadence.
+
+1. **Support authors today.** Keep the downloadable starter and the playground linked. A new author should be able to rename the theme, use it alongside a built-in preset and hand it to a second project without editing a Lumen package.
+2. **Simplify export if authors get stuck.** The playground currently exports one scheme at a time. If assembling the two exports is a recurring problem, add a named, two-scheme CSS export there. Qualify it by installing the output in a clean consumer and running the same light, dark and nested checks as the starter.
+3. **Grow discovery with submissions.** Begin with the existing opt-in showcase. Consider a searchable directory once there are enough independently maintained themes to browse. Entries should point to a version, license, tested adapters and preview, with a way for the author to update or withdraw the listing.
+
 ## Local Setup
 
-Use Node.js 22.22.2+, 24.15.0+, or 26+ and the pnpm version pinned in `package.json` (currently 12.8.1).
-This workspace tooling requirement does not change the supported runtimes of published packages.
+For the full workspace, use Node.js 22.23.4+, 24.15.0+, or 26+ and the pnpm version pinned in
+`package.json` (currently 12.8.1). The installed Astro toolchain requires at least Node.js 22.23.4
+for the docs app. This contributor requirement does not change the supported runtimes of published packages.
 
 ```bash
 pnpm install
@@ -72,6 +81,21 @@ fingerprints without changing content or image bytes. Full `pnpm run validate` p
 The canonical `pnpm run typecheck` also checks the local Figma Code Connect templates and their
 shared ambient types with `pnpm run typecheck:figma`.
 
+The docs check excludes the generated, ignored Expo preview bundle under
+`public/native-previews/react-native-live`, just as it excludes `dist`. Its authored sources are
+checked by the React Native playground's own TypeScript commands. Checking that minified output
+again consumes excessive memory and reports generated-code hints without validating source types.
+
+Knip treats the CLI's installable recipe scripts and standalone styles as explicit asset entries.
+The CLI is not an Astro application, so its Astro application-discovery plugin is disabled; its
+existing TypeScript/CSS analysis scope is unchanged. Installed Astro and React recipes are checked
+through their consumer fixtures, while the Elements recipe entry scripts use a development-only
+adapter dependency for analysis. Template dependencies remain consumer-owned at runtime.
+The three Elements recipe sources allow that declared consumer adapter in the unpublished-import
+rule. All other imports remain checked. Keep this exception aligned with registry dependency
+metadata and `pnpm run test:portable-editorial`; adding an adapter to the CLI's production graph
+would incorrectly make every CLI installation install that adapter.
+
 The shared ESLint composer supplies the TypeScript parser for Astro files. Keep parser ownership
 in `@santi020k/eslint-config-astro` instead of duplicating the parser in the root configuration.
 
@@ -104,7 +128,9 @@ The build matrix installs Chromium before affected package tests; Turbo passes t
 location to those tests without using the machine-specific path as a cache key. Motion browser
 tests depend on their own preview build as well as dependency package builds.
 The matrix limits concurrent Turbo tasks to half the runner's logical CPUs because each Vitest
-suite uses two workers. This keeps CPU-heavy catalog tests within their normal timeouts.
+suite uses two workers. The native catalog check runs the Android and Apple capture scripts in
+sequence because both launch a subprocess for each fixture interaction. This keeps the capture
+checks within their individual timeouts under load.
 Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
 complete release gate.
 Linux browser setup configures 30-second APT connection/data timeouts and two retries per failed
@@ -245,8 +271,9 @@ without downloading the extended subset for Latin-only pages. Keep `OFL.txt` alo
 
 Prepare every non-initial release in `release/v<semver>` and open its pull request into `main`.
 
-For the initial v4 publication, approval identifies the exact reviewed draft revision. After recording
-approval, run `pnpm run generate:v4-migration` and `pnpm --filter @santi020k/lumen-mcp run generate`.
+For the initial v4 or v5 publication, approval identifies the exact reviewed draft revision. After
+recording approval, run the matching `generate:v4-migration` or `generate:v5-migration` command and
+`pnpm --filter @santi020k/lumen-mcp run generate`.
 The revision gate permits only contract status/approval metadata and those two generated migration
 mirrors to change. Both mirrors must match the approved contract; all migration rules and the rest
 of the MCP snapshot must remain identical to the reviewed revision. Commit the approval and mirrors
@@ -280,12 +307,17 @@ its automatic branch does not replace the reviewed release pull request. Never p
 release directly from a developer machine.
 
 Initial coordinated npm releases at 2.0.0, 3.0.0, and 4.0.0 verify the complete release-manifest
-family from the registry before creating the repository release. Every publication attempt includes
+family from the registry before creating the repository release. The mixed-version 5.0.0 release
+verifies its immutable `npmPublicationVersions` set from `registry/lumen-5-contract.json` against
+the release manifest and registry, including updated companions and excluding unchanged packages. Every publication attempt includes
 this audit, including recovery after partial publication and retries with no newly published packages.
 The audit installs every expected version and verifies its signed provenance against the merged
 commit, or the immutable existing version tag during recovery. Missing packages, mismatched versions,
 and incorrect source provenance stop release creation. Version-preparation pull requests are not
-publication attempts; ordinary releases continue auditing their newly published packages.
+publication attempts; ordinary releases continue auditing their newly published packages. After an
+initial major release, prepare a new umbrella patch or minor version before publishing further companion
+updates. The initial publication set stays immutable; new release manifests and provenance must belong
+to the new release revision even when companion packages retain independent version numbers.
 
 Ordinary pull requests run affected builds, type checks, lint, and tests. Release pull requests run
 those four tasks for the full workspace. Both retain the platform and integration gates selected

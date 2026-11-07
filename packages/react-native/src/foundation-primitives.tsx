@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   type ActivityIndicatorProps,
   type ColorValue,
+  Platform,
   Pressable,
   type PressableProps,
   Text,
@@ -65,13 +66,18 @@ export const LumenText = ({
   const theme = useLumenTheme()
   const contentColor = useLumenControlContentColor()
 
+  const color = tone === 'default' ?
+    contentColor ?? theme.colors.ink :
+    resolveLumenTextColor(theme.colors, tone, theme.appearance?.statusText)
+
   return (
     <Text
       ref={ref}
       {...props}
       style={[
-        { color: tone === 'default' ? contentColor ?? theme.colors.ink : resolveLumenTextColor(theme.colors, tone) },
+        { color },
         resolveLumenTextStyle(theme, variant),
+        variant === 'title' && theme.appearance?.serifHeadings && { fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif' },
         style
       ]}
     />
@@ -135,9 +141,9 @@ export const LumenButton = ({
   ...props
 }: LumenButtonProps): ReactElement => {
   const theme = useLumenTheme()
-  const colors = resolveLumenButtonColors(theme.colors, intent)
+  const colors = resolveLumenButtonColors(theme.colors, intent, theme.appearance)
   const dimensions = resolveLumenButtonSize(theme, size)
-  const isDisabled = disabled === true || loading
+  const isDisabled = disabled || loading
 
   return (
     <Pressable
@@ -317,6 +323,7 @@ export const LumenBadge = ({
 }: LumenBadgeProps): ReactElement => {
   const theme = useLumenTheme()
   const color = tone === 'neutral' ? theme.colors.inkSoft : theme.colors[tone]
+  const textColor = tone === 'neutral' || tone === 'accent' ? color : theme.appearance?.statusText ?? color
   const backgroundColor = tone === 'neutral' ? theme.colors.surfaceMuted : `${color}1F`
 
   return (
@@ -334,7 +341,7 @@ export const LumenBadge = ({
         style
       ]}
     >
-      <Text style={{ color, fontSize: theme.fontSizes.xs, fontWeight: '600' }}>
+      <Text style={{ color: textColor, fontSize: theme.fontSizes.xs, fontWeight: '600' }}>
         {children}
       </Text>
     </View>

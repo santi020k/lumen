@@ -21,8 +21,10 @@
         "ButtonLink",
         "Callout",
         "Card",
+        "Collapsible",
         "Dialog",
         "DialogBody",
+        "DialogHeader",
         "DialogTitle",
         "Icon",
         "Link",
@@ -32,6 +34,73 @@
       ],
       "files": [
         "docs/editorial-recipes.md"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install @santi020k/lumen-astro in the application and @santi020k/lumen separately for the CLI.",
+            "Keep selective component imports. Mount the runtime once in the root layout."
+          ]
+        }
+      }
+    },
+    {
+      "name": "share",
+      "type": "recipe",
+      "components": [
+        "Button",
+        "Collapsible",
+        "CopyButton",
+        "Dialog",
+        "DialogBody",
+        "DialogClose",
+        "DialogHeader",
+        "DialogTitle",
+        "Input",
+        "Link"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install @santi020k/lumen-astro in the application and @santi020k/lumen separately for the CLI.",
+            "Keep selective component imports. Mount the runtime once in the root layout."
+          ]
+        }
+      },
+      "files": [
+        "docs/product-workflow-recipes.md"
+      ]
+    },
+    {
+      "name": "code-example",
+      "type": "recipe",
+      "components": [
+        "Code",
+        "Collapsible",
+        "CopyButton"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install @santi020k/lumen-astro in the application and @santi020k/lumen separately for the CLI.",
+            "Keep selective component imports. Mount the runtime once in the root layout."
+          ]
+        }
+      },
+      "files": [
+        "docs/product-workflow-recipes.md"
       ]
     },
     {
@@ -45,7 +114,39 @@
       ],
       "files": [
         "docs/interactive-editorial-recipes.md"
-      ]
+      ],
+      "setup": {
+        "astro": {
+          "dependencies": [
+            "@santi020k/lumen-astro"
+          ],
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install the Astro adapter in the application and the Lumen CLI separately for installation.",
+            "Use the installed Astro recipe and mount the runtime once in the root layout."
+          ]
+        },
+        "react": {
+          "dependencies": [
+            "@santi020k/lumen-react",
+            "react",
+            "react-dom"
+          ],
+          "instructions": [
+            "Import the React foundation stylesheet once, then import the installed TSX recipe with its selective component and local CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        },
+        "elements": {
+          "dependencies": [
+            "@santi020k/lumen-elements"
+          ],
+          "instructions": [
+            "Import the Elements foundation stylesheet once. Insert the installed HTML and import the installed TypeScript module, which registers only required primitives and imports their CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        }
+      }
     },
     {
       "name": "site-search-dialog",
@@ -66,7 +167,39 @@
       ],
       "files": [
         "docs/interactive-editorial-recipes.md"
-      ]
+      ],
+      "setup": {
+        "astro": {
+          "dependencies": [
+            "@santi020k/lumen-astro"
+          ],
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install the Astro adapter in the application and the Lumen CLI separately for installation.",
+            "Use the installed Astro recipe and mount the runtime once in the root layout."
+          ]
+        },
+        "react": {
+          "dependencies": [
+            "@santi020k/lumen-react",
+            "react",
+            "react-dom"
+          ],
+          "instructions": [
+            "Import the React foundation stylesheet once, then import the installed TSX recipe with its selective component and local CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        },
+        "elements": {
+          "dependencies": [
+            "@santi020k/lumen-elements"
+          ],
+          "instructions": [
+            "Import the Elements foundation stylesheet once. Insert the installed HTML and import the installed TypeScript module, which registers only required primitives and imports their CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        }
+      }
     },
     {
       "name": "image-viewer",
@@ -84,7 +217,39 @@
       ],
       "files": [
         "docs/interactive-editorial-recipes.md"
-      ]
+      ],
+      "setup": {
+        "astro": {
+          "dependencies": [
+            "@santi020k/lumen-astro"
+          ],
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Install the Astro adapter in the application and the Lumen CLI separately for installation.",
+            "Use the installed Astro recipe and mount the runtime once in the root layout."
+          ]
+        },
+        "react": {
+          "dependencies": [
+            "@santi020k/lumen-react",
+            "react",
+            "react-dom"
+          ],
+          "instructions": [
+            "Import the React foundation stylesheet once, then import the installed TSX recipe with its selective component and local CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        },
+        "elements": {
+          "dependencies": [
+            "@santi020k/lumen-elements"
+          ],
+          "instructions": [
+            "Import the Elements foundation stylesheet once. Insert the installed HTML and import the installed TypeScript module, which registers only required primitives and imports their CSS.",
+            "Keep requests, routing, content, and persistence in the application."
+          ]
+        }
+      }
     },
     {
       "name": "page-header",
@@ -574,6 +739,85 @@
       "files": [
         "docs/studio-media-workspaces.md"
       ]
+    },
+    {
+      "name": "feedback-board",
+      "type": "recipe",
+      "components": [
+        "Badge",
+        "Button",
+        "Card",
+        "Input",
+        "Label",
+        "Select",
+        "Textarea"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "files": [
+        "docs/consumer-ui-recipes.md"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Mount UIPrimitives once in the application layout.",
+            "See consumer-ui-recipes.md for lifecycle and callback setup."
+          ]
+        }
+      }
+    },
+    {
+      "name": "responsive-navigation",
+      "type": "recipe",
+      "components": [
+        "Button",
+        "Dialog",
+        "DialogClose",
+        "DialogHeader",
+        "DialogTitle",
+        "Link",
+        "NavigationMenu"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "files": [
+        "docs/consumer-ui-recipes.md"
+      ],
+      "setup": {
+        "astro": {
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Mount UIPrimitives once in the application layout.",
+            "See consumer-ui-recipes.md for lifecycle and callback setup."
+          ]
+        }
+      }
+    },
+    {
+      "name": "editable-ticket",
+      "type": "recipe",
+      "components": [
+        "Button",
+        "Card",
+        "Input",
+        "Label"
+      ],
+      "files": [
+        "docs/editable-ticket.md"
+      ],
+      "dependencies": [
+        "@santi020k/lumen-astro"
+      ],
+      "setup": {
+        "astro": {
+          "instructions": [
+            "Import the copied Astro component. Each instance requires a unique id. Persist committed ui:event-change values in the application."
+          ]
+        }
+      }
     }
   ],
   "components": [

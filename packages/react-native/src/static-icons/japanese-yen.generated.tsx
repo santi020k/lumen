@@ -24,9 +24,10 @@ const LumenJapaneseYenIconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Path d="M12 9.5V21m0-11.5L6 3m6 6.5L18 3" />
-      <Path d="M6 15h12" />
-      <Path d="M6 11h12" />
+      <Path d="M12 12v8" />
+      <Path d="m6 4 6 8 6-8" />
+      <Path d="M8 13h8" />
+      <Path d="M8 17h8" />
   </Svg>
 )
 

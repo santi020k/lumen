@@ -2,8 +2,9 @@ import { createHash } from 'node:crypto'
 import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
 
+import { bundledV5ReleaseVersions, consumerPackageVersion } from './consumer-release-versions.js'
 import { formatConsumerRollout, inspectLumenConsumer } from './consumer-rollout.js'
-import { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
+import { formatLumenConsumerUpgradeAudit, inspectConsumerSource, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
 import { discoverSourceFiles } from './v2-migration.js'
 import { migrateLumenV4 } from './v4-migration.js'
 import {
@@ -14,7 +15,7 @@ import { migrateLumenVersionSource } from './version-migration-source.js'
 
 export { migrateLumenVersionSource } from './version-migration-source.js'
 
-export type LumenMigrationVersion = 'v3' | 'v4'
+export type LumenMigrationVersion = 'v3' | 'v4' | 'v5'
 export interface LumenVersionMigrationFinding {
   column: number
   file: string
@@ -149,18 +150,27 @@ const migrateFile = async (
   await writeMigratedSource(absoluteFile, source, migration.source, { report, ledger, ledgerPath, file })
 }
 
-const createReport = (
+const createReport = async (
   options: LumenVersionMigrationOptions, root: string, filesScanned: number
-): LumenVersionMigrationReport => ({
-  applied: options.apply === true,
-  changedFiles: [],
-  changes: [],
-  filesScanned,
-  manualReview: [],
-  root,
-  version: options.version,
-  dependencyVersion: options.version === 'v3' ? '3.0.1' : '4.0.0'
-})
+): Promise<LumenVersionMigrationReport> => {
+  const packageVersions = options.version === 'v5' ? await bundledV5ReleaseVersions() : undefined
+
+  const dependencyVersion = options.version === 'v5' ?
+    consumerPackageVersion('@santi020k/lumen', '', packageVersions) :
+    { v3: '3.0.1', v4: '4.0.0' }[options.version]
+
+  return {
+    applied: options.apply === true,
+    changedFiles: [],
+    changes: [],
+    filesScanned,
+    manualReview: [],
+    root,
+    version: options.version,
+    dependencyVersion,
+    ...(packageVersions ? { packageVersions: { ...packageVersions } } : {})
+  }
+}
 
 const refreshDependencyReport = async (report: LumenVersionMigrationReport): Promise<void> => {
   if (report.dependencies && report.applied) {
@@ -185,7 +195,9 @@ const optionalConsumerAudit = async (root: string, version: string): Promise<Lum
     throw error
   }
 
-  return inspectLumenConsumerUpgrade(root, version)
+  if (version.startsWith('5.')) return inspectLumenConsumerUpgrade(root, version)
+
+  return { findings: await inspectConsumerSource(root), repository: root, targetVersion: version }
 }
 
 export const migrateLumenVersion = async (
@@ -198,10 +210,10 @@ export const migrateLumenVersion = async (
   const files = await discoverSourceFiles(root, extensions)
   const ledgerPath = resolve(root, '.lumen', 'migrations-v4.json')
 
-  await checkLedgerLocation(root)
+  if (options.version === 'v4') await checkLedgerLocation(root)
 
   const ledger = options.version === 'v4' ? await readLedger(ledgerPath) : {}
-  const report = createReport(options, root, files.length)
+  const report = await createReport(options, root, files.length)
 
   if (options.dependencies) {
     report.dependencies = await applyLumenVersionMigrationDependencies(root, report.dependencyVersion, options)
@@ -235,16 +247,34 @@ export const migrateLumenVersion = async (
   return report
 }
 
+const formatManualReview = (findings: LumenVersionMigrationFinding[]): string[] => {
+  const groups = new Map<string, string[]>()
+
+  for (const { file, line, column, message } of findings) {
+    const locations = groups.get(message) ?? []
+
+    locations.push(`  ${file}:${line}:${column}`)
+
+    groups.set(message, locations)
+  }
+
+  return [...groups].flatMap(([message, locations]) => [`[manual review] ${message}`, ...locations])
+}
+
 export const formatLumenVersionMigration = (report: LumenVersionMigrationReport): string => [
   `Lumen ${report.version} migration ${report.applied ? 'apply' : 'dry run'}: ${report.root}`,
   `Scanned ${report.filesScanned} source files. ${report.applied ? 'Applied' : 'Would apply'} ${report.changes.length} changes in ${report.changedFiles.length} files.`,
   ...report.changes.map(item => `${item.file}:${item.line}:${item.column} [${item.kind}] ${item.message}`),
-  ...report.manualReview.map(item => `${item.file}:${item.line}:${item.column} [manual review] ${item.message}`),
+  ...formatManualReview(report.manualReview),
   ...(report.dependencies ? [formatConsumerRollout(report.dependencies)] : []),
   ...(report.consumerAudit ? [formatLumenConsumerUpgradeAudit(report.consumerAudit)] : []),
-  report.version === 'v3' ?
-    'V3 requires coordinated package versions and a native rebuild, with no web source rewrites. Review exhaustive Swift LumenIconName switches for added cases.' :
-    'Review product CSS, pending dialogs, chart identity, native initializers, exhaustive Swift icon switches and embedded MCP SDK v2 integrations. Source changes do not qualify the application for release.',
-  `Use --dependencies to inventory or upgrade the coordinated npm family to ${report.dependencyVersion} through the existing pnpm rollout. Native Swift/Maven pins remain application-owned.`,
+  {
+    v3: 'V3 requires coordinated package versions and a native rebuild, with no web source rewrites. Review exhaustive Swift LumenIconName switches for added cases.',
+    v4: 'Review product CSS, pending dialogs, chart identity, native initializers, exhaustive Swift icon switches and embedded MCP SDK v2 integrations. Source changes do not qualify the application for release.',
+    v5: 'V5 performs no automatic source rewrites. Review async Astro readiness and separately installed CLI; delivery and recipes are optional adoption. The candidate contract does not establish publication availability.'
+  }[report.version],
+  report.version === 'v5' ?
+    'Use --dependencies to inventory or upgrade npm packages to their individual bundled release-manifest versions through the existing pnpm rollout. Native Swift/Maven pins remain application-owned.' :
+    `Use --dependencies to inventory or upgrade the coordinated npm family to ${report.dependencyVersion} through the existing pnpm rollout. Native Swift/Maven pins remain application-owned.`,
   ...(!report.applied && report.changes.length ? [`Run lumen migrate ${report.version} --apply to write the source changes.`] : [])
 ].join('\n')

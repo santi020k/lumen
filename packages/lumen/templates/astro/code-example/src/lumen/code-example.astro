@@ -1,0 +1,53 @@
+---
+import Code from '@santi020k/lumen-astro/components/Code'
+import Collapsible from '@santi020k/lumen-astro/components/Collapsible'
+import CopyButton from '@santi020k/lumen-astro/components/CopyButton'
+
+interface Props {
+  id: string
+  source: string
+  language?: string
+  title: string
+  open?: boolean
+  highlighted?: boolean
+  labels?: Partial<{
+    copy: string
+    copied: string
+    error: string
+    recovery: string
+    disclosure: string
+    scroll: string
+  }>
+}
+
+const { id, source, language, title, labels, highlighted = false, open = false } = Astro.props
+---
+
+<section class="code-example" aria-labelledby={id + '-title'}>
+  <header>
+    <p id={id + '-title'}>{title}</p>
+    <CopyButton
+      class="code-example-copy"
+      value={source}
+      label={labels?.copy ?? 'Copy complete example'}
+      copiedLabel={labels?.copied ?? 'Complete example copied'}
+      errorLabel={labels?.error ?? 'Copy failed. Select the complete source below.'}
+      recoveryLabel={labels?.recovery ?? 'Complete source for manual copying'}
+    >{labels?.copy ?? 'Copy complete example'}</CopyButton>
+  </header>
+  <Collapsible id={id} open={open}>
+    <summary>{labels?.disclosure ?? 'Read complete example'}</summary>
+    <Code id={id + '-source'} code={source} language={language} codeLabel={title} highlighted={highlighted} variant="block" scrollCue={labels?.scroll ?? true}>
+      <slot />
+    </Code>
+  </Collapsible>
+</section>
+
+<style>
+  .code-example { min-inline-size: 0; overflow-wrap: anywhere; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+  header > p { flex: 1 1 12rem; font-weight: 600; }
+  summary { min-block-size: 2.75rem; padding-block: 0.65rem; cursor: pointer; }
+  .code-example-copy { display: none; max-inline-size: 100%; block-size: auto; white-space: normal; }
+  .code-example-copy[data-ui-copy-button-bound='true'] { display: inline-flex; }
+</style>

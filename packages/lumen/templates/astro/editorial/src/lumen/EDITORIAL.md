@@ -4,7 +4,7 @@ These nine independent components and one example page are copied into your proj
 `lumen add editorial --target astro`. Edit the copies to fit your content. React and Elements
 implementations are not included in this family.
 
-Import `@santi020k/lumen-astro/styles.css` once in your root layout. The static compositions need
+For the video workflow, keep selective component imports and mount `@santi020k/lumen-astro/runtime` once in the root layout. The static compositions need
 only CSS. The video dialog ships with its own small Astro script. The example's `ThemeToggle`
 needs the standard single `UIPrimitives` mount in the root layout. Tailwind and the private
 templates package are not required.
@@ -64,3 +64,8 @@ before using it as a product page.
 These generalized compositions are part of Lumen under its MIT license. Their design originated
 in versions 4.1 and 5 of Santiago Molina's website; personal writing, photographs, and client assets remain outside
 the recipe. Keep the copyright and license notice supplied with Lumen when redistributing copies.
+
+The video supports `captions` entries with `src`, `language`, `label`, and optional `default`.
+Tracks load with the source when opened. Localize `loadingLabel` and `retryLabel`. The same transcript
+disclosure moves into the enhanced dialog, keeping IDs unique. Native controls start playback.
+Navigation, page exit, and closing pause playback. Failure offers Retry and the direct file.

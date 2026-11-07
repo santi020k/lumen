@@ -386,6 +386,33 @@ VoiceOver and TalkBack evidence.
 
 ## Appearance presets
 
+Import optional themes individually. Paper gives titles a system serif and tighter corners.
+Field rounds controls and santi020k uses ink on primary buttons and violet accents.
+The public theme value also works with `createLumenTheme(scheme, { definition: paperTheme })`.
+
+```tsx
+import { LumenProvider, LumenThemeScope, type LumenThemeDefinition } from '@santi020k/lumen-react-native/foundations'
+import { paperTheme } from '@santi020k/lumen-react-native/themes/paper'
+
+const harbor = {
+  light: { brand: '#0D6769', brandSolid: '#0D6769', onBrand: '#FFFFFF' },
+  dark: { brand: '#80DBD3', brandSolid: '#80DBD3', onBrand: '#0D2326' }
+} satisfies LumenThemeDefinition
+
+<LumenProvider scheme="system" definition={paperTheme}>
+  <Article />
+  <LumenThemeScope definition={harbor} scheme="light">
+    <HarborPreview />
+  </LumenThemeScope>
+</LumenProvider>
+```
+
+Use `themes/field` and `themes/santi020k` for the named `fieldTheme` and `santi020kTheme` exports.
+A scope without a scheme follows its parent's resolved scheme. Render sheets inside their initiating
+scope. Themes resolve from Lumen foundations for the selected scheme. Application overrides passed
+to `createLumenTheme` take precedence over the definition. A complete `theme` on the provider takes
+precedence over its other settings.
+
 Start with `createLumenTheme(scheme, { preset: 'studio' })` or `<LumenProvider preset="studio">`. Theme options support custom numeric scales and semantic colors. See [appearance presets](https://github.com/santi020k/lumen/blob/main/docs/appearance-presets.md) for the opaque material fallback.
 
 ## Data visualization
@@ -497,6 +524,9 @@ import { LumenButton, LumenProvider } from '@santi020k/lumen-react-native/founda
 <LumenProvider><LumenButton>Continue</LumenButton></LumenProvider>
 ```
 
+Native adapters consume focused core entrypoints so the root native catalog does not also load the
+web icon lookup catalog. Named native icons remain available with the same API.
+
 Run `pnpm run measure:react-native-imports` from the repository to compare production Hermes
 bytecode for a platform baseline, root button, root icon, foundation button, and matching
 four-icon navigation fixtures using root or static graphics imports. Both static graphics
@@ -600,11 +630,11 @@ data work together. Domains include zero and all measurements; invalid inputs fa
 Null values stay distinct from zero. See the [chart guide](https://github.com/santi020k/lumen/blob/main/docs/data-visualization.md#actual-values-and-targets)
 for the input, localization, and domain contracts.
 
-### React Native 0.86.3 live iOS text resizing
+### React Native 0.88.1 live iOS text resizing
 
 This renderer version can retain stale text geometry after a live system Text Size change.
 The Lumen playground applies the exact-version source patch in
-`patches/react-native@0.86.3.patch` and builds iOS React Native from source. See
+`patches/react-native@0.88.1.patch` and builds iOS React Native from source. See
 [the playground instructions](https://github.com/santi020k/lumen/blob/main/apps/playground-react-native/README.md#live-ios-text-resizing)
 for the patch, rebuild requirements, and mounted-draft regression check. Installing Lumen alone
 does not change the host application's native renderer. Native font scaling remains enabled.

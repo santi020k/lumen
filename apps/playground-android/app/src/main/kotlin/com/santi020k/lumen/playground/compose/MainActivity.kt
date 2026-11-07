@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -153,9 +156,10 @@ import com.santi020k.lumen.LumenTextField
 import com.santi020k.lumen.LumenTextarea
 import com.santi020k.lumen.LumenTextTone
 import com.santi020k.lumen.LumenTextVariant
-import com.santi020k.lumen.LumenColorPalette
-import com.santi020k.lumen.LumenTheme
-import com.santi020k.lumen.LumenThemeValues
+import com.santi020k.lumen.LumenNamedTheme
+import com.santi020k.lumen.LumenNamedThemes
+import com.santi020k.lumen.LumenThemePreset
+import com.santi020k.lumen.LumenThemeScope
 import com.santi020k.lumen.LumenToggle
 import com.santi020k.lumen.LumenToast
 import com.santi020k.lumen.lumenNavigationBarScrollBehavior
@@ -164,14 +168,21 @@ import com.santi020k.lumen.rememberLumenNavigationBarScrollState
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val initialDarkTheme = intent.getBooleanExtra(DARK_THEME_EXTRA, false)
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = !initialDarkTheme
-            isAppearanceLightNavigationBars = !initialDarkTheme
+        val initialScheme = when {
+            !intent.hasExtra(DARK_THEME_EXTRA) -> PlaygroundScheme.System
+            intent.getBooleanExtra(DARK_THEME_EXTRA, false) -> PlaygroundScheme.Dark
+            else -> PlaygroundScheme.Light
         }
         setContent {
             LumenAndroidPlayground(
-                initialDarkTheme = initialDarkTheme,
+                initialScheme = initialScheme,
+                initialTheme = PlaygroundThemePreset.fromId(intent.getStringExtra("theme")),
+                onResolvedScheme = { isDark ->
+                    WindowCompat.getInsetsController(window, window.decorView).apply {
+                        isAppearanceLightStatusBars = !isDark
+                        isAppearanceLightNavigationBars = !isDark
+                    }
+                },
                 initialComponent = intent.getStringExtra(COMPONENT_EXTRA).orEmpty(),
                 initialDestination = PlaygroundDestination.fromLaunchValue(
                     intent.getStringExtra(DESTINATION_EXTRA).orEmpty()
@@ -187,80 +198,50 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-internal enum class PlaygroundThemePreset(val label: String) {
+internal enum class PlaygroundScheme { System, Light, Dark }
+
+internal enum class PlaygroundThemePreset(
+    val label: String,
+    val shared: LumenThemePreset = LumenThemePreset.Default,
+    val named: LumenNamedTheme? = null
+) {
     Lumen("Normal"),
-    Studio("Studio"),
-    Glass("Glass"),
-    Santi020k("santi020k");
+    Studio("Studio", shared = LumenThemePreset.Studio),
+    Glass("Glass", shared = LumenThemePreset.Glass),
+    Santi020k("santi020k", named = LumenNamedThemes.Santi020k),
+    Paper("Paper", named = LumenNamedThemes.Paper),
+    Field("Field", named = LumenNamedThemes.Field);
 
-    fun values(darkTheme: Boolean): LumenThemeValues = when (this) {
-        Studio -> LumenThemeValues.preset(com.santi020k.lumen.LumenThemePreset.Studio, darkTheme)
-        Glass -> LumenThemeValues.preset(com.santi020k.lumen.LumenThemePreset.Glass, darkTheme)
-        else -> LumenThemeValues(
-            colors = when {
-                this == Santi020k && darkTheme -> santi020kDark
-                this == Santi020k -> santi020kLight
-                darkTheme -> com.santi020k.lumen.LumenColors.Dark
-                else -> com.santi020k.lumen.LumenColors.Light
-            },
-            isDark = darkTheme
-        )
-    }
-
-    private companion object {
-        val santi020kLight = palette(
-            0xFFFAF9FB, 0xFFFFFFFF, 0xFFF5F3F7, 0xFFE5E2E9, 0xFFD6D0DC,
-            0xFF332E38, 0xFF5B5463, 0xFF47434C, 0xFF620AE6, 0xFF5709CE,
-            0xFFEEE7F9, 0xFF7D29FA, 0xFF16A249, 0xFFF59F0A, 0xFFEF4343, 0xFF000000
-        )
-        val santi020kDark = palette(
-            0xFF110C1D, 0xFF1C1528, 0xFF231D30, 0xFF322B40, 0xFF494158,
-            0xFFDFDDE3, 0xFFB6B2BD, 0xFF8D8896, 0xFFA56EF7, 0xFF6F16F3,
-            0xFF2A1943, 0xFF9F64F7, 0xFF21C45D, 0xFFF6A823, 0xFFF15B5B, 0xFF110C1D
-        )
-
-        fun palette(
-            canvas: Long, surface: Long, surfaceMuted: Long, surfaceStrong: Long, line: Long,
-            ink: Long, inkSoft: Long, inkMuted: Long, brand: Long, brandSolid: Long,
-            brandSoft: Long, accent: Long, success: Long, warning: Long, danger: Long, onDanger: Long
-        ) = LumenColorPalette(
-            canvas = androidx.compose.ui.graphics.Color(canvas),
-            surface = androidx.compose.ui.graphics.Color(surface),
-            surfaceMuted = androidx.compose.ui.graphics.Color(surfaceMuted),
-            surfaceStrong = androidx.compose.ui.graphics.Color(surfaceStrong),
-            line = androidx.compose.ui.graphics.Color(line),
-            ink = androidx.compose.ui.graphics.Color(ink),
-            inkSoft = androidx.compose.ui.graphics.Color(inkSoft),
-            inkMuted = androidx.compose.ui.graphics.Color(inkMuted),
-            brand = androidx.compose.ui.graphics.Color(brand),
-            brandSolid = androidx.compose.ui.graphics.Color(brandSolid),
-            brandSoft = androidx.compose.ui.graphics.Color(brandSoft),
-            onBrand = androidx.compose.ui.graphics.Color.White,
-            accent = androidx.compose.ui.graphics.Color(accent),
-            success = androidx.compose.ui.graphics.Color(success),
-            warning = androidx.compose.ui.graphics.Color(warning),
-            danger = androidx.compose.ui.graphics.Color(danger),
-            onDanger = androidx.compose.ui.graphics.Color(onDanger)
-        )
+    companion object {
+        fun fromId(id: String?): PlaygroundThemePreset =
+            entries.firstOrNull { it.name.equals(id, ignoreCase = true) } ?: Lumen
     }
 }
 
 @Composable
 private fun LumenAndroidPlayground(
     initialComponent: String,
-    initialDarkTheme: Boolean,
-    initialDestination: PlaygroundDestination
+    initialScheme: PlaygroundScheme,
+    initialTheme: PlaygroundThemePreset,
+    initialDestination: PlaygroundDestination,
+    onResolvedScheme: (Boolean) -> Unit
 ) {
-    var darkTheme by remember(initialDarkTheme) { mutableStateOf(initialDarkTheme) }
-    var themePreset by remember { mutableStateOf(PlaygroundThemePreset.Lumen) }
+    var scheme by rememberSaveable(initialScheme) { mutableStateOf(initialScheme) }
+    var themePreset by rememberSaveable(initialTheme) { mutableStateOf(initialTheme) }
+    val darkTheme = when (scheme) {
+        PlaygroundScheme.System -> isSystemInDarkTheme()
+        PlaygroundScheme.Light -> false
+        PlaygroundScheme.Dark -> true
+    }
+    SideEffect { onResolvedScheme(darkTheme) }
 
-    LumenTheme(darkTheme = darkTheme, values = themePreset.values(darkTheme)) {
+    LumenThemeScope(themePreset.named, darkTheme = darkTheme, preset = themePreset.shared) {
         if (initialComponent.isNotBlank()) {
             PlaygroundContent(
                 darkTheme = darkTheme,
                 initialComponent = initialComponent,
                 enhancedDiscovery = false,
-                onToggleTheme = { darkTheme = !darkTheme }
+                onToggleTheme = { scheme = if (darkTheme) PlaygroundScheme.Light else PlaygroundScheme.Dark }
             )
         } else {
             LumenReferenceApplication(
@@ -268,7 +249,8 @@ private fun LumenAndroidPlayground(
                 darkTheme = darkTheme,
                 themePreset = themePreset,
                 onThemePresetChange = { themePreset = it },
-                onToggleTheme = { darkTheme = !darkTheme },
+                scheme = scheme,
+                onSchemeChange = { scheme = it },
                 catalog = playgroundSections.map { section ->
                     CatalogCategorySummary(section.title, section.names.size)
                 },
@@ -277,7 +259,7 @@ private fun LumenAndroidPlayground(
                         darkTheme = darkTheme,
                         initialComponent = "",
                         enhancedDiscovery = true,
-                        onToggleTheme = { darkTheme = !darkTheme }
+                        onToggleTheme = { scheme = if (darkTheme) PlaygroundScheme.Light else PlaygroundScheme.Dark }
                     )
                 }
             )

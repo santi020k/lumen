@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen-astro",
-  "version": "4.4.0",
+  "version": "5.0.0",
   "publishConfig": {
     "access": "public"
   },
@@ -12,7 +12,8 @@
     "./styles/scroll-cue.css",
     "./styles.css",
     "./styles/tailwind.css",
-    "./styles/layers.css"
+    "./styles/layers.css",
+    "./styles/**/*.css"
   ],
   "types": "./index.ts",
   "exports": {
@@ -30,10 +31,16 @@
     "./styles.css": "./styles/lumen.css",
     "./styles/critical.css": "./styles/critical.css",
     "./package.json": "./package.json",
-    "./tailwind.css": "./styles/tailwind.css"
+    "./tailwind.css": "./styles/tailwind.css",
+    "./styles/foundation.css": "./styles/foundation.css",
+    "./styles/themes/studio.css": "./styles/themes/studio.css",
+    "./styles/themes/paper.css": "./styles/themes/paper.css",
+    "./styles/themes/field.css": "./styles/themes/field.css",
+    "./styles/themes/santi020k.css": "./styles/themes/santi020k.css",
+    "./styles/effects/glass.css": "./styles/effects/glass.css",
+    "./styles/components/*.css": "./styles/components/*.css"
   },
   "files": [
-    "bin",
     "components",
     "internal",
     "runtime",
@@ -43,9 +50,6 @@
     "README.md",
     "LICENSE"
   ],
-  "bin": {
-    "lumen": "./bin/lumen.mjs"
-  },
   "scripts": {
     "build": "astro sync && tsc -p tsconfig.json --noEmit",
     "dev": "astro sync --watch",
@@ -57,7 +61,6 @@
     "clean": "rm -rf .astro coverage"
   },
   "dependencies": {
-    "@santi020k/lumen": "workspace:^",
     "@santi020k/lumen-core": "workspace:^",
     "uqr": "catalog:"
   },

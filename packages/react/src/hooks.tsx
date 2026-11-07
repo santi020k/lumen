@@ -4,7 +4,6 @@ import {
   type ComponentPropsWithRef,
   type CSSProperties,
   type Dispatch,
-  type JSX,
   type KeyboardEvent,
   type MouseEvent,
   type PointerEvent,
@@ -41,21 +40,16 @@ import {
   scrollLumenTabIntoView } from '@santi020k/lumen-core'
 import { isLumenDateBoundsValid as isCalendarBoundsValid, parseLumenDate as parseCalendarDate, resolveLumenDateLabels as resolveDateControlLabels, resolveLumenDateLocale as getCalendarLocale } from '@santi020k/lumen-core'
 
-import { useDialogLifecycle } from './dialog-lifecycle.js'
+import { type ChangeHandler, type DisclosureOptions, type LumenProps, useControllableState } from './dialog-controller.js'
 import { type FloatingPanelOptions, useFloatingPanel } from './floating-panel.js'
 import { isLumenFormControl } from './form-workflow.js'
 import { useSelectFormReset } from './select-form.js'
 
+export type { DialogController, DialogOptions } from './dialog-controller.js'
+export { useDialog } from './dialog-controller.js'
 export { useToast } from './toast-context.js'
 
-type ChangeHandler<T> = (value: T) => void
-
 type ToastVariant = 'default' | 'destructive' | 'success' | 'warning'
-
-type DataAttributes = Record<`data-${string}`, unknown>
-
-type LumenProps<Tag extends keyof JSX.IntrinsicElements> =
-  ComponentPropsWithRef<Tag> & DataAttributes
 
 type InputMode = NonNullable<ComponentPropsWithRef<'input'>['inputMode']>
 
@@ -114,19 +108,6 @@ export interface ToastApi {
   update: (id: string, detail: ToastDetail) => void
 }
 
-interface ControllableOptions<T> {
-  defaultValue: T
-  onChange?: ChangeHandler<T> | undefined
-  value?: T | undefined
-}
-
-interface DisclosureOptions {
-  defaultOpen?: boolean | undefined
-  id?: string | undefined
-  onOpenChange?: ChangeHandler<boolean> | undefined
-  open?: boolean | undefined
-}
-
 interface DisclosureController {
   close: () => void
   open: boolean
@@ -136,23 +117,6 @@ interface DisclosureController {
   rootRef: RefObject<HTMLElement | null>
   setOpen: Dispatch<SetStateAction<boolean>>
   toggle: () => void
-  triggerProps: LumenProps<'button'>
-  triggerRef: RefObject<HTMLElement | null>
-}
-
-export interface DialogOptions extends DisclosureOptions {
-  alert?: boolean | undefined
-  dismissOnEscape?: boolean | undefined
-  dismissOnOutsidePress?: boolean | undefined
-}
-
-export interface DialogController {
-  close: () => void
-  closeProps: LumenProps<'button'>
-  dialogProps: LumenProps<'dialog'>
-  dialogRef: RefObject<HTMLDialogElement | null>
-  open: boolean
-  setOpen: Dispatch<SetStateAction<boolean>>
   triggerProps: LumenProps<'button'>
   triggerRef: RefObject<HTMLElement | null>
 }
@@ -631,41 +595,6 @@ const useSafeId = (prefix: string, id?: string): string => {
   return id ?? `${prefix}-${reactId}`
 }
 
-const useControllableState = <T extends string | number | boolean | undefined>({
-  defaultValue,
-  onChange,
-  value
-}: ControllableOptions<T>): [T, Dispatch<SetStateAction<T>>, (value: T) => void] => {
-  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
-  const pendingValueRef = useRef(defaultValue)
-  const currentValue = value ?? uncontrolledValue
-
-  const setValue = useCallback<Dispatch<SetStateAction<T>>>(
-    next => {
-      const previousValue = value === undefined ? pendingValueRef.current : currentValue
-      const resolvedValue = typeof next === 'function' ? next(previousValue) : next
-
-      if (value === undefined) {
-        pendingValueRef.current = resolvedValue
-
-        setUncontrolledValue(resolvedValue)
-      }
-
-      onChange?.(resolvedValue)
-    }, [currentValue, onChange, value]
-  )
-
-  const restoreValue = useCallback((next: T) => {
-    if (value !== undefined) return
-
-    pendingValueRef.current = next
-
-    setUncontrolledValue(next)
-  }, [value])
-
-  return [currentValue, setValue, restoreValue]
-}
-
 const focusFirstIn = (root: ParentNode | null): void => {
   globalThis.setTimeout(() => {
     getFocusable(root)[0]?.focus()
@@ -862,98 +791,6 @@ const useDisclosureController = (
     rootRef,
     setOpen,
     toggle,
-    triggerProps,
-    triggerRef
-  }
-}
-
-const isDialogBackdropPoint = (
-  dialog: HTMLDialogElement | null,
-  event: { clientX: number, clientY: number, target: EventTarget | null }
-): boolean => {
-  if (!dialog || event.target !== dialog) return false
-
-  const bounds = dialog.getBoundingClientRect()
-
-  return event.clientX < bounds.left || event.clientX >= bounds.right ||
-    event.clientY < bounds.top || event.clientY >= bounds.bottom
-}
-
-export const useDialog = (options: DialogOptions = {}): DialogController => {
-  const dialogRef = useRef<HTMLDialogElement | null>(null)
-  const triggerRef = useRef<HTMLElement | null>(null)
-  const outsidePointerRef = useRef<boolean | undefined>(undefined)
-
-  const [open, setOpen] = useControllableState({
-    defaultValue: options.defaultOpen ?? false,
-    onChange: options.onOpenChange,
-    value: options.open
-  })
-
-  const consumeProgrammaticClose = useDialogLifecycle(open, dialogRef, triggerRef)
-
-  const close = useCallback(() => {
-    setOpen(false)
-  }, [setOpen])
-
-  const dialogProps: LumenProps<'dialog'> = {
-    'aria-modal': true,
-    'data-ui-alert-dialog': options.alert ? true : undefined,
-    'data-ui-bound': true,
-    'data-ui-dialog': options.alert ? undefined : true,
-    onCancel: event => {
-      if (event.target !== dialogRef.current || event.defaultPrevented) return
-
-      event.preventDefault()
-
-      event.stopPropagation()
-
-      if (options.dismissOnEscape !== false) close()
-    },
-    onClick: event => {
-      const startedOutside = outsidePointerRef.current
-
-      outsidePointerRef.current = undefined
-
-      if (event.defaultPrevented || startedOutside === false || event.detail === 0) return
-
-      if (!(options.dismissOnOutsidePress ?? !options.alert)) return
-
-      if (isDialogBackdropPoint(dialogRef.current, event)) close()
-    },
-    onClose: event => {
-      if (event.target !== dialogRef.current || consumeProgrammaticClose()) return
-
-      close()
-    },
-    onPointerDown: event => {
-      outsidePointerRef.current = isDialogBackdropPoint(dialogRef.current, event)
-    },
-    ref: dialogRef,
-    role: options.alert ? 'alertdialog' : 'dialog'
-  }
-
-  const triggerProps: LumenProps<'button'> = {
-    'aria-haspopup': 'dialog',
-    onClick: () => {
-      setOpen(true)
-    },
-    ref: element => {
-      triggerRef.current = element
-    },
-    type: 'button'
-  }
-
-  return {
-    close,
-    closeProps: {
-      onClick: close,
-      type: 'button'
-    },
-    dialogProps,
-    dialogRef,
-    open,
-    setOpen,
     triggerProps,
     triggerRef
   }
@@ -1506,6 +1343,7 @@ export const useSelect = ({
   const rootProps: LumenProps<'div'> = {
     'data-placeholder': hasSelection ? 'false' : 'true',
     'data-ui-select': true,
+    'data-ui-owner': 'react',
     onBlur: event => {
       const next = event.relatedTarget
       const NodeType = event.currentTarget.ownerDocument.defaultView?.Node

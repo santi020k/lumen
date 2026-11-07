@@ -24,8 +24,8 @@ const LumenMusic2IconGraphic = ({
     viewBox="0 0 24 24"
     width={size}
   >
-      <Circle cx="8" cy="18" r="4" />
-      <Path d="M12 18V2l7 4" />
+      <Path d="m19 6-5.2-3.9a.5.5 0 0 0-.8.4V18" />
+      <Circle cx="9" cy="18" r="4" />
   </Svg>
 )
 

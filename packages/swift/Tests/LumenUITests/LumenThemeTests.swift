@@ -285,7 +285,7 @@ import Testing
 @Test func sharedIconCatalogHasStableUniqueNames() {
     let icons = LumenIconName.allCases
 
-    #expect(icons.count == 2_437)
+    #expect(icons.count == 2_625)
     #expect(icons.contains(.bangladeshiTaka))
     #expect(icons.contains(.layoutGridCircles))
     #expect(icons.contains(.letters))
@@ -426,3 +426,56 @@ import Testing
     #expect(symbols.allSatisfy { !$0.category.isEmpty && !$0.label.isEmpty && !$0.name.isEmpty })
 }
 #endif
+
+@Test func namedThemesResolvePaletteTypeShapesAndComponentActionsIndependently() {
+    for scheme in [LumenColorScheme.light, .dark] {
+        let site = LumenTheme(.santi020k, scheme: scheme)
+        #expect(site.actionFill == site.colors.ink)
+        #expect(site.actionForeground == site.colors.surface)
+        #expect(site.statusText(site.colors.danger) == (scheme == .light ? site.colors.ink : site.colors.danger))
+        #expect(site.statusText(site.colors.success) == (scheme == .light ? site.colors.ink : site.colors.success))
+        #expect(site.statusText(site.colors.warning) == (scheme == .light ? site.colors.ink : site.colors.warning))
+        #expect(site.successForeground != site.colors.onBrand)
+        #expect(site.actionFill != site.linkForeground)
+        #expect(site.linkForeground == site.colors.brand)
+        #expect(site.chartColors.series1 == site.chartColors.sequentialMid)
+        #expect(site.chartColors.series1 == site.chartColors.divergingPositive)
+        #expect(site.chartColors.series2 == site.colors.accent)
+        #expect(site.chartColors.sequentialHigh == site.colors.brandSolid)
+        #expect(site.increasingContrast().colors.line == site.colors.inkSoft)
+
+        let paper = LumenTheme(.paper, scheme: scheme)
+        let field = LumenTheme(.field, scheme: scheme)
+        #expect(paper.surfaceRadius(.lg) < field.surfaceRadius(.lg))
+        #expect(paper.controlRadius < field.controlRadius)
+        #expect(paper.actionFill == paper.colors.brandSolid)
+        #expect(paper.textStyles.title != field.textStyles.title)
+        #expect(paper.textStyles.body == field.textStyles.body)
+        let baseChart = scheme == .dark ? LumenChartColors.dark : LumenChartColors.light
+        #expect(field.chartColors.series1 == baseChart.series1)
+    }
+}
+
+@Test func applicationsSupplyBothPalettesAndRetainTheirOwnTypography() {
+    let harbor = LumenNamedTheme.field.overridingColors { palette, scheme in
+        palette.overriding(accent: scheme == .dark ? .mint : .teal)
+    }
+    let theme = LumenTheme(harbor, scheme: .dark, textStyles: LumenTextStyles(title: .headline))
+    #expect(theme.colors.accent == .mint)
+    #expect(theme.colors.danger == LumenTheme(.field, scheme: .dark).colors.danger)
+    #expect(theme.controlRadius == LumenTheme(.field, scheme: .dark).controlRadius)
+    #expect(theme.textStyles.title == .headline)
+    #expect(theme.actionFill == theme.colors.brandSolid)
+}
+
+
+@Test func customSuccessButtonForegroundSurvivesPaletteDerivationInBothSchemes() {
+    let named = LumenNamedTheme(light: LumenColors.light, dark: LumenColors.dark,
+                                lightOnSuccess: .black, darkOnSuccess: .white, lightStatusText: .purple)
+    let derived = named.overridingColors { colors, _ in colors.overriding(accent: .teal) }
+    #expect(LumenTheme(derived, scheme: .light).successForeground == .black)
+    #expect(LumenTheme(derived, scheme: .dark).successForeground == .white)
+    #expect(LumenTheme(derived, scheme: .light).statusText(.red) == .purple)
+    #expect(LumenTheme(derived, scheme: .dark).statusText(.red) == .red)
+    #expect(LumenTheme.light.successForeground == LumenColors.light.onBrand)
+}

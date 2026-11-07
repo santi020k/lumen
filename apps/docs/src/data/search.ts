@@ -246,6 +246,14 @@ const recipeItems: DocsSearchItem[] = [
   },
   {
     category: 'Themes',
+    description: 'Create a scoped stylesheet, use several themes on a website, and share a versioned theme.',
+    href: '/docs/web/themes',
+    keywords: normalizeKeywords('custom community theme author download share publish CSS package nested light dark preset Harbor'),
+    title: 'Create and share a web theme',
+    type: 'Recipe'
+  },
+  {
+    category: 'Themes',
     description:
       'Generate theme tokens from a hue, preview Lumen components, and copy CSS.',
     href: '/docs/theme-playground',
@@ -261,7 +269,7 @@ const recipeItems: DocsSearchItem[] = [
       'Find the Lumen UI Library, Templates, and Playgrounds on Figma Community, and learn how design maps to code.',
     href: '/docs/figma',
     keywords: normalizeKeywords(
-      'figma community library templates playgrounds design files variables tokens color radius cover foundations components variants code connect handoff'
+      'figma community library v5 templates playgrounds design files variables tokens color radius cover foundations components variants code connect plugin export setup design review handoff astro react web components native swiftui compose'
     ),
     title: 'Lumen Figma library',
     type: 'Recipe'
@@ -385,10 +393,18 @@ const recipeItems: DocsSearchItem[] = [
   },
   {
     category: 'Migrations',
-    description: 'Review v4 candidate spacing, component behavior, native signatures, and consumer checks.',
+    description: 'Review v4 spacing, component behavior, native signatures, and consumer checks.',
     href: '/docs/migrations/v3-to-v4',
-    keywords: normalizeKeywords('migration upgrade v3 v4 version 3 version 4 candidate spacing focus dates native rollback'),
+    keywords: normalizeKeywords('migration upgrade v3 v4 version 3 version 4 spacing focus dates native rollback'),
     title: 'Migrating from Lumen 3 to Lumen 4',
+    type: 'Recipe'
+  },
+  {
+    category: 'Migrations',
+    description: 'Upgrade to runtime-only adapters and async Astro enhancement; adopt component CSS and editable recipes.',
+    href: '/docs/migrations/v4-to-v5',
+    keywords: normalizeKeywords('migration upgrade v4 v5 version 4 version 5 modular selective CSS CLI async runtime recipes rollback'),
+    title: 'Migrating from Lumen 4 to Lumen 5',
     type: 'Recipe'
   },
   {

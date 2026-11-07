@@ -85,7 +85,7 @@ public struct LumenDateField: View {
             if let errorMessage {
                 Text(errorMessage)
                     .font(.caption)
-                    .foregroundStyle(theme.colors.danger)
+                    .foregroundStyle(theme.statusText(theme.colors.danger))
                     .fixedSize(horizontal: false, vertical: true)
             } else if let description {
                 Text(description)
@@ -197,7 +197,7 @@ public struct LumenDateRangeField: View {
             if let errorMessage {
                 Text(errorMessage)
                     .font(.caption)
-                    .foregroundStyle(theme.colors.danger)
+                    .foregroundStyle(theme.statusText(theme.colors.danger))
                     .fixedSize(horizontal: false, vertical: true)
             } else if let description {
                 Text(description)
@@ -281,7 +281,7 @@ public struct LumenLink<Label: View>: View {
                 }
             }
         }
-        .foregroundStyle(theme.colors.brandSolid)
+        .foregroundStyle(theme.linkForeground)
         .underline()
     }
 }

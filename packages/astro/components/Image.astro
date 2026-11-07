@@ -5,6 +5,9 @@ import {
   type RemoteImageProps
 } from 'astro:assets'
 
+import '../styles/foundation.css'
+import '../styles/components/image.css'
+
 import { resolveLumenAstroProps } from '@santi020k/lumen-core'
 
 type Props = (LocalImageProps | RemoteImageProps) & {

@@ -1,0 +1,583 @@
+{
+  "schemaVersion": 1,
+  "status": "draft",
+  "targetVersion": "5.0.0",
+  "publication": "unverified",
+  "policy": {
+    "compatibility": "The v5 plan permits deliberate web contract changes and reviewed Swift icon enum additions. Full CSS and root entries remain supported; source-only signals are review prompts, not proof of broken behavior. Consumer data and application ownership remain protected.",
+    "versioning": "This contract describes Lumen 5 migration behavior. Bundled evidence does not query the registry or establish availability. Publication requires the normal approved GitHub workflow."
+  },
+  "changes": [
+    {
+      "id": "runtime-only-adapters",
+      "kind": "breaking",
+      "currentContract": "Web adapters install the umbrella CLI and TypeScript and provide the lumen executable.",
+      "replacement": "Web adapters depend on runtime packages only; the umbrella package owns the CLI.",
+      "migration": "Install @santi020k/lumen as a development dependency when scripts or contributors use lumen. Keep runtime adapters in application dependencies.",
+      "packages": [
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "signals": [
+        "lumen doctor",
+        "lumen add",
+        "lumen init",
+        "lumen migrate"
+      ],
+      "evidence": [
+        "packages/astro/package.json",
+        "packages/react/package.json",
+        "packages/elements/package.json"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run validate"
+      ],
+      "extensions": [
+        ".astro",
+        ".html",
+        ".htm",
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".sh"
+      ]
+    },
+    {
+      "id": "async-astro-runtime",
+      "kind": "breaking",
+      "currentContract": "LumenInitUiPrimitives is synchronous and mounting the runtime loads the interactive catalog.",
+      "replacement": "LumenInitUiPrimitives returns a promise; matching controllers load on demand. ui:ready follows completion and ui:runtime-error reports failed automatic initialization.",
+      "migration": "Await initialization before relying on newly enhanced markup. Listen for ui:ready or await the function for caller-created markup; handle rejection. LumenToast returns its ID immediately but renders asynchronously. Keep UIPrimitives in the shared Astro layout.",
+      "packages": [
+        "@santi020k/lumen-astro"
+      ],
+      "signals": [
+        "LumenInitUiPrimitives",
+        "LumenToast"
+      ],
+      "evidence": [
+        "packages/astro/runtime/loader.ts",
+        "packages/astro/runtime/features.ts"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run validate"
+      ],
+      "extensions": [
+        ".astro",
+        ".html",
+        ".htm",
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".css"
+      ]
+    },
+    {
+      "id": "component-css",
+      "kind": "adoption",
+      "currentContract": "The full stylesheet loads the catalog on each page that imports it.",
+      "replacement": "Astro components import their own styles; React and Elements expose shared foundation and component CSS. Full styles.css remains supported.",
+      "migration": "Use foundation.css once and documented component CSS for React/Elements; Astro component styles are automatic. Add styles/themes/paper.css, styles/themes/field.css, styles/themes/studio.css, styles/themes/santi020k.css, or styles/effects/glass.css when using that appearance. Remove full CSS only after checking runtime-created and Markdown markup, navigation, themes and all routes. No source-only audit proves route delivery.",
+      "packages": [
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements",
+        "@santi020k/lumen"
+      ],
+      "signals": [
+        "@santi020k/lumen/styles.css",
+        "@santi020k/lumen-astro/styles.css",
+        "@santi020k/lumen-react/styles.css",
+        "@santi020k/lumen-elements/styles.css"
+      ],
+      "evidence": [
+        "registry/web-css.json",
+        "scripts/generate-component-css.mjs"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run validate"
+      ],
+      "extensions": [
+        ".astro",
+        ".html",
+        ".htm",
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".css"
+      ]
+    },
+    {
+      "id": "selective-web-entries",
+      "kind": "adoption",
+      "currentContract": "Root JavaScript exports and catalog-wide Elements registration remain convenient but can traverse or initialize unrelated modules.",
+      "replacement": "Documented granular implementations and per-component Elements registrations reduce the dependency graph.",
+      "migration": "Use the actual exported component entries generated by lumen add. Keep root entries when an equivalent granular export is unavailable. Measure emitted and requested assets separately from traversed modules.",
+      "packages": [
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "signals": [
+        "defineLumenElements",
+        "@santi020k/lumen-react'",
+        "@santi020k/lumen-react\""
+      ],
+      "evidence": [
+        "packages/react/package.json",
+        "packages/elements/package.json"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run validate"
+      ],
+      "extensions": [
+        ".astro",
+        ".html",
+        ".htm",
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".css"
+      ]
+    },
+    {
+      "id": "reveal-visibility",
+      "kind": "breaking",
+      "currentContract": "Reveals can activate below explicit thresholds or remain hidden when their threshold is unreachable.",
+      "replacement": "Web reveals honor the requested ratio and stay visible when geometry, reduced motion, or keyboard access makes hiding inappropriate.",
+      "migration": "Keep explicit thresholds; do not replace every value with zero. Check tall/clipped groups, enlarged text, focus, repeatable reveals and reduced motion. Focused content stays visible for the lifetime of that controller.",
+      "packages": [
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "signals": [
+        "data-ui-scroll-reveal-bound",
+        "data-ui-reveal-threshold"
+      ],
+      "evidence": [
+        "packages/core/src/reveal.ts",
+        "tests/motion/reveal-accessibility.spec.ts"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run validate"
+      ],
+      "extensions": [
+        ".astro",
+        ".html",
+        ".htm",
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".css"
+      ]
+    },
+    {
+      "id": "stable-styling-parts",
+      "kind": "adoption",
+      "currentContract": "Consumers may target internal Timeline, ThemeToggle and WorldMap markup.",
+      "replacement": "Documented data-slot parts and ThemeToggle icon sizing provide matching web customization hooks.",
+      "migration": "Use the published styling contract and --ui-theme-toggle-icon-size. Compare local overrides with upstream fixes; remove patches only after equivalent consumer tests pass.",
+      "packages": [
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements"
+      ],
+      "signals": [
+        "ui-timeline",
+        "ui-theme-toggle",
+        "ui-world-map"
+      ],
+      "evidence": [
+        "docs/styling-contract.md",
+        "packages/core/src/components.ts"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run validate"
+      ],
+      "extensions": [
+        ".astro",
+        ".html",
+        ".htm",
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".css"
+      ]
+    },
+    {
+      "id": "editable-product-recipes",
+      "kind": "adoption",
+      "currentContract": "Applications own repeated video, code, sharing, reading, search and image-viewer compositions.",
+      "replacement": "Editable recipes compose maintained primitives with explicit dependencies and setup metadata.",
+      "migration": "Use lumen add to preview/install a recipe. Application code owns content, request adapters, localization and routing. Existing copies are never overwritten without an explicit force option.",
+      "packages": [
+        "@santi020k/lumen",
+        "@santi020k/lumen-mcp"
+      ],
+      "signals": [],
+      "evidence": [
+        "docs/interactive-editorial-recipes.md"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run validate"
+      ],
+      "extensions": [
+        ".astro",
+        ".html",
+        ".htm",
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".css"
+      ]
+    },
+    {
+      "id": "explicit-rendered-audit",
+      "kind": "adoption",
+      "currentContract": "Source diagnostics cannot prove actual overflow, browser failures or route asset requests.",
+      "replacement": "lumen audit-rendered explicitly inspects a caller-provided local URL with project-installed Playwright.",
+      "migration": "Run the app preview yourself, supply a canonical local URL and exact known/allowed asset inventory. Redirects and external requests are blocked and make observation incomplete. Ordinary doctor remains source-only.",
+      "packages": [
+        "@santi020k/lumen",
+        "@santi020k/lumen-mcp"
+      ],
+      "signals": [],
+      "evidence": [
+        "docs/rendered-audit.md"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run validate"
+      ],
+      "extensions": [
+        ".astro",
+        ".html",
+        ".htm",
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".css"
+      ]
+    },
+    {
+      "id": "expanded-swift-icon-catalog",
+      "kind": "breaking",
+      "currentContract": "Swift callers can exhaustively switch over the v4.4.0 LumenIconName cases.",
+      "replacement": "The refreshed icon catalog preserves existing names and adds 188 Swift enum cases. Static web and native aliases retain previous names.",
+      "migration": "Review exhaustive LumenIconName switches and handle the new cases or supply an appropriate default. Rebuild native consumers when upgrading their SDK.",
+      "packages": [
+        "LumenUI"
+      ],
+      "signals": [
+        "LumenIconName"
+      ],
+      "evidence": [
+        "icons/lumen.icons.json",
+        "packages/swift/Sources/LumenUI/Icons.generated.swift"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md",
+        "docs/lumen-5-dependencies.md"
+      ],
+      "tests": [
+        "pnpm run check:swift-source-compatibility",
+        "swift test"
+      ],
+      "extensions": [
+        ".swift"
+      ],
+      "swiftApiBreakages": [
+        "enumelement LumenIconName.archiveArrowDown has been added as a new enum case",
+        "enumelement LumenIconName.archiveArrowUp has been added as a new enum case",
+        "enumelement LumenIconName.armenianDram has been added as a new enum case",
+        "enumelement LumenIconName.avocado has been added as a new enum case",
+        "enumelement LumenIconName.azerbaijaniManat has been added as a new enum case",
+        "enumelement LumenIconName.bacon has been added as a new enum case",
+        "enumelement LumenIconName.badgeExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.ballWave has been added as a new enum case",
+        "enumelement LumenIconName.batteryExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.belarusianRuble has been added as a new enum case",
+        "enumelement LumenIconName.bookExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.boxesLinked has been added as a new enum case",
+        "enumelement LumenIconName.brainOff has been added as a new enum case",
+        "enumelement LumenIconName.calendarArrowLeft has been added as a new enum case",
+        "enumelement LumenIconName.calendarArrowRight has been added as a new enum case",
+        "enumelement LumenIconName.calendarChevronsLeft has been added as a new enum case",
+        "enumelement LumenIconName.certificate has been added as a new enum case",
+        "enumelement LumenIconName.chartBellCurve has been added as a new enum case",
+        "enumelement LumenIconName.chartQuadrant has been added as a new enum case",
+        "enumelement LumenIconName.chartRadar has been added as a new enum case",
+        "enumelement LumenIconName.circleChevronsDown has been added as a new enum case",
+        "enumelement LumenIconName.circleChevronsLeft has been added as a new enum case",
+        "enumelement LumenIconName.circleChevronsRight has been added as a new enum case",
+        "enumelement LumenIconName.circleChevronsUp has been added as a new enum case",
+        "enumelement LumenIconName.circleExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.circleFadingPlay has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterA has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterB has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterC has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterD has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterE has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterF has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterG has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterH has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterI has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterJ has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterK has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterL has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterM has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterN has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterO has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterP has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterPOff has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterQ has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterR has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterS has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterT has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterU has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterV has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterW has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterX has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterY has been added as a new enum case",
+        "enumelement LumenIconName.circleLetterZ has been added as a new enum case",
+        "enumelement LumenIconName.clockExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.cloudExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.cpuAi has been added as a new enum case",
+        "enumelement LumenIconName.databaseCog has been added as a new enum case",
+        "enumelement LumenIconName.diagramFlowHorizontal has been added as a new enum case",
+        "enumelement LumenIconName.diagramFlowVertical has been added as a new enum case",
+        "enumelement LumenIconName.doorClosedCog has been added as a new enum case",
+        "enumelement LumenIconName.earbuds has been added as a new enum case",
+        "enumelement LumenIconName.earbudsOff has been added as a new enum case",
+        "enumelement LumenIconName.eighthNote has been added as a new enum case",
+        "enumelement LumenIconName.eighthNotes has been added as a new enum case",
+        "enumelement LumenIconName.emiratiDirham has been added as a new enum case",
+        "enumelement LumenIconName.fileDatabase has been added as a new enum case",
+        "enumelement LumenIconName.folderUser has been added as a new enum case",
+        "enumelement LumenIconName.folderUsers has been added as a new enum case",
+        "enumelement LumenIconName.globeBan has been added as a new enum case",
+        "enumelement LumenIconName.globePlus has been added as a new enum case",
+        "enumelement LumenIconName.graphHub has been added as a new enum case",
+        "enumelement LumenIconName.graphStar has been added as a new enum case",
+        "enumelement LumenIconName.groceries has been added as a new enum case",
+        "enumelement LumenIconName.guitarElectric has been added as a new enum case",
+        "enumelement LumenIconName.halfNote has been added as a new enum case",
+        "enumelement LumenIconName.handleBottomRight has been added as a new enum case",
+        "enumelement LumenIconName.hikingStick has been added as a new enum case",
+        "enumelement LumenIconName.hockeyStick has been added as a new enum case",
+        "enumelement LumenIconName.hotAirBalloon has been added as a new enum case",
+        "enumelement LumenIconName.kazakhTenge has been added as a new enum case",
+        "enumelement LumenIconName.laser has been added as a new enum case",
+        "enumelement LumenIconName.lens has been added as a new enum case",
+        "enumelement LumenIconName.letterA has been added as a new enum case",
+        "enumelement LumenIconName.letterB has been added as a new enum case",
+        "enumelement LumenIconName.letterC has been added as a new enum case",
+        "enumelement LumenIconName.letterD has been added as a new enum case",
+        "enumelement LumenIconName.letterE has been added as a new enum case",
+        "enumelement LumenIconName.letterF has been added as a new enum case",
+        "enumelement LumenIconName.letterG has been added as a new enum case",
+        "enumelement LumenIconName.letterH has been added as a new enum case",
+        "enumelement LumenIconName.letterI has been added as a new enum case",
+        "enumelement LumenIconName.letterJ has been added as a new enum case",
+        "enumelement LumenIconName.letterK has been added as a new enum case",
+        "enumelement LumenIconName.letterL has been added as a new enum case",
+        "enumelement LumenIconName.letterM has been added as a new enum case",
+        "enumelement LumenIconName.letterN has been added as a new enum case",
+        "enumelement LumenIconName.letterO has been added as a new enum case",
+        "enumelement LumenIconName.letterP has been added as a new enum case",
+        "enumelement LumenIconName.letterQ has been added as a new enum case",
+        "enumelement LumenIconName.letterR has been added as a new enum case",
+        "enumelement LumenIconName.letterS has been added as a new enum case",
+        "enumelement LumenIconName.letterSpacing has been added as a new enum case",
+        "enumelement LumenIconName.letterT has been added as a new enum case",
+        "enumelement LumenIconName.letterU has been added as a new enum case",
+        "enumelement LumenIconName.letterV has been added as a new enum case",
+        "enumelement LumenIconName.letterW has been added as a new enum case",
+        "enumelement LumenIconName.letterX has been added as a new enum case",
+        "enumelement LumenIconName.letterY has been added as a new enum case",
+        "enumelement LumenIconName.letterZ has been added as a new enum case",
+        "enumelement LumenIconName.lineHeight has been added as a new enum case",
+        "enumelement LumenIconName.mailDot has been added as a new enum case",
+        "enumelement LumenIconName.mailExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.mango has been added as a new enum case",
+        "enumelement LumenIconName.margin has been added as a new enum case",
+        "enumelement LumenIconName.marginBottom has been added as a new enum case",
+        "enumelement LumenIconName.marginHorizontal has been added as a new enum case",
+        "enumelement LumenIconName.marginLeft has been added as a new enum case",
+        "enumelement LumenIconName.marginRight has been added as a new enum case",
+        "enumelement LumenIconName.marginTop has been added as a new enum case",
+        "enumelement LumenIconName.marginVertical has been added as a new enum case",
+        "enumelement LumenIconName.messageCircleExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.messageCircleText has been added as a new enum case",
+        "enumelement LumenIconName.messageSquareExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.monitorActivity has been added as a new enum case",
+        "enumelement LumenIconName.numbers has been added as a new enum case",
+        "enumelement LumenIconName.octagonExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.perfumeBottle has been added as a new enum case",
+        "enumelement LumenIconName.phoneLog has been added as a new enum case",
+        "enumelement LumenIconName.rugbyBall has been added as a new enum case",
+        "enumelement LumenIconName.scratchBlocks has been added as a new enum case",
+        "enumelement LumenIconName.screw has been added as a new enum case",
+        "enumelement LumenIconName.searchExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.serverNas has been added as a new enum case",
+        "enumelement LumenIconName.shieldExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.shieldHouse has been added as a new enum case",
+        "enumelement LumenIconName.sirenOff has been added as a new enum case",
+        "enumelement LumenIconName.sixteenthNotes has been added as a new enum case",
+        "enumelement LumenIconName.smartphoneUserRound has been added as a new enum case",
+        "enumelement LumenIconName.squareChevronsDown has been added as a new enum case",
+        "enumelement LumenIconName.squareChevronsLeft has been added as a new enum case",
+        "enumelement LumenIconName.squareChevronsRight has been added as a new enum case",
+        "enumelement LumenIconName.squareChevronsUp has been added as a new enum case",
+        "enumelement LumenIconName.squareKanbanPlus has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterA has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterB has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterC has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterD has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterE has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterF has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterG has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterH has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterI has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterJ has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterK has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterL has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterM has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterN has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterO has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterP has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterPOff has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterQ has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterR has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterS has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterT has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterU has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterV has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterW has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterX has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterY has been added as a new enum case",
+        "enumelement LumenIconName.squareLetterZ has been added as a new enum case",
+        "enumelement LumenIconName.squarePadding has been added as a new enum case",
+        "enumelement LumenIconName.squarePaddingBottom has been added as a new enum case",
+        "enumelement LumenIconName.squarePaddingHorizontal has been added as a new enum case",
+        "enumelement LumenIconName.squarePaddingLeft has been added as a new enum case",
+        "enumelement LumenIconName.squarePaddingRight has been added as a new enum case",
+        "enumelement LumenIconName.squarePaddingTop has been added as a new enum case",
+        "enumelement LumenIconName.squarePaddingVertical has been added as a new enum case",
+        "enumelement LumenIconName.textAlignJustifyCenter has been added as a new enum case",
+        "enumelement LumenIconName.textAlignJustifyEnd has been added as a new enum case",
+        "enumelement LumenIconName.textAlignJustifyStart has been added as a new enum case",
+        "enumelement LumenIconName.tombstone has been added as a new enum case",
+        "enumelement LumenIconName.triangleExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.userRoundShield has been added as a new enum case",
+        "enumelement LumenIconName.userRoundStar has been added as a new enum case",
+        "enumelement LumenIconName.usersCollaboration has been added as a new enum case",
+        "enumelement LumenIconName.usersRoundCollaboration has been added as a new enum case",
+        "enumelement LumenIconName.wifiLock has been added as a new enum case",
+        "enumelement LumenIconName.windArrowUp has been added as a new enum case"
+      ]
+    },
+    {
+      "id": "default-palette-refresh",
+      "kind": "breaking",
+      "currentContract": "Consumers use the previous default light and dark palettes.",
+      "replacement": "Default palettes and brand-derived charts use the refreshed shared foundations.",
+      "migration": "Review visual baselines, chart colors and application colors paired with Lumen backgrounds. Use brand on brand-soft and on-brand on brand-solid. Keep application palettes at the theme boundary.",
+      "packages": [
+        "@santi020k/lumen-core",
+        "@santi020k/lumen-react-native",
+        "@santi020k/lumen-tokens",
+        "LumenUI",
+        "lumen-compose",
+        "@santi020k/lumen-astro",
+        "@santi020k/lumen-react",
+        "@santi020k/lumen-elements",
+        "@santi020k/lumen"
+      ],
+      "signals": [
+        "brand-soft",
+        "brand-solid",
+        "LumenTheme",
+        "import LumenUI",
+        "createLumenTheme"
+      ],
+      "extensions": [
+        ".astro",
+        ".tsx",
+        ".ts",
+        ".jsx",
+        ".js",
+        ".css",
+        ".swift",
+        ".kt",
+        ".json"
+      ],
+      "evidence": [
+        "tokens/lumen.tokens.json"
+      ],
+      "docs": [
+        "docs/migrating-v4-to-v5.md"
+      ],
+      "tests": [
+        "pnpm run check:platform-tokens",
+        "pnpm run check:route-delivery"
+      ]
+    }
+  ],
+  "swiftApiBaseline": "v4.4.0",
+  "npmPublicationVersions": {
+    "@santi020k/lumen": "5.0.0",
+    "@santi020k/lumen-astro": "5.0.0",
+    "@santi020k/lumen-core": "5.0.0",
+    "@santi020k/lumen-elements": "5.0.0",
+    "@santi020k/lumen-icons-brand": "4.0.1",
+    "@santi020k/lumen-mcp": "5.0.0",
+    "@santi020k/lumen-react": "5.0.0",
+    "@santi020k/lumen-react-hook-form": "4.0.2",
+    "@santi020k/lumen-react-native": "4.1.0",
+    "@santi020k/lumen-tokens": "4.1.0"
+  }
+}

@@ -1,5 +1,12 @@
 # @santi020k/lumen-icons-brand
 
+## 4.0.1
+
+### Patch Changes
+
+- Updated dependencies [`1487f80`, `94d13ff`, `73a4b13`, `8ba0ca5`, `3e1d507`, `23d5ef6`, `94cf634`, `d4cb325`]:
+  - @santi020k/lumen-core@5.0.0
+
 ## 4.0.0
 
 ### Patch Changes

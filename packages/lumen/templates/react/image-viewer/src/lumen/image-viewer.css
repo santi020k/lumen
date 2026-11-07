@@ -1,0 +1,6 @@
+.image-viewer { min-inline-size: 0; overflow-wrap: anywhere; }
+.image-viewer [hidden] { display: none; }
+.image-viewer button { max-inline-size: 100%; block-size: auto; white-space: normal; overflow-wrap: anywhere; }
+.image-viewer button > span { min-inline-size: 0; flex-wrap: wrap; }
+.image-viewer dialog { inline-size: min(54rem, calc(100% - 1.25rem)); max-inline-size: none; overflow-wrap: anywhere; }
+.image-viewer dialog header { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 0.75rem; }

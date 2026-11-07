@@ -20,12 +20,13 @@ const workflowExample = `
 
 <div class="grid gap-4">
   <p>Apply the current theme with <Code>data-theme</Code> on the root element.</p>
-  <Code code={themeExample} copy label="theme.ts" language="ts" variant="block" />
+  <Code appearance="editorial" code={themeExample} recoveryLabel="Select and copy the complete example" copy copyLabel="Copy code" copiedLabel="Copied" label="theme.ts" language="ts" scrollCue variant="block" />
 
   <p>Wrap prose-like output or long commands when horizontal scrolling would obscure the content.</p>
   <Code
     code={workflowExample}
     copy
+    recoveryLabel="Select and copy the complete example"
     label=".github/workflows/validate.yml"
     language="yaml"
     variant="block"
@@ -36,6 +37,7 @@ const workflowExample = `
   <Code
     code="pnpm add @santi020k/lumen-astro"
     copy
+    recoveryLabel="Select and copy the complete example"
     language="bash"
     variant="block"
   />

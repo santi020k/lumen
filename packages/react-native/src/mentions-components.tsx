@@ -1,4 +1,4 @@
-import { type ReactElement, type RefObject, useEffect, useRef, useState } from 'react'
+import { type ComponentRef, type ReactElement, type RefObject, useEffect, useRef, useState } from 'react'
 import { type BlurEvent, Platform, Pressable, type TextInput, type TextInputEndEditingEvent,
   type TextInputKeyPressEvent,
   type TextInputSelectionChangeEvent, View, type ViewProps } from 'react-native'
@@ -71,7 +71,7 @@ interface PendingMention { id: string, source: string }
 
 const useMentionsInput = (value: LumenMentionsValue, emit: (value: LumenMentionsValue) => void,
   options: readonly LumenMentionOption[], trigger: string, editable: boolean, isComposing: boolean, ready: boolean,
-  inputRef: RefObject<TextInput | null>) => {
+  inputRef: RefObject<ComponentRef<typeof TextInput> | null>) => {
   const nativeValueRef = useRef(value)
   const pendingMentionRef = useRef<PendingMention | null>(null)
   const insertedValueRef = useRef<{ source: string, value: LumenMentionsValue } | null>(null)
@@ -310,7 +310,7 @@ export const LumenMentions = ({ label, value, onValueChange, options, trigger = 
   const valid = isLumenMentionsSelectionValid(value)
   const safeValue = safeMentionsValue(value, valid)
   const editable = valid && !disabled && !readOnly
-  const inputRef = useRef<TextInput>(null)
+  const inputRef = useRef<ComponentRef<typeof TextInput>>(null)
   const state = useMentionsInput(safeValue, onValueChange, options, trigger, editable, isComposing, status === 'ready', inputRef)
 
   return (

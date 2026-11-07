@@ -56,3 +56,21 @@ test('a nested close action only dismisses its own dialog', () => {
   expect(inner.hidden).toBe(true)
   expect(dialog.hidden).toBe(false)
 })
+
+test('a stale native close event does not move focus out of a reopened modal', () => {
+  document.body.innerHTML = '<button id="native-opener">Open</button><lumen-dialog><dialog><input aria-label="Task"></dialog></lumen-dialog>'
+  const owner = document.querySelector('lumen-dialog')
+  const native = owner?.querySelector('dialog')
+  const field = native?.querySelector('input')
+  const opener = document.querySelector('#native-opener')
+  if (!(owner instanceof LumenDialogElement) || !native || !field || !(opener instanceof HTMLElement)) {
+    throw new Error('Missing native dialog fixture')
+  }
+  owner.show(opener)
+  field.focus()
+  native.dispatchEvent(new Event('close'))
+  expect(document.activeElement).toBe(field)
+  native.removeAttribute('open')
+  native.dispatchEvent(new Event('close'))
+  expect(document.activeElement).toBe(opener)
+})

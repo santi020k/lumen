@@ -6,6 +6,8 @@ import { Script } from 'node:vm'
 import { build } from 'esbuild'
 import { beforeAll, describe, expect, test } from 'vitest'
 
+import manifest from '../manifest.json'
+
 import { componentKeys } from './contracts.js'
 import type { PluginMessage } from './model.js'
 import { isPluginMessage } from './model.js'
@@ -17,6 +19,11 @@ interface MockNode {
   visible: boolean
   characters: string
   children: MockNode[]
+  key?: string
+  defaultVariant?: MockNode
+  parent?: MockNode
+  variantProperties?: Record<string, string>
+  componentPropertyDefinitions?: Record<string, { type: string, defaultValue: string | boolean }>
   fills?: readonly Paint[]
   strokes?: readonly Paint[]
   componentProperties: Record<string, { type: string, value: string | boolean }>
@@ -49,7 +56,8 @@ beforeAll(async () => {
   script = new Script(source)
 })
 
-const host = (selection: MockNode[]) => {
+const host = (selection: MockNode[], pluginId?: string) => {
+  const relaunchCommands: string[] = []
   const messages: PluginMessage[] = []
   const events = new Map<string, () => void>()
   const pageEvents = new Map<string, () => void>()
@@ -72,10 +80,16 @@ const host = (selection: MockNode[]) => {
   script.runInNewContext({
     __html__: '<div>Plugin test</div>',
     figma: {
+      pluginId,
       mixed: Symbol('mixed'),
       ui,
       currentPage: page,
-      root: { setRelaunchData: () => {} },
+      root: {
+        setRelaunchData: (data: Record<string, string>) => {
+          if (!pluginId || pluginId === 'local-extension') throw new Error('Cannot set relaunch data in a plugin without an ID.')
+          relaunchCommands.push(...Object.keys(data))
+        }
+      },
       showUI: () => {},
       on: (type: string, callback: () => void) => {
         events.set(type, callback)
@@ -87,19 +101,25 @@ const host = (selection: MockNode[]) => {
     ui.onmessage(message)
     await new Promise<void>(resolve => setImmediate(resolve))
   }
-  return { messages, events, pageEvents, page, send }
+  return { messages, events, pageEvents, page, send, relaunchCommands }
 }
 
 describe('Figma host lifecycle', () => {
+  test('only sets the relaunch shortcut for the registered plugin identity', () => {
+    expect(host([]).relaunchCommands).toEqual([])
+    expect(host([], 'local-extension').relaunchCommands).toEqual([])
+    expect(host([], manifest.id).relaunchCommands).toEqual(['inspect'])
+  })
+
   test('waits for the UI handshake and rejects empty or multiple selections', async () => {
     const app = host([])
     expect(app.messages).toEqual([])
     await app.send({ type: 'ready' })
     expect(app.messages.at(-1)).toEqual({ type: 'selection', name: null })
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     expect(app.messages.at(-1)?.type).toBe('error')
     app.page.selection = [node(), node()]
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     expect(app.messages.at(-1)?.type).toBe('error')
   })
 
@@ -108,12 +128,27 @@ describe('Figma host lifecycle', () => {
     await app.send(null)
     await app.send({ type: 'delete' })
     expect(app.messages).toEqual([])
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     const message = app.messages.at(-1)
     expect(message?.type).toBe('result')
     if (message?.type !== 'result') throw new Error('Expected conversion result.')
     expect(message.result.code).toContain('Visible')
     expect(message.result.handoff).not.toContain('Hidden')
+  })
+
+  test('rejects unsupported targets and exports the version requested by the panel', async () => {
+    const app = host([node()])
+    for (const [version, appearance] of [['3.0.0', 'project'], ['4.4.0', 'paper'], ['5.0.0', '__proto__']]) {
+      await app.send({ type: 'analyze', version, appearance })
+      expect(app.messages.at(-1)?.type).toBe('error')
+    }
+    await app.send({ type: 'analyze', platform: '__proto__', version: '5.0.0', appearance: 'project' })
+    expect(app.messages.at(-1)?.type).toBe('error')
+    await app.send({ type: 'analyze', version: '4.4.0', appearance: 'studio' })
+    const message = app.messages.at(-1)
+    if (message?.type !== 'result') throw new Error('Expected the requested v4 export.')
+    expect(message.result.lumenVersion).toBe('4.4.0')
+    expect(message.result.layout).toContain('styles.css')
   })
 
   test('normalizes property suffixes and recognizes canonical instances', async () => {
@@ -129,10 +164,26 @@ describe('Figma host lifecycle', () => {
         Size: { type: 'VARIANT', value: 'Sm' }
       }
     })])
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     const message = app.messages.at(-1)
     if (message?.type !== 'result') throw new Error('Expected conversion result.')
     expect(message.result.code).toContain('<Button variant="outline" size="sm">{"Continue"}</Button>')
+  })
+
+  test('exports a selected component set through its default variant and actual variant values', async () => {
+    const set = node({ id: 'set',
+      type: 'COMPONENT_SET',
+      key: componentKeys.Button[0] ?? '',
+      componentPropertyDefinitions: {
+        Variant: { type: 'VARIANT', defaultValue: 'Default' }, Size: { type: 'VARIANT', defaultValue: 'Default' }, 'Label#key': { type: 'TEXT', defaultValue: 'Send' }
+      } })
+    set.defaultVariant = node({ type: 'COMPONENT', parent: set, key: 'variant', variantProperties: { Variant: 'Outline', Size: 'Sm' } })
+    const app = host([set])
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
+    const message = app.messages.at(-1)
+    if (message?.type !== 'result') throw new Error('Expected default variant output.')
+    expect(message.result.code).toContain('<Button variant="outline" size="sm">{"Send"}</Button>')
+    expect(message.result.findings.some(finding => finding.message.includes('default variant'))).toBe(true)
   })
 
   test('rejects ambiguous properties without silently replacing their values', async () => {
@@ -140,7 +191,7 @@ describe('Figma host lifecycle', () => {
       componentProperties: {
         'Label#1': { type: 'TEXT', value: 'First' }, 'Label#2': { type: 'TEXT', value: 'Second' }
       } })])
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     expect(app.messages.at(-1)?.type).toBe('error')
   })
 
@@ -154,7 +205,7 @@ describe('Figma host lifecycle', () => {
       node({ visible: false })
     ]) {
       const app = host([selection])
-      await app.send({ type: 'analyze' })
+      await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
       expect(app.messages.at(-1)?.type).toBe('error')
     }
   })
@@ -166,7 +217,7 @@ describe('Figma host lifecycle', () => {
       app.events.get('selectionchange')?.()
       return Promise.resolve(null)
     }
-    await app.send({ type: 'analyze' })
+    await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
     expect(app.messages.at(-1)?.type).toBe('error')
     expect(app.messages.some(message => message.type === 'result')).toBe(false)
   })
@@ -192,7 +243,7 @@ test('audits only detached visible solid fills and strokes', async () => {
     ],
     strokes: [{ type: 'SOLID', color: { r: 0, g: 0, b: 1 } }]
   })])
-  await app.send({ type: 'analyze' })
+  await app.send({ type: 'analyze', version: '5.0.0', appearance: 'project' })
   const message = app.messages.at(-1)
   if (message?.type !== 'result') throw new Error('Expected paint audit result.')
   expect(message.result.findings.some(finding => finding.message.includes('2 visible paints'))).toBe(true)

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { openPreview } from './open-preview.js'
+
 for (const width of [390, 1440]) {
   test(`consumer forms and record actions at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 1000 })
@@ -81,7 +83,7 @@ for (const width of [390, 1440]) {
 }
 
 test('Astro amount field submits an exact localized decimal', async ({ page }) => {
-  await page.goto('/docs/components/amount-field')
+  await openPreview(page, 'amount-field')
 
   const amount = page.getByRole('textbox', { name: 'Amount COP' }).first()
 

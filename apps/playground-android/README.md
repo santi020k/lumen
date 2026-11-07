@@ -36,7 +36,13 @@ interactive release-readiness, catalog-health, and profile patterns with represe
 states. The Motion pattern demonstrates expandable content, simulated save feedback, and a native
 sheet. Its local reduction toggle disables demo effects; native sheet motion follows Android's
 animation scale. Normal Components launches add category discovery, while Settings demonstrates
-Normal, Studio, Glass and santi020k themes, light and dark appearance, and groups accessibility, platform,
+Normal, Studio, Glass, santi020k, Paper and Field. Choose System, Light or Dark independently.
+Open **Open Harbor note** to edit a draft in an app-owned theme. The note follows the
+playground, or you can turn off **Match note to app appearance** to keep it light while
+changing the surrounding scheme. The draft survives closing the sheet and changing the selected theme.
+An Android launch may select Settings with `--es destination settings`, choose a theme with
+`--es theme paper`, and pin appearance with `--ez darkTheme true` or `false`. Omit the
+appearance extra to follow the system. Settings also groups accessibility, platform,
 privacy, and support information. Wide windows use paired panes alongside
 the adaptive navigation rail instead of stretching the phone layout.
 

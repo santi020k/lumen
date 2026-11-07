@@ -12,7 +12,7 @@
     ".": {
       "entry": ["scripts/check-maven-pom-metadata.mjs", "scripts/report-android-workspace-runtime.mjs"],
       "ignoreBinaries": ["codex", "infisical", "pod", "quality", "swift"],
-      "project": ["*.{js,css}", "scripts/*.mjs"]
+      "project": ["*.{js,css}", "scripts/*.mjs", "scripts/lib/named-themes.mjs", "scripts/lib/santi020k-site-colors.mjs"]
     },
     "apps/docs": {
       "entry": ["src/pages/**/*.astro", "scripts/**/*.{js,mjs}"],
@@ -36,12 +36,23 @@
       "project": ["src/**/*.ts"]
     },
     "packages/lumen": {
+      "astro": false,
       "entry": [
         "src/index.ts",
         "src/cli.ts",
+        "src/build-report-plugin.ts",
         "bin/*.mjs",
         "templates/shared/common/src/lumen/lumen-template.css",
-        "templates/astro/site-search-dialog/src/lumen/site-search-provider.ts"
+        "templates/{shared,elements}/media-workspace/src/lumen/media-workspace.css",
+        "templates/astro/editable-ticket/src/lumen/editable-ticket-controller.ts",
+        "templates/astro/editable-ticket/src/lumen/editable-ticket.css",
+        "templates/astro/site-search-dialog/src/lumen/site-search-provider.ts",
+        "templates/elements/article-reading/src/lumen/article-reading.ts",
+        "templates/elements/image-viewer/src/lumen/image-viewer.ts",
+        "templates/elements/site-search-dialog/src/lumen/site-search-dialog.ts",
+        "templates/react/article-reading/src/lumen/article-reading.css",
+        "templates/react/image-viewer/src/lumen/image-viewer.css",
+        "templates/react/site-search-dialog/src/lumen/site-search-dialog.css"
       ],
       "ignoreDependencies": ["@types/react", "react"],
       "project": ["bin/*.mjs", "**/*.{css,ts}"]

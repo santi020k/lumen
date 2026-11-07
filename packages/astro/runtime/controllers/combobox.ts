@@ -1,5 +1,7 @@
 import { createLumenComboboxController, type LumenComboboxController } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 interface BoundCombobox {
   controller: LumenComboboxController
   document: Document
@@ -27,7 +29,7 @@ export const initComboboxes = (scope: ParentNode): void => {
     }
   }
 
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-combobox]')) {
+  for (const root of queryScope(scope, '[data-ui-combobox]')) {
     if (!controllers.has(root)) {
       controllers.set(root, {
         controller: createLumenComboboxController(root),
