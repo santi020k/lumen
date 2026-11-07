@@ -5,11 +5,7 @@ import type { LumenComponentName } from '../../packages/core/src/components.js'
 import { verifyAstroChartActivation } from './chart-activation.js'
 import { runtimeBehaviorComponentNames } from './component-coverage.js'
 import { verifyFocusNavigation } from './focus-navigation.js'
-
-const openPreview = async (page: Page, slug: string) => {
-  await page.goto(`/docs/components/${slug}`)
-  await expect(page.locator('.component-doc-preview')).toBeVisible()
-}
+import { openPreview } from './open-preview.js'
 
 type BehaviorTestBody = (fixtures: { page: Page }) => Promise<void>
 
@@ -735,17 +731,26 @@ behaviorTest(['Code'], 'Code copies its block content and announces success', as
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
-      value: { writeText: () => Promise.resolve() }
+      value: { writeText: (value: string) => {
+        sessionStorage.setItem('test-copied-code', value)
+        return Promise.resolve()
+      } }
     })
   })
   await openPreview(page, 'code')
 
-  const copy = page.locator('.component-doc-preview [data-ui-code-copy]').first()
+  const block = page.locator('.component-doc-preview [data-ui-code]').filter({ hasText: 'theme.ts' })
+  const copy = block.getByRole('button')
 
-  await expect(copy).toHaveAttribute('aria-label', 'Copy code to clipboard')
+  await expect(copy).toHaveAccessibleName('Copy code')
   await copy.click()
-  await expect(copy).toHaveAttribute('aria-label', 'Code copied to clipboard')
-  await expect(page.getByText('Code copied to clipboard', { exact: true })).toBeAttached()
+  await expect(copy).toHaveAccessibleName('Copied')
+  const source = ['', '  const theme = "lumen";', '  const accent = "hsl(var(--accent))";', ''].join('\n')
+
+  expect(await page.evaluate(() => sessionStorage.getItem('test-copied-code'))).toBe(source)
+  await expect(copy.getByText('Copied', { exact: true })).toBeVisible()
+  const announcement = page.locator('body > [aria-live="polite"][aria-atomic="true"]').filter({ hasText: /^Copied$/ })
+  await expect(announcement).toHaveText('Copied')
 })
 
 behaviorTest(['Command'], 'Command filters actions from its search input', async ({ page }) => {

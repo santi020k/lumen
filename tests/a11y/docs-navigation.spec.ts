@@ -210,15 +210,26 @@ test('split guide links remain usable without JavaScript', async ({ browser }) =
   await context.close()
 })
 
+test('hook references expose one Options landmark with or without a table', async ({ page }) => {
+  for (const hook of ['use-dialog', 'use-toast']) {
+    await page.goto(`/docs/frameworks/react/hooks/${hook}`)
+    const options = page.getByRole('region', { name: 'Options', exact: true })
+
+    await expect(options).toHaveCount(1)
+    await expect(options).toBeVisible()
+    await expect(options.getByRole('table', { name: 'Options', exact: true })).toHaveCount(hook === 'use-toast' ? 0 : 1)
+  }
+})
+
 for (const theme of ['lumen-light', 'lumen-dark', 'santi020k-light', 'santi020k-dark']) {
-  test(`new visual guides remain accessible in ${theme}`, async ({ page }) => {
-    await page.addInitScript(value => { localStorage.setItem('lumen-theme', value); }, theme)
-    for (const route of ['/docs/web/data-visualization', '/docs/components/box-plot', '/docs/frameworks/react/hooks', '/docs/react-native', '/docs/mcp/clients', '/docs/web/data-visualization/data', '/docs/web/data-visualization/accessibility', '/docs/migrations/v4-to-v5', '/docs/web']) {
+  for (const route of ['/docs/web/data-visualization', '/docs/components/box-plot', '/docs/frameworks/react/hooks', '/docs/react-native', '/docs/mcp/clients', '/docs/web/data-visualization/data', '/docs/web/data-visualization/accessibility', '/docs/migrations/v4-to-v5', '/docs/web']) {
+    test(`visual guides remain accessible in ${theme} on ${route}`, async ({ page }) => {
+      await page.addInitScript(value => { localStorage.setItem('lumen-theme', value); }, theme)
       await page.goto(route)
       if (route === '/docs/components/box-plot') await page.locator('.framework-example__code > summary').press('Enter')
       await page.addScriptTag({ path: axePath })
       const report: unknown = await page.evaluate('axe.run(".docs-content")')
       expect(report, route).toMatchObject({ violations: [] })
-    }
-  })
+    })
+  }
 }

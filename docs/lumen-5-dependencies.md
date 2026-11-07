@@ -7,8 +7,8 @@ the normal reviewed GitHub release workflow.
 ## Android tooling
 
 Android Gradle Plugin is 9.5.1 in the Compose library, playground and documentation preview.
-Dokka is 2.3.0 for phone and Wear documentation. JDK 21, Kotlin 2.4.21 and the
-2026.09.00 Compose BOM remain the selected stable releases. AndroidX UI Automator and its shell library
+Dokka is 2.3.0 for phone and Wear documentation. JDK 21, Gradle 9.9.0, Kotlin 2.4.21 and the
+2026.09.00 Compose BOM remain current stable releases. AndroidX UI Automator and its shell library
 advance to 2.4.1. Other directly declared Maven dependencies were checked against their official
 Google Maven or Maven Central metadata and were already current stable releases.
 

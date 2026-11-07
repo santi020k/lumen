@@ -79,7 +79,7 @@ const breadcrumbs = [
       </Note>
     </section>
 
-    <section class="hook-reference__section" aria-labelledby="options">
+    <section class="hook-reference__section" aria-labelledby={hook.options.length > 0 ? undefined : 'options'}>
       <div class="docs-section-heading"><h2 id="options">Options</h2></div>
       {hook.options.length > 0 ?
 (
@@ -92,7 +92,7 @@ const breadcrumbs = [
 <p class="hook-reference__copy">Call <code>{hook.name}()</code> without options.</p>}
     </section>
 
-    <section class="hook-reference__section" aria-labelledby="controller">
+    <section class="hook-reference__section">
       <div class="docs-section-heading"><h2 id="controller">Controller return values</h2></div>
       <DocsReferenceTable
         columns={['Property', 'Type', 'Description']}

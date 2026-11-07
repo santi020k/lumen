@@ -66,6 +66,8 @@ diffs. With `--merge`, missing files are added, identical files are skipped and 
 untouched. A conflict returns exit code 1 so you can review the diff and apply selected edits.
 Only `--force` replaces the local copy.
 
+Doctor recognizes shared Core and umbrella CSS exports, Elements registration helpers and HTML script entries. It checks explicit built-in preset and glass usage for optional appearance CSS. These source checks cannot prove route coverage or dynamic theme choices.
+
 ## Consumer form measurement
 
 The packed subscribe-form benchmark also renders Field, FieldError and Checkbox in its React fixture.
@@ -75,4 +77,57 @@ respectively. This fixture demonstrates a smaller build graph with equivalent br
 Run `pnpm run measure:subscribe-form` to reproduce with freshly packed packages. Application routes,
 bundler versions and shared chunks can produce different results.
 
-Doctor recognizes shared Core and umbrella CSS exports, Elements registration helpers and HTML script entries. It checks explicit built-in preset and glass usage for optional appearance CSS. These source checks cannot prove route coverage or dynamic theme choices.
+### React
+
+Load the foundation once and import the style and component entry for each control.
+
+```tsx
+import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/button.css'
+import '@santi020k/lumen-react/styles/components/card.css'
+import '@santi020k/lumen-react/styles/components/input.css'
+import '@santi020k/lumen-react/styles/components/label.css'
+import { Button } from '@santi020k/lumen-react/components/button'
+import { Card } from '@santi020k/lumen-react/components/card'
+import { Input } from '@santi020k/lumen-react/components/input'
+import { Label } from '@santi020k/lumen-react/components/label'
+
+export function SubscribeForm() {
+  return (
+    <Card>
+      <Label htmlFor="email">Email</Label>
+      <Input id="email" name="email" type="email" placeholder="you@example.com" />
+      <Button>Subscribe</Button>
+    </Card>
+  )
+}
+```
+
+### Web Components
+
+Import styles from a bundler entry and register the four elements used in the form.
+
+```html
+<script type="module">
+  import '@santi020k/lumen-elements/styles/foundation.css'
+  import '@santi020k/lumen-elements/styles/components/button.css'
+  import '@santi020k/lumen-elements/styles/components/card.css'
+  import '@santi020k/lumen-elements/styles/components/input.css'
+  import '@santi020k/lumen-elements/styles/components/label.css'
+  import { defineLumenButton } from '@santi020k/lumen-elements/components/button'
+  import { defineLumenCard } from '@santi020k/lumen-elements/components/card'
+  import { defineLumenInput } from '@santi020k/lumen-elements/components/input'
+  import { defineLumenLabel } from '@santi020k/lumen-elements/components/label'
+
+  defineLumenButton()
+  defineLumenCard()
+  defineLumenInput()
+  defineLumenLabel()
+</script>
+
+<lumen-card>
+  <lumen-label id="email-label">Email</lumen-label>
+  <lumen-input aria-labelledby="email-label" id="email" name="email" type="email" placeholder="you@example.com"></lumen-input>
+  <lumen-button>Subscribe</lumen-button>
+</lumen-card>
+```

@@ -22,7 +22,7 @@ Select a frame in a design that uses the [Lumen UI library](https://www.figma.co
 
 **For the web:** Export Astro, React TSX, or HTML with Lumen Web Components. Choose Lumen 5.0.0 or 4.4.0 and the appearance used by your project. The plugin recognizes 21 components. Lumen 4.4 uses Astro 4.4.0 and React or Elements 4.3.0.
 
-**For native apps:** Export React Native, Jetpack Compose for Android, or SwiftUI for iPhone and Mac. Native starters include labeled fields, editable checkboxes, and nested layouts. They flag inferred progress indicators for review. React Native and Compose target adapter 4.1.0; SwiftUI targets v5.0.0.
+**For native apps:** Export React Native, Jetpack Compose for Android, or SwiftUI for iPhone and Mac. Native starters include labeled fields, editable checkboxes, and nested layouts. In the Lumen onboarding template, Back and Continue retain the entered name, email and workspace choices. They flag inferred progress indicators for review. React Native and Compose target adapter 4.1.0; SwiftUI targets v5.0.0.
 
 Choose your target, click **Inspect selection**, review the findings, then choose **Open handoff** to copy or save the starter and setup instructions where offered. The optional AI handoff includes visible design text, component properties, and items to review. You connect actions, implement unsupported layers, and check accessibility in your app.
 
@@ -34,7 +34,7 @@ The plugin runs offline. It does not call an AI model or send your design to Lum
 
 1. Open [Lumen Templates on Community](https://www.figma.com/community/file/1700607667944072280) and choose **Open in Figma** to get an editable copy. On **Auth & Onboarding**, expand **Desktop / 1440 px** and select the **Onboarding form** inside **Onboarding card**. The [original frame](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3/Lumen-Templates?node-id=5-834) shows the selection.
 2. Choose **React**, **Lumen 4.4.0**, and **Inspect selection**. Expect a TSX starter with the two linked Inputs, **Back** and **Continue** Buttons, and setup for the React 4.3.0 adapter.
-3. Switch to **Web Components** and **Lumen 5.0.0**, then inspect again. Expect an HTML starter and an app setup module. Select **iPhone · SwiftUI** and inspect again to see a SwiftUI view for the same Button.
+3. Switch to **Web Components** and **Lumen 5.0.0**, then inspect again. Expect an HTML starter and an app setup module. Select **iPhone · SwiftUI** and inspect again to see a SwiftUI view for the same onboarding form.
 4. Deselect the frame. The panel should clear the previous result and ask you to select one frame or component. No sign-in to Lumen, network permission, or AI service is required.
 
 ## Images

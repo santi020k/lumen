@@ -55,6 +55,7 @@
 
 - Honor explicit reveal thresholds across web adapters. Keep tall or clipped content visible when its
   threshold cannot be reached, and bypass decorative hiding for keyboard focus and reduced motion.
+  Skip layout measurements in offscreen, browser-skipped content until it renders.
   Clean up reveal observers on navigation, disconnection, and unmount.
 
 ### Patch Changes

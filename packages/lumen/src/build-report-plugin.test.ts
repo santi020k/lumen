@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, realpath, rm, symlink, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, realpath, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -62,7 +62,7 @@ test('keeps PostCSS import provenance and existing application transforms', asyn
 })
 
 test('attributes server-emitted Astro CSS without a client script', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'lumen-astro-css-report-'))
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'lumen-astro-css-report-')))
   try {
     const dependency = join(root, 'node_modules/@santi020k/lumen-astro')
     await mkdir(join(dependency, 'styles'), { recursive: true })
@@ -74,6 +74,7 @@ test('attributes server-emitted Astro CSS without a client script', async () => 
     await writeFile(join(root, 'src/global.css'), '@import "@santi020k/lumen-astro/styles.css";')
     const reportPlugin = lumenBuildReport()
     await buildAstro({ root,
+      build: { inlineStylesheets: 'never' },
       configFile: false,
       logLevel: 'silent',
       vite: {
@@ -82,7 +83,12 @@ test('attributes server-emitted Astro CSS without a client script', async () => 
     const report = await loadBuildReport(parseRenderedAuditArguments(['http://localhost:4321/', '--build-report', '.cache/lumen/build-report.json'], root))
     const entries = [...(report?.entries() ?? [])]
     expect(entries.length).toBeGreaterThan(0)
-    expect(entries.every(([path]) => path.endsWith('.css'))).toBe(true)
+    const html = await readFile(join(root, 'dist/index.html'), 'utf8')
+    for (const [url] of entries) {
+      const path = new URL(url).pathname
+      expect(path.endsWith('.css')).toBe(true)
+      expect(html).toContain(`href="${path}"`)
+    }
     expect(entries.flatMap(([, chains]) => chains)).toContainEqual(['./src/pages/index.astro', './src/global.css', '@santi020k/lumen-astro/styles/lumen.css'])
   } finally {
     await rm(root, { recursive: true, force: true })

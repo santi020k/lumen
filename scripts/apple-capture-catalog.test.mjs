@@ -38,9 +38,10 @@ if [[ "$1 $2 $3" == "xcresulttool export attachments" ]]; then
   if [[ "$LUMEN_CAPTURE_TEST_MISSING_ATTACHMENT" == "true" ]]; then
     printf '[]' > "$directory/manifest.json"
   else
-    printf '[{"attachments":[{"suggestedHumanReadableName":"tour-light-ready_0_fixture.png","exportedFileName":"tour-attachment.png"},{"suggestedHumanReadableName":"kanban-column-light-ready_0_fixture.png","exportedFileName":"kanban-attachment.png"}]}]' > "$directory/manifest.json"
+    printf '[{"attachments":[{"suggestedHumanReadableName":"tour-light-ready_0_fixture.png","exportedFileName":"tour-attachment.png"},{"suggestedHumanReadableName":"kanban-board-light-ready_0_fixture.png","exportedFileName":"board-attachment.png"},{"suggestedHumanReadableName":"kanban-column-light-ready_0_fixture.png","exportedFileName":"kanban-attachment.png"}]}]' > "$directory/manifest.json"
     printf 'verified tour' > "$directory/tour-attachment.png"
     printf 'verified kanban' > "$directory/kanban-attachment.png"
+    printf 'verified board' > "$directory/board-attachment.png"
   fi
 fi
 `, { mode: 0o755 })
@@ -118,6 +119,12 @@ fi
     assert.deepEqual(await capture(['Tour']), ['Tour'])
 
     await capture(['Tour'], true)
+
+    assert.deepEqual(await capture(['Kanban board']), ['Kanban board'])
+
+    assert.match(await readFile(buildLog, 'utf8'), /testKanbanBoardCaptureMatchesDocumentation/)
+
+    assert.equal(await readFile(join(output, 'kanban-board.png'), 'utf8'), 'verified board')
 
     assert.deepEqual(await capture(['Kanban column']), ['Kanban column'])
 

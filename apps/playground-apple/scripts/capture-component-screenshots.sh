@@ -57,7 +57,7 @@ for component in "${components[@]}"; do
   xcrun simctl io "${device_id}" screenshot "${output_dir}/${slug}.png"
 done
 
-for interaction in "Tour" "Kanban column"; do
+for interaction in "Tour" "Kanban board" "Kanban column"; do
   if [[ " ${components[*]} " != *" ${interaction} "* ]]; then continue; fi
   # These documentation baselines include the native XCTest scroll/interaction state.
   # Reproduce it instead of comparing the default launch viewport.
@@ -65,6 +65,10 @@ for interaction in "Tour" "Kanban column"; do
     test_method="testTourCaptureMatchesDocumentation"
     attachment_prefix="tour-light-ready_"
     interaction_slug="tour"
+  elif [[ "$interaction" == "Kanban board" ]]; then
+    test_method="testKanbanBoardCaptureMatchesDocumentation"
+    attachment_prefix="kanban-board-light-ready_"
+    interaction_slug="kanban-board"
   else
     test_method="testKanbanColumnCaptureMatchesDocumentation"
     attachment_prefix="kanban-column-light-ready_"

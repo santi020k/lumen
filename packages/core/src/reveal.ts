@@ -9,6 +9,10 @@ export const normalizeLumenRevealThreshold = (value: number | undefined): number
 
 /** An upper bound: a clipped container cannot expose more than its available area. */
 const maximumVisibleRatio = (root: HTMLElement, view: Window): number => {
+  // Reading bounds inside a skipped content-visibility subtree forces its layout.
+  // Recheck when intersection or resize observers report its rendered geometry.
+  if (typeof root.checkVisibility === 'function' && !root.checkVisibility({ contentVisibilityAuto: true })) return 1
+
   const rectangle = root.getBoundingClientRect()
 
   if (rectangle.width <= 0 || rectangle.height <= 0) return 1
