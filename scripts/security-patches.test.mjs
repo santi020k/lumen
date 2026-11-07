@@ -212,13 +212,13 @@ test('network errors, malformed reports, missing findings and inconsistent count
   assert.throws(() => evaluateAudit(report, 1, policies), /count mismatch/u)
 })
 
-test('installed patches preserve bounded glob and collection validation', async () => {
+test('installed patches preserve bounded glob validation', async () => {
   const inventory = spawnSync('pnpm', ['list', '--recursive', ...policies.map(policy => policy.name), '--depth', 'Infinity', '--json'], { cwd: root, encoding: 'utf8' })
 
   assert.equal(inventory.status, 0)
 
   const instances = await collectPatchedInstances(root, JSON.parse(inventory.stdout), policies)
-  const checks = { braces: verifyBracesBehavior, zod: verifyZodBehavior }
+  const checks = { braces: verifyBracesBehavior }
 
   for (const policy of policies) {
     const installed = instances.get(policy.name)
@@ -239,6 +239,12 @@ test('installed patches preserve bounded glob and collection validation', async 
   }
 })
 
+
+test('published Zod preserves bounded collection validation', async () => {
+  const require = createRequire(resolve(root, 'packages/mcp/package.json'))
+
+  await verifyZodBehavior(require('zod'))
+})
 
 test('published Forge preserves signature verification and rejects malformed signatures', async () => {
   const forge = { name: 'node-forge', version: '1.4.3' }

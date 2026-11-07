@@ -19,6 +19,8 @@ dependencyResolutionManagement {
     }
 }
 
+apply(from = "gradle/security-dependencies.gradle")
+
 rootProject.name = "lumen-compose"
 
 include(":wear")

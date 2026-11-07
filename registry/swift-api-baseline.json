@@ -11910,6 +11910,15 @@
           "precise": "s:7LumenUI0A8IconNameO10navigationyA2CmF"
         },
         {
+          "declaration": "case packagePen",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packagePen"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO10packagePenyA2CmF"
+        },
+        {
           "declaration": "case paintbrush",
           "kind": "swift.enum.case",
           "path": [
@@ -22062,6 +22071,15 @@
           "precise": "s:7LumenUI0A8IconNameO17circleDashedCheckyA2CmF"
         },
         {
+          "declaration": "case circleFadingCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "circleFadingCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17circleFadingCheckyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowDown",
           "kind": "swift.enum.case",
           "path": [
@@ -23365,6 +23383,15 @@
             "messageSquareDashed"
           ],
           "precise": "s:7LumenUI0A8IconNameO19messageSquareDashedyA2CmF"
+        },
+        {
+          "declaration": "case packageQuestionMark",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packageQuestionMark"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO19packageQuestionMarkyA2CmF"
         },
         {
           "declaration": "case receiptRussianRuble",
@@ -29359,6 +29386,15 @@
             "octagon"
           ],
           "precise": "s:7LumenUI0A8IconNameO7octagonyA2CmF"
+        },
+        {
+          "declaration": "case opacity",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "opacity"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7opacityyA2CmF"
         },
         {
           "declaration": "case origami",
@@ -47776,6 +47812,15 @@
           "precise": "s:7LumenUI0A8IconNameO10navigationyA2CmF"
         },
         {
+          "declaration": "case packagePen",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packagePen"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO10packagePenyA2CmF"
+        },
+        {
           "declaration": "case paintbrush",
           "kind": "swift.enum.case",
           "path": [
@@ -57928,6 +57973,15 @@
           "precise": "s:7LumenUI0A8IconNameO17circleDashedCheckyA2CmF"
         },
         {
+          "declaration": "case circleFadingCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "circleFadingCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17circleFadingCheckyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowDown",
           "kind": "swift.enum.case",
           "path": [
@@ -59231,6 +59285,15 @@
             "messageSquareDashed"
           ],
           "precise": "s:7LumenUI0A8IconNameO19messageSquareDashedyA2CmF"
+        },
+        {
+          "declaration": "case packageQuestionMark",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packageQuestionMark"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO19packageQuestionMarkyA2CmF"
         },
         {
           "declaration": "case receiptRussianRuble",
@@ -65225,6 +65288,15 @@
             "octagon"
           ],
           "precise": "s:7LumenUI0A8IconNameO7octagonyA2CmF"
+        },
+        {
+          "declaration": "case opacity",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "opacity"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7opacityyA2CmF"
         },
         {
           "declaration": "case origami",
@@ -80642,6 +80714,15 @@
           "precise": "s:7LumenUI0A8IconNameO10navigationyA2CmF"
         },
         {
+          "declaration": "case packagePen",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packagePen"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO10packagePenyA2CmF"
+        },
+        {
           "declaration": "case paintbrush",
           "kind": "swift.enum.case",
           "path": [
@@ -90794,6 +90875,15 @@
           "precise": "s:7LumenUI0A8IconNameO17circleDashedCheckyA2CmF"
         },
         {
+          "declaration": "case circleFadingCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "circleFadingCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17circleFadingCheckyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowDown",
           "kind": "swift.enum.case",
           "path": [
@@ -92097,6 +92187,15 @@
             "messageSquareDashed"
           ],
           "precise": "s:7LumenUI0A8IconNameO19messageSquareDashedyA2CmF"
+        },
+        {
+          "declaration": "case packageQuestionMark",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packageQuestionMark"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO19packageQuestionMarkyA2CmF"
         },
         {
           "declaration": "case receiptRussianRuble",
@@ -98091,6 +98190,15 @@
             "octagon"
           ],
           "precise": "s:7LumenUI0A8IconNameO7octagonyA2CmF"
+        },
+        {
+          "declaration": "case opacity",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "opacity"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7opacityyA2CmF"
         },
         {
           "declaration": "case origami",
@@ -115930,6 +116038,15 @@
           "precise": "s:7LumenUI0A8IconNameO10navigationyA2CmF"
         },
         {
+          "declaration": "case packagePen",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packagePen"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO10packagePenyA2CmF"
+        },
+        {
           "declaration": "case paintbrush",
           "kind": "swift.enum.case",
           "path": [
@@ -126082,6 +126199,15 @@
           "precise": "s:7LumenUI0A8IconNameO17circleDashedCheckyA2CmF"
         },
         {
+          "declaration": "case circleFadingCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "circleFadingCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17circleFadingCheckyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowDown",
           "kind": "swift.enum.case",
           "path": [
@@ -127385,6 +127511,15 @@
             "messageSquareDashed"
           ],
           "precise": "s:7LumenUI0A8IconNameO19messageSquareDashedyA2CmF"
+        },
+        {
+          "declaration": "case packageQuestionMark",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packageQuestionMark"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO19packageQuestionMarkyA2CmF"
         },
         {
           "declaration": "case receiptRussianRuble",
@@ -133379,6 +133514,15 @@
             "octagon"
           ],
           "precise": "s:7LumenUI0A8IconNameO7octagonyA2CmF"
+        },
+        {
+          "declaration": "case opacity",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "opacity"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7opacityyA2CmF"
         },
         {
           "declaration": "case origami",
@@ -148950,6 +149094,15 @@
           "precise": "s:7LumenUI0A8IconNameO10navigationyA2CmF"
         },
         {
+          "declaration": "case packagePen",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packagePen"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO10packagePenyA2CmF"
+        },
+        {
           "declaration": "case paintbrush",
           "kind": "swift.enum.case",
           "path": [
@@ -159102,6 +159255,15 @@
           "precise": "s:7LumenUI0A8IconNameO17circleDashedCheckyA2CmF"
         },
         {
+          "declaration": "case circleFadingCheck",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "circleFadingCheck"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO17circleFadingCheckyA2CmF"
+        },
+        {
           "declaration": "case databaseArrowDown",
           "kind": "swift.enum.case",
           "path": [
@@ -160405,6 +160567,15 @@
             "messageSquareDashed"
           ],
           "precise": "s:7LumenUI0A8IconNameO19messageSquareDashedyA2CmF"
+        },
+        {
+          "declaration": "case packageQuestionMark",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "packageQuestionMark"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO19packageQuestionMarkyA2CmF"
         },
         {
           "declaration": "case receiptRussianRuble",
@@ -166399,6 +166570,15 @@
             "octagon"
           ],
           "precise": "s:7LumenUI0A8IconNameO7octagonyA2CmF"
+        },
+        {
+          "declaration": "case opacity",
+          "kind": "swift.enum.case",
+          "path": [
+            "LumenIconName",
+            "opacity"
+          ],
+          "precise": "s:7LumenUI0A8IconNameO7opacityyA2CmF"
         },
         {
           "declaration": "case origami",

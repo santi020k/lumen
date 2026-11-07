@@ -2404,6 +2404,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getCircleEuro--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleExclamationPoint--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleFadingArrowUp--ExOp-M ()Ljava/lang/String;
+	public final fun getCircleFadingCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleFadingPlay--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleFadingPlus--ExOp-M ()Ljava/lang/String;
 	public final fun getCircleGauge--ExOp-M ()Ljava/lang/String;
@@ -3282,6 +3283,7 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getOctagonPause--ExOp-M ()Ljava/lang/String;
 	public final fun getOctagonX--ExOp-M ()Ljava/lang/String;
 	public final fun getOmega--ExOp-M ()Ljava/lang/String;
+	public final fun getOpacity--ExOp-M ()Ljava/lang/String;
 	public final fun getOption--ExOp-M ()Ljava/lang/String;
 	public final fun getOrbit--ExOp-M ()Ljava/lang/String;
 	public final fun getOrigami--ExOp-M ()Ljava/lang/String;
@@ -3290,7 +3292,9 @@ public final class com/santi020k/lumen/LumenIconName$Companion {
 	public final fun getPackageCheck--ExOp-M ()Ljava/lang/String;
 	public final fun getPackageMinus--ExOp-M ()Ljava/lang/String;
 	public final fun getPackageOpen--ExOp-M ()Ljava/lang/String;
+	public final fun getPackagePen--ExOp-M ()Ljava/lang/String;
 	public final fun getPackagePlus--ExOp-M ()Ljava/lang/String;
+	public final fun getPackageQuestionMark--ExOp-M ()Ljava/lang/String;
 	public final fun getPackageSearch--ExOp-M ()Ljava/lang/String;
 	public final fun getPackageX--ExOp-M ()Ljava/lang/String;
 	public final fun getPaintBucket--ExOp-M ()Ljava/lang/String;

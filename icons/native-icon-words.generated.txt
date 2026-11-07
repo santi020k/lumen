@@ -1012,6 +1012,7 @@ LumenCircleEqualIconGraphic
 LumenCircleEuroIconGraphic
 LumenCircleExclamationPointIconGraphic
 LumenCircleFadingArrowUpIconGraphic
+LumenCircleFadingCheckIconGraphic
 LumenCircleFadingPlayIconGraphic
 LumenCircleFadingPlusIconGraphic
 LumenCircleGaugeIconGraphic
@@ -1890,6 +1891,7 @@ LumenOctagonMinusIconGraphic
 LumenOctagonPauseIconGraphic
 LumenOctagonXIconGraphic
 LumenOmegaIconGraphic
+LumenOpacityIconGraphic
 LumenOptionIconGraphic
 LumenOrbitIconGraphic
 LumenOrigamiIconGraphic
@@ -1898,7 +1900,9 @@ LumenPackageCheckIconGraphic
 LumenPackageIconGraphic
 LumenPackageMinusIconGraphic
 LumenPackageOpenIconGraphic
+LumenPackagePenIconGraphic
 LumenPackagePlusIconGraphic
+LumenPackageQuestionMarkIconGraphic
 LumenPackageSearchIconGraphic
 LumenPackageXIconGraphic
 LumenPaintBucketIconGraphic
@@ -3785,6 +3789,7 @@ circle-equal
 circle-euro
 circle-exclamation-point
 circle-fading-arrow-up
+circle-fading-check
 circle-fading-play
 circle-fading-plus
 circle-gauge
@@ -5131,6 +5136,7 @@ of
 off
 old
 omega
+opacity
 open
 openai
 opencart
@@ -5159,7 +5165,9 @@ package-2
 package-check
 package-minus
 package-open
+package-pen
 package-plus
+package-question-mark
 package-search
 package-x
 padding

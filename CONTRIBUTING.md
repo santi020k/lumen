@@ -26,7 +26,7 @@ Start with the [web theme authoring guide](docs/community-web-themes.md). A comm
 ## Local Setup
 
 For the full workspace, use Node.js 22.23.4+, 24.15.0+, or 26+ and the pnpm version pinned in
-`package.json` (currently 12.8.1). The installed Astro toolchain requires at least Node.js 22.23.4
+`package.json` (currently 12.18.0). The installed Astro toolchain requires at least Node.js 22.23.4
 for the docs app. This contributor requirement does not change the supported runtimes of published packages.
 
 ```bash

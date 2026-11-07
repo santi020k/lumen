@@ -1,0 +1,30 @@
+// Keep these constraints on build and test classpaths so published consumers do not inherit them.
+gradle.beforeProject { project ->
+    def tooling = [
+        'com.fasterxml.jackson.core:jackson-core:2.22.4',
+        'com.fasterxml.jackson.core:jackson-databind:2.22.4',
+        'com.google.guava:guava:33.8.0-jre',
+        'org.apache.commons:commons-lang3:3.21.0',
+        'org.bitbucket.b_c:jose4j:0.9.7',
+        'org.bouncycastle:bcpkix-jdk18on:1.86',
+        'org.bouncycastle:bcprov-jdk18on:1.86',
+        'org.jdom:jdom2:2.0.6.1'
+    ]
+    tooling.each { coordinate ->
+        project.buildscript.dependencies.constraints.add('classpath', coordinate) {
+            because('Use patched transitive dependencies in the Android and documentation build tools')
+        }
+    }
+
+    project.configurations.matching { it.name == 'androidTestImplementation' }.all {
+        [
+            'com.google.guava:guava:33.8.0-android',
+            'com.google.protobuf:protobuf-javalite:3.25.9',
+            'org.jsoup:jsoup:1.24.1'
+        ].each { coordinate ->
+            project.dependencies.constraints.add('androidTestImplementation', coordinate) {
+                because('Use patched transitive dependencies in Android accessibility tests')
+            }
+        }
+    }
+}

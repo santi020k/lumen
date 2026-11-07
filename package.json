@@ -244,7 +244,7 @@
   "engines": {
     "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
-  "packageManager": "pnpm@12.8.1",
+  "packageManager": "pnpm@12.18.0",
   "license": "MIT",
   "lint-staged": {
     "*": [

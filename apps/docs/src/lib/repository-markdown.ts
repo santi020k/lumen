@@ -28,10 +28,10 @@ export const repositoryMarkdownLinks: NonNullable<MarkdownProcessorOptions['mdas
 
   return {
     definition(node, ctx) {
-      ctx.setProperty(node, 'url', resolveRepositoryLink(node.url))
+      ctx.setField(node, 'url', resolveRepositoryLink(node.url))
     },
     link(node, ctx) {
-      ctx.setProperty(node, 'url', resolveRepositoryLink(node.url))
+      ctx.setField(node, 'url', resolveRepositoryLink(node.url))
     },
     name: 'repository-document-links'
   }
