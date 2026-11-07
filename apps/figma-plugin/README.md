@@ -45,8 +45,8 @@ select one frame or component instance, and run **Lumen for Figma**.
 The panel follows the Figma editor’s light or dark theme. **Project appearance** applies to the exported starter.
 
 1. In **Setup**, choose the **Export target**. For web, choose the **Target version** and **Project appearance**. Choosing **santi020k** reveals **Starting mode**, with Light selected initially. For native, check the supported adapter version. Choose **Inspect selection**.
-2. In **Design review**, check the verified count and the layers that need attention. Choose **Open handoff** for the generated files. Use **Back to review** or **Back to setup** to revisit an earlier step.
-3. Copy the setup for your framework and copy or save the starter and **AI handoff**. React and Web Components also offer **Save app setup**. Returning to Setup preserves your settings and findings. Changing a setting or editing the Figma selection clears the previous output.
+2. In **Design review**, check the verified count and the layers that need attention. Use **Show findings** to filter all notes, unsupported layers, review notes or inferred mappings. Choose **Open handoff** for the generated files. Use **Back to review** or **Back to setup** to revisit an earlier step.
+3. Copy the setup for your framework and copy or save the starter and **AI handoff**. Use **Layout** for the Astro root layout or **Install** for the other targets. Each has a download alongside **Save starter** and **Save AI handoff**. Returning to earlier steps preserves your settings, review filter, scroll position and selected output tab. Changing a setting or editing the Figma selection clears the previous output.
 4. Give the handoff to a coding agent working in the target repository. It directs the agent to
    check installed Lumen versions, retrieve component contracts, connect application behavior,
    and validate the rendered result.
