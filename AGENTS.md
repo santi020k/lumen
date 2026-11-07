@@ -112,7 +112,8 @@ before release-oriented work or broad cross-package changes.
 - Brand guidance lives only in [docs/brand-guidelines.md](docs/brand-guidelines.md).
 - Contributor workflow lives in [CONTRIBUTING.md](CONTRIBUTING.md).
 - The MCP server for AI agents lives in [packages/mcp](packages/mcp/README.md); regenerate its bundled
-  snapshot with `pnpm --filter @santi020k/lumen-mcp run generate` after changing components, tokens, or `llms.txt`.
+  snapshot with `pnpm --filter @santi020k/lumen-mcp run generate` after changing components, tokens,
+  the root `README.md`, `docs/ai-usage.md`, or `llms.txt`.
 - Figma workflows: implementing Figma designs with Lumen follows
   [docs/figma-design-to-code.md](docs/figma-design-to-code.md); token export to Figma lives in
   [docs/figma.md](docs/figma.md); reusable AI maintenance instructions for the library live in
