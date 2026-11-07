@@ -306,7 +306,7 @@
       "id": "expanded-swift-icon-catalog",
       "kind": "breaking",
       "currentContract": "Swift callers can exhaustively switch over the v4.4.0 LumenIconName cases.",
-      "replacement": "The refreshed icon catalog preserves existing names and adds 188 Swift enum cases. Static web and native aliases retain previous names.",
+      "replacement": "The refreshed icon catalog preserves existing names and adds 192 Swift enum cases. Static web and native aliases retain previous names.",
       "migration": "Review exhaustive LumenIconName switches and handle the new cases or supply an appropriate default. Rebuild native consumers when upgrading their SDK.",
       "packages": [
         "LumenUI"
@@ -355,6 +355,7 @@
         "enumelement LumenIconName.circleChevronsRight has been added as a new enum case",
         "enumelement LumenIconName.circleChevronsUp has been added as a new enum case",
         "enumelement LumenIconName.circleExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.circleFadingCheck has been added as a new enum case",
         "enumelement LumenIconName.circleFadingPlay has been added as a new enum case",
         "enumelement LumenIconName.circleLetterA has been added as a new enum case",
         "enumelement LumenIconName.circleLetterB has been added as a new enum case",
@@ -456,6 +457,9 @@
         "enumelement LumenIconName.monitorActivity has been added as a new enum case",
         "enumelement LumenIconName.numbers has been added as a new enum case",
         "enumelement LumenIconName.octagonExclamationPoint has been added as a new enum case",
+        "enumelement LumenIconName.opacity has been added as a new enum case",
+        "enumelement LumenIconName.packagePen has been added as a new enum case",
+        "enumelement LumenIconName.packageQuestionMark has been added as a new enum case",
         "enumelement LumenIconName.perfumeBottle has been added as a new enum case",
         "enumelement LumenIconName.phoneLog has been added as a new enum case",
         "enumelement LumenIconName.rugbyBall has been added as a new enum case",

@@ -126,7 +126,9 @@ release approval and deployment boundaries are preserved.
 The workspace now uses pnpm 12.18.0, Astro 7.4.7, Markdown Satteri 0.4.7, Vite 8.3.6,
 Playwright 1.65.0, jsdom 31.0.0, Wrangler 4.158.0, React Hook Form Resolvers 7.0.3,
 Rive Canvas 2.49.4, and Lucide 1.69.0. Lucide adds four icons across web and native; Swift
-clients should review exhaustive switches over `LumenIconName`. The ESLint Config Basic family
+clients should review exhaustive switches over `LumenIconName`. The v5 compatibility contract
+classifies 192 additions against v4.4.0, including `circleFadingCheck`, `opacity`, `packagePen`, and
+`packageQuestionMark` from this refresh. The ESLint Config Basic family
 was refreshed together with Oxlint 1.90.0 and its matching ESLint plugin. Oxlint 1.91 has no
 matching plugin release, and 1.92 was still inside the 24-hour hold. The TypeScript 6 and Expo 58
 compatibility holds still apply. Astro and the workspace now share Vite 8.3.6 so their plugin
