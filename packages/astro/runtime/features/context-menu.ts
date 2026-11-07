@@ -12,8 +12,12 @@ export const closeContextMenu = (menu: HTMLElement): void => {
 }
 
 const openContextMenuAt = (menu: HTMLElement, x: number, y: number): void => {
-  for (const other of document.querySelectorAll<HTMLElement>('[data-ui-context-menu][data-state="open"]')) {
-    if (other !== menu) closeContextMenu(other)
+  const tree = menu.getRootNode()
+
+  if (tree instanceof Document || tree instanceof DocumentFragment || tree instanceof Element) {
+    for (const other of queryScope(tree, '[data-ui-context-menu][data-ui-context-menu-bound][data-state="open"]')) {
+      if (other !== menu && !other.closest('[data-ui-owner]')) closeContextMenu(other)
+    }
   }
 
   menu.hidden = false
@@ -36,14 +40,16 @@ const openContextMenuAt = (menu: HTMLElement, x: number, y: number): void => {
 }
 
 const bindContextMenus = (target: HTMLElement): void => {
-  if (target.dataset.uiBound === 'true') return
+  if (target.dataset.uiBound === 'true' || target.closest('[data-ui-owner]')) return
 
   const menuId = target.getAttribute('data-ui-context-menu-trigger')
   const menu = menuId ? getScopeTarget(target, menuId) : null
 
-  if (!menu) return
+  if (!menu || menu.closest('[data-ui-owner]')) return
 
   target.dataset.uiBound = 'true'
+
+  menu.dataset.uiContextMenuBound = 'true'
 
   menu.hidden = true
 

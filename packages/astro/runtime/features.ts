@@ -24,9 +24,9 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     load: () => import('./features/disclosures.js').then(m => ({ init: scope => {
       m.initDisclosures(scope)
     },
-    outside: { selector: '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]', close: m.closeDisclosure },
+    outside: { selector: '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]', isOpen: m.isBoundDisclosure, close: m.closeDisclosure },
     escape: { selector: '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]',
-      isOpen: root => root.querySelector('[data-ui-trigger]')?.getAttribute('aria-expanded') === 'true',
+      isOpen: root => m.isBoundDisclosure(root) && root.querySelector('[data-ui-trigger]')?.getAttribute('aria-expanded') === 'true',
       close: root => {
         m.closeDisclosure(root)
 
@@ -75,7 +75,7 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     load: () => import('./features/select.js').then(m => ({ init: scope => {
       m.initSelects(scope)
     },
-    outside: { selector: '[data-ui-select]:not([data-ui-owner])', close: m.closeSelect } })) },
+    outside: { selector: '[data-ui-select][data-ui-bound="true"]', close: m.closeSelect } })) },
   { name: 'resizable',
     selector: '[data-ui-resizable]',
     load: () => import('./features/resizable.js').then(m => ({ init: scope => {
@@ -101,8 +101,8 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     load: () => import('./features/date-picker.js').then(m => ({ init: scope => {
       m.initDatePickers(scope)
     },
-    outside: { selector: '[data-ui-date-picker]', close: m.closeDatePicker },
-    escape: { selector: '[data-ui-date-picker]', isOpen: root => root.querySelector('[aria-expanded="true"]') !== null, close: m.closeDatePicker } })) },
+    outside: { selector: '[data-ui-date-picker][data-ui-date-picker-bound="true"]', close: m.closeDatePicker },
+    escape: { selector: '[data-ui-date-picker][data-ui-date-picker-bound="true"]', isOpen: root => root.querySelector('[aria-expanded="true"]') !== null, close: m.closeDatePicker } })) },
   { name: 'amount-field',
     selector: '[data-ui-amount-field]',
     load: () => import('./controllers/amount-field.js').then(m => ({ init: scope => {
@@ -183,8 +183,8 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     load: () => import('./features/context-menu.js').then(m => ({ init: scope => {
       m.initContextMenus(scope)
     },
-    outside: { selector: '[data-ui-context-menu][data-state="open"]', close: m.closeContextMenu },
-    escape: { selector: '[data-ui-context-menu][data-state="open"]', close: m.closeContextMenu } })) },
+    outside: { selector: '[data-ui-context-menu][data-ui-context-menu-bound][data-state="open"]', close: m.closeContextMenu },
+    escape: { selector: '[data-ui-context-menu][data-ui-context-menu-bound][data-state="open"]', close: m.closeContextMenu } })) },
   { name: 'date-range',
     selector: '[data-ui-date-range-picker]',
     load: () => import('./features/date-range.js').then(m => ({ init: scope => {
@@ -215,8 +215,8 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     load: () => import('./features/speed-dial.js').then(m => ({ init: scope => {
       m.initSpeedDials(scope)
     },
-    outside: { selector: '[data-ui-speed-dial][data-state="open"]', close: m.closeSpeedDial },
-    escape: { selector: '[data-ui-speed-dial][data-state="open"]', close: m.closeSpeedDial } })) },
+    outside: { selector: '[data-ui-speed-dial][data-ui-bound="true"][data-state="open"]', close: m.closeSpeedDial },
+    escape: { selector: '[data-ui-speed-dial][data-ui-bound="true"][data-state="open"]', close: m.closeSpeedDial } })) },
   { name: 'cascader',
     selector: '[data-ui-cascader]',
     load: () => import('./features/cascader.js').then(m => ({ init: scope => {

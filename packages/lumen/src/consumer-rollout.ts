@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process'
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { lstat, readdir, readFile, writeFile } from 'node:fs/promises'
 import { join, relative, resolve } from 'node:path'
 import { promisify } from 'node:util'
 
@@ -19,9 +19,29 @@ const lumenPackageSuffixPattern =
 const lumenPackageNamePattern = `@santi020k/lumen(?:-${lumenPackageSuffixPattern})?`
 const lumenPackagePattern = new RegExp(`^${lumenPackageNamePattern}$`)
 
-const lumenYamlReferencePattern = new RegExp(
-  `^\\s*['"]?(${lumenPackageNamePattern})['"]?\\s*:\\s*['"]?([^'"\\s#]+)['"]?`
+const lumenYamlKeyPattern = new RegExp(
+  `^[\\t ]*['"]?(${lumenPackageNamePattern})['"]?[\\t ]*:[\\t ]*`,
+  'u'
 )
+
+const readCatalogRange = (line: string) => {
+  const key = lumenYamlKeyPattern.exec(line)
+  const packageName = key?.[1]
+
+  if (!key || !packageName) return undefined
+
+  const scalar = line.slice(key[0].length)
+  const quote = scalar[0]
+  const quoted = quote === '\'' || quote === '"'
+  const start = quoted ? 1 : 0
+  const end = quoted ? scalar.indexOf(quote, start) : scalar.search(/[\r\n#]/u)
+
+  if (quoted && end === -1) return undefined
+
+  const version = scalar.slice(start, end === -1 ? undefined : end).trimEnd()
+
+  return version ? { packageName, version, offset: key[0].length + start } : undefined
+}
 
 const lumenLockReferencePattern = new RegExp(
   `^  ['"]?(${lumenPackageNamePattern})@(\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?)['"]?:`,
@@ -124,13 +144,17 @@ export const resolveConsumerRolloutTargets = (
   }
 }
 
-const pathExists = async (path: string): Promise<boolean> => {
+const regularFileExists = async (path: string): Promise<boolean> => {
   try {
-    await stat(path)
+    if (!(await lstat(path)).isFile()) {
+      throw new Error(`Consumer migration requires a regular file: ${path}`)
+    }
 
     return true
-  } catch {
-    return false
+  } catch (error) {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') return false
+
+    throw error
   }
 }
 
@@ -148,6 +172,8 @@ const findPackageManifests = async (root: string): Promise<string[]> => {
       if (entry.isDirectory()) {
         await visit(path)
       } else if (entry.name === 'package.json') {
+        if (!entry.isFile()) throw new Error(`Consumer migration requires a regular file: ${path}`)
+
         results.push(path)
       }
     }
@@ -196,10 +222,10 @@ const collectYamlReferences = (source: string, file: string): ConsumerReference[
   const references: ConsumerReference[] = []
 
   for (const line of yamlSection(source, ['catalog', 'catalogs'])) {
-    const match = lumenYamlReferencePattern.exec(line)
+    const range = readCatalogRange(line)
 
-    if (match?.[1] && match[2]) {
-      references.push({ file, packageName: match[1], source: 'catalog', version: match[2] })
+    if (range) {
+      references.push({ file, packageName: range.packageName, source: 'catalog', version: range.version })
     }
   }
 
@@ -252,7 +278,7 @@ export const inspectLumenConsumer = async (
   const root = resolve(repository)
   const rootManifestPath = join(root, 'package.json')
 
-  if (!(await pathExists(rootManifestPath))) {
+  if (!(await regularFileExists(rootManifestPath))) {
     throw new Error(`No package.json found at consumer root: ${root}`)
   }
 
@@ -270,11 +296,11 @@ export const inspectLumenConsumer = async (
   const workspacePath = join(root, 'pnpm-workspace.yaml')
   const lockPath = join(root, 'pnpm-lock.yaml')
 
-  if (await pathExists(workspacePath)) {
+  if (await regularFileExists(workspacePath)) {
     references.push(...collectYamlReferences(await readFile(workspacePath, 'utf8'), 'pnpm-workspace.yaml'))
   }
 
-  if (await pathExists(lockPath)) {
+  if (await regularFileExists(lockPath)) {
     references.push(...collectLockReferences(await readFile(lockPath, 'utf8')))
   }
 
@@ -408,11 +434,6 @@ const lumenWorkspaceVersionPattern = new RegExp([
   String.raw`([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$`
 ].join(''), 'gm')
 
-const mappedWorkspaceVersionPattern = new RegExp([
-  String.raw`^([\t ]*['"]?(${lumenPackageNamePattern})['"]?[\t ]*:[\t ]*['"]?)`,
-  String.raw`([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?[\t ]*(?:#.*)?\r?)$`
-].join(''), 'gm')
-
 export const updateLumenWorkspaceSource = (
   source: string, targetVersion: string, packageVersions?: Readonly<Record<string, string>>, preserveCompatible = false
 ): string => {
@@ -424,15 +445,15 @@ export const updateLumenWorkspaceSource = (
 
       if (!inCatalog) return line
 
-      return line.replaceAll(mappedWorkspaceVersionPattern, (
-        match: string, before: string, name: string, prefix: string, _version: string, after: string
-      ) => {
-        const target = packageVersions[name]
+      const range = readCatalogRange(line)
+      const target = range && packageVersions[range.packageName]
 
-        return target && !(preserveCompatible && satisfies(target, prefix + _version)) ?
-          `${before}${prefix}${target}${after}` :
-          match
-      })
+      if (!range || !target || !validRange(range.version)) return line
+
+      if (preserveCompatible && satisfies(target, range.version)) return line
+
+      return line.slice(0, range.offset) + replaceRange(range.version, target) +
+        line.slice(range.offset + range.version.length)
     }).join('')
   }
 
@@ -689,7 +710,7 @@ const upgradeConsumer = async (
 
   const workspacePath = join(inventory.repository, 'pnpm-workspace.yaml')
 
-  if (await pathExists(workspacePath)) {
+  if (await regularFileExists(workspacePath)) {
     const source = await readFile(workspacePath, 'utf8')
     const packages = [...new Set(inventory.references.map(item => item.packageName))]
     let updated = updateLumenWorkspaceSource(source, targetVersion, packageVersions, Boolean(release))
@@ -717,7 +738,7 @@ const upgradeConsumer = async (
 
   // pnpm update may rewrite declared ranges or catalog references.
   for (const [path, source] of desiredDeclarations) {
-    if (await readFile(path, 'utf8') !== source) await writeFile(path, source)
+    if (!(await regularFileExists(path)) || await readFile(path, 'utf8') !== source) await writeFile(path, source)
   }
 
   if (!commands[0]?.ok) return commands
@@ -726,7 +747,7 @@ const upgradeConsumer = async (
 
   if (!commands.at(-1)?.ok) return commands
 
-  if (!release && await pathExists(workspacePath)) {
+  if (!release && await regularFileExists(workspacePath)) {
     const source = await readFile(workspacePath, 'utf8')
     const updated = removeObsoleteReleaseAgeEntries(source, targetVersion, packageVersions)
 

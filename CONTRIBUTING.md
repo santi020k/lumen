@@ -315,6 +315,9 @@ tracks catalog content and migration rules, excluding publication status and app
    A Compose version with a successful publication workflow and verified Maven Central artifacts
    keeps its existing immutable tag and artifacts; an npm-only release does not republish it. Incomplete
    Compose publications retain the source-revision check before recovery dispatch.
+   Dispatch Compose recovery from its existing tag on `main`. The initial v5 Compose tag must match
+   the approved `v5.0.0` release commit. Docs may deploy while npm publication is underway; verify
+   both the public docs and the published packages before announcing the release.
 
 The Changesets action can still create or update its version-preparation pull request when pending
 Changesets reach `main`. Integrate that generated preparation into the selected release branch;

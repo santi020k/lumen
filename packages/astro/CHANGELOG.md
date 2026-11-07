@@ -2,6 +2,9 @@
 
 ## 5.0.0
 
+- Limit outside click and Escape dismissal to initialized Astro controls, respecting ownership by
+  other adapters and preserving dismissal for Astro controls inside shadow roots.
+
 - Scope runtime initialization to the requested root and descendants, including detached controls and fragments. Keep repeat interactions local and initialize dynamic dialog targets before opening them.
 
 - Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.

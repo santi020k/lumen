@@ -4,6 +4,9 @@ import { queryScope } from '../scope.js'
 import { getFocusable, getLoopedIndex, getPanel, nextAnchorName, setOpen, supportsAnchoredPopovers } from './shared.js'
 
 const disclosureSelector = '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]'
+const boundDisclosures = new WeakSet<HTMLElement>()
+
+export const isBoundDisclosure = (root: HTMLElement): boolean => boundDisclosures.has(root)
 
 export const closeDisclosure = (root: HTMLElement): void => {
   const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
@@ -18,6 +21,8 @@ export const closeDisclosure = (root: HTMLElement): void => {
 }
 
 const bindDisclosures = (root: HTMLElement): void => {
+  if (root.closest('[data-ui-owner]')) return
+
   const trigger = root.querySelector<HTMLElement>('[data-ui-trigger]')
 
   if (!trigger) return
@@ -27,6 +32,8 @@ const bindDisclosures = (root: HTMLElement): void => {
   if (!panel || trigger.dataset.uiBound === 'true') return
 
   trigger.dataset.uiBound = 'true'
+
+  boundDisclosures.add(root)
 
   trigger.setAttribute('aria-haspopup', trigger.getAttribute('aria-haspopup') ?? 'menu')
 

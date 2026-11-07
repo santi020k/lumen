@@ -38,6 +38,7 @@ env:
 
 jobs:
   build-and-deploy:
+    if: github.ref == 'refs/heads/main'
     name: Build and deploy docs
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -45,11 +46,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          fetch-depth: 0
 
       - name: Set up pnpm workspace
         uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Verify release approval
+        run: node scripts/check-approved-release-revision.mjs
 
       - name: Build docs
         run: pnpm run docs:build
@@ -68,3 +74,10 @@ jobs:
           fi
 
           pnpm exec wrangler pages deploy "$DOCS_DIST_DIR" --project-name="$CLOUDFLARE_PAGES_PROJECT_NAME" --branch="$DEPLOY_BRANCH"
+
+      - name: Smoke test the public docs
+        run: |
+          for path in / /docs; do
+            curl --fail --silent --show-error --location --retry 5 --retry-all-errors \
+              --max-time 20 --output /dev/null "${PUBLIC_SITE_URL%/}$path"
+          done

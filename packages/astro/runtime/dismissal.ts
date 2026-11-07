@@ -38,6 +38,11 @@ const dismissalTrees = (): ParentNode[] => {
 
 const eventPath = (event: Event): EventTarget[] => shadowEventPaths.get(event) ?? event.composedPath()
 
+const matchesDismissal = (target: HTMLElement, dismissal: LumenRuntimeDismissal | undefined): boolean => (
+  dismissal !== undefined && !target.closest('[data-ui-owner]') &&
+  target.matches(dismissal.selector) && dismissal.isOpen?.(target) !== false
+)
+
 const closeOutside = (event: MouseEvent): void => {
   if (!(event.target instanceof Node)) return
 
@@ -49,15 +54,11 @@ const closeOutside = (event: MouseEvent): void => {
 
     for (const tree of trees) {
       for (const root of tree.querySelectorAll<HTMLElement>(outside.selector)) {
-        if (!path.includes(root)) outside.close(root)
+        if (!path.includes(root) && matchesDismissal(root, outside)) outside.close(root)
       }
     }
   }
 }
-
-const matchesDismissal = (target: HTMLElement, dismissal: LumenRuntimeDismissal | undefined): boolean => (
-  dismissal !== undefined && target.matches(dismissal.selector) && dismissal.isOpen?.(target) !== false
-)
 
 const closeOnEscape = (event: KeyboardEvent): void => {
   if (event.defaultPrevented || event.isComposing || event.key !== 'Escape') return

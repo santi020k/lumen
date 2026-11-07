@@ -154,3 +154,27 @@ test.each(['open', 'closed'] as const)('dismisses initialized %s shadow popovers
   document.body.click()
   expect(panel.hidden).toBe(true)
 })
+
+test('dismisses only bound Astro disclosures when enhancing a scope', async () => {
+  const disclosure = (id: string) => `<div data-ui-popover><button data-ui-trigger aria-controls="${id}" aria-expanded="true">Open</button><div id="${id}">Panel</div></div>`
+  document.body.innerHTML = `<section>${disclosure('astro')}<div data-ui-owner="react">${disclosure('react')}</div></section>${disclosure('sibling')}`
+  const scope = document.querySelector('section')
+  if (!scope) throw new Error('Missing initialization scope')
+
+  const { initUiPrimitives } = await import('./runtime/loader.js')
+  await initUiPrimitives(scope)
+
+  for (const id of ['react', 'sibling']) {
+    const trigger = document.querySelector(`[aria-controls="${id}"]`)
+    const escape = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Escape' })
+
+    trigger?.dispatchEvent(escape)
+    expect(escape.defaultPrevented).toBe(false)
+    expect(trigger?.hasAttribute('data-ui-bound')).toBe(false)
+  }
+
+  document.body.click()
+  expect(document.querySelector('[aria-controls="astro"]')?.getAttribute('aria-expanded')).toBe('false')
+  expect(document.querySelector('[aria-controls="react"]')?.getAttribute('aria-expanded')).toBe('true')
+  expect(document.querySelector('[aria-controls="sibling"]')?.getAttribute('aria-expanded')).toBe('true')
+})

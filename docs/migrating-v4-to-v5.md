@@ -139,6 +139,8 @@ pnpm exec lumen migrate v5 --dependencies --apply --json
 
 Dependency changes remain opt-in. Inspect the manifest and lockfile diff before continuing. The
 rollout uses the bundled per-package release map and does not change native Swift or Maven pins.
+Use regular files for manifests, pnpm workspace configuration, and the lockfile; the rollout
+rejects symbolic links to these files before editing dependencies.
 Other package managers should update their own manifest and lockfile using the versions in the
 release manifest; source-only diagnostics do not require pnpm. For example, update only the web
 adapter the app actually uses, keeping it in production dependencies. Do not install all adapters.

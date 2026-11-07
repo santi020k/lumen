@@ -2,6 +2,9 @@
 
 ## 5.0.0
 
+- Refuse linked migration manifests and lock files before changing dependencies. Read full pnpm
+  catalog ranges so migration can preserve compatible ranges and update incompatible ones.
+
 - Use the shared Core component delivery metadata when generating selective wrappers and checking their imports.
 
 - Add Paper, Field and santi020k mobile themes, reusable custom definitions and local light/dark scopes across React Native, SwiftUI and Compose. Upgrade all three phone playgrounds with theme selection and a scoped note sheet.

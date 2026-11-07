@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -64,6 +64,45 @@ catalog:
     expect(updateLumenWorkspaceSource(source, '0.2.0')).toContain('"@santi020k/lumen-astro": ^0.2.0')
     expect(updateLumenWorkspaceSource(source, '0.2.0')).toContain('unrelated: 0.1.0')
   })
+
+  test('updates incompatible full catalog ranges and preserves compatible declarations and comments', () => {
+    const source = [
+      'catalogs:',
+      '  web:',
+      '    "@santi020k/lumen-astro": ">=4.0.0 <5" # upgrade',
+      '    \'@santi020k/lumen-react\': \'^4 || ^5\' # keep',
+      '    "@santi020k/lumen-elements": >=4 <5 # upgrade',
+      ''
+    ].join('\r\n')
+
+    expect(updateLumenWorkspaceSource(source, '5.0.0', {
+      '@santi020k/lumen-astro': '5.0.0',
+      '@santi020k/lumen-react': '5.0.0',
+      '@santi020k/lumen-elements': '5.0.0'
+    }, true)).toBe(source.replace('>=4.0.0 <5', '5.0.0').replace('>=4 <5', '5.0.0'))
+  })
+
+  test.each(['app/package.json', 'pnpm-workspace.yaml', 'pnpm-lock.yaml'])(
+    'refuses to follow a linked migration file: %s',
+    async file => {
+      const directory = await mkdtemp(join(tmpdir(), 'lumen-consumer-links-'))
+      const repository = join(directory, 'consumer')
+      const outside = join(directory, 'outside')
+      const source = '{"dependencies":{"@santi020k/lumen-astro":"^4.4.0"}}'
+
+      try {
+        await mkdir(join(repository, 'app'), { recursive: true })
+        await writeFile(join(repository, 'package.json'), source)
+        await writeFile(outside, source)
+        await symlink(outside, join(repository, file))
+
+        await expect(inspectLumenConsumer(repository)).rejects.toThrow('Consumer migration requires a regular file')
+        expect(await readFile(outside, 'utf8')).toBe(source)
+      } finally {
+        await rm(directory, { recursive: true, force: true })
+      }
+    }
+  )
 
   test('evaluates complete Node engine ranges', () => {
     expect(satisfiesNodeEngine('~22.12.0', '22.12.9')).toBe(true)
