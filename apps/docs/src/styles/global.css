@@ -1,9 +1,9 @@
 @import "@santi020k/lumen/layers.css";
 @import "tailwindcss";
-@import "./fonts.css";
 @import "@santi020k/lumen/styles.css";
 @import "@santi020k/lumen/tailwind.css";
 @import "@santi020k/theme/typography.css";
+@import "./fonts.css";
 @import "../../public/examples/themes/harbor.css";
 
 @source "../../../../packages/astro/components";

@@ -94,6 +94,21 @@ test('unreachable tall groups stay visible without lowering the requested thresh
   expect(root.dataset.uiRevealThreshold).toBe('0.8')
 })
 
+test('defers bounds reads inside skipped content and checks the threshold when it renders', () => {
+  const root = fixture(4000)
+  const checkVisibility = vi.fn(() => false)
+  const readBounds = vi.spyOn(root, 'getBoundingClientRect')
+
+  Object.defineProperty(root, 'checkVisibility', { value: checkVisibility })
+  cleanup.push(createLumenRevealController(root, { threshold: 0.8 }).destroy)
+  expect(checkVisibility).toHaveBeenCalledWith({ contentVisibilityAuto: true })
+  expect(readBounds).not.toHaveBeenCalled()
+  checkVisibility.mockReturnValue(true)
+  window.dispatchEvent(new Event('resize'))
+  expect(root.classList.contains('is-revealed')).toBe(true)
+  expect(root.dataset.uiScrollRevealBound).toBeUndefined()
+})
+
 test('clipping containers and enlarged text cannot strand content after initialization', () => {
   const parent = document.createElement('div')
   const root = fixture(200)
