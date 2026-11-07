@@ -215,4 +215,29 @@ const { compact = false, description, eyebrow, stats = [], title } = Astro.props
       margin: 0;
     }
   }
+
+  @media (max-width: 24rem) {
+    .docs-page-hero h1 {
+      font-size: 1.625rem;
+    }
+  }
+
+  @container docs-viewport (max-width: 12rem) {
+    .docs-page-hero,
+    .docs-page-hero.docs-page-hero--compact {
+      grid-template-columns: minmax(0, 1fr);
+      padding: min(1.5rem, 5vw);
+      overflow-wrap: anywhere;
+    }
+
+    .docs-page-hero__actions :global(.ui-button-link) {
+      max-inline-size: 100%;
+      white-space: normal;
+    }
+
+    .docs-page-hero__copy > :global(.ui-badge) {
+      max-inline-size: 100%;
+      white-space: normal;
+    }
+  }
 </style>
