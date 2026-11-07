@@ -13,7 +13,8 @@ Official references:
 
 ## Install from the Lumen repository
 
-Add the repository marketplace, then install the plugin:
+After the intended marketplace revision and its pinned MCP package are public, add the repository
+marketplace and install the plugin:
 
 ```text
 /plugin marketplace add santi020k/lumen
@@ -25,7 +26,10 @@ namespaced as `/lumen-ui:lumen-ui`; Claude can also invoke it automatically when
 its description.
 
 Plugin 1.1.0 pins `@santi020k/lumen-mcp@5.0.0` through `npx`, matching the Codex package. Plugin
-distribution requires the pinned MCP package to be published and the plugin directory update to be approved.
+distribution requires the pinned MCP package and matching marketplace revision to be public. The
+ChatGPT/Codex directory update and Anthropic's reviewed marketplace have separate approval steps;
+those approvals are not required for a local development install. The 1.1.0 package in this release
+checkout is a candidate, not evidence that a marketplace install serves v5.
 Call `lumen_check_compatibility` with resolved installed package versions before using catalog
 contracts. On a mismatch, use installed public types and README or a matching catalog; never upgrade
 an application implicitly.

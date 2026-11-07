@@ -11,9 +11,14 @@ Use these files first when generating, reviewing, or migrating apps that use Lum
 - docs/product-workflow-recipes.md: editable video, code and sharing compositions with application-owned content.
 - docs/interactive-editorial-recipes.md: portable reading, search and image-viewer recipes.
 - docs/rendered-audit.md: explicit local browser diagnostics with caller-owned Playwright.
+- docs/figma.md: v5 Community design files, theme controls, Code Connect and the local Figma export plugin.
+- docs/figma-design-to-code.md: translate design semantics into verified Lumen contracts and framework setup.
+- docs/claude-code-plugin.md: build, review and migration skills with a version-pinned read-only MCP catalog.
 - https://lumen.santi020k.com/guides/build-ui-with-ai: tested Astro and React adoption example with a reusable prompt.
 - docs/ai-efficiency.md: reproducible AI token measurement, quality checks, and limits on efficiency claims.
-- skills/lumen-ui/SKILL.md: portable Agent Skill for building, reviewing, and theming Lumen interfaces.
+- skills/lumen-ui/SKILL.md: portable Agent Skill for building and theming Lumen interfaces.
+- skills/lumen-review/SKILL.md: audit existing Lumen interfaces against their installed contracts.
+- skills/lumen-migrate/SKILL.md: plan and verify explicitly requested version upgrades.
 - docs/feature-roadmap.md: competitor-informed gaps and implementation priorities.
 - registry/lumen.registry.json: installable component, recipe, and documentation manifest.
 - packages/core/src/components.ts: authoritative shared component catalog.

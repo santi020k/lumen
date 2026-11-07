@@ -75,8 +75,8 @@ const workflow = [
       eyebrow="Design handoff"
       stats={[
         { label: 'Plugin version', value: '1.1.0' },
-        { label: 'Web / native components', value: '21 / 9' },
-        { label: 'Export targets', value: 5 }
+        { label: 'Web / native components', value: '21 / 12' },
+        { label: 'Export targets', value: 7 }
       ]}
       title="One system from canvas to code."
     >
@@ -167,8 +167,9 @@ const workflow = [
       </p>
       <p>
         For native code, select React Native or Android Compose (adapter 4.1.0), or SwiftUI for
-        iPhone or Mac (Swift package v5.0.0). All four targets support linked components including labels and checkboxes and
-        nested layouts. They use the app’s theme and list unsupported layers in the handoff.
+        iPhone or Mac (Swift package v5.0.0). All four targets support twelve components, including
+        labeled inputs, checkboxes, progress and nested layouts. They use the app’s theme and list
+        unsupported layers in the handoff. Check package or tag availability before installing a target version.
       </p>
       <CodeTabs
         ariaLabel="Build the Figma plugin"
@@ -181,10 +182,12 @@ const workflow = [
         open the published design files.
       </p>
       <p>
-        Select one frame or component instance, choose <strong>Inspect selection</strong>, and
-        review the findings. Copy or save the <strong>starter</strong> or <strong>AI handoff</strong> for your project.
-        Exports include the selected design's visible
-        text and component data, so review them before sharing with your coding agent.
+        Select one frame or component instance. In <strong>Setup</strong>, choose the export target,
+        version and project appearance, then choose <strong>Inspect selection</strong>.
+        Check the findings in <strong>Design review</strong> and choose <strong>Open handoff</strong>.
+        Copy the app setup and copy or save the <strong>starter</strong> or <strong>AI handoff</strong>.
+        Exports include the selected design's visible text and component data, so review them before
+        sharing with your coding agent. Changes to the selection or export settings require a fresh inspection.
       </p>
       <p>
         Community publication follows the Lumen v5 package and documentation release. An install

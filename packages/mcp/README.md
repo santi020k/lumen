@@ -211,7 +211,10 @@ in ChatGPT or Codex, then mention **@Lumen UI** in a request. The published plug
 read-only catalog and requires no separate Lumen account, API key, or local MCP configuration.
 
 The repository includes the plugin package in [`plugins/lumen-ui`](https://github.com/santi020k/lumen/tree/main/plugins/lumen-ui).
-It combines the portable `lumen-ui` skill with this MCP server for Codex, ChatGPT, and Claude Code.
+It combines the portable `lumen-ui`, `lumen-review` and `lumen-migrate` skills with this MCP server
+for Codex, ChatGPT, and Claude Code. Plugin 1.1.0 pins MCP 5.0.0 for local stdio installs; the pinned
+package must be published before distribution. Hosted catalog deployment and plugin directory
+approval are separate from local package validation.
 The public OpenAI Plugins Directory version uses a hosted Streamable HTTP endpoint; see the
 [publication record and checklist](https://github.com/santi020k/lumen/blob/main/docs/openai-plugin-submission.md) for deployment requirements, listing
 copy, annotation justifications, and reviewer test cases.

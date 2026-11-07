@@ -19,7 +19,17 @@ and Android Compose use the 4.1.0 adapters. Choose iPhone or Mac for the v5.0.0 
 Native exports support linked components including labels and checkboxes, text and nested layouts. Unmapped components and
 custom layers stay in the handoff with review findings.
 
-Select one frame or instance, choose the version installed in the receiving project, then choose **Inspect selection**. Review the findings and the selected text before sharing an export. The plugin runs offline. See [setup, component coverage and version compatibility](../apps/figma-plugin/README.md).
+The seven export targets share a three-step flow: **Setup → Design review → Handoff**. Select one
+frame or instance, choose the target, installed version and project appearance in Setup, then choose
+**Inspect selection**. Review the findings before choosing **Open handoff**. Copy the framework setup
+alongside the starter. Changing the selection or export settings clears the previous output.
+The plugin runs offline; review selected text before sharing it with an agent. See
+[setup, component coverage and version compatibility](../apps/figma-plugin/README.md).
+
+Plugin 1.1.0 remains a local candidate. Its bundled version choices do not establish npm, Maven or
+Swift tag availability. The design files, Figma plugin, AI plugin and framework packages have
+separate publication steps; the [AI client guide](https://lumen.santi020k.com/docs/mcp/clients)
+covers the ChatGPT, Codex and Claude Code plugin.
 
 GitHub Actions prepares the versioned ZIP, revision and checksum for desktop verification. Community submission and installation verification follow the [publication checklist](../apps/figma-plugin/README.md#figma-community-publication). The Community links below open the three design files.
 
