@@ -14,5 +14,6 @@ export interface LumenRuntimeController {
 export interface LumenRuntimeFeature {
   name: string
   selector: string
+  interactionRoot?: string
   load: () => Promise<LumenRuntimeController>
 }

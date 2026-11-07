@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 let codeCopyLiveRegion: HTMLElement | undefined
 
 const getCodeCopyLiveRegion = (): HTMLElement => {
@@ -41,7 +43,7 @@ const bindCodeRegions = (root: HTMLElement): void => {
 }
 
 export const initCodeRegions = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-code]')) {
+  for (const root of queryScope(scope, '[data-ui-code]')) {
     if (!root.closest('[data-ui-owner], lumen-code')) bindCodeRegions(root)
   }
 }
@@ -245,7 +247,5 @@ const bindCopyButtons = (button: HTMLButtonElement): void => {
 }
 
 export const initCopyButtons = (scope: ParentNode): void => {
-  for (const button of scope.querySelectorAll<HTMLButtonElement>(
-    '[data-ui-copy-button], [data-ui-code-copy]'
-  )) bindCopyButtons(button)
+  for (const button of queryScope(scope, '[data-ui-copy-button], [data-ui-code-copy]', 'button')) bindCopyButtons(button)
 }

@@ -147,3 +147,14 @@ test('Astro leaves React and custom element Anchor ownership alone', () => {
   initDocumentNavigationControllers(document)
   expect(document.querySelector('[data-ui-bound]')).toBeNull()
 })
+
+test('initializes scroll progress only inside its scope', () => {
+  const markup = '<div data-ui-scroll-progress><span class="ui-scroll-progress__bar"></span></div>'
+  document.body.innerHTML = markup + markup
+  const [first, second] = document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress]')
+  if (!first || !second) throw new Error('Missing progress controls')
+
+  initDocumentNavigationControllers(first)
+  expect(first.dataset.uiBound).toBe('true')
+  expect(second.dataset.uiBound).toBeUndefined()
+})

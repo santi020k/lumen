@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { getLoopedIndex } from './shared.js'
 
 const bindTreeCollections = (root: HTMLElement): void => {
@@ -55,5 +57,5 @@ const bindTreeCollections = (root: HTMLElement): void => {
 }
 
 export const initTreeCollections = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[role="tree"], [role="treegrid"]')) bindTreeCollections(root)
+  for (const root of queryScope(scope, '[role="tree"], [role="treegrid"]')) bindTreeCollections(root)
 }

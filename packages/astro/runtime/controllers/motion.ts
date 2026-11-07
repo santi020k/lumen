@@ -1,7 +1,9 @@
 import { createLumenRevealController } from '@santi020k/lumen-core/reveal'
 
+import { queryScope } from '../scope.js'
+
 const initBackToTopButtons = (scope: ParentNode): void => {
-  for (const button of scope.querySelectorAll<HTMLButtonElement>('[data-ui-back-to-top]')) {
+  for (const button of queryScope(scope, '[data-ui-back-to-top]', 'button')) {
     if (button.dataset.uiBound === 'true') continue
 
     button.dataset.uiBound = 'true'
@@ -18,7 +20,7 @@ const initBackToTopButtons = (scope: ParentNode): void => {
 const revealControllers = new Map<HTMLElement, { destroy: () => void }>()
 
 const initScrollReveals = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-scroll-reveal], [data-ui-reveal-group]')) {
+  for (const root of queryScope(scope, '[data-ui-scroll-reveal], [data-ui-reveal-group]')) {
     if (revealControllers.has(root) || root.dataset.uiScrollRevealBound === 'true') continue
 
     if (root.matches('[data-ui-reveal-group]')) {
@@ -56,7 +58,7 @@ const createNumberFormatter = (root: HTMLElement): ((value: number) => string) =
 }
 
 const initAnimatedNumbers = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-animated-number]')) {
+  for (const root of queryScope(scope, '[data-ui-animated-number]')) {
     if (root.dataset.uiBound === 'true') continue
 
     const output = root.querySelector<HTMLElement>('[data-ui-animated-number-output]')

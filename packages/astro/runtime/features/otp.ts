@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { isOwnedByAnotherAdapter } from './shared.js'
 
 const sanitizeOtpValue = (input: HTMLInputElement, value: string, length: number): string => {
@@ -143,5 +145,5 @@ const bindInputOtpFields = (root: HTMLElement): void => {
 }
 
 export const initInputOtpFields = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-input-otp]')) bindInputOtpFields(root)
+  for (const root of queryScope(scope, '[data-ui-input-otp]')) bindInputOtpFields(root)
 }

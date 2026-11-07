@@ -1,6 +1,7 @@
 import { getLumenDirectionalKey, type LumenTabsChangeDetail, scrollLumenTabIntoView } from '@santi020k/lumen-core'
 
 import { refreshScrollCues } from '../controllers/scroll-cue.js'
+import { queryScope } from '../scope.js'
 
 import { getLoopedIndex } from './shared.js'
 
@@ -243,7 +244,7 @@ const bindTabs = (root: HTMLElement): void => {
 }
 
 export const initTabs = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-tabs]')) bindTabs(root)
+  for (const root of queryScope(scope, '[data-ui-tabs]')) bindTabs(root)
 }
 
 export const clearTabLayout = (): void => {

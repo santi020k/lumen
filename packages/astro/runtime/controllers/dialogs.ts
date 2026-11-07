@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const dialogTriggers = new WeakMap<HTMLDialogElement, HTMLElement>()
 
 const isBackdropPoint = (dialog: HTMLDialogElement, event: MouseEvent): boolean => {
@@ -13,7 +15,7 @@ export const initDialogControllers = (scope: ParentNode): void => {
   const dialogSelector =
     '[data-ui-dialog], [data-ui-alert-dialog], [data-ui-drawer], [data-ui-sheet]'
 
-  for (const dialog of scope.querySelectorAll<HTMLDialogElement>(dialogSelector)) {
+  for (const dialog of queryScope(scope, dialogSelector, 'dialog')) {
     if (dialog.dataset.uiBound === 'true') continue
 
     dialog.dataset.uiBound = 'true'
@@ -57,7 +59,7 @@ export const initDialogControllers = (scope: ParentNode): void => {
     '[data-ui-sheet-trigger]'
   ].join(', ')
 
-  for (const trigger of scope.querySelectorAll<HTMLElement>(triggerSelector)) {
+  for (const trigger of queryScope(scope, triggerSelector)) {
     if (trigger.dataset.uiBound === 'true') continue
 
     trigger.dataset.uiBound = 'true'
@@ -79,6 +81,8 @@ export const initDialogControllers = (scope: ParentNode): void => {
 
       if (!(dialog instanceof HTMLDialogElement) || dialog.open) return
 
+      initDialogControllers(dialog)
+
       dialog.showModal()
 
       if (dialog.hasAttribute('open')) dialogTriggers.set(dialog, trigger)
@@ -92,7 +96,7 @@ export const initDialogControllers = (scope: ParentNode): void => {
     '[data-ui-sheet-close]'
   ].join(', ')
 
-  for (const closeButton of scope.querySelectorAll<HTMLElement>(closeSelector)) {
+  for (const closeButton of queryScope(scope, closeSelector)) {
     if (closeButton.dataset.uiBound === 'true') continue
 
     closeButton.dataset.uiBound = 'true'

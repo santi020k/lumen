@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 import { getLoopedIndex, getPanel, setOpen } from './shared.js'
 
 const resetCascaderColumns = (column: HTMLElement | null, columns: HTMLElement[]): void => {
@@ -129,5 +131,5 @@ const bindCascaders = (root: HTMLElement): void => {
 }
 
 export const initCascaders = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-cascader]')) bindCascaders(root)
+  for (const root of queryScope(scope, '[data-ui-cascader]')) bindCascaders(root)
 }

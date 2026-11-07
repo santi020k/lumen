@@ -1,5 +1,7 @@
 import { createLumenVirtualListController } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 const virtualListControllers = new Map<HTMLElement, { destroy: () => void, ownerDocument: Document }>()
 
 export const initVirtualLists = (scope: ParentNode): void => {
@@ -11,7 +13,7 @@ export const initVirtualLists = (scope: ParentNode): void => {
     }
   }
 
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-virtual-list]')) {
+  for (const root of queryScope(scope, '[data-ui-virtual-list]')) {
     if (!virtualListControllers.has(root)) virtualListControllers.set(root, {
       ...createLumenVirtualListController(root), ownerDocument: root.ownerDocument
     })

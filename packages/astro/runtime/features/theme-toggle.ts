@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 export const initThemeToggles = (scope: ParentNode): void => {
   const root = document.documentElement
   const selector = '[data-ui-theme-toggle]'
@@ -146,5 +148,5 @@ export const initThemeToggles = (scope: ParentNode): void => {
     })
   }
 
-  for (const control of scope.querySelectorAll<HTMLButtonElement>(selector)) bindControl(control)
+  for (const control of queryScope(scope, selector, 'button')) bindControl(control)
 }

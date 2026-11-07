@@ -2,6 +2,8 @@
 
 ## 5.0.0
 
+- Scope runtime initialization to the requested root and descendants, including detached controls and fragments. Keep repeat interactions local and initialize dynamic dialog targets before opening them.
+
 - Use warm paper and charcoal surfaces, clearer muted text and coordinated cyan chart accents in the default palette.
 
 ### Major Changes

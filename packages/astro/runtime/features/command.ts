@@ -1,3 +1,5 @@
+import { queryScope } from '../scope.js'
+
 const filterItems = (input: HTMLInputElement, items: HTMLElement[]): void => {
   const query = input.value.trim().toLowerCase()
 
@@ -25,5 +27,5 @@ const bindCommand = (root: HTMLElement): void => {
 }
 
 export const initCommand = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-command]')) bindCommand(root)
+  for (const root of queryScope(scope, '[data-ui-command]')) bindCommand(root)
 }

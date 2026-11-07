@@ -1,11 +1,13 @@
 import { formatLumenImageComparisonValue, normalizeLumenImageComparisonMode, normalizeLumenImageComparisonValue, syncLumenImageComparisonMode } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 import { bindComparisonReset } from './comparison-reset.js'
 
 const syncs = new WeakMap<HTMLInputElement, () => number>()
 
 export const initImageComparisonControllers = (scope: ParentNode): void => {
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-image-comparison]')) {
+  for (const root of queryScope(scope, '[data-ui-image-comparison]')) {
     const input = root.querySelector<HTMLInputElement>('[data-ui-image-comparison-input]')
     const frame = root.querySelector<HTMLElement>('.ui-image-comparison__frame')
 

@@ -1,5 +1,7 @@
 import { createLumenChartInteractionController } from '@santi020k/lumen-core'
 
+import { queryScope } from '../scope.js'
+
 interface BoundChart {
   controller: ReturnType<typeof createLumenChartInteractionController>
   document: Document
@@ -16,7 +18,7 @@ export const initChartControllers = (scope: ParentNode): void => {
     }
   }
 
-  for (const root of scope.querySelectorAll<HTMLElement>('[data-ui-chart-interactive]')) {
+  for (const root of queryScope(scope, '[data-ui-chart-interactive]')) {
     if (!controllers.has(root)) {
       controllers.set(root, {
         controller: createLumenChartInteractionController(root),
