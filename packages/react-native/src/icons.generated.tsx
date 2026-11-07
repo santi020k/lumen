@@ -21286,6 +21286,31 @@ const LumenCircleFadingArrowUpIconGraphic = ({
   </Svg>
 )
 
+const LumenCircleFadingCheckIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12 2a10 10 0 017.38 16.75" />
+      <Path d="m16 9-5.5 5.5L8 12" />
+      <Path d="M2.5 8.875a10 10 0 00-.5 3" />
+      <Path d="M2.83 16a10 10 0 002.43 3.4" />
+      <Path d="M4.636 5.235a10 10 0 01.891-.857" />
+      <Path d="M8.644 21.42a10 10 0 007.631-.38" />
+  </Svg>
+)
+
 const LumenCircleFadingPlayIconGraphic = ({
   color = 'currentColor',
   size = 24,
@@ -41374,6 +41399,38 @@ const LumenOmegaIconGraphic = ({
   </Svg>
 )
 
+const LumenOpacityIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12 3h.01" />
+      <Path d="M12 9h.01" />
+      <Path d="M15 6h.01" />
+      <Path d="M18 3h.01" />
+      <Path d="M21 6v13a2 2 0 0 1-2 2H6" />
+      <Path d="M3 12h.01" />
+      <Path d="M3 18h.01" />
+      <Path d="M3 6h.01" />
+      <Path d="M6 15h.01" />
+      <Path d="M6 3h.01" />
+      <Path d="M6 9h.01" />
+      <Path d="M9 12h.01" />
+      <Path d="M9 6h.01" />
+  </Svg>
+)
+
 const LumenOptionIconGraphic = ({
   color = 'currentColor',
   size = 24,
@@ -41557,6 +41614,30 @@ const LumenPackageOpenIconGraphic = ({
   </Svg>
 )
 
+const LumenPackagePenIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12 14.34V12l8.71-5" />
+      <Path d="M16.511 21.141a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 1 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .599.626z" />
+      <Path d="M21 9.114V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l5.087 2.907" />
+      <Path d="M3.29 7 12 12" />
+      <Path d="m7.5 4.27 9 5.15" />
+  </Svg>
+)
+
 const LumenPackagePlusIconGraphic = ({
   color = 'currentColor',
   size = 24,
@@ -41579,6 +41660,31 @@ const LumenPackagePlusIconGraphic = ({
       <Path d="M21 10.535V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.729l7 4a2 2 0 0 0 2 .001l1.675-.955" />
       <Path d="M3.29 7 12 12l8.71-5" />
       <Path d="m7.5 4.27 8.997 5.148" />
+  </Svg>
+)
+
+const LumenPackageQuestionMarkIconGraphic = ({
+  color = 'currentColor',
+  size = 24,
+  strokeWidth = 2
+}: LumenIconGraphicProps): ReactElement => (
+  <Svg
+    fill={'none'}
+    focusable={false}
+    height={size}
+    stroke={color}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={strokeWidth}
+    viewBox="0 0 24 24"
+    width={size}
+  >
+      <Path d="M12 22V12l8.71-5" />
+      <Path d="M17 15.27c.2-.4.5-.8.9-1a2.1 2.1 0 0 1 2.6.4c.3.4.5.8.5 1.3 0 1.3-2 2-2 2" />
+      <Path d="M19 21.99h.01" />
+      <Path d="M21 10.342V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2.33-1.332" />
+      <Path d="M3.29 7 12 12" />
+      <Path d="m7.5 4.27 9 5.15" />
   </Svg>
 )
 
@@ -59735,6 +59841,7 @@ export const lumenIcons = {
   'circle-euro': LumenCircleEuroIconGraphic,
   'circle-exclamation-point': LumenCircleExclamationPointIconGraphic,
   'circle-fading-arrow-up': LumenCircleFadingArrowUpIconGraphic,
+  'circle-fading-check': LumenCircleFadingCheckIconGraphic,
   'circle-fading-play': LumenCircleFadingPlayIconGraphic,
   'circle-fading-plus': LumenCircleFadingPlusIconGraphic,
   'circle-gauge': LumenCircleGaugeIconGraphic,
@@ -60612,6 +60719,7 @@ export const lumenIcons = {
   'octagon-pause': LumenOctagonPauseIconGraphic,
   'octagon-x': LumenOctagonXIconGraphic,
   'omega': LumenOmegaIconGraphic,
+  'opacity': LumenOpacityIconGraphic,
   'option': LumenOptionIconGraphic,
   'orbit': LumenOrbitIconGraphic,
   'origami': LumenOrigamiIconGraphic,
@@ -60620,7 +60728,9 @@ export const lumenIcons = {
   'package-check': LumenPackageCheckIconGraphic,
   'package-minus': LumenPackageMinusIconGraphic,
   'package-open': LumenPackageOpenIconGraphic,
+  'package-pen': LumenPackagePenIconGraphic,
   'package-plus': LumenPackagePlusIconGraphic,
+  'package-question-mark': LumenPackageQuestionMarkIconGraphic,
   'package-search': LumenPackageSearchIconGraphic,
   'package-x': LumenPackageXIconGraphic,
   'paint-bucket': LumenPaintBucketIconGraphic,

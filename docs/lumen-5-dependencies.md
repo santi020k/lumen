@@ -121,6 +121,37 @@ GitHub Actions are updated to stable releases using immutable commit pins, inclu
 CodeQL 4.39.3, setup-node 7.1.0, setup-java 6.1.0 and artifact action patches. Workflow permissions,
 release approval and deployment boundaries are preserved.
 
+## November 7 follow-up
+
+The workspace now uses pnpm 12.18.0, Astro 7.4.7, Markdown Satteri 0.4.7, Vite 8.3.6,
+Playwright 1.65.0, jsdom 31.0.0, Wrangler 4.158.0, React Hook Form Resolvers 7.0.3,
+Rive Canvas 2.49.4, and Lucide 1.69.0. Lucide adds four icons across web and native; Swift
+clients should review exhaustive switches over `LumenIconName`. The ESLint Config Basic family
+was refreshed together with Oxlint 1.90.0 and its matching ESLint plugin. Oxlint 1.91 has no
+matching plugin release, and 1.92 was still inside the 24-hour hold. The TypeScript 6 and Expo 58
+compatibility holds still apply. Astro and the workspace now share Vite 8.3.6 so their plugin
+types agree. The Astro checker explicitly resolves the same stable emnapi version for its
+WebAssembly runtime and core.
+
+Hyperframes 0.9.19 removes the dependency path to Zod 3. The workspace now resolves only the
+published Zod 4.6.7, so the [Zod security patch](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)
+and its exception were retired. The published version still runs against the collection regression
+test. Undici advances to 7.30.2 and 8.12.4. The security gate now audits development dependencies
+alongside production dependencies and still verifies the installed Braces patch before accepting a
+matching advisory.
+
+The Gradle wrapper and directly declared Maven dependencies were rechecked and remain current.
+The OSV scan of resolved Gradle dependencies found advisories in Android build plugins and
+instrumentation tests. The shared constraints upgrade Jackson to 2.22.4, Guava to 33.8.0,
+Commons Lang to 3.21.0, jose4j to 0.9.7, Bouncy Castle to 1.86, JDOM to 2.0.6.1,
+Protobuf Lite to 3.25.9, and jsoup to 1.24.1. The Compose scan returned no advisories after
+the update. The constraints do not change the published Compose dependency graph.
+GitHub Actions uses the immutable setup-java 6.2.0 commit. The playground EAS CLI advances to
+27.5.0. Its separately resolved CLI tree still has 13 upstream advisories in Diff, Minimatch,
+Joi, Tar, ts-deepmerge, and deepmerge. The upstream CLI graph is outside the workspace lockfile;
+the [deepmerge advisory](https://github.com/advisories/GHSA-gcqx-w48m-w2h4) has no published fix.
+The version probe succeeds and still reports upstream deprecation and peer notices.
+
 ## Verification and recovery
 
 The final implementation passed `pnpm run validate`: 3,176 tests across 306 files, strict types,
@@ -148,3 +179,9 @@ together from the prior reviewed revision. Never move or replace a published tag
 - [Resolvers 7 changes](https://github.com/react-hook-form/resolvers/releases/tag/v7.0.0)
 - [Vitest 5.1 changes](https://main.vitest.dev/blog/vitest-5-1)
 - [MCP SDK 2.4 changes](https://github.com/modelcontextprotocol/typescript-sdk/releases/tag/v2.4.0)
+- [pnpm 12.18.0 release](https://github.com/pnpm/pnpm/releases/tag/v12.18.0)
+- [Astro 7.4.7 release](https://github.com/withastro/astro/releases/tag/astro%407.4.7)
+- [Lucide 1.69.0 release](https://github.com/lucide-icons/lucide/releases/tag/1.69.0)
+- [Jackson 2.22 release notes](https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.22)
+- [Guava 33.8.0 release](https://github.com/google/guava/releases/tag/v33.8.0)
+- [EAS CLI 27.5.0 release](https://github.com/expo/eas-cli/releases/tag/v27.5.0)

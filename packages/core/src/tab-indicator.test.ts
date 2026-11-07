@@ -37,7 +37,7 @@ test('selection indicator follows active geometry and cleans up its frame and po
   expect(frames).toHaveLength(1)
   frames[0]?.(0)
   expect(marker.style.width).toBe('120px')
-  expect(marker.style.translate).toBe('80px 0')
+  expect(marker.style.translate).toBe('80px')
   root.dataset.uiMotion = 'reduce'
   await Promise.resolve()
   frames[1]?.(0)

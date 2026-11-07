@@ -184,8 +184,8 @@ CLI version without installing it into the Expo app. Authenticate and connect th
 
 ```bash
 cd apps/playground-react-native
-pnpm dlx eas-cli@27.4.1 login
-pnpm dlx eas-cli@27.4.1 init
+pnpm dlx eas-cli@27.5.0 login
+pnpm dlx eas-cli@27.5.0 init
 ```
 
 After `eas init`, keep the generated EAS project identifier in `app.json`. Build a directly

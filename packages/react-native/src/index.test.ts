@@ -91,8 +91,8 @@ describe('Lumen React Native foundations', () => {
   })
 
   test('exposes the complete unique interface and brand icon catalog', () => {
-    expect(lumenIconNames).toHaveLength(2_625)
-    expect(new Set(lumenIconNames).size).toBe(2_625)
+    expect(lumenIconNames).toHaveLength(2_629)
+    expect(new Set(lumenIconNames).size).toBe(2_629)
     expect(lumenIconNames).toEqual(expect.arrayContaining(['bangladeshi-taka', 'layout-grid-circles', 'letters', 'printer-3d']))
     expect(lumenIconNames.filter(name => name.startsWith('brand:'))).toHaveLength(573)
     expect(lumenIconNames).toContain('search')

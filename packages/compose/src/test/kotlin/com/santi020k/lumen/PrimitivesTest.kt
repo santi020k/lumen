@@ -184,7 +184,7 @@ class PrimitivesTest {
     fun sharedIconCatalogHasStableUniqueNames() {
         val icons = LumenIconName.entries
 
-        assertEquals(2_625, icons.size)
+        assertEquals(2_629, icons.size)
         assertTrue(LumenIconName.Album in icons)
         assertTrue(LumenIconName.Trash2 in icons)
         assertTrue(LumenIconName.BangladeshiTaka in icons)
