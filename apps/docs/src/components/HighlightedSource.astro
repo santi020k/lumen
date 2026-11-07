@@ -15,25 +15,20 @@ interface Props {
 
 const { code, codeLabel, lang } = Astro.props
 
-const variants = [
-  { className: 'docs-code-block__variant docs-code-block__variant--santi020k', themes: cachedSanti020kThemes },
-  { className: 'docs-code-block__variant docs-code-block__variant--lumen', themes: cachedLumenThemes }
-]
+const themes = {
+  ...cachedLumenThemes,
+  'santi-light': cachedSanti020kThemes.light,
+  'santi-dark': cachedSanti020kThemes.dark
+}
 ---
 
-{variants.map(({ className, themes }) => (
-<div
-  class={className}
->
-  <Code class="docs-code-source" code={code} codeLabel={codeLabel} highlighted scrollCue variant="block">
+<Code class="docs-code-source" code={code} codeLabel={codeLabel} highlighted scrollCue variant="block">
   <AstroCode aria-label={codeLabel} code={code} defaultColor={false} lang={lang} role="region" tabindex="0" themes={themes} />
-  </Code>
-</div>
-))}
+</Code>
 
 <style>
-  .docs-code-block__variant :global(code) { counter-reset: code-line; }
-  .docs-code-block__variant :global(.line)::before {
+  :global(.docs-code-source code) { counter-reset: code-line; }
+  :global(.docs-code-source .line)::before {
     counter-increment: code-line;
     content: counter(code-line) / "";
     display: inline-block;
@@ -53,11 +48,33 @@ const variants = [
     box-shadow: none;
   }
 
-  .docs-code-block__variant :global(pre) {
+  :global(.docs-code-source pre) {
     background: var(--shiki-light-bg, var(--ui-code-bg));
   }
 
-  :global(:root:is([data-theme='dark'], [data-theme='lumen-dark'], [data-theme='santi020k-dark'])) .docs-code-block__variant :global(pre) {
+  :global(:root:is([data-theme='dark'], [data-theme='lumen-dark'])) :global(.docs-code-source pre) {
     background: var(--shiki-dark-bg, var(--ui-code-bg));
+  }
+
+  :global(:root[data-theme='santi020k-light'] .docs-code-source pre) {
+    background: var(--shiki-santi-light-bg, var(--ui-code-bg));
+  }
+
+  :global(:root[data-theme='santi020k-dark'] .docs-code-source pre) {
+    background: var(--shiki-santi-dark-bg, var(--ui-code-bg));
+  }
+
+  :global(:root[data-theme='santi020k-light'] .docs-code-source :is(code, code span)) {
+    color: var(--shiki-santi-light, var(--ui-code-fg));
+    font-style: var(--shiki-santi-light-font-style, normal);
+    font-weight: var(--shiki-santi-light-font-weight, inherit);
+    text-decoration: var(--shiki-santi-light-text-decoration, none);
+  }
+
+  :global(:root[data-theme='santi020k-dark'] .docs-code-source :is(code, code span)) {
+    color: var(--shiki-santi-dark, var(--shiki-santi-light, var(--ui-code-fg)));
+    font-style: var(--shiki-santi-dark-font-style, var(--shiki-santi-light-font-style, normal));
+    font-weight: var(--shiki-santi-dark-font-weight, var(--shiki-santi-light-font-weight, inherit));
+    text-decoration: var(--shiki-santi-dark-text-decoration, var(--shiki-santi-light-text-decoration, none));
   }
 </style>

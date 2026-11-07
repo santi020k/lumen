@@ -693,7 +693,7 @@ export const frameworkSetups: FrameworkSetup[] = [
     installCommands: buildInstallCommands('@santi020k/lumen-elements'),
     label: 'Elements',
     lang: 'html',
-    note: 'Install the runtime adapter; add @santi020k/lumen separately for the optional CLI. Load foundation and component CSS and register each used element. This bundled example uses a catalog fallback for Input; registration scope alone does not prove selective JavaScript delivery. Behavior-backed elements include overlays, context menus, advanced selection, file upload, tours, mentions, forms, rich text, schedule, toast, DataTable, ThemeBuilder, and VirtualList.',
+    note: 'Install the runtime adapter; add @santi020k/lumen separately for the optional CLI. Load foundation and component CSS and register each used element. This example imports the registration catalog and registers only the listed elements. Use public components/<name> registrations where available to reduce the dependency graph; registration scope alone does not prove selective JavaScript delivery.',
     packageName: '@santi020k/lumen-elements',
     usage: elementsUsage
   }

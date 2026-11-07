@@ -1246,6 +1246,41 @@ pre:where(:not(.ui-code pre)) code {
   gap: 0.4rem;
 }
 
+@media (max-width: 24rem) {
+  body:has(.docs-shell) {
+    container: docs-viewport / inline-size;
+  }
+}
+
+@container docs-viewport (max-width: 12rem) {
+  .docs-site-header,
+  .docs-mobile-navigation-bar {
+    position: relative;
+    top: auto;
+  }
+
+  .docs-shell {
+    --docs-shell-inline-padding: min(1.25rem, 5vw);
+    --docs-sticky-top: 0px;
+    --docs-sticky-navigation-height: 0px;
+  }
+
+  .docs-context-navigation__shell {
+    flex-wrap: wrap;
+  }
+
+  .docs-context-navigation__platform,
+  .docs-context-navigation__links.ui-navigation-menu {
+    flex-basis: 100%;
+  }
+
+  .docs-context-navigation__platform,
+  .docs-context-navigation__platform > div {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+}
+
 .docs-mobile-drawer {
   width: 100%;
   height: min(88dvh, 48rem);
@@ -2208,8 +2243,7 @@ pre:where(:not(.ui-code pre)) code {
 
 .docs-section > .grid,
 .docs-section > .grid > .ui-card,
-.docs-code-block,
-.docs-code-block__variant {
+.docs-code-block {
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -2566,23 +2600,6 @@ pre:where(:not(.ui-code pre)) code {
   }
 }
 
-.docs-code-block__variant {
-  display: none;
-}
-
-:root[data-theme="santi020k-light"] .docs-code-block__variant--santi020k,
-:root[data-theme="santi020k-dark"] .docs-code-block__variant--santi020k {
-  display: block;
-}
-
-:root:not([data-theme]) .docs-code-block__variant--lumen,
-:root[data-theme="light"] .docs-code-block__variant--lumen,
-:root[data-theme="dark"] .docs-code-block__variant--lumen,
-:root[data-theme="lumen-light"] .docs-code-block__variant--lumen,
-:root[data-theme="lumen-dark"] .docs-code-block__variant--lumen {
-  display: block;
-}
-
 @utility docs-preview {
   display: flow-root;
   align-content: center;
@@ -2658,5 +2675,19 @@ pre:where(:not(.ui-code pre)) code {
 
   .docs-theme-select.ui-select-field {
     max-inline-size: 100%;
+  }
+}
+
+@container docs-viewport (max-width: 12rem) {
+  .docs-theme-controls {
+    flex-wrap: nowrap;
+  }
+
+  .docs-theme-picker > .ui-icon {
+    display: none;
+  }
+
+  .docs-theme-select :is(.ui-select__trigger, .ui-select__native:not([aria-hidden="true"])) {
+    padding-inline: 0.75rem;
   }
 }
