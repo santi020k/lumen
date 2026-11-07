@@ -1,0 +1,29 @@
+---
+import { createElement } from 'react'
+import { renderToString } from 'react-dom/server'
+
+import { SkipLink } from '@santi020k/lumen-astro'
+import { SkipLink as ReactSkipLink } from '@santi020k/lumen-react'
+
+const label = 'Skip to InternationalizationAndAccessibilityConfiguration'
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Skip link reflow audit</title>
+    <script>
+      import { defineLumenSkipLink } from '@santi020k/lumen-elements/components/skip-link'
+
+      defineLumenSkipLink()
+    </script>
+  </head>
+  <body>
+    <SkipLink id="astro-shortcut" href="#content">{label}</SkipLink>
+    <Fragment set:html={renderToString(createElement(ReactSkipLink, { id: 'react-shortcut', href: '#content' }, label))} />
+    <lumen-skip-link id="elements-shortcut"><a href="#content">{label}</a></lumen-skip-link>
+    <main id="content" tabindex="-1"><h1>Reading destination</h1></main>
+  </body>
+</html>

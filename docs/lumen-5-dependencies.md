@@ -7,10 +7,22 @@ the normal reviewed GitHub release workflow.
 ## Android tooling
 
 Android Gradle Plugin is 9.5.1 in the Compose library, playground and documentation preview.
-Dokka is 2.3.0 for phone and Wear documentation. JDK 21, Gradle 9.8.2, Kotlin 2.4.21 and the
-2026.09.00 Compose BOM remain current stable releases. AndroidX UI Automator and its shell library
+Dokka is 2.3.0 for phone and Wear documentation. JDK 21, Kotlin 2.4.21 and the
+2026.09.00 Compose BOM remain the selected stable releases. AndroidX UI Automator and its shell library
 advance to 2.4.1. Other directly declared Maven dependencies were checked against their official
 Google Maven or Maven Central metadata and were already current stable releases.
+
+The framework parity audit on 2026-11-06 found that Android lint rejected the Gradle 9.8.2 wrapper
+after 9.9.0 became stable. The wrapper advances to 9.9.0 with Gradle's published distribution checksum.
+The [release notes](https://docs.gradle.org/9.9.0/release-notes.html) and
+[upgrade guide](https://docs.gradle.org/9.9.0/userguide/upgrading_version_9.html) were reviewed;
+JDK 21, Android Gradle Plugin 9.5.1, Kotlin 2.4.21 and the Android baselines remain unchanged.
+
+Gradle's `--warning-mode=all` reports `Configuration.setVisible(boolean)` from
+`BinaryCompatibilityValidatorPlugin.kt:697` in binary-compatibility-validator 0.18.2, the current
+stable artifact in Maven Central at the audit date. This upstream deprecation is scheduled for
+removal in Gradle 11. Retain the API checks and reassess the plugin before a future Gradle major
+upgrade; the warning is not suppressed.
 
 ## JavaScript packages
 

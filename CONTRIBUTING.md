@@ -151,6 +151,21 @@ Run `pnpm run test:visual` for documentation screenshots. It builds the dependen
 server. `test:visual:update` uses the same preparation. Direct `pnpm exec playwright test` requires
 `pnpm run prepare:visual` first. Screenshot assertions and server-start limits remain unchanged.
 
+`pnpm run test:a11y` likewise runs `prepare:a11y` before Playwright starts its preview server.
+Preparation builds the docs dependencies, including the Expo web playground, through Turbo with
+two concurrent tasks and reuses valid build caches. It then refreshes the embedded native preview
+and builds the docs. Package compilation and static generation do not consume the server-start
+timeout. The suite owns its preview server so an existing server cannot silently test another
+checkout. Set `LUMEN_A11Y_PORT` to an unused port when another suite is running. For a direct
+`pnpm exec playwright test -c playwright.a11y.config.ts` invocation, run `pnpm run prepare:a11y`
+first with the same port. Test assertions and timeouts remain unchanged.
+
+The framework conformance and visual scripts run `prepare:frameworks` before starting Playwright.
+This builds the Next.js consumer and its dependencies through Turbo with two concurrent tasks;
+compilation does not consume the preview server's startup budget. Run `pnpm run prepare:frameworks`
+first when invoking either framework Playwright configuration directly. Use separate
+`LUMEN_FRAMEWORK_CONFORMANCE_PORT` and `LUMEN_FRAMEWORK_VISUAL_PORT` values for concurrent checkouts.
+
 Dependency age exceptions must identify the exact reviewed package version. Use a temporary exact-version exception for an approved security fix that cannot wait for
 the normal 24-hour hold, then remove it once that hold expires. The
 `http-cache-semantics@4.3.0` exception was retired after 2026-10-05 02:56:06 UTC; its fixed
@@ -226,8 +241,8 @@ need different labels or a stable server-rendered menu. Preserve old deep links 
 or a focused redirect. See [the navigation audit](docs/documentation-navigation-audit.md) for the
 current page boundaries and validation coverage.
 
-The docs post-build SEO audit also checks rendered header, sidebar, section, and footer navigation
-and every destination in `docs-search.json`. Internal routes must resolve to a built page or static
+The docs post-build SEO audit also checks rendered header, sidebar, section, and footer navigation,
+links in main content, and every destination in `docs-search.json`. Internal routes must resolve to a built page or static
 file; fragments must identify a rendered element. Links inside live component previews are examples,
 so they are excluded from site-navigation validation. Run
 `pnpm --filter @santi020k/lumen-docs run audit:seo` against the current build when changing navigation

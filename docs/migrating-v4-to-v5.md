@@ -65,7 +65,9 @@ On mobile, adopt Paper, Field or santi020k one screen at a time with the named t
 [Appearance presets](appearance-presets.md#named-themes-on-mobile). Move playground-style copies of
 the website palette to the supplied santi020k definition. Filled primary actions now use ink while
 links and charts keep the branded palette. Store appearance preference separately from the theme
-identifier. Existing Default, Studio and Glass calls continue to work.
+identifier. Existing Default, Studio and Glass calls continue to work. The
+[framework parity audit](lumen-5-framework-parity.md) maps these improvements to React, Elements,
+React Native, SwiftUI and Compose and records the verification scope.
 
 
 ## Optional delivery and composition improvements

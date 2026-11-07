@@ -1,0 +1,452 @@
+{
+  "assets": [
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/react-native-profile-dark.webp",
+      "bytes": 26930,
+      "width": 390,
+      "height": 844,
+      "hasAlpha": false,
+      "sha256": "b995096124bcd9972f80aa88d4324fed231ed2afc0a3e08a77460513da418a92"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/react-native-profile-light.webp",
+      "bytes": 28656,
+      "width": 390,
+      "height": 844,
+      "hasAlpha": false,
+      "sha256": "bd3d0cad9e5f97ac08c0aa17c4ba03658c6d9c1b2172de2b997c93b1fa48d775"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/react-native-settings-dark.webp",
+      "bytes": 30694,
+      "width": 390,
+      "height": 844,
+      "hasAlpha": false,
+      "sha256": "2e899b7047933e281b171fb623c99c17faea22eb527f5f7e826f28e8c16f38c7"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/react-native-settings-light.webp",
+      "bytes": 30934,
+      "width": 390,
+      "height": 844,
+      "hasAlpha": false,
+      "sha256": "2d4dea7f20a6406546efdcc575835e156b9afb10f25bed58c45b98e6e53e8b21"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/theme-studio-dark.webp",
+      "bytes": 169192,
+      "width": 1037,
+      "height": 3242,
+      "hasAlpha": false,
+      "sha256": "7680f1d796e39ab8b2d0d0d57fb7eb98e3cc6e8a2b6719033002d990e1eac4d9"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/theme-studio-light.webp",
+      "bytes": 173326,
+      "width": 1037,
+      "height": 3242,
+      "hasAlpha": false,
+      "sha256": "b9ae81117df55c87b3efd7e526b6eeb6da3f273891b38343e991dd34fdbc6a36"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-elements-interaction-dark.webp",
+      "bytes": 27434,
+      "width": 1037,
+      "height": 664,
+      "hasAlpha": false,
+      "sha256": "dc593635f226841de38d8f012aadbcd6f5c0b81508c287f795c34f104b789908"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-elements-interaction-light.webp",
+      "bytes": 29004,
+      "width": 1037,
+      "height": 664,
+      "hasAlpha": false,
+      "sha256": "e3f385dd77f055c26b90689e519b2b5dba7b33fb31c511512b51d437417e9bae"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-frameworks-dark.webp",
+      "bytes": 25416,
+      "width": 1037,
+      "height": 664,
+      "hasAlpha": false,
+      "sha256": "5168776bb666260df60a1be757d296a28490eece28457767769d8be82aa4291f"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-frameworks-light.webp",
+      "bytes": 27234,
+      "width": 1037,
+      "height": 664,
+      "hasAlpha": false,
+      "sha256": "1b2808490767dde70b2f1f76d7c56af0a1d29608ab694fcbc90a5d33531d1b19"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-mobile-dark.webp",
+      "bytes": 18324,
+      "width": 358,
+      "height": 669,
+      "hasAlpha": false,
+      "sha256": "9ee5f3562f8fe35e107e17b315526e0ed8c0b02e76de12140d90c753d9f52ea3"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-mobile-light.webp",
+      "bytes": 19756,
+      "width": 358,
+      "height": 669,
+      "hasAlpha": false,
+      "sha256": "912d1a8642014ea09a4e9f751cf7b348988c0b6e62e13fcf766f582aa11f5ff2"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-react-interaction-dark.webp",
+      "bytes": 25636,
+      "width": 1037,
+      "height": 664,
+      "hasAlpha": false,
+      "sha256": "37f74628942053d846d3060b3e5c3c6f8bd7e9ac061a1a4c135ce0394105bb36"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-react-interaction-light.webp",
+      "bytes": 27998,
+      "width": 1037,
+      "height": 664,
+      "hasAlpha": false,
+      "sha256": "a3fe1d955bc796fcac74deccccbc4d1688a174257ad5dae3ad3155f9f2846854"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-workspace-dark.webp",
+      "bytes": 52434,
+      "width": 1184,
+      "height": 790,
+      "hasAlpha": false,
+      "sha256": "5ad1cd3febe3bcd4df92453df4c359a5769d2171aeb2bf24535dae965c36efd2"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/screenshots/web-workspace-light.webp",
+      "bytes": 55814,
+      "width": 1184,
+      "height": 790,
+      "hasAlpha": false,
+      "sha256": "e55365f7113e10eeb734bd4d1bc822afcb965d0f7c8f8ab573fbe951668ecc84"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/apple-medium/iphone-01-home-light.png",
+      "bytes": 291780,
+      "width": 1206,
+      "height": 2622,
+      "hasAlpha": false,
+      "sha256": "a1483afbcbb08015cb70a8979db45e9358776078d25608735a71a0d4ee77e2e0"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/apple-medium/iphone-02-examples-light.png",
+      "bytes": 288983,
+      "width": 1206,
+      "height": 2622,
+      "hasAlpha": false,
+      "sha256": "74b7da90ff5a369b17a404cd15cca949eb786301cb562dbd5afec2a63b76281e"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/apple-medium/iphone-03-components-light.png",
+      "bytes": 253907,
+      "width": 1206,
+      "height": 2622,
+      "hasAlpha": false,
+      "sha256": "ee97d536799e54f5e8ddd60c3535827ca8ea18c3a0659eb038e0a35a7966fb62"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/apple-medium/iphone-04-components-dark.png",
+      "bytes": 249441,
+      "width": 1206,
+      "height": 2622,
+      "hasAlpha": false,
+      "sha256": "59a8c98620972ce951059d6ac15dcbbcf17ed606a3af1a60bd029f11abb27822"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/apple-medium/iphone-05-settings-light.png",
+      "bytes": 270812,
+      "width": 1206,
+      "height": 2622,
+      "hasAlpha": false,
+      "sha256": "c49b5e5fe556e8dee4e87d7b8677d706f7c86f1f9b3897666f59cca8ab71e860"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/apple-medium/iphone-06-examples-dark.png",
+      "bytes": 288232,
+      "width": 1206,
+      "height": 2622,
+      "hasAlpha": false,
+      "sha256": "a39fb03efdf74da18c93c134fedd9015bdd6a928f52f62384b9306bd112eb93c"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/landscape-01-modular-web.png",
+      "bytes": 214443,
+      "width": 1920,
+      "height": 1080,
+      "hasAlpha": false,
+      "sha256": "1235320b351536697f2039edc240e6af45520294f26ece3751b221027fb3969a"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/landscape-02-native-playgrounds.png",
+      "bytes": 169819,
+      "width": 1920,
+      "height": 1080,
+      "hasAlpha": false,
+      "sha256": "7b576fbc0af0f3d85a135b65e71db3b0b6a589b3c505dde383c2238277f9b1d3"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/landscape-03-shared-themes.png",
+      "bytes": 207657,
+      "width": 1920,
+      "height": 1080,
+      "hasAlpha": false,
+      "sha256": "86801953e7cbf47527007b0ef2f21347c74383c075367dd63a82dc37c9d30b62"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/portrait-01-modular-web.png",
+      "bytes": 239018,
+      "width": 1080,
+      "height": 1920,
+      "hasAlpha": false,
+      "sha256": "52489c4509b94c8ec68816d61a3f0ff0d2361c2b71e090098fecbe98d670d7d0"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/portrait-02-native-playgrounds.png",
+      "bytes": 180309,
+      "width": 1080,
+      "height": 1920,
+      "hasAlpha": false,
+      "sha256": "8df06aa1626482b1b0260000dbd4d4543543caacc9ee9e1c88dea9e8ff91d35d"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/portrait-03-shared-themes.png",
+      "bytes": 254093,
+      "width": 1080,
+      "height": 1920,
+      "hasAlpha": false,
+      "sha256": "af278cd3be136ae92f187b0bec5d40b0784c276a74fbce890db59e3369545d6d"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/release-cover-1200x630.png",
+      "bytes": 120552,
+      "width": 1200,
+      "height": 630,
+      "hasAlpha": false,
+      "sha256": "7f7a9308e5ed324131f6274d2aee395f58073216eb708192e9972ab9b27d387f"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/square-01-modular-web.png",
+      "bytes": 187166,
+      "width": 1080,
+      "height": 1080,
+      "hasAlpha": false,
+      "sha256": "905d70de2118a257a580f72a376ae90f9cf79824660b961af935d7378101c79a"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/square-02-native-playgrounds.png",
+      "bytes": 146250,
+      "width": 1080,
+      "height": 1080,
+      "hasAlpha": false,
+      "sha256": "41e134a58ca726b7784f8910a8f3c21a5b62c732ca41fe6ba66775131010b25f"
+    },
+    {
+      "file": "docs/assets/releases/v5.0.0/social/square-03-shared-themes.png",
+      "bytes": 182673,
+      "width": 1080,
+      "height": 1080,
+      "hasAlpha": false,
+      "sha256": "d449bd3314793c4b8e940a9b785baa801f3fb7d054cccd625506d63ce2e6a485"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/ipad-01-home-light.png",
+      "bytes": 376748,
+      "width": 2064,
+      "height": 2752,
+      "hasAlpha": false,
+      "sha256": "99a987c55d00c2795da245a12e5a1382c8c8a81c0dd999baa449f6f45fedfdf2"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/ipad-02-examples-light.png",
+      "bytes": 258600,
+      "width": 2064,
+      "height": 2752,
+      "hasAlpha": false,
+      "sha256": "a8faa18134b48741a8c67e9fb70fe85167edfc4dceaa5fca0af6b3816fab2f52"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/ipad-03-components-light.png",
+      "bytes": 275215,
+      "width": 2064,
+      "height": 2752,
+      "hasAlpha": false,
+      "sha256": "7ddb0075ff7281450b1d002187424da0c8f3a8c8ffa96507446423d36442cefa"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/ipad-04-components-dark.png",
+      "bytes": 269744,
+      "width": 2064,
+      "height": 2752,
+      "hasAlpha": false,
+      "sha256": "20e860218e26799b9a60e7324d48ea100db1b55979f0c4cee0e00b0ed1bf12e3"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/ipad-05-settings-light.png",
+      "bytes": 286293,
+      "width": 2064,
+      "height": 2752,
+      "hasAlpha": false,
+      "sha256": "a0b3fb496dffca795747bb0d327fe0e18e00c0dea44e4f71b128e90bac9dcb38"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/ipad-06-examples-dark.png",
+      "bytes": 252816,
+      "width": 2064,
+      "height": 2752,
+      "hasAlpha": false,
+      "sha256": "a348c7a546de71ee2099e1f063c4a875818fab8ebec99ff2630efde42fc0efe3"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/iphone-01-home-light.png",
+      "bytes": 316416,
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "sha256": "e5fff84216789b615bda89bc159cf69d8bcdee2360ffd010479801e62e4d9de5"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/iphone-02-examples-light.png",
+      "bytes": 299593,
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "sha256": "b8331da4e41e44676968bb8f9cf113542f34219129d4e1fdc12e74e4b09e59ac"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/iphone-03-components-light.png",
+      "bytes": 309164,
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "sha256": "fa5c2185edbaefd49d4858c0dfee02c4271ce489deb1dd901440b231e0937da1"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/iphone-04-components-dark.png",
+      "bytes": 311755,
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "sha256": "4dc023036eeef72e4f8fa9388cc3b469de7be2b2b3bb0b2eff05d5d46c67bf5c"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/iphone-05-settings-light.png",
+      "bytes": 285576,
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "sha256": "d8d3237e1b4b7c4c10801eb8c7f3016eabaa4636ee42af9d010930bdefae7811"
+    },
+    {
+      "file": "apps/playground-apple/Store/Screenshots/iphone-06-examples-dark.png",
+      "bytes": 302548,
+      "width": 1320,
+      "height": 2868,
+      "hasAlpha": false,
+      "sha256": "26a99d6cdcae17f894512d16448a365eeb68930bca95a4c9d6ade0a613488fb2"
+    },
+    {
+      "file": "apps/playground-android/Store/Screenshots/phone-01-home-light.png",
+      "bytes": 179667,
+      "width": 1080,
+      "height": 1920,
+      "hasAlpha": false,
+      "sha256": "9d0699b0af060ecf4755c56ce2ba2a71bab1db1646c3f083ab0324486bfa1bc8"
+    },
+    {
+      "file": "apps/playground-android/Store/Screenshots/phone-02-examples-light.png",
+      "bytes": 186372,
+      "width": 1080,
+      "height": 1920,
+      "hasAlpha": false,
+      "sha256": "5002d59442cec355203f0e3e97b9ca18dec0b1ef2cd718987179143c90f7e74a"
+    },
+    {
+      "file": "apps/playground-android/Store/Screenshots/phone-03-components-light.png",
+      "bytes": 165926,
+      "width": 1080,
+      "height": 1920,
+      "hasAlpha": false,
+      "sha256": "9c0456aa65aab28ea0d40c3bda364273f8602133bc5d3ec7a68a684090ef3a83"
+    },
+    {
+      "file": "apps/playground-android/Store/Screenshots/phone-04-components-dark.png",
+      "bytes": 161669,
+      "width": 1080,
+      "height": 1920,
+      "hasAlpha": false,
+      "sha256": "537a2ebbb43c1fe20f965149a0b988057ea8a24b2dda7ba6fe78de489efbdeb8"
+    },
+    {
+      "file": "apps/playground-android/Store/Screenshots/phone-05-settings-light.png",
+      "bytes": 159899,
+      "width": 1080,
+      "height": 1920,
+      "hasAlpha": false,
+      "sha256": "218fa186538d44c29e0cbe63613a1a052c3e1bc5276ebaa80ef22ced37138c1c"
+    },
+    {
+      "file": "apps/playground-android/Store/Screenshots/phone-06-examples-dark.png",
+      "bytes": 181984,
+      "width": 1080,
+      "height": 1920,
+      "hasAlpha": false,
+      "sha256": "814c988ee302bd746a9114f6b7a97feb708292b980b0c4653f26cf6cb4656c2f"
+    },
+    {
+      "file": "apps/playground-android/Store/feature-graphic.png",
+      "bytes": 58169,
+      "width": 1024,
+      "height": 500,
+      "hasAlpha": false,
+      "sha256": "334727091c9c5aecdf35dcb4d51a6edbf0da9a90d8209bfa0ff6df04d03d4dac"
+    },
+    {
+      "file": "apps/playground-android/Store/icon-512.png",
+      "bytes": 29668,
+      "width": 512,
+      "height": 512,
+      "hasAlpha": false,
+      "sha256": "0cbf643ba14cb53c4427c4fe199c09e458c9c6408d3b4c6451a0f95f85341dd9"
+    },
+    {
+      "file": "apps/docs/src/assets/platforms/android.webp",
+      "bytes": 48788,
+      "width": 720,
+      "height": 1280,
+      "hasAlpha": false,
+      "sha256": "3e0dc6620d29e0c62dc433050b7db784be33a869fa9206d3ee2a725302d612f0"
+    },
+    {
+      "file": "apps/docs/src/assets/platforms/apple.webp",
+      "bytes": 88660,
+      "width": 792,
+      "height": 1721,
+      "hasAlpha": false,
+      "sha256": "777dd7d2d26a1cf2dc684bcdf733c2f498cb9d508ff42910ef652b21e590fb78"
+    },
+    {
+      "file": "apps/docs/src/assets/platforms/react-native.webp",
+      "bytes": 24480,
+      "width": 390,
+      "height": 844,
+      "hasAlpha": false,
+      "sha256": "647e25f8cc8d9e2259647be594a6f43dc5b94fb76285efb87902b4b89f30a3cd"
+    },
+    {
+      "file": "apps/docs/src/assets/platforms/web.webp",
+      "bytes": 47010,
+      "width": 1184,
+      "height": 790,
+      "hasAlpha": false,
+      "sha256": "1798ab79f024d97230cbb7a849255e4d11d9439b154ad4a4b4d03bfba9431f30"
+    }
+  ]
+}
