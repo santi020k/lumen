@@ -39,3 +39,27 @@ for (const width of [390, 1440]) {
     })
   }
 }
+
+for (const width of [390, 1440]) {
+  test(`the docs example offers the complete message at ${width}px without stretching actions`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined })
+    })
+    await page.goto('/docs/components/copy-button')
+    const button = page.locator('[data-copy-target="#share-message"]')
+    await expect(button).toHaveAttribute('data-ui-copy-button-bound', 'true')
+    const otherButton = page.locator('[data-copy-recovery-label="Select and copy the link"]')
+    const actionHeight = await otherButton.evaluate(element => element.getBoundingClientRect().height)
+    await button.focus()
+    await button.press('Enter')
+    const field = page.getByRole('textbox', { name: 'Select and copy the complete message' })
+    await expect(field).toBeVisible()
+    await expect(field).toHaveValue('Join the Lumen workspace at https://lumen.santi020k.com')
+    await expect(button).toBeFocused()
+    expect(await otherButton.evaluate(element => element.getBoundingClientRect().height)).toBe(actionHeight)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    await page.emulateMedia({ media: 'print' })
+    await expect(field).toBeHidden()
+  })
+}

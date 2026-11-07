@@ -356,6 +356,9 @@ either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
 customize its visible feedback while the localized label props remain the accessible announcement.
 Stable `data-slot` hooks expose the idle, copied, and error parts.
 
+Manual recovery renders beside the trigger in DOM order. Use a vertical Lumen `Stack` with
+`align="start"` for separate copy actions so a recovery field does not stretch neighboring buttons.
+
 Wrap React copy actions in `ToastProvider` to display their optional toast feedback. Target selectors
 resolve in the clicked button's owning document, including iframe portals. Updating a closing or moved
 toast reapplies the destination viewport limit without dismissing toasts in another placement.

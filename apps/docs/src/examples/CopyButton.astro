@@ -1,15 +1,21 @@
 ---
-import { CopyButton } from '@santi020k/lumen-astro'
+import { CopyButton, Stack, Typography } from '@santi020k/lumen-astro'
 ---
 
-<div class="grid gap-3">
-  <p id="share-message">Join the Lumen workspace at https://lumen.santi020k.com</p>
-  <div class="flex flex-wrap gap-2">
-    <CopyButton target="#share-message" recoveryLabel="Select and copy the complete message">Copy message</CopyButton>
-    <CopyButton value="https://lumen.santi020k.com" variant="default" size="sm" toast recoveryLabel="Select and copy the link">
-      Copy link
-      <span slot="copied">Link copied</span>
-      <span slot="error">Copy failed</span>
-    </CopyButton>
-  </div>
-</div>
+<Stack align="start" gap="related">
+  <Typography><p id="share-message">Join the Lumen workspace at https://lumen.santi020k.com</p></Typography>
+  <CopyButton target="#share-message" recoveryLabel="Select and copy the complete message">
+    Copy message
+  </CopyButton>
+  <CopyButton
+    value="https://lumen.santi020k.com"
+    variant="default"
+    size="sm"
+    toast
+    recoveryLabel="Select and copy the link"
+  >
+    Copy link
+    <span slot="copied">Link copied</span>
+    <span slot="error">Copy failed</span>
+  </CopyButton>
+</Stack>

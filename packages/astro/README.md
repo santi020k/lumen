@@ -417,6 +417,9 @@ non-code content `Code` semantics.
 </CopyButton>
 ```
 
+Manual recovery renders beside the trigger in DOM order. Use a vertical Lumen `Stack` with
+`align="start"` for separate copy actions so a recovery field does not stretch neighboring buttons.
+
 `CopyButton` accepts the same presentation `variant` and `size` vocabulary as `Button`. Its stable
 `copy-idle`, `copy-copied`, and `copy-error` slots keep visible feedback in
 sync with the accessible label; free-form default children remain the idle presentation.

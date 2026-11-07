@@ -521,6 +521,9 @@ recovery. Missing or invalid targets produce error feedback without an empty rec
 </lumen-copy-button>
 ```
 
+Manual recovery renders beside the trigger in DOM order. Use a vertical Lumen `Stack` with
+`align="start"` for separate copy actions so a recovery field does not stretch neighboring buttons.
+
 ## Motion
 
 The elements adapter exposes the same motion vocabulary as Astro and React. Use

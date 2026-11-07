@@ -198,7 +198,9 @@ A controlled Lumen toggle does not read storage or change that state itself.
 For links and generated text, use `CopyButton recoveryLabel="Select and copy the complete value"`
 (`recovery-label` in Elements) when manual recovery is useful. A failed clipboard request exposes a
 labelled read-only field without moving focus from the trigger. Recovery stays available after the
-button feedback resets; a successful retry removes it. Keep the recovery label localized.
+button feedback resets; a successful retry removes it. Keep the recovery label localized. Place
+separate copy actions in a vertical `Stack align="start"` so recovery stays beside its trigger in
+reading order without stretching other buttons.
 
 For commands generated from a form, point `CopyButton` at the current output element. It reads the
 latest text when clicked, so the application only updates the output rather than managing clipboard
