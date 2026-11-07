@@ -41,6 +41,8 @@ for (const width of [390, 1440]) {
       await expect(code.locator('details')).toHaveAttribute('open')
       const region = code.getByRole('region').first()
       await expect(region).toHaveAttribute('tabindex', '0')
+      await expect(code.locator('details pre')).toHaveCount(1)
+      await expect(preview.locator('pre')).toHaveCount(1)
       await expect(code.locator('[data-scroll-cue-message]:visible')).toHaveCount(1)
       await summary.press('Enter')
       await expect(preview).toBeVisible()

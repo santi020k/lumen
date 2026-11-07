@@ -68,6 +68,9 @@ Expose a standalone Input entry sharing its constructor and form behavior with t
 
 ### Patch Changes
 
+- Render structured charts once when existing markup is upgraded or inserted from a template, avoiding
+  repeated CalendarHeatmap initialization while preserving synchronous updates and reconnection.
+
 - Move focus to local Anchor destinations consistently across web adapters without replacing native
   hash scrolling or history. Preserve modified and canceled navigation and authored tab order,
   use the rendering document in React and Elements, and prevent duplicate Astro runtime ownership.

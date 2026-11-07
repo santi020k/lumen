@@ -2243,8 +2243,7 @@ pre:where(:not(.ui-code pre)) code {
 
 .docs-section > .grid,
 .docs-section > .grid > .ui-card,
-.docs-code-block,
-.docs-code-block__variant {
+.docs-code-block {
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -2599,23 +2598,6 @@ pre:where(:not(.ui-code pre)) code {
     line-height: 1.65;
     padding: 1.1rem 1.3rem;
   }
-}
-
-.docs-code-block__variant {
-  display: none;
-}
-
-:root[data-theme="santi020k-light"] .docs-code-block__variant--santi020k,
-:root[data-theme="santi020k-dark"] .docs-code-block__variant--santi020k {
-  display: block;
-}
-
-:root:not([data-theme]) .docs-code-block__variant--lumen,
-:root[data-theme="light"] .docs-code-block__variant--lumen,
-:root[data-theme="dark"] .docs-code-block__variant--lumen,
-:root[data-theme="lumen-light"] .docs-code-block__variant--lumen,
-:root[data-theme="lumen-dark"] .docs-code-block__variant--lumen {
-  display: block;
 }
 
 @utility docs-preview {

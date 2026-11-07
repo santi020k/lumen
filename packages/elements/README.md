@@ -977,7 +977,7 @@ rechecked. Keyboard focus within a reveal and reduced motion bypass decorative h
 Content stays readable without JavaScript; navigation, unmount, and disconnection clean up observers.
 
 Use `defineLumenInput` from `@santi020k/lumen-elements/components/input` for a standalone
-form input. It shares its constructor with the full catalog. See the [web quick start](../../README.md#web-components).
+form input. It shares its constructor with the full catalog. See the [Elements quick start](https://lumen.santi020k.com/docs/frameworks/elements).
 
 ## Editorial code blocks
 

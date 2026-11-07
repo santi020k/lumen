@@ -97,7 +97,8 @@ corepack enable
 pnpm install
 ```
 
-Use Node.js 22.22.2+, 24.15.0+, or 26+, matching the private workspace tooling requirements. The Apple playground additionally needs macOS and Xcode. The Android
+Use the Node.js and pnpm versions in the [workspace setup requirements](../CONTRIBUTING.md#local-setup).
+The Apple playground additionally needs macOS and Xcode. The Android
 playground needs Android Studio, Android SDK 37, and JDK 21. The packed React Native Android smoke
 test also supports Android Studio's newer bundled JDK by enabling the native access required by
 Expo's CMake configuration step.
