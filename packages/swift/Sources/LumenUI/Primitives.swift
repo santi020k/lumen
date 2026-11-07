@@ -289,6 +289,8 @@ public struct LumenIconButtonStyle: ButtonStyle {
         let metrics = LumenIconButtonMetrics.resolve(size, density: density)
 
         configuration.label
+            .environment(\.lumenControlContentColor, foregroundColor)
+            .foregroundStyle(foregroundColor)
             .frame(width: metrics.touchTarget, height: metrics.touchTarget)
             .background(backgroundColor)
             .overlay {
@@ -306,6 +308,16 @@ public struct LumenIconButtonStyle: ButtonStyle {
         case .quiet: .clear
         case .secondary: theme.colors.surfaceMuted
         case .success: theme.colors.success
+        }
+    }
+
+    private var foregroundColor: Color {
+        switch intent {
+        case .danger: theme.colors.onDanger
+        case .primary: theme.actionForeground
+        case .quiet: theme.colors.inkSoft
+        case .secondary: theme.colors.ink
+        case .success: theme.successForeground
         }
     }
 
