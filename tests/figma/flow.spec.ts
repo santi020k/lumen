@@ -44,7 +44,7 @@ test('review filters and reading position survive the round trip through handoff
   await page.getByRole('option', { name: 'Needs review (20)', exact: true }).click()
   await expect(findings.getByRole('listitem')).toHaveCount(20)
   await findings.press('End')
-  await expect.poll(() => findings.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
+  await expect.poll(() => findings.evaluate(element => element.scrollTop + element.clientHeight >= element.scrollHeight - 1)).toBe(true)
   const scrollTop = await findings.evaluate(element => element.scrollTop)
   await page.getByRole('button', { name: 'Open handoff' }).click()
   await expect(page.getByRole('heading', { name: 'Project handoff' })).toBeFocused()
