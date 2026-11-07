@@ -587,11 +587,11 @@
   "approval": {
     "approver": "Santiago Molina (santi020k, release owner)",
     "date": "2026-11-07",
-    "decision": "Approve Lumen 5 for merge and publication through GitHub Actions, including the reviewed Playground 1.0.4 release preparation for iOS and Android store delivery.",
-    "reviewedRevision": "b96f36eceb5c56b26d16add750f6cac5ad356fd8",
+    "decision": "Approve Android Playground 1.0.4 with app-only API 24 minimum, Google Play automatic protection, review submission, and automatic publishing after approval. The Compose library retains API 23.",
+    "reviewedRevision": "58c3a3675ae6b860ea5e98b8660e0927e54e33ca",
     "evidence": [
-      "https://github.com/santi020k/lumen/pull/113",
-      "https://github.com/santi020k/lumen/commit/b96f36eceb5c56b26d16add750f6cac5ad356fd8"
+      "https://github.com/santi020k/lumen/pull/117",
+      "https://github.com/santi020k/lumen/commit/58c3a3675ae6b860ea5e98b8660e0927e54e33ca"
     ]
   }
 }

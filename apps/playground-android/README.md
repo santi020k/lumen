@@ -187,6 +187,8 @@ Production delivery uses the **Release Android playground beta** GitHub workflow
 dispatches from other branches are skipped. Store delivery uses `--require-current-approval`, so
 publishing a library tag does not exempt later uploads from exact-source approval. A source change
 requires a fresh matching approval before delivery. Local signed builds are development preflight only.
+Playground 1.0.4 requires Android 7.0 (API 24) for Google Play automatic protection. The Compose
+library still supports Android 6.0 (API 23).
 Google Play automatically submits committed changes for review. Prepare the listing before dispatch
 and keep managed publishing enabled to hold approved changes for the intended rollout.
 

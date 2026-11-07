@@ -43,7 +43,7 @@ android {
 
     defaultConfig {
         applicationId = "com.santi020k.lumen.playground.compose"
-        minSdk = 23
+        minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         targetSdk = 37
         versionCode = releaseVersionCode.get()
