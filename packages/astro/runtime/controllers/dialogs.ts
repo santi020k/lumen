@@ -1,3 +1,4 @@
+import { getScopeTarget } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
 const dialogTriggers = new WeakMap<HTMLDialogElement, HTMLElement>()
@@ -77,7 +78,7 @@ export const initDialogControllers = (scope: ParentNode): void => {
 
       if (!targetId) return
 
-      const dialog = document.getElementById(targetId)
+      const dialog = getScopeTarget(trigger, targetId)
 
       if (!(dialog instanceof HTMLDialogElement) || dialog.open) return
 

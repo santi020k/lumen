@@ -5,7 +5,7 @@ import { queryScope } from '../scope.js'
 const anchors = new WeakMap<HTMLElement, () => void>()
 let observer: ResizeObserver | undefined
 const bars = () => document.querySelectorAll<HTMLElement>('[data-ui-scroll-progress][data-ui-bound="true"]')
-const getTarget = (root: HTMLElement) => document.getElementById(root.dataset.uiScrollProgressTarget ?? '')
+const getTarget = (root: HTMLElement) => root.ownerDocument.getElementById(root.dataset.uiScrollProgressTarget ?? '')
 
 const updateProgress = (roots: Iterable<HTMLElement> = bars()): void => {
   const scroller = document.scrollingElement ?? document.documentElement
@@ -54,8 +54,6 @@ const initAnchors = (scope: ParentNode): void => {
   for (const root of queryScope(scope, '[data-ui-anchor]')) {
     if (root.dataset.uiBound === 'true' || root.closest('[data-ui-owner], lumen-anchor')) continue
 
-    root.dataset.uiBound = 'true'
-
     const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
 
     const targets = links.flatMap(link => {
@@ -66,6 +64,8 @@ const initAnchors = (scope: ParentNode): void => {
     })
 
     if (!targets.length) continue
+
+    root.dataset.uiBound = 'true'
 
     const headings = targets.map(({ target }) => target)
 

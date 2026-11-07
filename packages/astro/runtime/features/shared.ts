@@ -1,3 +1,5 @@
+import { getScopeTarget } from '../relationships.js'
+
 const focusableSelector = [
   'a[href]',
   'button:not([disabled])',
@@ -51,7 +53,7 @@ export const getPanel = (trigger: HTMLElement): HTMLElement | null => {
   const controls = trigger.getAttribute('aria-controls')
 
   if (controls) {
-    return document.getElementById(controls)
+    return getScopeTarget(trigger, controls)
   }
 
   return trigger.nextElementSibling instanceof HTMLElement ? trigger.nextElementSibling : null

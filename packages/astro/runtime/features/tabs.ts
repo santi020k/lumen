@@ -78,11 +78,11 @@ const readContext = (root: HTMLElement): TabsContext => {
   return { root, tabs, panels, tabList, orientation }
 }
 
-const selectPanels = ({ root, tabs, panels }: TabsContext, tab: HTMLElement): void => {
+const selectPanels = ({ tabs, panels }: TabsContext, tab: HTMLElement): void => {
   for (const [index, item] of tabs.entries()) {
     const selected = item === tab
     const panelId = item.getAttribute('aria-controls')
-    const panel = panelId ? root.ownerDocument.getElementById(panelId) : panels[index]
+    const panel = panelId ? panels.find(candidate => candidate.id === panelId) : panels[index]
 
     item.setAttribute('aria-selected', String(selected))
 

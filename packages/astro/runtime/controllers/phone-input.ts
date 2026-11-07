@@ -6,6 +6,7 @@ import {
   resolveLumenPhoneNumber
 } from '@santi020k/lumen-core'
 
+import { getScopeTarget } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
 const phoneInputSelector = '[data-ui-phone-input]'
@@ -88,7 +89,7 @@ const syncPhoneValidation = (
   descriptions: string[]
 ): void => {
   const errorMessage = getPhoneErrorMessage(root, phoneNumber)
-  const error = root.ownerDocument.getElementById(root.dataset.errorId ?? '')
+  const error = getScopeTarget(root, root.dataset.errorId ?? '')
   const describedBy = [...descriptions, ...(errorMessage && error ? [error.id] : [])].join(' ')
 
   if (describedBy) numberInput.setAttribute('aria-describedby', describedBy)
