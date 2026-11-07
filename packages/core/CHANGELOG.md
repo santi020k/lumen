@@ -59,6 +59,8 @@
 
 ### Patch Changes
 
+- Add four Lucide icons: Circle Fading Check, Opacity, Package Pen, and Package Question Mark.
+
 - Offer opt-in manual code-copy recovery consistently across the web adapters. React Code and
   CodeTabs accept recoveryLabel; Elements accepts recovery-label and inherits it from code tabs.
   Recovery preserves exact source in a labelled read-only field, selects on focus without taking
