@@ -9083,7 +9083,12 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
 
     this.recoveryObserver?.disconnect()
 
-    this.recoveryObserver = new MutationObserver(() => {
+    this.recoveryObserver = new MutationObserver(records => {
+      const changed = records.some(record => record.attributeName !== null &&
+        record.oldValue !== this.getAttribute(record.attributeName))
+
+      if (!changed) return
+
       this.operation += 1
 
       this.#clearRecovery()
@@ -9091,7 +9096,7 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
       this.#announce('')
     })
 
-    this.recoveryObserver.observe(this, { attributes: true, attributeFilter: ['value', 'target', 'recovery-label'] })
+    this.recoveryObserver.observe(this, { attributes: true, attributeOldValue: true, attributeFilter: ['value', 'target', 'recovery-label'] })
 
     this.#ensureStateContent()
 
