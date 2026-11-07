@@ -16,6 +16,9 @@ product teams evaluating Lumen.
 
 ## Start here
 
+For the next major release, use the [Lumen UI 5 release kit](RELEASE_V5.md): current candidate
+screenshots, launch graphics, draft copy, capture evidence, and the final publication checklist.
+
 1. [`STRATEGY.md`](STRATEGY.md) — canonical positioning, audiences, message pillars, the claim
    ledger every public sentence must trace to, and the actions that require Santiago's explicit
    approval before execution.
