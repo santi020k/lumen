@@ -6,7 +6,9 @@ const expectConnectedNavigation = async (page: Page): Promise<void> => {
 
     if (!header) throw new Error('Missing documentation header')
 
-    return Math.abs(element.getBoundingClientRect().top - header.getBoundingClientRect().bottom)
+    const expectedGap = window.innerWidth < 1024 ? 0 : Number.parseFloat(getComputedStyle(document.documentElement).fontSize)
+
+    return Math.abs(element.getBoundingClientRect().top - header.getBoundingClientRect().bottom - expectedGap)
   })).toBeLessThan(1)
 }
 

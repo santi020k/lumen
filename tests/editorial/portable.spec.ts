@@ -115,8 +115,13 @@ for (const target of ['react', 'elements']) {
       await expect(page.locator('article.article-text')).toBeFocused()
       await page.locator('.article-reading').scrollIntoViewIfNeeded()
       if (width === 320) {
-        await page.locator('.chapter-disclosure summary').click()
-        await page.locator('.chapter-disclosure').getByRole('link', { name: 'Second chapter' }).click()
+        const summary = page.locator('.chapter-disclosure summary')
+        const chapter = page.locator('.chapter-disclosure').getByRole('link', { name: 'Second chapter' })
+
+        await summary.press('Enter')
+        await expect(summary).not.toHaveCSS('border-block-end-color', 'rgba(0, 0, 0, 0)')
+        await expect.poll(() => chapter.evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44)
+        await chapter.press('Enter')
       } else await page.locator('.chapter-rail').getByRole('link', { name: 'Second chapter' }).click()
       await expect(page.locator('#second-chapter')).toBeInViewport()
       const progress = page.getByRole('progressbar')

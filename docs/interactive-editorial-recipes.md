@@ -74,7 +74,8 @@ const chapters = [
 ```
 
 The desktop rail and mobile disclosure share the same heading data and preserve native fragment
-links. The runtime closes the mobile disclosure when a chapter is activated and moves focus to
+links. On phones, the summary and chapter list share one bordered surface, with room to tap
+each chapter link. The runtime closes the mobile disclosure when a chapter is activated and moves focus to
 its heading. The skip link targets the article itself, and the progress indicator stays visible
 while the article is in view. Set `--article-reading-sticky-offset` to clear a sticky site header, and use
 `--article-reading-heading-offset` if your headings need more room beyond the document's
