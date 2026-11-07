@@ -89,6 +89,12 @@ App Store app, so development builds do not replace it. Set `LUMEN_MAC_BUILD_PAT
 build directory. A raw `swift run` executable remains useful for development but does not include
 application-bundle metadata or the Dock icon.
 
+The local identifier override is scoped to the Mac application target through
+`LUMEN_MAC_BUNDLE_IDENTIFIER`. Do not override `PRODUCT_BUNDLE_IDENTIFIER` globally: that also
+renames Swift package resource bundles, causing their asset catalogs to collide with the app's
+catalog and leaving shared icons blank. The build command verifies distinct identifiers before
+signing. The default App Store identifier remains unchanged.
+
 The Navigate menu supports **Command-1** through **Command-4** for Home, Examples, Components, and
 Settings. **Command-comma** opens Settings in the active playground window. The View menu provides
 the native sidebar toggle, and Help links to the playground guide and component documentation.

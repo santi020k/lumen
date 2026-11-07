@@ -828,8 +828,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LUMEN_MAC_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				MARKETING_VERSION = 1.0.3;
-				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LUMEN_MAC_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "Lumen Playground";
 				PROVISIONING_PROFILE_SPECIFIER = "$(LUMEN_MAC_APP_STORE_PROFILE)";
 				SDKROOT = macosx;
@@ -854,8 +855,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LUMEN_MAC_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
 				MARKETING_VERSION = 1.0.3;
-				PRODUCT_BUNDLE_IDENTIFIER = com.santi020k.lumen.playground.apple;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(LUMEN_MAC_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = "Lumen Playground";
 				PROVISIONING_PROFILE_SPECIFIER = "$(LUMEN_MAC_APP_STORE_PROFILE)";
 				SDKROOT = macosx;
