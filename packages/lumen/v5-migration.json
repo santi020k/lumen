@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "draft",
+  "status": "approved",
   "targetVersion": "5.0.0",
   "publication": "unverified",
   "policy": {
@@ -583,5 +583,15 @@
     "@santi020k/lumen-react-hook-form": "4.0.2",
     "@santi020k/lumen-react-native": "4.1.0",
     "@santi020k/lumen-tokens": "4.1.0"
+  },
+  "approval": {
+    "approver": "Santiago Molina (santi020k, release owner)",
+    "date": "2026-11-07",
+    "decision": "Approve Lumen 5 for merge and publication through GitHub Actions, including the reviewed Playground 1.0.4 release preparation for iOS and Android store delivery.",
+    "reviewedRevision": "b96f36eceb5c56b26d16add750f6cac5ad356fd8",
+    "evidence": [
+      "https://github.com/santi020k/lumen/pull/113",
+      "https://github.com/santi020k/lumen/commit/b96f36eceb5c56b26d16add750f6cac5ad356fd8"
+    ]
   }
 }
