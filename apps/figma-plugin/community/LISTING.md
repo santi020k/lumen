@@ -34,7 +34,7 @@ The plugin runs offline. It does not call an AI model or send your design to Lum
 
 1. Open [Lumen Templates on Community](https://www.figma.com/community/file/1700607667944072280) and choose **Open in Figma** to get an editable copy. On **Auth & Onboarding**, expand **Desktop / 1440 px** and select the **Onboarding form** inside **Onboarding card**. The [original frame](https://www.figma.com/design/DX5clPFAvKTjrSe4wyfMe3/Lumen-Templates?node-id=5-834) shows the selection.
 2. Choose **React**, **Lumen 4.4.0**, and **Inspect selection**. Expect a TSX starter with the two linked Inputs, **Back** and **Continue** Buttons, and setup for the React 4.3.0 adapter.
-3. Switch to **Web Components** and **Lumen 5.0.0**, then inspect again. Expect an HTML starter and an app setup module. Select **iPhone · SwiftUI** and inspect again to see a SwiftUI view for the same Button.
+3. Switch to **Web Components** and **Lumen 5.0.0**, then inspect again. Expect an HTML starter and an app setup module. Select **iPhone · SwiftUI** and inspect again to see a SwiftUI view for the same onboarding form.
 4. Deselect the frame. The panel should clear the previous result and ask you to select one frame or component. No sign-in to Lumen, network permission, or AI service is required.
 
 ## Images
