@@ -1614,6 +1614,9 @@ const apiReferenceByComponent = {
   ],
   CopyButton: [
     apiRow(
+      'recoveryLabel', 'string', '-', 'Opts into a labelled, read-only manual copy field after clipboard failure. Recovery remains after feedback resets; a successful retry clears it. Elements uses recovery-label.'
+    ),
+    apiRow(
       'value', 'string', '-', 'Copies the supplied arbitrary text without requiring code semantics.'
     ),
     apiRow(

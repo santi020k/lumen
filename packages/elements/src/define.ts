@@ -9068,10 +9068,30 @@ class LumenCodeBehaviorElement extends LumenElement {
 
 class LumenCopyButtonBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
+  private recovery: HTMLLabelElement | undefined
+  private copyStatus: HTMLSpanElement | undefined
+  private recoveryObserver: MutationObserver | undefined
+  private operation = 0
   private resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
   override connectedCallback() {
     super.connectedCallback()
+
+    this.#clearRecovery()
+
+    this.#announce('')
+
+    this.recoveryObserver?.disconnect()
+
+    this.recoveryObserver = new MutationObserver(() => {
+      this.operation += 1
+
+      this.#clearRecovery()
+
+      this.#announce('')
+    })
+
+    this.recoveryObserver.observe(this, { attributes: true, attributeFilter: ['value', 'target', 'recovery-label'] })
 
     this.#ensureStateContent()
 
@@ -9097,6 +9117,16 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
   }
 
   override disconnectedCallback() {
+    this.operation += 1
+
+    this.recoveryObserver?.disconnect()
+
+    this.#clearRecovery()
+
+    this.copyStatus?.remove()
+
+    this.copyStatus = undefined
+
     this.abortController?.abort()
 
     this.abortController = undefined
@@ -9154,31 +9184,134 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
     }
   }
 
+  #clearRecovery() {
+    this.recovery?.remove()
+
+    this.recovery = undefined
+
+    if (this.copyStatus) this.copyStatus.textContent = ''
+
+    if (!this.getAttribute('recovery-label')) {
+      this.copyStatus?.remove()
+
+      this.copyStatus = undefined
+    }
+  }
+
+  #announce(message: string) {
+    if (!this.getAttribute('recovery-label')) return
+
+    if (!this.copyStatus) {
+      this.copyStatus = this.ownerDocument.createElement('span')
+
+      this.copyStatus.className = 'ui-sr-only'
+
+      this.copyStatus.setAttribute('role', 'status')
+
+      this.copyStatus.setAttribute('aria-live', 'polite')
+
+      this.after(this.copyStatus)
+    }
+
+    this.copyStatus.textContent = message
+  }
+
+  #showRecovery(value: string) {
+    const label = this.getAttribute('recovery-label')
+
+    if (!label) return
+
+    this.recovery?.remove()
+
+    const recovery = this.ownerDocument.createElement('label')
+    const caption = this.ownerDocument.createElement('span')
+    const input = this.ownerDocument.createElement('textarea')
+
+    recovery.className = 'ui-copy-button__recovery'
+
+    caption.textContent = label
+
+    input.className = 'ui-textarea'
+
+    input.readOnly = true
+
+    input.rows = 3
+
+    input.value = value
+
+    input.setAttribute('aria-label', label)
+
+    input.addEventListener('focus', () => {
+      input.select()
+    })
+
+    input.addEventListener('click', () => {
+      input.select()
+    })
+
+    recovery.append(caption, input)
+
+    this.after(recovery)
+
+    this.recovery = recovery
+  }
+
+  #isCurrent(operation: number) {
+    return this.isConnected && operation === this.operation
+  }
+
+  #targetValue(target: HTMLElement | null): string | undefined {
+    const view = target?.ownerDocument.defaultView
+
+    if (view && (target instanceof view.HTMLInputElement || target instanceof view.HTMLTextAreaElement)) {
+      return target.value
+    }
+
+    return target?.innerText ?? target?.textContent ?? undefined
+  }
+
+  #resolveValue(): string | undefined {
+    if (this.hasAttribute('value')) return this.getAttribute('value') ?? ''
+
+    const selector = this.getAttribute('target')
+    const target = selector ? this.ownerDocument.querySelector<HTMLElement>(selector) : null
+
+    return this.#targetValue(target)
+  }
+
+  #announceFailure(label: string) {
+    const recoveryLabel = this.getAttribute('recovery-label') ?? ''
+
+    this.#announce(this.recovery ? `${label} ${recoveryLabel}` : label)
+  }
+
+  #toast(title: string, variant: 'success' | 'destructive') {
+    if (!this.hasAttribute('toast')) return
+
+    this.ownerDocument.dispatchEvent(new CustomEvent('ui:toast', { detail: { title, variant } }))
+  }
+
   private copy = async () => {
+    const operation = ++this.operation
+    let value: string | undefined
     const label = this.getAttribute('label') ?? 'Copy to clipboard'
+    const copiedLabel = this.getAttribute('copied-label') ?? 'Copied to clipboard'
+    const errorLabel = this.getAttribute('error-label') ?? 'Could not copy to clipboard'
 
-    const copiedLabel = this.getAttribute('copied-label') ??
-      'Copied to clipboard'
-
-    const errorLabel = this.getAttribute('error-label') ??
-      'Could not copy to clipboard'
+    globalThis.clearTimeout(this.resetTimer)
 
     try {
-      const selector = this.getAttribute('target')
-      const target = selector ? document.querySelector<HTMLElement>(selector) : null
-
-      const targetValue =
-        target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement ?
-          target.value :
-          target?.innerText ?? target?.textContent
-
-      const value = this.hasAttribute('value') ?
-        this.getAttribute('value') ?? '' :
-        targetValue
+      value = this.#resolveValue()
 
       if (value === undefined) throw new Error(errorLabel)
 
       await navigator.clipboard.writeText(value)
+
+      if (!this.#isCurrent(operation)) return
+
+      this.#clearRecovery()
+
+      this.#announce(copiedLabel)
 
       this.dataset.state = 'copied'
 
@@ -9186,44 +9319,39 @@ class LumenCopyButtonBehaviorElement extends LumenElement {
 
       this.setAttribute('aria-label', copiedLabel)
 
-      this.dispatchEvent(new CustomEvent('ui:copy-success', {
-        bubbles: true,
-        detail: { value }
-      }))
+      this.dispatchEvent(new CustomEvent('ui:copy-success', { bubbles: true, detail: { value } }))
 
-      if (this.hasAttribute('toast')) {
-        document.dispatchEvent(new CustomEvent('ui:toast', {
-          detail: { title: copiedLabel, variant: 'success' }
-        }))
-      }
+      this.#toast(copiedLabel, 'success')
     } catch (error) {
+      if (!this.#isCurrent(operation)) return
+
+      if (value !== undefined) this.#showRecovery(value)
+
+      this.#announceFailure(errorLabel)
+
       this.dataset.state = 'error'
 
       this.#updateStateContent('error')
 
       this.setAttribute('aria-label', errorLabel)
 
-      this.dispatchEvent(new CustomEvent('ui:copy-error', {
-        bubbles: true,
-        detail: { error }
-      }))
+      this.dispatchEvent(new CustomEvent('ui:copy-error', { bubbles: true, detail: { error } }))
 
-      if (this.hasAttribute('toast')) {
-        document.dispatchEvent(new CustomEvent('ui:toast', {
-          detail: { title: errorLabel, variant: 'destructive' }
-        }))
-      }
+      this.#toast(errorLabel, 'destructive')
     }
 
+    this.#scheduleReset(label)
+  }
+
+  #scheduleReset(label: string) {
     globalThis.clearTimeout(this.resetTimer)
 
-    const parsedResetAfter = Number(this.getAttribute('reset-after') ?? '2000')
-
-    const resetAfter = Number.isFinite(parsedResetAfter) ?
-      Math.max(0, parsedResetAfter) :
-      2000
+    const parsed = Number(this.getAttribute('reset-after') ?? '2000')
+    const resetAfter = Number.isFinite(parsed) ? Math.max(0, parsed) : 2000
 
     this.resetTimer = globalThis.setTimeout(() => {
+      if (this.copyStatus) this.copyStatus.textContent = ''
+
       this.dataset.state = 'idle'
 
       this.#updateStateContent('idle')

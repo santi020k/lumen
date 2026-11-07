@@ -44,3 +44,11 @@
 @layer lumen.components {
 .ui-copy-button__recovery > textarea { width: 100%; min-inline-size: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
 }
+
+@layer lumen.components {
+@media print {
+.ui-copy-button__recovery {
+    display: none;
+  }
+}
+}

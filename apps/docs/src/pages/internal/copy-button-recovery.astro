@@ -1,0 +1,56 @@
+---
+import { createElement } from 'react'
+import { renderToString } from 'react-dom/server'
+
+import '../../styles/global.css'
+
+import { Card, Container, CopyButton, Stack, Typography } from '@santi020k/lumen-astro'
+import UIPrimitives from '@santi020k/lumen-astro/runtime'
+import { CopyButton as ReactCopyButton } from '@santi020k/lumen-react'
+
+const source = 'https://lumen.santi020k.com/¡Hola!\nComplete link'
+const recoveryLabel = 'Select the complete link'
+const reactMarkup = renderToString(createElement(ReactCopyButton, { value: source, recoveryLabel }))
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Copy button recovery audit</title>
+    <script>
+      import { createElement } from 'react'
+      import { hydrateRoot } from 'react-dom/client'
+
+      import { defineLumenElements } from '@santi020k/lumen-elements'
+      import { CopyButton } from '@santi020k/lumen-react'
+
+      defineLumenElements()
+
+      const root = document.getElementById('react-copy')
+
+      if (root) hydrateRoot(root, createElement(CopyButton, {
+        value: 'https://lumen.santi020k.com/¡Hola!\nComplete link', recoveryLabel: 'Select the complete link'
+      }))
+    </script>
+  </head>
+  <body>
+    <Container as="main"><Stack gap="section">
+      <Typography><h1>Copy button recovery audit</h1></Typography>
+      <Card id="astro-example"><Stack gap="related">
+        <Typography><h2>Astro</h2></Typography>
+        <CopyButton value={source} recoveryLabel={recoveryLabel}>Copy link</CopyButton>
+      </Stack></Card>
+      <Card id="react-example"><Stack gap="related">
+        <Typography><h2>React</h2></Typography>
+        <div id="react-copy" set:html={reactMarkup} />
+      </Stack></Card>
+      <Card id="elements-example"><Stack gap="related">
+        <Typography><h2>Elements</h2></Typography>
+        <lumen-copy-button value={source} recovery-label={recoveryLabel}>Copy link</lumen-copy-button>
+      </Stack></Card>
+    </Stack></Container>
+    <UIPrimitives />
+  </body>
+</html>

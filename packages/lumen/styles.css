@@ -4248,7 +4248,7 @@ lumen-dialog-close {
     box-shadow: none;
   }
 
-  .ui-code__copy, .ui-code--block [data-scroll-cue-message], .ui-code__recovery {
+  .ui-code__copy, .ui-code--block [data-scroll-cue-message], .ui-code__recovery, .ui-copy-button__recovery {
     display: none;
   }
 

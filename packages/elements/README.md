@@ -509,6 +509,18 @@ keep their normal behavior. Passive scrolling only updates the current link and 
 `lumen-pill` wraps long text within its available width. A `.ui-pill__count` child stays together;
 plain text labels do not need a wrapper. This reflow behavior is shared by Astro and React `Pill`.
 
+Pass a localized `recoveryLabel` to React `CopyButton`, or `recovery-label` to
+`lumen-copy-button`, to offer manual selection when clipboard access fails. The labelled read-only
+field retains the complete value after transient feedback resets, selects its text on focus, and
+clears after a successful retry. Changing the value, target selector, or recovery label clears stale
+recovery. Missing or invalid targets produce error feedback without an empty recovery field.
+
+```html
+<lumen-copy-button value="https://lumen.santi020k.com" recovery-label="Select and copy the link">
+  Copy link
+</lumen-copy-button>
+```
+
 ## Motion
 
 The elements adapter exposes the same motion vocabulary as Astro and React. Use

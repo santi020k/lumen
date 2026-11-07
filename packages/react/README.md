@@ -342,6 +342,7 @@ either a `value` or a `target` selector; `toast` opts into Lumen Toast feedback.
 ```tsx
 <CopyButton
   copiedContent="Link copied"
+  recoveryLabel="Select and copy the link"
   size="sm"
   value="https://lumen.santi020k.com"
   variant="default"
@@ -358,6 +359,12 @@ Stable `data-slot` hooks expose the idle, copied, and error parts.
 Wrap React copy actions in `ToastProvider` to display their optional toast feedback. Target selectors
 resolve in the clicked button's owning document, including iframe portals. Updating a closing or moved
 toast reapplies the destination viewport limit without dismissing toasts in another placement.
+
+Pass a localized `recoveryLabel` to React `CopyButton`, or `recovery-label` to
+`lumen-copy-button`, to offer manual selection when clipboard access fails. The labelled read-only
+field retains the complete value after transient feedback resets, selects its text on focus, and
+clears after a successful retry. Changing the value, target selector, or recovery label clears stale
+recovery. Missing or invalid targets produce error feedback without an empty recovery field.
 
 ## Data visualization
 

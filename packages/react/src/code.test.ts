@@ -389,3 +389,76 @@ test('missing highlighted source never offers a non-existent recovery field', as
   expect(container.querySelector('textarea')).toBeNull()
   expect(container.querySelector('[role="status"]')?.textContent).toBe('No source available')
 })
+
+test('CopyButton retains complete manual recovery after reset and clears it on retry or value change', async () => {
+  const writeText = vi.fn().mockRejectedValue(new Error('Denied'))
+  vi.stubGlobal('navigator', { clipboard: { writeText } })
+  const source = 'https://lumen.santi020k.com/¡Hola!\nComplete value'
+  await act(async () => {
+    root.render(createElement(CopyButton, { value: source, recoveryLabel: 'Select complete link' }))
+    await Promise.resolve()
+  })
+  button().focus()
+  await click()
+  const field = container.querySelector('textarea')
+  if (!field) throw new Error('Expected manual recovery')
+  expect(field.value).toBe(source)
+  expect(field.readOnly).toBe(true)
+  expect(document.activeElement).toBe(button())
+  field.focus()
+  expect(field.selectionEnd).toBe(source.length)
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(2000)
+  })
+  expect(container.querySelector('textarea')).toBe(field)
+  writeText.mockResolvedValue(undefined)
+  await click()
+  expect(container.querySelector('textarea')).toBeNull()
+  writeText.mockRejectedValue(new Error('Denied'))
+  await click()
+  await act(async () => {
+    root.render(createElement(CopyButton, { value: 'New link', recoveryLabel: 'Select complete link' }))
+    await Promise.resolve()
+  })
+  expect(container.querySelector('textarea')).toBeNull()
+})
+
+test.each(['#missing', '['])('CopyButton does not create recovery for unresolved target %s', async target => {
+  vi.stubGlobal('navigator', { clipboard: { writeText: vi.fn().mockRejectedValue(new Error('Denied')) } })
+  await act(async () => {
+    root.render(createElement(CopyButton, { target, recoveryLabel: 'Copy manually' }))
+    await Promise.resolve()
+  })
+  await click()
+  expect(button().dataset.state).toBe('error')
+  expect(container.querySelector('textarea')).toBeNull()
+})
+
+test('CopyButton recovery reads the current form control value', async () => {
+  vi.stubGlobal('navigator', { clipboard: { writeText: vi.fn().mockRejectedValue(new Error('Denied')) } })
+  const input = document.createElement('input')
+  input.id = 'generated-value'
+  input.value = 'Current value'
+  document.body.append(input)
+  fixtures.push(input)
+  await act(async () => {
+    root.render(createElement(CopyButton, { target: '#generated-value', recoveryLabel: 'Select generated value' }))
+    await Promise.resolve()
+  })
+  await click()
+  expect(container.querySelector('textarea')?.value).toBe('Current value')
+  input.value = 'Updated value'
+  await click()
+  expect(container.querySelector('textarea')?.value).toBe('Updated value')
+})
+
+test('CopyButton without recoveryLabel keeps error feedback without adding a field', async () => {
+  vi.stubGlobal('navigator', { clipboard: { writeText: vi.fn().mockRejectedValue(new Error('Denied')) } })
+  await act(async () => {
+    root.render(createElement(CopyButton, { value: 'Link' }))
+    await Promise.resolve()
+  })
+  await click()
+  expect(button().dataset.state).toBe('error')
+  expect(container.querySelector('textarea')).toBeNull()
+})

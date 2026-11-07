@@ -2448,12 +2448,23 @@ export interface CopyButtonProps extends ComponentPropsWithoutRef<'button'> {
   errorContent?: ReactNode
   errorLabel?: string
   label?: string
+  recoveryLabel?: string
   resetAfter?: number
   target?: string
   toast?: boolean
   value?: string
   variant?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
   size?: 'default' | 'icon' | 'lg' | 'sm'
+}
+
+const readCopyTarget = (target: HTMLElement | null): string | undefined => {
+  const view = target?.ownerDocument.defaultView
+
+  if (view && (target instanceof view.HTMLInputElement || target instanceof view.HTMLTextAreaElement)) {
+    return target.value
+  }
+
+  return target?.innerText ?? target?.textContent ?? undefined
 }
 
 const resolveCopyText = (
@@ -2465,12 +2476,48 @@ const resolveCopyText = (
 
   const targetElement = button.ownerDocument.querySelector<HTMLElement>(target)
 
-  return targetElement?.innerText ?? targetElement?.textContent ?? undefined
+  return readCopyTarget(targetElement)
 }
 
 const resolveCopyFeedback = (content: ReactNode | undefined, fallback: string): ReactNode => (
   content ?? fallback
 )
+
+interface CopyButtonRecoveryProps {
+  accessibleLabel: string
+  recoveryLabel: string | undefined
+  recoveryValue: string | undefined
+  state: ReturnType<typeof useCopyFeedback>['state']
+}
+
+const CopyButtonRecovery = ({ accessibleLabel, recoveryLabel, recoveryValue, state }: CopyButtonRecoveryProps) => {
+  if (!recoveryLabel) return null
+
+  return (
+    <>
+      <span aria-live="polite" className="ui-sr-only" role="status">
+        {state === 'idle' ? '' : `${accessibleLabel}${recoveryValue !== undefined ? ` ${recoveryLabel}` : ''}`}
+      </span>
+      {recoveryValue !== undefined && (
+        <label className="ui-copy-button__recovery">
+          <span>{recoveryLabel}</span>
+          <Textarea
+            aria-label={recoveryLabel}
+            onClick={event => {
+              event.currentTarget.select()
+            }}
+            onFocus={event => {
+              event.currentTarget.select()
+            }}
+            readOnly
+            rows={3}
+            value={recoveryValue}
+          />
+        </label>
+      )}
+    </>
+  )
+}
 
 export const CopyButton = ({
   children = 'Copy',
@@ -2481,6 +2528,7 @@ export const CopyButton = ({
   errorLabel = 'Could not copy to clipboard',
   label = 'Copy to clipboard',
   onClick,
+  recoveryLabel,
   resetAfter = 2000,
   size = 'default',
   target,
@@ -2489,9 +2537,13 @@ export const CopyButton = ({
   variant = 'outline',
   ...props
 }: CopyButtonProps) => {
-  const { accessibleLabel, handleClick, state } = useCopyFeedback({
+  const recoveryKey = useMemo(() => [target, value, recoveryLabel], [target, value, recoveryLabel])
+
+  const { accessibleLabel, handleClick, recoveryValue, state } = useCopyFeedback({
     copiedLabel,
     errorLabel,
+    recoveryKey,
+    recoveryLabel,
     getValue: button => resolveCopyText(button, target, value),
     label,
     onClick,
@@ -2500,26 +2552,34 @@ export const CopyButton = ({
   })
 
   return (
-    <Button
-      aria-label={accessibleLabel}
-      className={composeClassName('ui-copy-button', className)}
-      data-slot="copy-button"
-      data-state={state}
-      data-ui-copy-button
-      data-ui-owner="react"
-      onClick={handleClick}
-      size={size}
-      variant={variant}
-      {...props}
-    >
-      <span aria-hidden="true" data-slot="copy-idle" hidden={state !== 'idle'}>{children}</span>
-      <span aria-hidden="true" data-slot="copy-copied" hidden={state !== 'copied'}>
-        {resolveCopyFeedback(copiedContent, copiedLabel)}
-      </span>
-      <span aria-hidden="true" data-slot="copy-error" hidden={state !== 'error'}>
-        {resolveCopyFeedback(errorContent, errorLabel)}
-      </span>
-    </Button>
+    <>
+      <Button
+        aria-label={accessibleLabel}
+        className={composeClassName('ui-copy-button', className)}
+        data-slot="copy-button"
+        data-state={state}
+        data-ui-copy-button
+        data-ui-owner="react"
+        onClick={handleClick}
+        size={size}
+        variant={variant}
+        {...props}
+      >
+        <span aria-hidden="true" data-slot="copy-idle" hidden={state !== 'idle'}>{children}</span>
+        <span aria-hidden="true" data-slot="copy-copied" hidden={state !== 'copied'}>
+          {resolveCopyFeedback(copiedContent, copiedLabel)}
+        </span>
+        <span aria-hidden="true" data-slot="copy-error" hidden={state !== 'error'}>
+          {resolveCopyFeedback(errorContent, errorLabel)}
+        </span>
+      </Button>
+      <CopyButtonRecovery
+        accessibleLabel={accessibleLabel}
+        recoveryLabel={recoveryLabel}
+        recoveryValue={recoveryValue}
+        state={state}
+      />
+    </>
   )
 }
 
