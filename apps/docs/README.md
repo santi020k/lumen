@@ -20,7 +20,7 @@ workspace packages. This is the reference app for component behavior, theming, a
 
 ## Run locally
 
-Use Node.js 22.22.2+, 24.15.0+, or 26+ and the pnpm version pinned in the root manifest.
+Use Node.js 22.23.4+, 24.15.0+, or 26+ and the pnpm version pinned in the root manifest.
 From the repository root:
 
 ```bash
@@ -105,6 +105,25 @@ and release highlights invalidate cached HTML.
 For visual changes, run `pnpm run test:visual` and the affected interaction/accessibility suites.
 Check mobile and desktop, light and dark themes, keyboard navigation, and reduced motion.
 Use `pnpm run check:docs-performance` for the documented Lighthouse budgets.
+
+### SEO maintenance
+
+1. Review the Lumen Search Console property before choosing pages to improve. Compare equal
+   reporting periods and inspect queries and landing pages together; separate branded searches
+   from framework and component searches. Keep account reports out of this public repository.
+2. Check indexing reasons and representative URLs. Redirects, intentional `noindex` pages, and
+   canonical alternatives are expected exclusions. Confirm the sitemap's last successful read,
+   canonical destinations, and HTTP status before changing URLs or requesting validation.
+3. Write concise titles that identify the component or task. Describe the actual page content,
+   framework, and examples; preserve useful content and stable URLs. Social cards are generated
+   from the same metadata. Follow Google's [title guidance](https://developers.google.com/search/docs/appearance/title-link).
+4. Run the checks above. The SEO audit validates metadata, sitemap coverage, social cards, and
+   links in navigation, documentation content, and search results. Live component previews use
+   explicit preview containers so example destinations are excluded from site-link checks.
+5. After an authorized deployment, check canonical URLs, redirects, sitemap responses, and a
+   real 404 on the live site. Inspect priority pages in Search Console and compare clicks,
+   impressions, CTR, and query positions after a few weeks. Record the deployment date and
+   reporting windows; a passing local audit does not establish indexing or ranking gains.
 
 ## Preview assets and deployment
 

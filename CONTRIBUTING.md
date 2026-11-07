@@ -226,8 +226,8 @@ need different labels or a stable server-rendered menu. Preserve old deep links 
 or a focused redirect. See [the navigation audit](docs/documentation-navigation-audit.md) for the
 current page boundaries and validation coverage.
 
-The docs post-build SEO audit also checks rendered header, sidebar, section, and footer navigation
-and every destination in `docs-search.json`. Internal routes must resolve to a built page or static
+The docs post-build SEO audit also checks rendered header, sidebar, section, and footer navigation,
+links in main content, and every destination in `docs-search.json`. Internal routes must resolve to a built page or static
 file; fragments must identify a rendered element. Links inside live component previews are examples,
 so they are excluded from site-navigation validation. Run
 `pnpm --filter @santi020k/lumen-docs run audit:seo` against the current build when changing navigation
