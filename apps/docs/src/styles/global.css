@@ -70,28 +70,6 @@ body {
   background: hsl(var(--theme-bg));
 }
 
-.docs-skip-link {
-  position: fixed;
-  z-index: 100;
-  top: 0.75rem;
-  left: 0.75rem;
-  border: 2px solid hsl(var(--brand));
-  border-radius: 0.65rem;
-  background: hsl(var(--surface));
-  color: hsl(var(--ink));
-  font-size: 0.82rem;
-  font-weight: 800;
-  padding: 0.65rem 0.85rem;
-  text-decoration: none;
-  transform: translateY(calc(-100% - 1rem));
-  transition: transform var(--ui-duration-fast) var(--ui-ease);
-}
-
-.docs-skip-link:focus-visible {
-  outline: 0;
-  transform: translateY(0);
-}
-
 .docs-site-content:focus {
   outline: 0;
 }

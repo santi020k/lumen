@@ -360,7 +360,7 @@ now expose concrete nested output schemas. Existing MCP clients can keep using t
 - The native registry and React Native, SwiftUI, and Compose adapter sources.
 - Native documentation examples, API rows, accessibility, and platform guidance.
 - Documentation examples, API rows, guidance, keyboard interactions, and runtime events.
-- Design tokens, recipes, `docs/ai-usage.md`, and `llms.txt`.
+- Design tokens, recipes, the root `README.md`, `docs/ai-usage.md`, and `llms.txt`.
 
 The output is deterministic and carries the package version used by the MCP
 initialization response. It also includes every framework package version, a
