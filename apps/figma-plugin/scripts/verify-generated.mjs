@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdir, readFile, realpath, symlink, writeFile } from 'node:fs/promises'
+import { lstat, mkdir, readFile, symlink, unlink, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
@@ -41,7 +41,14 @@ const linkDependency = async (modules, name, source) => {
   try {
     await symlink(source, destination, 'dir')
   } catch (error) {
-    if (error.code !== 'EEXIST' || await realpath(destination) !== await realpath(source)) throw error
+    if (!(error instanceof Error) || !('code' in error) || error.code !== 'EEXIST') throw error
+
+    // Rebuilt fixtures must follow the current dependency resolution after an install.
+    if (!(await lstat(destination)).isSymbolicLink()) throw error
+
+    await unlink(destination)
+
+    await symlink(source, destination, 'dir')
   }
 }
 
