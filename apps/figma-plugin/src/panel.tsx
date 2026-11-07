@@ -23,14 +23,12 @@ import { ArrowRight, ArrowUpRight, CircleAlert, Frame, Icon, Info, ScanSearch, S
 
 import pluginIcon from '../community/assets/icon.png'
 
-import { componentKeys } from './contracts.js'
 import { DesignReview, ProjectHandoff } from './export-result.js'
 import { ExportSettings } from './export-settings.js'
 import type { PluginBridge, PluginResult } from './model.js'
-import { nativeComponents } from './native-design.js'
 import { SelectionArt } from './selection-art.js'
 import type { ExportTarget } from './targets.js'
-import { defaultTarget, isWebPlatform, platforms } from './targets.js'
+import { appearancesFor, defaultTarget, isBrandMode, isNativeTarget, platforms } from './targets.js'
 
 const stages = ['Setup', 'Review', 'Handoff']
 
@@ -45,13 +43,27 @@ interface SelectionSummaryProps {
   target: ExportTarget
 }
 
+const appearanceName = (target: ExportTarget) => {
+  if (isBrandMode(target.appearance)) return `santi020k ${target.appearance === 'santi020k-dark' ? 'Dark' : 'Light'}`
+
+  if (isNativeTarget(target)) return 'Project appearance'
+
+  return appearancesFor(target.version).find(option => option.value === target.appearance)?.label
+}
+
 const SelectionSummary = ({ step, selection, target }: SelectionSummaryProps) => {
   if (step.page !== 'setup') {
     return (
       <div className="result-context">
         <Icon icon={Frame} size="sm" />
         <strong>{selection ?? step.result.selectionName}</strong>
-        <span>{platforms[step.result.target].label}</span>
+        <span className="context-details">
+          {platforms[step.result.target].label}
+          {' · '}
+          {step.result.lumenVersion}
+          {' · '}
+          {appearanceName(target)}
+        </span>
       </div>
     )
   }
@@ -72,9 +84,7 @@ const SelectionSummary = ({ step, selection, target }: SelectionSummaryProps) =>
         </Eyebrow>
         <h2 id="selection-title">{selection ?? 'Nothing selected'}</h2>
         <p>
-          {isWebPlatform(platform) ? Object.keys(componentKeys).length : nativeComponents.length}
-          {' supported components for '}
-          {platforms[platform].label}
+          {selection ? `Ready to inspect for ${platforms[platform].label}.` : 'Select one frame or component to begin.'}
         </p>
       </div>
       <SelectionArt />
@@ -86,14 +96,22 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
   const [target, setTarget] = useState<ExportTarget>(defaultTarget)
   const [selection, setSelection] = useState<string | null>(null)
   const [step, setStep] = useState<InspectorStep>(initialStep)
-  const headingRef = useRef<HTMLHeadingElement>(null)
+  const [handoffVisited, setHandoffVisited] = useState(false)
+  const setupHeadingRef = useRef<HTMLHeadingElement>(null)
+  const reviewHeadingRef = useRef<HTMLHeadingElement>(null)
+  const handoffHeadingRef = useRef<HTMLHeadingElement>(null)
+  const { result } = step
   const previousPageRef = useRef(step.page)
   const [busy, setBusy] = useState(false)
   const [status, setStatus] = useState('Select one frame or component in Figma.')
   const [failed, setFailed] = useState(false)
 
   useEffect(() => {
-    if (previousPageRef.current !== step.page) headingRef.current?.focus()
+    if (previousPageRef.current !== step.page) {
+      const heading = { setup: setupHeadingRef, review: reviewHeadingRef, handoff: handoffHeadingRef }[step.page]
+
+      heading.current?.focus()
+    }
 
     previousPageRef.current = step.page
   }, [step.page])
@@ -102,6 +120,8 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
     if (message.type !== 'selection') setBusy(false)
 
     setFailed(message.type === 'error')
+
+    setHandoffVisited(false)
 
     if (message.type === 'selection') {
       setSelection(message.name)
@@ -122,6 +142,8 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
 
   const changeTarget = (next: ExportTarget) => {
     setTarget(next)
+
+    setHandoffVisited(false)
 
     setStep(initialStep)
 
@@ -167,7 +189,7 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
           as="section"
           className="settings-card"
         >
-          <h2 id="settings-title" ref={headingRef} tabIndex={-1}>
+          <h2 id="settings-title" ref={setupHeadingRef} tabIndex={-1}>
             <Icon icon={SlidersHorizontal} />
             Export settings
           </h2>
@@ -186,26 +208,34 @@ export const Panel = ({ bridge, preview }: { bridge: PluginBridge, preview: bool
           </p>
         </Card>
       )}
-      {step.page === 'review' && (
-        <DesignReview
-          headingRef={headingRef}
-          onBack={() => {
-            setStep({ page: 'setup', result: step.result })
-          }}
-          onNext={() => {
-            setStep({ page: 'handoff', result: step.result })
-          }}
-          result={step.result}
-        />
-      )}
-      {step.page === 'handoff' && (
-        <ProjectHandoff
-          headingRef={headingRef}
-          onBack={() => {
-            setStep({ page: 'review', result: step.result })
-          }}
-          result={step.result}
-        />
+      {result && (
+        <>
+          <div hidden={step.page !== 'review'}>
+            <DesignReview
+              headingRef={reviewHeadingRef}
+              onBack={() => {
+                setStep({ page: 'setup', result })
+              }}
+              onNext={() => {
+                setHandoffVisited(true)
+
+                setStep({ page: 'handoff', result })
+              }}
+              result={result}
+            />
+          </div>
+          {handoffVisited && (
+            <div hidden={step.page !== 'handoff'}>
+              <ProjectHandoff
+                headingRef={handoffHeadingRef}
+                onBack={() => {
+                  setStep({ page: 'review', result })
+                }}
+                result={result}
+              />
+            </div>
+          )}
+        </>
       )}
       <footer className="plugin-footer">
         {preview && <p className="preview-note">Local preview · Synthetic settings screen. No Figma file is connected.</p>}
