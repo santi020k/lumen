@@ -1,5 +1,69 @@
 import assert from 'node:assert/strict'
 
+/** @param {import('@playwright/test').Page} page */
+const checkShadowControls = async page => {
+  await page.evaluate(async () => {
+    const host = document.createElement('section')
+
+    host.id = 'scoped-shadow-controls'
+
+    const scope = host.attachShadow({ mode: 'open' })
+
+    scope.innerHTML = `<div data-ui-popover><button data-ui-trigger aria-controls="shadow-panel">Open scoped popover</button>
+      <div id="shadow-panel" hidden><button>First item</button><button>Second item</button><button>Third item</button></div></div>
+      <div data-ui-tabs><div role="tablist"><button role="tab">First scoped tab</button><button role="tab">Second scoped tab</button></div>
+      <div role="tabpanel">First scoped panel</div><div role="tabpanel">Second scoped panel</div></div>
+      <button data-ui-dialog-trigger="shadow-dialog">Open scoped dialog</button>
+      <dialog id="shadow-dialog" data-ui-dialog aria-label="Scoped dialog"><button data-ui-dialog-close>Close scoped dialog</button></dialog>`
+
+    await window.LumenInitUiPrimitives(scope)
+
+    document.body.append(host)
+  })
+
+  const host = page.locator('#scoped-shadow-controls')
+  const popover = host.getByRole('button', { name: 'Open scoped popover' })
+
+  await popover.focus()
+
+  await page.keyboard.press('ArrowDown')
+
+  await host.getByRole('button', { name: 'First item' }).waitFor({ state: 'visible' })
+
+  await page.keyboard.press('ArrowDown')
+
+  await page.keyboard.press('ArrowDown')
+
+  assert.equal(await host.getByRole('button', { name: 'Third item' }).evaluate(element => element.matches(':focus')), true)
+
+  await page.keyboard.press('Escape')
+
+  assert.equal(await popover.getAttribute('aria-expanded'), 'false')
+
+  await popover.click()
+
+  await page.getByRole('button', { name: 'Second scoped toggle' }).click()
+
+  assert.equal(await popover.getAttribute('aria-expanded'), 'false')
+
+  await host.getByRole('tab', { name: 'Second scoped tab' }).click()
+
+  assert.equal(await host.getByRole('tabpanel').textContent(), 'Second scoped panel')
+
+  const trigger = host.getByRole('button', { name: 'Open scoped dialog' })
+  const dialog = host.getByRole('dialog', { name: 'Scoped dialog' })
+
+  await trigger.click()
+
+  await dialog.waitFor({ state: 'visible' })
+
+  await page.keyboard.press('Escape')
+
+  await dialog.waitFor({ state: 'hidden' })
+
+  assert.equal(await trigger.evaluate(element => element.matches(':focus')), true)
+}
+
 /** @param {import('@playwright/test').Browser} browser @param {string} origin */
 export const checkScopedInitialization = async (browser, origin) => {
   const page = await browser.newPage()
@@ -66,6 +130,8 @@ export const checkScopedInitialization = async (browser, origin) => {
   await dialog.waitFor({ state: 'hidden' })
 
   await page.waitForFunction(() => document.activeElement?.textContent === 'Open dynamic dialog')
+
+  await checkShadowControls(page)
 
   assert.deepEqual(errors, [])
 
@@ -146,7 +212,60 @@ const featureAsset = (graph, suffix) => {
 
 /** @param {import('@playwright/test').Browser} browser @param {string} origin
  * @param {Record<string, string[]>} graph */
+const checkColdDismissal = async (browser, origin, graph) => {
+  const page = await browser.newPage()
+  const asset = featureAsset(graph, '/runtime/dismissal.ts')
+  let release = () => undefined
+  const held = new Promise(resolve => { release = resolve })
+
+  await page.route(`**/${asset}`, async route => {
+    await held
+
+    await route.continue()
+  })
+
+  await page.goto(`${origin}/static-runtime/`)
+
+  await page.waitForLoadState('networkidle')
+
+  const started = page.waitForRequest(`**/${asset}`)
+
+  await page.evaluate(() => {
+    const root = document.createElement('div')
+
+    root.dataset.uiPopover = ''
+
+    root.innerHTML = '<button data-ui-trigger aria-controls="cold-panel">Cold popover</button><div id="cold-panel" hidden><button>Inside</button></div>'
+
+    document.body.append(root)
+
+    void window.LumenInitUiPrimitives(root)
+  })
+
+  await started
+
+  const trigger = page.getByRole('button', { name: 'Cold popover' })
+
+  await trigger.click()
+
+  assert.equal(await trigger.getAttribute('data-ui-bound'), null, 'Activation waits for dismissal readiness.')
+
+  release()
+
+  await page.locator('#cold-panel').waitFor({ state: 'visible' })
+
+  await page.getByRole('heading').first().click()
+
+  await page.locator('#cold-panel').waitFor({ state: 'hidden' })
+
+  await page.close()
+}
+
+/** @param {import('@playwright/test').Browser} browser @param {string} origin
+ * @param {Record<string, string[]>} graph */
 export const checkColdInteractions = async (browser, origin, graph) => {
+  await checkColdDismissal(browser, origin, graph)
+
   const asset = featureAsset(graph, '/runtime/controllers/dialogs.ts')
 
   for (const activation of ['click', 'Enter', 'Space']) {

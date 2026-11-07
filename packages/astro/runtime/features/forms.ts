@@ -1,3 +1,4 @@
+import { getScopeTarget } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
 // cspell:words spinbutton
@@ -46,7 +47,7 @@ const getFieldControl = (root: HTMLElement): HTMLElement | null => {
   const controlId = root.dataset.uiFieldControl
 
   if (controlId) {
-    const control = root.ownerDocument.getElementById(controlId)
+    const control = getScopeTarget(root, controlId)
 
     if (isFormHtmlElement(control)) return control
   }
@@ -227,7 +228,7 @@ const bindForms = (form: HTMLFormElement): void => {
 
     const link = target.closest<HTMLAnchorElement>('[data-ui-error-summary] a[href^="#"]')
     const controlId = link?.hash.slice(1)
-    const control = controlId ? form.ownerDocument.getElementById(controlId) : null
+    const control = controlId ? getScopeTarget(form, controlId) : null
 
     if (!link || !isFormHtmlElement(control) ||
       !(isNativeFormControl(control) ? control.form === form : form.contains(control))) return

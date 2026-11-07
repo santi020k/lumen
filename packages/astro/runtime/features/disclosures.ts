@@ -1,3 +1,4 @@
+import { getScopeActiveElement } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
 import { getFocusable, getLoopedIndex, getPanel, nextAnchorName, setOpen, supportsAnchoredPopovers } from './shared.js'
@@ -92,7 +93,7 @@ const bindDisclosures = (root: HTMLElement): void => {
 
     event.preventDefault()
 
-    const currentIndex = items.findIndex(item => item === document.activeElement)
+    const currentIndex = items.findIndex(item => item === getScopeActiveElement(panel))
     const nextItem = items[getLoopedIndex(event.key, Math.max(0, currentIndex), items.length, ['ArrowDown'])]
 
     nextItem?.focus()
@@ -124,7 +125,7 @@ const bindDisclosures = (root: HTMLElement): void => {
     })
 
     root.addEventListener('mouseleave', () => {
-      if (!root.contains(root.ownerDocument.activeElement)) setOpen(trigger, panel, false)
+      if (!root.contains(getScopeActiveElement(root))) setOpen(trigger, panel, false)
     })
 
     root.addEventListener('focusin', event => {

@@ -1,3 +1,4 @@
+import { getScopeActiveElement, getScopeTarget } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
 import { getFocusable, getLoopedIndex } from './shared.js'
@@ -37,12 +38,12 @@ const openContextMenuAt = (menu: HTMLElement, x: number, y: number): void => {
 const bindContextMenus = (target: HTMLElement): void => {
   if (target.dataset.uiBound === 'true') return
 
-  target.dataset.uiBound = 'true'
-
   const menuId = target.getAttribute('data-ui-context-menu-trigger')
-  const menu = menuId ? document.getElementById(menuId) : null
+  const menu = menuId ? getScopeTarget(target, menuId) : null
 
   if (!menu) return
+
+  target.dataset.uiBound = 'true'
 
   menu.hidden = true
 
@@ -83,7 +84,7 @@ const bindContextMenus = (target: HTMLElement): void => {
 
     event.preventDefault()
 
-    const currentIndex = items.findIndex(item => item === menu.ownerDocument.activeElement)
+    const currentIndex = items.findIndex(item => item === getScopeActiveElement(menu))
 
     const nextIndex = currentIndex < 0 && event.key === 'ArrowUp' ?
       items.length - 1 :

@@ -1,7 +1,7 @@
 import type { ToastApi } from './features/toast.js'
 import { runtimeFeatures } from './features.js'
 import { matchesScope } from './scope.js'
-import type { LumenRuntimeController, LumenRuntimeDismissal, LumenRuntimeFeature } from './types.js'
+import type { LumenRuntimeController, LumenRuntimeFeature } from './types.js'
 
 const loaded = new Map<LumenRuntimeFeature, LumenRuntimeController>()
 const pending = new Map<LumenRuntimeFeature, Promise<LumenRuntimeController>>()
@@ -27,11 +27,7 @@ const loadFeature = (feature: LumenRuntimeFeature): Promise<LumenRuntimeControll
 
   if (current) return current
 
-  const request = feature.load().then(controller => {
-    loaded.set(feature, controller)
-
-    return controller
-  }).catch((error: unknown) => {
+  const request = feature.load().catch((error: unknown) => {
     pending.delete(feature)
 
     throw error
@@ -50,9 +46,12 @@ interface FeatureRequest {
 const initializeFeatures = async (requests: readonly FeatureRequest[]): Promise<void> => {
   const revision = navigation
 
-  const results = await Promise.allSettled(requests.map(async ({ feature, scope }) => ({
-    controller: await loadFeature(feature), name: feature.name, scope
-  })))
+  const results = await Promise.allSettled(requests.map(async ({ feature, scope }) => {
+    const controller = await loadFeature(feature)
+    const dismissal = controller.outside || controller.escape ? await import('./dismissal.js') : undefined
+
+    return { controller, dismissal, feature, scope }
+  }))
 
   if (revision !== navigation) return
 
@@ -65,11 +64,15 @@ const initializeFeatures = async (requests: readonly FeatureRequest[]): Promise<
       continue
     }
 
-    const { controller, name, scope } = result.value
+    const { controller, dismissal, feature, scope } = result.value
+
+    dismissal?.bindDismissal(controller, scope)
 
     controller.init(scope)
 
-    if (name === 'toast') toastReady = true
+    loaded.set(feature, controller)
+
+    if (feature.name === 'toast') toastReady = true
   }
 
   if (errors.length) throw new AggregateError(errors, 'Unable to load one or more Lumen controllers.')
@@ -85,40 +88,6 @@ export const initUiPrimitives = async (scope: ParentNode = document): Promise<vo
   if (revision === navigation) document.dispatchEvent(new CustomEvent('ui:ready', { detail: { scope } }))
 }
 
-const closeOutside = (event: MouseEvent): void => {
-  if (!(event.target instanceof Node)) return
-
-  for (const { outside } of loaded.values()) {
-    if (!outside) continue
-
-    for (const root of document.querySelectorAll<HTMLElement>(outside.selector)) {
-      if (!root.contains(event.target)) outside.close(root)
-    }
-  }
-}
-
-const matchesDismissal = (target: HTMLElement, dismissal: LumenRuntimeDismissal | undefined): boolean => (
-  dismissal !== undefined && target.matches(dismissal.selector) && dismissal.isOpen?.(target) !== false
-)
-
-const closeOnEscape = (event: KeyboardEvent): void => {
-  if (event.defaultPrevented || event.isComposing || event.key !== 'Escape') return
-
-  for (const target of event.composedPath()) {
-    if (!(target instanceof HTMLElement)) continue
-
-    for (const { escape } of loaded.values()) {
-      if (!escape || !matchesDismissal(target, escape)) continue
-
-      event.preventDefault()
-
-      escape.close(target, true)
-
-      return
-    }
-  }
-}
-
 const requestToast = async (perform: (api: ToastApi) => void): Promise<void> => {
   const feature = runtimeFeatures.find(candidate => candidate.name === 'toast')
 
@@ -130,6 +99,8 @@ const requestToast = async (perform: (api: ToastApi) => void): Promise<void> => 
   if (revision !== navigation) return
 
   controller.init(document)
+
+  loaded.set(feature, controller)
 
   toastReady = true
 
@@ -259,10 +230,6 @@ export const installRuntime = (): void => {
     document.addEventListener('click', bindBeforeClick, true)
 
     document.addEventListener('keydown', bindBeforeKey, true)
-
-    document.addEventListener('click', closeOutside)
-
-    document.addEventListener('keydown', closeOnEscape)
 
     document.addEventListener('astro:before-swap', () => {
       navigation += 1

@@ -110,6 +110,9 @@ or shadow root, including detached content prepared before insertion. Scoped ini
 sibling controls for their own initialization. Repeated interactions initialize their owning
 feature root, including the containing form or code block for compound controls. Dialog triggers
 also initialize their referenced dialog before opening it.
+Compound control IDs resolve within their owning DOM tree, so shadow content does not select
+an unrelated document element with the same ID. Initialized shadow popovers retain outside-click
+dismissal. Document navigation and Anchor links retain native document-fragment URL semantics.
 A failed module does not prevent other available controllers from initializing. The returned promise
 rejects with an `AggregateError`; automatic initialization reports `ui:runtime-error` and a browser
 error. Keep native fallbacks and provide a reload path for unavailable deployment assets.
