@@ -60,6 +60,17 @@ Pair the mark with the restrained serif wordmark and keep product UI copy in the
 smaller `ui` suffix is a quiet descriptor, not a separate accent. The contrast should feel editorial
 and intentional, not decorative.
 
+## Lu mascot
+
+Lu is Lumen’s calm, curious lantern companion: a rounded ivory shell, cyan feet and trim,
+a softly lit face, and one warm amber flame. Preserve the approved 2.5D artwork, proportions,
+palette, and silhouette. Lu complements the logo and never replaces it.
+
+Use the optional `@santi020k/lumen/lu` player and the artwork exported under `lu/` so projects
+share one source. Idle is a gentle breath and blink; thinking is a small tilt with a cheek touch;
+celebration is one happy hop followed by idle. Keep Lu supplemental to clear product status text,
+provide pause controls, and honor reduced motion. See the [integration guide](https://lumen.santi020k.com/docs/lu).
+
 ## Interface Principles
 
 - Prioritize legibility, focus states, keyboard access, and predictable composition.
