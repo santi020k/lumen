@@ -1,0 +1,19 @@
+.lumen-lu {
+  display: inline-block;
+  width: var(--lu-size, 240px);
+  max-width: 100%;
+  aspect-ratio: 320 / 352;
+  background-repeat: no-repeat;
+  background-size: 800% 300%;
+  vertical-align: middle;
+}
+
+.lumen-lu > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.lumen-lu[data-lu-ready="true"] > img {
+  visibility: hidden;
+}

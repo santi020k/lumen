@@ -34,6 +34,7 @@
 <summary>Browse all sections</summary>
 
 - [Install](#install)
+- [Lu mascot](#lu-mascot)
 - [Typography](#typography)
 - [Commands](#commands)
 - [Version migration previews](#version-migration-previews)
@@ -71,6 +72,46 @@ pnpm add @santi020k/lumen
 Set direction with the `dir` attribute on `html` or a containing element. Select and NativeSelect
 place their chevron from the nearest `dir="rtl"` or `dir="ltr"` ancestor, so nested LTR regions
 inside RTL work even when a consumer CSS pipeline compiles `:dir()` into language selectors.
+
+
+## Lu mascot
+
+Import `@santi020k/lumen/lu` to reuse Lu's idle, thinking, and celebration animations.
+The entry point is optional, has no runtime dependencies, and is not imported by
+the package root or framework adapters.
+
+```ts
+import { mountLu } from '@santi020k/lumen/lu'
+import '@santi020k/lumen/lu/styles.css'
+import atlas from '@santi020k/lumen/lu/sprites.webp?url'
+
+const element = document.querySelector<HTMLElement>('[data-lu]')
+
+if (element) {
+  const lu = mountLu(element, { atlas })
+  lu.setState('thinking')
+  lu.play()
+  // lu.setState('celebration') // One hop, then idle.
+  // lu.pause()
+  // lu.destroy() // On unmount.
+}
+```
+
+Keep an image child using `@santi020k/lumen/lu/still.webp` inside a
+`class="lumen-lu"` host, with an accessible name or `aria-hidden="true"` for decoration.
+The `?url` syntax above is for Vite/Astro; other bundlers can copy the exported
+artwork to their public directory and pass its URL. Set `--lu-size` to control width.
+
+Playback starts paused. Bind a visible Lumen Button to play/pause when enabling
+autoplay. The player honors reduced motion, loads the atlas when visible, pauses
+offscreen and in hidden tabs, and preserves the still on loading errors.
+`onChange(snapshot)` reports state, requested playback, reduced motion and
+`loading | ready | error` status. Each mount owns its state; destroy it before remounting.
+
+The `lu/manifest.json` export supplies atlas dimensions and frame timings for other
+renderers, including native projects. Keep meaningful progress and result text in
+your application. See the [Lu guide](https://lumen.santi020k.com/docs/lu) for Astro,
+React, accessibility, and asset integration.
 
 ## Typography
 

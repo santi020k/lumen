@@ -1,0 +1,186 @@
+---
+import { Card, CodeTabs, Link } from '@santi020k/lumen-astro'
+
+import CodeBlock from '../../components/CodeBlock.astro'
+import DocsPageHero from '../../components/DocsPageHero.astro'
+import LuDemo from '../../components/LuDemo.astro'
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const setup = `import { mountLu } from '@santi020k/lumen/lu'
+import '@santi020k/lumen/lu/styles.css'
+import atlas from '@santi020k/lumen/lu/sprites.webp?url'
+import still from '@santi020k/lumen/lu/still.webp?url'
+
+// Retain an image child as the loading and failure fallback.
+const host = document.querySelector<HTMLElement>('[data-project-lu]')
+if (host) {
+  const player = mountLu(host, { atlas })
+  // Bind these to your application's real actions:
+  player.setState('thinking')
+  player.play()
+  // player.setState('celebration') // Plays once, then returns to idle.
+  // player.pause()
+  // player.destroy() // Call when the view unmounts.
+}`
+
+const markup = `<span class="lumen-lu" data-project-lu role="img" aria-label="Lu, Lumen's light companion">
+  <img src={still} width="320" height="352" alt="" />
+</span>`
+
+const astro = `---
+import { Image } from '@santi020k/lumen-astro'
+import still from '@santi020k/lumen/lu/still.webp'
+import '@santi020k/lumen/lu/styles.css'
+---
+<span class="lumen-lu" data-project-lu role="img" aria-label="Lu">
+  <Image src={still} width={320} height={352} alt="" radius="none" />
+</span>
+<script>
+  import { mountLu, type LuPlayer } from '@santi020k/lumen/lu'
+  import atlas from '@santi020k/lumen/lu/sprites.webp?url'
+
+  const players = new Map<HTMLElement, LuPlayer>()
+  const mount = () => {
+    for (const host of document.querySelectorAll<HTMLElement>('[data-project-lu]')) {
+      if (players.has(host)) continue
+      const player = mountLu(host, { atlas })
+      // Connect a Lumen Button to player.play() and player.pause().
+      players.set(host, player)
+    }
+  }
+  mount()
+  document.addEventListener('astro:page-load', mount)
+  document.addEventListener('astro:before-swap', () => {
+    for (const player of players.values()) player.destroy()
+    players.clear()
+  })
+</script>`
+
+const react = `import { useEffect, useRef } from 'react'
+import { Image } from '@santi020k/lumen-react'
+import { mountLu, type LuPlayer, type LuState } from '@santi020k/lumen/lu'
+import atlas from '@santi020k/lumen/lu/sprites.webp?url'
+import still from '@santi020k/lumen/lu/still.webp?url'
+import '@santi020k/lumen/lu/styles.css'
+
+export function Lu({ state = 'idle', playing = false }: { state?: LuState; playing?: boolean }) {
+  const host = useRef<HTMLSpanElement>(null)
+  const player = useRef<LuPlayer | null>(null)
+  useEffect(() => {
+    if (!host.current) return
+    const current = mountLu(host.current, { atlas })
+    player.current = current
+    return () => {
+      current.destroy()
+      player.current = null
+    }
+  }, [])
+  useEffect(() => { player.current?.setState(state) }, [state])
+  useEffect(() => {
+    if (playing) player.current?.play()
+    else player.current?.pause()
+  }, [playing])
+  return <span ref={host} className="lumen-lu" role="img" aria-label="Lu">
+    <Image src={still} width={320} height={352} alt="" radius="none" />
+  </span>
+}`
+
+const examples = [
+  { label: 'Astro', value: 'astro', language: 'astro', code: astro },
+  { label: 'React with Vite', value: 'react', language: 'tsx', code: react }
+]
+---
+
+<DocsLayout title="Lu mascot: animation and project integration - Lumen UI" description="Meet Lu, Lumen’s animated lantern companion. Reuse idle, thinking, and celebration states with a small optional player, shared assets, and reduced-motion support.">
+  <DocsPageHero
+    compact
+    eyebrow="Lu mascot"
+    title="Meet Lu."
+    description="Lu is Lumen’s calm, curious companion. Use the same ivory lantern, cyan details, and warm flame across your websites and projects."
+  />
+
+  <section class="lu-guide-section" id="preview">
+    <h2>Try the three states</h2>
+    <p>Choose a state to start. Celebration plays once and returns to idle. Pause whenever you like.</p>
+    <Card class="lu-guide-preview"><LuDemo /></Card>
+  </section>
+
+  <section class="lu-guide-section" id="setup">
+    <h2>Use the shared player</h2>
+    <p>
+      Lu is an optional entry point in <code>@santi020k/lumen</code>. Import its player,
+      stylesheet, and artwork only where you use the mascot. The player has no runtime dependencies.
+    </p>
+    <CodeBlock code="pnpm add @santi020k/lumen" lang="shell" />
+    <p>
+      In Astro or Vite, import artwork with <code>?url</code> so your build emits the files.
+      For another bundler, serve the exported WebP files from your public directory and pass the
+      resulting atlas URL. Retain the still image inside the mascot element.
+    </p>
+    <CodeBlock code={markup} lang="html" />
+    <CodeBlock code={setup} lang="typescript" />
+    <p>
+      Use <code>onChange</code> to keep your controls in sync with <code>state</code>,
+      <code>playing</code>, <code>reducedMotion</code>, and loading <code>status</code>.
+      Notifications describe state changes, not individual animation frames.
+    </p>
+  </section>
+
+  <section class="lu-guide-section" id="frameworks">
+    <h2>Keep state in your framework</h2>
+    <p>
+      Use your existing Lumen buttons for play and pause. Each instance has its own player.
+      Call <code>destroy()</code> when removing the view; it cancels playback and restores the host element.
+    </p>
+    <CodeTabs items={examples} ariaLabel="Lu framework example" codeLabel="Lu integration example" />
+  </section>
+
+  <section class="lu-guide-section" id="accessibility">
+    <h2>Keep Lu considerate</h2>
+    <ul>
+      <li>Playback starts paused. If you enable autoplay, provide a visible pause control.</li>
+      <li>Reduced motion shows a still pose while keeping state selection available.</li>
+      <li>The atlas loads when Lu enters the viewport. Playback pauses offscreen and in hidden tabs.</li>
+      <li>Keep the still image available if JavaScript or the animation asset fails to load.</li>
+      <li>Use product text for progress, success, and errors. Lu is an additional visual cue.</li>
+      <li>Keep an accessible name, or hide the whole mascot from assistive technology when it is decorative.</li>
+    </ul>
+  </section>
+
+  <section class="lu-guide-section" id="assets">
+    <h2>Share one set of artwork</h2>
+    <p>
+      The <code>lu/sprites.webp</code> export contains an eight-column, three-row sheet.
+      Each cell is 320 × 352 pixels. <code>lu/manifest.json</code> describes the occupied
+      frames and their durations for a native animation view or another renderer.
+      <code>lu/still.webp</code> supplies the neutral fallback.
+    </p>
+    <p>
+      Set <code>--lu-size</code> on the host to change its width while preserving the aspect ratio.
+      Keep the palette, proportions, and warm flame intact. Lu complements the
+      <Link href="/docs/foundations">shared foundations</Link> and does not replace the Lumen logo.
+    </p>
+  </section>
+</DocsLayout>
+
+<style>
+  .lu-guide-section {
+    display: grid;
+    gap: var(--ui-space-lg);
+    margin-block: clamp(2rem, 4vw, 3rem);
+  }
+
+  .lu-guide-section h2,
+  .lu-guide-section p { margin: 0; }
+
+  .lu-guide-section h2 {
+    font-size: clamp(1.35rem, 2vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .lu-guide-section p,
+  .lu-guide-section li { color: hsl(var(--ink-soft)); line-height: 1.7; }
+
+  .lu-guide-preview { padding: clamp(1rem, 3vw, 2rem); }
+</style>

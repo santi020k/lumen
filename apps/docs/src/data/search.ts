@@ -264,6 +264,14 @@ const recipeItems: DocsSearchItem[] = [
     type: 'Recipe'
   },
   {
+    category: 'Brand',
+    description: 'Meet Lu and reuse the idle, thinking, and celebration animations in your projects.',
+    href: '/docs/lu',
+    keywords: 'lu mascot pet animation sprite idle thinking celebration reduced motion',
+    title: 'Lu mascot',
+    type: 'Recipe'
+  },
+  {
     category: 'Figma',
     description:
       'Find the Lumen UI Library, Templates, and Playgrounds on Figma Community, and learn how design maps to code.',
