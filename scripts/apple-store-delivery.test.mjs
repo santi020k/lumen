@@ -32,7 +32,7 @@ test('delivery rejects source branches before reading signing credentials', () =
   assert.doesNotMatch(result.stderr, /Missing required signing credential/u);
 });
 
-test('delivery scopes Mac distribution signing and preserves iOS development archives', async () => {
+test('delivery uses manual distribution signing for iOS and Mac archives', async () => {
   const root = await mkdtemp(join(tmpdir(), 'lumen-delivery-test-'));
   const bin = join(root, 'bin');
 
@@ -67,15 +67,13 @@ if [[ "$1" != -exportArchive ]]; then
   /bin/mkdir -p "$payload"
   touch "$payload/resource.json"
   if [[ "$MOCK_PRIVATE_PAYLOAD" == true ]]; then chmod 600 "$payload/resource.json"; fi
-  if [[ "$APPLE_RELEASE_PLATFORM" == macOS ]]; then
-    if [[ "$*" != *"-xcconfig"* || "$*" == *"PROVISIONING_PROFILE_SPECIFIER="* || "$*" == *"CODE_SIGN_STYLE=Automatic"* ]]; then exit 65; fi
-    if [[ "$("$MOCK_REAL_NODE" -p 'require("node:fs").statSync(process.env.LUMEN_SIGNING_TEMP + "/ArchiveSigning.xcconfig").mode & 511')" != 384 ]]; then exit 65; fi
-  elif [[ "$*" != *"CODE_SIGN_STYLE=Automatic"* || "$*" != *"CODE_SIGN_IDENTITY=Apple Development"* ]]; then
-    echo "Automatic development signing conflicts with a forced distribution identity" >&2
+  if [[ "$*" != *"-xcconfig"* || "$*" == *"PROVISIONING_PROFILE_SPECIFIER="* || "$*" == *"CODE_SIGN_STYLE=Automatic"* || "$*" == *"-allowProvisioningUpdates"* ]]; then
+    echo "Archive must use target-scoped distribution signing without provisioning updates" >&2
     exit 65
   fi
+  if [[ "$("$MOCK_REAL_NODE" -p 'require("node:fs").statSync(process.env.LUMEN_SIGNING_TEMP + "/ArchiveSigning.xcconfig").mode & 511')" != 384 ]]; then exit 65; fi
   if [[ "$*" == *"OTHER_CODE_SIGN_FLAGS="* ]]; then
-    echo "Development signing must search both temporary and login keychains" >&2
+    echo "Archive signing must use the configured keychain search list" >&2
     exit 65
   fi
   if [[ "$*" != *"DEVELOPMENT_TEAM=BY4995HQ3J"* ]]; then
@@ -124,13 +122,13 @@ printf "%s\\n" "$@" >> "$MOCK_LOG"`,
 
       const commands = await readFile(log, 'utf8');
 
-      assert.equal(commands.includes('CODE_SIGN_IDENTITY=Apple Development'), platform === 'iOS');
+      assert.ok(!commands.includes('CODE_SIGN_IDENTITY=Apple Development'));
 
       assert.ok(commands.includes('DEVELOPMENT_TEAM=BY4995HQ3J'));
 
       assert.ok(!commands.includes('OTHER_CODE_SIGN_FLAGS='));
 
-      if (platform === 'iOS') assert.match(commands, /CODE_SIGN_STYLE=Automatic/u);
+      if (platform === 'iOS') assert.match(commands, /-xcconfig[\s\S]*archive\n-exportArchive/u);
       else assert.match(commands, /-xcconfig[\s\S]*archive\nsignatures\n-exportArchive/u);
 
       assert.match(commands, /archive\n[\s\S]*-exportArchive/u);

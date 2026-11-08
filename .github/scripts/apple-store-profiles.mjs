@@ -158,9 +158,13 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     }
   }
 
-  if (platform === 'macOS') {
-    writeFileSync(join(work, 'ArchiveSigning.xcconfig'), `CODE_SIGN_STYLE = Manual\nCODE_SIGN_IDENTITY = ${fingerprint}\nLUMEN_MAC_APP_STORE_PROFILE = ${profiles[0].attributes.uuid}\n`, { mode: 0o600 });
+  const archiveProfiles = platform === 'iOS'
+    ? `LUMEN_IOS_APP_STORE_PROFILE = ${profiles[0].attributes.uuid}\nLUMEN_IOS_WIDGET_STORE_PROFILE = ${profiles[1].attributes.uuid}\n`
+    : `LUMEN_MAC_APP_STORE_PROFILE = ${profiles[0].attributes.uuid}\n`;
 
+  writeFileSync(join(work, 'ArchiveSigning.xcconfig'), `CODE_SIGN_STYLE = Manual\nCODE_SIGN_IDENTITY = ${fingerprint}\n${archiveProfiles}`, { mode: 0o600 });
+
+  if (platform === 'macOS') {
     writeFileSync(join(work, 'distribution-fingerprint.txt'), fingerprint, { mode: 0o600 });
   }
 
