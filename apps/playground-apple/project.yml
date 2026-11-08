@@ -42,6 +42,7 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         MARKETING_VERSION: 1.0.4
         PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.apple
+        PROVISIONING_PROFILE_SPECIFIER: "$(LUMEN_IOS_APP_STORE_PROFILE)"
         SWIFT_VERSION: 6.0
         TARGETED_DEVICE_FAMILY: "1,2"
         VERSIONING_SYSTEM: apple-generic
@@ -122,6 +123,7 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         MARKETING_VERSION: 1.0.4
         PRODUCT_BUNDLE_IDENTIFIER: com.santi020k.lumen.playground.apple.widget
+        PROVISIONING_PROFILE_SPECIFIER: "$(LUMEN_IOS_WIDGET_STORE_PROFILE)"
         SWIFT_VERSION: 6.0
         TARGETED_DEVICE_FAMILY: "1,2"
   LumenWatchPlayground:

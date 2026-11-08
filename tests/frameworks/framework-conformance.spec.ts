@@ -716,6 +716,7 @@ test('visualSize renders equivalent form densities and preserves keyboard select
 
 test('React workflow retains validation when a native document listener cancels reset', async ({ page }) => {
   await page.goto('/visual/forms');
+  await expect(page.locator('html')).toHaveAttribute('data-fixture-ready', 'true');
   const input = page.getByRole('textbox', { name: 'Workflow value' });
   const validation = page.getByRole('status', { name: 'Workflow validation' });
   await input.fill('');

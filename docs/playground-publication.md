@@ -225,10 +225,9 @@ For public store delivery, `release-playground-apple.yml` and `release-playgroun
 `apple-store-release.yml` from merged main, in the protected `app-store` environment. They resolve
 build numbers from live App Store records, archive/sign/upload on the standard runner, and create
 an immutable source tag only after upload succeeds. The runtime signing script uses a temporary
-keychain and removes certificates, private key files, and archives on exit. iOS archives use automatic
-Apple Development signing with the team applied to every target. Mac archives use the validated
-distribution certificate for the app and Swift resource bundles, with the profile scoped to the app
-target. Before export, the Mac guard verifies the archive signature and checks each nested bundle
+keychain and removes certificates, private key files, and archives on exit. iOS and Mac archives use the validated distribution identity. The iOS app and widget each use
+their own App Store profile, and the Mac profile applies only to the app target. Swift resource
+bundles do not receive a provisioning profile. Before export, the Mac guard verifies the archive signature and checks each nested bundle
 certificate against that profile, rejecting development or mismatched signatures before upload.
 Before archiving, delivery downloads the active App Store profiles matching each bundle ID and
 imported distribution identity. It verifies each CMS signature and signer trust before reading
@@ -249,7 +248,8 @@ path. Do not create new credentials or mutate shared secrets without authorizati
 Keep Lumen's old Cloud store-release workflows deactivated after migration. Private repositories
 may keep them active. Re-enable a previous provider only with an explicit decision and deactivate
 its replacement first. Successful upload is not store review or customer release: verify App Store
-processing, select the matching signed build, submit for review, and keep manual rollout held.
+processing, select the matching signed build, and submit for review. Set the release method in
+App Store Connect according to the approved rollout plan.
 
 The Tour component capture replays its native XCTest interaction to open step one and reveal the
 target, matching the committed documentation image. Missing attachments fail the gate; comparison
