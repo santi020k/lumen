@@ -28,6 +28,8 @@ The plugin includes three skills, an optional reviewer agent, and the read-only 
 Claude Code starts the pinned catalog locally with Node.js and npx. No Lumen account or API key is
 required.
 
+Install from the original Lumen marketplace in Claude Code:
+
 ```text
 /plugin install lumen-ui --marketplace santi020k/lumen
 ```
