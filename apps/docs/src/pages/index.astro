@@ -31,6 +31,7 @@ import applePlaygroundPreview from '../../../playground-apple/Store/Screenshots/
 import FigmaCommunityLink from '../components/FigmaCommunityLink.astro'
 import HomePlatformShowcase from '../components/HomePlatformShowcase.astro'
 import HomeWorkbench from '../components/HomeWorkbench.astro'
+import LuDemo from '../components/LuDemo.astro'
 import { frameworkSetups } from '../data/docs'
 import { getPlatformGuide } from '../data/platforms'
 import { showcaseProjects } from '../data/showcase'
@@ -139,7 +140,7 @@ interface UseCase {
   stack: string
 }
 
-const featuredProjects = ['Astro Doctor', 'PostLens', 'Coolstead']
+const featuredProjects = ['Astro Doctor', 'PostLens', 'Between Contractions']
 
 const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   const project = showcaseProjects.find(item => item.name === name)
@@ -638,6 +639,19 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
       </Card>
     </section>
 
+    <section class="home-section home-container home-lu" aria-labelledby="lu-title">
+      <div class="home-section__head">
+        <Eyebrow>Meet Lu</Eyebrow>
+        <h2 id="lu-title">A little light.<br />A lot of character.</h2>
+        <p>
+          Lu is Lumen’s curious companion. Take a breath, think something through,
+          or celebrate a small win. Bring the same little light into your own project.
+        </p>
+        <ButtonLink href="/docs/lu" showArrow variant="inline">Bring Lu to your project</ButtonLink>
+      </div>
+      <LuDemo />
+    </section>
+
     <section class="home-principles">
       <div class="home-container">
         <ScrollReveal animation="slide-up">
@@ -664,6 +678,17 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
 </BaseLayout>
 
 <style>
+  .home-lu {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: var(--home-content-gap);
+  }
+
+  @media (max-width: 47.999rem) {
+    .home-lu { grid-template-columns: minmax(0, 1fr); }
+  }
+
   .home {
     --home-section-space: clamp(4rem, 7vw, 7rem);
     --home-content-gap: clamp(1.5rem, 3vw, 2.5rem);

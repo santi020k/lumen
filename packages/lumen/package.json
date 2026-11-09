@@ -1,6 +1,6 @@
 {
   "name": "@santi020k/lumen",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "publishConfig": {
     "access": "public"
   },
@@ -13,7 +13,8 @@
     "./styles/motion.css",
     "./styles/world-map.css",
     "./tailwind.css",
-    "./styles/**/*.css"
+    "./styles/**/*.css",
+    "./mascot/lu.css"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -46,7 +47,15 @@
     "./vite/build-report": {
       "types": "./dist/build-report-plugin.d.ts",
       "import": "./dist/build-report-plugin.js"
-    }
+    },
+    "./lu": {
+      "types": "./dist/lu.d.ts",
+      "import": "./dist/lu.js"
+    },
+    "./lu/styles.css": "./mascot/lu.css",
+    "./lu/sprites.webp": "./mascot/lu-sprites.webp",
+    "./lu/still.webp": "./mascot/lu-still.webp",
+    "./lu/manifest.json": "./dist/lu-manifest.json"
   },
   "files": [
     "bin",
@@ -61,7 +70,8 @@
     "LICENSE",
     "v4-migration.json",
     "tailwind.css",
-    "v5-migration.json"
+    "v5-migration.json",
+    "mascot"
   ],
   "bin": {
     "lumen": "./bin/lumen.mjs"

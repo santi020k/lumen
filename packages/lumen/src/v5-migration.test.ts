@@ -4,6 +4,7 @@ import { join } from 'node:path'
 
 import { expect, test } from 'vitest'
 
+import { bundledReleaseTarget } from './consumer-release-versions.js'
 import { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade } from './consumer-upgrade-audit.js'
 import { loadLumenV5Contract } from './v5-contract.js'
 import { formatLumenVersionMigration, migrateLumenVersion, migrateLumenVersionSource } from './version-migration.js'
@@ -40,7 +41,7 @@ test('v5 apply preserves source, CSS, patches and v4 ledgers while reporting exp
     expect(applied.changedFiles).toEqual([])
     expect(applied.changes).toEqual([])
     expect(applied.dependencies).toBeUndefined()
-    expect(applied.dependencyVersion).toBe('5.0.0')
+    expect(applied.dependencyVersion).toBe(await bundledReleaseTarget())
     expect(applied.consumerAudit).toEqual(preview.consumerAudit)
     const contract = await loadLumenV5Contract()
     expect(applied.consumerAudit?.contract).toEqual({ targetVersion: '5.0.0', status: contract.status, publication: contract.publication })
@@ -67,7 +68,7 @@ test('adoption is target-specific and never inferred from domain component names
     await writeFile(join(root, 'Domain.tsx'), 'import { Button, Timeline, Share } from "./domain"; export const View = () => <Button />')
     await mkdir(join(root, 'node_modules'))
     await writeFile(join(root, 'node_modules/ignored.css'), '@import "@santi020k/lumen/styles.css"')
-    const report = await inspectLumenConsumerUpgrade(root, '5.0.0')
+    const report = await inspectLumenConsumerUpgrade(root)
 
     expect(report.findings).toEqual([])
     expect(formatLumenConsumerUpgradeAudit(report)).toContain('not evidence of registry availability')
@@ -87,7 +88,7 @@ test('v5 audits Swift icon switches and refreshed palette usage', async () => {
   try {
     await writeFile(join(root, 'package.json'), '{}')
     await writeFile(join(root, 'Screen.swift'), 'import LumenUI\nlet icon: LumenIconName = .arrowLeft')
-    const report = await inspectLumenConsumerUpgrade(root, '5.0.0')
+    const report = await inspectLumenConsumerUpgrade(root)
     expect(report.findings.map(item => item.rule)).toContain('expanded-swift-icon-catalog')
     expect(report.findings.map(item => item.rule)).toContain('default-palette-refresh')
   } finally {

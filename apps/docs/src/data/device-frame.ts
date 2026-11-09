@@ -23,7 +23,7 @@ import { DeviceFrame } from '@santi020k/lumen-astro'
 
 <DeviceFrame device="macbook-pro" color="white">
   <iframe
-    src="/device-frame-demo"
+    src="/internal/device-frame-demo"
     title="Lumen component workspace"
     loading="lazy"
     sandbox=""

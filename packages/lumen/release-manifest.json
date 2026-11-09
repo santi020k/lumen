@@ -35,11 +35,11 @@
             "react": ">=19",
             "vite": "*"
           },
-          "version": "5.0.0"
+          "version": "5.1.0"
         },
         "@santi020k/lumen-mcp": {
           "peerDependencies": {},
-          "version": "5.0.0"
+          "version": "5.1.0"
         },
         "@santi020k/lumen-react": {
           "peerDependencies": {
@@ -74,9 +74,9 @@
     "swift": {
       "package": "https://github.com/santi020k/lumen.git",
       "revision": null,
-      "tag": "v5.0.0"
+      "tag": "v5.1.0"
     },
-    "version": "5.0.0"
+    "version": "5.1.0"
   },
   "migration": {
     "codemod": null,

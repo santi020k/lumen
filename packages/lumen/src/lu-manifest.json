@@ -1,0 +1,53 @@
+{
+  "name": "Lu",
+  "version": 1,
+  "width": 320,
+  "height": 352,
+  "columns": 8,
+  "rows": 3,
+  "atlas": "lu-sprites.webp",
+  "fallback": "lu-still.webp",
+  "states": {
+    "idle": {
+      "row": 0,
+      "frames": 6,
+      "durations": [
+        1700,
+        180,
+        100,
+        100,
+        220,
+        700
+      ],
+      "loop": true
+    },
+    "thinking": {
+      "row": 1,
+      "frames": 6,
+      "durations": [
+        440,
+        240,
+        360,
+        140,
+        260,
+        460
+      ],
+      "loop": true
+    },
+    "celebration": {
+      "row": 2,
+      "frames": 8,
+      "durations": [
+        140,
+        120,
+        100,
+        200,
+        100,
+        100,
+        140,
+        220
+      ],
+      "loop": false
+    }
+  }
+}

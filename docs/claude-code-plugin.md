@@ -25,7 +25,7 @@ Run `/reload-plugins` if Claude Code asks you to activate the new plugin. The bu
 namespaced as `/lumen-ui:lumen-ui`; Claude can also invoke it automatically when a request matches
 its description.
 
-Plugin 1.1.0 pins `@santi020k/lumen-mcp@5.0.0` through `npx`, matching the Codex package. Plugin
+Plugin 1.1.0 pins `@santi020k/lumen-mcp@5.1.0` through `npx`, matching the Codex package. Plugin
 distribution requires the pinned MCP package and matching marketplace revision to be public. The
 ChatGPT/Codex directory update and Anthropic's reviewed marketplace have separate approval steps;
 those approvals are not required for a local development install. The 1.1.0 package in this release
@@ -81,3 +81,31 @@ separately. Before submitting Lumen UI:
 
 Submission, marketplace review, commits, and pushes change external state and are not performed by
 the repository validation command.
+
+### Automatic directory source updates
+
+Anthropic's scanner downloads the whole GitHub source repository. The standalone
+[`santi020k/lumen-claude-plugin`](https://github.com/santi020k/lumen-claude-plugin) repository is a
+generated mirror for the directory. Keep its `main` branch dedicated to the generated plugin.
+
+The **Sync Claude plugin** workflow runs after **Release** publishes a stable Lumen release on
+`main`. It exports the tagged Claude plugin, checks the exact MCP pin against npm, and pushes
+only changed plugin contents. The first sync uses the source plugin version. Later syncs use a
+newer source version when available and otherwise increment the mirror's patch version. Each
+mirror commit names the source Lumen tag. Rerun the workflow from `main` to sync the latest stable
+release after a setup or delivery failure.
+
+For one-time setup, create the empty public mirror repository with `main` as its default branch.
+Add a write-enabled deploy key restricted to that repository. Store its private key in the dedicated
+**Lumen Claude Plugin** Infisical project at `prod:/claude-plugin` as `CLAUDE_PLUGIN_DEPLOY_KEY`. Configure
+`INFISICAL_CLAUDE_PLUGIN_IDENTITY_ID` for the GitHub Actions OIDC identity and give it a viewer role
+in the dedicated project. Lumen uses the shared `github-actions-secrets` identity, whose existing
+OIDC trust covers repositories owned by `santi020k`. Set the
+`INFISICAL_CLAUDE_PLUGIN_PROJECT_SLUG` repository variable to the dedicated project's slug and keep
+that project limited to the mirror credential.
+
+After the first sync, submit the mirror's repository root in
+[Anthropic's developer portal](https://claude.ai/directory/manage) and track `main`. Scheduled
+checks pick up later pushes automatically. The initial submission requires the publisher's
+compliance acknowledgements. Anthropic controls security review and whether an approved version
+can publish automatically. See the [directory submission guide](https://claude.com/docs/plugins/submit).

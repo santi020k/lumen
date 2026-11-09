@@ -107,6 +107,12 @@ For visual changes, run `pnpm run test:visual` and the affected interaction/acce
 Check mobile and desktop, light and dark themes, keyboard navigation, and reduced motion.
 Use `pnpm run check:docs-performance` for the documented Lighthouse budgets.
 
+The public device showcase and React Native component demos are included in the sitemap.
+The device workspace under `/internal/` and the parameterized Expo preview under
+`/native-previews/` are iframe resources and remain excluded. Direct visits to an Expo
+preview show a link to the matching component documentation, or to the React Native
+playground when no component matches. The link is hidden when the preview is framed.
+
 ### SEO maintenance
 
 1. Review the Lumen Search Console property before choosing pages to improve. Compare equal

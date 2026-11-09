@@ -24,6 +24,7 @@ const items = [
 <Stack gap="lg" class="device-usage">
   <section aria-labelledby="device-content-title">
     <h2 id="device-content-title">Choose what goes on screen</h2>
+    <p><Link href="/device-frame-demo">Try the interactive device showcase</Link> to compare the same workspace across six viewports.</p>
     <div class="device-content-types"><div><h3>Image</h3><p>For screenshots and product artwork. Give the image meaningful alt text and match its aspect ratio to the frame.</p></div><div><h3>HTML</h3><p>For real components and interactive controls. Content shares the page viewport; use container queries to adapt to the frame.</p></div><div><h3>Iframe</h3><p>For a complete responsive app. The page inside gets the device viewport, then scales to fit the available space.</p></div></div>
     <p>Import <code>DeviceFrame</code> and the components in your example from <code>@santi020k/lumen-astro</code>. The framework example above includes React and Elements usage.</p>
     <CodeTabs recoveryLabel="Select and copy the complete example" items={items} ariaLabel="Device screen content examples" copy wrap />

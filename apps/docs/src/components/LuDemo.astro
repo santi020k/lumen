@@ -1,0 +1,83 @@
+---
+import '@santi020k/lumen/lu/styles.css'
+
+import luStill from '@santi020k/lumen/lu/still.webp'
+import { Button, Image } from '@santi020k/lumen-astro'
+---
+
+<div class="lu-demo" data-lu-demo data-docs-toc-ignore>
+  <div class="lu-demo__stage">
+    <span class="lumen-lu" role="img" aria-label="Lu, Lumen’s ivory lantern companion with cyan feet and a warm flame" data-lu-mascot>
+      <Image src={luStill} alt="" width={320} height={352} fit="contain" radius="none" />
+    </span>
+  </div>
+  <div class="lu-demo__controls" data-lu-controls inert role="group" aria-label="Lu animation">
+    <Button variant="outline" size="sm" data-lu-choice="idle" aria-pressed="true">Idle</Button>
+    <Button variant="outline" size="sm" data-lu-choice="thinking" aria-pressed="false">Thinking</Button>
+    <Button variant="outline" size="sm" data-lu-choice="celebration" aria-pressed="false">Celebrate</Button>
+    <Button variant="secondary" size="sm" data-lu-playback>Play</Button>
+  </div>
+  <p class="lu-demo__status" role="status" data-lu-status>Lu is resting.</p>
+</div>
+
+<script>
+  import { mountLuDemo } from '../lib/lu-demo'
+
+  const cleanups = new Map<HTMLElement, () => void>()
+
+  const mount = () => {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-lu-demo]')) {
+      if (!cleanups.has(root)) cleanups.set(root, mountLuDemo(root))
+    }
+  }
+
+  mount()
+
+  document.addEventListener('astro:page-load', mount)
+
+  document.addEventListener('astro:before-swap', () => {
+    for (const cleanup of cleanups.values()) cleanup()
+
+    cleanups.clear()
+  })
+</script>
+
+<style>
+  .lu-demo {
+    display: grid;
+    justify-items: center;
+    gap: var(--ui-space-lg);
+    min-width: 0;
+  }
+
+  .lu-demo__stage {
+    display: grid;
+    place-items: center;
+    width: 100%;
+  }
+
+  .lu-demo__stage .lumen-lu {
+    --lu-size: clamp(12rem, 24vw, 18rem);
+  }
+
+  .lu-demo__controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--ui-space-sm);
+  }
+
+  .lu-demo__controls :global(button[aria-pressed="true"]) {
+    border-color: hsl(var(--brand));
+    background: hsl(var(--brand-soft));
+    color: hsl(var(--ink));
+  }
+
+  .lu-demo__status {
+    margin: 0;
+    min-height: 1.5em;
+    color: hsl(var(--ink-soft));
+    font-size: .875rem;
+    text-align: center;
+  }
+</style>

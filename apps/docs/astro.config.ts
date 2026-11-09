@@ -19,7 +19,7 @@ export default defineConfig({
     filter: page => {
       const { pathname } = new URL(page)
 
-      return !pathname.startsWith('/internal/') && pathname !== '/device-frame-demo'
+      return !pathname.startsWith('/internal/')
     }
   })],
   ...(process.env.LUMEN_DOCS_OUT_DIR ?
