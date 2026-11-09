@@ -70,7 +70,7 @@ jobs:
           method: oidc
           oidc-audience: https://github.com/santi020k
           identity-id: ${{ vars.INFISICAL_CLAUDE_PLUGIN_IDENTITY_ID }}
-          project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
+          project-slug: ${{ vars.INFISICAL_CLAUDE_PLUGIN_PROJECT_SLUG }}
           env-slug: prod
           secret-path: /claude-plugin
           secret-name: CLAUDE_PLUGIN_DEPLOY_KEY

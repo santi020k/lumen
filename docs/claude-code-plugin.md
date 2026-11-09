@@ -96,11 +96,12 @@ mirror commit names the source Lumen tag. Rerun the workflow from `main` to sync
 release after a setup or delivery failure.
 
 For one-time setup, create the empty public mirror repository with `main` as its default branch.
-Add a write-enabled deploy key restricted to that repository. Store its private key in the Lumen
-Infisical project at `prod:/claude-plugin` as `CLAUDE_PLUGIN_DEPLOY_KEY`. Configure
+Add a write-enabled deploy key restricted to that repository. Store its private key in the dedicated
+**Lumen Claude Plugin** Infisical project at `prod:/claude-plugin` as `CLAUDE_PLUGIN_DEPLOY_KEY`. Configure
 `INFISICAL_CLAUDE_PLUGIN_IDENTITY_ID` for an OIDC identity restricted to this workflow on Lumen
-`main`, with read access to that path. The workflow uses the existing
-`INFISICAL_PROJECT_SLUG` repository variable.
+`main`, with a viewer role in that dedicated project. Set the
+`INFISICAL_CLAUDE_PLUGIN_PROJECT_SLUG` repository variable to its slug. Keep this project limited
+to the mirror credential.
 
 After the first sync, submit the mirror's repository root in
 [Anthropic's developer portal](https://claude.ai/directory/manage) and track `main`. Scheduled
