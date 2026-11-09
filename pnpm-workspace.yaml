@@ -25,7 +25,7 @@ catalog:
   "@modelcontextprotocol/express": ^2.0.2
   "@modelcontextprotocol/server": ^2.4.0
   "@playwright/test": 1.65.0
-  "@react-native-community/datetimepicker": 9.2.1
+  "@react-native-community/datetimepicker": 9.3.0
   "@rive-app/canvas": 2.49.4
   "@santi020k/commitprompt": ^1.1.0
   "@santi020k/eslint-config-astro": ^3.1.7
@@ -74,13 +74,13 @@ catalog:
   lumen-astro-v5: npm:@santi020k/lumen-astro@5.0.0
   lumen-elements-v4: npm:@santi020k/lumen-elements@4.3.0
   lumen-react-v4: npm:@santi020k/lumen-react@4.3.0
-  motion: 14.9.1
+  motion: 14.10.1
   next: ^16.4.5
-  oxlint: 1.90.0
+  oxlint: 1.92.0
   postcss: 8.5.32
   postcss-selector-parser: 7.1.7
-  react: 19.3.0
-  react-dom: 19.3.0
+  react: 19.3.1
+  react-dom: 19.3.1
   react-hook-form: ^7.91.0
   react-native: 0.88.1
   react-native-web: ^0.21.4
@@ -100,11 +100,11 @@ catalog:
 catalogs:
   # Keep this group aligned with `expo install --check` for SDK 58.
   expo:
-    react: 19.3.0
-    react-dom: 19.3.0
+    react: 19.3.1
+    react-dom: 19.3.1
     react-native: 0.88.1
     react-native-safe-area-context: ~5.11.1
-    react-native-svg: 15.16.0
+    react-native-svg: 15.16.1
 ignoredBuiltDependencies:
   - esbuild
   - sharp
@@ -131,8 +131,8 @@ overrides:
   node-forge@1.4.0: 1.4.3
   postcss@8: 8.5.32
   qs@6: 6.16.1
-  react: 19.3.0
-  react-dom: 19.3.0
+  react: 19.3.1
+  react-dom: 19.3.1
   svgo@4: 4.1.0
   undici@>=7.0.0 <7.30.2: 7.30.2
   katex@<0.19.1: 0.19.1
