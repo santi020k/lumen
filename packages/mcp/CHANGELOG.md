@@ -1,5 +1,11 @@
 # @santi020k/lumen-mcp
 
+## 5.1.0
+
+### Patch Changes
+
+- Refresh the bundled release manifest and usage guidance for Lumen 5.1.0.
+
 ## 5.0.0
 
 - Refresh the bundled v5 migration contract and documentation with default-palette review and current theme guidance.

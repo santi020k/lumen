@@ -39,7 +39,7 @@
         },
         "@santi020k/lumen-mcp": {
           "peerDependencies": {},
-          "version": "5.0.0"
+          "version": "5.1.0"
         },
         "@santi020k/lumen-react": {
           "peerDependencies": {

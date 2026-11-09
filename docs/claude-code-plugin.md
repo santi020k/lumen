@@ -25,7 +25,7 @@ Run `/reload-plugins` if Claude Code asks you to activate the new plugin. The bu
 namespaced as `/lumen-ui:lumen-ui`; Claude can also invoke it automatically when a request matches
 its description.
 
-Plugin 1.1.0 pins `@santi020k/lumen-mcp@5.0.0` through `npx`, matching the Codex package. Plugin
+Plugin 1.1.0 pins `@santi020k/lumen-mcp@5.1.0` through `npx`, matching the Codex package. Plugin
 distribution requires the pinned MCP package and matching marketplace revision to be public. The
 ChatGPT/Codex directory update and Anthropic's reviewed marketplace have separate approval steps;
 those approvals are not required for a local development install. The 1.1.0 package in this release
