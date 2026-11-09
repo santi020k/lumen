@@ -1,5 +1,11 @@
 # @santi020k/lumen-astro
 
+## 5.2.0
+
+### Patch Changes
+
+- Add the Astro component keyword so the package can be discovered in Astro’s integrations directory.
+
 ## 5.0.0
 
 - Limit outside click and Escape dismissal to initialized Astro controls, respecting ownership by
