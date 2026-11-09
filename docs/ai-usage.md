@@ -102,7 +102,7 @@ Use the framework requested by the user. Every adapter shares the same Lumen fou
 | React Hook Form composites | `@santi020k/lumen-react-hook-form`                                     | `@santi020k/lumen-react-hook-form`           | Uses React styles                      |
 | Web Components             | `@santi020k/lumen-elements`                                            | `@santi020k/lumen-elements/define`           | Foundation + component CSS, or full `styles.css` |
 | React Native / Expo        | `@santi020k/lumen-react-native`                                        | `@santi020k/lumen-react-native`              | Not applicable                         |
-| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `5.2.0`  | `LumenUI`                                    | Not applicable                         |
+| Apple / SwiftUI            | Swift Package `https://github.com/santi020k/lumen`, pinned to `5.2.1`  | `LumenUI`                                    | Not applicable                         |
 | Android / Compose          | Maven Central `com.santi020k:lumen-compose:4.1.0`                       | `com.santi020k.lumen`                        | Not applicable                         |
 | Wear OS / Compose          | Maven Central `com.santi020k:lumen-compose-wear:4.1.0`                  | `com.santi020k.lumen`                        | Not applicable                         |
 | Package metadata           | `@santi020k/lumen-core`                                                | `@santi020k/lumen-core`                      | Not applicable                         |

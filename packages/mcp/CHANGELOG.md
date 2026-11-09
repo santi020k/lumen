@@ -1,5 +1,11 @@
 # @santi020k/lumen-mcp
 
+## 5.2.1
+
+### Patch Changes
+
+- Add human-readable titles to the Lumen MCP tools so Claude can display their names in the connector directory. Tool names, inputs, and read-only behavior are unchanged.
+
 ## 5.2.0
 
 ### Patch Changes
