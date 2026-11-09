@@ -89,11 +89,16 @@ Anthropic's scanner downloads the whole GitHub source repository. The standalone
 generated mirror for the directory. Keep its `main` branch dedicated to the generated plugin.
 
 The **Sync Claude plugin** workflow runs after **Release** publishes a stable Lumen release on
-`main`. It exports the tagged Claude plugin, checks the exact MCP pin against npm, and pushes
-only changed plugin contents. The first sync uses the source plugin version. Later syncs use a
-newer source version when available and otherwise increment the mirror's patch version. Each
-mirror commit names the source Lumen tag. Rerun the workflow from `main` to sync the latest stable
-release after a setup or delivery failure.
+`main`. It exports the tagged Claude plugin with the public HTTPS MCP and directory-compatible assets
+and agent metadata, then pushes only changed plugin contents. The original marketplace keeps its
+pinned local MCP. The directory mirror sends catalog queries to the hosted service under the
+[Lumen privacy policy](https://lumen.santi020k.com/privacy). Anthropic reviews that hosted service
+through a separate [connector submission](https://claude.com/docs/connectors/building/submission).
+
+The first sync uses the source plugin version. Later syncs use a newer source version when
+available and otherwise increment the mirror's patch version. Each mirror commit names the source
+Lumen tag. Rerun the workflow from `main` to sync the latest stable release after a setup or delivery
+failure.
 
 For one-time setup, create the empty public mirror repository with `main` as its default branch.
 Add a write-enabled deploy key restricted to that repository. Store its private key in the dedicated
