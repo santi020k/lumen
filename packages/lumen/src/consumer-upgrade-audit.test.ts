@@ -4,6 +4,7 @@ import { join } from 'node:path'
 
 import { describe, expect, test } from 'vitest'
 
+import { bundledReleaseTarget } from './consumer-release-versions.js'
 import { runConsumerRollout } from './consumer-rollout.js'
 import { inspectLumenConsumerUpgrade } from './consumer-upgrade-audit.js'
 
@@ -105,7 +106,7 @@ describe('consumer upgrade review signals', () => {
       await writeFile(join(root, 'package.json'), JSON.stringify({ dependencies: { '@santi020k/lumen-react': '^4.0.0' } }))
 
       expect((await inspectLumenConsumerUpgrade(root, '4.0.0')).findings).toEqual([])
-      expect((await inspectLumenConsumerUpgrade(root)).targetVersion).toBe('5.0.0')
+      expect((await inspectLumenConsumerUpgrade(root)).targetVersion).toBe(await bundledReleaseTarget())
 
       await expect(inspectLumenConsumerUpgrade(root, 'latest')).rejects.toThrow('exact semantic')
     } finally {

@@ -50,6 +50,11 @@ const expected = {
   '@santi020k/lumen-react-native': '4.1.0',
   '@santi020k/lumen-tokens': '4.1.0'
 }
+const releaseManifestSource = (versions: Readonly<Record<string, string>>) => JSON.stringify({
+  release: { npm: { packages: Object.fromEntries(
+    Object.entries(versions).map(([name, version]) => [name, { version }])
+  ) } }
+})
 const lock = (versions: Readonly<Record<string, string>>) => `packages:\n${Object.entries(versions)
   .map(([name, version]) => `  '${name}@${version}': {}`).join('\n')}\n`
 const roots: string[] = []
@@ -79,7 +84,7 @@ const fixture = async () => {
 }
 
 beforeEach(() => {
-  bundledManifest.source = undefined
+  bundledManifest.source = releaseManifestSource(expected)
   execution.run.mockReset().mockResolvedValue({ stdout: '', stderr: '' })
 })
 afterEach(async () => {
@@ -194,9 +199,7 @@ test('mapped workspace updates stay line-bounded across adversarial blank lines'
 test('future v5 CLI uses its bundled publication graph for source-only, dry-run and apply reports', async () => {
   const future = { ...expected, '@santi020k/lumen': '5.0.1', '@santi020k/lumen-astro': '5.0.1' }
 
-  bundledManifest.source = JSON.stringify({ release: { npm: { packages: Object.fromEntries(
-    Object.entries(future).map(([name, version]) => [name, { version }])
-  ) } } })
+  bundledManifest.source = releaseManifestSource(future)
   execution.run.mockImplementation(async (executable, args, options) => {
     if (executable === 'corepack' && args.includes('update')) {
       await writeFile(join(options.cwd, 'pnpm-lock.yaml'), lock(future))
