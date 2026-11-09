@@ -1,0 +1,51 @@
+---
+import { Badge, ButtonLink, Card } from '@santi020k/lumen-astro'
+
+import NativeLivePreview from '../../../../components/NativeLivePreview.astro'
+import { getNativeComponentsForPlatform, type NativeComponentDoc } from '../../../../data/native-components'
+import { getPlatformGuide } from '../../../../data/platforms'
+import DocsLayout from '../../../../layouts/DocsLayout.astro'
+
+export const getStaticPaths = () => getNativeComponentsForPlatform('react-native').map(component => ({
+  params: { slug: component.slug },
+  props: { component }
+}))
+
+interface Props {
+  component: NativeComponentDoc
+}
+
+const { component } = Astro.props
+const guide = { ...getPlatformGuide('react-native'), id: 'react-native' } as const
+const docsHref = `/docs/react-native/components/${component.slug}`
+const title = `${component.name} React Native demo`
+---
+
+<DocsLayout
+  description={`Try ${component.name} in the Lumen React Native playground. ${component.summary}`}
+  title={`${title} - Lumen UI`}
+>
+  <section class="docs-section" aria-labelledby="component-demo-title">
+    <div class="docs-section-heading">
+      <Badge variant="outline">Interactive preview</Badge>
+      <h1 id="component-demo-title">{title}</h1>
+      <p>{component.summary}</p>
+    </div>
+
+    <aside aria-label="Component documentation" data-demo-docs-banner>
+      <Card class="mb-4 flex flex-wrap items-center justify-between gap-3 p-4">
+        <p>See usage examples, accessibility guidance, and the component API.</p>
+        <ButtonLink href={docsHref} showArrow>Read {component.name} documentation</ButtonLink>
+      </Card>
+    </aside>
+
+    <script is:inline>
+      if (window.self !== window.top) {
+        document.querySelector('[data-demo-docs-banner]').hidden = true
+      }
+    </script>
+
+    <NativeLivePreview component={component} guide={guide} />
+    <p class="mt-4 text-ink-soft">{component.guidance}</p>
+  </section>
+</DocsLayout>

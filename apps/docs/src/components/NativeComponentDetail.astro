@@ -156,6 +156,7 @@ const appleAvailability = implementation.appleAvailability
       {hasLivePreview && (
         <div class="native-detail-live-preview">
           <NativeLivePreview component={component} guide={guide} />
+          <Link href={`/docs/react-native/demos/${component.slug}`}>Open the {component.name} demo</Link>
           <details class="native-detail-capture-evidence">
               <summary>View captured {guide.shortLabel} example</summary>
               <figure class={captureClass}>

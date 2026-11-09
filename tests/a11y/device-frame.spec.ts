@@ -8,13 +8,22 @@ test('the standalone device preview loads its own component styles without docum
 
     if (['.woff', '.woff2', '.ttf', '.otf'].some(extension => pathname.endsWith(extension))) fontRequests.push(pathname)
   })
-  await page.goto('/device-frame-demo')
+  await page.goto('/internal/device-frame-demo')
   await expect(page.getByRole('heading', { name: /A thoughtful start/ })).toBeVisible()
   await expect(page.locator('.ui-card').first()).toHaveCSS('display', 'flex')
   await expect(page.locator('.ui-badge')).toHaveCSS('align-items', 'center')
   await page.evaluate(() => document.fonts.ready)
   expect(fontRequests).toEqual([])
   expect(await page.evaluate(() => document.fonts.size)).toBe(0)
+})
+
+test('the device showcase is indexable and links to the component reference', async ({ page }) => {
+  await page.goto('/device-frame-demo')
+  await expect(page.getByRole('heading', { level: 1, name: 'One workspace across six device frames' })).toBeVisible()
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/device-frame-demo$/)
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^index,/)
+  await expect(page.getByRole('link', { name: 'Read the Device Frame docs' })).toHaveAttribute('href', '/docs/components/device-frame')
+  await expect(page.frameLocator('iframe[title="MacBook Pro Lumen workspace"]').getByRole('heading', { name: /A thoughtful start/ })).toBeVisible()
 })
 
 test('white, black and custom finishes preserve the screen content and dimensions', async ({ page }) => {
@@ -76,7 +85,7 @@ for (const width of [320, 1440]) {
         expect(frame.y + frame.height).toBeLessThanOrEqual(stage.y + stage.height + 1)
         const preview = slide.locator('iframe')
 
-        await expect(preview).toHaveAttribute('src', '/device-frame-demo')
+        await expect(preview).toHaveAttribute('src', '/internal/device-frame-demo')
         await preview.scrollIntoViewIfNeeded()
         const content = slide.frameLocator('iframe')
 
@@ -101,7 +110,7 @@ for (const width of [320, 1440]) {
       await expect(iframe).toHaveAttribute('title', 'MacBook Pro Lumen workspace')
       await expect(iframe).toHaveCSS('width', '1280px')
       await expect(iframe).toHaveCSS('height', '800px')
-      const content = page.frames().find(frame => frame.url().includes('/device-frame-demo'))
+      const content = page.frames().find(frame => frame.url().includes('/internal/device-frame-demo'))
 
       if (!content) throw new Error('Expected loaded demo iframe')
       expect(await content.evaluate(() => window.innerWidth)).toBe(1280)

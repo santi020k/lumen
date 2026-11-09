@@ -5,7 +5,7 @@ import { deviceExamples } from '../data/device-frame'
 
 const snippet = (device: typeof deviceExamples[number]): string => {
   const orientation = device.device === 'ipad-pro' ? ' orientation="landscape"' : ''
-  const content = '  <iframe src="/device-frame-demo" title="Lumen component workspace" loading="lazy" sandbox=""></iframe>'
+  const content = '  <iframe src="/internal/device-frame-demo" title="Lumen component workspace" loading="lazy" sandbox=""></iframe>'
 
   return `<DeviceFrame device="${device.device}" color="white"${orientation}>\n${content}\n</DeviceFrame>`
 }
@@ -29,7 +29,7 @@ const snippet = (device: typeof deviceExamples[number]): string => {
           <header class="device-slide-heading"><div><span>0{index + 1} / 0{deviceExamples.length}</span><h3>{device.label}</h3><p>{device.detail}</p></div><Badge variant="outline">Live iframe</Badge></header>
           <div class="device-gallery-stage">
             <DeviceFrame device={device.device} color="white" {...('orientation' in device ? { orientation: device.orientation } : {})}>
-              <iframe loading={index === 0 ? 'eager' : 'lazy'} sandbox="" src="/device-frame-demo" title={`${device.label} Lumen workspace`}></iframe>
+              <iframe loading={index === 0 ? 'eager' : 'lazy'} sandbox="" src="/internal/device-frame-demo" title={`${device.label} Lumen workspace`}></iframe>
             </DeviceFrame>
           </div>
           <div class="device-slide-meta"><span>{device.viewport} <span aria-hidden="true">·</span> Demo viewport</span><span>Responsive frame</span></div>
