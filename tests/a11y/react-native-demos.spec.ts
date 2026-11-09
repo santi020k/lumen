@@ -23,6 +23,11 @@ test('a raw preview opened directly links to the matching component documentatio
 
   expect(response?.ok()).toBe(true)
   await expect(page.getByRole('complementary', { name: 'React Native preview documentation' })).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Read the React Native preview documentation' })).toHaveAttribute('href', docsPath)
+  const docsLink = page.getByRole('link', { name: 'Read the React Native preview documentation' })
+
+  await expect(docsLink).toHaveAttribute('href', docsPath)
+  await expect(docsLink).toHaveCSS('color', await page.locator('#preview-docs-banner').evaluate(banner => getComputedStyle(banner).color))
+  await docsLink.hover()
+  await expect(docsLink).toHaveCSS('text-decoration-thickness', '2px')
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /^noindex\b/u)
 })

@@ -1,3 +1,6 @@
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
 import {
   cp,
   mkdir,
@@ -7,6 +10,8 @@ import {
 } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { Link } from '@santi020k/lumen-react/components/link'
 
 import { getNativeComponentsForPlatform } from '../src/data/native-components.ts'
 
@@ -34,6 +39,19 @@ await mkdir(targetRoot, { recursive: true })
 
 await cp(sourceRoot, targetRoot, { recursive: true })
 
+const linkStylesheet = import.meta.resolve('@santi020k/lumen-core/styles/components/link.css')
+
+// Preserve the published stylesheet's relative import in the standalone export.
+await cp(fileURLToPath(linkStylesheet), resolve(targetRoot, 'lumen/styles/components/link.css'))
+
+await cp(fileURLToPath(new URL('../parts/link.css', linkStylesheet)), resolve(targetRoot, 'lumen/styles/parts/link.css'))
+
+const docsLink = renderToStaticMarkup(createElement(Link, {
+  className: 'preview-docs-link',
+  href: '/docs/react-native/playground',
+  variant: 'inherit'
+}, 'Read the React Native preview documentation'))
+
 const docsByComponent = JSON.stringify(Object.fromEntries(
   getNativeComponentsForPlatform('react-native').map(component => [
     component.name.toLowerCase(),
@@ -44,18 +62,18 @@ const docsByComponent = JSON.stringify(Object.fromEntries(
 const embeddedIndex = indexHtml
   .replace(
     '</title>',
-    '</title>\n    <meta name="description" content="Interactive Lumen React Native component preview." />\n    <meta name="robots" content="noindex, nofollow" />'
+    `</title>\n    <meta name="description" content="Interactive Lumen React Native component preview." />\n    <meta name="robots" content="noindex, nofollow" />\n    <link rel="stylesheet" href="${publicPath}/lumen/styles/components/link.css" />`
   )
   .replace('<body>', `<body>
     <h1 hidden>Lumen React Native component preview</h1>
     <aside id="preview-docs-banner" aria-label="React Native preview documentation" hidden>
-      <a href="/docs/react-native/playground">Read the React Native preview documentation</a>
+      ${docsLink}
     </aside>
     <style>
       body[data-standalone-preview] { display: flex; flex-direction: column; }
       body[data-standalone-preview] #root { height: auto; min-height: 0; }
       #preview-docs-banner { padding: 0.75rem 1rem; font: 1rem/1.5 system-ui; background: Canvas; color: CanvasText; }
-      #preview-docs-banner a { display: inline-block; padding-block: 0.25rem; }
+      .preview-docs-link { display: inline-block; padding-block: 0.25rem; }
     </style>
     <script>
       if (window.self === window.top) {
