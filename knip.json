@@ -10,9 +10,20 @@
       "project": ["src/**/*.{ts,tsx}", "scripts/*.mjs"]
     },
     ".": {
-      "entry": ["scripts/check-maven-pom-metadata.mjs", "scripts/report-android-workspace-runtime.mjs"],
+      "entry": [
+        "scripts/check-maven-pom-metadata.mjs",
+        "scripts/report-android-workspace-runtime.mjs",
+        "examples/astro-starter/astro.config.mjs",
+        "examples/astro-starter/src/pages/**/*.astro"
+      ],
       "ignoreBinaries": ["codex", "infisical", "pod", "quality", "swift"],
-      "project": ["*.{js,css}", "scripts/*.mjs", "scripts/lib/named-themes.mjs", "scripts/lib/santi020k-site-colors.mjs"]
+      "project": [
+        "*.{js,css}",
+        "scripts/*.mjs",
+        "scripts/lib/named-themes.mjs",
+        "scripts/lib/santi020k-site-colors.mjs",
+        "examples/astro-starter/src/**/*.{astro,css,ts}"
+      ]
     },
     "apps/docs": {
       "entry": ["src/pages/**/*.astro", "scripts/**/*.{js,mjs}"],

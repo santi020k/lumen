@@ -229,6 +229,7 @@
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "ajv": "catalog:",
+    "astro": "catalog:",
     "cspell": "catalog:",
     "eslint": "catalog:",
     "jsdom": "catalog:",

@@ -542,6 +542,9 @@ importers:
       ajv:
         specifier: 'catalog:'
         version: 8.20.0
+      astro:
+        specifier: 'catalog:'
+        version: 7.4.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.8.3)
       cspell:
         specifier: 'catalog:'
         version: 10.4.0
