@@ -86,6 +86,11 @@ The docs check excludes the generated, ignored Expo preview bundle under
 checked by the React Native playground's own TypeScript commands. Checking that minified output
 again consumes excessive memory and reports generated-code hints without validating source types.
 
+The standalone Astro starter has its own dependency manifest and lockfile. Root development
+dependencies supply Astro and the workspace adapter for cold docs checks and Knip analysis; Knip
+explicitly includes the starter's configuration, routes, and sources. The downloadable project
+continues to install its own published dependencies independently.
+
 Knip treats the CLI's installable recipe scripts and standalone styles as explicit asset entries.
 The CLI is not an Astro application, so its Astro application-discovery plugin is disabled; its
 existing TypeScript/CSS analysis scope is unchanged. Installed Astro and React recipes are checked

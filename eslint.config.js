@@ -4,6 +4,14 @@ import { defineConfig } from '@santi020k/eslint-config-basic'
 export default defineConfig({
   ignores: ['**/.build/**', '**/.swiftpm/**'],
   projects: {
+    'examples/astro-starter': {
+      frameworks: {
+        astro: true
+      },
+      tailwind: {
+        noUnknownClasses: false
+      }
+    },
     'apps/motion': {
       frameworks: {
         astro: true

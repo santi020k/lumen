@@ -183,6 +183,20 @@ test("v2 release inputs trigger the workflow and select the web canary", () => {
   }
 });
 
+test("Astro starter source and regression tests trigger browser canaries", () => {
+  for (const [pattern, input] of [
+    ["examples/astro-starter/**", "examples/astro-starter/src/pages/index.astro"],
+    ["tests/a11y/astro-starter.spec.ts", "tests/a11y/astro-starter.spec.ts"],
+  ]) {
+    assert.ok(
+      canaryWorkflow.includes(`      - "${pattern}"`),
+      `${input} must trigger the workflow`,
+    );
+
+    assertSelectsCanary(input, "browser");
+  }
+});
+
 test("the web canary executes every v2 release gate", () => {
   assertOrderedCommands(canaryWorkflow, "release canary", [
     "pnpm run check:release-manifest",

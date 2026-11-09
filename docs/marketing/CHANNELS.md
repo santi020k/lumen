@@ -24,6 +24,7 @@ file only defines role and priority. No submission is recorded in this repositor
 
 | Channel | Role | Priority | Cadence |
 | --- | --- | --- | --- |
+| Astro Themes and Integrations directories | High-intent discovery for the free starter and the Astro component package | Primary for Astro discovery | One theme submission after public verification. Check the package listing after a published keyword update and directory refresh. |
 | Hacker News (Show HN) | One-time credibility launch to a technical audience | Secondary | Single post; personally written by Santiago per HN's no-AI-text rule |
 | Product Hunt | Structured launch listing with gallery assets | Secondary | Single scheduled launch |
 | Santiago's personal LinkedIn profile | English-first maker and engineering notes that connect Lumen decisions to product-team outcomes | Secondary | At most one post per week during an approved cycle; do not create a company page |

@@ -1,0 +1,183 @@
+---
+import '../../styles/ai-guides.css'
+
+import { Alert, Badge, ButtonLink, Code, CodeTabs, Container, Link, Prose, Stack } from '@santi020k/lumen-astro'
+
+import { getGuide } from '../../data/guides'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const guide = getGuide('/guides/build-an-astro-starter')
+const sourceUrl = 'https://github.com/santi020k/lumen/tree/main/examples/astro-starter'
+
+const runExamples = [
+  {
+    label: 'Downloaded starter',
+    value: 'download',
+    language: 'bash',
+    code: 'unzip lumen-astro-starter.zip\ncd lumen-astro-starter\npnpm install --frozen-lockfile\npnpm dev'
+  },
+  {
+    label: 'Repository checkout',
+    value: 'checkout',
+    language: 'bash',
+    code: 'git clone https://github.com/santi020k/lumen.git\ncd lumen/examples/astro-starter\npnpm install --frozen-lockfile\npnpm dev'
+  }
+] as const
+
+const compositionExample = `---
+import { Badge, Card, Stack } from '@santi020k/lumen-astro'
+---
+
+<Card as="section" aria-labelledby="activity-title">
+  <Stack gap="group">
+    <h2 id="activity-title">Project activity</h2>
+    <p>Your team's latest work, in one place.</p>
+    <Badge variant="outline">Updated today</Badge>
+  </Stack>
+</Card>`
+---
+
+<BaseLayout
+  article={{ author: guide.author, publishedAt: guide.publishedAt }}
+  breadcrumbs={[{ href: '/', label: 'Home' }, { href: '/guides', label: 'Guides' }, { href: guide.href, label: guide.title }]}
+  description={guide.description}
+  title={`${guide.title} — Lumen UI`}
+>
+  <Container as="main" class="ai-guide" size="md">
+    <Stack gap="section">
+      <Prose>
+        <Badge variant="outline">Free Astro starter · MIT license</Badge>
+        <h1>Start with a working screen. Make it yours.</h1>
+        <p>
+          Build from four editable Lumen templates with a shared theme picker. This walkthrough
+          takes you from the live preview to a local project, then through changing the content,
+          testing its interactions, and preparing a static build.
+        </p>
+        <p>By {guide.author} · <time datetime={guide.publishedAt}>November 9, 2026</time></p>
+      </Prose>
+
+      <Stack direction="horizontal" gap="related" wrap>
+        <ButtonLink href="/starters/astro" showArrow>Explore the starter</ButtonLink>
+        <ButtonLink href={sourceUrl} newTab variant="secondary">View source</ButtonLink>
+        <ButtonLink href="/downloads/lumen-astro-starter.zip" download variant="secondary">Download ZIP</ButtonLink>
+      </Stack>
+
+      <Prose>
+        <h2>1. Choose the screen closest to your project</h2>
+        <p>
+          Open the preview and follow its navigation. Each screen uses public Lumen Astro components,
+          so you can copy a composition, adjust its content, and keep using the same component APIs.
+        </p>
+        <ul>
+          <li><Link href="/starters/astro">Landing page</Link> introduces a product and connects its calls to action to the other templates.</li>
+          <li><Link href="/starters/astro/ecommerce">Ecommerce</Link> combines a product collection with an interactive local cart.</li>
+          <li><Link href="/starters/astro/dashboard">Dashboard</Link> demonstrates metrics that respond to a reporting period.</li>
+          <li><Link href="/starters/astro/portfolio">Portfolio</Link> organizes selected work with category filtering.</li>
+        </ul>
+        <p>
+          Use the theme and appearance controls to compare Lumen, Santi020k, Studio, Paper, Field,
+          Glass, and Harbor. Your selection follows you between the starter's pages.
+        </p>
+      </Prose>
+
+      <Stack as="section" gap="group" aria-labelledby="run-title">
+        <Prose>
+          <h2 id="run-title">2. Open your own copy</h2>
+          <p>
+            Download the ZIP or clone the repository to edit your own copy. Use the Node.js and pnpm versions declared
+            in the starter's <code>package.json</code>, then run the commands below.
+          </p>
+        </Prose>
+        <CodeTabs ariaLabel="Run the Astro starter locally" items={runExamples} />
+        <Prose>
+          <p>
+            Open the local address printed by Astro. The starter has its own manifest and lockfile,
+            so its published Lumen dependencies install independently of the contributor workspace.
+            Keep <code>pnpm-lock.yaml</code> when you copy or publish your project.
+          </p>
+        </Prose>
+      </Stack>
+
+      <Stack as="section" gap="group" aria-labelledby="edit-title">
+        <Prose>
+          <h2 id="edit-title">3. Edit the page you want to keep</h2>
+          <p>
+            The route files in <code>src/pages/</code> render <code>src/Starter.astro</code>.
+            That shared shell owns navigation, theme selection, and the Lumen runtime. Page content lives
+            in <code>src/components/Landing.astro</code>, <code>Storefront.astro</code>,
+            <code>Dashboard.astro</code>, and <code>Portfolio.astro</code>.
+          </p>
+          <p>
+            Start with <code>Dashboard.astro</code>. Change its heading to your product's name,
+            replace one metric with a representative value, and check each reporting period.
+            Keep metric labels, values, and chart data consistent as you replace the sample data.
+            Add a small section with public components when you need another content block.
+          </p>
+        </Prose>
+        <Code code={compositionExample} copy label="Compose a dashboard section" language="astro" variant="block" wrap />
+        <Prose>
+          <p>
+            Adjust layout in <code>src/styles/starter.css</code>. Use semantic roles such as
+            <code>hsl(var(--surface))</code>, <code>hsl(var(--ink))</code>, and
+            <code>hsl(var(--brand))</code> so your additions respond to every theme. Harbor's
+            editable example stylesheet is <code>src/styles/harbor.css</code>.
+            The shared shell already mounts <code>UIPrimitives</code> once.
+          </p>
+          <p>
+            After you choose the pages for your site, update navigation and remove unused route files.
+            Set your final title, description, site URL, and links before deploying.
+            Follow the <Link href="/docs/web/themes">web theme guide</Link> when extending the palette.
+          </p>
+        </Prose>
+      </Stack>
+
+      <Stack as="section" gap="group" aria-labelledby="behavior-title">
+        <Prose>
+          <h2 id="behavior-title">4. Connect your product's data and services</h2>
+          <p>
+            The cart, reporting periods, and project filters give you concrete interactions to adapt.
+            Keep the user-facing states clear while connecting the starter to your application.
+          </p>
+          <ul>
+            <li>For ecommerce, connect product availability and server-validated prices, then create checkout sessions through your payment provider.</li>
+            <li>For a dashboard, load authorized data for the selected date range and show loading, empty, and failed-request states.</li>
+            <li>For a portfolio, replace project examples and destinations with your own work and confirm every category has an appropriate result.</li>
+          </ul>
+        </Prose>
+        <Alert>
+          The storefront uses sample products and a local cart. Its checkout action displays a demo
+          notice. Add your commerce service and payment flow before accepting orders.
+        </Alert>
+      </Stack>
+
+      <Stack as="section" gap="group" aria-labelledby="verify-title">
+        <Prose>
+          <h2 id="verify-title">5. Verify and build</h2>
+          <p>
+            Test the changed screens at mobile and desktop widths in both appearance modes.
+            Use Tab and the arrow keys to operate the theme selector and confirm visible focus.
+            Reload and move between routes to check that the chosen theme persists.
+          </p>
+          <ul>
+            <li>Add multiple products, remove them, and verify that the cart total returns to zero.</li>
+            <li>Change the dashboard period and confirm that its metrics and chart agree.</li>
+            <li>Choose each portfolio category and return to the full collection.</li>
+            <li>Check long labels, enlarged text, and reduced motion after adding your content.</li>
+          </ul>
+        </Prose>
+        <Code code={'pnpm check\npnpm build\npnpm preview'} copy label="Check and preview the production build" language="bash" variant="block" />
+        <Prose>
+          <p>
+            Deploy the generated <code>dist/</code> directory with a host that supports static Astro
+            sites. The MIT license allows personal and commercial use. Keep its copyright and license
+            notice with copies or substantial portions of the starter.
+          </p>
+        </Prose>
+        <Stack direction="horizontal" gap="related" wrap>
+          <ButtonLink href="/starters/astro/dashboard" showArrow>Try the dashboard</ButtonLink>
+          <ButtonLink href="/docs/frameworks/astro" variant="secondary">Read the Astro component guide</ButtonLink>
+        </Stack>
+      </Stack>
+    </Stack>
+  </Container>
+</BaseLayout>

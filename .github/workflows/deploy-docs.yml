@@ -6,6 +6,7 @@ on:
     paths:
       - "apps/docs/**"
       - "apps/playground-react-native/**"
+      - "examples/astro-starter/**"
       - "packages/astro/**"
       - "packages/core/**"
       - "packages/elements/**"
@@ -77,7 +78,7 @@ jobs:
 
       - name: Smoke test the public docs
         run: |
-          for path in / /docs; do
+          for path in / /docs /starters/astro /downloads/lumen-astro-starter.zip; do
             curl --fail --silent --show-error --location --retry 5 --retry-all-errors \
               --max-time 20 --output /dev/null "${PUBLIC_SITE_URL%/}$path"
           done

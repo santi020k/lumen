@@ -53,6 +53,29 @@ search demand or conversion gains.
    drop a channel from this review alone — that still needs Santiago's approval per `STRATEGY.md`).
 5. Record the decision in the log.
 
+## Astro starter campaign baseline
+
+On November 9, 2026, the public npm downloads API returned these counts for the 28 days from
+October 12 through November 8, inclusive. The interval includes the Lumen 5 release. Registry
+downloads can include CI and transitive installs. Use each adapter’s trend as a trial signal and
+keep the package rows separate.
+
+| Package | 28-day downloads |
+| --- | ---: |
+| [`@santi020k/lumen-astro`](https://api.npmjs.org/downloads/point/2026-10-12:2026-11-08/@santi020k/lumen-astro) | 1,779 |
+| [`@santi020k/lumen-react`](https://api.npmjs.org/downloads/point/2026-10-12:2026-11-08/@santi020k/lumen-react) | 3,004 |
+| [`@santi020k/lumen-elements`](https://api.npmjs.org/downloads/point/2026-10-12:2026-11-08/@santi020k/lumen-elements) | 1,195 |
+| [`@santi020k/lumen-react-native`](https://api.npmjs.org/downloads/point/2026-10-12:2026-11-08/@santi020k/lumen-react-native) | 1,023 |
+| [`@santi020k/lumen-mcp`](https://api.npmjs.org/downloads/point/2026-10-12:2026-11-08/@santi020k/lumen-mcp) | 1,128 |
+
+Use Astro downloads as the primary campaign metric. Compare the baseline with the first 28 complete
+days after the verified launch, and record the deployment, directory listing, and post dates
+separately. In the existing Search Console property, compare the October 11–November 7 baseline with
+a matched post-launch window. Review impressions and clicks for the starter landing page, Astro
+setup guide, templates, and icons. Treat the starter route as a new page and record its early search
+performance independently. Use existing route analytics if available. Keep any App Store or
+Google Play acquisition figures separate.
+
 ## Review log
 
 ### Search Console baseline: October 6, 2026

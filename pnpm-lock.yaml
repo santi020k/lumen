@@ -329,6 +329,9 @@ catalogs:
     express:
       specifier: ^5.3.0
       version: 5.3.0
+    fflate:
+      specifier: 0.8.3
+      version: 0.8.3
     gsap:
       specifier: 3.15.1
       version: 3.15.1
@@ -353,6 +356,9 @@ catalogs:
     lumen-astro-v4:
       specifier: npm:@santi020k/lumen-astro@4.4.0
       version: 4.4.0
+    lumen-astro-v5:
+      specifier: npm:@santi020k/lumen-astro@5.0.0
+      version: 5.0.0
     lumen-elements-v4:
       specifier: npm:@santi020k/lumen-elements@4.3.0
       version: 4.3.0
@@ -524,6 +530,9 @@ importers:
       '@santi020k/eslint-config-vite':
         specifier: 'catalog:'
         version: 3.1.5(@typescript-eslint/eslint-plugin@8.72.1(@typescript-eslint/parser@8.72.1(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3))(eslint-import-resolver-node@0.3.10(supports-color@10.2.2))(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
+      '@santi020k/lumen-astro':
+        specifier: workspace:*
+        version: link:packages/astro
       '@santi020k/theme':
         specifier: 'catalog:'
         version: 3.0.0
@@ -536,6 +545,9 @@ importers:
       ajv:
         specifier: 'catalog:'
         version: 8.20.0
+      astro:
+        specifier: 'catalog:'
+        version: 7.4.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.8.3)
       cspell:
         specifier: 'catalog:'
         version: 10.4.0
@@ -645,6 +657,9 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 19.3.0(@types/react@19.3.0)
+      fflate:
+        specifier: 'catalog:'
+        version: 0.8.3
       jsdom:
         specifier: 'catalog:'
         version: 31.0.0
@@ -682,9 +697,6 @@ importers:
       '@figma/plugin-typings':
         specifier: 'catalog:'
         version: 1.142.0
-      '@santi020k/lumen-astro':
-        specifier: workspace:^
-        version: link:../../packages/astro
       '@santi020k/lumen-elements':
         specifier: workspace:^
         version: link:../../packages/elements
@@ -700,6 +712,9 @@ importers:
       lumen-astro-v4:
         specifier: 'catalog:'
         version: '@santi020k/lumen-astro@4.4.0(@rive-app/canvas@2.49.4)(astro@7.4.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.8.3))(react@19.3.0)'
+      lumen-astro-v5:
+        specifier: 'catalog:'
+        version: '@santi020k/lumen-astro@5.0.0(@rive-app/canvas@2.49.4)(astro@7.4.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.8.3))'
       lumen-elements-v4:
         specifier: 'catalog:'
         version: '@santi020k/lumen-elements@4.3.0(@rive-app/canvas@2.49.4)(react@19.3.0)'
@@ -4574,8 +4589,23 @@ packages:
     peerDependencies:
       astro: '>=5'
 
+  '@santi020k/lumen-astro@5.0.0':
+    resolution: {integrity: sha512-5dQ6fjxbTxAhgCd/S9lU3BW+4/Q9I5Qxl0HURr5kmVovCkW5UuHzBf6EsHvrhDekfDJ5F4yWcuZe7GRXn0NgAg==}
+    engines: {node: '>=22.12.0'}
+    peerDependencies:
+      astro: '>=5'
+
   '@santi020k/lumen-core@4.4.0':
     resolution: {integrity: sha512-z0SkzDCktTgm3W4ff60TDiBCItdiPRTfg56mhkLjWFWid7UnsUpr1uZTxl6deQtrKEUhiobacEhvX1UXKLOyOg==}
+    engines: {node: '>=22.12.0'}
+    peerDependencies:
+      '@rive-app/canvas': ^2.44.0
+    peerDependenciesMeta:
+      '@rive-app/canvas':
+        optional: true
+
+  '@santi020k/lumen-core@5.0.0':
+    resolution: {integrity: sha512-jE/1WvLPYr3IuxoMax9XTPrU00xOaI1RLOT2gC7CEwtq+SpKS9DeQneLKHzkurtwvRFBvejzHrmdqYsWdce3IA==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       '@rive-app/canvas': ^2.44.0
@@ -7307,6 +7337,9 @@ packages:
 
   fflate@0.7.5:
     resolution: {integrity: sha512-QieYf//cis6ywHNi5qW1+PXPQ4bC+XVJAtS4AXIML8P76GroEiOxm/oQtn1f02UkJY1+KsXMJcC+R2v/Eg4G3g==}
+
+  fflate@0.8.3:
+    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}
 
   file-entry-cache@11.1.5:
     resolution: {integrity: sha512-+PFTHITI08JIGhnNpGNI8T8inUpgZfk3GNEqfT9R2zZV2iFXg3CvqzSl/uEhs7TSGujYRELEANyDvS8Fj7+S7Q==}
@@ -14077,7 +14110,22 @@ snapshots:
       - '@rive-app/canvas'
       - react
 
+  '@santi020k/lumen-astro@5.0.0(@rive-app/canvas@2.49.4)(astro@7.4.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.8.3))':
+    dependencies:
+      '@santi020k/lumen-core': 5.0.0(@rive-app/canvas@2.49.4)
+      astro: 7.4.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.8.3)
+      uqr: 0.1.3
+    transitivePeerDependencies:
+      - '@rive-app/canvas'
+
   '@santi020k/lumen-core@4.4.0(@rive-app/canvas@2.49.4)':
+    dependencies:
+      '@lucide/icons': 1.69.0
+      libphonenumber-js: 1.13.15
+    optionalDependencies:
+      '@rive-app/canvas': 2.49.4
+
+  '@santi020k/lumen-core@5.0.0(@rive-app/canvas@2.49.4)':
     dependencies:
       '@lucide/icons': 1.69.0
       libphonenumber-js: 1.13.15
@@ -17331,6 +17379,8 @@ snapshots:
   fetch-nodeshim@0.4.10: {}
 
   fflate@0.7.5: {}
+
+  fflate@0.8.3: {}
 
   file-entry-cache@11.1.5:
     dependencies:

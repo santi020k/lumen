@@ -26,6 +26,7 @@ Every public post, guide, or demo should lead to one primary next action:
 | Audience intent | Destination | Success signal |
 | --- | --- | --- |
 | Wants to try Lumen | `/guides/ship-a-settings-screen` | Continues to a framework guide or template |
+| Wants an Astro starter with editable layouts | `/starters/astro` | Opens the runnable starter or copies its setup command |
 | Wants a working starting point | `/templates` | Opens a template or copies an install command |
 | Uses an AI coding tool | `/docs/ai-skill` | Copies the skill installation command |
 | Needs structured AI context | `/docs/mcp` | Copies an MCP connection command |

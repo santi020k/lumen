@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url'
 
 const sharedConfiguration = /^(package\.json|pnpm-workspace\.yaml|turbo\.json|scripts\/(?:classify-workflow-paths|release-scope)(?:\.test)?\.mjs|scripts\/(?:publish-packages|version-packages|workflow-scope\.test)\.mjs)$/u
 const dependencyFiles = /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|apps\/[^/]+\/package\.json|packages\/[^/]+\/package\.json)$/u
+const astroStarter = /^examples\/astro-starter\//u
 
 const publicPackageNames = new Map([
   ['astro', '@santi020k/lumen-astro'],
@@ -88,6 +89,7 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   ])
 
   const playwright = matchesAny(paths, [
+    astroStarter,
     /^\.github\/actions\/setup-playwright\//u,
     /^apps\/(docs|figma-plugin|motion|templates)\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|react|react-hook-form|templates)\//u,
@@ -196,6 +198,7 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
   }
 
   const web = matchesAny(paths, [
+    astroStarter,
     /^\.github\/actions\/setup-playwright\//u,
     /^packages\/(astro|core|elements|icons-brand|lumen|mcp|react|react-hook-form|react-native|templates|tokens)\//u,
     /^apps\/(docs|next-smoke|playground-react-native|templates)\//u,
@@ -233,6 +236,7 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
   ])
 
   const browser = matchesAny(paths, [
+    astroStarter,
     /^\.github\/workflows\/release-canary\.yml$/u,
     /^\.github\/actions\/setup-playwright\//u,
     /^apps\/(docs|templates)\//u,

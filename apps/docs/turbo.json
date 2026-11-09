@@ -2,8 +2,24 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "inputs": ["$TURBO_EXTENDS$", "$TURBO_ROOT$/docs/**"],
+      "inputs": [
+        "$TURBO_EXTENDS$",
+        "$TURBO_ROOT$/docs/**",
+        "$TURBO_ROOT$/examples/astro-starter/{src/**,public/**,package.json,pnpm-lock.yaml,pnpm-workspace.yaml,astro.config.mjs,tsconfig.json,README.md,LICENSE,.gitignore}"
+      ],
       "outputs": ["$TURBO_EXTENDS$", "cloudflare/dist/**"]
+    },
+    "typecheck": {
+      "inputs": [
+        "$TURBO_EXTENDS$",
+        "$TURBO_ROOT$/examples/astro-starter/{src/**,public/**,package.json,pnpm-lock.yaml,pnpm-workspace.yaml,astro.config.mjs,tsconfig.json,README.md,LICENSE,.gitignore}"
+      ]
+    },
+    "test": {
+      "inputs": [
+        "$TURBO_EXTENDS$",
+        "$TURBO_ROOT$/examples/astro-starter/{src/**,public/**,package.json,pnpm-lock.yaml,pnpm-workspace.yaml,astro.config.mjs,tsconfig.json,README.md,LICENSE,.gitignore}"
+      ]
     }
   }
 }

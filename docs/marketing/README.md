@@ -50,6 +50,8 @@ screenshots, launch graphics, draft copy, capture evidence, and the final public
 13. [`Lumen motion studio`](../../apps/motion/README.md) — local HyperFrames compositions, browser
     previews, and repeatable portrait/square/landscape MP4 rendering without hosted generation services.
 
+For the Astro starter campaign, see the [walkthrough and distribution kit](ASTRO_STARTER.md).
+
 ## Readiness gates
 
 Treat every gate below as it is recorded in the repository right now. Do not round a "Conditional"

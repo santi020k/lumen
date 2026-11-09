@@ -12,6 +12,15 @@ export interface GuideMetadata {
 export const publishedGuides = [
   {
     author: 'Santiago Molina',
+    description: 'Run a free Astro starter with landing page, ecommerce, dashboard, and portfolio templates. Customize seven Lumen themes and verify the interactive examples.',
+    href: '/guides/build-an-astro-starter',
+    icon: 'panels-top-left',
+    publishedAt: '2026-11-09',
+    readingTime: '15 minute build',
+    title: 'Build with the free Lumen Astro starter'
+  },
+  {
+    author: 'Santiago Molina',
     description: 'Build an editorial article with readable prose, attributed quotations, connected figure captions, responsive contents, and synchronized code examples.',
     href: '/guides/build-an-editorial-article',
     icon: 'book-open',

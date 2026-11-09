@@ -1,6 +1,7 @@
 ---
 import '@santi020k/lumen-templates/styles.css'
 
+import { Badge, ButtonLink, Card, Stack } from '@santi020k/lumen-astro'
 import TemplateGallery from '@santi020k/lumen-templates/TemplateGallery.astro'
 
 import FigmaCommunityCover from '../../components/FigmaCommunityCover.astro'
@@ -9,11 +10,29 @@ import BaseLayout from '../../layouts/BaseLayout.astro'
 ---
 
 <BaseLayout
-  description="Explore responsive dashboard, product page, and onboarding templates built with Lumen UI components. Preview layouts and open their source to adapt them."
-  title="Dashboard & App UI Templates — Lumen UI"
+  description="Free Astro templates for landing pages, ecommerce, dashboards, and portfolios with seven Lumen themes. Explore the starter and framework-specific product recipes."
+  title="Free Astro Templates & App UI Recipes — Lumen UI"
 >
   <TemplateGallery>
+    <ButtonLink href="/starters/astro" slot="actions" variant="secondary">Free Astro starter</ButtonLink>
     <FigmaCommunityLink file="templates" slot="actions" />
+    <section aria-labelledby="astro-starter-title" class="starter-entry" slot="starter">
+      <Card class="starter-entry__card" variant="muted">
+        <Stack align="start" gap="group">
+          <Badge variant="outline">Free · MIT license · Astro</Badge>
+          <h2 id="astro-starter-title">Four starting points. Your own look.</h2>
+          <p>
+            Build a landing page, ecommerce storefront, dashboard, or portfolio. Switch between seven
+            Lumen themes and light or dark mode, then take the editable project into your own app.
+          </p>
+          <Stack direction="horizontal" gap="related" wrap>
+            <ButtonLink href="/starters/astro" showArrow>Explore the Astro starter</ButtonLink>
+            <ButtonLink href="/downloads/lumen-astro-starter.zip" download variant="secondary">Download free starter</ButtonLink>
+            <ButtonLink href="/guides/build-an-astro-starter" variant="inline">Follow the walkthrough</ButtonLink>
+          </Stack>
+        </Stack>
+      </Card>
+    </section>
   </TemplateGallery>
   <aside
 aria-label="Templates design file"
@@ -22,3 +41,27 @@ class="mx-auto mb-12 w-[min(100%-2rem,80rem)]"
     <FigmaCommunityCover file="templates" />
   </aside>
 </BaseLayout>
+
+<style>
+  .starter-entry {
+    width: min(100% - 2rem, 80rem);
+    margin: var(--ui-space-section) auto var(--ui-space-group);
+  }
+
+  .starter-entry :global(.starter-entry__card) {
+    padding: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .starter-entry h2 {
+    color: hsl(var(--ink));
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+  }
+
+  .starter-entry p {
+    max-width: 65ch;
+    color: hsl(var(--ink-soft));
+    line-height: 1.7;
+  }
+</style>

@@ -30,6 +30,7 @@ export default defineConfig({
   vite: {
     build: { assetsInlineLimit: 8192 },
     resolve: {
+      dedupe: ['@santi020k/lumen-astro'],
       alias: [
         {
           find: /^@santi020k\/lumen-core$/,

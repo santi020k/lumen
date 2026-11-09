@@ -1,5 +1,12 @@
 # @santi020k/lumen-mcp
 
+## 5.2.0
+
+### Patch Changes
+
+- Refresh the bundled project overview with the free Astro starter, GitHub source, source download,
+  and customization walkthrough.
+
 ## 5.1.0
 
 ### Patch Changes

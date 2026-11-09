@@ -99,6 +99,27 @@ test('motion source changes select browser coverage without native jobs', () => 
   assert.equal(classification.android, false)
 })
 
+test('Astro starter changes select docs browser coverage without selecting packages or native jobs', () => {
+  for (const path of ['examples/astro-starter/src/pages/index.astro', 'examples/astro-starter/pnpm-lock.yaml']) {
+    const ci = classifyCiPaths([path])
+    const canary = classifyCanaryPaths([path])
+
+    assert.equal(ci.playwright, true, path)
+
+    assert.equal(canary.browser, true, path)
+
+    assert.equal(canary.web, true, path)
+
+    assert.equal(ci.apple, false, path)
+
+    assert.equal(ci.android, false, path)
+
+    assert.equal(canary.native, false, path)
+
+    assert.deepEqual(classifyChangedNpmPackages([path]), [], path)
+  }
+})
+
 test('primitive motion regressions select CI and release browser coverage', () => {
   for (const path of ['tests/motion/playground.spec.ts', 'playwright.motion.config.ts']) {
     const ci = classifyCiPaths([path])

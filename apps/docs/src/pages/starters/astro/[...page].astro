@@ -1,0 +1,19 @@
+---
+import Starter from '../../../../../../examples/astro-starter/src/Starter.astro'
+import { getSocialImageUrl } from '../../../lib/social-image'
+
+interface Props {
+  page: 'landing' | 'ecommerce' | 'dashboard' | 'portfolio'
+}
+
+export const getStaticPaths = () => [
+    { params: { page: undefined }, props: { page: 'landing' as const } },
+    { params: { page: 'ecommerce' }, props: { page: 'ecommerce' as const } },
+    { params: { page: 'dashboard' }, props: { page: 'dashboard' as const } },
+    { params: { page: 'portfolio' }, props: { page: 'portfolio' as const } }
+  ]
+
+const { page } = Astro.props
+---
+
+<Starter basePath="/starters/astro" page={page} showStarterLinks socialImage={getSocialImageUrl(Astro.url.pathname, Astro.site)} />

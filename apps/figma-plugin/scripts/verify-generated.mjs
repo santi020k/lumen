@@ -56,7 +56,7 @@ for (const version of versions) {
   const legacy = version === '4.4.0'
   const fixture = join(verification, version)
   const modules = join(fixture, 'node_modules')
-  const manifest = legacy ? import.meta.resolve('lumen-astro-v4/package.json') : import.meta.resolve('@santi020k/lumen-astro/package.json')
+  const manifest = legacy ? import.meta.resolve('lumen-astro-v4/package.json') : import.meta.resolve('lumen-astro-v5/package.json')
   const adapter = dirname(fileURLToPath(manifest))
   const installed = JSON.parse(await readFile(join(adapter, 'package.json'), 'utf8'))
 
