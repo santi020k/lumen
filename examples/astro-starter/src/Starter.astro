@@ -29,9 +29,15 @@ interface Props {
   basePath?: string
   showStarterLinks?: boolean
   socialImage?: string
+  socialImageWidth?: number
+  socialImageHeight?: number
 }
 
-const { page = 'landing', basePath = '', showStarterLinks = false, socialImage } = Astro.props
+const {
+  page = 'landing', basePath = '', showStarterLinks = false, socialImage,
+  socialImageWidth = 1200, socialImageHeight = 630
+} = Astro.props
+
 const route = (name: string) => name === 'landing' ? basePath || '/' : `${basePath}/${name}`
 
 const pages = [
@@ -61,6 +67,16 @@ const titles = {
 const title = `${titles[page]} · Lumen Astro Starter`
 const description = 'Four free Astro templates built with Lumen UI. Explore a storefront, dashboard, landing page, and portfolio in seven themes.'
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined
+const imageAlt = `${title} social preview`
+
+const structuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  url: canonical,
+  inLanguage: 'en'
+}).replaceAll('<', '\\u003c')
 ---
 
 <!doctype html>
@@ -69,6 +85,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
     <meta charset="UTF-8" />
     <link rel="icon" href={lumenIcon} type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta
       name="description"
       content={description}
@@ -79,12 +96,19 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
+    {canonical && <meta name="twitter:url" content={canonical} />}
+    {canonical && <script is:inline type="application/ld+json" set:html={structuredData} />}
     {socialImage && (
       <>
         <meta property="og:image" content={socialImage} />
-        <meta property="og:image:alt" content={`${title} social preview`} />
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="og:image:alt" content={imageAlt} />
+        <meta property="og:image:width" content={String(socialImageWidth)} />
+        <meta property="og:image:height" content={String(socialImageHeight)} />
         <meta name="twitter:image" content={socialImage} />
+        <meta name="twitter:image:alt" content={imageAlt} />
       </>
     )}
     <script is:inline>

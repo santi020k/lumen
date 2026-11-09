@@ -57,7 +57,11 @@ saved preferences before the page paints. Keep those family lists aligned when a
 
 Run `pnpm build` and serve the `dist` directory with your static host. Set Astro's `site` option in
 `astro.config.mjs` to your canonical production URL before deployment. The page will then include a
-canonical URL. For deployment under a path prefix, also configure Astro's `base`. The page wrappers pass it through to the shared navigation.
+canonical URL and WebPage structured data. For deployment under a path prefix, also configure
+Astro's `base`. The page wrappers pass it through to the shared navigation.
+
+Pass an absolute image URL as `socialImage` to `Starter` for social previews. The default image size
+is 1200 by 630 pixels; set `socialImageWidth` and `socialImageHeight` when using a different size.
 
 ## Resources
 
