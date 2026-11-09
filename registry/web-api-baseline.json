@@ -2442,6 +2442,14 @@
         },
         "./cli": "./dist/cli.js",
         "./layers.css": "./layers.css",
+        "./lu": {
+          "import": "./dist/lu.js",
+          "types": "./dist/lu.d.ts"
+        },
+        "./lu/manifest.json": "./dist/lu-manifest.json",
+        "./lu/sprites.webp": "./mascot/lu-sprites.webp",
+        "./lu/still.webp": "./mascot/lu-still.webp",
+        "./lu/styles.css": "./mascot/lu.css",
         "./package.json": "./package.json",
         "./registry": {
           "import": "./dist/registry.js",
