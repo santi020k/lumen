@@ -29,6 +29,8 @@ and then record it here.
 
 | Item | Channel | Source | Copy / asset | Status | Santiago decision | Published URL |
 | --- | --- | --- | --- | --- | --- | --- |
+| Free Astro starter | Astro Themes directory | [Astro starter kit](ASTRO_STARTER.md) | Listing fields and four preview images | Held — verify public demo and source before submitting | — | — |
+| Free Astro starter walkthrough | Santiago’s personal LinkedIn and an Astro community that permits maintainer posts | [Astro starter kit](ASTRO_STARTER.md) | Walkthrough, caption, and starter CTA | Held — verify the starter before publication | — | — |
 | Week 1 guide share | Community post (framework-specific, Lumen does not own) | `CONTENT_CALENDAR.md` Week 1 | Guide URL + community-appropriate framing | Draft — needs approval | — | — |
 | Week 1 personal LinkedIn note | Santiago's personal LinkedIn profile | `PERSONAL_LINKEDIN.md` Week 1 | Engineering problem + one accessibility decision + guide CTA | Draft — needs approval | — | — |
 | Week 2 implementation comparison | Community post | `CONTENT_CALENDAR.md` Week 2 | Framework-native differences + `one-screen-three-web-targets.mp4` | Draft — needs approval | — | — |

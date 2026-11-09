@@ -107,6 +107,7 @@ must not appear in public copy at all.
 | C-15 | Designed to reduce repetitive UI code and unnecessary AI context | Public primitives; MCP summary/usage/source detail; [`../ai-efficiency.md`](../ai-efficiency.md) | CONDITIONAL | A design goal, not measured savings on every task. Explain that discovery, tools, and retries consume tokens too. |
 | C-16 | A fixed percentage of AI token or cost savings | No generalizable comparison establishes this claim | BLOCKED | Do not promise a percentage, lower bills, fewer corrections, or superiority over another library. Any future numerical result must name its model, tasks, run count, checks, and limitations. |
 | C-17 | The October 4, 2026 local comparison did not show lower token usage with Lumen | `/guides/measure-ai-ui-token-usage`; `/benchmarks/ai-efficiency-2026-10-04.json`; [`../ai-efficiency.md`](../ai-efficiency.md) | SUPPORTED | Scope to the recorded model, local v4 candidate, two React tasks, three repetitions per approach, and verification/repair protocol. All 18 runs passed within two attempts. Do not generalize to all models, interfaces, frameworks, or billing. |
+| C-18 | The free MIT Astro starter includes landing page, storefront, dashboard, and portfolio examples | [Astro starter kit](ASTRO_STARTER.md), standalone source, and live starter page | CONDITIONAL | Verify the deployed demo, license, and clean checkout. Describe sample data and storefront behavior accurately. |
 
 ## AI discovery and search intent
 

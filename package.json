@@ -224,6 +224,7 @@
     "@santi020k/eslint-config-testing": "catalog:",
     "@santi020k/eslint-config-tools": "catalog:",
     "@santi020k/eslint-config-vite": "catalog:",
+    "@santi020k/lumen-astro": "workspace:*",
     "@santi020k/theme": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
