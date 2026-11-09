@@ -1,0 +1,96 @@
+name: Sync Claude plugin
+
+on:
+  workflow_run:
+    workflows: [Release]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-claude-plugin
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: >-
+      github.repository == 'santi020k/lumen' && github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      tag: ${{ steps.source.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select the latest stable repository release
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REVISION: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          tag="$(gh release list --exclude-drafts --exclude-pre-releases --limit 100 --json tagName \
+            --jq '.[] | .tagName | select(test("^v[0-9]+[.][0-9]+[.][0-9]+$"))' | sort -V | tail -n1)"
+          [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 0
+          revision="$(git rev-parse "refs/tags/${tag}^{commit}")"
+          git merge-base --is-ancestor "$revision" HEAD
+          if [[ -n "$RELEASE_REVISION" && "$revision" != "$RELEASE_REVISION" ]]; then
+            echo "The completed workflow did not publish the latest stable Lumen release."
+            exit 0
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+  sync:
+    needs: release
+    if: needs.release.outputs.tag != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Prepare the Claude plugin
+        env:
+          RELEASE_TAG: ${{ needs.release.outputs.tag }}
+        run: bash .github/scripts/stage-claude-plugin.sh "$RELEASE_TAG" "$RUNNER_TEMP/claude-plugin"
+      - name: Read the mirror deploy key
+        uses: Infisical/secrets-action@d2e351f16c6ca20d17c85e6c992e04bdeb64e87d # v1.0.18
+        with:
+          method: oidc
+          identity-id: ${{ vars.INFISICAL_CLAUDE_PLUGIN_IDENTITY_ID }}
+          project-slug: ${{ vars.INFISICAL_PROJECT_SLUG }}
+          env-slug: prod
+          secret-path: /claude-plugin
+      - name: Update the public Claude plugin repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.release.outputs.tag }}
+        run: |
+          latest="$(gh release list --exclude-drafts --exclude-pre-releases --limit 100 --json tagName \
+            --jq '.[] | .tagName | select(test("^v[0-9]+[.][0-9]+[.][0-9]+$"))' | sort -V | tail -n1)"
+          if [[ "$latest" != "$RELEASE_TAG" ]]; then
+            echo "A newer release is available; skipping $RELEASE_TAG."
+            exit 0
+          fi
+          umask 077
+          key="$RUNNER_TEMP/claude-plugin-deploy-key"
+          known_hosts="$key.known_hosts"
+          trap 'rm -f "$key" "$known_hosts"' EXIT
+          printf '%s\n' "${CLAUDE_PLUGIN_DEPLOY_KEY:?Missing mirror deploy key}" > "$key"
+          unset CLAUDE_PLUGIN_DEPLOY_KEY
+          # Pin GitHub's published Ed25519 host key.
+          printf '%s\n' 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > "$known_hosts"
+          export GIT_SSH_COMMAND="ssh -i $key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$known_hosts"
+          git clone git@github.com:santi020k/lumen-claude-plugin.git "$RUNNER_TEMP/claude-mirror"
+          bash .github/scripts/sync-claude-plugin.sh "$RUNNER_TEMP/claude-plugin" "$RUNNER_TEMP/claude-mirror" "$RELEASE_TAG"

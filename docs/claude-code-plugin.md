@@ -81,3 +81,29 @@ separately. Before submitting Lumen UI:
 
 Submission, marketplace review, commits, and pushes change external state and are not performed by
 the repository validation command.
+
+### Automatic directory source updates
+
+Anthropic's scanner downloads the whole GitHub source repository. The standalone
+[`santi020k/lumen-claude-plugin`](https://github.com/santi020k/lumen-claude-plugin) repository is a
+generated mirror for the directory. Keep its `main` branch dedicated to the generated plugin.
+
+The **Sync Claude plugin** workflow runs after **Release** publishes a stable Lumen release on
+`main`. It exports the tagged Claude plugin, checks the exact MCP pin against npm, and pushes
+only changed plugin contents. The first sync uses the source plugin version. Later syncs use a
+newer source version when available and otherwise increment the mirror's patch version. Each
+mirror commit names the source Lumen tag. Rerun the workflow from `main` to sync the latest stable
+release after a setup or delivery failure.
+
+For one-time setup, create the empty public mirror repository with `main` as its default branch.
+Add a write-enabled deploy key restricted to that repository. Store its private key in the Lumen
+Infisical project at `prod:/claude-plugin` as `CLAUDE_PLUGIN_DEPLOY_KEY`. Configure
+`INFISICAL_CLAUDE_PLUGIN_IDENTITY_ID` for an OIDC identity restricted to this workflow on Lumen
+`main`, with read access to that path. The workflow uses the existing
+`INFISICAL_PROJECT_SLUG` repository variable.
+
+After the first sync, submit the mirror's repository root in
+[Anthropic's developer portal](https://claude.ai/directory/manage) and track `main`. Scheduled
+checks pick up later pushes automatically. The initial submission requires the publisher's
+compliance acknowledgements. Anthropic controls security review and whether an approved version
+can publish automatically. See the [directory submission guide](https://claude.com/docs/plugins/submit).
