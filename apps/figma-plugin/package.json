@@ -23,12 +23,12 @@
   "devDependencies": {
     "@astrojs/compiler": "catalog:",
     "@figma/plugin-typings": "catalog:",
-    "@santi020k/lumen-astro": "workspace:^",
     "@santi020k/lumen-elements": "workspace:^",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "esbuild": "catalog:",
     "lumen-astro-v4": "catalog:",
+    "lumen-astro-v5": "catalog:",
     "lumen-elements-v4": "catalog:",
     "lumen-react-v4": "catalog:",
     "typescript": "catalog:",

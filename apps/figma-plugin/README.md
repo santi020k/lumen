@@ -148,6 +148,10 @@ tabs, dialog focus, downloads, and narrow/desktop layouts. Test the development 
 behavior, and downloads before distribution. Browser and mocked-host checks do not establish native
 Figma acceptance or Community publication.
 
+Astro verification uses exact registry aliases for the advertised 5.0.0 and 4.4.0 export targets,
+so advancing the workspace adapter does not silently change the tested contract. React and
+Web Components verify the workspace 5.0.0 adapters and the registry-pinned 4.3.0 adapters.
+
 To compile generated native code in this checkout, first build the React Native adapter and use
 the [native toolchains](../../docs/native-compatibility.md). Run from the repository root:
 

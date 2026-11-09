@@ -71,6 +71,7 @@ catalog:
   lighthouse: 13.6.0
   lint-staged: ^17.6.0
   lumen-astro-v4: npm:@santi020k/lumen-astro@4.4.0
+  lumen-astro-v5: npm:@santi020k/lumen-astro@5.0.0
   lumen-elements-v4: npm:@santi020k/lumen-elements@4.3.0
   lumen-react-v4: npm:@santi020k/lumen-react@4.3.0
   motion: 14.9.1
