@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- Refresh the bundled project overview with the free Astro starter, browser editor, source download,
+- Refresh the bundled project overview with the free Astro starter, GitHub source, source download,
   and customization walkthrough.
 
 ## 5.1.0

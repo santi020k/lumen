@@ -54,7 +54,7 @@ platform's own authoring conventions. Astro is the reference implementation.
 includes landing page, ecommerce, dashboard, and portfolio templates with seven Lumen theme families
 and light/dark modes. Use it for personal or commercial projects under the MIT license.
 
-[Open in StackBlitz](https://stackblitz.com/fork/github/santi020k/lumen/tree/main/examples/astro-starter) ·
+[View the source](https://github.com/santi020k/lumen/tree/main/examples/astro-starter) ·
 [Download the starter](https://lumen.santi020k.com/downloads/lumen-astro-starter.zip) ·
 [Follow the walkthrough](https://lumen.santi020k.com/guides/build-an-astro-starter)
 

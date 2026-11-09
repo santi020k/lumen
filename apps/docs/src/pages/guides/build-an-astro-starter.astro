@@ -7,7 +7,7 @@ import { getGuide } from '../../data/guides'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 
 const guide = getGuide('/guides/build-an-astro-starter')
-const browserUrl = 'https://stackblitz.com/fork/github/santi020k/lumen/tree/main/examples/astro-starter'
+const sourceUrl = 'https://github.com/santi020k/lumen/tree/main/examples/astro-starter'
 
 const runExamples = [
   {
@@ -58,7 +58,7 @@ import { Badge, Card, Stack } from '@santi020k/lumen-astro'
 
       <Stack direction="horizontal" gap="related" wrap>
         <ButtonLink href="/starters/astro" showArrow>Explore the starter</ButtonLink>
-        <ButtonLink href={browserUrl} newTab variant="secondary">Edit in StackBlitz</ButtonLink>
+        <ButtonLink href={sourceUrl} newTab variant="secondary">View source</ButtonLink>
         <ButtonLink href="/downloads/lumen-astro-starter.zip" download variant="secondary">Download ZIP</ButtonLink>
       </Stack>
 
@@ -84,8 +84,7 @@ import { Badge, Card, Stack } from '@santi020k/lumen-astro'
         <Prose>
           <h2 id="run-title">2. Open your own copy</h2>
           <p>
-            StackBlitz opens an editable browser project and starts the development server. For local
-            work, download the ZIP or clone the repository. Use the Node.js and pnpm versions declared
+            Download the ZIP or clone the repository to edit your own copy. Use the Node.js and pnpm versions declared
             in the starter's <code>package.json</code>, then run the commands below.
           </p>
         </Prose>

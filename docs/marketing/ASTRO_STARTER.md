@@ -9,7 +9,8 @@
    [GitHub source](https://github.com/santi020k/lumen/tree/main/examples/astro-starter) after
    deployment. Follow the production page’s setup command from an empty directory, run a
    production build, and open all four examples. Check that theme controls, mobile navigation,
-   and every download or browser-editor link work.
+   and every download or source link work. Browser editor launches are not supported by the
+   starter's pinned pnpm toolchain; do not advertise an editable browser runtime.
 2. Submit one free starter through the [Astro Developer Portal](https://portal.astro.build).
    Sign in with the maintainer’s GitHub account. Record the submission separately from the
    eventual listing URL. Use the title, description, source, demo, and images below.

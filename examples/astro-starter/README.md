@@ -23,6 +23,10 @@ pnpm preview
 The starter is independent of the Lumen monorepo. Its dependencies resolve from npm and its local
 workspace configuration lets it run both inside the repository and after downloading the ZIP.
 
+Use the starter locally with the required Node.js and pnpm versions. Browser editor launches are
+not supported: WebContainers cannot run the native pnpm 12 executable, and its experimental WASM
+alternative is outside this starter's supported setup.
+
 ## Choose a page
 
 | Route | Source | Included behavior |

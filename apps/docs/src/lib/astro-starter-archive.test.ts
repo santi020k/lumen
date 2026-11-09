@@ -12,6 +12,7 @@ test('ships a standalone source project with all four routes and reproducible de
     'package.json',
     'pnpm-lock.yaml',
     'astro.config.mjs',
+    'src/env.d.ts',
     'src/Starter.astro',
     'src/pages/index.astro',
     'src/pages/ecommerce.astro',
