@@ -70,7 +70,7 @@ describe('Lumen MCP protocol server', () => {
     })
   })
 
-  test('registers the complete read-only tool surface', async () => {
+  test('registers the complete read-only tool surface with unique display titles', async () => {
     await withClient(async client => {
       const response = await client.listTools()
 
@@ -91,7 +91,13 @@ describe('Lumen MCP protocol server', () => {
         'lumen_get_rules'
       ])
 
+      const titles = new Set<string>()
+
       for (const tool of response.tools) {
+        const title = tool.annotations?.title ?? ''
+        expect(title).toMatch(/\p{L}+ \p{L}+/u)
+        expect(titles.has(title)).toBe(false)
+        titles.add(title)
         expect(tool.outputSchema).toBeDefined()
         expect(tool.annotations).toMatchObject({
           destructiveHint: false,

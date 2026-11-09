@@ -197,7 +197,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_list_components', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'List Lumen web components' },
       description:
         'List Lumen components with descriptions, categories, framework availability, collections, ' +
         'and recipes. Filter by framework, recipe, or a natural-language query.',
@@ -218,7 +218,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_get_component', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Read a Lumen web component' },
       description:
         'Get framework-specific Lumen component usage: description, imports, styles, typed props or ' +
         'attributes, examples, guidance, accessibility, events, and optional reference source.',
@@ -240,7 +240,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_list_native_components', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'List Lumen native components' },
       description:
         'List native Lumen components with platform availability, accessibility, category, and shared contract tier.',
       inputSchema: z.strictObject({
@@ -255,7 +255,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_get_native_component', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Read a Lumen native component' },
       description:
         'Get install steps, imports, setup, API, accessible usage example, and optional reference source for React Native, SwiftUI, or Compose.',
       inputSchema: z.strictObject({
@@ -271,7 +271,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_get_recipe', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Read a Lumen recipe' },
       description:
         'Get a Lumen recipe or component set with its purpose, categories, components, files, and ' +
         'framework-specific install command.',
@@ -288,7 +288,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_search', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Search the Lumen catalog' },
       description:
         'Rank natural-language matches across descriptions, categories, curated collections, ' +
         'framework contracts, props, attributes, recipes, tokens, and agent rules.',
@@ -312,7 +312,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_check_compatibility', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Check Lumen package compatibility' },
       description: 'Compare resolved installed Lumen package versions with this snapshot before generating or migrating code. Does not read repositories or change dependencies.',
       inputSchema: z.strictObject({
         packageVersions: z.record(z.string().refine(hasCanonicalRecordKey, 'Record keys must not contain surrounding whitespace').min(1).max(160), z.string().trim().min(1).max(100))
@@ -324,7 +324,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_get_migration', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Read Lumen migration guidance' },
       description: 'Read the explicit v4 or v5 target contract, affected packages, compatibility reviews and optional adoption. Bundled guidance does not prove consumer compatibility or publication availability.',
       inputSchema: z.strictObject({
         packageName: z.string().trim().min(1).max(160).optional(),
@@ -350,7 +350,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_get_meta', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Read Lumen catalog metadata' },
       description:
         'Return snapshot provenance: server and package versions, schema version, component count, ' +
         'and a deterministic catalog hash for freshness checks.',
@@ -361,7 +361,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_get_catalog_manifest', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Read the Lumen catalog manifest' },
       description:
         'Return stable per-component and per-recipe fingerprints that a client can retain for later change detection.',
       inputSchema: z.strictObject({}),
@@ -371,7 +371,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_diff_catalog', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Compare Lumen catalog versions' },
       description:
         'Compare a previously retained Lumen catalog manifest with the current snapshot and report added, changed, removed, and unchanged entries.',
       inputSchema: z.strictObject({
@@ -387,7 +387,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_diagnose', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Check Lumen catalog integrity' },
       description:
         'Run deterministic snapshot integrity checks and report web framework and native platform coverage. Useful when testing a new MCP connection.',
       inputSchema: z.strictObject({}),
@@ -397,7 +397,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_get_tokens', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Read Lumen design tokens' },
       description:
         'Return Lumen spacing dimensions and content roles, semantic colors, glass tokens, and theme attribute.',
       inputSchema: z.strictObject({}),
@@ -407,7 +407,7 @@ export const createLumenServer = (): McpServer => {
 
   server.registerTool(
     'lumen_get_rules', {
-      annotations: readOnlyAnnotations,
+      annotations: { ...readOnlyAnnotations, title: 'Read Lumen workflow rules' },
       description:
         'Return the Lumen agent rules for generating, reviewing, or migrating apps that use Lumen.',
       inputSchema: z.strictObject({}),
