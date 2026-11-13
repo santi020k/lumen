@@ -69,11 +69,19 @@ export default defineConfig({
       provider: 'v8',
       reporter: coverageReporters,
       reportsDirectory: 'coverage',
+      // Global floors cover every project. Web packages carry a higher bar; ratchet these
+      // upward as tests land (see the open backlog in docs/feature-roadmap.md).
       thresholds: {
         branches: 55,
         functions: 63,
         lines: 61,
-        statements: 58
+        statements: 58,
+        'packages/{core,astro,react,elements}/**': {
+          branches: 75,
+          functions: 83,
+          lines: 86,
+          statements: 83
+        }
       }
     },
     includeTaskLocation: true,
