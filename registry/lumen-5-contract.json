@@ -320,7 +320,7 @@
       ],
       "docs": [
         "docs/migrating-v4-to-v5.md",
-        "docs/lumen-5-dependencies.md"
+        "docs/archive/lumen-5-dependencies.md"
       ],
       "tests": [
         "pnpm run check:swift-source-compatibility",

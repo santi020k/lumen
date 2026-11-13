@@ -59,8 +59,8 @@ or "Blocked" state up to a plain claim in any draft.
 
 | Surface | Current state | Source | What copy may say |
 | --- | --- | --- | --- |
-| Lumen 2 coordinated release | Complete (2026-08-28) for package publication; real-consumer and physical-device validation remain post-release qualification work | [`docs/lumen-2-readiness.md`](../lumen-2-readiness.md) readiness ledger | State the coordinated release as complete, always paired with the open post-release qualification note (claim C-10). |
-| React Native / SwiftUI / Compose native foundations | Stable and published; not yet proven on physical devices or in external consumer apps | [`docs/lumen-2-readiness.md`](../lumen-2-readiness.md) | Use claim C-02's exact boundary sentence every time. |
+| Lumen 2 coordinated release | Complete (2026-08-28) for package publication; real-consumer and physical-device validation remain post-release qualification work | [`docs/archive/lumen-2-readiness.md`](../archive/lumen-2-readiness.md) readiness ledger | State the coordinated release as complete, always paired with the open post-release qualification note (claim C-10). |
+| React Native / SwiftUI / Compose native foundations | Stable and published; not yet proven on physical devices or in external consumer apps | [`docs/archive/lumen-2-readiness.md`](../archive/lumen-2-readiness.md) | Use claim C-02's exact boundary sentence every time. |
 | Apple playground | Live on the App Store | Root `README.md` "Native playgrounds" section and current public listing | May state as available for iPhone, iPad, and Mac (claim C-11). Do not imply a React Native App Store listing. |
 | Android playground | Live on Google Play | [`docs/playground-publication.md`](../playground-publication.md) Android production record and current public listing | May state as available for Android phones and tablets (claim C-14). Do not infer a specific install count or independent production adoption. |
 | React Native playground | Distributed through Expo/TestFlight/APK profiles, not a public store listing | Root `README.md` "Native playgrounds" section | Do not imply a public store listing exists. |

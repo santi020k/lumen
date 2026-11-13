@@ -1,7 +1,7 @@
 # Native contract review
 
 This record reviews the semantic contract behind the public inventories in the [Native API
-audit](native-api-audit.md). It does not require identical syntax or rendering across React Native,
+audit](../native-api-audit.md). It does not require identical syntax or rendering across React Native,
 SwiftUI, and Compose. It identifies the behavior that consumers may rely on and the behavior that
 must remain native or application-owned.
 

@@ -22,13 +22,13 @@ visible and must not be represented as complete.
 | Compose and Wear OS        | `packages/compose/gradle.properties`       | Stable 2.0.0 artifacts published | Real-app adoption and physical Android and Wear OS validation        |
 
 The exact versions are recorded in `registry/release-manifest.json`. The compatibility baselines
-are recorded in [Native compatibility](native-compatibility.md), and the incomplete hardware
-evidence is recorded in [Native device validation](native-device-validation.md).
+are recorded in [Native compatibility](../native-compatibility.md), and the incomplete hardware
+evidence is recorded in [Native device validation](../native-device-validation.md).
 
 ## Release sequence
 
 The command-level version, publication, verification, and evidence sequence lives in the
-[Native release runbook](native-release-runbook.md). It uses two ordinary published releases on the
+[Native release runbook](../native-release-runbook.md). It uses two ordinary published releases on the
 current version lines as stability iterations before the coordinated `2.0.0` launch.
 
 ### 0. Establish a clean release baseline
@@ -65,7 +65,7 @@ The audit must:
 - leave `pnpm run check:native-contracts` enforcing the frozen shared contract.
 
 The declaration-level classifications and enforcement progress are recorded in the
-[Native API audit](native-api-audit.md). `pnpm run check:native-api-baseline` prevents unclassified
+[Native API audit](../native-api-audit.md). `pnpm run check:native-api-baseline` prevents unclassified
 React Native entrypoint changes; reviewed binary API dumps protect Compose and Wear OS; and
 `pnpm run check:swift-api-baseline` rebuilds and classifies every declared Apple target. The
 [Native contract review](native-contract-review.md) records the accepted shared defaults, state
@@ -96,7 +96,7 @@ consumer evidence is post-release qualification work for the initial 2.0.0 publi
 ### 3. Complete physical-device accessibility validation after launch
 
 Complete every required entry in the [native device validation
-matrix](native-device-validation.md). Simulator, emulator, snapshot, unit, and accessibility-tree
+matrix](../native-device-validation.md). Simulator, emulator, snapshot, unit, and accessibility-tree
 checks remain required automated evidence, but they do not replace physical-device results.
 
 Every matrix entry must identify the tested revision. For the initial coordinated launch, every
@@ -216,8 +216,8 @@ proves every exit condition above.
 | Gate                        | Status                                                           | Required record                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | --------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Clean release baseline      | Complete (2026-08-24)                                            | [Release 1.6 baseline evidence](#release-16-baseline-evidence)                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Native contract freeze      | Complete; soak 2/2 (2026-08-28)                                  | [Native API audit](native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](native-release-runbook.md), and the stability soak ledger                                                                                                                                                                                                                                                                                                    |
-| Real consumer validation    | Post-release qualification incomplete                            | [Native consumer validation](native-consumer-validation.md), [web consumer validation](web-consumer-validation.md), and their machine-readable ledgers: immutable active-consumer qualification remains required                                                                                                                                                                                                                                                                    |
+| Native contract freeze      | Complete; soak 2/2 (2026-08-28)                                  | [Native API audit](../native-api-audit.md), [Native contract review](native-contract-review.md), [Native release runbook](../native-release-runbook.md), and the stability soak ledger                                                                                                                                                                                                                                                                                                    |
+| Real consumer validation    | Post-release qualification incomplete                            | [Native consumer validation](../native-consumer-validation.md), [web consumer validation](../web-consumer-validation.md), and their machine-readable ledgers: immutable active-consumer qualification remains required                                                                                                                                                                                                                                                                    |
 | Physical-device validation  | Incomplete                                                       | Completed native device matrix with evidence links; exact package minimums and explicit Partial blockers are machine-enforced                                                                                                                                                                                                                                                                                                                                                       |
 | Distribution validation     | Complete (2026-08-28)                                            | The first [published-native run](https://github.com/santi020k/lumen/actions/runs/33139186529), second [npm/Swift release](https://github.com/santi020k/lumen/actions/runs/33149488101), second [Maven release](https://github.com/santi020k/lumen/actions/runs/33149826124), coordinated [npm/Swift 2.0.0 release](https://github.com/santi020k/lumen/actions/runs/33206832772), and coordinated [Maven 2.0.0 release](https://github.com/santi020k/lumen/actions/runs/33207266786) |
 | Coordinated Lumen 2 release | Complete (2026-08-28)                                            | Every public package and platform published at `2.0.0` from revision `c8ebda903f64d116635227a3e49017c84b4af6f1`, with documentation and migration notes                                                                                                                                                                                                                                                                                                                             |

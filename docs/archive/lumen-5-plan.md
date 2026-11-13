@@ -1,5 +1,8 @@
 # Lumen 5: modular delivery
 
+> **Archived.** Open items from this file now live in the
+> [open backlog](../feature-roadmap.md#open-backlog). This record keeps the original evidence.
+
 Status: implemented and locally validated on `release/v5.0.0`, based on published v4.4.0
 (`fc264ae2`). The maintainer selected modular packages with editable recipes on November 5, 2026.
 P0, P1, and P2 are in scope. Publication requires a separately approved, validated revision.
@@ -37,7 +40,7 @@ traffic or universal savings. Source sizes exclude transitive imports and bundle
 | Current component installer | Astro/React wrappers import roots; Elements wrappers register the whole catalog | Installing one wrapper currently does not guarantee selective delivery. |
 
 Reproduce with `pnpm run measure:imports`, `pnpm run measure:selective-imports`, and the commands in
-[import performance](import-and-icon-performance.md). The existing import fixture does not mount
+[import performance](../import-and-icon-performance.md). The existing import fixture does not mount
 the runtime or import CSS. Add route-level delivery fixtures before setting browser budgets.
 
 ## Delivery contract
@@ -136,7 +139,7 @@ browsers, mobile/desktop rendering, enlarged text, RTL, reduced motion, and no-J
 Test both package tarballs and real consumer-shaped fixtures, including Astro navigation and React
 server boundaries. Check changed native surfaces with their platform commands.
 
-The current [release policy](native-release-runbook.md#current-release-policy) governs qualification;
+The current [release policy](../native-release-runbook.md#current-release-policy) governs qualification;
 historical physical-device and stability matrices must not be reinstated as release gates.
 Require independent pre-push review, resolve findings, and publish through the normal GitHub release
 workflow only after authorization. Verify exact package/tag provenance and documented smoke checks.
@@ -157,7 +160,7 @@ prepared release and its follow-up validation are recorded below.
   installer output, and installed-consumer tests are implemented.
 - P2: React/Elements editorial recipes, explicit local rendered audits, CLI/MCP target-version
   diagnostics, native import improvements, and measured delivery/install comparisons are implemented.
-- [Performance evidence](import-and-icon-performance.md) separates browser assets, installation
+- [Performance evidence](../import-and-icon-performance.md) separates browser assets, installation
   content, and native bundle costs. Existing budgets remain enforced.
 - Changesets resolve the six linked web/tooling packages to 5.0.0. Companion native packages follow
   their own versions through the existing release process.
@@ -204,7 +207,7 @@ Detailed temporary logs, clean-install inventories, and consumer evidence are re
 were excluded from commits: route metadata and renderer sources are unchanged, and the generator
 hashes absolute source paths. No generated image or build cache is included in the release diff.
 
-Use the [v4 → v5 migration guide](migrating-v4-to-v5.md) for the separately installed CLI, awaited
+Use the [v4 → v5 migration guide](../migrating-v4-to-v5.md) for the separately installed CLI, awaited
 Astro initialization, selective setup, and optional recipe adoption.
 
 Publication remains a separate authorized task through the normal GitHub workflow. Do not remove
@@ -218,7 +221,7 @@ stabilization in `b15052a5`. Changesets are consumed into package versions and c
 web/tooling packages are 5.0.0; React Native is 4.0.3, React Hook Form 4.0.2, and brand icons 4.0.1.
 That revision retained tokens 4.0.0 and Compose/Wear 4.0.1. The subsequent base theme refresh
 adds tokens 4.0.1 to the npm publication set, updates the Compose/Wear target to 4.0.2, and
-regenerates Swift colors for the v5.0.0 tag. See the [appearance migration](migrating-v4-to-v5.md#default-appearance).
+regenerates Swift colors for the v5.0.0 tag. See the [appearance migration](../migrating-v4-to-v5.md#default-appearance).
 
 Independent pre-push review and its bounded final review produced four findings, all addressed:
 
@@ -234,7 +237,7 @@ Independent pre-push review and its bounded final review produced four findings,
 Additional preparation preserves React Hook Form's v4 peer support alongside v5, validates the Swift
 baseline, and reports registry availability as `unverified` rather than baking an unpublished claim
 into immutable packages. The subsequent-release umbrella-version constraint is documented in
-[CONTRIBUTING.md](../CONTRIBUTING.md#publishing); the initial publication set is never rewritten.
+[CONTRIBUTING.md](../../CONTRIBUTING.md#publishing); the initial publication set is never rewritten.
 
 | Prepared-release check | Result |
 | --- | --- |
@@ -363,5 +366,5 @@ and desktop interaction, stale-load protection, focus recovery and navigation re
 
 The named Paper, Field and santi020k themes add public mobile APIs. The v5 candidate therefore
 targets 4.1.0 for React Native, tokens and the two Compose artifacts. SwiftUI follows the v5
-repository tag. The [appearance guide](appearance-presets.md#named-themes-on-mobile) describes
+repository tag. The [appearance guide](../appearance-presets.md#named-themes-on-mobile) describes
 local scopes and the Playground examples.

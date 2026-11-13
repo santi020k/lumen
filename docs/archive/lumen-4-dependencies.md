@@ -107,7 +107,7 @@ hold, strict mode, audit enforcement and other exclusions remain unchanged. A ta
 changes only this package's resolution and integrity in the lockfile. Remove this temporary entry
 after the normal hold expires. This is an approved age-policy exception, not an advisory suppression
 or a claim that the reported cache behavior changed. Final validation is recorded in
-[release readiness](lumen-4-readiness.md).
+[release readiness](../lumen-4-readiness.md).
 
 ### Applied patches and audit verification
 
@@ -230,7 +230,7 @@ Regenerated with `pnpm run generate:platform-icons`: 1864 interface (+4), 573 br
 - Full `pnpm audit --json`: reduced from 10 findings (7 high, 3 moderate) to exactly 3 high, 0 moderate. Fixed seven development findings through compatible patched versions. Remaining three are unchanged production-transitive advisories with `patched_versions: null`: node-forge, http-cache-semantics, braces. No exclusions/suppressions. Canonical security gate remains blocked.
 - MCP migration agent separately reports: strict typecheck/lint, 75 tests, 686 component contracts + 162 examples, packed stdio/HTTP consumer smoke, Cloudflare dry-run and real local workerd handshake/tools/schema error smoke all PASS.
 
-Final integrated verification and release blockers are recorded in [the v4 readiness record](lumen-4-readiness.md).
+Final integrated verification and release blockers are recorded in [the v4 readiness record](../lumen-4-readiness.md).
 
 ## Official evidence
 

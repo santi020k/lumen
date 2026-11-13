@@ -68,10 +68,10 @@ The browser checks used isolated local ports. React Native appearance checks ran
 web playground. Firefox, a fresh React Native iOS/Android app run, and physical-device checks are
 outside this local evidence.
 
-The existing [native device validation matrix](native-device-validation.md) remains authoritative
+The existing [native device validation matrix](../native-device-validation.md) remains authoritative
 for physical-device VoiceOver, TalkBack, hardware input and minimum-OS coverage. A simulator,
 emulator or browser preview does not complete those cells. React Native rich-text editing remains
 the explicitly deferred dependency decision described in the
 [native catalog parity plan](native-catalog-parity-plan.md). Native WorldMap rendering also remains
-unimplemented, as recorded in the [web/native audit](lumen-4-web-native-audit.md). Neither older gap
+unimplemented, as recorded in the [web/native audit](../lumen-4-web-native-audit.md). Neither older gap
 is a missing port of a new v5 feature; neither is claimed as complete catalog equivalence.

@@ -70,7 +70,7 @@ Existing app icons retain the canonical monogram.
 
 ## Sources for claims
 
-- [V5 plan](../lumen-5-plan.md): modular delivery, editable recipes, and their evidence boundaries.
+- [V5 plan](../archive/lumen-5-plan.md): modular delivery, editable recipes, and their evidence boundaries.
 - [Playground guide](../playgrounds.md): platform distribution and capture workflows.
 - Application READMEs: named themes, category navigation, and composed example behavior.
 - [Brand guide](../brand-guidelines.md): palette, mark, voice, and motion.

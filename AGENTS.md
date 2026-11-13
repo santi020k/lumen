@@ -20,6 +20,10 @@ the other packages adapt or expose shared pieces.
 - `packages/lumen` is the umbrella package and public package map.
 - `apps/docs` is the Astro documentation and demo site.
 
+Open work is tracked only in the [open backlog](docs/feature-roadmap.md#open-backlog). Files in
+[docs/archive/](docs/archive/README.md) are historical records; do not treat them as current API or
+release guidance, and do not add new top-level backlog files.
+
 Use [README.md](README.md) for the public overview, [docs/ai-usage.md](docs/ai-usage.md) for
 AI-facing consumption examples, and [docs/brand-guidelines.md](docs/brand-guidelines.md) for voice
 and visual guidance.

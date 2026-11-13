@@ -18,7 +18,7 @@ native adapters retain platform controls and application-owned state.
   catalogs include the new contract. English and Spanish examples exercise editable and read-only
   states. Release notes are folded into the already prepared, unpublished 4.0.0 changelogs.
 
-See the [range-filter contract](native-components.md#native-range-filters) for syntax and step
+See the [range-filter contract](../native-components.md#native-range-filters) for syntax and step
 conventions. React Native uses a numeric increment, SwiftUI supports continuous or stepped native
 sliders, and Compose counts intermediate stops. The host still owns units, filtering and persistence.
 
@@ -48,7 +48,7 @@ search also accepts a localized clear label. Native conventions remain: SwiftUI 
 sheets, React Native callbacks and a virtualized modal list, and Compose Material dialogs. React
 Native forwards application-owned safe-area insets into the embedded sheet.
 
-The [complete web-to-native audit](lumen-4-web-native-audit.md) records every one of the 182 web
+The [complete web-to-native audit](../lumen-4-web-native-audit.md) records every one of the 182 web
 entries: 70 semantic counterparts, 61 native compositions, 27 platform/host responsibilities and
 24 actual gaps. The native contract check rejects missing web entries or nonexistent mapped native
 contracts. A counterpart is semantic coverage, not identical markup, props or platform availability.

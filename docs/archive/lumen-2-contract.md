@@ -181,7 +181,7 @@ risk creating duplicate local bindings.
 - **React server/client boundaries — resolved, retain:** keep the package root as the complete
   client catalog and provide `@santi020k/lumen-react/server` for the seven stateless primitives it
   implements directly. The workspace and clean packed-package Next consumers validate both
-  boundaries, and the [repeatable measurement](import-and-icon-performance.md#august-26-2026-react-server-boundary-baseline)
+  boundaries, and the [repeatable measurement](../import-and-icon-performance.md#august-26-2026-react-server-boundary-baseline)
   shows the implementation-level server entrypoint materially reduces emitted static output. The
   root reuses the same primitive implementations, so this additive path does not fork behavior or
   require a breaking v2 root change.
@@ -189,7 +189,7 @@ risk creating duplicate local bindings.
   typed component-set overload, while providing implementation-level Badge, Button, and Card
   entrypoints for small surfaces. The full catalog reuses those exact constructors, a clean Astro
   application consumes them from the packed package, and the
-  [repeatable bundle measurement](import-and-icon-performance.md#august-27-2026-elements-registration-baseline)
+  [repeatable bundle measurement](../import-and-icon-performance.md#august-27-2026-elements-registration-baseline)
   proves material output reduction. This additive path avoids a breaking full-catalog deprecation;
   expand it component by component as equivalent evidence becomes available.
 - **Umbrella Core re-exports — resolved, retain:** the web API baseline protects 202 umbrella

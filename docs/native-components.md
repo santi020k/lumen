@@ -1201,7 +1201,7 @@ React Native's `resolveLumenRating` and native `LumenRatingModel` expose normali
 for application validation. Only an enabled, editable selection invokes an update.
 
 Catalog integration and playground verification are tracked in
-[native catalog parity completion](native-catalog-parity-plan.md).
+[native catalog parity completion](archive/native-catalog-parity-plan.md).
 
 ## Stepper, timeline and breadcrumb
 

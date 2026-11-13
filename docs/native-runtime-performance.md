@@ -123,7 +123,7 @@ text remains visible. Restore the original text size, app and host entrypoint af
 The iPhone iOS 27 Simulator probe reproduced clipping in both renderers at live maximum text size.
 Both callbacks reported four lines at standard size and only one after enlargement, despite lost
 paragraph content. This rules out a Lumen-only layout defect in this host; it does not identify the exact native
-cache failure or establish an acceptable workaround. See the [v4 quality record](lumen-4-native-quality.md)
+cache failure or establish an acceptable workaround. See the [v4 quality record](archive/lumen-4-native-quality.md)
 for the preserved fixture, artifact and screenshots.
 
 ### Runtime and hardware measurements

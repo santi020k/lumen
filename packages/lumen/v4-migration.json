@@ -14,7 +14,7 @@
       "replacement": "Shared chart geometry and formatted axes, strict range selection, explicit clipboard recovery, accessible native layout controls, and a cross-framework image comparison primitive.",
       "migration": "Use stable unique chart X identities; remove verified old chart/hidden patches; review button content selectors and loading activation; rebuild native consumers for changed initializer and formatter contracts.",
       "evidence": [
-        "docs/lumen-4-consumer-audit.md",
+        "docs/archive/lumen-4-consumer-audit.md",
         "docs/lumen-4-readiness.md"
       ],
       "docs": [
@@ -57,7 +57,7 @@
         "LumenUI"
       ],
       "evidence": [
-        "docs/lumen-4-consumer-audit.md",
+        "docs/archive/lumen-4-consumer-audit.md",
         "docs/native-api-audit.md"
       ],
       "docs": [
@@ -105,7 +105,7 @@
         "com.santi020k:lumen-compose"
       ],
       "evidence": [
-        "docs/lumen-4-native-quality.md"
+        "docs/archive/lumen-4-native-quality.md"
       ],
       "docs": [
         "docs/native-patterns.md",

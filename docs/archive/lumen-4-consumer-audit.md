@@ -4,7 +4,7 @@ Twenty dedicated source audits were completed on October 3, 2026. Each compared 
 usage against the current library, rather than treating an older installed version as proof of a
 missing component. Consumer repositories and application data were left unchanged.
 
-The implementation record and final validation belong in [v4 readiness](lumen-4-readiness.md).
+The implementation record and final validation belong in [v4 readiness](../lumen-4-readiness.md).
 The table records the decision for each project; it does not claim that consumers have upgraded.
 
 | Consumer | Evidence from current usage | Library response and adoption guidance |

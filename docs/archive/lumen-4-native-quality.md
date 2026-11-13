@@ -32,7 +32,7 @@ dependency, icon, web, and Compose-field work. Integrate only completed, verifie
 Real-consumer completion, physical-device evidence matrices, and two stability iterations no longer
 form release steps or validation checks. Historical statements below describe previously collected
 evidence, not current release blockers. See the
-[current release policy](native-release-runbook.md#current-release-policy).
+[current release policy](../native-release-runbook.md#current-release-policy).
 
 ## Implementation and evidence
 
@@ -125,7 +125,7 @@ marks affected runs Partial. Six deterministic parser tests cover cold-launch re
 unfinished frames, timestamp precision, duplicate rows, malformed bounds and future timestamps.
 
 Run `pnpm run measure:android-workspace --serial <device>` from a clean committed checkout.
-See [runtime performance](native-runtime-performance.md) for setup, raw artifacts and limitations.
+See [runtime performance](../native-runtime-performance.md) for setup, raw artifacts and limitations.
 
 ### Isolated Android runtime collector
 
@@ -156,7 +156,7 @@ Both raw runs remain local under `.build/native-quality-android-runtime-benchmar
 plus the then-uncommitted benchmark/driver changes, source hashes, test results, lint and preserved
 APKs. Runtime input hashes matched after the run; the installed benchmark APK matched preserved
 SHA-256 `8f5e59aa6f749e7114c07cf162c55886267fd6fdaeb9c0257244cf0505516899`.
-See [runtime performance](native-runtime-performance.md) for the isolated workflow.
+See [runtime performance](../native-runtime-performance.md) for the isolated workflow.
 
 ### Apple scrolling hitch fixture
 
@@ -517,7 +517,7 @@ zero-warning lint and all 180 tests against packed v4 React Native/core packages
 Hermes production exports plus the web export passed without application source changes. Ten dirty
 paths in the original checkout were preserved; the canary used committed source in an isolated
 copy. Peer diagnostics failed identically in both the original checkout and candidate, reflecting
-existing lint-tool ranges. The [consumer record](native-consumer-validation.md#lumen-4-local-roadscore-compatibility)
+existing lint-tool ranges. The [consumer record](../native-consumer-validation.md#lumen-4-local-roadscore-compatibility)
 describes exact inputs, hashes and limitations. This establishes local compatibility, not a
 published, adopted, signed or physical-device-qualified consumer; the qualification ledger remains
 unchanged.
@@ -588,8 +588,8 @@ Do not overwrite those edits or bypass the failed gate. Publication remains outs
 implementation authorization. Physical-device and release stability evidence must bind their
 actual tested revision; historical records retain their original attribution and version.
 
-See [runtime performance](native-runtime-performance.md), [native patterns](native-patterns.md), [device validation](native-device-validation.md),
-[consumer qualification](native-consumer-validation.md), and [v4 readiness](lumen-4-readiness.md).
+See [runtime performance](../native-runtime-performance.md), [native patterns](../native-patterns.md), [device validation](../native-device-validation.md),
+[consumer qualification](../native-consumer-validation.md), and [v4 readiness](../lumen-4-readiness.md).
 
 ### React Native iOS long-note verification
 
@@ -802,7 +802,7 @@ App Intents dependency; other application targets use App Intents.
 
 The consumer's current Apple source does not import `LumenWidgetUI`, so its widget builds do not
 qualify that adapter. Native source hashes captured after build start still matched at completion;
-logs and artifact hashes remain local. See [consumer validation](native-consumer-validation.md)
+logs and artifact hashes remain local. See [consumer validation](../native-consumer-validation.md)
 for commands and evidence limits. Physical-device, accessibility, published-artifact upgrade and
 stability requirements remain open; no qualification ledger status changed. Canonical validation
 and local release integration remain incomplete because of the previously recorded web bundle

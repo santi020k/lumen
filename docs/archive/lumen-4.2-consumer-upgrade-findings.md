@@ -1,9 +1,12 @@
 # Findings from Lumen 4.2 consumer upgrades
 
+> **Archived.** Open items from this file now live in the
+> [open backlog](../feature-roadmap.md#open-backlog). This record keeps the original evidence.
+
 Reviewed on October 13, 2026. This document records findings for the next Lumen release,
 based on upgrading sibling projects under `/Users/santi020k/Projects/santi020k`.
-It supplements the existing [native backlog](improvement.md) and
-[4.2 scope audit](docs/lumen-4.2-improvement-audit.md).
+It supplements the existing [native backlog](native-consumer-backlog-v4.md) and
+[4.2 scope audit](lumen-4.2-improvement-audit.md).
 
 ## Release contract
 

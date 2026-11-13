@@ -1,7 +1,10 @@
 # Active Lumen improvements
 
+> **Archived.** Open items from this file now live in the
+> [open backlog](../feature-roadmap.md#open-backlog). This record keeps the original evidence.
+
 Reconciled against released v4 code on October 12, 2026. The
-[v4.2 reconciliation](docs/lumen-4.2-improvement-audit.md) records all 52 original proposals, including the appearance fix completed for v4.2,
+[v4.2 reconciliation](lumen-4.2-improvement-audit.md) records all 52 original proposals, including the appearance fix completed for v4.2,
 current implementation evidence, and remaining acceptance work. The status note under each heading
 is authoritative; the older consumer observations describe the package version used at that time
 and must not be read as current v4 API limitations.
@@ -16,7 +19,7 @@ pointers to the current release policy. This backlog does not make every proposa
 **Reconciliation: Retired.** External real-consumer completion is not a release gate. Preserve the historical evidence; retain configured package-consumer canaries.
 
 See the
-[current release policy](docs/native-release-runbook.md#current-release-policy) and preserved
+[current release policy](../native-release-runbook.md#current-release-policy) and preserved
 historical records. No new external repository or device action is required by this item.
 
 ## Physical-device accessibility evidence
@@ -24,7 +27,7 @@ historical records. No new external repository or device action is required by t
 **Reconciliation: Retired.** The physical-device matrix is historical and is not a release gate. Automated accessibility checks remain required where configured.
 
 See the
-[current release policy](docs/native-release-runbook.md#current-release-policy) and preserved
+[current release policy](../native-release-runbook.md#current-release-policy) and preserved
 historical records. No new external repository or device action is required by this item.
 
 ## SwiftUI semantic button roles
@@ -2171,5 +2174,5 @@ or package version changed for this consumer implementation.
 Remove an item when its public contract and documentation exist and the remaining automated and
 rendered acceptance criteria pass. Preserve evidence in Git history or the linked reconciliation.
 Do not reinstate retired consumer-completion, physical-device, or stability-soak release gates;
-follow [current release policy](docs/native-release-runbook.md#current-release-policy). Product
+follow [current release policy](../native-release-runbook.md#current-release-policy). Product
 navigation, domain state, safety policy, and platform presentation remain application-owned.

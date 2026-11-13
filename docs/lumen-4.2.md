@@ -52,5 +52,5 @@ These changes require no persisted-data migration. Published corrections use a n
 replace the published tag. See the
 [v4.1 highlights](https://github.com/santi020k/lumen/blob/main/docs/lumen-4.1.md) for the preceding
 loading and form improvements, and the
-[v4.2 scope audit](https://github.com/santi020k/lumen/blob/main/docs/lumen-4.2-improvement-audit.md)
+[v4.2 scope audit](https://github.com/santi020k/lumen/blob/main/docs/archive/lumen-4.2-improvement-audit.md)
 for work retained in the backlog.

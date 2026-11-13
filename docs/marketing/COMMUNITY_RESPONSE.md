@@ -29,7 +29,7 @@ claim under social pressure to sound impressive or to close an argument.
 > The web packages (Astro, React, Web Components) are published and stable. The native foundations
 > for React Native, SwiftUI, and Jetpack Compose are also published in the stable Lumen 2 line, but
 > real-consumer and physical-device validation remain open post-release qualification work — see
-> [`docs/lumen-2-readiness.md`](../lumen-2-readiness.md) for the exact ledger.
+> [`docs/archive/lumen-2-readiness.md`](../archive/lumen-2-readiness.md) for the exact ledger.
 
 **"Does Lumen support Spanish / other languages?"**
 

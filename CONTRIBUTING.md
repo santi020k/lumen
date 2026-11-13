@@ -243,7 +243,7 @@ Native component cards reuse the verified native captures. Run
 `pnpm --filter @santi020k/lumen-docs run check:og` and `pnpm --filter @santi020k/lumen-docs run audit:seo` after building. `DocsLayout` builds an
 accessible section menu from page headings; pass explicit `pageNavigation` entries when sections
 need different labels or a stable server-rendered menu. Preserve old deep links with an onward link
-or a focused redirect. See [the navigation audit](docs/documentation-navigation-audit.md) for the
+or a focused redirect. See [the navigation audit](docs/archive/documentation-navigation-audit.md) for the
 current page boundaries and validation coverage.
 
 The docs post-build SEO audit also checks rendered header, sidebar, section, and footer navigation,

@@ -76,7 +76,7 @@ Never write copy that implies any of the following, even loosely:
 - That OpenAI endorses or certifies Lumen. The published Plugins Directory listing confirms
   availability, not an endorsement.
 - That native platform support is production-proven on physical devices, or that real external
-  consumer applications have completed qualification. `docs/lumen-2-readiness.md` records both as
+  consumer applications have completed qualification. `docs/archive/lumen-2-readiness.md` records both as
   incomplete post-release qualification work.
 - Any competitor comparison beyond a factual, sourced statement. Do not disparage other UI systems.
 - Any metric, testimonial, or adoption number that is not in this file's claim ledger or directly
@@ -91,7 +91,7 @@ must not appear in public copy at all.
 | ID | Claim | Evidence | State | Approved usage boundary |
 | --- | --- | --- | --- | --- |
 | C-01 | 150+ accessible web primitives across Astro, React, and Web Components | `README.md` project description; `packages/astro` component catalog | SUPPORTED | Web primitive count only; do not add native component counts to this figure. |
-| C-02 | Shared native foundations for React Native, SwiftUI, and Jetpack Compose | `packages/react-native`, `packages/swift`, `packages/compose`; [`docs/lumen-2-readiness.md`](../lumen-2-readiness.md) baseline table | CONDITIONAL | Always pair with: "physical-device and real-consumer validation remain post-release qualification work." |
+| C-02 | Shared native foundations for React Native, SwiftUI, and Jetpack Compose | `packages/react-native`, `packages/swift`, `packages/compose`; [`docs/archive/lumen-2-readiness.md`](../archive/lumen-2-readiness.md) baseline table | CONDITIONAL | Always pair with: "physical-device and real-consumer validation remain post-release qualification work." |
 | C-03 | Free and MIT licensed | `LICENSE`, package manifests, README license section | SUPPORTED | State as current policy, not a promotional discount or limited-time offer. |
 | C-04 | Localization-ready primitives with a demonstrated English/Spanish `LanguageToggle` default | `packages/core/src/language.ts`, public route `/docs/components/language-toggle`, `docs/ai-usage.md` (`useLanguageToggle`) | CONDITIONAL | Use the exact approved sentence in `CONTENT_KIT.md`. Never imply the docs site or packages ship translated content. |
 | C-05 | Portable Agent Skill and MCP server for AI-assisted development | README "AI and design workflows" section; `packages/mcp`; `llms.txt` | SUPPORTED | Name the install command exactly as published; do not claim specific agent/tool compatibility beyond what the skill documents. |
@@ -99,7 +99,7 @@ must not appear in public copy at all.
 | C-07 | Five installable template families across three framework targets | README "Dashboards and templates" section; `lumen add` CLI | SUPPORTED | Name the CLI command exactly; do not claim template count beyond five without checking `apps/docs/src/pages/templates`. |
 | C-08 | Real-world use across sibling web, SwiftUI, and Jetpack Compose projects in the maintainer's own workspace | [`docs/project-adoption.md`](../project-adoption.md) workspace inventory table | CONDITIONAL | Always describe as the maintainer's own projects, never as customers. Do not state a specific project count in public copy; the inventory table counts package surfaces, not products, so a single project can appear more than once. Re-verify against the current table before citing anything more specific; the audit is dated 2026-08-22 and may be stale. |
 | C-09 | Public showcase projects: PostLens, Astro Doctor, Santi020k Themes | `apps/docs/src/pages/community.astro` (live `/community` route) | SUPPORTED | Link only to the exact public URLs already on the live community page. |
-| C-10 | Lumen 2 coordinated `2.0.0` release published across the public package family | [`docs/lumen-2-readiness.md`](../lumen-2-readiness.md) readiness ledger | CONDITIONAL | Always note that real-consumer and physical-device validation remain open post-release qualification items. |
+| C-10 | Lumen 2 coordinated `2.0.0` release published across the public package family | [`docs/archive/lumen-2-readiness.md`](../archive/lumen-2-readiness.md) readiness ledger | CONDITIONAL | Always note that real-consumer and physical-device validation remain open post-release qualification items. |
 | C-11 | The Apple playground (iPhone, iPad, Mac) is live on the App Store | README "Native playgrounds" section; current public App Store listing | SUPPORTED | Link to the exact public listing. Do not imply that the React Native playground has an App Store listing. |
 | C-12 | Lumen UI 1.0.0 is published in the shared ChatGPT and Codex Plugins Directory | [`../openai-plugin-submission.md`](../openai-plugin-submission.md), verified public listing on 2026-09-08 | SUPPORTED | May say published and available; link to the exact directory listing or instruct readers to search Plugins for Lumen UI. Do not imply OpenAI endorsement or private-repository access. |
 | C-13 | Live CI, CodeQL, and npm badges expose current status | README badges section | CONDITIONAL | Link to the live GitHub Actions and npm pages. Never restate a green or current status without checking it at publication time. |

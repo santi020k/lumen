@@ -3,7 +3,7 @@
 <!-- cspell:words Roadscore -->
 
 This document records candidate and qualifying applications from the historical real-consumer
-plan in the [Lumen 2 readiness plan](lumen-2-readiness.md). A repository reference alone is discovery evidence,
+plan in the [Lumen 2 readiness plan](archive/lumen-2-readiness.md). A repository reference alone is discovery evidence,
 not proof that an adapter is production-ready.
 
 This historical record is retained for reference. Native consumer qualification checks and commands
@@ -419,7 +419,7 @@ status and exported artifact hashes remain local under `.build/native-quality-ro
 This is local source/package compatibility evidence. It does not prove signed native compilation,
 installation, device accessibility, an adopted consumer upgrade, current active-product status,
 published-artifact qualification or either stability iteration. The historical consumer ledger
-remains unchanged and incomplete. See [v4 native quality](lumen-4-native-quality.md) for the final
+remains unchanged and incomplete. See [v4 native quality](archive/lumen-4-native-quality.md) for the final
 candidate requirements and remaining release gates.
 
 ## Lumen 4 local ContracTrack compatibility

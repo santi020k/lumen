@@ -103,7 +103,7 @@ qualification evidence, but the maintainer explicitly deferred their completion 
 initial 2.0.0 publication. Pending entries must not be described as completed.
 
 The measurable graduation gates, release sequence, and stable compatibility policy are tracked in
-[Lumen 2 readiness](lumen-2-readiness.md).
+[Lumen 2 readiness](archive/lumen-2-readiness.md).
 
 Future features that do not yet meet the supported contract bar should be labeled
 **Experimental** and must not be presented as part of the supported component surface.
