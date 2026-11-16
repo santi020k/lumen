@@ -24,7 +24,10 @@ test('presets animate real components and lists retain focus and state', async (
 
 test('the playground reinitializes after client navigation', async ({ page }) => {
   await page.goto(route)
-  await page.locator('[data-motion-playground]').getByRole('link', { name: 'ScrollReveal', exact: true }).click()
+  await Promise.all([
+    page.waitForURL(/\/docs\/components\/scroll-reveal$/),
+    page.locator('[data-motion-playground]').getByRole('link', { name: 'ScrollReveal', exact: true }).click()
+  ])
   await expect(page).toHaveURL(/\/docs\/components\/scroll-reveal$/)
   await page.goBack()
   await expect(page).toHaveURL(new RegExp(`${route}$`))
