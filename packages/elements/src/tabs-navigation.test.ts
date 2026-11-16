@@ -44,3 +44,46 @@ test.each(['ArrowRight', 'End'])('skips disabled Elements tabs with %s', key => 
   expect(getTab('last').getAttribute('aria-selected')).toBe('true')
   expect(getTab('disabled').getAttribute('aria-selected')).toBe('false')
 })
+
+test('does not activate disabled, aria-disabled, or canceled-click tabs or emit ui:tabs-change', () => {
+  document.body.innerHTML = `<lumen-tabs>
+    <div role="tablist">
+      <button role="tab" id="first" aria-selected="true" aria-controls="first-panel">First</button>
+      <button role="tab" id="second" aria-selected="false" aria-controls="second-panel">Second</button>
+      <button role="tab" id="aria-disabled" aria-selected="false" aria-disabled="true" aria-controls="aria-disabled-panel">Aria disabled</button>
+      <button role="tab" id="native-disabled" aria-selected="false" disabled aria-controls="native-disabled-panel">Native disabled</button>
+    </div>
+    <section role="tabpanel" id="first-panel">First panel</section>
+    <section role="tabpanel" id="second-panel" hidden>Second panel</section>
+    <section role="tabpanel" id="aria-disabled-panel" hidden>Aria disabled panel</section>
+    <section role="tabpanel" id="native-disabled-panel" hidden>Native disabled panel</section>
+  </lumen-tabs>`
+
+  const tabs = document.querySelector('lumen-tabs')
+  if (!tabs) throw new Error('Expected tabs')
+  const events: Event[] = []
+
+  tabs.addEventListener('ui:tabs-change', event => {
+    events.push(event)
+  })
+
+  tabs.addEventListener('click', event => {
+    if (event.target === getTab('second')) event.preventDefault()
+  }, { capture: true, once: true })
+
+  getTab('second').click()
+  getTab('aria-disabled').click()
+  getTab('native-disabled').dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+  expect(getTab('first').getAttribute('aria-selected')).toBe('true')
+  expect(getTab('second').getAttribute('aria-selected')).toBe('false')
+  expect(getTab('aria-disabled').getAttribute('aria-selected')).toBe('false')
+  expect(getTab('native-disabled').getAttribute('aria-selected')).toBe('false')
+  expect(document.getElementById('first-panel')?.hidden).toBe(false)
+  expect(document.getElementById('second-panel')?.hidden).toBe(true)
+  expect(document.getElementById('aria-disabled-panel')?.hidden).toBe(true)
+  expect(events).toHaveLength(0)
+
+  getTab('first').click()
+  expect(events).toHaveLength(1)
+})

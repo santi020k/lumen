@@ -1,5 +1,5 @@
 // cspell:words Elegir fecha enero
-import { afterEach, expect, test } from 'vitest'
+import { afterEach, expect, test, vi } from 'vitest'
 
 import { enhanceLumenCalendars, enhanceLumenDatePickers } from './define.js'
 
@@ -195,4 +195,40 @@ test('preserves a focused calendar day after cross-document adoption and attribu
   root.setAttribute('lang', 'en')
   await tick()
   expect(destination.activeElement?.getAttribute('data-date')).toBe('2026-07-23')
+})
+
+test('picker aborts the previous outside-click AbortSignal on repeated open and on close', () => {
+  const clickSignals: AbortSignal[] = []
+  const originalAddEventListener = document.addEventListener.bind(document)
+
+  vi.spyOn(document, 'addEventListener').mockImplementation((
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions
+  ) => {
+    if (type === 'click' && options && typeof options === 'object' && options.signal) {
+      clickSignals.push(options.signal)
+    }
+
+    originalAddEventListener(type, listener, options)
+  })
+
+  picker()
+  const trigger = node('#date')
+  const popover = node('[data-ui-date-picker-popover]')
+
+  trigger.click()
+  expect(popover.hidden).toBe(false)
+  expect(clickSignals).toHaveLength(1)
+  expect(clickSignals[0]?.aborted).toBe(false)
+
+  trigger.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'ArrowDown' }))
+  expect(popover.hidden).toBe(false)
+  expect(clickSignals).toHaveLength(2)
+  expect(clickSignals[0]?.aborted).toBe(true)
+  expect(clickSignals[1]?.aborted).toBe(false)
+
+  document.body.click()
+  expect(popover.hidden).toBe(true)
+  expect(clickSignals[1]?.aborted).toBe(true)
 })
