@@ -4,6 +4,13 @@
 
 ### Patch Changes
 
+- Return HTTP `405` with `Allow: POST` for non-POST requests to stateless `/mcp` endpoints. Decode
+  resource-template variables safely once, resolve native aliases consistently, and ignore
+  inherited properties in catalog comparisons and manifest diagnostics.
+
+- Support cross-platform `kind: "native-component"` searches without changing default web
+  rankings. Keep searches with an explicit `platform` limited to native contracts.
+
 - Add CheckboxCard and RadioCard compositions for descriptive choices with visible native
   selection indicators, labels, descriptions, decorative icons and metadata. Preserve native
   form values, reset, keyboard behavior and validation, with outline/soft surfaces and clear

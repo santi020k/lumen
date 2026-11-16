@@ -21,6 +21,16 @@
 
 ### Patch Changes
 
+- Forward dynamic accessibility and input attributes across scalar form controls and clear removed
+  host IDs. Ignore disabled tab clicks, remove stale DatePicker outside-click listeners after
+  repeated opens, and retain ThemeBuilder export events when clipboard access is unavailable.
+
+- Honor canceled, composing, and modified keys in Calendar, InputOTP, Tabs, Resizable, and
+  ContextMenu. Preserve ContextMenu invoker tracking and SVG item activation while guarding
+  disabled items and triggers.
+
+- Limit FileUpload drops to the first file when `multiple` is absent.
+
 - Fix Elements submit-button behavior and dialog backdrop detection, preserve disabled option groups
   in Astro Select, and keep Android date-picker cleanup scoped to the field that opened it.
   Refresh the MCP server's bundled native source to include the date-picker fix.

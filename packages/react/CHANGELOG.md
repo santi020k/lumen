@@ -21,6 +21,10 @@
 
 ### Patch Changes
 
+- Leave canceled, composing, and Alt-, Ctrl-, or Meta-modified Mentions keyboard events to the
+  consumer. Preserve ordinary Enter and Shift+Enter selection, and document distinct explicit
+  names for multiple Segmented controls without changing their default form submission name.
+
 - Updated dependencies [`77f02b8`, `77f02b8`, `77f02b8`]:
   - @santi020k/lumen-core@5.3.0
 

@@ -19,6 +19,27 @@
 
 - Add safe system typography choices and flat elevation to ThemeBuilder across web adapters. Extend the theme workbench with density and shareable appearance controls.
 
+### Patch Changes
+
+- Bound chart tick requests to 2–4096 ticks, using five for nonfinite counts. Keep ticks finite,
+  distinct, and strictly increasing across extreme finite domains and millisecond timestamps.
+
+- Scan theme CSS and YAML, Markdown, and Markup code in linear time for adversarial inputs.
+  Preserve complete Unicode and escaped CSS identifiers, first-declaration and whitespace-only
+  values, contiguous code token offsets, and attributes containing quoted `>` characters.
+
+- Ignore inherited properties when filtering and sorting records, resolving device presets, and
+  handling rich-text and media-viewport shortcuts. Preserve explicitly owned record fields,
+  literal locale labels in templates, and consistent normalization of record-based form errors.
+
+- Reject malformed or nonfinite HSL exports while preserving hue wrapping and channel clamping.
+  Validate recurring events even for zero occurrences and reject fractional day intervals;
+  preserve zero and negative integer intervals, validation precedence, and date overflow errors.
+
+- Parse localized negative amounts and decimals containing RTL direction marks. Keep the
+  AmountField caret after a leading decimal point and preserve its previous state when `setValue`
+  rejects a draft. Fall back safely when phone-country sorting receives a malformed locale.
+
 ## 5.0.0
 
 - Share selective component delivery and React server export metadata through the component-delivery entry for CLI and Figma tooling.

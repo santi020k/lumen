@@ -4,6 +4,9 @@
 
 ### Patch Changes
 
+- Keep Android time-picker ownership scoped to the field that opened it, prevent concurrent
+  opens during dismissal, handle unmount dismissal errors, and discard stale callbacks.
+
 - Fix Elements submit-button behavior and dialog backdrop detection, preserve disabled option groups
   in Astro Select, and keep Android date-picker cleanup scoped to the field that opened it.
   Refresh the MCP server's bundled native source to include the date-picker fix.

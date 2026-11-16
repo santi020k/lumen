@@ -21,6 +21,29 @@
 
 ### Patch Changes
 
+- Preserve validation from submissions and focus changes immediately after a form reset. Honor
+  canceled resets, clear only runtime-owned errors on disabled and external form-associated
+  controls, and retain authored errors.
+
+- Skip native disabled, hidden, and inert navigation items dynamically in roving groups and
+  SpeedDial. Keep ARIA-disabled menu items focusable without activation, block disabled radio
+  activation, isolate nested and foreign-owned controls, and respect canceled, composing, and
+  modified keys. Resolve SpeedDial focus within its shadow root and guard disabled triggers.
+
+- Forward native Select focus to its visible trigger without changing the native ID or taking
+  validation focus from another control. Synchronize disabled, required, and invalid attributes,
+  including removals and controls initialized in a shadow root.
+
+- Respect disabled controls and canceled or modified interactions in menus, cascaders, mentions,
+  and trees. Keep disabled menu and tree items discoverable, skip unavailable targets, and restore
+  menu or cascader trigger focus when pointer activation leaves focus on the page or enclosing
+  dialog, including across shadow roots, while preserving focus moved by application actions.
+
+- Disconnect document-navigation resize observers during Astro swaps and initialize them cleanly
+  on subsequent navigation.
+
+- Limit FileUpload drops to the first file when `multiple` is absent.
+
 - Skip disabled controls during keyboard navigation in radio groups, toggle groups, toolbars, and
   menu bars. Preserve enabled focus and submitted radio values when controls become disabled.
 
