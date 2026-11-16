@@ -1630,6 +1630,58 @@ describe('@santi020k/lumen-elements', () => {
     expect(writeText).toHaveBeenCalledWith(output.value)
   })
 
+  test.each(['missing', 'rejected', 'throwing'] as const)(
+    'theme builder still dispatches ui:theme-export when clipboard is %s',
+    mode => {
+      if (mode === 'missing') {
+        Object.defineProperty(navigator, 'clipboard', {
+          configurable: true,
+          value: undefined
+        })
+      } else if (mode === 'rejected') {
+        Object.defineProperty(navigator, 'clipboard', {
+          configurable: true,
+          value: {
+            writeText: vi.fn(() => Promise.reject(new Error('Clipboard denied')))
+          }
+        })
+      } else {
+        Object.defineProperty(navigator, 'clipboard', {
+          configurable: true,
+          value: {
+            writeText: vi.fn(() => {
+              throw new Error('Clipboard blocked')
+            })
+          }
+        })
+      }
+
+      document.body.innerHTML = `
+        <lumen-theme-builder>
+          <input data-ui-theme-brand-hue type="range" max="360" value="264" />
+          <button data-ui-theme-export type="button">Copy</button>
+          <textarea data-ui-theme-output></textarea>
+        </lumen-theme-builder>
+      `
+
+      const root = requireValue(document.querySelector<HTMLElement>('lumen-theme-builder'))
+      const exportButton = requireValue(root.querySelector<HTMLButtonElement>('[data-ui-theme-export]'))
+      const exports: { format: string, value: string }[] = []
+
+      root.addEventListener('ui:theme-export', event => {
+        exports.push((event as CustomEvent<{ format: string, value: string }>).detail)
+      })
+
+      expect(() => {
+        exportButton.click()
+      }).not.toThrow()
+
+      expect(exports).toHaveLength(1)
+      expect(exports[0]?.format).toBe('css')
+      expect(exports[0]?.value).toContain('--brand:')
+    }
+  )
+
   test('rich text editor controls execute commands and emit events', () => {
     const execCommand = vi.fn(() => true)
     const commands: string[] = []

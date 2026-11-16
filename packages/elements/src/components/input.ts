@@ -1,6 +1,6 @@
 import { LumenScalarFormControlElement } from '../editorial-behaviors.js'
 import { defineLumenElement, type LumenCustomElementRegistry, type LumenElementConfig } from '../element-base.js'
-import { observedAttributeNames } from '../observed-attributes.js'
+import { scalarObservedAttributeNames } from '../observed-attributes.js'
 
 export const lumenInputElementConfig = {
   attributeClasses: {
@@ -12,7 +12,7 @@ export const lumenInputElementConfig = {
 } as const satisfies LumenElementConfig
 
 export class LumenInputElement extends LumenScalarFormControlElement {
-  static override config = { ...lumenInputElementConfig, observedAttributes: observedAttributeNames }
+  static override config = { ...lumenInputElementConfig, observedAttributes: scalarObservedAttributeNames }
 }
 
 export const defineLumenInput = (registry?: LumenCustomElementRegistry): void => {

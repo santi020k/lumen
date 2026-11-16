@@ -1,3 +1,36 @@
+export const scalarControlAttributes = [
+  'accept',
+  'aria-describedby',
+  'aria-label',
+  'aria-labelledby',
+  'autocomplete',
+  'disabled',
+  'form',
+  'inputmode',
+  'max',
+  'maxlength',
+  'min',
+  'minlength',
+  'multiple',
+  'pattern',
+  'placeholder',
+  'readonly',
+  'required',
+  'rows',
+  'size',
+  'step'
+] as const
+
+export const scalarObservedAttributeNames = [
+  ...scalarControlAttributes,
+  'checked',
+  'id',
+  'name',
+  'type',
+  'value',
+  'visual-size'
+] as const
+
 export const observedAttributeNames = [
   'target-id',
   'start-date',

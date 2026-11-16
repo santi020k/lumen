@@ -2,7 +2,7 @@ import { activateLumenAnchor, decodeLumenAnchorFragment, getLumenActiveAnchorInd
 
 import { LumenElement } from './element-base.js'
 import { createLumenElementClass, defineLumenElement, type LumenCustomElementRegistry, type LumenElementConfig } from './element-base.js'
-import { observedAttributeNames } from './observed-attributes.js'
+import { observedAttributeNames, scalarControlAttributes, scalarObservedAttributeNames } from './observed-attributes.js'
 
 const focusableSelector = [
   'a[href]',
@@ -49,29 +49,6 @@ export const getFocusable = (root: ParentNode | null): HTMLElement[] => {
 export const getOwnedTarget = (event: Event): Node | null => event.target instanceof Node ? event.target : null
 
 export type LumenScalarNativeControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-
-const scalarControlAttributes = [
-  'accept',
-  'aria-describedby',
-  'aria-label',
-  'aria-labelledby',
-  'autocomplete',
-  'disabled',
-  'form',
-  'inputmode',
-  'max',
-  'maxlength',
-  'min',
-  'minlength',
-  'multiple',
-  'pattern',
-  'placeholder',
-  'readonly',
-  'required',
-  'rows',
-  'size',
-  'step'
-] as const
 
 const getValidityFlags = (validity: ValidityState): ValidityStateFlags => ({
   badInput: validity.badInput,
@@ -439,6 +416,7 @@ export class LumenScalarFormControlElement extends LumenElement {
     control.disabled = this.disabled || this.formDisabledState
 
     if (this.id) control.id = `${this.id}-control`
+    else control.removeAttribute('id')
 
     if (this.internals) {
       control.removeAttribute('name')
@@ -1056,7 +1034,7 @@ export const lumenSearchFieldElementConfig = {
   tagName: 'lumen-search-field'
 } as const satisfies LumenElementConfig
 export class LumenSearchFieldElement extends LumenScalarFormControlElement {
-  static override config = { ...lumenSearchFieldElementConfig, observedAttributes: observedAttributeNames }
+  static override config = { ...lumenSearchFieldElementConfig, observedAttributes: scalarObservedAttributeNames }
 }
 export const defineLumenSearchField = (registry: LumenCustomElementRegistry = customElements): void => {
   defineLumenElement(lumenSearchFieldElementConfig, LumenSearchFieldElement, registry)

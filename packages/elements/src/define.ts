@@ -192,7 +192,7 @@ import {
   type LumenElementConstructor
 } from './element-base.js'
 import { boxPlotHtml, calendarHeatmapHtml, funnelChartHtml, parseBoxPlotData, parseCalendarHeatmapData, parseFunnelData } from './expanded-chart-html.js'
-import { observedAttributeNames } from './observed-attributes.js'
+import { observedAttributeNames, scalarObservedAttributeNames } from './observed-attributes.js'
 
 export { LumenDialogElement } from './editorial-behaviors.js'
 
@@ -4307,6 +4307,8 @@ const initDatePickers = (scope: ParentNode): void => {
     const closePopover = (restoreFocus = false): void => {
       outsideController?.abort()
 
+      outsideController = undefined
+
       disconnectPanel?.()
 
       disconnectPanel = undefined
@@ -4387,6 +4389,8 @@ const initDatePickers = (scope: ParentNode): void => {
           closePopover()
         }
       })
+
+      outsideController?.abort()
 
       outsideController = new AbortController()
 
@@ -6873,7 +6877,9 @@ class LumenTabsBehaviorElement extends LumenElement {
 
     for (const tab of tabs) {
       tab.addEventListener(
-        'click', () => {
+        'click', event => {
+          if (event.defaultPrevented || tab.matches(':disabled, [aria-disabled="true"]')) return
+
           activate(tab)
         }, { signal }
       )
@@ -8187,7 +8193,11 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
         const value = output?.value || this.currentExportValue
 
-        navigator.clipboard.writeText(value).catch(() => null)
+        try {
+          navigator.clipboard.writeText(value).catch(() => null)
+        } catch {
+          // Clipboard access is optional; export events still dispatch when unavailable.
+        }
 
         this.dispatchEvent(
           new CustomEvent('ui:theme-export', {
@@ -11443,11 +11453,20 @@ const createLumenElementClass = (
   withObservedAttributes(config)
 )
 
+const withScalarObservedAttributes = (
+  config: LumenElementConfig
+): LumenElementConfig => ({ ...config, observedAttributes: scalarObservedAttributeNames })
+
 const createLumenBehaviorElementClass = (
   BaseElement: typeof LumenElement,
   config: LumenElementConfig
 ) => class extends BaseElement {
-  static override config = withObservedAttributes(config)
+  static override config = (
+    BaseElement === LumenScalarFormControlElement ||
+    BaseElement.prototype instanceof LumenScalarFormControlElement
+  ) ?
+    withScalarObservedAttributes(config) :
+    withObservedAttributes(config)
 }
 
 const behaviorElementClasses: Partial<
