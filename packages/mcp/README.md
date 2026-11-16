@@ -152,14 +152,14 @@ Streamable HTTP transport:
 npx -y --package @santi020k/lumen-mcp lumen-mcp-http
 ```
 
-It binds to `127.0.0.1:3000` by default and exposes MCP at
-`http://127.0.0.1:3000/mcp`, a liveness check at `/health`, and a catalog readiness check at
-`/ready`. Readiness returns the loaded catalog hash and server version, or a safe 503 response when
-the catalog cannot initialize. Configure the transport with
-`LUMEN_MCP_HOST`, `LUMEN_MCP_PORT`, and a comma-separated
-`LUMEN_MCP_ALLOWED_HOSTS`. The transport applies safe response headers and a
-fixed-window request limit of 120 requests per minute by default. Malformed request bodies and
-initialization failures return bounded JSON errors without stack traces or local paths.
+It binds to `127.0.0.1:3000` by default and exposes stateless JSON-RPC `POST` MCP requests at
+`http://127.0.0.1:3000/mcp` (returning `405` with `Allow: POST` for non-`POST` methods such as `GET`
+and `DELETE`), a liveness check at `/health`, and a catalog readiness check at `/ready`. Readiness
+returns the loaded catalog hash and server version, or a safe 503 response when the catalog cannot
+initialize. Configure the transport with `LUMEN_MCP_HOST`, `LUMEN_MCP_PORT`, and a comma-separated
+`LUMEN_MCP_ALLOWED_HOSTS`. The transport applies safe response headers and a fixed-window request
+limit of 120 requests per minute by default. Malformed request bodies and initialization failures
+return bounded JSON errors without stack traces or local paths.
 
 Public deployments can also set:
 
