@@ -64,6 +64,7 @@
 .ui-menu :where(a, button, [role="menuitem"]) {
   display: flex;
   width: 100%;
+  min-height: var(--ui-density-target-min, 0rem);
   align-items: center;
   gap: 0.5rem;
   border: 0;
@@ -72,16 +73,23 @@
   color: hsl(var(--ink-soft));
   cursor: pointer;
   font: inherit;
-  padding: 0.55rem 0.65rem;
+  padding: var(--ui-density-menu-padding, 0.55rem 0.65rem);
   text-align: start;
   text-decoration: none;
 }
 }
 
 @layer lumen.components {
-.ui-menu :where(a, button, [role="menuitem"]):hover {
+.ui-menu :where(a, button, [role="menuitem"]):not(:disabled, [aria-disabled="true"]):is(:hover, :focus-visible) {
   background: hsl(var(--brand-soft));
   color: hsl(var(--brand));
+}
+}
+
+@layer lumen.components {
+.ui-menu :where(a, button, [role="menuitem"]):focus-visible {
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: -2px;
 }
 }
 

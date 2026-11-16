@@ -1,0 +1,31 @@
+---
+import {
+  RadioCard,
+  RadioGroup
+} from '@santi020k/lumen-astro'
+---
+
+<RadioGroup>
+  <legend>Choose a workspace</legend>
+  <RadioCard
+    checked
+    description="A focused space for your own projects."
+    label="Personal"
+    name="card-workspace"
+    value="personal"
+  >One member</RadioCard>
+  <RadioCard
+    description="Shared projects, resources, and team settings."
+    label="Team"
+    name="card-workspace"
+    value="team"
+    variant="soft"
+  >Up to ten members</RadioCard>
+  <RadioCard
+    description="Contact your administrator to enable organization workspaces."
+    disabled
+    label="Organization"
+    name="card-workspace"
+    value="organization"
+  />
+</RadioGroup>

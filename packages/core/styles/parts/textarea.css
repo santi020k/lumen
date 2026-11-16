@@ -2,7 +2,7 @@
 @layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities;
 @layer lumen.components {
 .ui-textarea {
-  min-height: 2.75rem;
+  min-height: max(var(--ui-density-control-height, 2.75rem), var(--ui-density-target-min, 0rem));
   width: 100%;
   border: var(--ui-border-width, 1px) solid hsl(var(--line));
   border-radius: var(--ui-radius-sm);
@@ -10,7 +10,7 @@
   color: hsl(var(--ink));
   box-shadow: inset 0 1px 2px hsl(222 47% 11% / 0.04);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--ui-density-input-font-size, 0.875rem);
   line-height: 1.4;
   transition:
     border-color 160ms ease,
@@ -21,7 +21,7 @@
 @layer lumen.components {
 .ui-textarea {
   min-height: 7rem;
-  padding: 0.65rem 0.75rem;
+  padding: 0.65rem var(--ui-density-control-padding, 0.75rem);
   resize: vertical;
 }
 }
@@ -33,7 +33,7 @@
 }
 
 @layer lumen.components {
-.ui-textarea:hover {
+.ui-textarea:not(:disabled, [aria-disabled="true"], [readonly], [aria-invalid="true"], :user-invalid):hover {
   border-color: hsl(var(--brand) / 0.42);
 }
 }
@@ -46,7 +46,22 @@
 }
 
 @layer lumen.components {
-.ui-textarea[aria-invalid="true"] {
+.ui-textarea[readonly] {
+    background-color: hsl(var(--surface-muted));
+    border-style: dashed;
+    box-shadow: none;
+  }
+}
+
+@layer lumen.components {
+.ui-textarea:disabled {
+    background-color: hsl(var(--surface-muted));
+    box-shadow: none;
+  }
+}
+
+@layer lumen.components {
+.ui-textarea:is([aria-invalid="true"], :user-invalid) {
     border-color: hsl(var(--danger) / 0.6);
     box-shadow:
       inset 0 1px 2px hsl(222 47% 11% / 0.04),
@@ -55,7 +70,7 @@
 }
 
 @layer lumen.components {
-.ui-textarea[aria-invalid="true"]:focus-visible {
+.ui-textarea:is([aria-invalid="true"], :user-invalid):focus-visible {
     outline-color: hsl(var(--danger));
   }
 }

@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="./task-progress.css" />
+<!-- Illustrative initial snapshot. The host listens for ui:task-action and supplies ui:task-update. -->
+<lumen-card id="export-task" class="lumen-task-progress" data-task-recipe data-task-status="queued">
+  <div class="lumen-task-progress__heading"><lumen-typography><h3>Export workspace</h3></lumen-typography>
+    <lumen-badge variant="outline" data-task-status-label="queued">Queued</lumen-badge>
+    <lumen-badge hidden variant="outline" data-task-status-label="running">In progress</lumen-badge>
+    <lumen-badge hidden variant="success" data-task-status-label="complete">Complete</lumen-badge>
+    <lumen-badge hidden variant="destructive" data-task-status-label="failed">Failed</lumen-badge>
+    <lumen-badge hidden variant="outline" data-task-status-label="canceled">Canceled</lumen-badge>
+  </div>
+  <p class="lumen-task-progress__detail" role="status" data-task-detail>Waiting for the application to start the export.</p>
+  <lumen-progress data-task-progress value="0" max="3" aria-label="Completed steps"></lumen-progress>
+  <span class="lumen-task-progress__count" data-task-count>0 / 3</span>
+  <div class="lumen-task-progress__actions"><lumen-button variant="outline" data-task-action="retry" hidden>Retry</lumen-button><lumen-button variant="outline" data-task-action="cancel" disabled>Cancel task</lumen-button></div>
+</lumen-card>
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  import { mountTaskProgress } from './task-progress-controller.ts'
+  defineLumenElements()
+  let cleanup = mountTaskProgress(document)
+  window.addEventListener('pagehide', () => { cleanup() })
+  window.addEventListener('pageshow', () => {
+    cleanup()
+    cleanup = mountTaskProgress(document)
+  })
+  // Enable actions after connecting a host handler; keep them disabled during its pending request.
+</script>

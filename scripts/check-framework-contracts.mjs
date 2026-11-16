@@ -32,6 +32,7 @@ const [
     'image-comparison',
     'media-viewport',
     'media-selection',
+    'selection-card',
     'world-map',
     'timeline',
     'virtual-list',
@@ -40,7 +41,7 @@ const [
     new URL(`../packages/elements/src/components/${name}.ts`, import.meta.url),
     'utf8'
   ))).then(sources => sources.join('\n')),
-  Promise.all(['editorial-controls', 'dialog', 'reading-navigation', 'label', 'ai-surfaces', 'device-frame', 'amount-field', 'attachments', 'bullet-chart', 'comparison-chart', 'combobox', 'components', 'data-table', 'expanded-charts', 'dashboard', 'change-summary', 'image-comparison', 'media-viewport', 'media-selection', 'world-map', 'interval-charts', 'virtual-list', 'visual-interactions'].map(name => readFile(
+  Promise.all(['selection-card', 'editorial-controls', 'dialog', 'reading-navigation', 'label', 'ai-surfaces', 'device-frame', 'amount-field', 'attachments', 'bullet-chart', 'comparison-chart', 'combobox', 'components', 'data-table', 'expanded-charts', 'dashboard', 'change-summary', 'image-comparison', 'media-viewport', 'media-selection', 'world-map', 'interval-charts', 'virtual-list', 'visual-interactions'].map(name => readFile(
     new URL(`../packages/react/src/${name}.tsx`, import.meta.url), 'utf8'
   ))).then(sources => sources.join('\n')),
   Promise.all([

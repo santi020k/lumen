@@ -1,0 +1,30 @@
+---
+import {
+  CheckboxCard,
+  CheckboxGroup
+} from '@santi020k/lumen-astro'
+---
+
+<CheckboxGroup legend="Stay informed">
+  <CheckboxCard
+    checked
+    description="A monthly summary of new features and improvements."
+    label="Product updates"
+    name="card-notifications"
+    value="product"
+  >Delivered monthly</CheckboxCard>
+  <CheckboxCard
+    description="Tips for creating consistent interfaces with your team."
+    label="Design resources"
+    name="card-notifications"
+    value="resources"
+    variant="soft"
+  />
+  <CheckboxCard
+    description="Your workspace administrator manages these notifications."
+    disabled
+    label="Security notices"
+    name="card-notifications"
+    value="security"
+  />
+</CheckboxGroup>

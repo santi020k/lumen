@@ -1,0 +1,52 @@
+---
+import { Badge, Button, Card, Progress, Typography } from '@santi020k/lumen-astro'
+
+export type TaskStatus = 'queued' | 'running' | 'complete' | 'failed' | 'canceled'
+export interface TaskSnapshot {
+  status: TaskStatus
+  completed: number
+  total: number
+  detail: string
+}
+export type TaskAction = 'cancel' | 'retry'
+export const taskStatusLabels: Record<TaskStatus, string> = { queued: 'Queued', running: 'In progress', complete: 'Complete', failed: 'Failed', canceled: 'Canceled' }
+
+interface Props {
+  id: string
+  title: string
+  snapshot: TaskSnapshot
+  labels?: Record<TaskStatus, string>
+  progressLabel?: string
+  retryLabel?: string
+  cancelLabel?: string
+  actions?: boolean
+}
+
+const { id, title, snapshot, labels = taskStatusLabels, progressLabel = 'Completed steps', retryLabel = 'Retry', cancelLabel = 'Cancel task', actions = false } = Astro.props
+const statuses = ['queued', 'running', 'complete', 'failed', 'canceled'] as const
+const variants = { queued: 'outline', running: 'outline', complete: 'success', failed: 'destructive', canceled: 'outline' } as const
+---
+
+<Card id={id} class="lumen-task-progress" data-task-recipe data-task-status={snapshot.status}>
+  <div class="lumen-task-progress__heading">
+    <Typography><h3>{title}</h3></Typography>
+    {statuses.map(status => (
+      <Badge hidden={snapshot.status !== status} data-task-status-label={status} variant={variants[status]}>
+        {labels[status]}
+      </Badge>
+    ))}
+  </div>
+  <p class="lumen-task-progress__detail" role="status" data-task-detail>{snapshot.detail}</p>
+  <Progress data-task-progress value={snapshot.completed} max={snapshot.total} aria-label={progressLabel} />
+  <span class="lumen-task-progress__count" data-task-count>{snapshot.completed} / {snapshot.total}</span>
+  {actions && (
+    <div class="lumen-task-progress__actions">
+      <Button variant="outline" data-task-action="retry" hidden={!['failed', 'canceled'].includes(snapshot.status)}>
+        {retryLabel}
+      </Button>
+      <Button variant="outline" data-task-action="cancel" hidden={!['queued', 'running'].includes(snapshot.status)}>
+        {cancelLabel}
+      </Button>
+    </div>
+  )}
+</Card>

@@ -1277,3 +1277,32 @@ to show a labelled read-only field when clipboard access fails. It contains the 
 including empty strings, and selects its contents on focus. Recovery does not take focus and
 remains available after transient feedback resets. A successful retry, source update, or tab
 change removes it. Omit the prop to keep the existing feedback-only behavior.
+
+## Selection cards
+
+`CheckboxCard` and `RadioCard` provide descriptive choices using real native inputs. Their
+`label`, `description`, `icon` and children compose the visible card without replacing native
+form submission, reset, required validation or radio grouping.
+
+```tsx
+import { RadioCard, RadioGroup } from '@santi020k/lumen-react'
+import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/radio-card.css'
+import '@santi020k/lumen-react/styles/components/radio-group.css'
+
+<RadioGroup>
+  <legend>Workspace</legend>
+  <RadioCard name="workspace" value="personal" label="Personal" description="For your own projects." defaultChecked>
+    One member
+  </RadioCard>
+  <RadioCard name="workspace" value="team" label="Team" description="Shared projects and resources." variant="soft" />
+</RadioGroup>
+```
+
+Use `CheckboxGroup` with `CheckboxCard` for independent choices. Both support `outline`
+(default) and `soft`, `invalid`, `disabled`, `required`, and native input props. `className`
+styles the card; the `ref`, `id`, ARIA and remaining input props reach the native input.
+`icon` is decorative, and children are supplementary metadata. Keep all supplied content
+non-interactive. Labels and descriptions receive stable generated IDs; caller-supplied ARIA
+references are preserved. Cards support controlled `checked`/`onChange` or uncontrolled
+`defaultChecked` and are exported from the main React entry, not the server-only entry.

@@ -127,6 +127,54 @@ color-scheme: dark;
 }
 }
 
+@layer lumen.tokens.foundation {
+[data-ui-density="compact"] {
+--ui-density-control-height: 2.25rem;
+--ui-density-control-padding: 0.625rem;
+--ui-density-button-padding: 0.375rem 0.75rem;
+--ui-density-field-gap: 0.375rem;
+--ui-density-card-padding: var(--ui-space-lg);
+--ui-density-card-gap: var(--ui-space-md);
+--ui-density-table-padding: 0.5rem 0.75rem;
+--ui-density-menu-padding: 0.375rem 0.625rem;
+}
+}
+
+@layer lumen.tokens.foundation {
+[data-ui-density="comfortable"] {
+--ui-density-control-height: 2.75rem;
+--ui-density-control-padding: 0.75rem;
+--ui-density-button-padding: 0.5rem 1rem;
+--ui-density-field-gap: var(--ui-space-related);
+--ui-density-card-padding: var(--ui-space-inset);
+--ui-density-card-gap: var(--ui-space-group);
+--ui-density-table-padding: 0.75rem 1rem;
+--ui-density-menu-padding: 0.55rem 0.75rem;
+}
+}
+
+@layer lumen.tokens.foundation {
+[data-ui-density="spacious"] {
+--ui-density-control-height: 3.25rem;
+--ui-density-control-padding: 1rem;
+--ui-density-button-padding: 0.75rem 1.25rem;
+--ui-density-field-gap: var(--ui-space-md);
+--ui-density-card-padding: var(--ui-space-2xl);
+--ui-density-card-gap: var(--ui-space-xl);
+--ui-density-table-padding: 1rem 1.25rem;
+--ui-density-menu-padding: 0.75rem 1rem;
+}
+}
+
+@media (any-pointer: coarse), (max-width: 40rem) {
+@layer lumen.tokens.foundation {
+:is([data-ui-density="compact"], [data-ui-density="comfortable"], [data-ui-density="spacious"]) {
+--ui-density-target-min: 2.75rem;
+--ui-density-input-font-size: 1rem;
+}
+}
+}
+
 @layer lumen.base {
 /* Preserve native hiding even when a primitive establishes its own display mode. */
 [hidden]:not([hidden="until-found"]) {
@@ -320,7 +368,7 @@ color-scheme: dark;
   font-family: var(--ui-font);
 }
 
-:where(.ui-button, .ui-back-to-top, .ui-code__copy, .ui-input, .ui-language-toggle, .ui-link, .ui-select, .ui-skip-link, .ui-textarea, .ui-checkbox, .ui-switch, .ui-toggle, .ui-theme-toggle, .ui-slider, .ui-color-picker, .ui-resizable__handle):focus-visible {
+:where(.ui-button, .ui-back-to-top, .ui-code__copy, .ui-input, .ui-input-otp, .ui-language-toggle, .ui-link, .ui-select, .ui-skip-link, .ui-textarea, .ui-checkbox, .ui-switch, .ui-toggle, .ui-theme-toggle, .ui-slider, .ui-color-picker, .ui-resizable__handle):focus-visible {
   outline: 2px solid hsl(var(--brand));
   outline-offset: 2px;
 }

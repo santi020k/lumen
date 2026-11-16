@@ -36,6 +36,7 @@
 - [Install](#install)
 - [Lu mascot](#lu-mascot)
 - [Typography](#typography)
+- [Web density and control states](#web-density-and-control-states)
 - [Commands](#commands)
 - [Version migration previews](#version-migration-previews)
 - [Coordinated consumer rollout](#coordinated-consumer-rollout)
@@ -124,6 +125,19 @@ Lumen defaults `--ui-font` to the canonical Santi020k Montserrat family stack:
 The package declares the family but does not bundle or load font files. Applications should load
 Montserrat once through their preferred delivery path, or override `--ui-font` when using another
 typeface.
+
+## Web density and control states
+
+Set `data-ui-density="compact"`, `"comfortable"`, or `"spacious"` on a container to coordinate
+web control heights, form gaps, card padding, menus, and table cells. Density can be nested
+independently of the palette and is included in both full and selective styles. Explicit
+component size props keep priority; narrow and coarse-pointer layouts preserve control targets
+and readable input text. Without the attribute, existing dimensions are unchanged.
+
+Readonly controls use a muted surface and dashed border while remaining focusable and
+selectable. Invalid and disabled controls retain distinct hover/focus treatment, and keyboard
+focus in menus remains visible independently of selection. See the
+[density and state guidance](../../docs/appearance-presets.md#coordinated-web-density) for examples.
 
 ## Commands
 
@@ -214,6 +228,11 @@ codemod availability.
 Run `lumen audit-tokens [path]` before incremental adoption when an existing stylesheet may already
 declare names such as `--surface`, `--ink`, or `--line`. The audit reports complete CSS colors that
 are incompatible with Lumen's HSL-channel token format and exits non-zero when it finds conflicts.
+
+The [visual product recipes](../../docs/visual-product-recipes.md) add `card-detail`, `metric-card`,
+and `task-progress` for Astro, React, and Elements. They include scoped styles, complete product
+states, and application-owned callbacks. Preview them in the
+[product recipes workbench](https://lumen.santi020k.com/docs/visual-playground/recipes).
 
 ## Version migration previews
 
