@@ -208,6 +208,31 @@ const streamResponse = async (webResponse: Response, response: ExpressResponse) 
   if (!response.writableEnded) response.end()
 }
 
+const methodNotAllowedBody = {
+  error: {
+    code: -32000,
+    message: 'Method not allowed.'
+  },
+  id: null,
+  jsonrpc: '2.0'
+} as const
+
+const sendJson = (
+  response: ExpressResponse,
+  status: number,
+  data: unknown
+): void => {
+  response.setHeader('cache-control', 'no-store')
+
+  response.setHeader('referrer-policy', 'no-referrer')
+
+  response.setHeader('x-content-type-options', 'nosniff')
+
+  response.setHeader('x-frame-options', 'DENY')
+
+  response.status(status).type('application/json').send(JSON.stringify(data))
+}
+
 const handleMcpRequest = async (
   request: ExpressRequest,
   response: ExpressResponse,
@@ -215,6 +240,14 @@ const handleMcpRequest = async (
   options: LumenMcpHttpOptions,
   activeServers: Set<ReturnType<typeof createLumenServer>>
 ): Promise<void> => {
+  if (request.method !== 'POST') {
+    response.setHeader('allow', 'POST')
+
+    sendJson(response, 405, methodNotAllowedBody)
+
+    return
+  }
+
   let mcpServer: ReturnType<typeof createLumenServer> | undefined
 
   try {
@@ -250,22 +283,6 @@ const handleMcpRequest = async (
 
     if (mcpServer) activeServers.delete(mcpServer)
   }
-}
-
-const sendJson = (
-  response: ExpressResponse,
-  status: number,
-  data: unknown
-): void => {
-  response.setHeader('cache-control', 'no-store')
-
-  response.setHeader('referrer-policy', 'no-referrer')
-
-  response.setHeader('x-content-type-options', 'nosniff')
-
-  response.setHeader('x-frame-options', 'DENY')
-
-  response.status(status).type('application/json').send(JSON.stringify(data))
 }
 
 /** Start a self-hostable Streamable HTTP transport. Defaults to loopback for safety. */

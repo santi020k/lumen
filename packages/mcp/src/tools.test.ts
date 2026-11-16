@@ -566,9 +566,56 @@ describe('search', () => {
     expect(all.data.total).toBe(expected.length)
   })
 
-  test.each(['native-component', 'recipe', 'rule', 'token'] as const)('keeps %s searches isolated', kind => {
-    const result = search({ query: 'theme', kind })
+  test.each([
+    ['native-component', 'button'],
+    ['recipe', 'theme'],
+    ['rule', 'theme'],
+    ['token', 'brand']
+  ] as const)('keeps %s searches isolated', (kind, query) => {
+    const result = search({ kind, query })
+
+    expect(result.data.results.length).toBeGreaterThan(0)
     expect(result.data.results.every(match => match.kind === kind)).toBe(true)
+  })
+
+  test('enforces native-only results when platform is specified without affecting default or framework searches', () => {
+    const composeScheduler = search({ platform: 'compose', query: 'scheduler' })
+    const composeButton = search({ platform: 'compose', query: 'button' })
+    const swiftuiDialog = search({ platform: 'swiftui', query: 'dialog' })
+    const defaultScheduler = search({ query: 'scheduler' })
+    const reactDialog = search({ framework: 'react', query: 'dialog' })
+
+    expect(composeScheduler.data.results).toEqual([])
+
+    for (const [result, platform] of [
+      [composeButton, 'compose'],
+      [swiftuiDialog, 'swiftui']
+    ] as const) {
+      expect(result.data.results.length).toBeGreaterThan(0)
+      expect(result.data.results.every(match => match.kind === 'native-component')).toBe(true)
+      expect(result.data.results.every(match => match.platforms?.includes(platform))).toBe(true)
+      expect(
+        result.data.results.some(match => match.kind === 'recipe' || match.kind === 'rule' || match.kind === 'token')
+      ).toBe(false)
+    }
+
+    expect(defaultScheduler.data.results.some(match => match.kind === 'recipe')).toBe(true)
+    expect(
+      reactDialog.data.results.some(match => match.kind === 'component' && match.name === 'Dialog')
+    ).toBe(true)
+  })
+
+  test('searches native components across platforms for native-component kind while preserving web defaults', () => {
+    const nativeCrossPlatform = search({ kind: 'native-component', query: 'symbol' })
+    const wearableCrossPlatform = search({ kind: 'native-component', query: 'wearable action' })
+    const defaultWeb = search({ limit: 100, query: 'button' })
+
+    expect(nativeCrossPlatform.data.results.length).toBeGreaterThan(0)
+    expect(nativeCrossPlatform.data.results.every(match => match.kind === 'native-component')).toBe(true)
+    expect(nativeCrossPlatform.data.results.some(match => match.name === 'Symbol picker')).toBe(true)
+    expect(wearableCrossPlatform.data.results.some(match => match.name === 'Wearable action')).toBe(true)
+    expect(defaultWeb.data.results.some(match => match.kind === 'native-component')).toBe(false)
+    expect(defaultWeb.data.results[0]).toMatchObject({ kind: 'component', name: 'Button' })
   })
 
   test('finds components by keyword', () => {
@@ -705,7 +752,10 @@ describe('catalog freshness and diagnostics', () => {
         components: {
           ...current.manifest.components,
           Button: '0'.repeat(64),
-          RemovedComponent: '1'.repeat(64)
+          RemovedComponent: '1'.repeat(64),
+          constructor: '2'.repeat(64),
+          toString: '3'.repeat(64),
+          valueOf: '4'.repeat(64)
         },
         recipes: current.manifest.recipes
       }
@@ -713,7 +763,9 @@ describe('catalog freshness and diagnostics', () => {
 
     expect(unchanged.data.unchanged).toBe(true)
     expect(changed.data.components.changed).toContain('Button')
-    expect(changed.data.components.removed).toContain('RemovedComponent')
+    expect(changed.data.components.removed).toEqual(
+      expect.arrayContaining(['RemovedComponent', 'constructor', 'toString', 'valueOf'])
+    )
   })
 
   test('reports a healthy bundled snapshot and detects corruption', () => {
@@ -726,5 +778,31 @@ describe('catalog freshness and diagnostics', () => {
         meta: { ...data.meta, componentCount: 0 }
       }).data.status
     ).toBe('issues')
+  })
+
+  test('checks manifest presence using own properties when components use Object.prototype names', () => {
+    const data = loadLumenData()
+    const firstComponent = data.components[0]
+    const firstNativeComponent = data.nativeComponents[0]
+
+    if (!firstComponent || !firstNativeComponent) {
+      throw new Error('Expected bundled web and native components')
+    }
+
+    const missingWebManifest = diagnose({
+      ...data,
+      components: [{ ...firstComponent, name: 'toString' }],
+      meta: { ...data.meta, componentCount: 1 }
+    })
+    const missingNativeManifest = diagnose({
+      ...data,
+      meta: { ...data.meta, nativeComponentCount: 1 },
+      nativeComponents: [{ ...firstNativeComponent, name: 'constructor' }]
+    })
+
+    expect(missingWebManifest.data.status).toBe('issues')
+    expect(missingWebManifest.data.checks.find(check => check.name === 'component-manifest')?.status).toBe('fail')
+    expect(missingNativeManifest.data.status).toBe('issues')
+    expect(missingNativeManifest.data.checks.find(check => check.name === 'native-component-manifest')?.status).toBe('fail')
   })
 })
