@@ -1,3 +1,4 @@
+import { constants } from 'node:fs'
 import type * as Fs from 'node:fs/promises'
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -11,16 +12,19 @@ const race = vi.hoisted(() => ({ ledger: '', source: '', fired: false }))
 
 vi.mock('node:fs/promises', async importOriginal => {
   const original = await importOriginal<typeof Fs>()
-  const guardedWrite: typeof original.writeFile = async (...args) => {
-    if (!race.fired && args[0] === race.ledger) {
+  const guardedOpen: typeof original.open = async (...args) => {
+    const flags = typeof args[1] === 'number' ? args[1] : 0
+    const isWrite = (flags & (constants.O_WRONLY | constants.O_RDWR)) !== 0
+
+    if (!race.fired && args[0] === race.ledger && isWrite) {
       race.fired = true
       await original.writeFile(race.source, '<lumen-stack gap="md">New editor content</lumen-stack>', 'utf8')
     }
 
-    return original.writeFile(...args)
+    return original.open(...args)
   }
 
-  return { ...original, writeFile: guardedWrite }
+  return { ...original, open: guardedOpen }
 })
 
 test('preserves an editor save during apply and removes its unapplied ledger fingerprint', async () => {

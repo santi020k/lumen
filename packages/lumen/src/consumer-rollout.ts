@@ -428,38 +428,29 @@ export const updateLumenManifestSource = (
   return changed ? `${JSON.stringify(manifest, undefined, 2)}\n` : source
 }
 
-const lumenWorkspaceVersionPattern = new RegExp([
-  String.raw`^(\s*['"]?@santi020k\/lumen`,
-  String.raw`(?:-(?:astro|core|elements|mcp|react))?['"]?\s*:\s*['"]?)`,
-  String.raw`([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$`
-].join(''), 'gm')
-
 export const updateLumenWorkspaceSource = (
   source: string, targetVersion: string, packageVersions?: Readonly<Record<string, string>>, preserveCompatible = false
 ): string => {
-  if (packageVersions) {
-    let inCatalog = false
+  let inCatalog = false
 
-    return source.split(/(?<=\n)/u).map(line => {
-      if (/^[^\s#]/u.test(line)) inCatalog = /^(?:catalog|catalogs):/u.test(line)
+  return source.split(/(?<=\n)/u).map(line => {
+    if (/^[^\s#]/u.test(line)) inCatalog = /^(?:catalog|catalogs):/u.test(line)
 
-      if (!inCatalog) return line
+    if (!inCatalog) return line
 
-      const range = readCatalogRange(line)
-      const target = range && packageVersions[range.packageName]
+    const range = readCatalogRange(line)
 
-      if (!range || !target || !validRange(range.version)) return line
+    if (!range || !validRange(range.version)) return line
 
-      if (preserveCompatible && satisfies(target, range.version)) return line
+    const target = packageVersions ? packageVersions[range.packageName] : targetVersion
 
-      return line.slice(0, range.offset) + replaceRange(range.version, target) +
-        line.slice(range.offset + range.version.length)
-    }).join('')
-  }
+    if (!target) return line
 
-  return source.replaceAll(lumenWorkspaceVersionPattern, (
-    _match: string, before: string, prefix: string, _version: string, after: string
-  ) => `${before}${prefix}${targetVersion}${after}`)
+    if (preserveCompatible && satisfies(target, range.version)) return line
+
+    return line.slice(0, range.offset) + replaceRange(range.version, target) +
+      line.slice(range.offset + range.version.length)
+  }).join('')
 }
 
 const getVerificationScripts = (manifest: PackageManifest, frameworks: LumenFramework[]): string[] => {
@@ -666,7 +657,7 @@ export const addReleaseAgeTarget = (source: string, packages: string[], version:
   return lines.join(newline)
 }
 
-const removeObsoleteReleaseAgeEntries = (
+export const removeObsoleteReleaseAgeEntries = (
   source: string, targetVersion: string, packageVersions?: Readonly<Record<string, string>>
 ): string => {
   const section = releaseAgeSection(source)
@@ -674,8 +665,7 @@ const removeObsoleteReleaseAgeEntries = (
   if (!section) return source
 
   const { end, lines, newline, start } = section
-  const pattern = packageVersions ? lumenPackageNamePattern : '@santi020k/lumen(?:-(?:astro|core|elements|mcp|react))?'
-  const entry = new RegExp(`^\\s*-\\s*['"]?(${pattern})@([^'"\\s]+)['"]?\\s*$`, 'u')
+  const entry = new RegExp(`^\\s*-\\s*['"]?(${lumenPackageNamePattern})@([^'"\\s]+)['"]?\\s*$`, 'u')
 
   const isCurrent = (line: string): boolean => {
     const match = entry.exec(line)

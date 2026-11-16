@@ -3,10 +3,10 @@ import { resolve } from 'node:path'
 
 import { auditLumenTheme } from '@santi020k/lumen-core'
 
+import { parseCliOptions, type ParsedCliOptions, resolveAuditRenderedCwd } from './cli-options.js'
 import {
   consumerRolloutSucceeded,
   formatConsumerRollout,
-  resolveConsumerRolloutTargets,
   runConsumerRollout
 } from './consumer-rollout.js'
 import { formatLumenConsumerUpgradeAudit, inspectLumenConsumerUpgrade } from './consumer-upgrade-audit.js'
@@ -32,60 +32,7 @@ import { formatLumenV2Migration, migrateLumenV2 } from './v2-migration.js'
 import { formatLumenVersionMigration, migrateLumenVersion } from './version-migration.js'
 
 const args = process.argv.slice(2)
-const [command = 'help', name] = args
-const dryRun = args.includes('--dry-run')
-const failOnConflict = args.includes('--fail-on-conflict')
-const force = args.includes('--force')
-const merge = args.includes('--merge')
-const cwdIndex = args.indexOf('--cwd')
-const cwd = cwdIndex >= 0 ? args[cwdIndex + 1] : undefined
-const registryIndex = args.indexOf('--registry')
-const registrySource = registryIndex >= 0 ? args[registryIndex + 1] : undefined
-const registryTokenIndex = args.indexOf('--registry-token')
-const registryToken = registryTokenIndex >= 0 ? args[registryTokenIndex + 1] : process.env.LUMEN_REGISTRY_TOKEN
-const targetIndex = args.indexOf('--target')
-const targetProvided = targetIndex >= 0
-const targetValue = targetIndex >= 0 ? args[targetIndex + 1] : undefined
-const applyRollout = args.includes('--apply')
-const allowDirty = args.includes('--allow-dirty')
-const noVerify = args.includes('--no-verify')
-const reportIndex = args.indexOf('--report')
-const reportPath = reportIndex >= 0 ? args[reportIndex + 1] : undefined
-const manifestIndex = args.indexOf('--manifest')
-const manifestPath = manifestIndex >= 0 ? args[manifestIndex + 1] : undefined
-const frameworkIndex = args.indexOf('--framework')
-const frameworkValue = frameworkIndex >= 0 ? args[frameworkIndex + 1] : undefined
-const json = args.includes('--json')
-const tailwind = args.includes('--tailwind')
-
-const excludeValues = args.flatMap((value, index) => {
-  const nextValue = args[index + 1]
-
-  return value === '--exclude' && nextValue ? [nextValue] : []
-})
-
-let conflict: 'error' | 'merge' | 'skip' = 'skip'
-
-const getRolloutArguments = (): { repositories: string[], targetVersion?: string } => {
-  const values: string[] = []
-  const optionsWithValues = new Set(['--exclude', '--manifest', '--report'])
-
-  for (let index = 1; index < args.length; index += 1) {
-    const value = args[index]
-
-    if (!value) continue
-
-    if (optionsWithValues.has(value)) {
-      index += 1
-
-      continue
-    }
-
-    if (!value.startsWith('--')) values.push(value)
-  }
-
-  return resolveConsumerRolloutTargets(values)
-}
+const command = args[0] ?? 'help'
 
 const getAddTarget = (value: string | undefined, provided = false): LumenAddTarget => {
   if (provided && !value) {
@@ -103,12 +50,6 @@ const getFramework = (value: string | undefined): LumenAddTarget => {
   if (value === 'astro' || value === 'elements' || value === 'react') return value
 
   throw new Error('Missing or invalid framework. Use --framework astro, react, or elements.')
-}
-
-if (failOnConflict) {
-  conflict = 'error'
-} else if (merge) {
-  conflict = 'merge'
 }
 
 const formatList = (registry: LumenRegistry = lumenRegistry) => getLumenRegistryEntries(registry)
@@ -196,14 +137,14 @@ const formatItem = (itemName: string, registry: LumenRegistry = lumenRegistry) =
   return lines.filter((line): line is string => Boolean(line)).join('\n')
 }
 
-const formatAddResult = async (itemName: string, registry: LumenRegistry) => {
+const formatAddResult = async (itemName: string, registry: LumenRegistry, options: ParsedCliOptions) => {
   const result = await addLumenRegistryItem(itemName, {
-    ...(cwd ? { cwd } : {}),
-    conflict,
-    dryRun,
-    force,
+    ...(options.cwd ? { cwd: options.cwd } : {}),
+    conflict: options.conflict,
+    dryRun: options.dryRun,
+    force: options.force,
     registry,
-    target: getAddTarget(targetValue, targetProvided)
+    target: getAddTarget(options.targetValue, options.targetProvided)
   })
 
   const heading = result.dryRun ? 'Would add' : 'Added'
@@ -301,8 +242,9 @@ const help = [
 // eslint-disable-next-line complexity -- Command dispatch keeps CLI exit behavior and output in one place.
 const run = async () => {
   if (command === 'audit-rendered') {
+    const renderedCwd = resolveAuditRenderedCwd(args)
     const { runRenderedAuditCommand } = await import('./rendered-audit.js')
-    const result = await runRenderedAuditCommand(args.slice(1), cwd ?? process.cwd())
+    const result = await runRenderedAuditCommand(args.slice(1), renderedCwd ?? process.cwd())
 
     process.exitCode = result.exitCode
 
@@ -310,6 +252,28 @@ const run = async () => {
 
     return
   }
+
+  const options = parseCliOptions(args)
+
+  const {
+    allowDirty,
+    applyRollout,
+    cwd,
+    dependencies,
+    dryRun,
+    excludeValues,
+    frameworkValue,
+    json,
+    manifestPath,
+    name,
+    noVerify,
+    registrySource,
+    registryToken,
+    reportPath,
+    rollout,
+    tailwind,
+    versionValue
+  } = options
 
   let output = help
 
@@ -319,16 +283,8 @@ const run = async () => {
 
   switch (command) {
     case 'audit-consumer': {
-      const versionIndex = args.indexOf('--version')
-      const auditVersion = versionIndex >= 0 ? args[versionIndex + 1] : undefined
-
-      if (versionIndex >= 0 && (!auditVersion || auditVersion.startsWith('--'))) throw new Error('audit-consumer --version requires an exact semantic version.')
-
-      const repository = cwd ?? (name && !name.startsWith('--') ? name : process.cwd())
-
-      if (manifestIndex >= 0 && (!manifestPath || manifestPath.startsWith('--'))) throw new Error('Provide a path after --manifest.')
-
-      const report = await inspectLumenConsumerUpgrade(repository, auditVersion, manifestPath)
+      const repository = cwd ?? (name ?? process.cwd())
+      const report = await inspectLumenConsumerUpgrade(repository, versionValue, manifestPath)
 
       output = json ? JSON.stringify(report, undefined, 2) : formatLumenConsumerUpgradeAudit(report)
 
@@ -372,7 +328,7 @@ const run = async () => {
     }
 
     case 'add': {
-      if (name) output = await formatAddResult(name, registry)
+      if (name) output = await formatAddResult(name, registry, options)
 
       break
     }
@@ -422,7 +378,7 @@ const run = async () => {
 
       if (name !== 'v2') {
         const report = await migrateLumenVersion({
-          allowDirty, apply: applyRollout, ...(cwd ? { cwd } : {}), dependencies: args.includes('--dependencies'), version: name
+          allowDirty, apply: applyRollout, ...(cwd ? { cwd } : {}), dependencies, version: name
         })
 
         output = json ? JSON.stringify(report, undefined, 2) : formatLumenVersionMigration(report)
@@ -432,7 +388,7 @@ const run = async () => {
         break
       }
 
-      if (args.includes('--dependencies')) throw new Error('For v2 dependencies, use lumen rollout separately.')
+      if (dependencies) throw new Error('For v2 dependencies, use lumen rollout separately.')
 
       const report = await migrateLumenV2({
         apply: applyRollout,
@@ -445,10 +401,6 @@ const run = async () => {
     }
 
     case 'rollout': {
-      if (manifestIndex >= 0 && (!manifestPath || manifestPath.startsWith('--'))) throw new Error('Provide a path after --manifest.')
-
-      const rollout = getRolloutArguments()
-
       const report = await runConsumerRollout({
         allowDirty,
         apply: applyRollout,
