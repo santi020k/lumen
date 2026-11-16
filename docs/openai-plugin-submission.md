@@ -208,7 +208,7 @@ updates, deletes, sends, publishes, enqueues, logs user content, or changes exte
 
 The local candidate uses portable `plugin.json` and `mcp.json` manifests and generated Codex/Claude
 wrappers. Both client manifests carry version 1.1.0. The local stdio configuration pins
-`@santi020k/lumen-mcp@5.2.1`; publish that package before distributing the plugin update.
+`@santi020k/lumen-mcp@5.3.0`; publish that package before distributing the plugin update.
 
 The candidate includes three skills (build, review, migration), fourteen read-only catalog tools,
 and an optional read-only Claude reviewer. It adds installed-version compatibility checks, v4 and v5
@@ -229,7 +229,7 @@ agents and local compatibility files. The command also produces a Claude archive
 checks. Archive generation validates snapshots first, includes only explicit plugin assets, and
 preserves existing output. It requires the system `zip` executable.
 
-Before uploading, verify the deployed catalog reports the candidate MCP version (5.0.0) and matches
+Before uploading, verify the deployed catalog reports the pinned MCP package version and matches
 the released snapshot hash. Check all fourteen tools, including `lumen_check_compatibility` and
 `lumen_get_migration` with an explicit v5 target. Check both a consumer matching the
 [release manifest](../registry/release-manifest.json) and an older consumer: the latter must use

@@ -22,7 +22,7 @@ where they apply; native adapters retain platform controls and application-owned
 
 The initial v5 release deliberately uses independent adapter versions: React and Elements target
 5.0.0, React Native and Compose target 4.1.0, and Swift resolves the repository's 5.0.0 tag.
-Use the [release manifest](../registry/release-manifest.json), not the umbrella version, to pin a
+Use the [release manifest](../../registry/release-manifest.json), not the umbrella version, to pin a
 consumer. These targets do not establish publication or store availability.
 
 ## Regression coverage

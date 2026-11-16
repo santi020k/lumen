@@ -1,5 +1,24 @@
 # @santi020k/lumen-core
 
+## 5.3.0
+
+### Minor Changes
+
+- Add CheckboxCard and RadioCard compositions for descriptive choices with visible native
+  selection indicators, labels, descriptions, decorative icons and metadata. Preserve native
+  form values, reset, keyboard behavior and validation, with outline/soft surfaces and clear
+  selected, focus, invalid and disabled states across the web adapters.
+
+- Add scoped compact, comfortable, and spacious web density through `data-ui-density`, coordinating
+  controls, form gaps, cards, menus, and table cells. Nested scopes reset density independently of
+  theme; coarse-pointer and narrow layouts preserve control targets and readable input text.
+
+  Differentiate readonly controls, preserve invalid feedback during hover and keyboard focus,
+  reflect native validation feedback, and make keyboard focus distinct from selected menu options.
+  Existing layouts without a density attribute retain their dimensions.
+
+- Add safe system typography choices and flat elevation to ThemeBuilder across web adapters. Extend the theme workbench with density and shareable appearance controls.
+
 ## 5.0.0
 
 - Share selective component delivery and React server export metadata through the component-delivery entry for CLI and Figma tooling.

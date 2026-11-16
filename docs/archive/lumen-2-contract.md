@@ -3,7 +3,7 @@
 **Status:** Approved and graduated on 2026-08-28; five breaking changes approved
 
 **Target:** `2.0.0`
-**Machine-readable source:** [`registry/lumen-2-contract.json`](../registry/lumen-2-contract.json)
+**Machine-readable source:** [`registry/lumen-2-contract.json`](../../registry/lumen-2-contract.json)
 
 This contract turns the [Lumen 2 readiness program](lumen-2-readiness.md) into an explicit public
 contract. Lumen 2 is a coordinated production-support milestone for web and native platforms. It is

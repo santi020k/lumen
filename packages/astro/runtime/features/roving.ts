@@ -4,6 +4,24 @@ import { queryScope } from '../scope.js'
 
 import { getLoopedIndex } from './shared.js'
 
+const isEnabledItem = (item: HTMLElement): boolean => !item.matches(':disabled, [disabled], [aria-disabled="true"]')
+
+const getNextEnabledItem = (
+  items: readonly HTMLElement[], key: string, currentIndex: number
+): HTMLElement | undefined => {
+  const forwardKeys = ['ArrowRight', 'ArrowDown']
+  const nextIndex = getLoopedIndex(key, currentIndex, items.length, forwardKeys)
+  const step = key === 'Home' || forwardKeys.includes(key) ? 1 : -1
+
+  for (let offset = 0; offset < items.length; offset += 1) {
+    const item = items[(nextIndex + offset * step + items.length) % items.length]
+
+    if (item && isEnabledItem(item)) return item
+  }
+
+  return undefined
+}
+
 export const initRovingGroups = (scope: ParentNode): void => {
   const groupSelector = [
     '[data-ui-menubar]',
@@ -24,8 +42,11 @@ export const initRovingGroups = (scope: ParentNode): void => {
 
     if (!items.length) continue
 
+    // Retain an entry point when a disabled native group is re-enabled later.
+    const initialItem = items.find(isEnabledItem) ?? items[0]
+
     for (const [index, item] of items.entries()) {
-      item.tabIndex = index === 0 ? 0 : -1
+      item.tabIndex = item === initialItem ? 0 : -1
 
       item.addEventListener('keydown', event => {
         const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End']
@@ -34,13 +55,13 @@ export const initRovingGroups = (scope: ParentNode): void => {
 
         event.preventDefault()
 
-        for (const nextItem of items) {
-          nextItem.tabIndex = -1
-        }
-
-        const nextItem = items[getLoopedIndex(getLumenDirectionalKey(root, event.key), index, items.length, ['ArrowRight', 'ArrowDown'])]
+        const nextItem = getNextEnabledItem(items, getLumenDirectionalKey(root, event.key), index)
 
         if (nextItem) {
+          for (const candidate of items) {
+            candidate.tabIndex = -1
+          }
+
           nextItem.tabIndex = 0
 
           nextItem.focus()

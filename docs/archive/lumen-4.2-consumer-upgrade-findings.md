@@ -14,7 +14,7 @@ Lumen 4.2 is independently versioned. The published umbrella, Elements, and MCP 
 Astro, React, and Core are 4.1.0; React Native and React Hook Form are 4.0.1;
 tokens, brand icons, and Compose remain 4.0.0. Swift uses tag `v4.2.0`, resolving to
 `eb00a5e5b29283fe2ce155ae58a28911166fab27`.
-Use the [release manifest](registry/release-manifest.json), rather than assigning 4.2.0
+Use the [release manifest](../../registry/release-manifest.json), rather than assigning 4.2.0
 to every package. The registry has no Astro, React, or React Native 4.2.0 package.
 
 ## Priorities for the next release
@@ -27,9 +27,9 @@ target, even though those are the correct adapters for the 4.2 release family.
 The historical migration target is documented, but this is confusing during current adoption.
 
 The dependency target is fixed in
-[version-migration.ts](packages/lumen/src/version-migration.ts), and dependency mutation delegates
-to [consumer rollout](packages/lumen/src/version-migration-dependencies.ts). The existing
-[rollout updater](packages/lumen/src/consumer-rollout.ts) also applies one target version across
+[version-migration.ts](../../packages/lumen/src/version-migration.ts), and dependency mutation delegates
+to [consumer rollout](../../packages/lumen/src/version-migration-dependencies.ts). The existing
+[rollout updater](../../packages/lumen/src/consumer-rollout.ts) also applies one target version across
 package declarations; it needs the release map before it can safely select the 4.2 family.
 A real `lumen rollout 4.2.0 <KinJar checkout> --dry-run` reproduced the problem: it marked
 correct Astro/Core 4.1.0 and React Native 4.0.1 resolutions as needing 4.2.0.
