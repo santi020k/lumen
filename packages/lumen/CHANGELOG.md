@@ -23,6 +23,13 @@
 
 ### Patch Changes
 
+- Validate every CLI option value before execution while preserving scalar option precedence.
+  Resolve `audit-tokens --cwd` correctly and update all supported Lumen packages only inside
+  workspace catalogs during legacy rollout.
+
+- Guard migration source and v4 ledger writes against final-component link swaps and concurrent
+  edits. Preserve interrupted-apply fingerprints, safe ledger rollback, and read-only previews.
+
 - Stop SwiftUI shortcut capture when disabled or removed. Dismiss phone-country selection when
   disabled, read-only, or without country choices; re-enabling does not reopen it. Keep the macOS
   country picker tall enough to display selectable countries.

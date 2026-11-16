@@ -21,6 +21,13 @@
 
 ### Patch Changes
 
+- Keep toast dismissal timers independent of sibling updates. Guard ListBox interaction while
+  disabled, loading, composing, or canceled, including controls within a disabled fieldset.
+
+- Preserve consumer focus changes and rapid DatePicker reopens across shadow roots. Restore
+  uncontrolled InputOTP defaults after accepted resets, preserve controlled updates, follow live
+  form ownership, and cancel pending reset work on unmount.
+
 - Leave canceled, composing, and Alt-, Ctrl-, or Meta-modified Mentions keyboard events to the
   consumer. Preserve ordinary Enter and Shift+Enter selection, and document distinct explicit
   names for multiple Segmented controls without changing their default form submission name.

@@ -21,6 +21,10 @@
 
 ### Patch Changes
 
+- Keep floating-panel focus owned across open, closed, and nested shadow roots. Follow panel
+  relocation, refresh root observers and containing-dialog listeners, and preserve external
+  focus when closing the panel.
+
 - Bound chart tick requests to 2–4096 ticks, using five for nonfinite counts. Keep ticks finite,
   distinct, and strictly increasing across extreme finite domains and millisecond timestamps.
 

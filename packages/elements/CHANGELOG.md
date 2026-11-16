@@ -21,6 +21,12 @@
 
 ### Patch Changes
 
+- Prevent duplicate Rating and BackToTop callbacks after reconnection. Preserve phone drafts,
+  ignore canceled or stale form resets, and clean up theme-reveal animations on disconnection.
+
+- Resolve Tabs and Popover panels within their shadow roots. Preserve Dialog and Popover inside
+  interactions, outside dismissal, and dialog focus wrapping across open and closed shadow roots.
+
 - Forward dynamic accessibility and input attributes across scalar form controls and clear removed
   host IDs. Ignore disabled tab clicks, remove stale DatePicker outside-click listeners after
   repeated opens, and retain ThemeBuilder export events when clipboard access is unavailable.
