@@ -88,9 +88,18 @@ tool_timeout_sec = 30.0
 Start or resume a Codex task after changing MCP configuration so the new tools
 are loaded.
 
-### Claude Desktop
+### Claude
 
-Add this server to `claude_desktop_config.json`:
+In Claude, open **Customize → Connectors**, search for **Lumen UI**, and add it. If the listing is
+unavailable, choose **Add → Custom → Web**, name it **Lumen UI**, enter
+`https://mcp.lumen.santi020k.com/mcp`, and select **No sign-in** when Claude detects authentication.
+The hosted catalog requires no Lumen account, API key, or local server installation. Try asking
+Claude to find components for an accessible React settings screen or show the SwiftUI Button
+contract. Catalog queries and tool arguments are sent over HTTPS to the public Lumen MCP. Keep
+credentials, personal data, and private source out of them. See the
+[Lumen privacy policy](https://lumen.santi020k.com/privacy).
+
+For a local server in Claude Desktop, add this configuration to `claude_desktop_config.json`:
 
 ```json
 {
@@ -212,8 +221,8 @@ read-only catalog and requires no separate Lumen account, API key, or local MCP 
 
 The repository includes the plugin package in [`plugins/lumen-ui`](https://github.com/santi020k/lumen/tree/main/plugins/lumen-ui).
 It combines the portable `lumen-ui`, `lumen-review` and `lumen-migrate` skills with this MCP server
-for Codex, ChatGPT, and Claude Code. Plugin 1.1.0 pins MCP 5.0.0 for local stdio installs; the pinned
-package must be published before distribution. Hosted catalog deployment and plugin directory
+for Codex, ChatGPT, and Claude Code. Local stdio installs use the exact MCP package version in
+[`plugins/lumen-ui/.mcp.json`](https://github.com/santi020k/lumen/blob/main/plugins/lumen-ui/.mcp.json). Hosted catalog deployment and plugin directory
 approval are separate from local package validation.
 The public OpenAI Plugins Directory version uses a hosted Streamable HTTP endpoint; see the
 [publication record and checklist](https://github.com/santi020k/lumen/blob/main/docs/openai-plugin-submission.md) for deployment requirements, listing

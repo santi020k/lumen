@@ -1,4 +1,4 @@
-# Claude Code Plugin
+# Lumen UI for Claude
 
 Lumen UI is packaged as a Claude Code plugin that combines the portable build, review, and migration skills with the
 public, read-only Lumen MCP catalog. The plugin source lives in
@@ -11,10 +11,33 @@ Official references:
 - [Create and distribute a plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces)
 - [Discover and install plugins](https://code.claude.com/docs/en/discover-plugins)
 
+## Connect from the Claude directory
+
+In Claude, open **Customize → Connectors** and search for **Lumen UI**. Open its listing and add
+the connector. If the listing is unavailable in your directory, choose **Add → Custom → Web**,
+name it **Lumen UI**, and enter `https://mcp.lumen.santi020k.com/mcp`. Select **No sign-in**
+when Claude detects authentication.
+
+The connector exposes the public, read-only component catalog over HTTPS without a separate Lumen
+account, API key, or local server installation.
+
+Try asking Claude to:
+
+- Find the right Lumen components for an accessible React settings screen.
+- Show the SwiftUI Button contract and its accessibility guidance.
+- Explain the public Lumen v5 migration guidance for a React application.
+
+The hosted connector receives catalog queries and tool arguments to return public documentation.
+Keep credentials, personal data, and private source out of those arguments. See the
+[Lumen privacy policy](https://lumen.santi020k.com/privacy).
+
+The repository plugin described below bundles build, review, and migration skills for Claude Code.
+The hosted connector supplies catalog tools. Its directory listing and the plugin bundle have
+separate publication and review states.
+
 ## Install from the Lumen repository
 
-After the intended marketplace revision and its pinned MCP package are public, add the repository
-marketplace and install the plugin:
+Add the repository marketplace and install the plugin:
 
 ```text
 /plugin marketplace add santi020k/lumen
@@ -25,11 +48,9 @@ Run `/reload-plugins` if Claude Code asks you to activate the new plugin. The bu
 namespaced as `/lumen-ui:lumen-ui`; Claude can also invoke it automatically when a request matches
 its description.
 
-Plugin 1.1.0 pins `@santi020k/lumen-mcp@5.2.1` through `npx`, matching the Codex package. Plugin
-distribution requires the pinned MCP package and matching marketplace revision to be public. The
-ChatGPT/Codex directory update and Anthropic's reviewed marketplace have separate approval steps;
-those approvals are not required for a local development install. The 1.1.0 package in this release
-checkout is a candidate, not evidence that a marketplace install serves v5.
+The repository plugin starts its exact MCP package version locally through `npx`. Read
+[`plugins/lumen-ui/.mcp.json`](../plugins/lumen-ui/.mcp.json) for the current pin. Node.js 20.20 or
+newer is required.
 Call `lumen_check_compatibility` with resolved installed package versions before using catalog
 contracts. On a mismatch, use installed public types and README or a matching catalog; never upgrade
 an application implicitly.
@@ -65,22 +86,17 @@ Confirm that the plugin lists the `lumen-ui` skill, starts the `lumen` MCP serve
 `lumen_diagnose`, `lumen_search`, and one web or native component retrieval tool. The server must
 remain read-only and must not request credentials or private repository data.
 
-## Community marketplace submission
+## Directory publication
 
-The self-hosted `lumen` marketplace is available as soon as this repository revision is public.
-Anthropic's reviewed third-party directory is the `claude-community` marketplace, which users add
-separately. Before submitting Lumen UI:
+The hosted connector and the generated plugin bundle are separate Anthropic submissions. The
+connector dashboard shows Published. Check the public directory separately before promoting a
+direct listing URL. The installation steps above include a custom connector fallback.
+Track plugin bundle review in [Anthropic’s developer portal](https://claude.ai/directory/manage)
+before describing that bundle as published.
 
-1. Run both strict validators against the public revision.
-2. Test installation from `santi020k/lumen`, not only with `--plugin-dir`.
-3. Verify that the plugin disclosure shows three skills, one read-only MCP server, and one optional read-only reviewer,
-   with no hooks or LSP servers. Build and migration skills edit only within the user-authorized scope.
-4. Submit the public repository through Anthropic's plugin submission form.
-5. Describe the plugin as community-submitted or under review until it appears in the public
-   `claude-community` catalog.
-
-Submission, marketplace review, commits, and pushes change external state and are not performed by
-the repository validation command.
+Before publishing a plugin update, run the strict validators and test its installation from the
+public source. Confirm that it exposes three skills, one read-only MCP server, and one optional
+read-only reviewer. Build and migration skills edit only within the user-authorized scope.
 
 ### Automatic directory source updates
 
