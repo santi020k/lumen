@@ -3,6 +3,7 @@ import {
   createElement,
   type ReactElement,
   useEffect,
+  useRef,
   useState
 } from 'react'
 import {
@@ -58,8 +59,25 @@ const resolveDatePickerExpanded = (enabled: boolean, expanded: boolean): boolean
   enabled && expanded
 )
 
-const dismissAndroidDatePicker = (): void => {
-  if (Platform.OS === 'android') void DateTimePickerAndroid.dismiss('date')
+// Android keeps the first listener when open() is called again for an existing dialog.
+let activeAndroidDatePicker: symbol | undefined
+
+const releaseAndroidDatePicker = (owner: symbol | undefined): boolean => {
+  if (owner === undefined || activeAndroidDatePicker !== owner) return false
+
+  activeAndroidDatePicker = undefined
+
+  return true
+}
+
+const dismissAndroidDatePicker = async (owner: symbol): Promise<void> => {
+  try {
+    await DateTimePickerAndroid.dismiss('date')
+  } catch {
+    // The native activity can disappear before cleanup; allow a later field to retry.
+  } finally {
+    releaseAndroidDatePicker(owner)
+  }
 }
 
 const DateSupportingText = ({ description, errorMessage }: DateSupportingTextProps): ReactElement | null => {
@@ -154,6 +172,7 @@ const LumenDateFieldControl = ({
 }: LumenDateFieldProps): ReactElement => {
   const theme = useLumenTheme()
   const [expanded, setExpanded] = useState(false)
+  const androidPickerRef = useRef<symbol | undefined>(undefined)
   const pickerExpanded = resolveDatePickerExpanded(enabled, expanded)
   const validValue = isValidLumenDate(value) ? value : null
   const pickerValue = resolveLumenDatePickerValue(value, minimumDate, maximumDate)
@@ -166,7 +185,13 @@ const LumenDateFieldControl = ({
 
   const pickerBounds = resolveLumenDateBounds(minimumDate, maximumDate)
 
-  useEffect(() => dismissAndroidDatePicker, [])
+  useEffect(() => () => {
+    const owner = androidPickerRef.current
+
+    androidPickerRef.current = undefined
+
+    if (owner !== undefined && activeAndroidDatePicker === owner) void dismissAndroidDatePicker(owner)
+  }, [])
 
   const commitValue = (_event: DateTimePickerChangeEvent, selectedDate?: Date): void => {
     if (!selectedDate) return
@@ -178,12 +203,42 @@ const LumenDateFieldControl = ({
     if (!enabled) return
 
     if (Platform.OS === 'android') {
-      DateTimePickerAndroid.open({
-        ...pickerBounds,
-        mode: 'date',
-        onValueChange: commitValue,
-        value: pickerValue
-      })
+      if (activeAndroidDatePicker !== undefined) return
+
+      const owner = Symbol('LumenDateField')
+
+      activeAndroidDatePicker = owner
+
+      androidPickerRef.current = owner
+
+      const releasePicker = (): boolean => {
+        if (androidPickerRef.current !== owner) return false
+
+        androidPickerRef.current = undefined
+
+        return releaseAndroidDatePicker(owner)
+      }
+
+      try {
+        DateTimePickerAndroid.open({
+          ...pickerBounds,
+          mode: 'date',
+          onDismiss: () => {
+            releasePicker()
+          },
+          onError: () => {
+            releasePicker()
+          },
+          onValueChange: (event, date) => {
+            if (releasePicker()) commitValue(event, date)
+          },
+          value: pickerValue
+        })
+      } catch (error) {
+        releasePicker()
+
+        throw error
+      }
 
       return
     }

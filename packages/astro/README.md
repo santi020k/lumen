@@ -70,6 +70,9 @@ Form controls use `visualSize` (`visual-size` in Elements) with `default`, `sm` 
 Select, PhoneInput and Segmented follow Input and NativeSelect; numeric input/select `size` keeps
 its native meaning. See the [v4 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v3-to-v4.md#form-control-visual-sizing).
 
+`Select` accepts slotted native options and option groups. Enhancement preserves disabled options,
+including options inside a disabled `optgroup`, for pointer selection and keyboard navigation.
+
 ## Install
 
 Upgrading from v4? Follow the [v5 migration guide](https://github.com/santi020k/lumen/blob/main/docs/migrating-v4-to-v5.md)

@@ -1,4 +1,8 @@
 import assert from 'node:assert/strict'
+import { spawnSync } from 'node:child_process'
+import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import test from 'node:test'
 
 import {
@@ -6,6 +10,26 @@ import {
   mergeReleasePackageNames,
   selectPendingReleaseNames
 } from './release-scope.mjs'
+
+test('pending changesets resolve without mixing private and public release packages', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'lumen-changeset-regression-'))
+  const output = join(directory, 'status.json')
+
+  try {
+    const result = spawnSync('pnpm', ['exec', 'changeset', 'status', '--output', output], {
+      cwd: new URL('..', import.meta.url),
+      encoding: 'utf8'
+    })
+
+    assert.equal(result.status, 0, result.error?.message ?? `${result.stdout}\n${result.stderr}`)
+
+    const status = JSON.parse(await readFile(output, 'utf8'))
+
+    assert.ok(Array.isArray(status.releases), 'Changesets must produce a valid release plan')
+  } finally {
+    await rm(directory, { force: true, recursive: true })
+  }
+})
 
 test('release scope merges pending and unpublished packages deterministically', () => {
   assert.deepEqual(

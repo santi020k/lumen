@@ -220,7 +220,11 @@ the matching Lumen rendering adapter. See the
 composition examples.
 
 Date values remain controlled by the application. `LumenDateField` opens the system picker, while
-`LumenDateRangeField` coordinates two pickers and prevents the end from preceding the start:
+`LumenDateRangeField` coordinates two pickers and prevents the end from preceding the start.
+On Android, disabling or unmounting the field that opened the current picker dismisses it;
+changing an unrelated date field leaves it open. While that picker is open or being dismissed,
+additional open requests leave it with its original field. Later callbacks from completed pickers
+are ignored:
 
 ```tsx
 import {

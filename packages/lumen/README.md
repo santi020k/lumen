@@ -311,6 +311,14 @@ A pre-v5 target without a manifest uses the historical uniform-package rollout, 
 updates pinned/caret ranges and refreshes existing release-age exceptions. Both modes require an
 exact pnpm declaration and a supported Node runtime. `--allow-dirty` permits a dirty worktree.
 
+Apply first runs `corepack pnpm --version` in the consumer to check that its package manager can
+start, before changing manifests, workspace catalogs, or the lockfile. A failed preflight leaves those
+files unchanged; inventory and dry-run do not launch the package manager. Standard Windows npm/Node,
+local `.bin`, and bundled Corepack shims use their adjacent JavaScript entry through Node without a
+shell. Unsupported or incomplete installations fail preflight. A later update, install, or
+verification failure can leave partial changes: inspect the command report and restore the recorded
+baseline and lockfile before retrying when recovery is needed.
+
 ## Consumer upgrade and theme audits
 
 ```bash

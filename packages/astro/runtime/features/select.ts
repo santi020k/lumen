@@ -64,7 +64,7 @@ const renderSelectOptions = (select: HTMLSelectElement, listbox: HTMLElement): v
 
       item.textContent = option.label
 
-      if (option.disabled) {
+      if (option.matches(':disabled')) {
         item.disabled = true
 
         item.setAttribute('aria-disabled', 'true')

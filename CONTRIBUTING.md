@@ -47,6 +47,11 @@ The docs app is the fastest way to inspect components while working.
 5. Add a changeset for user-visible package changes.
 6. Use the pull request template and note any commands you could not run.
 
+Changesets skips private workspace packages. Do not mix a private package such as
+`@santi020k/lumen-templates` with public packages in one changeset; keep its notes separate.
+Run `pnpm exec changeset status` to confirm the pending release plan. The release-scope tests also
+check that the repository's pending changesets can be resolved.
+
 ## Validation
 
 Common commands:

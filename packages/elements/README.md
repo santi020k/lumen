@@ -730,7 +730,9 @@ Associate the heading id with the dialog's `aria-labelledby`.
 ```
 
 A cancelled click or disabled native button does not dismiss the dialog. Nested
-close actions only dismiss their own dialog. `lumen-file-upload` accepts
+close actions only dismiss their own dialog. A slotted native `dialog` dismisses only when
+a pointer press starts and ends on its backdrop; interior padding and drags out of the dialog
+preserve the task. Alert dialogs require an explicit dismissal action. `lumen-file-upload` accepts
 `selected-files-label` containing `{count}` for localized multiple-file feedback.
 
 ### Rich description rows
@@ -879,6 +881,16 @@ from an ancestor after that keydown has been consumed. It blocks
 disabled/loading activation, including direct clicks. Blocking flags expose `aria-disabled`;
 removing them restores any prior application-supplied ARIA value. Native nested controls retain
 their own keyboard path.
+
+Set `type="submit"` to submit the containing form, or use `form="form-id"` for an external
+form owner. Submission respects canceled click events, native constraint validation, and disabled
+fieldset ancestors (including the first legend exception). The native submitter carries `name`, `value`, and the
+`formaction`, `formenctype`, `formmethod`, `formnovalidate`, and `formtarget` overrides. Nested
+native submit buttons keep their own submission without triggering a second one. Omitting `type`
+or using `type="button"` keeps an ordinary action button.
+`SubmitEvent.submitter` is a temporary native button, not the custom-element host. Capture
+`new FormData(form, event.submitter)` synchronously in the submit handler when the submitter's
+name and value are needed; its attributes remain readable after that native button is removed.
 
 ## Device demonstrations
 

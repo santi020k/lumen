@@ -567,9 +567,39 @@ export class LumenDialogBehaviorElement extends LumenElement {
       this.dataset.state = initiallyOpen ? 'open' : 'closed'
     }
 
+    let pressStartedOutside = false
+
+    const isBackdropPoint = (event: MouseEvent): boolean => {
+      const nativeDialog = this.#nativeDialog
+
+      if (!nativeDialog || event.target !== nativeDialog) return false
+
+      const bounds = nativeDialog.getBoundingClientRect()
+
+      return event.clientX < bounds.left || event.clientX >= bounds.right ||
+        event.clientY < bounds.top || event.clientY >= bounds.bottom
+    }
+
+    this.#nativeDialog?.addEventListener(
+      'pointerdown', event => {
+        pressStartedOutside = !event.defaultPrevented && isBackdropPoint(event)
+      }, { signal }
+    )
+
+    this.#nativeDialog?.addEventListener(
+      'pointercancel', () => {
+        pressStartedOutside = false
+      }, { signal }
+    )
+
     this.#nativeDialog?.addEventListener(
       'click', event => {
-        if (event.target === this.#nativeDialog && !this.#isAlertDialog) {
+        const dismiss = pressStartedOutside && event.detail > 0 &&
+          !event.defaultPrevented && isBackdropPoint(event)
+
+        pressStartedOutside = false
+
+        if (dismiss && !this.#isAlertDialog) {
           this.#closeDialog()
         }
       }, { signal }
@@ -577,6 +607,8 @@ export class LumenDialogBehaviorElement extends LumenElement {
 
     this.#nativeDialog?.addEventListener(
       'close', () => {
+        pressStartedOutside = false
+
         if (this.#nativeDialog?.open) return
 
         this.#returnFocus()
