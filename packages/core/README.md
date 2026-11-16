@@ -235,8 +235,9 @@ domain, tick, scaling, line/area, grouped/stacked bar, and pie/donut geometry he
 no DOM and perform no statistical analysis; framework packages use them to keep chart output
 aligned. Linear x coordinates ignore blank strings rather than treating them as zero.
 `getLumenChartTicks` caps the requested tick count at 4,096 and falls back to five for non-finite
-counts. Tick spacing may produce a different number of ticks; returned ticks remain finite,
-distinct, and increasing even when floating-point precision cannot represent the requested spacing.
+counts. Tick spacing may produce a different number of ticks. For finite, increasing domains,
+returned ticks remain finite, distinct, and increasing even when floating-point precision cannot
+represent the requested spacing.
 
 ```ts
 import {
