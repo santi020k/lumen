@@ -239,3 +239,16 @@ test('restarts the timeout when an update reopens a closing toast', async () => 
   await act(() => vi.advanceTimersByTimeAsync(240))
   expect(container.querySelector('#timed')).toBeNull()
 })
+
+test('closing toast finishes closeDelay removal even when other toasts re-render ToastProvider', async () => {
+  await clickButton('Save')
+  await clickButton('Dismiss save')
+  expect(container.querySelector('#save')?.getAttribute('data-state')).toBe('closed')
+
+  await act(() => vi.advanceTimersByTimeAsync(120))
+  await clickButton('Timed')
+  await act(() => vi.advanceTimersByTimeAsync(120))
+
+  expect(container.querySelector('#save')).toBeNull()
+  expect(container.querySelector('#timed')?.getAttribute('data-state')).toBe('open')
+})

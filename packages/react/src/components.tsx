@@ -2754,6 +2754,12 @@ export const DatePicker = ({
   const accessibleLabel = props['aria-label']
   const consumerInvalid = props['aria-invalid']
   const invalidAttemptedRef = useRef(false)
+  const focusTimerRef = useRef<ReturnType<typeof globalThis.setTimeout> | undefined>(undefined)
+  const isOpenRef = useRef(isOpen)
+
+  useLayoutEffect(() => {
+    isOpenRef.current = isOpen
+  }, [isOpen])
 
   const closePicker = useCallback(() => {
     setOpen(false)
@@ -2810,8 +2816,18 @@ export const DatePicker = ({
     }
   }, [defaultValue, props.form, value, setOpen, syncValidity])
 
+  useEffect(() => () => {
+    globalThis.clearTimeout(focusTimerRef.current)
+  }, [])
+
+  useEffect(() => {
+    if (disabled || readOnly) globalThis.clearTimeout(focusTimerRef.current)
+  }, [disabled, readOnly])
+
   useEffect(() => {
     if (!isOpen) return
+
+    globalThis.clearTimeout(focusTimerRef.current)
 
     const root = rootRef.current
 
@@ -2846,8 +2862,49 @@ export const DatePicker = ({
     }
   }, [isOpen, setOpen])
 
+  const getActiveFocus = (root: HTMLElement | null): Element | null => {
+    if (!root) return null
+
+    const view = root.ownerDocument.defaultView
+    const ElementType = view?.Element
+    const NodeType = view?.Node
+    let focusRoot: Node = root.getRootNode()
+
+    for (;;) {
+      if ('activeElement' in focusRoot) {
+        const active = focusRoot.activeElement
+
+        if (ElementType && active instanceof ElementType) return active
+      }
+
+      if (!('host' in focusRoot) || !NodeType || !(focusRoot.host instanceof NodeType)) break
+
+      focusRoot = focusRoot.host.getRootNode()
+    }
+
+    return root.ownerDocument.activeElement
+  }
+
+  const hasMovedFocusOutside = (activeBefore: Element | null): boolean => {
+    const root = rootRef.current
+
+    if (!root) return true
+
+    const active = getActiveFocus(root)
+    const ownerBody = root.ownerDocument.body
+
+    return Boolean(
+      active &&
+      active !== activeBefore &&
+      active !== ownerBody &&
+      !root.contains(active)
+    )
+  }
+
   const selectDate = (nextValue: string) => {
     if (disabled || readOnly) return
+
+    const activeBefore = getActiveFocus(rootRef.current)
 
     if (value === undefined) setInternalValue(nextValue)
 
@@ -2870,7 +2927,25 @@ export const DatePicker = ({
 
     setOpen(false)
 
-    globalThis.setTimeout(() => triggerRef.current?.focus())
+    globalThis.clearTimeout(focusTimerRef.current)
+
+    if (hasMovedFocusOutside(activeBefore)) return
+
+    focusTimerRef.current = globalThis.setTimeout(() => {
+      focusTimerRef.current = undefined
+
+      const trigger = triggerRef.current
+
+      if (
+        !trigger?.isConnected ||
+        isOpenRef.current ||
+        trigger.matches(':disabled') ||
+        trigger.getAttribute('aria-disabled') === 'true' ||
+        hasMovedFocusOutside(activeBefore)
+      ) return
+
+      trigger.focus()
+    })
   }
 
   return (
@@ -5446,10 +5521,14 @@ export const ListBox = (inputProps: ListBoxProps) => {
     select.dispatchEvent(new Event('change', { bubbles: true }))
   }
 
+  const isListBoxUnavailable = (): boolean => Boolean(
+    disabled || loading || selectRef.current?.matches(':disabled')
+  )
+
   const selectOption = (index: number) => {
     const option = normalizedOptions[index]
 
-    if (!option || option.disabled || disabled || loading) return
+    if (!option || option.disabled || isListBoxUnavailable()) return
 
     const optionValue = option.value
     let nextValues: string[]
@@ -5592,6 +5671,12 @@ export const ListBox = (inputProps: ListBoxProps) => {
   }
 
   const handleListKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (
+      isListBoxUnavailable() ||
+      event.defaultPrevented ||
+      event.nativeEvent.isComposing
+    ) return
+
     if (handleNavigationKey(event.key) || handleTypeaheadKey(event)) event.preventDefault()
   }
 
@@ -5694,7 +5779,7 @@ export const ListBox = (inputProps: ListBoxProps) => {
           groups={optionGroups}
           loading={loading}
           onSelect={index => {
-            if (!isEnabledOption(index)) return
+            if (!isEnabledOption(index) || isListBoxUnavailable()) return
 
             setActiveIndex(index)
 

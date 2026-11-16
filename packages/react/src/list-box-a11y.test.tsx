@@ -507,3 +507,86 @@ test.each(['value', 'defaultValue'] as const)('ListBox filters malformed runtime
   expect(container.querySelector('[data-value="bruno"]')?.getAttribute('aria-selected')).toBe('true')
   expect(container.querySelector('[data-value="amina"]')?.getAttribute('aria-selected')).toBe('false')
 })
+
+test('ListBox ignores keyboard and pointer updates when disabled, loading, inside a disabled fieldset, composing, or defaultPrevented while preserving first legend', async () => {
+  const onValueChange = vi.fn()
+
+  await run(() => {
+    root.render(<ListBox aria-label="Reviewer" defaultValue="amina" disabled onValueChange={onValueChange} options={options} selectionFollowsFocus />)
+  })
+
+  const [disabledList] = lists()
+
+  await run(() => {
+    disabledList?.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }))
+    disabledList?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+    disabledList?.dispatchEvent(new KeyboardEvent('keydown', { key: 'b', bubbles: true }))
+    container.querySelector<HTMLElement>('[data-value="bruno"]')?.click()
+  })
+
+  expect(activeText(disabledList)).toBe('Amina')
+  expect(onValueChange).not.toHaveBeenCalled()
+
+  await run(() => {
+    root.render(<ListBox aria-label="Reviewer" defaultValue="amina" loading onValueChange={onValueChange} options={options} selectionFollowsFocus />)
+  })
+
+  const [loadingList] = lists()
+  const loadingActiveBefore = loadingList?.getAttribute('aria-activedescendant')
+
+  await run(() => {
+    loadingList?.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }))
+    loadingList?.dispatchEvent(new KeyboardEvent('keydown', { key: 'b', bubbles: true }))
+    container.querySelector<HTMLElement>('[data-value="bruno"]')?.click()
+  })
+
+  expect(loadingList?.getAttribute('aria-activedescendant')).toBe(loadingActiveBefore)
+  expect(onValueChange).not.toHaveBeenCalled()
+
+  await run(() => {
+    root.render(
+      <fieldset disabled>
+        <legend>
+          <ListBox aria-label="Legend list" defaultValue="amina" onValueChange={onValueChange} options={options} selectionFollowsFocus />
+        </legend>
+        <ListBox aria-label="Body list" defaultValue="amina" onValueChange={onValueChange} options={options} selectionFollowsFocus />
+      </fieldset>
+    )
+  })
+
+  const [legendList, bodyList] = lists()
+
+  await run(() => {
+    bodyList?.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }))
+    bodyList?.querySelector<HTMLElement>('[data-value="bruno"]')?.click()
+  })
+
+  expect(activeText(bodyList)).toBe('Amina')
+  expect(onValueChange).not.toHaveBeenCalled()
+
+  await run(() => {
+    legendList?.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }))
+  })
+
+  expect(activeText(legendList)).toBe('Bruno')
+  expect(onValueChange).toHaveBeenCalledWith(['bruno'])
+
+  onValueChange.mockClear()
+
+  await run(() => {
+    root.render(<ListBox aria-label="Reviewer" defaultValue="amina" onValueChange={onValueChange} options={options} selectionFollowsFocus />)
+  })
+
+  const [enabledList] = lists()
+  const canceledKey = new KeyboardEvent('keydown', { key: 'End', bubbles: true, cancelable: true })
+
+  canceledKey.preventDefault()
+
+  await run(() => {
+    enabledList?.dispatchEvent(new KeyboardEvent('keydown', { key: 'b', bubbles: true, isComposing: true }))
+    enabledList?.dispatchEvent(canceledKey)
+  })
+
+  expect(activeText(enabledList)).toBe('Amina')
+  expect(onValueChange).not.toHaveBeenCalled()
+})

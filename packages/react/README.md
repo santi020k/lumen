@@ -263,9 +263,10 @@ accessibility contract without replacing form state. Native-backed controls forw
 submitted DOM controls and work directly with React Hook Form's `register()`.
 
 Native form resets defer past the browser's default action and honor a cancelled `reset` event:
-`DatePicker`, `DateRangeInput`, `PhoneInput`, and `Combobox` only restore uncontrolled defaults when
+`DatePicker`, `DateRangeInput`, `PhoneInput`, `InputOTP`, and `Combobox` only restore uncontrolled defaults when
 the reset is not prevented, and leave a controlled `value` untouched. `DatePicker` calendar
-selection fires the native `onChange` exactly once, matching typed input. `DateRangeInput` attaches
+selection fires the native `onChange` exactly once, matching typed input, and restores trigger focus
+only when the consumer has not moved focus elsewhere or reopened/disabled the control. `DateRangeInput` attaches
 its reset listener even without `name`, honoring an explicit `form` id as well as the nearest
 ancestor form. `Segmented` controls default to `name="segmented"`; when rendering multiple `Segmented`
 instances within the same form or page, assign a distinct explicit `name` to each control so their
