@@ -58,6 +58,31 @@ describe('form contracts', () => {
     expect(getLumenFieldErrors(errors, 'email')).toHaveLength(1)
   })
 
+  test('normalizes record field names consistently while retaining exact form-error routing', () => {
+    const input = {
+      '   ': 'Discard this error',
+      ' email ': ' Invalid email ',
+      email: ' Email is required ',
+      form: ' Global error ',
+      root: [' Root error '],
+      ' form ': ' Field named form ',
+      ' root ': ' Field named root '
+    }
+    const errors = normalizeLumenFormErrors(input)
+
+    expect(errors).toEqual({
+      fields: [
+        { name: 'email', message: 'Invalid email' },
+        { name: 'email', message: 'Email is required' },
+        { name: 'form', message: 'Field named form' },
+        { name: 'root', message: 'Field named root' }
+      ],
+      form: ['Global error', 'Root error']
+    })
+    expect(normalizeLumenFormErrors(errors)).toEqual(errors)
+    expect(input[' email ']).toBe(' Invalid email ')
+  })
+
   test('creates discriminated success and failure results', () => {
     expect(createLumenFormSuccess({ id: 'profile-1' })).toEqual({
       data: { id: 'profile-1' },

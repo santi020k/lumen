@@ -47,6 +47,6 @@ export const formatLumenLanguageLabel = (
   template: string,
   current: LumenLocaleOption,
   next: LumenLocaleOption
-): string => template
-  .replaceAll('{current}', current.label)
-  .replaceAll('{next}', next.label)
+): string => template.replaceAll(/\{current\}|\{next\}/gu, token => (
+  token === '{current}' ? current.label : next.label
+))

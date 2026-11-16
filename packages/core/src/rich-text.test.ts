@@ -33,6 +33,13 @@ describe('rich text helpers', () => {
     expect(shortcut('8', { shiftKey: true })).toBeUndefined()
   })
 
+  test.each(['constructor', 'toString', 'valueOf', '__proto__'])('ignores inherited shortcut names and physical codes: %s', key => {
+    expect(shortcut(key)).toBeUndefined()
+    expect(shortcut(key, { shiftKey: true })).toBeUndefined()
+    expect(shortcut('a', { code: key, shiftKey: true })).toBeUndefined()
+    expect(shortcut('z', { code: key, shiftKey: true })).toBe('redo')
+  })
+
   test('identifies commands with pressed state', () => {
     expect(isLumenRichTextToggleCommand('bold')).toBe(true)
     expect(isLumenRichTextToggleCommand('undo')).toBe(false)

@@ -169,8 +169,12 @@ const recordMatchesQuery = (record: LumenDataRecord, query: string): boolean => 
     .some(value => String(value ?? '').toLowerCase().includes(query))
 }
 
+const getRecordField = (record: LumenDataRecord, key: string): LumenDataRecord[string] => (
+  Object.hasOwn(record, key) ? record[key] : undefined
+)
+
 const recordMatchesFilters = (record: LumenDataRecord, filters: LumenDataViewState['filters']): boolean => Object.entries(filters)
-  .every(([key, value]) => !value || String(record[key] ?? '') === value)
+  .every(([key, value]) => !value || String(getRecordField(record, key) ?? '') === value)
 
 export const filterDataRecords = <T extends LumenDataRecord>(
   records: readonly T[],
@@ -190,8 +194,8 @@ export const sortDataRecords = <T extends LumenDataRecord>(
   const direction = sort.direction === 'desc' ? -1 : 1
 
   return [...records].sort((a, b) => {
-    const valueA = a[sort.key]
-    const valueB = b[sort.key]
+    const valueA = getRecordField(a, sort.key)
+    const valueB = getRecordField(b, sort.key)
 
     if (typeof valueA === 'number' && typeof valueB === 'number') {
       return (valueA - valueB) * direction

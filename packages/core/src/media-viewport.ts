@@ -89,7 +89,7 @@ export const bindLumenMediaViewport = (
   stage.addEventListener('keydown', event => {
     if (event.target !== stage || event.altKey || event.ctrlKey || event.metaKey || options.disabled()) return
 
-    const action = keys[event.key]
+    const action = Object.hasOwn(keys, event.key) ? keys[event.key] : undefined
 
     if (!action) return
 

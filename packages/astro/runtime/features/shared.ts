@@ -1,4 +1,4 @@
-import { getScopeTarget } from '../relationships.js'
+import { getScopeActiveElement, getScopeTarget } from '../relationships.js'
 
 const focusableSelector = [
   'a[href]',
@@ -74,6 +74,30 @@ export const getLoopedIndex = (
   if (forwardKeys.includes(key)) return (currentIndex + 1) % itemCount
 
   return (currentIndex - 1 + itemCount) % itemCount
+}
+
+export const shouldIgnoreKeydown = (event: KeyboardEvent): boolean => (
+  event.defaultPrevented || event.isComposing || event.altKey || event.ctrlKey || event.metaKey
+)
+
+export const shouldRestorePanelFocus = (panel: HTMLElement): boolean => {
+  let reference: Element | null = panel
+
+  while (reference) {
+    const activeElement = getScopeActiveElement(reference)
+
+    if (activeElement) {
+      // WebKit can blur pointer-activated buttons to the page or enclosing modal.
+      return panel.contains(activeElement) || activeElement === panel.ownerDocument.body ||
+        (activeElement.matches('dialog[open]') && activeElement.contains(reference))
+    }
+
+    const tree = reference.getRootNode()
+
+    reference = tree instanceof ShadowRoot ? tree.host : null
+  }
+
+  return false
 }
 
 export const setOpen = (trigger: HTMLElement, panel: HTMLElement, open: boolean): void => {
