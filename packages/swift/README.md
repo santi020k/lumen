@@ -414,7 +414,9 @@ LumenDateRangeField(
 )
 ```
 
-On macOS, shortcut validation remains application-owned while Lumen handles capture and presentation:
+On macOS, shortcut validation remains application-owned while Lumen handles capture and presentation.
+`LumenShortcutRecorder` stops active key capture if the control is disabled or leaves the view
+hierarchy:
 
 ```swift
 LumenShortcutRecorder("Quick switch", shortcut: $shortcut) { candidate in
@@ -569,7 +571,8 @@ binary consumers must rebuild.
 ### Phone presentation in v4
 
 `LumenPhoneInput` uses bundled flag artwork and a continuous control frame, and accepts `readOnly`
-in addition to `enabled`. Read-only fields also lock country selection. `LumenCountryFlag` and
+in addition to `enabled`. Read-only, disabled, or empty-catalog fields also lock and dismiss
+country selection. `LumenCountryFlag` and
 `LumenPhoneNumberView` expose the same artwork and normalized read-only phone presentation.
 Country names and calling codes remain the accessible selector label. The flag source and license
 are documented in [flags/README.md](https://github.com/santi020k/lumen/blob/main/flags/README.md); no external flag request is made.

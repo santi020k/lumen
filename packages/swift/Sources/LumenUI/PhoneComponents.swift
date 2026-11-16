@@ -478,7 +478,13 @@ public struct LumenPhoneInput: View {
     public var body: some View {
         phoneField
             .disabled(!enabled)
-            .sheet(isPresented: $pickerPresented) {
+            .task(id: pickerEnabled) {
+                if !pickerEnabled {
+                    pickerPresented = false
+                    countryQuery = ""
+                }
+            }
+            .sheet(isPresented: pickerPresentation) {
                 countryPicker
             }
     }
@@ -507,6 +513,7 @@ public struct LumenPhoneInput: View {
 
     private var countryButton: some View {
         Button {
+            guard pickerEnabled else { return }
             pickerPresented = true
         } label: {
             HStack(spacing: LumenSpacing.sm) {
@@ -523,9 +530,9 @@ public struct LumenPhoneInput: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .background(countryHovered && isEnabled && !readOnly ? theme.colors.surfaceMuted : Color.clear)
+        .background(countryHovered && pickerEnabled ? theme.colors.surfaceMuted : Color.clear)
         .onHover { countryHovered = $0 }
-        .disabled(!isEnabled || readOnly || countries.isEmpty)
+        .disabled(!pickerEnabled)
         .accessibilityLabel(countryButtonAccessibilityLabel)
     }
 
@@ -565,6 +572,22 @@ public struct LumenPhoneInput: View {
 
     private var isEnabled: Bool { enabled && isEnvironmentEnabled }
 
+    private var pickerEnabled: Bool {
+        isEnabled && !readOnly && !countries.isEmpty
+    }
+
+    private var pickerPresentation: Binding<Bool> {
+        Binding(
+            get: { pickerPresented && pickerEnabled },
+            set: { next in
+                pickerPresented = next && pickerEnabled
+                if !next {
+                    countryQuery = ""
+                }
+            }
+        )
+    }
+
     private var localizedDescription: LocalizedStringKey? {
         guard let description else { return nil }
 
@@ -582,7 +605,7 @@ public struct LumenPhoneInput: View {
         let field = TextField(numberLabel, text: Binding(
             get: { displayValue.nationalNumber },
             set: { input in
-                guard !readOnly else { return }
+                guard isEnabled && !readOnly else { return }
                 value = resolveLumenPhoneInputValue(
                     countries: countries,
                     country: displayValue.country,
@@ -612,10 +635,18 @@ public struct LumenPhoneInput: View {
     private var countryPicker: some View {
         NavigationStack {
             VStack(spacing: LumenSpacing.md) {
-                LumenSearchField(countrySearchLabel, text: $countryQuery)
+                LumenSearchField(
+                    countrySearchLabel,
+                    text: Binding(
+                        get: { countryQuery },
+                        set: { if pickerEnabled { countryQuery = $0 } }
+                    )
+                )
+                .disabled(!pickerEnabled)
 
                 List(filteredCountries) { country in
                     Button {
+                        guard pickerEnabled else { return }
                         value = resolveLumenPhoneNumber(
                             country: country,
                             input: displayValue.nationalNumber,
@@ -637,6 +668,7 @@ public struct LumenPhoneInput: View {
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
+                    .disabled(!pickerEnabled)
                     .accessibilityLabel("\(country.displayName), \(country.callingCode)")
                     .accessibilityAddTraits(
                         country.regionCode == displayValue.country.regionCode ? .isSelected : []
@@ -655,6 +687,9 @@ public struct LumenPhoneInput: View {
                 }
             }
         }
+        #if os(macOS)
+        .frame(minWidth: 360, idealWidth: 400, minHeight: 440, idealHeight: 480)
+        #endif
     }
 }
 #endif
