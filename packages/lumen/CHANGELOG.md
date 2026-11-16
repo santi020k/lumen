@@ -23,6 +23,10 @@
 
 ### Patch Changes
 
+- Stop SwiftUI shortcut capture when disabled or removed. Dismiss phone-country selection when
+  disabled, read-only, or without country choices; re-enabling does not reopen it. Keep the macOS
+  country picker tall enough to display selectable countries.
+
 - Fix Elements submit-button behavior and dialog backdrop detection, preserve disabled option groups
   in Astro Select, and keep Android date-picker cleanup scoped to the field that opened it.
   Refresh the MCP server's bundled native source to include the date-picker fix.
