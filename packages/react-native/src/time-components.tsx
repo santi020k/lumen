@@ -76,6 +76,26 @@ const supportingProps = (description?: string, errorMessage?: string) => ({
 })
 
 const isTimeEditable = (enabled?: boolean, readOnly?: boolean): boolean => (enabled ?? true) && !(readOnly ?? false)
+// Android keeps the first listener when open() is called again for an existing dialog.
+let activeAndroidTimePicker: symbol | undefined
+
+const releaseAndroidTimePicker = (owner: symbol | undefined): boolean => {
+  if (owner === undefined || activeAndroidTimePicker !== owner) return false
+
+  activeAndroidTimePicker = undefined
+
+  return true
+}
+
+const dismissAndroidTimePicker = async (owner: symbol): Promise<void> => {
+  try {
+    await DateTimePickerAndroid.dismiss('time')
+  } catch {
+    // The native activity can disappear before cleanup; allow a later field to retry.
+  } finally {
+    releaseAndroidTimePicker(owner)
+  }
+}
 
 const LumenTimeFieldControl = ({
   confirmLabel, description, dismissLabel, enabled,
@@ -89,23 +109,21 @@ const LumenTimeFieldControl = ({
   const [draft, setDraft] = useState(initial)
   const [expanded, setExpanded] = useState(false)
   const [selectionError, setSelectionError] = useState<string>()
-  const androidOpenRef = useRef(false)
+  const androidTimePickerRef = useRef<symbol | undefined>(undefined)
   const editable = isTimeEditable(enabled, readOnly)
   const message = errorMessage ?? selectionError
   const valid = isLumenTimeInBounds(draft, minTime, maxTime)
   const display = timeDisplay(value, labels.placeholder, locale, is24Hour)
 
   useEffect(() => () => {
-    if (androidOpenRef.current) void DateTimePickerAndroid.dismiss('time')
+    const owner = androidTimePickerRef.current
 
-    androidOpenRef.current = false
+    androidTimePickerRef.current = undefined
+
+    if (owner !== undefined && activeAndroidTimePicker === owner) void dismissAndroidTimePicker(owner)
   }, [])
 
   const onAndroidChange = (_event: DateTimePickerChangeEvent, date?: Date): void => {
-    if (!androidOpenRef.current) return
-
-    androidOpenRef.current = false
-
     if (!editable || !date) return
 
     const selected = timeForDate(date)
@@ -131,17 +149,40 @@ const LumenTimeFieldControl = ({
     setSelectionError(undefined)
 
     if (Platform.OS === 'android') {
-      androidOpenRef.current = true
+      if (activeAndroidTimePicker !== undefined) return
 
-      DateTimePickerAndroid.open({ ...(is24Hour === undefined ? {} : { is24Hour }),
-        mode: 'time',
-        onDismiss: () => {
-          androidOpenRef.current = false
-        },
-        onValueChange: (event, date) => {
-          androidChangeRef.current(event, date)
-        },
-        value: dateForTime(initial) })
+      const owner = Symbol('LumenTimeField')
+
+      activeAndroidTimePicker = owner
+
+      androidTimePickerRef.current = owner
+
+      const releasePicker = (): boolean => {
+        if (androidTimePickerRef.current !== owner) return false
+
+        androidTimePickerRef.current = undefined
+
+        return releaseAndroidTimePicker(owner)
+      }
+
+      try {
+        DateTimePickerAndroid.open({ ...(is24Hour === undefined ? {} : { is24Hour }),
+          mode: 'time',
+          onDismiss: () => {
+            releasePicker()
+          },
+          onError: () => {
+            releasePicker()
+          },
+          onValueChange: (event, date) => {
+            if (releasePicker()) androidChangeRef.current(event, date)
+          },
+          value: dateForTime(initial) })
+      } catch (error) {
+        releasePicker()
+
+        throw error
+      }
     } else setExpanded(true)
   }
 
