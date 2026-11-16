@@ -105,6 +105,8 @@ const setFieldValidity = (
     control.removeAttribute('aria-invalid')
 
     delete control.dataset.uiValidationInvalid
+  } else {
+    return
   }
 
   if (!field) return
@@ -120,10 +122,50 @@ const setFieldValidity = (
   }
 }
 
+const resetControlValidity = (
+  control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+): void => {
+  if (control.dataset.uiValidationInvalid !== 'true') return
+
+  control.removeAttribute('aria-invalid')
+
+  delete control.dataset.uiValidationInvalid
+
+  const field = getFieldRoot(control)
+
+  if (!field) return
+
+  field.dataset.invalid = 'false'
+
+  for (const error of field.querySelectorAll<HTMLElement>(fieldErrorSelector)) {
+    if (error.dataset.uiValidationErrorBound !== 'true') continue
+
+    error.hidden = true
+
+    error.textContent = ''
+  }
+}
+
+const resetFormValidation = (form: HTMLFormElement): void => {
+  for (const element of form.elements) {
+    if (isNativeFormControl(element) && element.type !== 'hidden') {
+      resetControlValidity(element)
+    }
+  }
+}
+
+const pendingFormResets = new WeakMap<HTMLFormElement, () => void>()
+
+const flushPendingReset = (form: HTMLFormElement): void => {
+  pendingFormResets.get(form)?.()
+}
+
 const validateControl = (
   control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
   form: HTMLFormElement
 ): boolean => {
+  flushPendingReset(form)
+
   form.dispatchEvent(new CustomEvent('ui:validate', {
     bubbles: true,
     detail: { control, form, value: control.value }
@@ -241,6 +283,8 @@ const bindForms = (form: HTMLFormElement): void => {
   })
 
   form.addEventListener('submit', event => {
+    flushPendingReset(form)
+
     if (form.dataset.status === 'submitting') {
       event.preventDefault()
 
@@ -285,8 +329,28 @@ const bindForms = (form: HTMLFormElement): void => {
     })
   })
 
-  form.addEventListener('reset', () => {
-    setStatus('idle')
+  form.addEventListener('reset', event => {
+    flushPendingReset(form)
+
+    let settled = false
+
+    const completeReset = (): void => {
+      if (settled || event.eventPhase !== 0) return
+
+      settled = true
+
+      if (pendingFormResets.get(form) === completeReset) pendingFormResets.delete(form)
+
+      if (event.defaultPrevented) return
+
+      setStatus('idle')
+
+      resetFormValidation(form)
+    }
+
+    pendingFormResets.set(form, completeReset)
+
+    globalThis.setTimeout(completeReset)
   })
 }
 

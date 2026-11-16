@@ -127,6 +127,12 @@ const initScrollProgress = (scope: ParentNode): void => {
   refresh()
 }
 
+export const cleanupDocumentNavigationControllers = (): void => {
+  observer?.disconnect()
+
+  observer = undefined
+}
+
 export const initDocumentNavigationControllers = (scope: ParentNode): void => {
   initAnchors(scope)
 
