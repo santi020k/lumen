@@ -20,12 +20,38 @@ const clientConfigurations = [
   title="MCP client setup and plugins — Lumen UI"
   description="Connect Lumen to Codex, Claude Desktop, Cursor, or any stdio or HTTP MCP client. Copy working configurations or install the bundled Lumen UI plugin."
   pageNavigation={[
+    { id: 'claude-connector-title', label: 'Claude connector' },
     { id: 'setup-title', label: 'Client configuration' },
     { id: 'plugin-title', label: 'ChatGPT and Codex plugin' },
     { id: 'claude-plugin-title', label: 'Claude Code plugin' }
   ]}
 >
-  <DocsPageHero compact eyebrow="MCP / Setup" title="Connect your client." description="Choose a local MCP server or install a plugin that includes the workflow skill and catalog together." />
+  <DocsPageHero compact eyebrow="MCP / Setup" title="Connect your client." description="Add the hosted Claude connector, run a local MCP server, or install a plugin with workflow skills and the catalog." />
+  <Card as="section" class="mcp-file-card" aria-labelledby="claude-connector-title" glass="subtle">
+    <div>
+      <Badge>Published connector</Badge>
+      <h2 id="claude-connector-title">Add Lumen UI to Claude</h2>
+      <p>
+        Find accessible components, inspect their APIs, and explore design tokens and migration
+        guidance from Claude. Open <strong>Customize → Connectors</strong>, search for{' '}
+        <strong>Lumen UI</strong>, and add it. No separate Lumen account, API key, or local server
+        setup is required.
+      </p>
+      <p>
+        Try asking Claude to find Lumen components for an accessible React settings screen or show
+        the SwiftUI Button contract. The connector sends catalog queries and tool arguments to the
+        hosted Lumen service over HTTPS. Keep credentials, personal data, and private source out of
+        those arguments.
+      </p>
+    </div>
+    <p>
+      If the listing is unavailable, choose <strong>Add → Custom → Web</strong>, name the connector{' '}
+      <strong>Lumen UI</strong>, and enter <code>https://mcp.lumen.santi020k.com/mcp</code>.
+      Select <strong>No sign-in</strong> when Claude detects authentication.
+    </p>
+    <DocsActionLink href="/privacy" variant="outline">Read the privacy policy</DocsActionLink>
+  </Card>
+
   <section class="mcp-section" aria-labelledby="setup-title">
     <div class="mcp-section__heading">
       <div><p>Local server</p><h2 id="setup-title">Run with npx over stdio or HTTP</h2></div>
@@ -68,7 +94,7 @@ const clientConfigurations = [
           Add Lumen's repository marketplace, then install one plugin that bundles the build,
           review and migration skills with an exact read-only MCP catalog version.
         </p>
-        <p>Plugin 1.1.0 pins <code>@santi020k/lumen-mcp@5.0.0</code>. Use that candidate after the pinned package and marketplace revision are public; follow the guide for local candidate validation.</p>
+        <p>The repository plugin starts an exact MCP package version locally with Node.js 20.20 or newer. The Claude directory connector above provides the hosted catalog tools.</p>
       </div>
       <CodeBlock code={claudePluginInstall} lang="text" title="Claude Code" />
       <DocsActionLink href={claudePluginGuideUrl} target="_blank" rel="noopener noreferrer">
