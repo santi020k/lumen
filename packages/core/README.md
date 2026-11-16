@@ -154,10 +154,13 @@ a different event sharing its resource; distinct resources and identical event I
 existing behavior. Adjacent valid intervals remain available.
 
 `resizeScheduleEvent` and `expandRecurringScheduleEvent` reject invalid date-times with `TypeError`.
-Recurrence advances UTC calendar days and preserves UTC time-of-day independently of the host time zone. Applications own civil-time recurrence policies and DST conversion.
+Recurrence validates the event even when its count is zero. Integer day intervals preserve UTC
+time-of-day independently of the host time zone; zero repeats the same interval, and negative
+integers generate earlier occurrences. Applications own civil-time recurrence policies and DST conversion.
 
 Invalid bounds, non-finite snapping/recurrence options, unsupported resulting date-times, and
-non-integer or negative recurrence counts produce `RangeError`. Applications own validation and
+fractional recurrence intervals or non-integer/negative recurrence counts produce `RangeError`.
+Recurrence validates its numeric options before its event interval. Applications own validation and
 recovery feedback. `parseScheduleEvents` preserves structurally valid records with malformed
 date-times so applications can repair the original data; these helpers do not rewrite storage.
 
@@ -332,6 +335,11 @@ exportThemeDesignTokens(theme)
 `exportThemeFigmaVariables` returns Figma variable-friendly color values (`r`, `g`, `b`, `a`) and
 hierarchical names such as `color/surface/muted`. `exportThemeDesignTokens` returns standard design
 token JSON that importers can map into Figma variables or other design tools.
+
+Color export accepts three finite HSL channels, with optional percent suffixes on saturation and
+lightness, and an optional finite numeric alpha after `/`. Hue wraps, saturation/lightness clamp
+to 0–100, and alpha clamps to 0–1. Malformed channels, missing alpha after `/`, and extra channels
+or slash segments throw the existing HSL parsing error instead of producing invalid color values.
 
 ## Static interface icon data
 
