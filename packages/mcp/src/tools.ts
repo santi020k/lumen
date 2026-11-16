@@ -10,6 +10,7 @@ import type {
   LumenRecipeSnapshot
 } from './data.js'
 import { loadLumenData } from './data.js'
+import { normalize } from './normalize.js'
 
 export interface CatalogChanges {
   added: string[]
@@ -58,13 +59,6 @@ export interface SearchResult {
   platforms?: LumenNativePlatform[]
   score: number
 }
-
-export const normalize = (value: string) => value
-  .normalize('NFD')
-  .replaceAll(/[\u0300-\u036f]/g, '')
-  .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
-  .replaceAll(/[\s_]+/g, '-')
-  .toLowerCase()
 
 const tokenize = (value: string): string[] => normalize(value)
   .split(/[^a-z0-9]+/)

@@ -5,6 +5,7 @@ import { checkCompatibility } from './compatibility.js'
 import { compatibilityOutputSchema, componentOutputSchema, nativeComponentOutputSchema, recipeOutputSchema } from './contracts.js'
 import { loadLumenData } from './data.js'
 import { getMigration } from './migration.js'
+import { normalize } from './normalize.js'
 import {
   diagnose,
   diffCatalog,
@@ -18,7 +19,6 @@ import {
   listComponents,
   listNativeComponents,
   type LumenToolResult,
-  normalize,
   resolveNativeComponent,
   search
 } from './tools.js'
