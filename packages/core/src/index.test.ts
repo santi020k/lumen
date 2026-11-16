@@ -322,11 +322,14 @@ paths: ['**/*.astro']
   test('tokenizes JSON and markup language families', () => {
     const jsonTokens = tokenizeLumenCode('{"enabled": true, "count": 2}', 'json')
     const markupTokens = tokenizeLumenCode('<Image src="/hero.png" alt="Overview" />', 'astro')
+    const quotedChevronTokens = tokenizeLumenCode('<div title="a > b" class="hero">Hello</div>', 'html')
 
     expect(jsonTokens.find(token => token.value === '"enabled"')?.kind).toBe('keyword')
     expect(jsonTokens.find(token => token.value === 'true')?.kind).toBe('type')
     expect(markupTokens.find(token => token.value === 'Image')?.kind).toBe('keyword')
     expect(markupTokens.find(token => token.value === 'src')?.kind).toBe('type')
+    expect(quotedChevronTokens.find(token => token.value === 'class')?.kind).toBe('type')
+    expect(quotedChevronTokens.find(token => token.value === 'Hello')?.kind).toBeUndefined()
   })
 
   test('tokenizes Markdown and Lua language families', () => {
@@ -641,6 +644,12 @@ describe('lumen product helpers', () => {
 
     expect(createThemePalette(longBrand)['brand-soft']).toBe('221 83% 96%')
     expect(createThemePalette('currentColor')['brand-soft']).toBe('currentColor')
+    expect(parseThemeCss(':root { --custom--brand: 0 100% 50%; --café--brand: 0 100% 50%; --foo\\--brand: 0 100% 50%; --\\62 rand: 0 100% 50%; ---brand: 0 100% 50%; --brand: 221 83% 53%; --brand: 0 0% 0%; }')).toEqual({
+      brand: '221 83% 53%'
+    })
+    expect(parseThemeCss(':root { --brand:   ; --brand: 221 83% 53%; }')).toEqual({
+      brand: ''
+    })
   })
 
   test('creates theme builder tokens and export payloads', () => {

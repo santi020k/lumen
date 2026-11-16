@@ -206,44 +206,37 @@ const yamlKeywords = new Set([
 ])
 
 const bashTokenPattern = new RegExp([
-  String.raw`#[^\n]*|"(?:\\.|[^"\\])*"|'[^']*'|\$\{?[A-Za-z_][\w]*\}?|`,
+  String.raw`#[^\n]*|"|'[^']*'|\$\{?[A-Za-z_][\w]*\}?|`,
   String.raw`--?[A-Za-z][\w-]*|\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[|&;<>()[\]{}=]+`
 ].join(''), 'g')
 
 const javascriptTokenPattern = new RegExp([
-  String.raw`\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`,
-  '`(?:\\\\.|[^`\\\\])*`|',
+  String.raw`\/\/[^\n]*|\/\*[\s\S]*?\*\/|"|'|` + '`|',
   String.raw`\b\d[\d._]*\b|\b[A-Za-z_$][\w$]*\b|[=+\-*%<>!?:.,;()[\]{}|&/]+`
 ].join(''), 'g')
 
 const jsonTokenPattern = new RegExp([
-  String.raw`\/\/[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|`,
+  String.raw`\/\/[^\n]*|\/\*[\s\S]*?\*\/|"|`,
   String.raw`\b(?:false|null|true)\b|-?\b\d+(?:\.\d+)?(?:e[+-]?\d+)?\b|[{},:]|\[|\]`
 ].join(''), 'gi')
 
 const luaTokenPattern = new RegExp([
-  String.raw`--\[\[[\s\S]*?\]\]|--[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`,
+  String.raw`--\[\[[\s\S]*?\]\]|--[^\n]*|"|'|`,
   String.raw`\b[A-Za-z_][\w]*\b|\b\d+(?:\.\d+)?\b|[=+\-*%<>~#.,:;()[\]{}]+`
 ].join(''), 'g')
 
-const markdownTokenPattern = new RegExp([
-  '```[\\s\\S]*?```|`[^`\\n]+`|',
-  String.raw`<!--[\s\S]*?-->|^#{1,6}(?=\s)|^>\s?|^\s*(?:[-+*]|\d+\.)\s+|`,
-  String.raw`\*\*|__|\*|_|\[[^\]]+\]\([^)]+\)`
-].join(''), 'gm')
-
 const markupTokenPattern = new RegExp([
-  String.raw`<!--[\s\S]*?-->|---|<\/?|\/?>|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`,
+  String.raw`<!--|---|<\/?|\/?>|"|'|`,
   String.raw`\b[A-Za-z_][\w:.-]*\b|[{}=]`
 ].join(''), 'g')
 
 const sqlTokenPattern = new RegExp([
-  String.raw`--[^\n]*|\/\*[\s\S]*?\*\/|"(?:\\.|[^"\\])*"|'(?:''|[^'])*'|`,
+  String.raw`--[^\n]*|\/\*[\s\S]*?\*\/|"|'(?:''|[^'])*'|`,
   String.raw`\b[A-Za-z_][\w$]*\b|\b\d+(?:\.\d+)?\b|[=+\-*%<>!.,;()[\]]+`
 ].join(''), 'g')
 
 const yamlTokenPattern = new RegExp([
-  String.raw`#[^\n]*|"(?:\\.|[^"\\])*"|'(?:''|[^'])*'|\b[A-Za-z_][\w.-]*(?=\s*:)|`,
+  String.raw`#[^\n]*|"|'(?:''|[^'])*'|\b[A-Za-z_][\w.-]*|`,
   String.raw`\b(?:false|no|null|off|on|true|yes)\b|\b\d+(?:\.\d+)?\b|`,
   '[{},:&*!?|>@`~-]+|\\[|\\]'
 ].join(''), 'gi')
@@ -325,6 +318,104 @@ const getBashTokenKind = (value: string): LumenCodeTokenKind | undefined => {
   return 'symbol'
 }
 
+type MonotonicFinder = (minIndex: number) => number
+
+interface MarkdownMatch {
+  end: number
+  kind: LumenCodeTokenKind
+}
+
+const unicodeWhitespaceCodes = new Set([
+  0x00A0,
+  0x1680,
+  0x2000,
+  0x2001,
+  0x2002,
+  0x2003,
+  0x2004,
+  0x2005,
+  0x2006,
+  0x2007,
+  0x2008,
+  0x2009,
+  0x200A,
+  0x2028,
+  0x2029,
+  0x202F,
+  0x205F,
+  0x3000,
+  0xFEFF
+])
+
+const isLineTerminator = (code: number): boolean => (
+  code === 10 || code === 13 || code === 0x2028 || code === 0x2029
+)
+
+const isCodeWhitespace = (code: number): boolean => (
+  code === 32 || (code >= 9 && code <= 13) || unicodeWhitespaceCodes.has(code)
+)
+
+const isFollowedByColon = (source: string, start: number): boolean => {
+  let index = start
+
+  while (index < source.length && isCodeWhitespace(source.charCodeAt(index))) {
+    index += 1
+  }
+
+  return source.charCodeAt(index) === 58
+}
+
+const createMonotonicFinder = (
+  source: string,
+  needle: string
+): MonotonicFinder => {
+  let cachedIndex = -1
+
+  return (minIndex: number): number => {
+    if (cachedIndex === -2) return -1
+
+    if (cachedIndex < minIndex) {
+      const found = source.indexOf(needle, minIndex)
+
+      cachedIndex = found === -1 ? -2 : found
+    }
+
+    return cachedIndex === -2 ? -1 : cachedIndex
+  }
+}
+
+const createBackslashQuoteMatcher = (source: string) => {
+  const failUntilByQuote = new Map<number, number>()
+
+  return (index: number, quoteCode: number): string | undefined => {
+    if (index < (failUntilByQuote.get(quoteCode) ?? -1)) return undefined
+
+    let cursor = index + 1
+
+    while (cursor < source.length) {
+      const code = source.charCodeAt(cursor)
+
+      if (code === quoteCode) return source.slice(index, cursor + 1)
+
+      if (code === 92) {
+        const nextCode = source.charCodeAt(cursor + 1)
+
+        if (Number.isNaN(nextCode) || isLineTerminator(nextCode)) break
+
+        cursor += 2
+
+        continue
+      }
+
+      cursor += 1
+    }
+
+    failUntilByQuote.set(quoteCode, cursor)
+
+    return undefined
+  }
+}
+
 const getJsonTokenKind = (
   value: string,
   source: string,
@@ -333,9 +424,7 @@ const getJsonTokenKind = (
   if (startsWithCommentPattern.exec(value)) return 'comment'
 
   if (value.startsWith('"')) {
-    const trailingSource = source.slice(start + value.length)
-
-    return /^\s*:/.exec(trailingSource) ? 'keyword' : 'string'
+    return isFollowedByColon(source, start + value.length) ? 'keyword' : 'string'
   }
 
   if (jsonKeywords.has(value.toLowerCase())) return 'type'
@@ -359,42 +448,358 @@ const getLuaTokenKind = (value: string): LumenCodeTokenKind | undefined => {
   return 'symbol'
 }
 
-const getMarkdownTokenKind = (value: string): LumenCodeTokenKind => {
-  if (value.startsWith('<!--')) return 'comment'
+const matchMarkdownHeading = (
+  source: string,
+  index: number
+): MarkdownMatch | undefined => {
+  if (source.charCodeAt(index) !== 35) return undefined
 
-  if (value.startsWith('`')) return 'string'
+  let end = index + 1
 
-  if (value.startsWith('[')) return 'accent'
+  while (end < source.length && end - index < 7 && source.charCodeAt(end) === 35) {
+    end += 1
+  }
 
-  if (value.trimStart().startsWith('#')) return 'keyword'
+  const count = end - index
 
-  return 'symbol'
+  if (count > 6 || !isCodeWhitespace(source.charCodeAt(end))) return undefined
+
+  return { end, kind: 'keyword' }
 }
 
-const getMarkupTokenKind = (
-  value: string,
+const matchMarkdownBlockquote = (
   source: string,
-  start: number
+  index: number
+): MarkdownMatch | undefined => {
+  if (source.charCodeAt(index) !== 62) return undefined
+
+  const end = isCodeWhitespace(source.charCodeAt(index + 1)) ? index + 2 : index + 1
+
+  return { end, kind: 'symbol' }
+}
+
+const readDigitsEnd = (source: string, start: number): number => {
+  let cursor = start
+
+  while (cursor < source.length) {
+    const code = source.charCodeAt(cursor)
+
+    if (code < 48 || code > 57) break
+
+    cursor += 1
+  }
+
+  return cursor
+}
+
+const readWhitespaceEnd = (source: string, start: number): number => {
+  let cursor = start
+
+  while (cursor < source.length && isCodeWhitespace(source.charCodeAt(cursor))) {
+    cursor += 1
+  }
+
+  return cursor
+}
+
+const readMarkdownListMarkerEnd = (
+  source: string,
+  markerStart: number
+): number => {
+  const code = source.charCodeAt(markerStart)
+
+  if (code === 45 || code === 43 || code === 42) return markerStart + 1
+
+  const digitsEnd = readDigitsEnd(source, markerStart)
+
+  if (digitsEnd > markerStart && source.charCodeAt(digitsEnd) === 46) {
+    return digitsEnd + 1
+  }
+
+  return -1
+}
+
+const createMarkdownLineStartMatcher = (source: string) => {
+  let listFailUntil = -1
+
+  return (index: number): MarkdownMatch | undefined => {
+    const heading = matchMarkdownHeading(source, index)
+
+    if (heading) return heading
+
+    const blockquote = matchMarkdownBlockquote(source, index)
+
+    if (blockquote) return blockquote
+
+    if (index < listFailUntil) return undefined
+
+    const markerStart = readWhitespaceEnd(source, index)
+    const markerEnd = readMarkdownListMarkerEnd(source, markerStart)
+    const trailingEnd = markerEnd === -1 ? -1 : readWhitespaceEnd(source, markerEnd)
+
+    if (trailingEnd > markerEnd) {
+      return { end: trailingEnd, kind: 'symbol' }
+    }
+
+    listFailUntil = markerStart + 1
+
+    return undefined
+  }
+}
+
+const matchMarkdownCodeSpan = (
+  source: string,
+  index: number,
+  findFence: MonotonicFinder,
+  findBacktick: MonotonicFinder,
+  findNewline: MonotonicFinder
+): MarkdownMatch | undefined => {
+  if (source.charCodeAt(index) !== 96) return undefined
+
+  if (source.startsWith('```', index)) {
+    const fenceEnd = findFence(index + 3)
+
+    if (fenceEnd !== -1) return { end: fenceEnd + 3, kind: 'string' }
+  }
+
+  const nextCode = source.charCodeAt(index + 1)
+
+  if (nextCode === 96 || nextCode === 10 || Number.isNaN(nextCode)) return undefined
+
+  const closeTick = findBacktick(index + 1)
+  const newline = findNewline(index + 1)
+
+  if (closeTick > index + 1 && (newline === -1 || closeTick < newline)) {
+    return { end: closeTick + 1, kind: 'string' }
+  }
+
+  return undefined
+}
+
+const matchMarkdownComment = (
+  source: string,
+  index: number,
+  findCommentEnd: MonotonicFinder
+): MarkdownMatch | undefined => {
+  if (!source.startsWith('<!--', index)) return undefined
+
+  const closeComment = findCommentEnd(index + 4)
+
+  return closeComment === -1 ? undefined : { end: closeComment + 3, kind: 'comment' }
+}
+
+const matchMarkdownEmphasis = (
+  source: string,
+  index: number
+): MarkdownMatch | undefined => {
+  const code = source.charCodeAt(index)
+
+  if (code !== 42 && code !== 95) return undefined
+
+  const end = source.charCodeAt(index + 1) === code ? index + 2 : index + 1
+
+  return { end, kind: 'symbol' }
+}
+
+const matchMarkdownLink = (
+  source: string,
+  index: number,
+  findCloseBracket: MonotonicFinder,
+  findCloseParen: MonotonicFinder
+): MarkdownMatch | undefined => {
+  if (source.charCodeAt(index) !== 91) return undefined
+
+  const closeBracket = findCloseBracket(index + 1)
+
+  if (closeBracket <= index + 1 || source.charCodeAt(closeBracket + 1) !== 40) {
+    return undefined
+  }
+
+  const closeParen = findCloseParen(closeBracket + 2)
+
+  return closeParen > closeBracket + 2 ?
+    { end: closeParen + 1, kind: 'accent' } :
+    undefined
+}
+
+const tokenizeMarkdownSource = (
+  source: string,
+  push: (value: string, start: number, kind?: LumenCodeTokenKind) => void
+): void => {
+  const matchLineStart = createMarkdownLineStartMatcher(source)
+  const findFence = createMonotonicFinder(source, '```')
+  const findBacktick = createMonotonicFinder(source, '`')
+  const findNewline = createMonotonicFinder(source, '\n')
+  const findCommentEnd = createMonotonicFinder(source, '-->')
+  const findCloseBracket = createMonotonicFinder(source, ']')
+  const findCloseParen = createMonotonicFinder(source, ')')
+  let offset = 0
+  let index = 0
+
+  while (index < source.length) {
+    const isLineStart = index === 0 || isLineTerminator(source.charCodeAt(index - 1))
+
+    const match =
+      matchMarkdownCodeSpan(source, index, findFence, findBacktick, findNewline) ??
+      matchMarkdownComment(source, index, findCommentEnd) ??
+      (isLineStart ? matchLineStart(index) : undefined) ??
+      matchMarkdownEmphasis(source, index) ??
+      matchMarkdownLink(source, index, findCloseBracket, findCloseParen)
+
+    if (!match) {
+      index += 1
+
+      continue
+    }
+
+    push(source.slice(offset, index), offset)
+
+    push(source.slice(index, match.end), index, match.kind)
+
+    offset = match.end
+
+    index = match.end
+  }
+
+  push(source.slice(offset), offset)
+}
+
+const hasNonSlashNonWhitespace = (
+  source: string,
+  start: number,
+  end: number
+): boolean => {
+  for (let index = start; index < end; index += 1) {
+    const code = source.charCodeAt(index)
+
+    if (code !== 47 && !isCodeWhitespace(code)) return true
+  }
+
+  return false
+}
+
+const getStaticMarkupTokenKind = (
+  value: string
 ): LumenCodeTokenKind | undefined => {
-  if (value.startsWith('<!--')) return 'comment'
+  if (value.startsWith('<!--') || value === '---') return 'comment'
 
   if (startsWithStringPattern.exec(value)) return 'string'
 
-  if (value === '---') return 'comment'
-
   if (/^(?:<\/?|\/?>|[{}=])$/.exec(value)) return 'symbol'
 
-  const openingTagIndex = source.lastIndexOf('<', start)
-  const closingTagIndex = source.lastIndexOf('>', start)
+  return undefined
+}
 
-  if (openingTagIndex <= closingTagIndex) return undefined
+const isOpeningMarkupTagSymbol = (value: string): boolean => (
+  value === '<' || value === '</'
+)
 
-  const beforeValue = source
-    .slice(openingTagIndex + 1, start)
-    .replace('/', '')
-    .trim()
+const isClosingMarkupTagSymbol = (value: string): boolean => (
+  value === '>' || value === '/>'
+)
 
-  return beforeValue === '' ? 'keyword' : 'type'
+const createMarkupTokenClassifier = (source: string) => {
+  let inTag = false
+  let hasTagName = false
+  let scanIndex = 0
+
+  return (value: string, start: number): LumenCodeTokenKind | undefined => {
+    if (inTag && !hasTagName && hasNonSlashNonWhitespace(source, scanIndex, start)) {
+      hasTagName = true
+    }
+
+    scanIndex = start + value.length
+
+    if (isOpeningMarkupTagSymbol(value)) {
+      inTag = true
+
+      hasTagName = false
+
+      return 'symbol'
+    }
+
+    if (isClosingMarkupTagSymbol(value)) {
+      inTag = false
+
+      hasTagName = false
+
+      return 'symbol'
+    }
+
+    const staticKind = getStaticMarkupTokenKind(value)
+
+    if (staticKind) {
+      if (inTag) hasTagName = true
+
+      return staticKind
+    }
+
+    if (!inTag) return undefined
+
+    const kind: LumenCodeTokenKind = hasTagName ? 'type' : 'keyword'
+
+    hasTagName = true
+
+    return kind
+  }
+}
+
+const resolveMarkupTokenValue = (
+  rawValue: string,
+  index: number,
+  source: string,
+  findCommentEnd: MonotonicFinder,
+  matchBackslashQuote: (index: number, quoteCode: number) => string | undefined
+): string | undefined => {
+  if (rawValue === '<!--') {
+    const closeComment = findCommentEnd(index + 4)
+
+    return closeComment === -1 ? undefined : source.slice(index, closeComment + 3)
+  }
+
+  if (rawValue === '"' || rawValue === '\'') {
+    return matchBackslashQuote(index, rawValue.charCodeAt(0))
+  }
+
+  return rawValue
+}
+
+const tokenizeMarkupSource = (
+  source: string,
+  push: (value: string, start: number, kind?: LumenCodeTokenKind) => void
+): void => {
+  const classify = createMarkupTokenClassifier(source)
+  const findCommentEnd = createMonotonicFinder(source, '-->')
+  const matchBackslashQuote = createBackslashQuoteMatcher(source)
+  const pattern = new RegExp(markupTokenPattern.source, markupTokenPattern.flags)
+  let offset = 0
+  let match = pattern.exec(source)
+
+  while (match !== null) {
+    const index = match.index
+
+    const value = resolveMarkupTokenValue(
+      match[0], index, source, findCommentEnd, matchBackslashQuote
+    )
+
+    if (value === undefined) {
+      match = pattern.exec(source)
+
+      continue
+    }
+
+    pattern.lastIndex = index + value.length
+
+    push(source.slice(offset, index), offset)
+
+    push(value, index, classify(value, index))
+
+    offset = index + value.length
+
+    match = pattern.exec(source)
+  }
+
+  push(source.slice(offset), offset)
 }
 
 const getSqlTokenKind = (value: string): LumenCodeTokenKind | undefined => {
@@ -425,9 +830,7 @@ const getYamlTokenKind = (
   if (yamlKeywords.has(value.toLowerCase())) return 'type'
 
   if (startsWithIdentifierPattern.exec(value)) {
-    const trailingSource = source.slice(start + value.length)
-
-    return /^\s*:/.exec(trailingSource) ? 'keyword' : undefined
+    return isFollowedByColon(source, start + value.length) ? 'keyword' : undefined
   }
 
   return 'symbol'
@@ -452,14 +855,6 @@ const getLumenCodeTokenizer = (
     return { getKind: getLuaTokenKind, pattern: luaTokenPattern }
   }
 
-  if (markdownLikeLanguages.has(language)) {
-    return { getKind: getMarkdownTokenKind, pattern: markdownTokenPattern }
-  }
-
-  if (markupLikeLanguages.has(language)) {
-    return { getKind: getMarkupTokenKind, pattern: markupTokenPattern }
-  }
-
   if (sqlLikeLanguages.has(language)) {
     return { getKind: getSqlTokenKind, pattern: sqlTokenPattern }
   }
@@ -471,30 +866,78 @@ const getLumenCodeTokenizer = (
   return undefined
 }
 
+const resolveTokenizerMatch = (
+  rawValue: string,
+  index: number,
+  language: string,
+  matchBackslashQuote: (index: number, quoteCode: number) => string | undefined
+): string | undefined => {
+  if (rawValue === '"' || rawValue === '\'') {
+    return matchBackslashQuote(index, rawValue.charCodeAt(0))
+  }
+
+  if (rawValue === '`' && javascriptLikeLanguages.has(language)) {
+    return matchBackslashQuote(index, 96)
+  }
+
+  return rawValue
+}
+
 export const tokenizeLumenCode = (
   code: string,
   language = ''
 ): LumenCodeToken[] => {
   const source = normalizeLumenCode(code)
   const tokens: LumenCodeToken[] = []
-  const tokenizer = getLumenCodeTokenizer(normalizeLanguage(language))
+  const normalizedLanguage = normalizeLanguage(language)
   let offset = 0
 
   const push = (value: string, start: number, kind?: LumenCodeTokenKind) => {
     if (value) tokens.push(kind ? { kind, start, value } : { start, value })
   }
 
+  if (markdownLikeLanguages.has(normalizedLanguage)) {
+    tokenizeMarkdownSource(source, push)
+
+    return tokens
+  }
+
+  if (markupLikeLanguages.has(normalizedLanguage)) {
+    tokenizeMarkupSource(source, push)
+
+    return tokens
+  }
+
+  const tokenizer = getLumenCodeTokenizer(normalizedLanguage)
+
   if (!tokenizer) return source ? [{ start: 0, value: source }] : []
 
-  for (const match of source.matchAll(tokenizer.pattern)) {
+  const matchBackslashQuote = createBackslashQuoteMatcher(source)
+  const pattern = new RegExp(tokenizer.pattern.source, tokenizer.pattern.flags)
+  let match = pattern.exec(source)
+
+  while (match !== null) {
     const index = match.index
-    const value = match[0]
+
+    const value = resolveTokenizerMatch(
+      match[0], index, normalizedLanguage, matchBackslashQuote
+    )
+
+    if (value === undefined) {
+      match = pattern.exec(source)
+
+      continue
+    }
+
+    pattern.lastIndex = index + value.length
 
     push(source.slice(offset, index), offset)
 
     push(value, index, tokenizer.getKind(value, source, index))
 
     offset = index + value.length
+
+    match = pattern.exec(source)
   }
 
   push(source.slice(offset), offset)

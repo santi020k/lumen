@@ -150,15 +150,121 @@ export const exportThemeCss = (
   return `${selector} {\n${lines.join('\n')}\n}`
 }
 
+const knownThemeTokenNameSet = new Set<string>(lumenTokenNames)
+
+const isHexDigitCode = (code: number): boolean => (
+  (code >= 48 && code <= 57) ||
+  (code >= 65 && code <= 70) ||
+  (code >= 97 && code <= 102)
+)
+
+const isCssWhitespaceCode = (code: number): boolean => (
+  code === 32 || code === 9 || code === 10 || code === 12 || code === 13
+)
+
+const isThemeIdentifierCharacter = (code: number): boolean => (
+  (code >= 48 && code <= 57) ||
+  (code >= 65 && code <= 90) ||
+  (code >= 97 && code <= 122) ||
+  code === 45 ||
+  code === 95 ||
+  code === 92 ||
+  code >= 128
+)
+
+const readCssEscapeEnd = (css: string, backslashIndex: number): number => {
+  let cursor = backslashIndex + 1
+
+  if (cursor >= css.length) return cursor
+
+  if (!isHexDigitCode(css.charCodeAt(cursor))) return cursor + 1
+
+  let hexCount = 0
+
+  while (cursor < css.length && hexCount < 6 && isHexDigitCode(css.charCodeAt(cursor))) {
+    cursor += 1
+
+    hexCount += 1
+  }
+
+  if (css.charCodeAt(cursor) === 13 && css.charCodeAt(cursor + 1) === 10) {
+    return cursor + 2
+  }
+
+  return isCssWhitespaceCode(css.charCodeAt(cursor)) ? cursor + 1 : cursor
+}
+
+const readThemeIdentifierEnd = (css: string, start: number): number => {
+  let cursor = start
+
+  while (cursor < css.length) {
+    const code = css.charCodeAt(cursor)
+
+    if (code === 92) {
+      cursor = readCssEscapeEnd(css, cursor)
+
+      continue
+    }
+
+    if (!isThemeIdentifierCharacter(code)) break
+
+    cursor += 1
+  }
+
+  return cursor
+}
+
+const getThemeDeclarationTokenName = (
+  css: string,
+  identifierStart: number,
+  identifierEnd: number
+): string | undefined => {
+  if (
+    identifierEnd - identifierStart <= 2 ||
+    css.charCodeAt(identifierStart) !== 45 ||
+    css.charCodeAt(identifierStart + 1) !== 45 ||
+    css.charCodeAt(identifierEnd) !== 58
+  ) {
+    return undefined
+  }
+
+  const tokenName = css.slice(identifierStart + 2, identifierEnd)
+
+  return knownThemeTokenNameSet.has(tokenName) ? tokenName : undefined
+}
+
 export const parseThemeCss = (css: string): LumenThemeTokens => {
   const tokens: LumenThemeTokens = {}
+  let index = 0
 
-  for (const token of lumenTokenNames) {
-    const match = new RegExp(`--${token}:\\s*([^;]+);`).exec(css)
+  while (index < css.length) {
+    if (!isThemeIdentifierCharacter(css.charCodeAt(index))) {
+      index += 1
 
-    if (match?.[1]) {
-      tokens[token] = match[1].trim()
+      continue
     }
+
+    const identifierStart = index
+    const identifierEnd = readThemeIdentifierEnd(css, identifierStart)
+    const tokenName = getThemeDeclarationTokenName(css, identifierStart, identifierEnd)
+
+    if (!tokenName) {
+      index = identifierEnd
+
+      continue
+    }
+
+    index = identifierEnd + 1
+
+    const semicolonIndex = css.indexOf(';', index)
+
+    if (semicolonIndex === -1) break
+
+    if (semicolonIndex > index && !Object.hasOwn(tokens, tokenName)) {
+      tokens[tokenName] = css.slice(index, semicolonIndex).trim()
+    }
+
+    index = semicolonIndex + 1
   }
 
   return tokens
