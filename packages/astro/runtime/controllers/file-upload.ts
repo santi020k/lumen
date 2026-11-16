@@ -26,23 +26,6 @@ const bindResets = (input: HTMLInputElement): void => {
   }, { capture: true })
 }
 
-const resolveDroppedFiles = (files: FileList, multiple: boolean): FileList | null => {
-  if (multiple || files.length <= 1) return files
-
-  if (typeof DataTransfer !== 'function') return null
-
-  try {
-    const transfer = new DataTransfer()
-    const firstFile = files[0]
-
-    if (firstFile) transfer.items.add(firstFile)
-
-    return transfer.files
-  } catch {
-    return null
-  }
-}
-
 export const initFileUploadControllers = (scope: ParentNode): void => {
   for (const root of queryScope(scope, '[data-ui-file-upload]')) {
     const input = root.querySelector<HTMLInputElement>('[data-ui-file-upload-input]')
@@ -96,21 +79,27 @@ export const initFileUploadControllers = (scope: ParentNode): void => {
 
       event.preventDefault()
 
-      if (!event.dataTransfer?.files.length) {
+      let list = event.dataTransfer?.files
+
+      if (list && !input.multiple && list.length > 1) {
+        try {
+          const transfer = new DataTransfer()
+
+          if (list[0]) transfer.items.add(list[0])
+
+          list = transfer.files
+        } catch {
+          list = undefined
+        }
+      }
+
+      if (!list?.length) {
         renderFiles()
 
         return
       }
 
-      const nextFiles = resolveDroppedFiles(event.dataTransfer.files, input.multiple)
-
-      if (!nextFiles) {
-        renderFiles()
-
-        return
-      }
-
-      input.files = nextFiles
+      input.files = list
 
       input.dispatchEvent(new Event('change', { bubbles: true }))
     })
