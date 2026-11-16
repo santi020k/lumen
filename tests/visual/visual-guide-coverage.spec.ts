@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test'
 for (const width of [390, 1440]) {
   for (const theme of ['light', 'dark']) {
     test(`visual guides work at ${width}px in ${theme}`, async ({ page }) => {
+      await page.clock.install({ time: new Date('2026-07-01T12:00:00Z') })
       await page.setViewportSize({ width, height: 1000 })
       await page.emulateMedia({ reducedMotion: 'reduce' })
       const visit = async (route: string) => {
@@ -32,12 +33,16 @@ for (const width of [390, 1440]) {
       await expect(elements.getByRole('tab', { name: 'Activity', exact: true })).toBeFocused()
       await checkOverflow()
 
-      for (const integration of ['react-hook-form', 'astro-actions', 'elements']) {
+      for (const [index, integration] of ['react-hook-form', 'astro-actions', 'elements'].entries()) {
+        await page.clock.resume()
         await visit(`/docs/forms/${integration}`)
         const demo = page.locator('[data-form-state-example]')
         const email = demo.getByRole('textbox', { name: 'Demo email' })
         const submit = demo.getByRole('button', { name: 'Try submission', exact: true })
         const status = demo.getByRole('status')
+        await expect(email).toBeEnabled()
+        // Hold the short request timer while checking pending state on slow runners.
+        await page.clock.pauseAt(new Date(Date.UTC(2026, 6, 1, 13 + index)))
         await submit.click()
         await expect(email).toHaveAttribute('aria-invalid', 'true')
         await expect(email).toBeFocused()
@@ -50,9 +55,12 @@ for (const width of [390, 1440]) {
         await expect(demo.locator('form')).toHaveAttribute('aria-busy', 'true')
         await expect(submit).toBeDisabled()
         await expect(email).toBeDisabled()
+        await page.clock.fastForward(1_200)
         await expect(status).toContainText('simulated request failed')
         await expect(email).toHaveValue('maya@example.com')
         await submit.click()
+        await expect(demo.locator('form')).toHaveAttribute('aria-busy', 'true')
+        await page.clock.fastForward(1_200)
         await expect(status).toContainText('Success!')
         await demo.getByRole('button', { name: 'Reset demo' }).click()
         await expect(email).toHaveValue('')
@@ -61,6 +69,7 @@ for (const width of [390, 1440]) {
         await checkOverflow()
       }
 
+      await page.clock.resume()
       await visit('/docs/foundations')
       await expect(page.getByRole('heading', { name: 'Space, type, and surface' })).toBeVisible()
       await page.getByRole('button', { name: 'Replay motion' }).click()

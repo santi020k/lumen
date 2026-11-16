@@ -51,11 +51,14 @@ test('Elements submit buttons preserve native validation, overrides and external
   await button.click()
   await expect(form).toHaveAttribute('data-invalid', '1')
   await expect(form).toHaveAttribute('data-submits', '0')
+  // Move focus away from the invalid field so native validation UI cannot consume the next click.
+  await button.focus()
   await button.evaluate(element => {
     element.setAttribute('formnovalidate', '')
   })
   await button.click()
   await expect(form).toHaveAttribute('data-submits', '1')
+  await expect(form).toHaveAttribute('data-invalid', '1')
   await expect(form).toHaveAttribute('data-intent', 'draft')
   await expect(form).toHaveAttribute('data-action', new URL('/save-review', page.url()).href)
   await expect(form).toHaveAttribute('data-encoding', 'multipart/form-data')
