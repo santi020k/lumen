@@ -1,13 +1,13 @@
-export type TaskStatus = 'queued' | 'running' | 'complete' | 'failed' | 'canceled'
+type TaskStatus = 'queued' | 'running' | 'complete' | 'failed' | 'canceled'
+
 export interface TaskSnapshot {
   status: TaskStatus
   completed: number
   total: number
   detail: string
 }
-export type TaskAction = 'cancel' | 'retry'
-export const taskStatusLabels: Record<TaskStatus, string> = { queued: 'Queued', running: 'In progress', complete: 'Complete', failed: 'Failed', canceled: 'Canceled' }
 
+const taskStatusLabels: Record<TaskStatus, string> = { queued: 'Queued', running: 'In progress', complete: 'Complete', failed: 'Failed', canceled: 'Canceled' }
 const isFiniteNonnegative = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value >= 0
 
 export const isTaskSnapshot = (value: unknown): value is TaskSnapshot => {
