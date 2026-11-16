@@ -1,6 +1,6 @@
 import { queryScope } from '../scope.js'
 
-import { getLoopedIndex } from './shared.js'
+import { getLoopedIndex, shouldIgnoreKeydown } from './shared.js'
 
 const bindMentions = (root: HTMLElement): void => {
   if (root.dataset.uiBound === 'true') return
@@ -15,26 +15,27 @@ const bindMentions = (root: HTMLElement): void => {
   const trigger = root.dataset.uiMentionsTrigger ?? '@'
   const escapedTrigger = trigger.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const options = [...list.querySelectorAll<HTMLButtonElement>('[data-ui-mentions-option]')]
-  let activeIndex = -1
+  const navigableOptions = (): HTMLButtonElement[] => options.filter(option => !option.matches(':disabled') && !option.closest('[hidden], [inert]'))
+  let activeOption: HTMLButtonElement | undefined
 
   for (const option of options) {
     option.tabIndex = -1
   }
 
   const setActive = (index: number): void => {
-    const visibleOptions = options.filter(option => !option.hidden)
+    const visibleOptions = navigableOptions()
 
-    activeIndex = visibleOptions.length && index >= 0 ?
+    const activeIndex = visibleOptions.length && index >= 0 ?
       Math.min(index, visibleOptions.length - 1) :
       -1
 
+    activeOption = visibleOptions[activeIndex]
+
     for (const option of options) {
-      option.setAttribute('aria-selected', option === visibleOptions[activeIndex] ? 'true' : 'false')
+      option.setAttribute('aria-selected', option === activeOption ? 'true' : 'false')
     }
 
-    const active = visibleOptions[activeIndex]
-
-    if (active?.id) input.setAttribute('aria-activedescendant', active.id)
+    if (activeOption?.id) input.setAttribute('aria-activedescendant', activeOption.id)
     else input.removeAttribute('aria-activedescendant')
   }
 
@@ -57,15 +58,16 @@ const bindMentions = (root: HTMLElement): void => {
     }
 
     const query = (match[1] ?? '').toLowerCase()
-    let visibleCount = 0
 
     for (const option of options) {
       const visible = (option.dataset.value ?? '').toLowerCase().startsWith(query)
 
       option.hidden = !visible
-
-      if (visible) visibleCount += 1
     }
+
+    list.hidden = false
+
+    const visibleCount = navigableOptions().length
 
     list.hidden = visibleCount === 0
 
@@ -90,15 +92,19 @@ const bindMentions = (root: HTMLElement): void => {
   }
 
   const insertOption = (option: HTMLButtonElement | undefined): void => {
-    insert(option?.dataset.value ?? '')
+    if (!option || option.matches(':disabled, [aria-disabled="true"]') || option.closest('[hidden], [inert]')) return
+
+    if (input.matches(':disabled, [readonly], [aria-disabled="true"]')) return
+
+    insert(option.dataset.value ?? '')
   }
 
   input.addEventListener('input', filter)
 
   input.addEventListener('keydown', event => {
-    const visibleOptions = options.filter(option => !option.hidden)
+    const visibleOptions = navigableOptions()
 
-    if (event.defaultPrevented || event.isComposing) return
+    if (shouldIgnoreKeydown(event)) return
 
     if (event.key === 'Escape' && !list.hidden) {
       event.preventDefault()
@@ -108,14 +114,14 @@ const bindMentions = (root: HTMLElement): void => {
       event.preventDefault()
 
       const nextIndex = getLoopedIndex(
-        event.key, activeIndex, visibleOptions.length, ['ArrowDown']
+        event.key, activeOption ? visibleOptions.indexOf(activeOption) : -1, visibleOptions.length, ['ArrowDown']
       )
 
       setActive(nextIndex)
-    } else if (event.key === 'Enter' && activeIndex >= 0 && !list.hidden) {
+    } else if (event.key === 'Enter' && activeOption && !list.hidden) {
       event.preventDefault()
 
-      insertOption(visibleOptions[activeIndex])
+      insertOption(activeOption)
     }
   })
 
@@ -128,8 +134,8 @@ const bindMentions = (root: HTMLElement): void => {
       event.preventDefault()
     })
 
-    option.addEventListener('click', () => {
-      insert(option.dataset.value ?? '')
+    option.addEventListener('click', event => {
+      if (!event.defaultPrevented) insertOption(option)
     })
   }
 }

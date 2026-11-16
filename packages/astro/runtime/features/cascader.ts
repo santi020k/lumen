@@ -1,6 +1,22 @@
 import { queryScope } from '../scope.js'
 
-import { getLoopedIndex, getPanel, setOpen } from './shared.js'
+import { getLoopedIndex, getPanel, setOpen, shouldIgnoreKeydown, shouldRestorePanelFocus } from './shared.js'
+
+const isCascaderOptionAvailable = (option: HTMLButtonElement): boolean => !option.matches(':disabled') && !option.closest('[hidden], [inert]')
+
+const getCascaderOptions = (column: HTMLElement): HTMLButtonElement[] => [
+  ...column.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')
+].filter(isCascaderOptionAvailable)
+
+const closeCascaderPanel = (trigger: HTMLElement | null, panel: HTMLElement | null): void => {
+  if (!trigger || !panel) return
+
+  const restoreFocus = shouldRestorePanelFocus(panel)
+
+  setOpen(trigger, panel, false)
+
+  if (restoreFocus) trigger.focus({ preventScroll: true })
+}
 
 const resetCascaderColumns = (column: HTMLElement | null, columns: HTMLElement[]): void => {
   if (column) {
@@ -26,6 +42,8 @@ const resetCascaderColumns = (column: HTMLElement | null, columns: HTMLElement[]
 
 const openCascaderColumn = (root: HTMLElement, option: HTMLButtonElement, event: KeyboardEvent): void => {
   if (event.key === 'ArrowRight') {
+    if (option.matches(':disabled, [aria-disabled="true"]')) return
+
     const nextSelector = option.dataset.uiCascaderNext
     const next = nextSelector ? root.querySelector<HTMLElement>(nextSelector) : null
 
@@ -35,7 +53,7 @@ const openCascaderColumn = (root: HTMLElement, option: HTMLButtonElement, event:
 
     option.click()
 
-    next.querySelector<HTMLElement>('[data-ui-cascader-option]')?.focus()
+    if (!next.hidden) getCascaderOptions(next)[0]?.focus()
   }
 }
 
@@ -50,7 +68,12 @@ const closeCascaderColumn = (columns: HTMLElement[], columnIndex: number, event:
     descendant.hidden = true
   }
 
-  previousColumn?.querySelector<HTMLElement>('[data-ui-cascader-option][data-active="true"]')?.focus()
+  if (previousColumn) {
+    const options = getCascaderOptions(previousColumn)
+    const previousOption = options.find(option => option.dataset.active === 'true') ?? options[0]
+
+    previousOption?.focus()
+  }
 }
 
 const bindCascaders = (root: HTMLElement): void => {
@@ -65,7 +88,11 @@ const bindCascaders = (root: HTMLElement): void => {
   const columns = [...root.querySelectorAll<HTMLElement>('.ui-cascader__column')]
 
   for (const option of root.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')) {
-    option.addEventListener('click', () => {
+    if (option.closest('[data-ui-cascader]') !== root) continue
+
+    option.addEventListener('click', event => {
+      if (event.defaultPrevented || option.matches(':disabled, [aria-disabled="true"]') || option.closest('[hidden], [inert]')) return
+
       const column = option.closest<HTMLElement>('.ui-cascader__column')
 
       resetCascaderColumns(column, columns)
@@ -93,15 +120,15 @@ const bindCascaders = (root: HTMLElement): void => {
         input.value = value
       }
 
-      if (trigger && panel) {
-        setOpen(trigger, panel, false)
-      }
+      closeCascaderPanel(trigger, panel)
 
       root.dispatchEvent(new CustomEvent('ui:cascader-change', { bubbles: true, detail: { value } }))
     })
   }
 
   panel?.addEventListener('keydown', event => {
+    if (shouldIgnoreKeydown(event)) return
+
     const target = event.target
 
     if (!(target instanceof HTMLElement)) return
@@ -109,10 +136,12 @@ const bindCascaders = (root: HTMLElement): void => {
     const option = target.closest<HTMLButtonElement>('[data-ui-cascader-option]')
     const column = option?.closest<HTMLElement>('.ui-cascader__column')
 
-    if (!option || !column) return
+    if (!option || !column || option.closest('[data-ui-cascader]') !== root) return
+
+    if (!isCascaderOptionAvailable(option)) return
 
     const columnIndex = columns.indexOf(column)
-    const options = [...column.querySelectorAll<HTMLButtonElement>('[data-ui-cascader-option]')]
+    const options = getCascaderOptions(column)
 
     if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
       event.preventDefault()
@@ -125,8 +154,9 @@ const bindCascaders = (root: HTMLElement): void => {
       return
     }
 
-    if (event.key === 'ArrowRight') openCascaderColumn(root, option, event)
-    else closeCascaderColumn(columns, columnIndex, event)
+    openCascaderColumn(root, option, event)
+
+    closeCascaderColumn(columns, columnIndex, event)
   })
 }
 
