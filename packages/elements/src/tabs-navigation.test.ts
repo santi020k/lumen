@@ -134,3 +134,44 @@ test('tabs ignore canceled keydown events', () => {
   expect(first.getAttribute('aria-selected')).toBe('true')
   expect(getTab('second').getAttribute('aria-selected')).toBe('false')
 })
+
+test.each(['open', 'closed'] as const)('activates panels by aria-controls inside %s shadow roots without leaking to duplicate outside IDs', mode => {
+  const outsidePanel = document.createElement('section')
+  outsidePanel.id = 'panel-a'
+  outsidePanel.hidden = false
+  document.body.append(outsidePanel)
+
+  const host = document.createElement('div')
+  const shadow = host.attachShadow({ mode })
+  shadow.innerHTML = `<lumen-tabs>
+    <div role="tablist">
+      <button role="tab" id="tab-a" aria-selected="true" aria-controls="panel-a">A</button>
+      <button role="tab" id="tab-b" aria-selected="false" aria-controls="panel-b">B</button>
+    </div>
+    <section role="tabpanel" id="panel-a">Shadow A</section>
+    <section role="tabpanel" id="panel-b" hidden>
+      Shadow B
+      <lumen-tabs>
+        <div role="tablist">
+          <button role="tab" id="nested-tab" aria-selected="true" aria-controls="panel-a">Nested</button>
+        </div>
+        <section role="tabpanel" id="panel-a">Nested A</section>
+      </lumen-tabs>
+    </section>
+  </lumen-tabs>`
+  document.body.append(host)
+
+  const tabB = shadow.querySelector<HTMLButtonElement>('#tab-b')
+  const shadowPanelA = shadow.querySelector<HTMLElement>('#panel-a')
+  const shadowPanelB = shadow.querySelector<HTMLElement>('#panel-b')
+  const nestedPanel = shadow.querySelector<HTMLElement>('lumen-tabs lumen-tabs #panel-a')
+  if (!tabB || !shadowPanelA || !shadowPanelB || !nestedPanel) {
+    throw new Error('Missing shadow tabs fixture')
+  }
+
+  tabB.click()
+  expect(shadowPanelA.hidden).toBe(true)
+  expect(shadowPanelB.hidden).toBe(false)
+  expect(outsidePanel.hidden).toBe(false)
+  expect(nestedPanel.hidden).toBe(false)
+})

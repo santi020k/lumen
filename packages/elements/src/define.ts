@@ -4847,11 +4847,21 @@ const getNextDataTableSortDirection = (
   return 'ascending'
 }
 
+const getElementByIdInRoot = (node: Node, id: string): HTMLElement | null => {
+  const root = node.getRootNode()
+
+  if (root instanceof Document || root instanceof ShadowRoot) {
+    return root.getElementById(id)
+  }
+
+  return hasDocument() ? document.getElementById(id) : null
+}
+
 const getControlledPanel = (trigger: HTMLElement): HTMLElement | null => {
   const controls = trigger.getAttribute('aria-controls')
 
-  if (controls && hasDocument()) {
-    return document.getElementById(controls)
+  if (controls) {
+    return getElementByIdInRoot(trigger, controls)
   }
 
   return trigger.nextElementSibling instanceof HTMLElement ?
@@ -6837,13 +6847,31 @@ class LumenDisclosureBehaviorElement extends LumenElement {
       }, { signal }
     )
 
+    const handledPointerDowns = new WeakSet<Event>()
+
+    this.addEventListener(
+      'pointerdown', event => {
+        handledPointerDowns.add(event)
+      }, { capture: true, signal }
+    )
+
+    if (!this.contains(panel)) {
+      panel.addEventListener(
+        'pointerdown', event => {
+          handledPointerDowns.add(event)
+        }, { capture: true, signal }
+      )
+    }
+
     document.addEventListener(
       'pointerdown', event => {
         if (trigger.getAttribute('aria-expanded') !== 'true') return
 
-        const target = getOwnedTarget(event)
-
-        if (!target || this.contains(target) || panel.contains(target)) return
+        if (
+          handledPointerDowns.has(event) ||
+          event.composedPath().includes(this) ||
+          event.composedPath().includes(panel)
+        ) return
 
         close()
       }, { signal }
@@ -6914,7 +6942,10 @@ class LumenTabsBehaviorElement extends LumenElement {
       for (const item of tabs) {
         const selected = item === tab
         const panelId = item.getAttribute('aria-controls')
-        const panel = panelId ? document.getElementById(panelId) : null
+
+        const panel = panelId ?
+          (panels.find(candidate => candidate.id === panelId) ?? getElementByIdInRoot(this, panelId)) :
+          null
 
         item.setAttribute('aria-selected', String(selected))
 
@@ -7192,9 +7223,13 @@ class LumenSelectBehaviorElement extends LumenElement {
       }, { signal }
     )
 
-    select.form?.addEventListener(
-      'reset', () => {
+    const form = select.form
+
+    form?.addEventListener(
+      'reset', event => {
         globalThis.setTimeout(() => {
+          if (signal.aborted || event.defaultPrevented || !this.isConnected || select.form !== form) return
+
           this.#syncValue(select, trigger)
         })
       }, { signal }
@@ -7844,9 +7879,13 @@ class LumenDataTableBehaviorElement extends LumenElement {
       }, { signal }
     )
 
-    this.closest('form')?.addEventListener(
-      'reset', () => {
+    const form = this.closest('form')
+
+    form?.addEventListener(
+      'reset', event => {
         globalThis.setTimeout(() => {
+          if (signal.aborted || event.defaultPrevented || !this.isConnected || this.closest('form') !== form) return
+
           this.#syncSelection(table, selectAll, true)
         })
       }, { signal }
@@ -10497,12 +10536,26 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 }
 
 class LumenBackToTopBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
   override connectedCallback() {
     super.connectedCallback()
 
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
     this.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
-    })
+    }, { signal: this.abortController.signal })
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+
+    super.disconnectedCallback()
   }
 }
 
@@ -10707,8 +10760,14 @@ class LumenParticlesBehaviorElement extends LumenElement {
 }
 
 class LumenRatingBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
   override connectedCallback() {
     super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
 
     this.addEventListener('click', e => {
       if (this.getAttribute('data-readonly') === 'true') return
@@ -10738,7 +10797,15 @@ class LumenRatingBehaviorElement extends LumenElement {
       this.dispatchEvent(
         new CustomEvent('change', { detail: { value: newValue } })
       )
-    })
+    }, { signal: this.abortController.signal })
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+
+    super.disconnectedCallback()
   }
 }
 
@@ -10891,6 +10958,7 @@ class LumenAnimatedNumberBehaviorElement extends LumenElement {
 }
 
 class LumenThemeToggleBehaviorElement extends LumenElement {
+  #cancelReveal: (() => void) | undefined
   #isAnimating = false
 
   override connectedCallback() {
@@ -10918,11 +10986,17 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
 
     this.setAttribute('aria-checked', String(this.#rootInDarkMode()))
 
+    this.removeEventListener('click', this.#handleClick)
+
     this.addEventListener('click', this.#handleClick)
   }
 
   override disconnectedCallback(): void {
     this.removeEventListener('click', this.#handleClick)
+
+    this.#cancelReveal?.()
+
+    super.disconnectedCallback()
   }
 
   #handleClick = (): void => {
@@ -10982,6 +11056,8 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
       return
     }
 
+    this.#cancelReveal?.()
+
     this.#isAnimating = true
 
     const rect = this.getBoundingClientRect()
@@ -11009,24 +11085,62 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
 
     document.body.appendChild(overlay)
 
+    let raf1 = 0
+    let raf2 = 0
+    let timer: ReturnType<typeof globalThis.setTimeout> | undefined
+    let cleaned = false
+    const isCleaned = (): boolean => cleaned
+
+    const cleanup = () => {
+      if (cleaned) return
+
+      cleaned = true
+
+      if (raf1) cancelAnimationFrame(raf1)
+
+      if (raf2) cancelAnimationFrame(raf2)
+
+      if (timer !== undefined) globalThis.clearTimeout(timer)
+
+      overlay.removeEventListener('transitionend', cleanup)
+
+      overlay.remove()
+
+      if (this.#cancelReveal === cleanup) {
+        this.#cancelReveal = undefined
+
+        this.#isAnimating = false
+      }
+    }
+
+    this.#cancelReveal = cleanup
+
     this.#dispatchChange(newTheme)
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
+    if (isCleaned() || !this.isConnected) {
+      cleanup()
+
+      return
+    }
+
+    raf1 = requestAnimationFrame(() => {
+      raf1 = 0
+
+      if (cleaned) return
+
+      raf2 = requestAnimationFrame(() => {
+        raf2 = 0
+
+        if (cleaned) return
+
         overlay.style.transition =
           'clip-path 580ms cubic-bezier(0.4, 0, 0.2, 1)'
 
         overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`
 
-        const done = () => {
-          overlay.remove()
+        overlay.addEventListener('transitionend', cleanup, { once: true })
 
-          this.#isAnimating = false
-        }
-
-        overlay.addEventListener('transitionend', done, { once: true })
-
-        setTimeout(done, 750)
+        timer = globalThis.setTimeout(cleanup, 750)
       })
     })
   }
@@ -11134,6 +11248,7 @@ export class LumenPhoneNumberElement extends LumenElement {
 class LumenPhoneInputBehaviorElement extends LumenElement {
   private countrySelect: HTMLSelectElement | undefined
   private eventController: AbortController | undefined
+  private initializedInput: HTMLInputElement | undefined
   private numberInput: HTMLInputElement | undefined
 
   get e164(): string | null {
@@ -11225,8 +11340,16 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
       this.#commit()
     }, options)
 
-    this.numberInput.form?.addEventListener('reset', () => {
+    const input = this.numberInput
+    const form = input.form
+    const signal = this.eventController.signal
+
+    form?.addEventListener('reset', event => {
       queueMicrotask(() => {
+        const stale = signal.aborted || event.defaultPrevented || !this.isConnected
+
+        if (stale || this.numberInput !== input || input.form !== form) return
+
         this.#commit()
       })
     }, options)
@@ -11438,7 +11561,11 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     this.numberInput.type = 'tel'
 
-    this.numberInput.value = this.getAttribute('value') ?? this.numberInput.value
+    if (this.initializedInput !== this.numberInput) {
+      this.initializedInput = this.numberInput
+
+      this.numberInput.value = this.getAttribute('value') ?? this.numberInput.value
+    }
   }
 
   #syncInputAttributes() {
