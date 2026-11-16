@@ -120,14 +120,37 @@ const translateAmountCharacters = (source: string, options: LumenAmountOptions):
   return draft
 }
 
+const normalizeGroupingInteger = (
+  integer: string,
+  minus: string,
+  digits: readonly string[]
+): string => {
+  let normalized = ''
+
+  for (const character of integer) {
+    if (character === '\u061c' || character === '\u200e' || character === '\u200f') continue
+
+    if (character === '-') {
+      normalized += minus
+    } else if (character >= '0' && character <= '9') {
+      normalized += digits[Number(character)] ?? character
+    } else {
+      normalized += character
+    }
+  }
+
+  return normalized
+}
+
 const validGrouping = (source: string, draft: string, options: LumenAmountOptions): boolean => {
-  const { decimal, group } = amountFormat(options)
+  const { decimal, digits, group, minus } = amountFormat(options)
 
   if (!group || !source.includes(group)) return true
 
-  const [integer, fraction = ''] = source.trim().split(decimal)
+  const [integer = '', fraction = ''] = source.trim().split(decimal)
+  const normalizedInteger = normalizeGroupingInteger(integer, minus, digits)
 
-  return !fraction.includes(group) && integer === formatLumenAmountDraft(draft, options).split(decimal)[0]
+  return !fraction.includes(group) && normalizedInteger === formatLumenAmountDraft(draft, options).split(decimal)[0]
 }
 
 export const parseLumenAmountDraft = (
@@ -151,6 +174,14 @@ export interface LumenAmountFieldController {
   /** Rebind reset handling after moving the existing control to another document or shadow root. */
   refresh: () => void
   setValue: (draft: string) => void
+}
+
+const hasLeadingDecimalPrefix = (beforeCaret: string, decimal: string, minus: string): boolean => {
+  const trimmed = beforeCaret.trimStart()
+
+  return trimmed.startsWith(decimal) ||
+    trimmed.startsWith(`-${decimal}`) ||
+    trimmed.startsWith(`${minus}${decimal}`)
 }
 
 const placeAmountCaret = (input: HTMLInputElement, group: string | undefined, logical: number) => {
@@ -186,15 +217,15 @@ export const createLumenAmountFieldController = (
   let destroyed = false
   let resetTimer: ReturnType<typeof setTimeout> | undefined
 
-  const sync = () => {
-    input.value = formatLumenAmountDraft(draft, options)
+  const sync = (formatted = formatLumenAmountDraft(draft, options)) => {
+    input.value = formatted
 
     submission.value = getLumenAmountValue(draft) ?? ''
 
     input.setCustomValidity(draft !== '' && getLumenAmountValue(draft) === undefined ? root.getAttribute('invalid-message') ?? 'Enter a complete amount.' : '')
   }
 
-  const group = amountFormat(options).group
+  const { decimal, group, minus } = amountFormat(options)
   const logicalCount = (text: string) => Array.from(text).filter(character => character !== group).length
 
   const emitChange = () => {
@@ -209,7 +240,8 @@ export const createLumenAmountFieldController = (
   const update = (event: Event) => {
     if (composing || input.matches(':disabled') || input.readOnly) return
 
-    const logical = logicalCount(input.value.slice(0, input.selectionStart ?? input.value.length))
+    const beforeCaret = input.value.slice(0, input.selectionStart ?? input.value.length)
+    const logical = logicalCount(beforeCaret) + (hasLeadingDecimalPrefix(beforeCaret, decimal, minus) ? 1 : 0)
     const parsed = parseLumenAmountDraft(input.value, options, 'inputType' in event && event.inputType === 'insertFromPaste')
 
     if (parsed === undefined) {
@@ -284,9 +316,11 @@ export const createLumenAmountFieldController = (
   return {
     refresh,
     setValue: value => {
+      const formatted = formatLumenAmountDraft(value, options)
+
       draft = value
 
-      sync()
+      sync(formatted)
     },
     destroy: () => {
       destroyed = true

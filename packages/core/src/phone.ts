@@ -73,12 +73,26 @@ export const getLumenPhoneCountry = (
   }
 }
 
+const createPhoneCollator = (
+  locale: string | readonly string[] | undefined
+): Intl.Collator => {
+  try {
+    return new Intl.Collator(locale)
+  } catch {
+    return new Intl.Collator('en')
+  }
+}
+
 export const getLumenPhoneCountries = (
   options: LumenPhoneCountryOptions = {}
-): readonly LumenPhoneCountry[] => getCountries()
-  .map(regionCode => getLumenPhoneCountry(regionCode, options))
-  .filter((country): country is LumenPhoneCountry => country !== null)
-  .sort((left, right) => left.displayName.localeCompare(right.displayName, options.locale))
+): readonly LumenPhoneCountry[] => {
+  const collator = createPhoneCollator(options.locale)
+
+  return getCountries()
+    .map(regionCode => getLumenPhoneCountry(regionCode, options))
+    .filter((country): country is LumenPhoneCountry => country !== null)
+    .sort((left, right) => collator.compare(left.displayName, right.displayName))
+}
 
 export const createEmptyLumenPhoneNumber = (
   country: LumenPhoneCountry

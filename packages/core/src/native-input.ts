@@ -65,15 +65,40 @@ const scanDecimalDigits = (
   return { digits, scale }
 }
 
+const stripBidiMarks = (value: string): string => {
+  let result = ''
+
+  for (const character of value) {
+    if (character !== '\u061c' && character !== '\u200e' && character !== '\u200f') {
+      result += character
+    }
+  }
+
+  return result
+}
+
+const extractUnsignedDecimal = (
+  normalized: string,
+  minus: string
+): { negative: boolean, unsigned: string } => {
+  if (normalized.startsWith(minus)) return { negative: true, unsigned: normalized.slice(minus.length) }
+
+  if (normalized.startsWith('-')) return { negative: true, unsigned: normalized.slice(1) }
+
+  return { negative: false, unsigned: normalized }
+}
+
 export const parseLumenDecimalDraft = (value: string, locale?: string): LumenDecimalDraft => {
   if (value === '') return { kind: 'empty' }
 
   if (value.length > 128) return { kind: 'invalid' }
 
+  const normalized = stripBidiMarks(value)
+
+  if (normalized === '') return { kind: 'invalid' }
+
   const symbols = decimalSymbols(locale)
-  const negative = value.startsWith(symbols.minus) || value.startsWith('-')
-  const signLength = value.startsWith(symbols.minus) ? symbols.minus.length : 1
-  const unsigned = negative ? value.slice(signLength) : value
+  const { negative, unsigned } = extractUnsignedDecimal(normalized, symbols.minus)
   const scanned = scanDecimalDigits(unsigned, symbols.decimal, symbols.digits)
 
   if (!scanned) return { kind: 'invalid' }

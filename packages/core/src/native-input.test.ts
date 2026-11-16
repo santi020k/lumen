@@ -75,6 +75,29 @@ test.each(['invalid_tag', 'en--US', '💥'])('uses English decimal symbols for m
   expect(stepLumenDecimalDraft('1.5', 1, { locale, step: '0.2' })).toBe('1.7')
 })
 
+test.each(['ar-EG', 'ar-SA', 'fa-IR', 'he-IL'])('parses, bounds-checks, and steps native negative Intl.NumberFormat output in %s', locale => {
+  const formatted = new Intl.NumberFormat(locale, { useGrouping: false }).format(-12.3)
+
+  expect(parseLumenDecimalDraft(formatted, locale)).toEqual({ coefficient: -123n, kind: 'valid', scale: 1 })
+  expect(isLumenDecimalInBounds(formatted, { locale, max: '-12', min: '-13' })).toBe(true)
+
+  const stepped = stepLumenDecimalDraft(formatted, 1, { locale, step: '0.2' })
+
+  expect(stepped).not.toBeNull()
+  if (stepped === null) throw new Error('Expected stepped decimal')
+  expect(parseLumenDecimalDraft(stepped, locale)).toEqual({ coefficient: -121n, kind: 'valid', scale: 1 })
+})
+
+test('rejects standalone directional mark and enforces raw 128-character limit with bidi marks', () => {
+  expect(parseLumenDecimalDraft('\u061c', 'ar-EG').kind).toBe('invalid')
+  expect(parseLumenDecimalDraft(`\u061c${'1'.repeat(127)}`, 'ar-EG')).toEqual({
+    coefficient: BigInt('1'.repeat(127)),
+    kind: 'valid',
+    scale: 0
+  })
+  expect(parseLumenDecimalDraft(`\u061c${'1'.repeat(128)}`, 'ar-EG').kind).toBe('invalid')
+})
+
 test.each([null,
   undefined,
   0,
