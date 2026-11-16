@@ -1,29 +1,65 @@
 import assert from 'node:assert/strict'
-import { readFile, stat, writeFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { readFile, realpath, stat, writeFile } from 'node:fs/promises'
+import { isAbsolute, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { validateContractApproval } from './check-lumen-3-contract.mjs'
 
-const validateChange = async (change, root) => {
+const isRepositoryReferencePath = path => (
+  !path.startsWith('/') &&
+  !path.includes('..') &&
+  !path.includes('\\') &&
+  !path.includes('\0') &&
+  !isAbsolute(path)
+)
+
+const validateChange = async (change, validateReference) => {
   assert.ok(['adoption', 'breaking'].includes(change.kind))
 
   for (const field of ['id', 'currentContract', 'replacement', 'migration']) {
     assert.ok(typeof change[field] === 'string' && change[field].trim())
   }
 
-  for (const field of ['docs', 'evidence', 'packages', 'tests', 'signals', 'extensions']) {
+  for (const field of ['docs', 'evidence', 'packages', 'tests']) {
+    assert.ok(
+      Array.isArray(change[field]) &&
+        change[field].length > 0 &&
+        change[field].every(item => typeof item === 'string' && item.trim()),
+      `Contract change ${change.id} requires a non-empty ${field} array`
+    )
+  }
+
+  for (const field of ['signals', 'extensions']) {
     assert.ok(Array.isArray(change[field]) && change[field].every(item => typeof item === 'string' && item.trim()))
   }
 
   for (const path of [...change.docs, ...change.evidence]) {
-    assert.ok(!path.startsWith('/') && !path.includes('..') && !path.includes('\\'))
+    assert.ok(isRepositoryReferencePath(path))
 
-    assert.ok((await stat(resolve(root, path))).isFile(), `Missing contract reference: ${path}`)
+    await validateReference(path)
   }
 }
 
-export const validateLumen5Contract = async (contract, root) => {
+const createFilesystemReferenceValidator = async root => {
+  const canonicalRoot = await realpath(root)
+
+  return async path => {
+    const resolvedReference = await realpath(resolve(canonicalRoot, path))
+    const relativeReference = relative(canonicalRoot, resolvedReference)
+
+    assert.ok(
+      relativeReference &&
+        relativeReference !== '..' &&
+        !relativeReference.startsWith(`..${sep}`) &&
+        !isAbsolute(relativeReference),
+      `Contract reference escapes repository: ${path}`
+    )
+
+    assert.ok((await stat(resolvedReference)).isFile(), `Missing contract reference: ${path}`)
+  }
+}
+
+export const validateLumen5Contract = async (contract, root, { validateReference } = {}) => {
   assert.equal(contract.schemaVersion, 1)
 
   assert.equal(contract.targetVersion, '5.0.0')
@@ -51,7 +87,9 @@ export const validateLumen5Contract = async (contract, root) => {
 
   assert.equal(new Set(contract.changes.map(change => change.id)).size, contract.changes.length)
 
-  for (const change of contract.changes) await validateChange(change, root)
+  const checkReference = validateReference ?? await createFilesystemReferenceValidator(root)
+
+  for (const change of contract.changes) await validateChange(change, checkReference)
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

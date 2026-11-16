@@ -1,9 +1,10 @@
+// cspell:words objecttype
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
-import { relative, resolve, sep } from "node:path";
+import { isAbsolute, relative, resolve, sep } from "node:path";
 
-import { validateLumen4Contract, validateLumen4ContractReferences } from "./check-lumen-4-contract.mjs";
+import { validateLumen4Contract } from "./check-lumen-4-contract.mjs";
 import { validateLumen5Contract } from "./generate-v5-migration.mjs";
 
 const repositoryRoot = resolve(import.meta.dirname, "..");
@@ -72,41 +73,14 @@ const contractRelativePath = relative(repository, contractPath)
   .join("/");
 
 const candidateRef = readArgument("--candidate-ref") ?? "HEAD";
-const contract = JSON.parse(await readFile(contractPath, "utf8"));
 const releaseLabel = `Lumen ${major}`;
 
 assert.ok(
-  contractRelativePath && !contractRelativePath.startsWith("../"),
+  contractRelativePath.length > 0 &&
+    contractRelativePath !== ".." &&
+    !contractRelativePath.startsWith("../") &&
+    !isAbsolute(contractRelativePath),
   "The approval contract must be inside the release repository",
-);
-
-assert.equal(
-  contract.targetVersion,
-  approvalVersion,
-  `${releaseLabel} contract must target ${approvalVersion}`,
-);
-
-assert.equal(
-  contract.status,
-  "approved",
-  `Initial ${releaseLabel} publication requires an approved contract`,
-);
-
-if (major === 4) {
-  const failures = [
-    ...validateLumen4Contract(contract, { requireApproved: true }),
-    ...await validateLumen4ContractReferences(contract, repository),
-  ];
-
-  assert.deepEqual(failures, [], `Lumen 4 contract validation failed:\n${failures.join("\n")}`);
-}
-
-if (major === 5) await validateLumen5Contract(contract, repository);
-
-assert.match(
-  contract.approval?.reviewedRevision ?? "",
-  /^[\da-f]{40}$/i,
-  "The approved contract requires a full reviewed candidate revision",
 );
 
 const runGit = (arguments_, label) => {
@@ -153,6 +127,79 @@ const resolveCommit = (reference, label) => {
 };
 
 const candidateRevision = resolveCommit(candidateRef, "publication candidate");
+
+const validateCandidateReference = (referencedPath) => {
+  assert.ok(
+    !referencedPath.includes("\0"),
+    `Referenced path must not contain NUL bytes: ${referencedPath}`,
+  );
+
+  const objectCheck = spawnSync(
+    "git",
+    ["cat-file", "--batch-check=%(objecttype)", "--follow-symlinks", "-Z"],
+    {
+      cwd: repository,
+      encoding: "utf8",
+      input: `${candidateRevision}:${referencedPath}\0`,
+    },
+  );
+
+  assert.equal(
+    objectCheck.status,
+    0,
+    `Referenced file does not exist: ${referencedPath}.`,
+  );
+
+  assert.equal(
+    objectCheck.stdout,
+    "blob\0",
+    `Referenced file does not exist: ${referencedPath}.`,
+  );
+};
+
+const contract = JSON.parse(
+  runGit(
+    ["show", `${candidateRevision}:${contractRelativePath}`],
+    `Could not read the candidate ${releaseLabel} contract`,
+  ),
+);
+
+assert.equal(
+  contract.targetVersion,
+  approvalVersion,
+  `${releaseLabel} contract must target ${approvalVersion}`,
+);
+
+assert.equal(
+  contract.status,
+  "approved",
+  `Initial ${releaseLabel} publication requires an approved contract`,
+);
+
+if (major === 4) {
+  const failures = validateLumen4Contract(contract, { requireApproved: true });
+
+  assert.deepEqual(failures, [], `Lumen 4 contract validation failed:\n${failures.join("\n")}`);
+
+  const candidateReferences = [
+    ...new Set(contract.changes.flatMap(change => [...change.evidence, ...change.docs])),
+  ];
+
+  for (const referencedPath of candidateReferences) validateCandidateReference(referencedPath);
+}
+
+if (major === 5) {
+  await validateLumen5Contract(contract, repository, {
+    validateReference: validateCandidateReference,
+  });
+}
+
+assert.match(
+  contract.approval?.reviewedRevision ?? "",
+  /^[\da-f]{40}$/i,
+  "The approved contract requires a full reviewed candidate revision",
+);
+
 const reviewedReference = contract.approval.reviewedRevision;
 
 const localReviewedRevision = spawnSync(
