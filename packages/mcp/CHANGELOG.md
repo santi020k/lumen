@@ -1,5 +1,20 @@
 # @santi020k/lumen-mcp
 
+## 5.3.0
+
+### Patch Changes
+
+- Add CheckboxCard and RadioCard compositions for descriptive choices with visible native
+  selection indicators, labels, descriptions, decorative icons and metadata. Preserve native
+  form values, reset, keyboard behavior and validation, with outline/soft surfaces and clear
+  selected, focus, invalid and disabled states across the web adapters.
+
+- Fix Elements submit-button behavior and dialog backdrop detection, preserve disabled option groups
+  in Astro Select, and keep Android date-picker cleanup scoped to the field that opened it.
+  Refresh the MCP server's bundled native source to include the date-picker fix.
+
+  Check that Corepack can run the consumer's pinned pnpm before rollout changes dependency declarations.
+
 ## 5.2.1
 
 ### Patch Changes

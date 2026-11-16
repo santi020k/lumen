@@ -1,5 +1,37 @@
 # @santi020k/lumen-astro
 
+## 5.3.0
+
+### Minor Changes
+
+- Add CheckboxCard and RadioCard compositions for descriptive choices with visible native
+  selection indicators, labels, descriptions, decorative icons and metadata. Preserve native
+  form values, reset, keyboard behavior and validation, with outline/soft surfaces and clear
+  selected, focus, invalid and disabled states across the web adapters.
+
+- Add scoped compact, comfortable, and spacious web density through `data-ui-density`, coordinating
+  controls, form gaps, cards, menus, and table cells. Nested scopes reset density independently of
+  theme; coarse-pointer and narrow layouts preserve control targets and readable input text.
+
+  Differentiate readonly controls, preserve invalid feedback during hover and keyboard focus,
+  reflect native validation feedback, and make keyboard focus distinct from selected menu options.
+  Existing layouts without a density attribute retain their dimensions.
+
+- Add safe system typography choices and flat elevation to ThemeBuilder across web adapters. Extend the theme workbench with density and shareable appearance controls.
+
+### Patch Changes
+
+- Skip disabled controls during keyboard navigation in radio groups, toggle groups, toolbars, and
+  menu bars. Preserve enabled focus and submitted radio values when controls become disabled.
+
+- Fix Elements submit-button behavior and dialog backdrop detection, preserve disabled option groups
+  in Astro Select, and keep Android date-picker cleanup scoped to the field that opened it.
+  Refresh the MCP server's bundled native source to include the date-picker fix.
+
+  Check that Corepack can run the consumer's pinned pnpm before rollout changes dependency declarations.
+- Updated dependencies [`77f02b8`, `77f02b8`, `77f02b8`]:
+  - @santi020k/lumen-core@5.3.0
+
 ## 5.2.0
 
 ### Patch Changes

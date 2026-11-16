@@ -186,3 +186,45 @@ test('ignores foreign-owned roving roots and nested foreign-owned descendants', 
   expect(foreignEvent.defaultPrevented).toBe(false)
   expect(document.activeElement).toBe(foreignChild)
 })
+
+test('re-enabled native groups retain an owned visible entry point and leave disabled sources', () => {
+  document.body.innerHTML = `
+    <fieldset data-ui-radio-group disabled>
+      <span hidden><input id="hidden" type="radio" name="plan" /></span>
+      <span inert><input id="inert" type="radio" name="plan" /></span>
+      <span data-ui-owner="react"><input id="foreign" type="radio" name="plan" /></span>
+      <input id="first" type="radio" name="plan" checked />
+      <input id="last" type="radio" name="plan" />
+    </fieldset>
+  `
+
+  const group = document.querySelector('fieldset')
+  const first = document.querySelector<HTMLInputElement>('#first')
+  const last = document.querySelector<HTMLInputElement>('#last')
+  const foreign = document.querySelector<HTMLInputElement>('#foreign')
+
+  if (!group || !first || !last || !foreign) throw new Error('Expected disabled roving fixture')
+
+  initRovingGroups(document)
+  expect(group.dataset.uiBound).toBe('true')
+  expect(first.tabIndex).toBe(0)
+  expect(last.tabIndex).toBe(-1)
+  expect(foreign.hasAttribute('tabindex')).toBe(false)
+
+  group.disabled = false
+  expect(first.tabIndex).toBe(0)
+  expect(last.tabIndex).toBe(-1)
+
+  first.focus()
+  first.setAttribute('aria-disabled', 'true')
+  key(first, 'ArrowRight')
+  expect(document.activeElement).toBe(last)
+  expect(last.checked).toBe(true)
+  expect(first.checked).toBe(false)
+  expect(foreign.checked).toBe(false)
+  expect(foreign.hasAttribute('tabindex')).toBe(false)
+
+  last.hidden = true
+  expect(key(last, 'Home').defaultPrevented).toBe(false)
+  expect(last.checked).toBe(true)
+})

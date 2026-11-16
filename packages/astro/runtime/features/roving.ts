@@ -22,14 +22,26 @@ const getOwnedRovingItems = (root: HTMLElement): HTMLElement[] => [
 ].filter(item => item.closest(groupSelector) === root && !isForeignOwned(item))
 
 const isNavigableRovingItem = (item: HTMLElement): boolean => (
-  !item.matches(':disabled') &&
+  !item.matches(':disabled, [disabled]') &&
   !item.closest('[hidden], [inert]') &&
-  !(item.getAttribute('role') === 'radio' && item.getAttribute('aria-disabled') === 'true')
+  !(item.matches('input[type="radio"], [role="radio"]') && item.getAttribute('aria-disabled') === 'true')
 )
 
-const getNavigableRovingItems = (root: HTMLElement): HTMLElement[] => (
-  getOwnedRovingItems(root).filter(isNavigableRovingItem)
-)
+const getNextNavigableRovingItem = (
+  items: readonly HTMLElement[], key: string, currentIndex: number
+): HTMLElement | undefined => {
+  const forwardKeys = ['ArrowRight', 'ArrowDown']
+  const nextIndex = getLoopedIndex(key, currentIndex, items.length, forwardKeys)
+  const step = key === 'Home' || forwardKeys.includes(key) ? 1 : -1
+
+  for (let offset = 0; offset < items.length; offset += 1) {
+    const item = items[(nextIndex + offset * step + items.length) % items.length]
+
+    if (item && isNavigableRovingItem(item)) return item
+  }
+
+  return undefined
+}
 
 const activateRovingRadio = (root: HTMLElement, nextItem: HTMLElement): void => {
   if (nextItem.matches(':disabled, [aria-disabled="true"]')) return
@@ -64,19 +76,20 @@ export const initRovingGroups = (scope: ParentNode): void => {
   for (const root of queryScope(scope, groupSelector)) {
     if (root.dataset.uiBound === 'true' || isForeignOwned(root)) continue
 
-    const initialItems = getNavigableRovingItems(root)
+    const initialItems = getOwnedRovingItems(root)
 
     if (!initialItems.length) continue
 
     root.dataset.uiBound = 'true'
 
-    for (const item of getOwnedRovingItems(root)) {
-      item.tabIndex = -1
+    // Retain an entry point when a disabled native group is re-enabled later.
+    const initialItem = initialItems.find(isNavigableRovingItem) ?? initialItems.find(
+      item => item.matches(':disabled') && !item.closest('[hidden], [inert]')
+    )
+
+    for (const item of initialItems) {
+      item.tabIndex = item === initialItem ? 0 : -1
     }
-
-    const firstItem = initialItems[0]
-
-    if (firstItem) firstItem.tabIndex = 0
 
     root.addEventListener('keydown', event => {
       if (isIgnoredRovingKey(event)) return
@@ -85,24 +98,20 @@ export const initRovingGroups = (scope: ParentNode): void => {
 
       if (target?.closest(groupSelector) !== root) return
 
-      const items = getNavigableRovingItems(root)
+      const items = getOwnedRovingItems(root)
       const currentIndex = items.indexOf(target)
 
-      if (currentIndex < 0) return
+      if (currentIndex < 0 || target.closest('[hidden], [inert]')) return
+
+      const nextItem = getNextNavigableRovingItem(items, getLumenDirectionalKey(root, event.key), currentIndex)
+
+      if (!nextItem) return
 
       event.preventDefault()
 
-      for (const item of getOwnedRovingItems(root)) {
+      for (const item of items) {
         item.tabIndex = -1
       }
-
-      const nextIndex = getLoopedIndex(
-        getLumenDirectionalKey(root, event.key), currentIndex, items.length, ['ArrowRight', 'ArrowDown']
-      )
-
-      const nextItem = items[nextIndex]
-
-      if (!nextItem) return
 
       nextItem.tabIndex = 0
 

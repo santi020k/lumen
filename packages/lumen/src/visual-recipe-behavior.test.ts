@@ -1,4 +1,7 @@
 // @vitest-environment jsdom
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+
 import { afterEach, expect, test, vi } from 'vitest'
 
 import { bindTaskProgress, isTaskSnapshot, mountTaskProgress } from '../templates/shared/task-progress/src/lumen/task-progress-controller.js'
@@ -8,6 +11,43 @@ const required = <T extends Element>(value: T | null): T => {
 }
 afterEach(() => {
   document.body.replaceChildren()
+})
+
+test.each(['failed', 'canceled'] as const)('Elements task recipe keeps %s actions disabled until the host enables them', async status => {
+  const template = resolve(import.meta.dirname, '../templates/elements/task-progress/src/lumen/task-progress.html')
+
+  document.body.innerHTML = await readFile(template, 'utf8')
+  const root = required(document.querySelector<HTMLElement>('[data-task-recipe]'))
+  const retry = required(root.querySelector<HTMLElement>('[data-task-action="retry"]'))
+  const cancel = required(root.querySelector<HTMLElement>('[data-task-action="cancel"]'))
+  const action = vi.fn<(event: Event) => void>()
+  const cleanup = bindTaskProgress(root)
+
+  root.addEventListener('ui:task-action', action)
+
+  try {
+    expect(retry.hasAttribute('disabled')).toBe(true)
+    expect(cancel.hasAttribute('disabled')).toBe(true)
+    root.dispatchEvent(new CustomEvent('ui:task-update', {
+      detail: { status, completed: 1, total: 3, detail: 'Export did not complete.' }
+    }))
+    expect(root.dataset.taskStatus).toBe(status)
+    expect(retry.hidden).toBe(false)
+    expect(retry.hasAttribute('disabled')).toBe(true)
+    expect(cancel.hidden).toBe(true)
+    retry.click()
+    expect(action).not.toHaveBeenCalled()
+
+    retry.removeAttribute('disabled')
+    root.dispatchEvent(new CustomEvent('ui:task-update', {
+      detail: { status, completed: 1, total: 3, detail: 'Retry is available.' }
+    }))
+    expect(retry.hasAttribute('disabled')).toBe(false)
+    retry.click()
+    expect(action).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ detail: { action: 'retry' } }))
+  } finally {
+    cleanup()
+  }
 })
 
 test('DOM task recipes use real updates, validate payloads, isolate instances and remove listeners', () => {
