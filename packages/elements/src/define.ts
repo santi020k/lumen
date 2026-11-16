@@ -2897,6 +2897,14 @@ const createResizableHandle = (
   return handle
 }
 
+const shouldIgnoreKeydown = (event: KeyboardEvent): boolean => (
+  event.defaultPrevented ||
+  event.isComposing ||
+  event.altKey ||
+  event.ctrlKey ||
+  event.metaKey
+)
+
 const initResizableGroups = (scope: ParentNode): void => {
   const closestRoot = getClosestScopedElement(scope, resizableSelector)
   const roots = getScopedElements<HTMLElement>(scope, resizableSelector)
@@ -3037,6 +3045,8 @@ const initResizableGroups = (scope: ParentNode): void => {
       })
 
       handle.addEventListener('keydown', event => {
+        if (shouldIgnoreKeydown(event)) return
+
         const step = event.shiftKey ? 10 : 2
 
         const keyDeltas: Record<string, number> =
@@ -3530,6 +3540,8 @@ const initInputOtpFields = (scope: ParentNode): void => {
     input.addEventListener('keyup', syncSegments)
 
     input.addEventListener('keydown', event => {
+      if (shouldIgnoreKeydown(event)) return
+
       if (event.key === 'ArrowLeft') {
         event.preventDefault()
 
@@ -4135,6 +4147,8 @@ const initCalendars = (scope: ParentNode): void => {
     })
 
     root.addEventListener('keydown', event => {
+      if (shouldIgnoreKeydown(event)) return
+
       const target = event.target
 
       if (
@@ -4584,6 +4598,35 @@ const openContextMenuAt = (menu: HTMLElement, x: number, y: number): void => {
   getFocusable(menu)[0]?.focus()
 }
 
+const contextMenuTriggers = new WeakMap<HTMLElement, HTMLElement>()
+
+const getScopeActiveElement = (node: Element): Element | null => {
+  const root = node.getRootNode()
+
+  if (root instanceof Document || root instanceof ShadowRoot) return root.activeElement
+
+  return node.ownerDocument.activeElement
+}
+
+const shouldRestorePanelFocus = (panel: HTMLElement): boolean => {
+  let reference: Element | null = panel
+
+  while (reference) {
+    const activeElement = getScopeActiveElement(reference)
+
+    if (activeElement) {
+      return panel.contains(activeElement) || activeElement === panel.ownerDocument.body ||
+        (activeElement.matches('dialog[open]') && activeElement.contains(reference))
+    }
+
+    const tree = reference.getRootNode()
+
+    reference = tree instanceof ShadowRoot ? tree.host : null
+  }
+
+  return false
+}
+
 const initContextMenus = (scope: ParentNode): void => {
   for (const trigger of getScopedElements<HTMLElement>(
     scope, contextMenuTriggerSelector
@@ -4604,12 +4647,18 @@ const initContextMenus = (scope: ParentNode): void => {
     menu.dataset.state = 'closed'
 
     trigger.addEventListener('contextmenu', event => {
+      if (event.defaultPrevented || trigger.matches(':disabled, [aria-disabled="true"]')) return
+
       event.preventDefault()
+
+      contextMenuTriggers.set(menu, trigger)
 
       openContextMenuAt(menu, event.clientX, event.clientY)
     })
 
     trigger.addEventListener('keydown', event => {
+      if (shouldIgnoreKeydown(event) || trigger.matches(':disabled, [aria-disabled="true"]')) return
+
       if (
         event.key !== 'ContextMenu' &&
         !(event.shiftKey && event.key === 'F10')
@@ -4620,6 +4669,8 @@ const initContextMenus = (scope: ParentNode): void => {
 
       const rect = trigger.getBoundingClientRect()
 
+      contextMenuTriggers.set(menu, trigger)
+
       openContextMenuAt(menu, rect.left + 16, rect.top + 16)
     })
 
@@ -4628,14 +4679,14 @@ const initContextMenus = (scope: ParentNode): void => {
     menu.dataset.uiContextMenuMenuBound = 'true'
 
     menu.addEventListener('keydown', event => {
-      if (event.defaultPrevented || event.isComposing) return
+      if (shouldIgnoreKeydown(event)) return
 
       if (event.key === 'Escape') {
         event.preventDefault()
 
         closeContextMenu(menu)
 
-        trigger.focus({ preventScroll: true })
+        contextMenuTriggers.get(menu)?.focus({ preventScroll: true })
 
         return
       }
@@ -4658,12 +4709,23 @@ const initContextMenus = (scope: ParentNode): void => {
     })
 
     menu.addEventListener('click', event => {
-      if (
-        event.target instanceof HTMLElement &&
-        event.target.closest('[role="menuitem"]')
-      ) {
-        closeContextMenu(menu)
+      const item = event.target instanceof Element ?
+        event.target.closest<HTMLElement>('[role="menuitem"]') :
+        null
+
+      if (event.defaultPrevented || item?.closest('[data-ui-context-menu]') !== menu) return
+
+      if (item.matches(':disabled, [aria-disabled="true"]') || item.closest('[hidden], [inert]')) {
+        event.preventDefault()
+
+        return
       }
+
+      const restoreFocus = shouldRestorePanelFocus(menu)
+
+      closeContextMenu(menu)
+
+      if (restoreFocus) contextMenuTriggers.get(menu)?.focus({ preventScroll: true })
     })
   }
 }
@@ -4700,7 +4762,7 @@ const installContextMenuController = (): void => {
   })
 
   document.addEventListener('keydown', event => {
-    if (event.defaultPrevented || event.isComposing) return
+    if (shouldIgnoreKeydown(event)) return
 
     if (event.key === 'Escape') {
       const target = getOwnedTarget(event)
@@ -6896,6 +6958,8 @@ class LumenTabsBehaviorElement extends LumenElement {
 
       tab.addEventListener(
         'keydown', event => {
+          if (shouldIgnoreKeydown(event)) return
+
           const keys = orientation === 'vertical' ?
             ['ArrowUp', 'ArrowDown', 'Home', 'End'] :
             ['ArrowLeft', 'ArrowRight', 'Home', 'End']
@@ -8600,6 +8664,23 @@ class LumenToastBehaviorElement extends LumenElement {
   }
 }
 
+const resolveDroppedFiles = (files: FileList, multiple: boolean): FileList | null => {
+  if (multiple || files.length <= 1) return files
+
+  if (typeof DataTransfer !== 'function') return null
+
+  try {
+    const transfer = new DataTransfer()
+    const firstFile = files[0]
+
+    if (firstFile) transfer.items.add(firstFile)
+
+    return transfer.files
+  } catch {
+    return null
+  }
+}
+
 class LumenFileUploadBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
 
@@ -8674,7 +8755,15 @@ class LumenFileUploadBehaviorElement extends LumenElement {
           return
         }
 
-        input.files = event.dataTransfer.files
+        const nextFiles = resolveDroppedFiles(event.dataTransfer.files, input.multiple)
+
+        if (!nextFiles) {
+          renderFiles()
+
+          return
+        }
+
+        input.files = nextFiles
 
         input.dispatchEvent(new Event('change', { bubbles: true }))
       }, { signal: this.abortController.signal }

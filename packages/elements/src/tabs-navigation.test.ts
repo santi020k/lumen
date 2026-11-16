@@ -87,3 +87,50 @@ test('does not activate disabled, aria-disabled, or canceled-click tabs or emit 
   getTab('first').click()
   expect(events).toHaveLength(1)
 })
+
+test.each([
+  { altKey: true },
+  { ctrlKey: true },
+  { metaKey: true },
+  { isComposing: true }
+])('tabs ignore modified or composing keydown %o', options => {
+  document.body.innerHTML = `<lumen-tabs>
+    <div role="tablist">
+      <button role="tab" id="first" aria-selected="true" aria-controls="first-panel">First</button>
+      <button role="tab" id="second" aria-controls="second-panel">Second</button>
+    </div>
+    <section role="tabpanel" id="first-panel">First panel</section>
+    <section role="tabpanel" id="second-panel" hidden>Second panel</section>
+  </lumen-tabs>`
+
+  const first = getTab('first')
+  first.focus()
+  const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'ArrowRight', ...options })
+  first.dispatchEvent(event)
+
+  expect(event.defaultPrevented).toBe(false)
+  expect(first.getAttribute('aria-selected')).toBe('true')
+  expect(getTab('second').getAttribute('aria-selected')).toBe('false')
+  expect(document.activeElement).toBe(first)
+})
+
+test('tabs ignore canceled keydown events', () => {
+  document.body.innerHTML = `<lumen-tabs>
+    <div role="tablist">
+      <button role="tab" id="first" aria-selected="true" aria-controls="first-panel">First</button>
+      <button role="tab" id="second" aria-controls="second-panel">Second</button>
+    </div>
+    <section role="tabpanel" id="first-panel">First panel</section>
+    <section role="tabpanel" id="second-panel" hidden>Second panel</section>
+  </lumen-tabs>`
+
+  const first = getTab('first')
+  first.focus()
+  first.addEventListener('keydown', event => {
+    event.preventDefault()
+  }, { capture: true })
+
+  first.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'ArrowRight' }))
+  expect(first.getAttribute('aria-selected')).toBe('true')
+  expect(getTab('second').getAttribute('aria-selected')).toBe('false')
+})
