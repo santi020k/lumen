@@ -287,7 +287,8 @@ export const runtimeFeatures: readonly LumenRuntimeFeature[] = [
     selector: '[data-ui-anchor], [data-ui-scroll-progress]',
     load: () => import('./controllers/document-navigation.js').then(m => ({ init: scope => {
       m.initDocumentNavigationControllers(scope)
-    }  })) },
+    },
+    cleanup: m.cleanupDocumentNavigationControllers })) },
   { name: 'toast',
     selector: '[data-ui-toast-viewport], [data-ui-toast], .ui-toast',
     load: async () => {
