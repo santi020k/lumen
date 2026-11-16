@@ -7844,6 +7844,15 @@ export interface MentionsProps extends Omit<
   trigger?: string
   value?: string
 }
+
+const ignoresMentionsKeyboard = (
+  event: KeyboardEvent<HTMLTextAreaElement>
+): boolean => event.defaultPrevented || event.nativeEvent.isComposing ||
+  event.altKey || event.ctrlKey || event.metaKey
+
+const isMentionsNavKey = (key: string): boolean => key === 'ArrowDown' ||
+  key === 'ArrowUp' || key === 'End' || key === 'Home'
+
 export const Mentions = ({
   className,
   defaultValue = '',
@@ -7924,6 +7933,8 @@ export const Mentions = ({
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>): void => {
+    if (ignoresMentionsKeyboard(event)) return
+
     if (event.key === 'Escape' && expanded) {
       event.preventDefault()
 
@@ -7932,10 +7943,7 @@ export const Mentions = ({
       return
     }
 
-    if (expanded && (
-      event.key === 'ArrowDown' || event.key === 'ArrowUp' ||
-      event.key === 'End' || event.key === 'Home'
-    )) {
+    if (expanded && isMentionsNavKey(event.key)) {
       event.preventDefault()
 
       setActiveIndex(current => {

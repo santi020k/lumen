@@ -267,7 +267,9 @@ Native form resets defer past the browser's default action and honor a cancelled
 the reset is not prevented, and leave a controlled `value` untouched. `DatePicker` calendar
 selection fires the native `onChange` exactly once, matching typed input. `DateRangeInput` attaches
 its reset listener even without `name`, honoring an explicit `form` id as well as the nearest
-ancestor form.
+ancestor form. `Segmented` controls default to `name="segmented"`; when rendering multiple `Segmented`
+instances within the same form or page, assign a distinct explicit `name` to each control so their
+radio groups remain independent in the DOM and form submission.
 
 For controlled composites, install the optional adapter:
 
