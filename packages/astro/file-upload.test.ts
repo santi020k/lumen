@@ -11,6 +11,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.runOnlyPendingTimers()
   vi.useRealTimers()
+  vi.unstubAllGlobals()
   document.body.replaceChildren()
 })
 
@@ -205,4 +206,121 @@ test('dropping text preserves selected files and restores the selection state', 
   expect(summary.textContent).toBe('selected.txt')
   expect(upload.getAttribute('data-state')).toBe('selected')
   expect(changes).toBe(0)
+})
+
+test('single-file drop retains only the first file while multiple preserves all files and order', () => {
+  const createFileList = (list: File[]): FileList => Object.assign([...list], {
+    item: (index: number) => list[index] ?? null
+  })
+
+  class MockDataTransfer {
+    private list: File[] = []
+
+    items = {
+      add: (file: File) => {
+        this.list.push(file)
+      }
+    }
+
+    get files(): FileList {
+      return createFileList(this.list)
+    }
+  }
+
+  if (typeof globalThis.DataTransfer !== 'function') {
+    vi.stubGlobal('DataTransfer', MockDataTransfer)
+  }
+
+  const { root: singleRoot, input: singleInput, files: singleSummary } = fixture()
+  initFileUploadControllers(document)
+
+  let singleFiles: FileList = createFileList([])
+  Object.defineProperty(singleInput, 'files', {
+    configurable: true,
+    get: () => singleFiles,
+    set: (value: FileList) => {
+      singleFiles = value
+    }
+  })
+
+  let singleChanges = 0
+  singleInput.addEventListener('change', () => {
+    singleChanges += 1
+  })
+
+  const droppedList = createFileList([new File(['a'], 'first.txt'), new File(['b'], 'second.txt')])
+  const singleDrop = new Event('drop', { bubbles: true, cancelable: true })
+  Object.defineProperty(singleDrop, 'dataTransfer', { value: { files: droppedList } })
+  singleRoot.dispatchEvent(singleDrop)
+
+  expect(singleChanges).toBe(1)
+  expect([...singleFiles].map(file => file.name)).toEqual(['first.txt'])
+  expect(singleSummary.textContent).toBe('first.txt')
+
+  document.body.replaceChildren()
+  const { root: multiRoot, input: multiInput, files: multiSummary } = fixture()
+  multiInput.multiple = true
+  initFileUploadControllers(document)
+
+  let multiFiles: FileList = createFileList([])
+  Object.defineProperty(multiInput, 'files', {
+    configurable: true,
+    get: () => multiFiles,
+    set: (value: FileList) => {
+      multiFiles = value
+    }
+  })
+
+  let multiChanges = 0
+  multiInput.addEventListener('change', () => {
+    multiChanges += 1
+  })
+
+  const multiDrop = new Event('drop', { bubbles: true, cancelable: true })
+  Object.defineProperty(multiDrop, 'dataTransfer', { value: { files: droppedList } })
+  multiRoot.dispatchEvent(multiDrop)
+
+  expect(multiChanges).toBe(1)
+  expect(multiFiles).toBe(droppedList)
+  expect([...multiFiles].map(file => file.name)).toEqual(['first.txt', 'second.txt'])
+  expect(multiSummary.textContent).toBe('2 archivos seleccionados')
+})
+
+test('single-file multi-drop preserves existing selection with no change event when DataTransfer is unavailable', () => {
+  const createFileList = (list: File[]): FileList => Object.assign([...list], {
+    item: (index: number) => list[index] ?? null
+  })
+
+  vi.stubGlobal('DataTransfer', undefined)
+
+  const { root, input, files: summary } = fixture()
+  initFileUploadControllers(document)
+
+  let files: FileList = createFileList([new File(['existing'], 'existing.txt')])
+  Object.defineProperty(input, 'files', {
+    configurable: true,
+    get: () => files,
+    set: (value: FileList) => {
+      files = value
+    }
+  })
+
+  input.dispatchEvent(new Event('change'))
+
+  let changes = 0
+  input.addEventListener('change', () => {
+    changes += 1
+  })
+
+  const drop = new Event('drop', { bubbles: true, cancelable: true })
+  Object.defineProperty(drop, 'dataTransfer', {
+    value: { files: createFileList([new File(['a'], 'first.txt'), new File(['b'], 'second.txt')]) }
+  })
+  root.dispatchEvent(new Event('dragover', { bubbles: true, cancelable: true }))
+  root.dispatchEvent(drop)
+
+  expect(changes).toBe(0)
+  expect([...files].map(file => file.name)).toEqual(['existing.txt'])
+  expect(summary.textContent).toBe('existing.txt')
+  expect(root.dataset.state).toBe('selected')
 })

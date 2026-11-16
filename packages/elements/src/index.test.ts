@@ -1332,6 +1332,39 @@ describe('@santi020k/lumen-elements', () => {
     expect(segments[2]?.textContent).toBe('7')
   })
 
+  test.each([
+    { altKey: true },
+    { ctrlKey: true },
+    { metaKey: true },
+    { isComposing: true }
+  ])('input OTP ignores modified or composing keydown %o', options => {
+    document.body.innerHTML = '<lumen-input-otp length="4" value="123"></lumen-input-otp>'
+    enhanceLumenInputOTPs(document)
+    const input = requireValue(document.querySelector<HTMLInputElement>('[data-ui-input-otp-native]'))
+    input.focus()
+    input.setSelectionRange(2, 2)
+
+    const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'ArrowLeft', ...options })
+    input.dispatchEvent(event)
+
+    expect(event.defaultPrevented).toBe(false)
+    expect(input.selectionStart).toBe(2)
+  })
+
+  test('input OTP ignores canceled keydown events', () => {
+    document.body.innerHTML = '<lumen-input-otp length="4" value="123"></lumen-input-otp>'
+    enhanceLumenInputOTPs(document)
+    const input = requireValue(document.querySelector<HTMLInputElement>('[data-ui-input-otp-native]'))
+    input.focus()
+    input.setSelectionRange(2, 2)
+    input.addEventListener('keydown', event => {
+      event.preventDefault()
+    }, { capture: true })
+
+    input.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'ArrowLeft' }))
+    expect(input.selectionStart).toBe(2)
+  })
+
   test('resizable panes get handles and keyboard resizing', () => {
     document.body.innerHTML = `
       <lumen-resizable data-ui-resizable-default-sizes="25,75">
@@ -1361,6 +1394,24 @@ describe('@santi020k/lumen-elements', () => {
 
     expect(nav.style.getPropertyValue('--ui-resizable-size')).toBe('27%')
     expect(editor.style.getPropertyValue('--ui-resizable-size')).toBe('73%')
+
+    press(handle, 'ArrowRight', { shiftKey: true })
+
+    expect(nav.style.getPropertyValue('--ui-resizable-size')).toBe('37%')
+    expect(editor.style.getPropertyValue('--ui-resizable-size')).toBe('63%')
+
+    for (const options of [{ altKey: true }, { ctrlKey: true }, { metaKey: true }, { isComposing: true }]) {
+      const ignored = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'ArrowLeft', ...options })
+      handle.dispatchEvent(ignored)
+      expect(ignored.defaultPrevented).toBe(false)
+      expect(nav.style.getPropertyValue('--ui-resizable-size')).toBe('37%')
+    }
+
+    handle.addEventListener('keydown', event => {
+      event.preventDefault()
+    }, { capture: true, once: true })
+    handle.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'ArrowLeft' }))
+    expect(nav.style.getPropertyValue('--ui-resizable-size')).toBe('37%')
   })
 
   test('calendar creates a selectable date grid', () => {
@@ -1866,6 +1917,94 @@ describe('@santi020k/lumen-elements', () => {
     press(menu, key)
     expect(document.activeElement?.textContent).toBe(label)
     expect(menu.hidden).toBe(false)
+  })
+
+  test('context menu tracks shared invoker for Escape, handles SVG and disabled items, and respects canceled/disabled triggers', () => {
+    document.body.innerHTML = `
+      <button data-ui-context-menu-trigger="shared-menu" id="first-trigger">First</button>
+      <button data-ui-context-menu-trigger="shared-menu" id="second-trigger">Second</button>
+      <lumen-context-menu id="shared-menu">
+        <button id="svg-item" role="menuitem" type="button"><svg><path /></svg>Edit</button>
+        <button id="disabled-item" role="menuitem" type="button" aria-disabled="true">Disabled</button>
+      </lumen-context-menu>
+      <input id="destination" />
+    `
+
+    enhanceLumenContextMenus(document)
+
+    const first = requireValue(document.querySelector<HTMLButtonElement>('#first-trigger'))
+    const second = requireValue(document.querySelector<HTMLButtonElement>('#second-trigger'))
+    const menu = requireValue(document.querySelector<HTMLElement>('#shared-menu'))
+    const svgItem = requireValue(document.querySelector<HTMLButtonElement>('#svg-item'))
+    const disabledItem = requireValue(document.querySelector<HTMLButtonElement>('#disabled-item'))
+    const destination = requireValue(document.querySelector<HTMLInputElement>('#destination'))
+    const path = requireValue(svgItem.querySelector('path'))
+
+    // Disabled and canceled triggers must not open
+    first.setAttribute('aria-disabled', 'true')
+    first.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }))
+    press(first, 'F10', { shiftKey: true })
+    expect(menu.hidden).toBe(true)
+    first.removeAttribute('aria-disabled')
+
+    const altF10 = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'F10', shiftKey: true, altKey: true })
+    second.dispatchEvent(altF10)
+    expect(altF10.defaultPrevented).toBe(false)
+    expect(menu.hidden).toBe(true)
+
+    second.addEventListener('contextmenu', event => {
+      event.preventDefault()
+    }, { capture: true, once: true })
+    second.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true }))
+    expect(menu.hidden).toBe(true)
+
+    // Open from first then second; Escape returns to actual invoker (second)
+    press(first, 'ContextMenu')
+    press(svgItem, 'Escape')
+    expect(document.activeElement).toBe(first)
+
+    press(second, 'F10', { shiftKey: true })
+    expect(menu.hidden).toBe(false)
+    expect(document.activeElement).toBe(svgItem)
+
+    // ARIA-disabled item retains keyboard discoverability and prevents default without closing
+    press(svgItem, 'ArrowDown')
+    expect(document.activeElement).toBe(disabledItem)
+    const disabledClick = new MouseEvent('click', { bubbles: true, cancelable: true })
+    disabledItem.dispatchEvent(disabledClick)
+    expect(disabledClick.defaultPrevented).toBe(true)
+    expect(menu.hidden).toBe(false)
+
+    // Escape returns focus to actual invoker (second)
+    press(disabledItem, 'Escape')
+    expect(menu.hidden).toBe(true)
+    expect(document.activeElement).toBe(second)
+
+    // Canceled click on item stays open; SVG descendant click closes menu and restores invoker focus
+    press(second, 'ContextMenu')
+    const altEscape = new KeyboardEvent('keydown', { altKey: true, bubbles: true, cancelable: true, key: 'Escape' })
+    svgItem.dispatchEvent(altEscape)
+    expect(altEscape.defaultPrevented).toBe(false)
+    expect(menu.hidden).toBe(false)
+
+    svgItem.addEventListener('click', event => {
+      event.preventDefault()
+    }, { once: true })
+    svgItem.click()
+    expect(menu.hidden).toBe(false)
+
+    path.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    expect(menu.hidden).toBe(true)
+    expect(document.activeElement).toBe(second)
+
+    // Consumer-moved focus during item click is preserved
+    press(second, 'ContextMenu')
+    svgItem.addEventListener('click', () => {
+      destination.focus()
+    }, { once: true })
+    path.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    expect(menu.hidden).toBe(true)
+    expect(document.activeElement).toBe(destination)
   })
 
   test('tooltip wires aria-describedby and dismisses with Escape', () => {

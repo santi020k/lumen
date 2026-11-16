@@ -232,3 +232,40 @@ test('picker aborts the previous outside-click AbortSignal on repeated open and 
   expect(popover.hidden).toBe(true)
   expect(clickSignals[1]?.aborted).toBe(true)
 })
+
+test.each([
+  { altKey: true },
+  { ctrlKey: true },
+  { metaKey: true },
+  { isComposing: true }
+])('calendar ignores modified or composing keydown %o', options => {
+  document.body.innerHTML = '<lumen-calendar month="2026-07" value="2026-07-10"></lumen-calendar>'
+  enhanceLumenCalendars(document)
+  const day = node('[data-date="2026-07-10"]')
+  day.focus()
+
+  const arrow = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'ArrowRight', ...options })
+  day.dispatchEvent(arrow)
+  expect(arrow.defaultPrevented).toBe(false)
+  expect(document.activeElement).toBe(day)
+
+  const enter = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'Enter', ...options })
+  node('[data-date="2026-07-11"]').dispatchEvent(enter)
+  expect(enter.defaultPrevented).toBe(false)
+  expect(input('[data-ui-calendar-input]').value).toBe('2026-07-10')
+})
+
+test('calendar ignores canceled keydown events', () => {
+  document.body.innerHTML = '<lumen-calendar month="2026-07" value="2026-07-10"></lumen-calendar>'
+  enhanceLumenCalendars(document)
+  const root = node('lumen-calendar')
+  const day = node('[data-date="2026-07-10"]')
+  day.focus()
+
+  root.addEventListener('keydown', event => {
+    event.preventDefault()
+  }, { capture: true })
+
+  day.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: 'ArrowRight' }))
+  expect(document.activeElement).toBe(day)
+})
