@@ -259,6 +259,8 @@ for the upgrade sequence, asynchronous Astro initialization, optional selective 
 
 V4 apply records output fingerprints in `.lumen/migrations-v4.json`. Commit that ledger with the
 source changes: repeated applies skip migrated files, and later edits to them require manual review.
+Migration writers verify final-component regular single-link file identity and expected content
+before writing source files or the v4 ledger.
 The pure `migrateLumenVersionSource` API assumes v3 input and does not maintain that filesystem ledger.
 Markup migrations preserve literal slash-star text; script comments and regex literals remain
 excluded from rewrites. The umbrella package includes TypeScript as a runtime dependency so

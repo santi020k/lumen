@@ -9,6 +9,7 @@ import {
   type ConsumerRolloutReport,
   consumerRolloutSucceeded,
   inspectLumenConsumer,
+  removeObsoleteReleaseAgeEntries,
   resolveConsumerRolloutTargets,
   satisfiesNodeEngine,
   updateLumenManifestSource,
@@ -63,6 +64,37 @@ catalog:
     expect(updateLumenWorkspaceSource(source, '0.2.0')).toContain('"@santi020k/lumen": 0.2.0')
     expect(updateLumenWorkspaceSource(source, '0.2.0')).toContain('"@santi020k/lumen-astro": ^0.2.0')
     expect(updateLumenWorkspaceSource(source, '0.2.0')).toContain('unrelated: 0.1.0')
+  })
+
+  test('legacy workspace updater covers all Lumen packages, scopes to catalogs, and prunes obsolete release-age entries', () => {
+    const workspace = [
+      'catalog:',
+      '  "@santi020k/lumen-tokens": ^4.0.0 # keep comment',
+      '  "@santi020k/lumen-icons-brand": ~4.0.0',
+      '  "@santi020k/lumen-react-native": ^4.0.0',
+      '  "@santi020k/lumen-react-hook-form": ">=4.0.0 <5"',
+      'overrides:',
+      '  "@santi020k/lumen-astro": ^4.0.0',
+      'minimumReleaseAgeExclude:',
+      '  - "@santi020k/lumen-tokens@4.0.0"',
+      '  - "@santi020k/lumen-react-native@4.0.0"',
+      '  - "@santi020k/lumen-tokens@4.1.0"',
+      ''
+    ].join('\n')
+
+    const updated = updateLumenWorkspaceSource(workspace, '4.1.0')
+
+    expect(updated).toContain('"@santi020k/lumen-tokens": ^4.1.0 # keep comment')
+    expect(updated).toContain('"@santi020k/lumen-icons-brand": ~4.1.0')
+    expect(updated).toContain('"@santi020k/lumen-react-native": ^4.1.0')
+    expect(updated).toContain('"@santi020k/lumen-react-hook-form": "4.1.0"')
+    expect(updated).toContain('overrides:\n  "@santi020k/lumen-astro": ^4.0.0')
+
+    const pruned = removeObsoleteReleaseAgeEntries(updated, '4.1.0')
+
+    expect(pruned).not.toContain('@santi020k/lumen-tokens@4.0.0')
+    expect(pruned).not.toContain('@santi020k/lumen-react-native@4.0.0')
+    expect(pruned).toContain('@santi020k/lumen-tokens@4.1.0')
   })
 
   test('updates incompatible full catalog ranges and preserves compatible declarations and comments', () => {
