@@ -632,7 +632,21 @@ export class LumenDialogBehaviorElement extends LumenElement {
       }, { signal }
     )
 
-    document.addEventListener(
+    this.#bindDialogTriggers(signal)
+  }
+
+  #bindDialogTriggers(signal: AbortSignal): void {
+    const root = this.getRootNode()
+    const triggerRoot: EventTarget = root instanceof Document || root instanceof ShadowRoot ? root : document
+    const handledPointerDowns = new WeakSet<Event>()
+
+    this.addEventListener(
+      'pointerdown', event => {
+        handledPointerDowns.add(event)
+      }, { capture: true, signal }
+    )
+
+    triggerRoot.addEventListener(
       'click', event => {
         const target = getOwnedTarget(event)
 
@@ -647,7 +661,7 @@ export class LumenDialogBehaviorElement extends LumenElement {
           trigger?.dataset.uiDialogTrigger ??
           trigger?.dataset.uiAlertDialogTrigger
 
-        if (!trigger || targetId !== this.id) return
+        if (!trigger || !this.id || targetId !== this.id) return
 
         this.#openDialog(trigger)
       }, { signal }
@@ -657,9 +671,7 @@ export class LumenDialogBehaviorElement extends LumenElement {
       'pointerdown', event => {
         if (!this.#isOpen() || this.#isAlertDialog) return
 
-        const target = getOwnedTarget(event)
-
-        if (!target || this.contains(target)) return
+        if (handledPointerDowns.has(event) || event.composedPath().includes(this)) return
 
         this.#closeDialog()
       }, { signal }
@@ -736,7 +748,11 @@ export class LumenDialogBehaviorElement extends LumenElement {
 
     if (!first || !last) return
 
-    if (event.shiftKey && document.activeElement === first) {
+    const root = this.getRootNode()
+    const inRoot = root instanceof Document || root instanceof ShadowRoot
+    const activeElement = inRoot ? root.activeElement : document.activeElement
+
+    if (event.shiftKey && activeElement === first) {
       event.preventDefault()
 
       last.focus()
@@ -744,7 +760,7 @@ export class LumenDialogBehaviorElement extends LumenElement {
       return
     }
 
-    if (!event.shiftKey && document.activeElement === last) {
+    if (!event.shiftKey && activeElement === last) {
       event.preventDefault()
 
       first.focus()

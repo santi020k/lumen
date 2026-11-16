@@ -149,3 +149,49 @@ test('native alert dialogs retain explicit dismissal and disconnect clears backd
   point('click', false)
   expect(close).toHaveBeenCalledOnce()
 })
+
+test.each(['open', 'closed'] as const)('dialogs in %s shadow roots scope triggers, keep inside clicks open, and dismiss on outside pointerdown', mode => {
+  const outsideDialog = document.createElement('lumen-dialog')
+  outsideDialog.id = 'shared-dialog'
+  outsideDialog.innerHTML = '<button type="button">Outside action</button>'
+  document.body.append(outsideDialog)
+
+  const host = document.createElement('div')
+  const shadow = host.attachShadow({ mode })
+  shadow.innerHTML = `<button type="button" data-ui-dialog-trigger="shared-dialog">Open shadow</button>
+    <lumen-dialog id="shared-dialog">
+      <button type="button" id="inside-btn">Inside</button>
+      <lumen-dialog id="nested-dialog">
+        <button type="button" id="nested-btn">Nested</button>
+      </lumen-dialog>
+    </lumen-dialog>`
+  document.body.append(host)
+
+  const trigger = shadow.querySelector<HTMLButtonElement>('[data-ui-dialog-trigger]')
+  const shadowDialog = shadow.querySelector<LumenDialogElement>('#shared-dialog')
+  const insideBtn = shadow.querySelector<HTMLButtonElement>('#inside-btn')
+  const nestedDialog = shadow.querySelector<LumenDialogElement>('#nested-dialog')
+  const nestedBtn = shadow.querySelector<HTMLButtonElement>('#nested-btn')
+  if (!trigger || !shadowDialog || !insideBtn || !nestedDialog || !nestedBtn) {
+    throw new Error('Missing shadow dialog fixture')
+  }
+
+  trigger.click()
+  expect(shadowDialog.hidden).toBe(false)
+  expect(outsideDialog.hidden).toBe(true)
+
+  insideBtn.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
+  expect(shadowDialog.hidden).toBe(false)
+
+  nestedDialog.show()
+  nestedBtn.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
+  expect(nestedDialog.hidden).toBe(false)
+  expect(shadowDialog.hidden).toBe(false)
+
+  insideBtn.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
+  expect(nestedDialog.hidden).toBe(true)
+  expect(shadowDialog.hidden).toBe(false)
+
+  document.body.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
+  expect(shadowDialog.hidden).toBe(true)
+})

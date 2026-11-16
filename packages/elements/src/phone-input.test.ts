@@ -88,3 +88,52 @@ test('visual-size updates both phone controls and removes stale size modifiers',
   expect(input.classList.contains('ui-input--lg')).toBe(false)
   expect(select.classList.contains('ui-select--lg')).toBe(false)
 })
+
+test('preserves user-entered value across reconnect while honoring explicit value attribute updates', () => {
+  const host = document.createElement('lumen-phone-input')
+  host.setAttribute('country', 'US')
+  host.setAttribute('value', '2125550123')
+  document.body.append(host)
+  const input = host.querySelector('input')
+  if (!input) throw new Error('Missing phone input')
+  expect(input.value).toBe('(212) 555-0123')
+
+  input.value = '4155550199'
+  input.dispatchEvent(new Event('input', { bubbles: true }))
+  expect(input.value).toBe('(415) 555-0199')
+  expect(host.dataset.e164).toBe('+14155550199')
+
+  host.remove()
+  document.body.append(host)
+  expect(input.value).toBe('(415) 555-0199')
+  expect(host.dataset.e164).toBe('+14155550199')
+
+  host.setAttribute('value', '6505550100')
+  expect(input.value).toBe('(650) 555-0100')
+})
+
+test('ignores stale reset microtasks after disconnect or canceled reset', async () => {
+  const form = document.createElement('form')
+  const host = document.createElement('lumen-phone-input')
+  host.setAttribute('country', 'US')
+  host.setAttribute('value', '2125550123')
+  form.append(host)
+  document.body.append(form)
+
+  let changes = 0
+  host.addEventListener('ui:phone-change', () => {
+    changes += 1
+  })
+
+  form.addEventListener('reset', event => {
+    event.preventDefault()
+  }, { once: true })
+  form.reset()
+  await Promise.resolve()
+  expect(changes).toBe(0)
+
+  form.reset()
+  host.remove()
+  await Promise.resolve()
+  expect(changes).toBe(0)
+})
