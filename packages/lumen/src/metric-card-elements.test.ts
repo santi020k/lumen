@@ -9,6 +9,25 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+test.each(['ready', 'stale'] as const)('Elements metric preserves single-point and empty %s histories', state => {
+  vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener: () => undefined, removeEventListener: () => undefined }))
+  defineLumenElements(['Card', 'Stat', 'StatLabel', 'AnimatedNumber', 'Sparkline', 'Badge'])
+  const root = document.createElement('section')
+  document.body.append(root)
+
+  for (const values of [[118], [0], [-118], [120, 240, 420], []]) {
+    renderMetricCard(root, {
+      label: 'Monthly revenue',
+      snapshot: { state, value: 118, values, change: '+12%', comparison: 'versus last month', trend: 'positive', updatedAt: 'Updated now' }
+    })
+
+    const chart = root.querySelector('lumen-sparkline')
+    expect(chart?.getAttribute('aria-label')).toBe('Monthly revenue trend')
+    expect(chart?.querySelector('svg') !== null).toBe(values.length > 0)
+    expect(chart?.querySelector('.ui-sparkline__endpoint') !== null).toBe(values.length > 0)
+  }
+})
+
 test('Elements metric keeps a visible label in every state and preserves untrusted messages as text', () => {
   vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener: () => undefined, removeEventListener: () => undefined }))
   defineLumenElements(['Card', 'Stat', 'StatLabel', 'AnimatedNumber', 'Sparkline', 'Skeleton', 'Badge', 'Button'])

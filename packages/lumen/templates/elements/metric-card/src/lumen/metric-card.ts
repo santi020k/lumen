@@ -43,7 +43,7 @@ const appendData = (card: HTMLElement, stat: HTMLElement, { label, snapshot, loc
 
   trend.append(node('lumen-badge', snapshot.change, { variant: variants[snapshot.trend] }), node('span', snapshot.comparison, { class: 'lumen-metric-card__note' }))
 
-  const chart = node('lumen-sparkline', undefined, { class: 'lumen-metric-card__chart', values: snapshot.values.join(','), label: trendLabel, tone: snapshot.trend === 'negative' ? 'danger' : 'brand' })
+  const chart = node('lumen-sparkline', undefined, { class: 'lumen-metric-card__chart', values: JSON.stringify(snapshot.values), label: trendLabel, tone: snapshot.trend === 'negative' ? 'danger' : 'brand' })
 
   card.append(trend, chart, node('p', snapshot.updatedAt, { class: 'lumen-metric-card__note' }))
 }

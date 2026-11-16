@@ -23,6 +23,8 @@
 
 ### Patch Changes
 
+- Preserve single-point trend histories in the Elements metric-card recipe.
+
 - Validate every CLI option value before execution while preserving scalar option precedence.
   Resolve `audit-tokens --cwd` correctly and update all supported Lumen packages only inside
   workspace catalogs during legacy rollout.
