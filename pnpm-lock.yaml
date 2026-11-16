@@ -362,9 +362,15 @@ catalogs:
     lumen-elements-v4:
       specifier: npm:@santi020k/lumen-elements@4.3.0
       version: 4.3.0
+    lumen-elements-v5:
+      specifier: npm:@santi020k/lumen-elements@5.0.0
+      version: 5.0.0
     lumen-react-v4:
       specifier: npm:@santi020k/lumen-react@4.3.0
       version: 4.3.0
+    lumen-react-v5:
+      specifier: npm:@santi020k/lumen-react@5.0.0
+      version: 5.0.0
     motion:
       specifier: 14.9.1
       version: 14.9.1
@@ -718,9 +724,15 @@ importers:
       lumen-elements-v4:
         specifier: 'catalog:'
         version: '@santi020k/lumen-elements@4.3.0(@rive-app/canvas@2.49.4)(react@19.3.0)'
+      lumen-elements-v5:
+        specifier: 'catalog:'
+        version: '@santi020k/lumen-elements@5.0.0(@rive-app/canvas@2.49.4)'
       lumen-react-v4:
         specifier: 'catalog:'
         version: '@santi020k/lumen-react@4.3.0(@rive-app/canvas@2.49.4)(motion@14.9.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)'
+      lumen-react-v5:
+        specifier: 'catalog:'
+        version: '@santi020k/lumen-react@5.0.0(@rive-app/canvas@2.49.4)(motion@14.9.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)'
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -4618,10 +4630,24 @@ packages:
     engines: {node: '>=22.12.0'}
     hasBin: true
 
+  '@santi020k/lumen-elements@5.0.0':
+    resolution: {integrity: sha512-LuSuyi6oFI82KTpqI+AO0xipCKHhydpul1dNo28ENzKWxcOwyJBE+3ueeOTBNn0hRfFyY4uULMdyCzpgqKaVpQ==}
+    engines: {node: '>=22.12.0'}
+
   '@santi020k/lumen-react@4.3.0':
     resolution: {integrity: sha512-SZlyzYQe1w727eAP1xru0kPgOpJm+4nTbZUte9q2k9hZpQA9jOmFjuEZ1fPHmHMMqvMSIujN7jdVeXoTO1oQ7Q==}
     engines: {node: '>=22.12.0'}
     hasBin: true
+    peerDependencies:
+      motion: ^14.0.0
+      react: 19.3.0
+    peerDependenciesMeta:
+      motion:
+        optional: true
+
+  '@santi020k/lumen-react@5.0.0':
+    resolution: {integrity: sha512-vBqbZ7w/9/snUZxynq+LdpGTWx6tWukmtXyvBYmPJjtjcXcVDd7/Me8TPwOH9eOM419daAMwiYhCw9Xn52Cn4Q==}
+    engines: {node: '>=22.12.0'}
     peerDependencies:
       motion: ^14.0.0
       react: 19.3.0
@@ -14140,10 +14166,28 @@ snapshots:
       - '@rive-app/canvas'
       - react
 
+  '@santi020k/lumen-elements@5.0.0(@rive-app/canvas@2.49.4)':
+    dependencies:
+      '@santi020k/lumen-core': 5.0.0(@rive-app/canvas@2.49.4)
+    transitivePeerDependencies:
+      - '@rive-app/canvas'
+
   '@santi020k/lumen-react@4.3.0(@rive-app/canvas@2.49.4)(motion@14.9.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@santi020k/lumen': 4.4.0(@rive-app/canvas@2.49.4)(react@19.3.0)
       '@santi020k/lumen-core': 4.4.0(@rive-app/canvas@2.49.4)
+      '@tanstack/react-table': 9.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react: 19.3.0
+      uqr: 0.1.3
+    optionalDependencies:
+      motion: 14.9.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+    transitivePeerDependencies:
+      - '@rive-app/canvas'
+      - react-dom
+
+  '@santi020k/lumen-react@5.0.0(@rive-app/canvas@2.49.4)(motion@14.9.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+    dependencies:
+      '@santi020k/lumen-core': 5.0.0(@rive-app/canvas@2.49.4)
       '@tanstack/react-table': 9.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
       uqr: 0.1.3
