@@ -1,6 +1,7 @@
+import { nextAnchorName, supportsAnchoredPopovers } from '../panels.js'
 import { queryScope } from '../scope.js'
 
-import { nextAnchorName, nextRuntimeId, supportsAnchoredPopovers } from './shared.js'
+import { nextRuntimeId } from './shared.js'
 
 const bindTooltips = (root: HTMLElement): void => {
   if (root.dataset.uiTooltipBound === 'true') return

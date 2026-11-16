@@ -540,3 +540,20 @@
     transform: translateY(-0.5rem) scale(0.98);
   }
 }
+
+@layer lumen.components {
+@starting-style {
+.ui-tvp .ui-toast {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+}
+}
+
+@layer lumen.components {
+@starting-style {
+.ui-tvp[data-placement^="top"] .ui-toast {
+      transform: translateY(-0.75rem);
+    }
+}
+}

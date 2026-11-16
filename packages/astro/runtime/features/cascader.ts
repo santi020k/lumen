@@ -1,6 +1,7 @@
+import { getPanel, setOpen, shouldRestorePanelFocus } from '../panels.js'
 import { queryScope } from '../scope.js'
 
-import { getLoopedIndex, getPanel, setOpen, shouldIgnoreKeydown, shouldRestorePanelFocus } from './shared.js'
+import { getLoopedIndex, shouldIgnoreKeydown } from './shared.js'
 
 const isCascaderOptionAvailable = (option: HTMLButtonElement): boolean => !option.matches(':disabled') && !option.closest('[hidden], [inert]')
 

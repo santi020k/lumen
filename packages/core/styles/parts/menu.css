@@ -152,6 +152,15 @@
 }
 
 @layer lumen.components {
+@starting-style {
+.ui-menu[data-ui-dropdown-menu] > [role="menu"][data-state="open"] {
+      opacity: 0;
+      transform: translateY(-0.25rem) scale(0.98);
+    }
+}
+}
+
+@layer lumen.components {
 .ui-menu[data-ui-dropdown-menu] > [popover][role="menu"] {
     position: fixed;
     position-area: block-end span-inline-end;

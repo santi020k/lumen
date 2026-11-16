@@ -1,7 +1,8 @@
+import { getFocusable, shouldRestorePanelFocus } from '../panels.js'
 import { getScopeActiveElement, getScopeTarget } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
-import { getFocusable, getLoopedIndex, shouldIgnoreKeydown, shouldRestorePanelFocus } from './shared.js'
+import { getLoopedIndex, shouldIgnoreKeydown } from './shared.js'
 
 const boundContextMenus = new WeakSet<HTMLElement>()
 const contextMenuTriggers = new WeakMap<HTMLElement, HTMLElement>()

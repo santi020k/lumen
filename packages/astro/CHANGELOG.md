@@ -21,6 +21,9 @@
 
 ### Patch Changes
 
+- Keep panel helpers out of form-only runtime chunks and deliver component entry animations
+  through their selective styles without increasing route asset budgets.
+
 - Preserve validation from submissions and focus changes immediately after a form reset. Honor
   canceled resets, clear only runtime-owned errors on disabled and external form-associated
   controls, and retain authored errors.

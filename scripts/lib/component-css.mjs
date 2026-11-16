@@ -109,6 +109,16 @@ const presetAppearanceEntry = rule => {
   return undefined
 }
 
+const keyframeFamily = header => {
+  if (/^@keyframes ui-map-(?:enter|pulse)$/u.test(header)) return 'world-map'
+
+  if (/^@keyframes ui-animated-portrait-(?:float|pulse|reveal|spin|spin-reverse)$/u.test(header)) return 'animated-portrait'
+
+  if (header === '@keyframes ui-particle-drift') return 'particles'
+
+  return undefined
+}
+
 const partitionTokens = (source, foundation, appearances, ancestors) => {
   for (const rule of readCssNodes(source)) {
     if (rule.header.startsWith('@')) {
@@ -207,6 +217,7 @@ export const partitionComponentCss = sources => {
       }
 
       const appearance = appearanceBlockEntry(header)
+      const animationOwner = keyframeFamily(header)
 
       if (header === '@layer lumen.tokens') {
         partitionTokens(body, foundation, appearances, ancestors)
@@ -214,12 +225,12 @@ export const partitionComponentCss = sources => {
         appearances[appearance].push(wrapRule(text, ancestors))
       } else if (header === '@layer lumen.base') {
         foundation.push(wrapRule(text, ancestors))
-      } else if (/^@(layer|media|supports|container|scope)\b/u.test(header)) {
+      } else if (/^@(layer|media|supports|container|scope|starting-style)\b/u.test(header)) {
         visit(body, [...ancestors, header])
-      } else if (/^@keyframes ui-map-(?:enter|pulse)$/u.test(header)) {
-        representative('world-map')
+      } else if (animationOwner) {
+        representative(animationOwner)
 
-        rules.push({ families: ['world-map'], text: wrapRule(text, ancestors) })
+        rules.push({ families: [animationOwner], text: wrapRule(text, ancestors) })
       } else if (header.startsWith('@')) {
         foundation.push(wrapRule(text, ancestors))
       } else {

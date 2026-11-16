@@ -1,7 +1,8 @@
+import { getFocusable, getPanel, nextAnchorName, setOpen, shouldRestorePanelFocus, supportsAnchoredPopovers } from '../panels.js'
 import { getScopeActiveElement } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
-import { getFocusable, getLoopedIndex, getPanel, nextAnchorName, setOpen, shouldIgnoreKeydown, shouldRestorePanelFocus, supportsAnchoredPopovers } from './shared.js'
+import { getLoopedIndex, shouldIgnoreKeydown } from './shared.js'
 
 const disclosureSelector = '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]'
 const boundDisclosures = new WeakSet<HTMLElement>()

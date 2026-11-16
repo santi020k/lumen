@@ -95,3 +95,12 @@
     transform: translateY(-0.25rem) scale(0.98);
   }
 }
+
+@layer lumen.components {
+@starting-style {
+.ui-combobox__list[data-state="open"] {
+      opacity: 0;
+      transform: translateY(-0.25rem) scale(0.98);
+    }
+}
+}

@@ -48,6 +48,15 @@
 }
 
 @layer lumen.components {
+@starting-style {
+.ui-hover-card > :where(div, section, article, [role="tooltip"])[data-state="open"] {
+      opacity: 0;
+      transform: translateY(-0.25rem) scale(0.98);
+    }
+}
+}
+
+@layer lumen.components {
 .ui-hover-card > [popover] {
     position: fixed;
     position-area: block-end span-inline-end;

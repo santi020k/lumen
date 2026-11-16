@@ -21,6 +21,9 @@
 
 ### Patch Changes
 
+- Keep component entry animations and portrait/particle keyframes in their selective styles,
+  avoiding unrelated animation CSS on static routes.
+
 - Keep floating-panel focus owned across open, closed, and nested shadow roots. Follow panel
   relocation, refresh root observers and containing-dialog listeners, and preserve external
   focus when closing the panel.
