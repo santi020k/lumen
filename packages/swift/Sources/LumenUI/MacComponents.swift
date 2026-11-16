@@ -83,14 +83,44 @@ public struct LumenShortcut: Hashable {
 }
 
 @MainActor
-private final class LumenShortcutRecorderState: ObservableObject {
+final class LumenShortcutRecorderState: ObservableObject {
     @Published var errorMessage: String?
     @Published var isRecording = false
+    var isEnabled = true
     var monitor: Any?
+
+    func setEnabled(_ enabled: Bool) {
+        isEnabled = enabled
+        if !enabled {
+            stopRecording()
+        }
+    }
+
+    func startRecording(isEnabled: Bool, onKeyDown: @escaping @MainActor (NSEvent) -> Void) {
+        self.isEnabled = isEnabled
+        guard isEnabled, monitor == nil else { return }
+
+        errorMessage = nil
+        isRecording = true
+        monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, self.isEnabled, self.isRecording else { return event }
+            onKeyDown(event)
+            return nil
+        }
+    }
+
+    func stopRecording() {
+        if let monitor {
+            NSEvent.removeMonitor(monitor)
+        }
+        monitor = nil
+        isRecording = false
+    }
 }
 
 public struct LumenShortcutRecorder: View {
     @Binding private var shortcut: LumenShortcut?
+    @Environment(\.isEnabled) private var isEnabled
     @Environment(\.lumenTheme) private var theme
     @StateObject private var state = LumenShortcutRecorderState()
 
@@ -142,6 +172,7 @@ public struct LumenShortcutRecorder: View {
 
                     if shortcut != nil {
                         LumenButton("Clear", intent: .quiet, size: .sm) {
+                            guard isEnabled else { return }
                             shortcut = nil
                             state.errorMessage = nil
                         }
@@ -166,28 +197,23 @@ public struct LumenShortcutRecorder: View {
         .onDisappear {
             stopRecording()
         }
+        .task(id: isEnabled) {
+            state.setEnabled(isEnabled)
+        }
     }
 
     private func startRecording() {
-        guard state.monitor == nil else { return }
-
-        state.errorMessage = nil
-        state.isRecording = true
-        state.monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+        state.startRecording(isEnabled: isEnabled) { event in
             handle(event)
-            return nil
         }
     }
 
     private func stopRecording() {
-        if let monitor = state.monitor {
-            NSEvent.removeMonitor(monitor)
-        }
-        state.monitor = nil
-        state.isRecording = false
+        state.stopRecording()
     }
 
     private func handle(_ event: NSEvent) {
+        guard state.isEnabled, state.isRecording else { return }
         defer { stopRecording() }
 
         if event.keyCode == 53 {
