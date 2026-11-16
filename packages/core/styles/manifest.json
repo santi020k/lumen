@@ -344,6 +344,13 @@
     ],
     "dependencies": []
   },
+  "CheckboxCard": {
+    "stylesheet": "styles/components/checkbox-card.css",
+    "parts": [
+      "selection-card"
+    ],
+    "dependencies": []
+  },
   "CheckboxGroup": {
     "stylesheet": "styles/components/checkbox-group.css",
     "parts": [
@@ -1172,6 +1179,13 @@
     "stylesheet": "styles/components/qr-code.css",
     "parts": [
       "qr-code"
+    ],
+    "dependencies": []
+  },
+  "RadioCard": {
+    "stylesheet": "styles/components/radio-card.css",
+    "parts": [
+      "selection-card"
     ],
     "dependencies": []
   },

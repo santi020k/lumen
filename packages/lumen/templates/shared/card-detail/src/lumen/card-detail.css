@@ -1,0 +1,6 @@
+/* Public Dialog and Sheet own placement, focus and reduced-motion-aware transitions. */
+.lumen-card-detail { min-inline-size: 0; }
+.lumen-card-detail__summary { color: hsl(var(--ink-soft)); margin: 0; }
+.lumen-card-detail__surface { max-inline-size: min(42rem, calc(100vw - 2 * var(--ui-space-group))); }
+.lumen-card-detail__surface [data-slot="dialog-title"] { overflow-wrap: anywhere; }
+@media (max-width: 40rem) { .lumen-card-detail__surface { max-inline-size: calc(100vw - 2 * var(--ui-space-related)); } }

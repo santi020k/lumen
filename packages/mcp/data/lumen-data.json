@@ -13,15 +13,15 @@
       "Avatar": "76512aa8ab3ff30fc238cc2a8775d0776b6bd501ab0dbeebd9b6277b79c4c988",
       "Backdrop": "d832d3bde577cb65c6947f16a62b746015cfb40e30b544ed9dce36bdeb66c713",
       "BackToTop": "8453900c786c0763155cc467c9d096fcd78d990b60d88e6e083fe04ccc8d65a0",
-      "Badge": "42be0ae885a869543dfb5ba052d723ff4193f3812bf59c5cbd68144332bfd7c3",
+      "Badge": "2b39b8d2fda9b9d46e2a9eff50d7ca2cd269e177645835074b09e9c33bb4a35d",
       "BarChart": "e3b3bb816a396b71bdac18ce80ba06c8c23b8a28dc41e9ed67c36037391a9787",
       "Breadcrumb": "863f537445faecdb134879ea3b81522ab90e76a2bf06d7ce42a67956e566a884",
       "Bubble": "3f8acfce05736c2f434c7e76b5e05e17103b76d0ce80742e8b9112928c7d483e",
-      "Button": "6220e31f6b39d3b61e6115f405477ceb9c1935474a72f13bbf115bc0ecd758b7",
+      "Button": "cc2baed524b8b6afcdd7e2c1ac95ac2caa7d169a6f971b2ae7bc30f5873a7c39",
       "ButtonGroup": "2cf8bb2c54134025a399dfd6a9154f4fd605aed44dd3bf1c85482404120482c5",
       "Calendar": "217904a9be45cb6bfc538d3af8b5486e7dbe547b6b26ab6e156fde3770c4fb0e",
       "Callout": "472d86da10f70441e76d34d0b6ce172750166a23b30ff1e246cc75e9c1bce58a",
-      "Card": "682f1e49f0170914d805298426e316f58143d015d8edc9782108503c45f2ba91",
+      "Card": "9d66e3ca2aa7e79fb0b4aa6ef944ab9252b09afdcaf88942a2cc09d1b77345f7",
       "CardContent": "924b37f218d4571ec5f339dcacf54307335d93f0e21ddc731f153000be09dc19",
       "CardDescription": "523acd548128c4e213de246b9871256bdf683f110b9ea65e041483801231c997",
       "CardFooter": "bf2ca365201aa254b14b3705ab7bb8aa808587dc3ee884e45ec0b011450f8137",
@@ -30,6 +30,7 @@
       "Carousel": "996e93a6c67a71910243e73b5ae4498ded825bc9745964604908b6a7993cdfb6",
       "Chart": "04ea9dd0180cf036274e1d483d530f5e407627a5a33fdec712300e0f2a96d1ca",
       "Checkbox": "85aa94fb65ddbde0a0d2e296ff580f0dec7fc209306eb5e6c61787e7feb10d6f",
+      "CheckboxCard": "b84db2098adbca4bc07737458d396f3d3b8958be2fabc1d1826d1a85fa96a8c6",
       "CheckboxGroup": "264088d3c2a0b9f9a35eefe918128aa34f5175719aed2354d4ff55f66c116dec",
       "Collapsible": "9721269fe544045e997710c31365a5f16109b07799567bc706729c6c343dce0a",
       "Code": "9051402a47cbebc63311d4896416959250726d82b6024ad62e944115e1f4e825",
@@ -44,12 +45,12 @@
       "DataTable": "9908d48a8a9140d0b989371fe49ad21a93242bc05570cd2e004095826138d950",
       "DatePicker": "d7e07526c027256bd286d62039f62844826dd138892603a9893fe36f61bc05c0",
       "DateRangePicker": "2df2360d4b8e6bb8d88a87407d637c64e891584511f984d4be414bd8f41164ab",
-      "Dialog": "0931f331b7c071ecdda5d558d93764bf31f4d4c1494b18a813e78e7e51c6df2f",
-      "DialogHeader": "a25b3cd3ee8190a2bbaf5b709e7892e9098c5771244bc0051d3ec9479aee7c3f",
-      "DialogTitle": "2068d7951fc81f58662fe1cd02e5fd0afd00d95a0e6069d4efb02bbed298c2b1",
-      "DialogBody": "0d8c235f3b8c94deac220c496a7919a0350a52f56f393812aaf291245ca964fa",
-      "DialogFooter": "74c029aa9d219405d40106f7c0678279ecf4accf11de3932e966fea118fa81b3",
-      "DialogClose": "d2e9a30474fafc47c961a60ffda3393c32c68c1018e9828dfa96ffabc97e0c19",
+      "Dialog": "a0d3ae2c5dfb262c1082272fbd77ed763c9889930f45c68ea3ecad0f1dad9f35",
+      "DialogHeader": "64691dca5f07127f1818d4d9b6b153c1ea7b12b8d9790a22134d320a9b7b9fd4",
+      "DialogTitle": "028a45fd8002be6394850282710362f382d8d932010cbd5e11172cab2b9b5ff1",
+      "DialogBody": "5df22d7429b2c8c436bf27240061083540be1ad173cdc60846f9dd70018e31fb",
+      "DialogFooter": "e84148ed0ad78ba9f83caec38a51838227876aa192fb2589cc163cd794e31a87",
+      "DialogClose": "1c565e4bead8c1fa88a979c64da9a5ab7a35b83c7d7025e4160790f7ea0a2cbb",
       "Direction": "739273fc3f0b743f3d0a427b74cdfef7951d43d34de53d46c302df02e56e3e5f",
       "Drawer": "7d752a45932493c7a6ed0423914a235a55ad14d108417f3f820f32f29227fa8e",
       "DropdownMenu": "0ead926c85f7aa00c9f992a13db79cbd133d20897ecd1412cfbfcdeccef89fdb",
@@ -97,8 +98,9 @@
       "PieChart": "3b903ba1c22d4f2f569e71fe12ef29f799c1009ff5476f7acc762af218eff17c",
       "Pill": "4cd497c6ca8072afbc51414acf44d8b0763069031f4ab28f67b41640f6cd3990",
       "Popover": "7483d60f515612fd9802d74aa9e767d104ca0c659c09b6db84f8f1529cf9fa25",
-      "Progress": "8b8fff4b3c4a73059a976f98eb61ccb4e9425808d950dae130e4ffc5ad2aadbe",
+      "Progress": "16bac933db92e066f71fd579d804bf3dc0b45403297573c482bad79147b3d6bc",
       "Prose": "99a09392c3e3745596e741d34de5a1c02a0528d07baf1c6bb2909806bebe7001",
+      "RadioCard": "a321d6b49e739b2ce4e438cee071da481fd0273e8bd84324af7053ce948be409",
       "RadioGroup": "d66577982927328ac9ecda04b9f817cccb365b5d7aa8baf89fd7de11c8f77c87",
       "Resizable": "ef0024d7e05d5f734d433e84f3706a0dbd58a0340cdfc7bc2dabf680684cbd4a",
       "RichTextEditor": "6a9182e04193066af282a1136a137cd2b9fdcb6673e19b82b00552d5aa76f185",
@@ -108,12 +110,12 @@
       "SearchField": "3716196751539f302668dda102d262058d6d5d1ad282fdbcdcd31e6e7f75ba74",
       "Select": "4583bb6fe8126abd75249fcc323cf9058c9b66f989b0de55e7f026d14ac6cd12",
       "Separator": "f29759dd83b00c58569117b8e2538aa1fbbdcc2c444303cccb701867b2f211db",
-      "Sheet": "c0175a4839040dc15254f698eaa043c8065a6f62d6f9058001b510faf10e9f72",
+      "Sheet": "61af36b6b0a610875e95af58b3f1a928baccc7c474ab6c0ffe82d6383413db5a",
       "Sidebar": "a37a3cbd6622d4106e89b90d4cedd7acea07bf4068d46b4dfcdde27d61b0c545",
-      "Skeleton": "c18e6caa7cb94fdf5f7ab44f87082e5d444287000333604a78715b2cc84e706e",
+      "Skeleton": "662e65e7930a11a6e30790d62ea66210a13e842a40957dfbe20487ad111fc153",
       "SkipLink": "31f23819b59bf66aff62de97773ee7986470b36ab2bdd0e264b98f0c3d50307f",
       "Slider": "0e5fee7836ce61a539f12b28bf29f66f5780d8ddf306631e97808c3992301684",
-      "Sparkline": "5ffeed9f98f26de427f5d3288f48ac9bfd99874168221d68d13564dde46779f2",
+      "Sparkline": "ef792bae4141a969206370e6a2f65b543b0275c2ec624e8619ab04d5c24ca14b",
       "Spinner": "76ba2165e33f320d03eb3defdaf68600289b61047897626d351ac62d6d225e31",
       "Switch": "8a81f07613ce36f41ca076c73d5574cfa42e19d321d24df9db30e6ab53d1b75a",
       "Table": "40749d0c798e68e83b2ec13fd1ff32a617072d51c99ef9c005640e0614a6fbbf",
@@ -130,14 +132,14 @@
       "Tooltip": "d38540f887733f6648ff5d5a4948c31a2eed18c2ba5670f3f68bbfd36132c1cc",
       "Tree": "de6c9eb34bb6dbb0095d7dd1479cda6689cea99649cc6aa1ff3de344dd25ad10",
       "TreeGrid": "752d292771dc9e2a23ab33b575d26cca1cd5b3e05cac187e114987d798ac861d",
-      "Typography": "3e7de521a6eb793d02d468ed083b162c584568f13f303fb2fe70b39b6f0f640a",
+      "Typography": "788f568e121c39d3c1f045f711b7abb8ba99223ed3b0ce6126024748f3941a26",
       "VirtualList": "c0622532f5743cd9f5925a0def8f0eae7040bd6dfcd77eea4d07ad935f9da5f2",
       "LanguageToggle": "63cb567d055857b7ac59f1fc394098f648c11341695b63d66df35eaee0c2469c",
       "Particles": "4c16c65292583297dd417f93b0abb720a89030dc1d70619174f30de80ca8fe26",
-      "AnimatedNumber": "4a1f012979c8cc3913bb25508f92603bc5d15131213e6eda82916c05287ff4c2",
+      "AnimatedNumber": "c2ca054e1fcc43715e84dec4abf2edfa56f36c77606a0f62682671959acee058",
       "RevealGroup": "da5fe91d3fa1b16d9b152617f63ebc2b39e6647ce9ec0a22f28dd2ef7a6fbdae",
       "ScrollReveal": "f9f3e44071366d31d9ab6db15a12bb936e9d223f8a72aad2243a977e51cbfb7e",
-      "Stat": "f68b07fa3a5de09832bdbbf68557ec1c0d7f674a9e16dfad608f4f6f70902f5c",
+      "Stat": "23375d79f322b93bd3bc8fdfaddacc7595ba13dbdf39fb0598511c6b95e1d995",
       "StatDescription": "1416f8f5f4b3518f988095b082ff10071e0ec0c16569464087bfc9826af63242",
       "StatIcon": "f550d126e6142a039271ddf87131f646830140b53b214285eff160522d6b5538",
       "StatLabel": "9319c66f7dcba07bd7abf33250601b2c47b95d0ed09c79be22194aad512b9ecd",
@@ -367,7 +369,10 @@
       "media-workspace": "9d2b7c508ae310e28c30cbd6b76256a302eecd4b2d7cff8c86c3e1a7acb58f67",
       "feedback-board": "a46971a42a5faa044d14c8aae48d8cfbbaca9471e2a75d67cbbd5dbd171f68ea",
       "responsive-navigation": "22a72bdac854eb126945c683f8099efac29df48dd07ec2e6ca5838d9fc15cf24",
-      "editable-ticket": "0bb4384985d5c2e6aed9fd778d2deb9048214ea55e0b03a1e1c76cec2d5c52f7"
+      "editable-ticket": "0bb4384985d5c2e6aed9fd778d2deb9048214ea55e0b03a1e1c76cec2d5c52f7",
+      "card-detail": "606b6f89d46c5f7c92c7aea22151e60e685eacc0260cca3f0b660420475671f3",
+      "metric-card": "e7067a28f3d1a23fec31c15f2ffd7021e0a815949e1aa37bc3e9c00d4e8545b6",
+      "task-progress": "b6e52102168052134e3fb4f4e6afb21521c8d9a2e699a8f1a25fdbe10086de20"
     }
   },
   "components": [
@@ -2960,6 +2965,14 @@
         {
           "name": "feedback-board",
           "type": "recipe"
+        },
+        {
+          "name": "metric-card",
+          "type": "recipe"
+        },
+        {
+          "name": "task-progress",
+          "type": "recipe"
         }
       ],
       "runtimeEvents": []
@@ -4138,6 +4151,18 @@
         {
           "name": "editable-ticket",
           "type": "recipe"
+        },
+        {
+          "name": "card-detail",
+          "type": "recipe"
+        },
+        {
+          "name": "metric-card",
+          "type": "recipe"
+        },
+        {
+          "name": "task-progress",
+          "type": "recipe"
         }
       ],
       "runtimeEvents": []
@@ -5219,6 +5244,18 @@
         },
         {
           "name": "editable-ticket",
+          "type": "recipe"
+        },
+        {
+          "name": "card-detail",
+          "type": "recipe"
+        },
+        {
+          "name": "metric-card",
+          "type": "recipe"
+        },
+        {
+          "name": "task-progress",
           "type": "recipe"
         }
       ],
@@ -6618,6 +6655,280 @@
           "type": "recipe"
         }
       ],
+      "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "frameworks": [
+            "astro",
+            "react"
+          ],
+          "attribute": "label, description",
+          "defaultValue": "label required",
+          "description": "Provides the visible label and optional associated description.",
+          "values": "string / ReactNode"
+        },
+        {
+          "attribute": "variant",
+          "defaultValue": "\"outline\"",
+          "description": "Sets the unselected surface; selection remains visible through the native indicator and border.",
+          "values": "\"outline\" | \"soft\""
+        },
+        {
+          "frameworks": [
+            "astro",
+            "react"
+          ],
+          "attribute": "icon / icon slot",
+          "defaultValue": "-",
+          "description": "Adds decorative content before the label. Keep children and icons non-interactive.",
+          "values": "ReactNode / Astro named slot"
+        },
+        {
+          "frameworks": [
+            "astro",
+            "react"
+          ],
+          "attribute": "children / default slot",
+          "defaultValue": "-",
+          "description": "Adds supplementary metadata below the description.",
+          "values": "phrasing content"
+        },
+        {
+          "frameworks": [
+            "astro",
+            "react"
+          ],
+          "attribute": "invalid",
+          "defaultValue": "false",
+          "description": "Sets aria-invalid on the input. Associate error text using aria-describedby.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "name, value, checked, disabled, required, form",
+          "defaultValue": "-",
+          "description": "Passes native form attributes to the checkbox input. React also accepts defaultChecked.",
+          "values": "native input attributes"
+        },
+        {
+          "frameworks": [
+            "elements"
+          ],
+          "attribute": "label > input",
+          "defaultValue": "required",
+          "description": "Provide a direct label containing a checkbox input and selection-card content slots. Set input state and ARIA on that native control.",
+          "values": "native child contract"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/checkbox-card.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'children'> {\n  class?: string | null\n  className?: string\n  description?: string\n  invalid?: boolean\n  label: string\n  variant?: 'outline' | 'soft'\n}\n\nconst {\n  'aria-describedby': ariaDescribedby,\n  'aria-invalid': ariaInvalid,\n  'aria-label': ariaLabel,\n  'aria-labelledby': ariaLabelledby,\n  class: classProp = '',\n  className = '',\n  description,\n  id,\n  invalid = false,\n  label,\n  variant = 'outline',\n  ...rest\n} = Astro.props\n\nconst controlId = id ?? `ui-checkbox-card-${crypto.randomUUID()}`\nconst labelId = `${controlId}-label`\nconst descriptionId = description ? `${controlId}-description` : undefined\nconst describedBy = [ariaDescribedby, descriptionId].filter(Boolean).join(' ') || undefined\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-selection-card',\n  'ui-checkbox-card',\n  `ui-selection-card--${variant}`\n], classProp, className)\n---\n\n<span class:list={classList} data-slot=\"checkbox-card\">\n  <label>\n    <input\n      {...passthrough}\n      aria-describedby={describedBy}\n      aria-invalid={invalid ? 'true' : ariaInvalid}\n      aria-label={ariaLabel}\n      aria-labelledby={ariaLabelledby ?? (ariaLabel ? undefined : labelId)}\n      id={controlId}\n      type=\"checkbox\"\n    />\n    {Astro.slots.has('icon') && (\n      <span aria-hidden=\"true\" data-slot=\"selection-card-icon\"><slot name=\"icon\" /></span>\n    )}\n    <span data-slot=\"selection-card-content\">\n      <span data-slot=\"selection-card-label\" id={labelId}>{label}</span>\n      {description && <span data-slot=\"selection-card-description\" id={descriptionId}>{description}</span>}\n      {Astro.slots.has('default') && <span data-slot=\"selection-card-addon\"><slot /></span>}\n    </span>\n  </label>\n</span>\n",
+      "category": "Forms",
+      "collections": [],
+      "contract": null,
+      "dependencies": [
+        "styles"
+      ],
+      "description": "Presents a descriptive checkbox choice with native form behavior and a visible selection indicator.",
+      "behavior": {
+        "astro": "none",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/CheckboxCard.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<CheckboxCard name=\"updates\" value=\"product\" label=\"Product updates\" description=\"New features and release notes.\" />",
+          "importStatement": "import { CheckboxCard } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "description",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "invalid",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "label",
+              "optional": false,
+              "type": "string"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "'outline' | 'soft'"
+            }
+          ],
+          "propsExtends": "Omit<HTMLAttributes<'input'>, 'type' | 'children'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/checkbox-card.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'children'> {\n  class?: string | null\n  className?: string\n  description?: string\n  invalid?: boolean\n  label: string\n  variant?: 'outline' | 'soft'\n}\n\nconst {\n  'aria-describedby': ariaDescribedby,\n  'aria-invalid': ariaInvalid,\n  'aria-label': ariaLabel,\n  'aria-labelledby': ariaLabelledby,\n  class: classProp = '',\n  className = '',\n  description,\n  id,\n  invalid = false,\n  label,\n  variant = 'outline',\n  ...rest\n} = Astro.props\n\nconst controlId = id ?? `ui-checkbox-card-${crypto.randomUUID()}`\nconst labelId = `${controlId}-label`\nconst descriptionId = description ? `${controlId}-description` : undefined\nconst describedBy = [ariaDescribedby, descriptionId].filter(Boolean).join(' ') || undefined\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-selection-card',\n  'ui-checkbox-card',\n  `ui-selection-card--${variant}`\n], classProp, className)\n---\n\n<span class:list={classList} data-slot=\"checkbox-card\">\n  <label>\n    <input\n      {...passthrough}\n      aria-describedby={describedBy}\n      aria-invalid={invalid ? 'true' : ariaInvalid}\n      aria-label={ariaLabel}\n      aria-labelledby={ariaLabelledby ?? (ariaLabel ? undefined : labelId)}\n      id={controlId}\n      type=\"checkbox\"\n    />\n    {Astro.slots.has('icon') && (\n      <span aria-hidden=\"true\" data-slot=\"selection-card-icon\"><slot name=\"icon\" /></span>\n    )}\n    <span data-slot=\"selection-card-content\">\n      <span data-slot=\"selection-card-label\" id={labelId}>{label}</span>\n      {description && <span data-slot=\"selection-card-description\" id={descriptionId}>{description}</span>}\n      {Astro.slots.has('default') && <span data-slot=\"selection-card-addon\"><slot /></span>}\n    </span>\n  </label>\n</span>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "data-slot",
+            "variant",
+            "name, value, checked, disabled, required, form",
+            "label > input",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+          },
+          "example": "<lumen-checkbox-card variant=\"soft\">\n  <label>\n    <input type=\"checkbox\" name=\"updates\" value=\"product\" aria-labelledby=\"updates-label\" aria-describedby=\"updates-description\">\n    <span data-slot=\"selection-card-content\">\n      <span data-slot=\"selection-card-label\" id=\"updates-label\">Product updates</span>\n      <span data-slot=\"selection-card-description\" id=\"updates-description\">New features and release notes.</span>\n    </span>\n  </label>\n</lumen-checkbox-card>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "lumenCheckboxCardElementConfig = {\n  attributeClasses: { variant: variants },\n  baseClassName: 'ui-selection-card ui-checkbox-card',\n  defaults: { 'data-slot': 'checkbox-card', variant: 'outline' },\n  tagName: 'lumen-checkbox-card'\n} as const satisfies LumenElementConfig",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-checkbox-card"
+        },
+        "react": {
+          "available": true,
+          "example": "<CheckboxCard name=\"updates\" value=\"product\" label=\"Product updates\" description=\"New features and release notes.\" />",
+          "importStatement": "import { CheckboxCard } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "children",
+              "optional": true,
+              "type": "ReactNode"
+            },
+            {
+              "name": "description",
+              "optional": true,
+              "type": "ReactNode"
+            },
+            {
+              "name": "icon",
+              "optional": true,
+              "type": "ReactNode"
+            },
+            {
+              "name": "invalid",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "label",
+              "optional": false,
+              "type": "ReactNode"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "'outline' | 'soft'"
+            }
+          ],
+          "propsExtends": "Omit<ComponentPropsWithRef<'input'>, 'children' | 'type'>",
+          "source": "interface SelectionCardProps extends Omit<ComponentPropsWithRef<'input'>, 'children' | 'type'> {\n  /** Non-interactive metadata displayed below the description. */\n  children?: ReactNode\n  description?: ReactNode\n  /** Decorative content; the visible label supplies the accessible name. */\n  icon?: ReactNode\n  invalid?: boolean\n  label: ReactNode\n  variant?: 'outline' | 'soft'\n}\n\nexport type CheckboxCardProps = SelectionCardProps\n\nexport const CheckboxCard = (props: CheckboxCardProps) => <SelectionCard {...props} type=\"checkbox\" />",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "checkbox-card",
+      "keyboardInteractions": [
+        {
+          "action": "Focus the native checkbox.",
+          "key": "Tab"
+        },
+        {
+          "action": "Toggle the focused choice.",
+          "key": "Space"
+        }
+      ],
+      "keywords": [
+        "and",
+        "behavior",
+        "checkbox",
+        "checkboxcard",
+        "choice",
+        "descriptive",
+        "form",
+        "forms",
+        "indicator",
+        "native",
+        "presents",
+        "selection",
+        "visible",
+        "with"
+      ],
+      "name": "CheckboxCard",
+      "props": [
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "invalid",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'outline' | 'soft'"
+        }
+      ],
+      "propsExtends": "Omit<HTMLAttributes<'input'>, 'type' | 'children'>",
+      "recipes": [],
       "runtimeEvents": []
     },
     {
@@ -10814,6 +11125,10 @@
         {
           "name": "responsive-navigation",
           "type": "recipe"
+        },
+        {
+          "name": "card-detail",
+          "type": "recipe"
         }
       ],
       "runtimeEvents": []
@@ -10978,6 +11293,10 @@
         },
         {
           "name": "responsive-navigation",
+          "type": "recipe"
+        },
+        {
+          "name": "card-detail",
           "type": "recipe"
         }
       ],
@@ -11169,6 +11488,10 @@
         {
           "name": "responsive-navigation",
           "type": "recipe"
+        },
+        {
+          "name": "card-detail",
+          "type": "recipe"
         }
       ],
       "runtimeEvents": []
@@ -11333,6 +11656,10 @@
         {
           "name": "image-viewer",
           "type": "recipe"
+        },
+        {
+          "name": "card-detail",
+          "type": "recipe"
         }
       ],
       "runtimeEvents": []
@@ -11480,7 +11807,12 @@
         }
       ],
       "propsExtends": "HTMLAttributes<'footer'>",
-      "recipes": [],
+      "recipes": [
+        {
+          "name": "card-detail",
+          "type": "recipe"
+        }
+      ],
       "runtimeEvents": []
     },
     {
@@ -11619,9 +11951,30 @@
           "importStatement": "import { DialogClose } from '@santi020k/lumen-react'",
           "language": "tsx",
           "packageName": "@santi020k/lumen-react",
-          "props": [],
-          "propsExtends": "ButtonProps",
-          "source": "export type DialogCloseProps = ButtonProps\n\nexport const DialogClose = ({ className, onClick, ...props }: DialogCloseProps) => {\n  const close = use(DialogCloseContext)\n\n  return (\n    <Button\n      {...props}\n      className={composeClassName('ui-dialog-close', className)}\n      data-slot=\"dialog-close\"\n      onClick={event => {\n        onClick?.(event)\n\n        if (event.defaultPrevented) return\n\n        if (close) close()\n        else event.currentTarget.closest('dialog')?.close()\n      }}\n    />\n  )\n}",
+          "props": [
+            {
+              "name": "asChild",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "loading",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "size",
+              "optional": true,
+              "type": "ButtonSize"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "ButtonVariant"
+            }
+          ],
+          "propsExtends": "ComponentPropsWithRef<'button'>",
+          "source": "export interface ButtonProps extends ComponentPropsWithRef<'button'> {\n  asChild?: boolean\n  loading?: boolean\n  size?: ButtonSize\n  variant?: ButtonVariant\n}\n\nexport type DialogCloseProps = ButtonProps\n\nexport const DialogClose = ({ className, onClick, ...props }: DialogCloseProps) => {\n  const close = use(DialogCloseContext)\n\n  return (\n    <Button\n      {...props}\n      className={composeClassName('ui-dialog-close', className)}\n      data-slot=\"dialog-close\"\n      onClick={event => {\n        onClick?.(event)\n\n        if (event.defaultPrevented) return\n\n        if (close) close()\n        else event.currentTarget.closest('dialog')?.close()\n      }}\n    />\n  )\n}",
           "styleImport": "import '@santi020k/lumen-react/styles.css'"
         }
       },
@@ -23326,6 +23679,10 @@
         {
           "name": "media-workspace",
           "type": "recipe"
+        },
+        {
+          "name": "task-progress",
+          "type": "recipe"
         }
       ],
       "runtimeEvents": []
@@ -23512,6 +23869,284 @@
           "type": "recipe"
         }
       ],
+      "runtimeEvents": []
+    },
+    {
+      "apiReference": [
+        {
+          "frameworks": [
+            "astro",
+            "react"
+          ],
+          "attribute": "label, description",
+          "defaultValue": "label required",
+          "description": "Provides the visible label and optional associated description.",
+          "values": "string / ReactNode"
+        },
+        {
+          "attribute": "variant",
+          "defaultValue": "\"outline\"",
+          "description": "Sets the unselected surface without replacing native radio selection behavior.",
+          "values": "\"outline\" | \"soft\""
+        },
+        {
+          "frameworks": [
+            "astro",
+            "react"
+          ],
+          "attribute": "icon / icon slot",
+          "defaultValue": "-",
+          "description": "Adds decorative content before the label. Keep children and icons non-interactive.",
+          "values": "ReactNode / Astro named slot"
+        },
+        {
+          "frameworks": [
+            "astro",
+            "react"
+          ],
+          "attribute": "children / default slot",
+          "defaultValue": "-",
+          "description": "Adds supplementary metadata below the description.",
+          "values": "phrasing content"
+        },
+        {
+          "frameworks": [
+            "astro",
+            "react"
+          ],
+          "attribute": "invalid",
+          "defaultValue": "false",
+          "description": "Sets aria-invalid on the input. Associate error text using aria-describedby.",
+          "values": "boolean"
+        },
+        {
+          "attribute": "name, value, checked, disabled, required, form",
+          "defaultValue": "-",
+          "description": "Use the same name within a labelled fieldset for mutually exclusive options. React also accepts defaultChecked.",
+          "values": "native input attributes"
+        },
+        {
+          "frameworks": [
+            "elements"
+          ],
+          "attribute": "label > input",
+          "defaultValue": "required",
+          "description": "Provide a direct label containing a radio input and selection-card content slots. Set input state and ARIA on that native control.",
+          "values": "native child contract"
+        },
+        {
+          "attribute": "class, className",
+          "defaultValue": "\"\"",
+          "description": "Merges custom classes with the generated ui-* root classes.",
+          "values": "string"
+        },
+        {
+          "attribute": "...native attributes",
+          "defaultValue": "-",
+          "description": "Forwards standard attributes to the root element unless the component consumes them.",
+          "values": "HTML attributes"
+        }
+      ],
+      "astroSource": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/radio-card.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'children'> {\n  class?: string | null\n  className?: string\n  description?: string\n  invalid?: boolean\n  label: string\n  variant?: 'outline' | 'soft'\n}\n\nconst {\n  'aria-describedby': ariaDescribedby,\n  'aria-invalid': ariaInvalid,\n  'aria-label': ariaLabel,\n  'aria-labelledby': ariaLabelledby,\n  class: classProp = '',\n  className = '',\n  description,\n  id,\n  invalid = false,\n  label,\n  variant = 'outline',\n  ...rest\n} = Astro.props\n\nconst controlId = id ?? `ui-radio-card-${crypto.randomUUID()}`\nconst labelId = `${controlId}-label`\nconst descriptionId = description ? `${controlId}-description` : undefined\nconst describedBy = [ariaDescribedby, descriptionId].filter(Boolean).join(' ') || undefined\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-selection-card',\n  'ui-radio-card',\n  `ui-selection-card--${variant}`\n], classProp, className)\n---\n\n<span class:list={classList} data-slot=\"radio-card\">\n  <label>\n    <input\n      {...passthrough}\n      aria-describedby={describedBy}\n      aria-invalid={invalid ? 'true' : ariaInvalid}\n      aria-label={ariaLabel}\n      aria-labelledby={ariaLabelledby ?? (ariaLabel ? undefined : labelId)}\n      id={controlId}\n      type=\"radio\"\n    />\n    {Astro.slots.has('icon') && (\n      <span aria-hidden=\"true\" data-slot=\"selection-card-icon\"><slot name=\"icon\" /></span>\n    )}\n    <span data-slot=\"selection-card-content\">\n      <span data-slot=\"selection-card-label\" id={labelId}>{label}</span>\n      {description && <span data-slot=\"selection-card-description\" id={descriptionId}>{description}</span>}\n      {Astro.slots.has('default') && <span data-slot=\"selection-card-addon\"><slot /></span>}\n    </span>\n  </label>\n</span>\n",
+      "category": "Forms",
+      "collections": [],
+      "contract": null,
+      "dependencies": [
+        "styles"
+      ],
+      "description": "Presents a descriptive, mutually exclusive native radio choice with an optional icon and metadata.",
+      "behavior": {
+        "astro": "none",
+        "elements": "registered-element",
+        "react": "component"
+      },
+      "files": [
+        "packages/astro/components/RadioCard.astro",
+        "packages/astro/styles/lumen.css"
+      ],
+      "frameworkDetails": {
+        "astro": {
+          "available": true,
+          "example": "<RadioGroup><legend>Plan</legend><RadioCard name=\"plan\" value=\"personal\" label=\"Personal\" description=\"For individual projects.\" /><RadioCard name=\"plan\" value=\"team\" label=\"Team\" description=\"For shared workspaces.\" /></RadioGroup>",
+          "importStatement": "import { RadioGroup, RadioCard } from '@santi020k/lumen-astro'",
+          "language": "astro",
+          "packageName": "@santi020k/lumen-astro",
+          "props": [
+            {
+              "name": "class",
+              "optional": true,
+              "type": "string | null"
+            },
+            {
+              "name": "className",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "description",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "invalid",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "label",
+              "optional": false,
+              "type": "string"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "'outline' | 'soft'"
+            }
+          ],
+          "propsExtends": "Omit<HTMLAttributes<'input'>, 'type' | 'children'>",
+          "source": "---\nimport type { HTMLAttributes } from 'astro/types'\n\nimport '../styles/foundation.css'\nimport '../styles/components/radio-card.css'\n\nimport { resolveLumenAstroProps } from '@santi020k/lumen-core'\n\ninterface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'children'> {\n  class?: string | null\n  className?: string\n  description?: string\n  invalid?: boolean\n  label: string\n  variant?: 'outline' | 'soft'\n}\n\nconst {\n  'aria-describedby': ariaDescribedby,\n  'aria-invalid': ariaInvalid,\n  'aria-label': ariaLabel,\n  'aria-labelledby': ariaLabelledby,\n  class: classProp = '',\n  className = '',\n  description,\n  id,\n  invalid = false,\n  label,\n  variant = 'outline',\n  ...rest\n} = Astro.props\n\nconst controlId = id ?? `ui-radio-card-${crypto.randomUUID()}`\nconst labelId = `${controlId}-label`\nconst descriptionId = description ? `${controlId}-description` : undefined\nconst describedBy = [ariaDescribedby, descriptionId].filter(Boolean).join(' ') || undefined\n\nconst { classList, passthrough } = resolveLumenAstroProps(rest, [\n  'ui-selection-card',\n  'ui-radio-card',\n  `ui-selection-card--${variant}`\n], classProp, className)\n---\n\n<span class:list={classList} data-slot=\"radio-card\">\n  <label>\n    <input\n      {...passthrough}\n      aria-describedby={describedBy}\n      aria-invalid={invalid ? 'true' : ariaInvalid}\n      aria-label={ariaLabel}\n      aria-labelledby={ariaLabelledby ?? (ariaLabel ? undefined : labelId)}\n      id={controlId}\n      type=\"radio\"\n    />\n    {Astro.slots.has('icon') && (\n      <span aria-hidden=\"true\" data-slot=\"selection-card-icon\"><slot name=\"icon\" /></span>\n    )}\n    <span data-slot=\"selection-card-content\">\n      <span data-slot=\"selection-card-label\" id={labelId}>{label}</span>\n      {description && <span data-slot=\"selection-card-description\" id={descriptionId}>{description}</span>}\n      {Astro.slots.has('default') && <span data-slot=\"selection-card-addon\"><slot /></span>}\n    </span>\n  </label>\n</span>\n",
+          "styleImport": "import '@santi020k/lumen-astro/styles.css'"
+        },
+        "elements": {
+          "attributes": [
+            "data-slot",
+            "variant",
+            "name, value, checked, disabled, required, form",
+            "label > input",
+            "class, className",
+            "...native attributes"
+          ],
+          "available": true,
+          "behavior": {
+            "mode": "registration",
+            "setup": "Call defineLumenElements() once before rendering Lumen custom elements."
+          },
+          "example": "<fieldset>\n  <legend>Workspace plan</legend>\n  <lumen-radio-card>\n    <label>\n      <input type=\"radio\" name=\"plan\" value=\"personal\" checked aria-labelledby=\"personal-label\">\n      <span data-slot=\"selection-card-content\"><span data-slot=\"selection-card-label\" id=\"personal-label\">Personal</span></span>\n    </label>\n  </lumen-radio-card>\n  <lumen-radio-card>\n    <label>\n      <input type=\"radio\" name=\"plan\" value=\"team\" aria-labelledby=\"team-label\">\n      <span data-slot=\"selection-card-content\"><span data-slot=\"selection-card-label\" id=\"team-label\">Team</span></span>\n    </label>\n  </lumen-radio-card>\n</fieldset>",
+          "importStatement": "import { defineLumenElements } from '@santi020k/lumen-elements/define'",
+          "language": "html",
+          "packageName": "@santi020k/lumen-elements",
+          "props": [],
+          "propsExtends": "HTMLElement attributes",
+          "registration": "defineLumenElements()",
+          "source": "lumenRadioCardElementConfig = {\n  attributeClasses: { variant: variants },\n  baseClassName: 'ui-selection-card ui-radio-card',\n  defaults: { 'data-slot': 'radio-card', variant: 'outline' },\n  tagName: 'lumen-radio-card'\n} as const satisfies LumenElementConfig",
+          "styleImport": "import '@santi020k/lumen-elements/styles.css'",
+          "tagName": "lumen-radio-card"
+        },
+        "react": {
+          "available": true,
+          "example": "<RadioGroup><legend>Plan</legend><RadioCard name=\"plan\" value=\"personal\" label=\"Personal\" description=\"For individual projects.\" /><RadioCard name=\"plan\" value=\"team\" label=\"Team\" description=\"For shared workspaces.\" /></RadioGroup>",
+          "importStatement": "import { RadioGroup, RadioCard } from '@santi020k/lumen-react'",
+          "language": "tsx",
+          "packageName": "@santi020k/lumen-react",
+          "props": [
+            {
+              "name": "children",
+              "optional": true,
+              "type": "ReactNode"
+            },
+            {
+              "name": "description",
+              "optional": true,
+              "type": "ReactNode"
+            },
+            {
+              "name": "icon",
+              "optional": true,
+              "type": "ReactNode"
+            },
+            {
+              "name": "invalid",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "name": "label",
+              "optional": false,
+              "type": "ReactNode"
+            },
+            {
+              "name": "variant",
+              "optional": true,
+              "type": "'outline' | 'soft'"
+            }
+          ],
+          "propsExtends": "Omit<ComponentPropsWithRef<'input'>, 'children' | 'type'>",
+          "source": "interface SelectionCardProps extends Omit<ComponentPropsWithRef<'input'>, 'children' | 'type'> {\n  /** Non-interactive metadata displayed below the description. */\n  children?: ReactNode\n  description?: ReactNode\n  /** Decorative content; the visible label supplies the accessible name. */\n  icon?: ReactNode\n  invalid?: boolean\n  label: ReactNode\n  variant?: 'outline' | 'soft'\n}\n\nexport type RadioCardProps = SelectionCardProps\n\nexport const RadioCard = (props: RadioCardProps) => <SelectionCard {...props} type=\"radio\" />",
+          "styleImport": "import '@santi020k/lumen-react/styles.css'"
+        }
+      },
+      "frameworks": {
+        "astro": true,
+        "elements": true,
+        "react": true
+      },
+      "guidance": null,
+      "kebab": "radio-card",
+      "keyboardInteractions": [
+        {
+          "action": "Enter or leave the native radio group.",
+          "key": "Tab"
+        },
+        {
+          "action": "Move and select within enabled choices sharing a name.",
+          "key": "Arrow keys"
+        },
+        {
+          "action": "Select the focused choice.",
+          "key": "Space"
+        }
+      ],
+      "keywords": [
+        "and",
+        "choice",
+        "descriptive",
+        "exclusive",
+        "forms",
+        "icon",
+        "metadata",
+        "mutually",
+        "native",
+        "optional",
+        "presents",
+        "radio",
+        "radiocard",
+        "with"
+      ],
+      "name": "RadioCard",
+      "props": [
+        {
+          "name": "class",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "className",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "invalid",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "variant",
+          "optional": true,
+          "type": "'outline' | 'soft'"
+        }
+      ],
+      "propsExtends": "Omit<HTMLAttributes<'input'>, 'type' | 'children'>",
+      "recipes": [],
       "runtimeEvents": []
     },
     {
@@ -25992,6 +26627,10 @@
         {
           "name": "docs-shell",
           "type": "recipe"
+        },
+        {
+          "name": "card-detail",
+          "type": "recipe"
         }
       ],
       "runtimeEvents": []
@@ -26406,7 +27045,12 @@
         }
       ],
       "propsExtends": "HTMLAttributes<'div'>",
-      "recipes": [],
+      "recipes": [
+        {
+          "name": "metric-card",
+          "type": "recipe"
+        }
+      ],
       "runtimeEvents": []
     },
     {
@@ -27033,6 +27677,10 @@
         },
         {
           "name": "project-workspace",
+          "type": "recipe"
+        },
+        {
+          "name": "metric-card",
           "type": "recipe"
         }
       ],
@@ -30714,6 +31362,14 @@
         {
           "name": "command-center",
           "type": "recipe"
+        },
+        {
+          "name": "card-detail",
+          "type": "recipe"
+        },
+        {
+          "name": "task-progress",
+          "type": "recipe"
         }
       ],
       "runtimeEvents": []
@@ -31676,7 +32332,12 @@
         }
       ],
       "propsExtends": "Omit<HTMLAttributes<'span'>, 'prefix'>",
-      "recipes": [],
+      "recipes": [
+        {
+          "name": "metric-card",
+          "type": "recipe"
+        }
+      ],
       "runtimeEvents": []
     },
     {
@@ -32608,6 +33269,10 @@
         },
         {
           "name": "dashboard-shell",
+          "type": "recipe"
+        },
+        {
+          "name": "metric-card",
           "type": "recipe"
         }
       ],
@@ -46615,8 +47280,8 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <picture>\n      <source media=\"(prefers-color-scheme: dark)\" srcset=\"./docs/assets/readme/hero-dark.svg\">\n      <img src=\"./docs/assets/readme/hero-light.svg\" alt=\"Lumen UI — A shared language. Every interface.\" width=\"1200\" height=\"340\">\n    </picture>\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  <strong>Accessible primitives. Native authoring. Shared foundations.</strong><br>\n  An open-source UI system for Astro, React, Web Components, React Native, SwiftUI, and Jetpack Compose.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com/docs\">Documentation</a> ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a> ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Playgrounds</a> ·\n  <a href=\"https://lumen.santi020k.com/support\">Support</a>\n</p>\n\n<p align=\"center\">\n  <strong>Figma Community</strong> ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513/lumen-ui-library-v5\">Lumen UI Library</a> ·\n  <a href=\"https://www.figma.com/community/file/1700607667944072280/lumen-templates\">Lumen Templates</a> ·\n  <a href=\"https://www.figma.com/community/file/1700608473577262170/lumen-playgrounds\">Lumen Playgrounds</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/ci.yml\"><img alt=\"CI status on main\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&amp;style=flat-square&amp;label=CI\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL status\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"Published Astro package version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&amp;label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-036b8c?style=flat-square\"></a>\n</p>\n\n## One system, your framework\n\nBuild web and native interfaces with shared design tokens, accessible components, and each\nplatform's own authoring conventions. Astro is the reference implementation.\n\n<p>\n  <a href=\"https://lumen.santi020k.com/docs/web/playground\">\n    <img src=\"./apps/docs/src/assets/platforms/web.webp\" alt=\"A Lumen web workspace with navigation, metric cards, an interactive chart, and a task form\" width=\"1184\" height=\"802\">\n  </a>\n</p>\n\n*Real Lumen components with illustrative data. [Open the web playground →](https://lumen.santi020k.com/docs/web/playground)*\n\n## Start building\n\n**Start with a free Astro project.** The [Lumen Astro starter](https://lumen.santi020k.com/starters/astro)\nincludes landing page, ecommerce, dashboard, and portfolio templates with seven Lumen theme families\nand light/dark modes. Use it for personal or commercial projects under the MIT license.\n\n[View the source](https://github.com/santi020k/lumen/tree/main/examples/astro-starter) ·\n[Download the starter](https://lumen.santi020k.com/downloads/lumen-astro-starter.zip) ·\n[Follow the walkthrough](https://lumen.santi020k.com/guides/build-an-astro-starter)\n\nChoose your framework, install its adapter, and follow the setup guide for styles and runtime.\n\n| Framework | Setup guide |\n| --- | --- |\n| **Astro** | [Astro quick start](https://lumen.santi020k.com/docs/frameworks/astro) |\n| **React** | [React quick start](https://lumen.santi020k.com/docs/frameworks/react) |\n| **Web Components** | [Elements quick start](https://lumen.santi020k.com/docs/frameworks/elements) |\n| **React Native** | [React Native guide](https://lumen.santi020k.com/docs/react-native) |\n| **SwiftUI** | [Apple guide](https://lumen.santi020k.com/docs/apple) |\n| **Jetpack Compose** | [Android guide](https://lumen.santi020k.com/docs/android) |\n\nAstro requires Astro 5+; React requires React 19+. See each guide for supported toolchains\nand complete configuration. Browse the [package directory](https://lumen.santi020k.com/docs/packages)\nfor tokens, icons, integrations, and focused native packages.\n\n> **Upgrading to Lumen 5?** Follow the [migration guide](https://lumen.santi020k.com/docs/migrations/v4-to-v5)\n> and [selective installation guide](docs/selective-installation.md). Package versions and store\n> builds follow their own release schedules; check availability before upgrading.\n\n## Explore the system\n\n| I want to… | Go to |\n| --- | --- |\n| Find a component and its API | [Component catalog](https://lumen.santi020k.com/docs/components) |\n| Try components, states, and themes | [Web playground](https://lumen.santi020k.com/docs/web/playground) |\n| Start from a complete product layout | [Dashboard and app templates](https://lumen.santi020k.com/templates) |\n| Customize colors and appearance | [Web themes](https://lumen.santi020k.com/docs/web/themes) · [Theme playground](https://lumen.santi020k.com/docs/theme-playground) |\n| Use Tailwind alongside Lumen | [Tailwind integration](https://lumen.santi020k.com/docs/web/tailwind) |\n| Build a real screen step by step | [Practical guides](https://lumen.santi020k.com/guides) |\n| Understand the shared foundations | [Tokens and platform contracts](https://lumen.santi020k.com/docs/foundations) |\n\n## Try it on native\n\n<table>\n  <tr>\n    <th>SwiftUI</th>\n    <th>Jetpack Compose</th>\n    <th>React Native</th>\n  </tr>\n  <tr>\n    <td><a href=\"https://lumen.santi020k.com/docs/apple/playground\"><img src=\"./apps/docs/src/assets/platforms/apple.webp\" alt=\"Native SwiftUI release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/android/playground\"><img src=\"./apps/docs/src/assets/platforms/android.webp\" alt=\"Native Compose release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/react-native/playground\"><img src=\"./apps/docs/src/assets/platforms/react-native.webp\" alt=\"Expo browser preview of the contributor profile example\" width=\"220\"></a></td>\n  </tr>\n  <tr>\n    <td>Native app capture</td>\n    <td>Native app capture</td>\n    <td>Expo browser preview</td>\n  </tr>\n</table>\n\nSee [capture provenance](apps/docs/src/assets/platforms/README.md) for sources and verification scope.\n\n[Apple App Store](https://apps.apple.com/app/id6805250815) ·\n[Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose) ·\n[React Native browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n\nFor local setup and source, see the [playground guide](docs/playgrounds.md).\nCheck [native compatibility](docs/native-compatibility.md) and\n[device validation evidence](docs/native-device-validation.md) for your target.\n\n## Build with AI and Figma\n\nGive your coding agent Lumen's component selection, composition, and verification guidance:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\n[Agent skill guide](https://lumen.santi020k.com/docs/ai-skill) ·\n[MCP catalog](https://lumen.santi020k.com/docs/mcp) ·\n[Lumen UI plugin for ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\n\nDesign with the [Figma community library](https://www.figma.com/community/file/1662337342676541513)\nand follow the [Figma integration guide](https://lumen.santi020k.com/docs/figma)\nfor variables and Code Connect. The [local Figma plugin](apps/figma-plugin/README.md) exports\nAstro, React and Web Components starters for Lumen releases 5.0.0 and 4.4.0. It also exports React Native and Compose 4.1.0 components and SwiftUI views for iPhone and Mac using the v5.0.0 Swift package.\n\n## Contribute and connect\n\nRead [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, workspace commands, tests, and release rules.\nThe [architecture guide](docs/cross-platform.md) explains package boundaries and platform responsibilities.\n\n[Feedback and support](https://lumen.santi020k.com/support) ·\n[Public roadmap](https://lumen.santi020k.com/support#roadmap) ·\n[Community showcase](https://lumen.santi020k.com/community) ·\n[Changelog](https://lumen.santi020k.com/changelog)\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n\nCreated and maintained by [Santiago Molina](https://santi020k.com).\n"
   },
   "meta": {
-    "catalogHash": "5efcd2f2f1a63b9a1c00e00e1bf842b38887bc237ca9ceefa4d1d67c0c232263",
-    "componentCount": 196,
+    "catalogHash": "88ecc8447e10632003e7d4f154263585cdcf3890c1c9f7baa714fce66f8bf4e4",
+    "componentCount": 198,
     "nativeComponentCount": 125,
     "packages": [
       "@santi020k/lumen-astro",
@@ -63301,6 +63966,215 @@
         "astro": "lumen add editable-ticket --target astro",
         "elements": "lumen add editable-ticket --target elements",
         "react": "lumen add editable-ticket --target react"
+      }
+    },
+    {
+      "name": "card-detail",
+      "type": "recipe",
+      "components": [
+        "Button",
+        "Card",
+        "Dialog",
+        "DialogBody",
+        "DialogFooter",
+        "DialogHeader",
+        "DialogTitle",
+        "Sheet",
+        "Typography"
+      ],
+      "files": [
+        "docs/visual-product-recipes.md"
+      ],
+      "setup": {
+        "astro": {
+          "dependencies": [
+            "@santi020k/lumen-astro"
+          ],
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Mount the public Astro runtime once in the root layout.",
+            "Import the installed scoped stylesheet once in the application layout.",
+            "The application owns data, asynchronous actions and state updates; see visual-product-recipes.md."
+          ]
+        },
+        "react": {
+          "dependencies": [
+            "@santi020k/lumen-react"
+          ],
+          "instructions": [
+            "Import the adapter foundation and required component styles in the application.",
+            "Import the installed TSX recipe and its scoped stylesheet once in the application.",
+            "Supply application-owned state and callbacks."
+          ]
+        },
+        "elements": {
+          "dependencies": [
+            "@santi020k/lumen-elements"
+          ],
+          "instructions": [
+            "Use a bundler for the installed module imports and load the adapter stylesheet.",
+            "Give each recipe instance unique IDs and connect application-owned state."
+          ]
+        }
+      },
+      "categories": [
+        "Actions",
+        "Layout",
+        "Overlays"
+      ],
+      "examples": {
+        "astro": "---\nimport { Button, Card, Dialog, DialogBody, DialogFooter, DialogHeader, DialogTitle, Sheet, Typography } from '@santi020k/lumen-astro'\n\ninterface Props {\n  id: string\n  title: string\n  summary: string\n  openLabel?: string\n  closeLabel?: string\n  presentation?: 'dialog' | 'sheet'\n}\n\nconst { id, title, summary, openLabel = 'View details', closeLabel = 'Close details', presentation = 'dialog' } = Astro.props\nconst trigger = presentation === 'sheet' ? { 'data-ui-sheet-trigger': id } : { 'data-ui-dialog-trigger': id }\n---\n\n<Card class=\"lumen-card-detail\">\n  <Typography><h3>{title}</h3></Typography>\n  <p class=\"lumen-card-detail__summary\">{summary}</p>\n  <Button variant=\"outline\" aria-controls={id} aria-haspopup=\"dialog\" {...trigger}>{openLabel}</Button>\n</Card>\n{presentation === 'sheet' ?\n(\n  <Sheet\nid={id}\naria-labelledby={`${id}-title`}\nclass=\"lumen-card-detail__surface\"\n  >\n    <DialogHeader><DialogTitle id={`${id}-title`}>{title}</DialogTitle></DialogHeader>\n    <DialogBody><slot /></DialogBody>\n    <DialogFooter><Button variant=\"outline\" data-ui-sheet-close>{closeLabel}</Button></DialogFooter>\n  </Sheet>\n) :\n(\n  <Dialog\nid={id}\naria-labelledby={`${id}-title`}\nclass=\"lumen-card-detail__surface\"\n  >\n    <DialogHeader><DialogTitle id={`${id}-title`}>{title}</DialogTitle></DialogHeader>\n    <DialogBody><slot /></DialogBody>\n    <DialogFooter><Button variant=\"outline\" data-ui-dialog-close>{closeLabel}</Button></DialogFooter>\n  </Dialog>\n)}\n",
+        "react": "'use client'\n\nimport { type ReactNode, useId } from 'react'\n\nimport { Button, Card, Dialog, DialogBody, DialogFooter, DialogHeader, DialogTitle, Sheet, Typography, useDialog } from '@santi020k/lumen-react'\n\nexport interface CardDetailRecipeProps {\n  title: string\n  summary: string\n  children?: ReactNode\n  openLabel?: string\n  closeLabel?: string\n  presentation?: 'dialog' | 'sheet'\n}\n\n/** A real button opens the details; the public modal controller restores focus on dismissal. */\nexport const CardDetailRecipe = ({ title, summary, children, openLabel = 'View details', closeLabel = 'Close details', presentation = 'dialog' }: CardDetailRecipeProps) => {\n  const id = useId()\n  const dialog = useDialog()\n\n  const content = (\n    <>\n      <DialogHeader><DialogTitle id={`${id}-title`}>{title}</DialogTitle></DialogHeader>\n      <DialogBody>{children}</DialogBody>\n      <DialogFooter><Button variant=\"outline\" {...dialog.closeProps}>{closeLabel}</Button></DialogFooter>\n    </>\n  )\n\n  return (\n    <>\n      <Card className=\"lumen-card-detail\">\n        <Typography><h3>{title}</h3></Typography>\n        <p className=\"lumen-card-detail__summary\">{summary}</p>\n        <Button variant=\"outline\" aria-controls={id} aria-expanded={dialog.open} {...dialog.triggerProps}>{openLabel}</Button>\n      </Card>\n      {presentation === 'sheet' ?\n        (\n          <Sheet\n            {...dialog.dialogProps}\n            id={id}\n            aria-labelledby={`${id}-title`}\n            className=\"lumen-card-detail__surface\"\n          >\n            {content}\n          </Sheet>\n        ) :\n        (\n          <Dialog\n            id={id}\n            open={dialog.open}\n            onOpenChange={dialog.setOpen}\n            aria-labelledby={`${id}-title`}\n            className=\"lumen-card-detail__surface\"\n          >\n            {content}\n          </Dialog>\n        )}\n    </>\n  )\n}\n",
+        "elements": "<link rel=\"stylesheet\" href=\"./card-detail.css\" />\n<!-- Give each installed instance unique IDs. Use lumen-sheet and data-ui-sheet-trigger/close for a sheet. -->\n<lumen-card class=\"lumen-card-detail\">\n  <lumen-typography><h3>Release overview</h3></lumen-typography>\n  <p class=\"lumen-card-detail__summary\">Inspect the scope and supporting evidence.</p>\n  <lumen-button variant=\"outline\" aria-controls=\"release-details\" aria-haspopup=\"dialog\" data-ui-dialog-trigger=\"release-details\">View details</lumen-button>\n</lumen-card>\n<lumen-dialog id=\"release-details\" aria-labelledby=\"release-details-title\" class=\"lumen-card-detail__surface\">\n  <lumen-dialog-header><lumen-dialog-title id=\"release-details-title\">Release overview</lumen-dialog-title></lumen-dialog-header>\n  <lumen-dialog-body><lumen-typography><p>Replace this illustrative content with application-owned details.</p></lumen-typography></lumen-dialog-body>\n  <lumen-dialog-footer><lumen-button variant=\"outline\" data-ui-dialog-close>Close details</lumen-button></lumen-dialog-footer>\n</lumen-dialog>\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n  defineLumenElements()\n</script>\n"
+      },
+      "frameworks": [
+        "astro",
+        "react",
+        "elements"
+      ],
+      "description": "A card detail composition using Button, Card, Dialog, DialogBody, DialogFooter, DialogHeader, DialogTitle, Sheet, Typography.",
+      "install": {
+        "astro": "lumen add card-detail --target astro",
+        "elements": "lumen add card-detail --target elements",
+        "react": "lumen add card-detail --target react"
+      }
+    },
+    {
+      "name": "metric-card",
+      "type": "recipe",
+      "components": [
+        "AnimatedNumber",
+        "Badge",
+        "Button",
+        "Card",
+        "Skeleton",
+        "Sparkline",
+        "Stat"
+      ],
+      "files": [
+        "docs/visual-product-recipes.md"
+      ],
+      "setup": {
+        "astro": {
+          "dependencies": [
+            "@santi020k/lumen-astro"
+          ],
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Mount the public Astro runtime once in the root layout.",
+            "Import the installed scoped stylesheet once in the application layout.",
+            "The application owns data, asynchronous actions and state updates; see visual-product-recipes.md."
+          ]
+        },
+        "react": {
+          "dependencies": [
+            "@santi020k/lumen-react"
+          ],
+          "instructions": [
+            "Import the adapter foundation and required component styles in the application.",
+            "Import the installed TSX recipe and its scoped stylesheet once in the application.",
+            "Supply application-owned state and callbacks."
+          ]
+        },
+        "elements": {
+          "dependencies": [
+            "@santi020k/lumen-elements"
+          ],
+          "instructions": [
+            "Use a bundler for the installed module imports and load the adapter stylesheet.",
+            "Give each recipe instance unique IDs and connect application-owned state."
+          ]
+        }
+      },
+      "categories": [
+        "Actions",
+        "Data display",
+        "Feedback",
+        "Layout"
+      ],
+      "examples": {
+        "astro": "---\nimport { AnimatedNumber, Badge, Card, Skeleton, Sparkline, Stat } from '@santi020k/lumen-astro'\n\nexport type MetricSnapshot =\n  | { state: 'loading' } |\n  { state: 'error', message: string } |\n  { state: 'ready' | 'stale', value: number, values: readonly number[], change: string, comparison: string, trend: 'positive' | 'negative' | 'neutral', updatedAt: string }\n\nexport interface MetricCardOptions {\n  label: string\n  snapshot: MetricSnapshot\n  locale?: string\n  prefix?: string\n  suffix?: string\n  decimals?: number\n  loadingLabel?: string\n  staleLabel?: string\n  retryLabel?: string\n  trendLabel?: string\n}\n\ntype Props = MetricCardOptions\n\nconst { label, snapshot, locale, prefix, suffix, decimals, loadingLabel = 'Loading metric', staleLabel = 'Out of date', trendLabel = `${label} trend` } = Astro.props\nconst variants = { positive: 'success', negative: 'destructive', neutral: 'outline' } as const\n\nconst statusText = (): string => {\n  if (snapshot.state === 'loading') return loadingLabel\n\n  if (snapshot.state === 'error') return snapshot.message\n\n  if (snapshot.state === 'stale') return staleLabel\n\n  return ''\n}\n---\n\n<Card class=\"lumen-metric-card\" data-state={snapshot.state} aria-busy={snapshot.state === 'loading'}>\n  <Stat label={label} variant=\"bare\">\n    {snapshot.state === 'loading' && <Skeleton height=\"3rem\" width=\"70%\" />}\n    {(snapshot.state === 'ready' || snapshot.state === 'stale') && (\n      <AnimatedNumber\n        class=\"lumen-metric-card__value\"\n        value={snapshot.value}\n        {...(locale === undefined ? {} : { locale })}\n        {...(prefix === undefined ? {} : { prefix })}\n        {...(suffix === undefined ? {} : { suffix })}\n        {...(decimals === undefined ? {} : { decimals })}\n      />\n    )}\n  </Stat>\n  {(snapshot.state === 'ready' || snapshot.state === 'stale') && (\n    <>\n      <div class=\"lumen-metric-card__trend\">\n        <Badge variant={variants[snapshot.trend]}>{snapshot.change}</Badge>\n        <span class=\"lumen-metric-card__note\">{snapshot.comparison}</span>\n      </div>\n      <Sparkline\n        class=\"lumen-metric-card__chart\"\n        values={snapshot.values}\n        label={trendLabel}\n        tone={snapshot.trend === 'negative' ? 'danger' : 'brand'}\n      />\n      <p class=\"lumen-metric-card__note\">{snapshot.updatedAt}</p>\n    </>\n  )}\n  <p class=\"lumen-metric-card__status\" role=\"status\">{statusText()}</p>\n  {snapshot.state === 'error' && <slot name=\"retry\" />}\n</Card>\n",
+        "react": "'use client'\n\nimport { AnimatedNumber, Badge, Button, Card, Skeleton, Sparkline, Stack, Stat } from '@santi020k/lumen-react'\n\nexport type MetricSnapshot =\n  | { state: 'loading' } |\n  { state: 'error', message: string } |\n  { state: 'ready' | 'stale', value: number, values: readonly number[], change: string, comparison: string, trend: 'positive' | 'negative' | 'neutral', updatedAt: string }\n\nexport interface MetricCardOptions {\n  label: string\n  snapshot: MetricSnapshot\n  locale?: string\n  prefix?: string\n  suffix?: string\n  decimals?: number\n  loadingLabel?: string\n  staleLabel?: string\n  retryLabel?: string\n  trendLabel?: string\n}\n\nexport interface MetricCardRecipeProps extends MetricCardOptions { onRetry?: () => void }\n\nconst variants = { positive: 'success', negative: 'destructive', neutral: 'outline' } as const\n\nconst MetricValue = ({ snapshot, locale, prefix, suffix, decimals }: MetricCardOptions) => {\n  if (snapshot.state === 'loading') return <Skeleton height=\"3rem\" width=\"70%\" />\n\n  if (snapshot.state === 'error') return null\n\n  return (\n    <AnimatedNumber\n      className=\"lumen-metric-card__value\"\n      value={snapshot.value}\n      {...(locale === undefined ? {} : { locale })}\n      {...(prefix === undefined ? {} : { prefix })}\n      {...(suffix === undefined ? {} : { suffix })}\n      {...(decimals === undefined ? {} : { decimals })}\n    />\n  )\n}\n\nconst MetricData = ({ label, snapshot, trendLabel = `${label} trend` }: MetricCardOptions) => {\n  if (snapshot.state !== 'ready' && snapshot.state !== 'stale') return null\n\n  return (\n    <>\n      <div className=\"lumen-metric-card__trend\">\n        <Badge variant={variants[snapshot.trend]}>{snapshot.change}</Badge>\n        <span className=\"lumen-metric-card__note\">\n          {snapshot.comparison}\n        </span>\n      </div>\n      <Sparkline className=\"lumen-metric-card__chart\" values={snapshot.values} label={trendLabel} tone={snapshot.trend === 'negative' ? 'danger' : 'brand'} />\n      <p className=\"lumen-metric-card__note\">{snapshot.updatedAt}</p>\n    </>\n  )\n}\n\nconst metricStatus = ({ snapshot, loadingLabel = 'Loading metric', staleLabel = 'Out of date' }: MetricCardOptions): string => {\n  if (snapshot.state === 'loading') return loadingLabel\n\n  if (snapshot.state === 'error') return snapshot.message\n\n  if (snapshot.state === 'stale') return staleLabel\n\n  return ''\n}\n\nexport const MetricCardRecipe = (props: MetricCardRecipeProps) => (\n  <Card className=\"lumen-metric-card\" data-state={props.snapshot.state} aria-busy={props.snapshot.state === 'loading'}>\n    <Stat label={props.label} variant=\"bare\"><MetricValue {...props} /></Stat>\n    <MetricData {...props} />\n    <p className=\"lumen-metric-card__status\" role=\"status\">{metricStatus(props)}</p>\n    {props.snapshot.state === 'error' && props.onRetry ? <Stack direction=\"horizontal\"><Button variant=\"outline\" onClick={props.onRetry}>{props.retryLabel ?? 'Try again'}</Button></Stack> : null}\n  </Card>\n)\n",
+        "elements": "<link rel=\"stylesheet\" href=\"./metric-card.css\" />\n<section id=\"revenue-metric\" aria-label=\"Revenue metric\"><p>Revenue data is unavailable until the application supplies a snapshot.</p></section>\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n  import { renderMetricCard } from './metric-card.ts'\n  defineLumenElements()\n  // Illustrative data. Call renderMetricCard again when the application receives an update.\n  renderMetricCard(document.getElementById('revenue-metric'), { label: 'Monthly revenue', prefix: '$', snapshot: { state: 'stale', value: 184320, values: [118, 126, 132, 148, 162, 184], change: '+12.4%', comparison: 'versus the previous month', trend: 'positive', updatedAt: 'Last refreshed 12 minutes ago' } })\n</script>\n"
+      },
+      "frameworks": [
+        "astro",
+        "react",
+        "elements"
+      ],
+      "description": "A metric card composition using AnimatedNumber, Badge, Button, Card, Skeleton, Sparkline, Stat.",
+      "install": {
+        "astro": "lumen add metric-card --target astro",
+        "elements": "lumen add metric-card --target elements",
+        "react": "lumen add metric-card --target react"
+      }
+    },
+    {
+      "name": "task-progress",
+      "type": "recipe",
+      "components": [
+        "Badge",
+        "Button",
+        "Card",
+        "Progress",
+        "Typography"
+      ],
+      "files": [
+        "docs/visual-product-recipes.md"
+      ],
+      "setup": {
+        "astro": {
+          "dependencies": [
+            "@santi020k/lumen-astro"
+          ],
+          "runtime": "@santi020k/lumen-astro/runtime",
+          "instructions": [
+            "Mount the public Astro runtime once in the root layout.",
+            "Import the installed scoped stylesheet once in the application layout.",
+            "The application owns data, asynchronous actions and state updates; see visual-product-recipes.md."
+          ]
+        },
+        "react": {
+          "dependencies": [
+            "@santi020k/lumen-react"
+          ],
+          "instructions": [
+            "Import the adapter foundation and required component styles in the application.",
+            "Import the installed TSX recipe and its scoped stylesheet once in the application.",
+            "Supply application-owned state and callbacks."
+          ]
+        },
+        "elements": {
+          "dependencies": [
+            "@santi020k/lumen-elements"
+          ],
+          "instructions": [
+            "Use a bundler for the installed module imports and load the adapter stylesheet.",
+            "Give each recipe instance unique IDs and connect application-owned state."
+          ]
+        }
+      },
+      "categories": [
+        "Actions",
+        "Data display",
+        "Feedback",
+        "Layout"
+      ],
+      "examples": {
+        "astro": "---\nimport { Badge, Button, Card, Progress, Typography } from '@santi020k/lumen-astro'\n\nexport type TaskStatus = 'queued' | 'running' | 'complete' | 'failed' | 'canceled'\nexport interface TaskSnapshot {\n  status: TaskStatus\n  completed: number\n  total: number\n  detail: string\n}\nexport type TaskAction = 'cancel' | 'retry'\nexport const taskStatusLabels: Record<TaskStatus, string> = { queued: 'Queued', running: 'In progress', complete: 'Complete', failed: 'Failed', canceled: 'Canceled' }\n\ninterface Props {\n  id: string\n  title: string\n  snapshot: TaskSnapshot\n  labels?: Record<TaskStatus, string>\n  progressLabel?: string\n  retryLabel?: string\n  cancelLabel?: string\n  actions?: boolean\n}\n\nconst { id, title, snapshot, labels = taskStatusLabels, progressLabel = 'Completed steps', retryLabel = 'Retry', cancelLabel = 'Cancel task', actions = false } = Astro.props\nconst statuses = ['queued', 'running', 'complete', 'failed', 'canceled'] as const\nconst variants = { queued: 'outline', running: 'outline', complete: 'success', failed: 'destructive', canceled: 'outline' } as const\n---\n\n<Card id={id} class=\"lumen-task-progress\" data-task-recipe data-task-status={snapshot.status}>\n  <div class=\"lumen-task-progress__heading\">\n    <Typography><h3>{title}</h3></Typography>\n    {statuses.map(status => (\n      <Badge hidden={snapshot.status !== status} data-task-status-label={status} variant={variants[status]}>\n        {labels[status]}\n      </Badge>\n    ))}\n  </div>\n  <p class=\"lumen-task-progress__detail\" role=\"status\" data-task-detail>{snapshot.detail}</p>\n  <Progress data-task-progress value={snapshot.completed} max={snapshot.total} aria-label={progressLabel} />\n  <span class=\"lumen-task-progress__count\" data-task-count>{snapshot.completed} / {snapshot.total}</span>\n  {actions && (\n    <div class=\"lumen-task-progress__actions\">\n      <Button variant=\"outline\" data-task-action=\"retry\" hidden={!['failed', 'canceled'].includes(snapshot.status)}>\n        {retryLabel}\n      </Button>\n      <Button variant=\"outline\" data-task-action=\"cancel\" hidden={!['queued', 'running'].includes(snapshot.status)}>\n        {cancelLabel}\n      </Button>\n    </div>\n  )}\n</Card>\n",
+        "react": "'use client'\n\nimport { useRef, useState } from 'react'\n\nimport { Badge, Button, Card, Progress, Typography } from '@santi020k/lumen-react'\n\nexport type TaskStatus = 'queued' | 'running' | 'complete' | 'failed' | 'canceled'\nexport interface TaskSnapshot {\n  status: TaskStatus\n  completed: number\n  total: number\n  detail: string\n}\nexport type TaskAction = 'cancel' | 'retry'\n\nconst taskStatusLabels: Record<TaskStatus, string> = { queued: 'Queued', running: 'In progress', complete: 'Complete', failed: 'Failed', canceled: 'Canceled' }\n\nexport interface TaskProgressRecipeProps {\n  title: string\n  snapshot: TaskSnapshot\n  labels?: Record<TaskStatus, string>\n  progressLabel?: string\n  retryLabel?: string\n  cancelLabel?: string\n  onAction?: (action: TaskAction) => void | Promise<void>\n  actionErrorLabel?: string\n}\n\n/** The application supplies every state. Requesting cancellation never marks a task canceled. */\n\nconst variants = { queued: 'outline', running: 'outline', complete: 'success', failed: 'destructive', canceled: 'outline' } as const\n\nconst TaskActions = ({ snapshot, onAction, retryLabel = 'Retry', cancelLabel = 'Cancel task', actionErrorLabel = 'The action could not be completed. Try again.' }: TaskProgressRecipeProps) => {\n  const pendingRef = useRef(false)\n  const [pending, setPending] = useState(false)\n  const [error, setError] = useState<{ snapshot: TaskSnapshot, message: string }>()\n\n  const request = async (action: TaskAction): Promise<void> => {\n    if (pendingRef.current || !onAction) return\n\n    pendingRef.current = true\n\n    setPending(true)\n\n    setError(undefined)\n\n    try {\n      await onAction(action)\n    } catch {\n      setError({ snapshot, message: actionErrorLabel })\n    } finally {\n      pendingRef.current = false\n\n      setPending(false)\n    }\n  }\n\n  if (!onAction || snapshot.status === 'complete') return null\n\n  const retry = snapshot.status === 'failed' || snapshot.status === 'canceled'\n\n  return (\n    <>\n      <div className=\"lumen-task-progress__actions\">\n        <Button\n          variant=\"outline\"\n          disabled={pending}\n          onClick={() => {\n            void request(retry ? 'retry' : 'cancel')\n          }}\n        >\n          {retry ? retryLabel : cancelLabel}\n        </Button>\n      </div>\n      <p role=\"status\">{error?.snapshot === snapshot ? error.message : ''}</p>\n    </>\n  )\n}\n\nexport const TaskProgressRecipe = (props: TaskProgressRecipeProps) => {\n  const { title, snapshot, labels = taskStatusLabels, progressLabel = 'Completed steps' } = props\n  const total = Number.isFinite(snapshot.total) && snapshot.total > 0 ? snapshot.total : 1\n  const completed = Number.isFinite(snapshot.completed) ? Math.max(0, Math.min(total, snapshot.completed)) : 0\n\n  return (\n    <Card className=\"lumen-task-progress\" data-task-status={snapshot.status}>\n      <div className=\"lumen-task-progress__heading\">\n        <Typography><h3>{title}</h3></Typography>\n        <Badge variant={variants[snapshot.status]}>{labels[snapshot.status]}</Badge>\n      </div>\n      <p className=\"lumen-task-progress__detail\" role=\"status\">{snapshot.detail}</p>\n      <Progress value={completed} max={total} aria-label={progressLabel} />\n      <span className=\"lumen-task-progress__count\">\n        {completed}\n        {' '}\n        /\n        {' '}\n        {total}\n      </span>\n      <TaskActions {...props} />\n    </Card>\n  )\n}\n",
+        "elements": "<link rel=\"stylesheet\" href=\"./task-progress.css\" />\n<!-- Illustrative initial snapshot. The host listens for ui:task-action and supplies ui:task-update. -->\n<lumen-card id=\"export-task\" class=\"lumen-task-progress\" data-task-recipe data-task-status=\"queued\">\n  <div class=\"lumen-task-progress__heading\"><lumen-typography><h3>Export workspace</h3></lumen-typography>\n    <lumen-badge variant=\"outline\" data-task-status-label=\"queued\">Queued</lumen-badge>\n    <lumen-badge hidden variant=\"outline\" data-task-status-label=\"running\">In progress</lumen-badge>\n    <lumen-badge hidden variant=\"success\" data-task-status-label=\"complete\">Complete</lumen-badge>\n    <lumen-badge hidden variant=\"destructive\" data-task-status-label=\"failed\">Failed</lumen-badge>\n    <lumen-badge hidden variant=\"outline\" data-task-status-label=\"canceled\">Canceled</lumen-badge>\n  </div>\n  <p class=\"lumen-task-progress__detail\" role=\"status\" data-task-detail>Waiting for the application to start the export.</p>\n  <lumen-progress data-task-progress value=\"0\" max=\"3\" aria-label=\"Completed steps\"></lumen-progress>\n  <span class=\"lumen-task-progress__count\" data-task-count>0 / 3</span>\n  <div class=\"lumen-task-progress__actions\"><lumen-button variant=\"outline\" data-task-action=\"retry\" hidden>Retry</lumen-button><lumen-button variant=\"outline\" data-task-action=\"cancel\" disabled>Cancel task</lumen-button></div>\n</lumen-card>\n<script type=\"module\">\n  import { defineLumenElements } from '@santi020k/lumen-elements/define'\n  import { mountTaskProgress } from './task-progress-controller.ts'\n  defineLumenElements()\n  let cleanup = mountTaskProgress(document)\n  window.addEventListener('pagehide', () => { cleanup() })\n  window.addEventListener('pageshow', () => {\n    cleanup()\n    cleanup = mountTaskProgress(document)\n  })\n  // Enable actions after connecting a host handler; keep them disabled during its pending request.\n</script>\n"
+      },
+      "frameworks": [
+        "astro",
+        "react",
+        "elements"
+      ],
+      "description": "A task progress composition using Badge, Button, Card, Progress, Typography.",
+      "install": {
+        "astro": "lumen add task-progress --target astro",
+        "elements": "lumen add task-progress --target elements",
+        "react": "lumen add task-progress --target react"
       }
     }
   ],

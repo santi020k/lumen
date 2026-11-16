@@ -1,0 +1,69 @@
+---
+import { AnimatedNumber, Badge, Card, Skeleton, Sparkline, Stat } from '@santi020k/lumen-astro'
+
+export type MetricSnapshot =
+  | { state: 'loading' } |
+  { state: 'error', message: string } |
+  { state: 'ready' | 'stale', value: number, values: readonly number[], change: string, comparison: string, trend: 'positive' | 'negative' | 'neutral', updatedAt: string }
+
+export interface MetricCardOptions {
+  label: string
+  snapshot: MetricSnapshot
+  locale?: string
+  prefix?: string
+  suffix?: string
+  decimals?: number
+  loadingLabel?: string
+  staleLabel?: string
+  retryLabel?: string
+  trendLabel?: string
+}
+
+type Props = MetricCardOptions
+
+const { label, snapshot, locale, prefix, suffix, decimals, loadingLabel = 'Loading metric', staleLabel = 'Out of date', trendLabel = `${label} trend` } = Astro.props
+const variants = { positive: 'success', negative: 'destructive', neutral: 'outline' } as const
+
+const statusText = (): string => {
+  if (snapshot.state === 'loading') return loadingLabel
+
+  if (snapshot.state === 'error') return snapshot.message
+
+  if (snapshot.state === 'stale') return staleLabel
+
+  return ''
+}
+---
+
+<Card class="lumen-metric-card" data-state={snapshot.state} aria-busy={snapshot.state === 'loading'}>
+  <Stat label={label} variant="bare">
+    {snapshot.state === 'loading' && <Skeleton height="3rem" width="70%" />}
+    {(snapshot.state === 'ready' || snapshot.state === 'stale') && (
+      <AnimatedNumber
+        class="lumen-metric-card__value"
+        value={snapshot.value}
+        {...(locale === undefined ? {} : { locale })}
+        {...(prefix === undefined ? {} : { prefix })}
+        {...(suffix === undefined ? {} : { suffix })}
+        {...(decimals === undefined ? {} : { decimals })}
+      />
+    )}
+  </Stat>
+  {(snapshot.state === 'ready' || snapshot.state === 'stale') && (
+    <>
+      <div class="lumen-metric-card__trend">
+        <Badge variant={variants[snapshot.trend]}>{snapshot.change}</Badge>
+        <span class="lumen-metric-card__note">{snapshot.comparison}</span>
+      </div>
+      <Sparkline
+        class="lumen-metric-card__chart"
+        values={snapshot.values}
+        label={trendLabel}
+        tone={snapshot.trend === 'negative' ? 'danger' : 'brand'}
+      />
+      <p class="lumen-metric-card__note">{snapshot.updatedAt}</p>
+    </>
+  )}
+  <p class="lumen-metric-card__status" role="status">{statusText()}</p>
+  {snapshot.state === 'error' && <slot name="retry" />}
+</Card>

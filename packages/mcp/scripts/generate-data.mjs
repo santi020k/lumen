@@ -309,6 +309,32 @@ const processReactStatement = (
   processVariableStatement(statement, componentNameSet, componentDeclarations)
 }
 
+// Public components can share a local props interface through a direct type alias.
+// Follow only known declarations, with cycle protection, and retain their source.
+const resolveLocalPropDeclarations = (declaration, propDeclarations) => {
+  const declarations = []
+  const visited = new Set()
+  let current = declaration
+
+  while (current && !visited.has(current)) {
+    visited.add(current)
+
+    declarations.push(current)
+
+    if (!ts.isTypeAliasDeclaration(current) || !ts.isTypeReferenceNode(current.type)) break
+
+    if (current.type.typeArguments?.length) break
+
+    const name = current.type.typeName.getText()
+
+    if (!name.endsWith('Props')) break
+
+    current = propDeclarations.get(name.slice(0, -5))
+  }
+
+  return declarations
+}
+
 const parseReactComponents = (source, componentNames) => {
   const sourceFile = ts.createSourceFile(
     'components.tsx',
@@ -330,7 +356,8 @@ const parseReactComponents = (source, componentNames) => {
     componentNames.map(name => {
       const componentDeclaration = componentDeclarations.get(name)
       const propsDeclaration = propDeclarations.get(name)
-      const props = parseTypeScriptProps(propsDeclaration, sourceFile)
+      const propsDeclarations = resolveLocalPropDeclarations(propsDeclaration, propDeclarations)
+      const props = parseTypeScriptProps(propsDeclarations.at(-1), sourceFile)
       const dataPropsDeclaration = name === 'VirtualList' ? propDeclarations.get('VirtualListData') : undefined
 
       if (dataPropsDeclaration) {
@@ -344,7 +371,7 @@ const parseReactComponents = (source, componentNames) => {
         props.props = [...combined.values()]
       }
 
-      const snippets = [propsDeclaration, dataPropsDeclaration, componentDeclaration]
+      const snippets = [...propsDeclarations.toReversed(), dataPropsDeclaration, componentDeclaration]
         .filter(Boolean)
         .map(declaration => declaration.getText(sourceFile))
 
@@ -625,6 +652,30 @@ const reactHookByComponent = {
 
 const elementsExampleOverrides = {
   AmountField: '<lumen-amount-field name="amount" locale="es-CO" default-value="1234.50" aria-label="Amount COP"></lumen-amount-field>',
+  CheckboxCard: `<lumen-checkbox-card variant="soft">
+  <label>
+    <input type="checkbox" name="updates" value="product" aria-labelledby="updates-label" aria-describedby="updates-description">
+    <span data-slot="selection-card-content">
+      <span data-slot="selection-card-label" id="updates-label">Product updates</span>
+      <span data-slot="selection-card-description" id="updates-description">New features and release notes.</span>
+    </span>
+  </label>
+</lumen-checkbox-card>`,
+  RadioCard: `<fieldset>
+  <legend>Workspace plan</legend>
+  <lumen-radio-card>
+    <label>
+      <input type="radio" name="plan" value="personal" checked aria-labelledby="personal-label">
+      <span data-slot="selection-card-content"><span data-slot="selection-card-label" id="personal-label">Personal</span></span>
+    </label>
+  </lumen-radio-card>
+  <lumen-radio-card>
+    <label>
+      <input type="radio" name="plan" value="team" aria-labelledby="team-label">
+      <span data-slot="selection-card-content"><span data-slot="selection-card-label" id="team-label">Team</span></span>
+    </label>
+  </lumen-radio-card>
+</fieldset>`,
   ChangeSummary: `<lumen-change-summary id="review" label="Review changes"></lumen-change-summary>
 <script>
   import { defineLumenChangeSummary, LumenChangeSummaryElement } from '@santi020k/lumen-elements/components/dashboard'
@@ -941,6 +992,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/elements/src/components/button.ts')),
     await readIfExists(p('packages/elements/src/components/card.ts')),
     await readIfExists(p('packages/elements/src/components/input.ts')),
+    await readIfExists(p('packages/elements/src/components/selection-card.ts')),
     await readIfExists(p('packages/elements/src/components/combobox.ts')),
     await readIfExists(p('packages/elements/src/components/device-frame.ts')),
     await readIfExists(p('packages/elements/src/components/image-comparison.ts')),
@@ -959,6 +1011,7 @@ const loadWorkspaceFiles = async p => ({
     await readIfExists(p('packages/react/src/amount-field.tsx')),
     await readIfExists(p('packages/react/src/components.tsx')),
     await readIfExists(p('packages/react/src/form-primitives.tsx')),
+    await readIfExists(p('packages/react/src/selection-card.tsx')),
     await readIfExists(p('packages/react/src/editorial-controls.tsx')),
     await readIfExists(p('packages/react/src/dialog.tsx')),
     await readIfExists(p('packages/react/src/reading-navigation.tsx')),

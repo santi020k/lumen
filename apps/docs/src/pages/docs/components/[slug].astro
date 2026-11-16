@@ -11,6 +11,7 @@ import {
   Separator,
   Tabs
 } from '@santi020k/lumen-astro'
+import { lumenComponentBehavior } from '@santi020k/lumen-core'
 
 import ChartUsageDetails from '../../../components/ChartUsageDetails.astro'
 import CodeBlock from '../../../components/CodeBlock.astro'
@@ -70,10 +71,8 @@ const next = index >= 0 && index < paginationComponents.length - 1 ?
   paginationComponents[index + 1] :
   undefined
 
-const requiresAstroRuntime = Boolean(
-  component.keyboardInteractions ??
-  component.runtimeEvents ??
-  component.apiReference.some(row => /UIPrimitives|runtime/i.test(row.description))
+const requiresAstroRuntime = Object.entries(lumenComponentBehavior).some(
+  ([name, behavior]) => name === component.name && behavior.astro === 'ui-primitives'
 )
 
 const relatedCollection = componentCollections.find(collection => collection.names.includes(component.name))
@@ -177,7 +176,7 @@ undefined}
             variant="outline"
           >
             <Icon decorative name="swatch-book" size="sm" />
-            View in Figma
+            {component.figmaNodeId ? 'View in Figma' : 'Figma library'}
           </DocsActionLink>
         </div>
       </div>
@@ -198,7 +197,7 @@ undefined}
           <span><Icon decorative name="swatch-book" size="sm" /></span>
           <p>
             <small>Design source</small>
-            <Link href={figmaUrl} rel="noopener noreferrer" target="_blank">Linked component node</Link>
+            <Link href={figmaUrl} rel="noopener noreferrer" target="_blank">{component.figmaNodeId ? 'Linked component node' : 'Figma library'}</Link>
           </p>
         </div>
       </div>
@@ -504,7 +503,9 @@ undefined}
           >Keyboard interactions
           </h2>
           <p class="max-w-2xl text-sm/7 text-ink-soft">
-            Keyboard behavior provided by the Astro UIPrimitives runtime for this component.
+            {requiresAstroRuntime ?
+              'Keyboard behavior provided by the Astro UIPrimitives runtime for this component.' :
+              'Keyboard behavior provided by native HTML controls.'}
           </p>
         </div>
         <DocsReferenceTable

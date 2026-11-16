@@ -10,6 +10,8 @@ import { GuidedOnboardingRecipe } from '../../../../packages/lumen/templates/rea
 import { InteractivePricingRecipe } from '../../../../packages/lumen/templates/react/interactive-pricing/src/lumen/interactive-pricing'
 import type { VisualGuideId } from '../data/visual-guide-sections'
 
+import { VisualProductRecipesDemo } from './visual-product-recipes-demo'
+
 const initialItems = ['Research', 'Prototype', 'Review']
 const reply = 'This is a local demonstration. Your application controls the model, requests, streaming, and authorization.'
 
@@ -649,6 +651,7 @@ export const VisualInteractionsDemo = ({ section }: { section?: VisualGuideId })
           <FeaturePreviewRecipe />
           <GuidedOnboardingRecipe />
           <CommandCenterRecipe />
+          <VisualProductRecipesDemo />
         </Stack>
       </section>
     )}

@@ -85,6 +85,24 @@ describe('lumen-mcp data snapshot', () => {
     ]))
   })
 
+  test.each(['CheckboxCard', 'RadioCard'])('discovers %s implementations and shared local prop contracts', name => {
+    const card = resolveComponent(name, loadLumenData())
+
+    expect(card?.frameworkDetails.react.available).toBe(true)
+    expect(card?.frameworkDetails.react.source).toContain('interface SelectionCardProps')
+    expect(card?.frameworkDetails.react.source).toContain(`type ${name}Props = SelectionCardProps`)
+    expect(card?.frameworkDetails.react.props).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'label', optional: false }),
+      expect.objectContaining({ name: 'description', optional: true }),
+      expect.objectContaining({ name: 'invalid', optional: true }),
+      expect.objectContaining({ name: 'variant', type: '\'outline\' | \'soft\'' })
+    ]))
+    expect(card?.frameworkDetails.elements.available).toBe(true)
+    expect(card?.frameworkDetails.elements.source).toContain(`lumen${name}ElementConfig`)
+    expect(card?.frameworkDetails.elements.attributes).toContain('variant')
+    expect(card?.frameworkDetails.elements.example).toContain('<input')
+  })
+
   test('discovers granular image comparison implementations and their public contracts', () => {
     const comparison = resolveComponent('ImageComparison', loadLumenData())
 

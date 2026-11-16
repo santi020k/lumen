@@ -199,3 +199,15 @@ Recipe need examples and interaction tests, not a new primitive.
   interaction tests land.
 - Keep full-browser interaction checks focused on behavior contracts; keep pixel regression on one
   deterministic browser and operating system.
+
+## Component appearance improvements
+
+The shared web adapters now include scoped density and consistent control state styling,
+native-input CheckboxCard and RadioCard choices, and typography/elevation controls in the
+[appearance workbench](appearance-workbench.md). Existing applications opt into density at a
+container boundary; default sizing stays compatible.
+
+The [visual product recipes](visual-product-recipes.md) provide card-to-detail overlays,
+metric cards, and application-owned task progress for Astro, React, and Elements. Live examples
+are in the visual product recipes guide. These additions target web; native adapters retain
+platform-specific interaction and layout conventions.

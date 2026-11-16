@@ -1039,6 +1039,34 @@ const compoundDescriptionsElementsExample = `${elementsHeader}
 `
 
 const elementsOverrides: Record<string, string> = {
+  RadioCard: `${elementsHeader}
+<fieldset>
+  <legend>Workspace preferences</legend>
+  <lumen-radio-card variant="soft">
+    <label>
+      <input type="radio" name="workspace" value="personal" checked aria-labelledby="radio-label" aria-describedby="radio-description">
+      <span data-slot="selection-card-content">
+        <span data-slot="selection-card-label" id="radio-label">Personal workspace</span>
+        <span data-slot="selection-card-description" id="radio-description">A focused space for your own projects.</span>
+        <span data-slot="selection-card-addon">One member</span>
+      </span>
+    </label>
+  </lumen-radio-card>
+</fieldset>`,
+  CheckboxCard: `${elementsHeader}
+<fieldset>
+  <legend>Workspace preferences</legend>
+  <lumen-checkbox-card variant="soft">
+    <label>
+      <input type="checkbox" name="workspace" value="personal" checked aria-labelledby="checkbox-label" aria-describedby="checkbox-description">
+      <span data-slot="selection-card-content">
+        <span data-slot="selection-card-label" id="checkbox-label">Personal workspace</span>
+        <span data-slot="selection-card-description" id="checkbox-description">A focused space for your own projects.</span>
+        <span data-slot="selection-card-addon">One member</span>
+      </span>
+    </label>
+  </lumen-checkbox-card>
+</fieldset>`,
   WorldMap: `<script type="module">
   import { defineLumenWorldMap, LumenWorldMapElement } from '@santi020k/lumen-elements/components/world-map'
   import { lumenWorldMapCountries } from '@santi020k/lumen-core/world-map-data'

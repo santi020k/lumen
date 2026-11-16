@@ -998,3 +998,32 @@ optional `footer`/`cite` inside `blockquote`; keep media and its `figcaption` to
 or optimized native image integration. Component-owned figures, including Code and charts,
 retain their own styling. Prose styles content; the application owns parsing, sanitization,
 heading IDs, captions, citations, and localization.
+
+## Selection cards
+
+`CheckboxCard` and `RadioCard` combine a visible native input, a label, an optional description,
+and supplementary metadata. The entire label is clickable; native keyboard behavior, required
+validation, form submission and reset remain available without `UIPrimitives`.
+
+```astro
+---
+import { Icon, RadioCard, RadioGroup } from '@santi020k/lumen-astro'
+---
+
+<RadioGroup>
+  <legend>Workspace</legend>
+  <RadioCard name="workspace" value="personal" label="Personal" description="For your own projects." checked>
+    <Icon slot="icon" name="check" />
+    One member
+  </RadioCard>
+  <RadioCard name="workspace" value="team" label="Team" description="Shared projects and resources." variant="soft" />
+</RadioGroup>
+```
+
+Use `CheckboxGroup` and `CheckboxCard` for independent choices. Both cards support `outline`
+(default) and `soft` variants, `disabled`, `required`, `invalid`, and native input attributes.
+Associate an external error with `aria-describedby`. The `class`/`className` styles the card;
+`id`, ARIA and remaining input attributes reach the native input. The named `icon` slot is
+hidden from assistive technology, and the default slot contains non-interactive metadata.
+Keep links, buttons and other controls outside the card label. New selection cards currently
+link to the Figma library overview; exact component design nodes are not yet published.

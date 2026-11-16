@@ -162,6 +162,14 @@ import {
 import { LumenInputElement as GranularLumenInputElement, lumenInputElementConfig } from './components/input.js'
 import { LumenMediaFilmstripElement as GranularLumenMediaFilmstripElement, lumenMediaFilmstripElementConfig, LumenMediaThumbnailElement as GranularLumenMediaThumbnailElement, lumenMediaThumbnailElementConfig } from './components/media-selection.js'
 import { LumenMediaViewportElement as GranularLumenMediaViewportElement, lumenMediaViewportElementConfig } from './components/media-viewport.js'
+import {
+  defineLumenCheckboxCard,
+  defineLumenRadioCard,
+  LumenCheckboxCardElement,
+  lumenCheckboxCardElementConfig,
+  LumenRadioCardElement,
+  lumenRadioCardElementConfig
+} from './components/selection-card.js'
 import { LumenTimelineElement as GranularLumenTimelineElement, lumenTimelineElementConfig } from './components/timeline.js'
 import {
   LumenVirtualListElement as GranularLumenVirtualListElement,
@@ -470,6 +478,7 @@ const elementConfigs = {
     defaults: { type: 'checkbox' },
     tagName: 'lumen-checkbox'
   },
+  CheckboxCard: lumenCheckboxCardElementConfig,
   CheckboxGroup: {
     attributeClasses: {
       orientation: {
@@ -914,6 +923,7 @@ const elementConfigs = {
     defaults: { 'data-slot': 'prose' },
     tagName: 'lumen-prose'
   },
+  RadioCard: lumenRadioCardElementConfig,
   RadioGroup: {
     baseClassName: 'ui-radio-group',
     defaults: { 'data-ui-radio-group': '' },
@@ -8069,6 +8079,8 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     const update = (dispatch = true): void => {
       const result = createThemeBuilderTokens({
         preset: currentPreset,
+        fontFamily: this.querySelector<HTMLSelectElement>('[data-ui-theme-font-family]')?.value ?? null,
+        elevation: this.querySelector<HTMLSelectElement>('[data-ui-theme-elevation]')?.value ?? null,
         radiusScale: this.querySelector<HTMLInputElement>('[data-ui-theme-radius-scale]')?.value ?? null,
         spacingScale: this.querySelector<HTMLInputElement>('[data-ui-theme-spacing-scale]')?.value ?? null,
         borderWidth: this.querySelector<HTMLInputElement>('[data-ui-theme-border-width]')?.value ?? null,
@@ -8115,7 +8127,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       }
     }
 
-    for (const input of this.querySelectorAll<HTMLInputElement>('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width]')) {
+    for (const input of this.querySelectorAll<HTMLInputElement>('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width], [data-ui-theme-font-family], [data-ui-theme-elevation]')) {
       input.addEventListener('input', () => {
         update()
       }, { signal })
@@ -11551,6 +11563,8 @@ const granularElementClasses: Partial<
   DumbbellChart: LumenDumbbellChartElement,
   Button: GranularLumenButtonElement,
   Card: GranularLumenCardElement,
+  CheckboxCard: LumenCheckboxCardElement,
+  RadioCard: LumenRadioCardElement,
   Timeline: GranularLumenTimelineElement,
   CardContent: GranularLumenCardContentElement,
   CardDescription: GranularLumenCardDescriptionElement,
@@ -11930,3 +11944,5 @@ export const LumenMediaViewportElement = elementClasses.MediaViewport
 
 export const LumenMediaThumbnailElement = elementClasses.MediaThumbnail
 export const LumenMediaFilmstripElement = elementClasses.MediaFilmstrip
+
+export { defineLumenCheckboxCard, defineLumenRadioCard, LumenCheckboxCardElement, LumenRadioCardElement }

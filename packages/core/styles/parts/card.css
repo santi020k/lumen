@@ -33,7 +33,7 @@
 }
 
 @layer lumen.components {
-.ui-card {--ui-card-gap:var(--ui-space-group);--ui-card-padding:var(--ui-space-inset);--ui-card-section-gap:var(--ui-space-related);display:flex;flex-direction:column;gap:var(--ui-card-gap);min-width:0;padding:var(--ui-card-padding);}
+.ui-card {--ui-card-gap:var(--ui-density-card-gap,var(--ui-space-group));--ui-card-padding:var(--ui-density-card-padding,var(--ui-space-inset));--ui-card-section-gap:var(--ui-space-related);display:flex;flex-direction:column;gap:var(--ui-card-gap);min-width:0;padding:var(--ui-card-padding);}
 }
 
 @layer lumen.components {

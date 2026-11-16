@@ -820,6 +820,150 @@ export const lumenRegistry = {
           ]
         }
       }
+    },
+    {
+      name: 'card-detail',
+      type: 'recipe',
+      components: [
+        'Button',
+        'Card',
+        'Dialog',
+        'DialogBody',
+        'DialogFooter',
+        'DialogHeader',
+        'DialogTitle',
+        'Sheet',
+        'Typography'
+      ],
+      files: [
+        'docs/visual-product-recipes.md'
+      ],
+      setup: {
+        astro: {
+          dependencies: [
+            '@santi020k/lumen-astro'
+          ],
+          runtime: '@santi020k/lumen-astro/runtime',
+          instructions: [
+            'Mount the public Astro runtime once in the root layout.',
+            'Import the installed scoped stylesheet once in the application layout.',
+            'The application owns data, asynchronous actions and state updates; see visual-product-recipes.md.'
+          ]
+        },
+        react: {
+          dependencies: [
+            '@santi020k/lumen-react'
+          ],
+          instructions: [
+            'Import the adapter foundation and required component styles in the application.',
+            'Import the installed TSX recipe and its scoped stylesheet once in the application.',
+            'Supply application-owned state and callbacks.'
+          ]
+        },
+        elements: {
+          dependencies: [
+            '@santi020k/lumen-elements'
+          ],
+          instructions: [
+            'Use a bundler for the installed module imports and load the adapter stylesheet.',
+            'Give each recipe instance unique IDs and connect application-owned state.'
+          ]
+        }
+      }
+    },
+    {
+      name: 'metric-card',
+      type: 'recipe',
+      components: [
+        'AnimatedNumber',
+        'Badge',
+        'Button',
+        'Card',
+        'Skeleton',
+        'Sparkline',
+        'Stat'
+      ],
+      files: [
+        'docs/visual-product-recipes.md'
+      ],
+      setup: {
+        astro: {
+          dependencies: [
+            '@santi020k/lumen-astro'
+          ],
+          runtime: '@santi020k/lumen-astro/runtime',
+          instructions: [
+            'Mount the public Astro runtime once in the root layout.',
+            'Import the installed scoped stylesheet once in the application layout.',
+            'The application owns data, asynchronous actions and state updates; see visual-product-recipes.md.'
+          ]
+        },
+        react: {
+          dependencies: [
+            '@santi020k/lumen-react'
+          ],
+          instructions: [
+            'Import the adapter foundation and required component styles in the application.',
+            'Import the installed TSX recipe and its scoped stylesheet once in the application.',
+            'Supply application-owned state and callbacks.'
+          ]
+        },
+        elements: {
+          dependencies: [
+            '@santi020k/lumen-elements'
+          ],
+          instructions: [
+            'Use a bundler for the installed module imports and load the adapter stylesheet.',
+            'Give each recipe instance unique IDs and connect application-owned state.'
+          ]
+        }
+      }
+    },
+    {
+      name: 'task-progress',
+      type: 'recipe',
+      components: [
+        'Badge',
+        'Button',
+        'Card',
+        'Progress',
+        'Typography'
+      ],
+      files: [
+        'docs/visual-product-recipes.md'
+      ],
+      setup: {
+        astro: {
+          dependencies: [
+            '@santi020k/lumen-astro'
+          ],
+          runtime: '@santi020k/lumen-astro/runtime',
+          instructions: [
+            'Mount the public Astro runtime once in the root layout.',
+            'Import the installed scoped stylesheet once in the application layout.',
+            'The application owns data, asynchronous actions and state updates; see visual-product-recipes.md.'
+          ]
+        },
+        react: {
+          dependencies: [
+            '@santi020k/lumen-react'
+          ],
+          instructions: [
+            'Import the adapter foundation and required component styles in the application.',
+            'Import the installed TSX recipe and its scoped stylesheet once in the application.',
+            'Supply application-owned state and callbacks.'
+          ]
+        },
+        elements: {
+          dependencies: [
+            '@santi020k/lumen-elements'
+          ],
+          instructions: [
+            'Use a bundler for the installed module imports and load the adapter stylesheet.',
+            'Give each recipe instance unique IDs and connect application-owned state.'
+          ]
+        }
+      }
     }
   ],
   components: [
@@ -1217,6 +1361,19 @@ export const lumenRegistry = {
       category: 'Forms',
       files: [
         'packages/astro/components/Checkbox.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'CheckboxCard',
+      type: 'component',
+      description: 'Presents a descriptive checkbox choice with native form behavior and a visible selection indicator.',
+      category: 'Forms',
+      files: [
+        'packages/astro/components/CheckboxCard.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [
@@ -2294,6 +2451,19 @@ export const lumenRegistry = {
       category: 'Layout',
       files: [
         'packages/astro/components/Prose.astro',
+        'packages/astro/styles/lumen.css'
+      ],
+      dependencies: [
+        'styles'
+      ]
+    },
+    {
+      name: 'RadioCard',
+      type: 'component',
+      description: 'Presents a descriptive, mutually exclusive native radio choice with an optional icon and metadata.',
+      category: 'Forms',
+      files: [
+        'packages/astro/components/RadioCard.astro',
         'packages/astro/styles/lumen.css'
       ],
       dependencies: [

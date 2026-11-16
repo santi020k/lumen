@@ -466,6 +466,8 @@ export interface ThemeBuilderExportDetail {
 }
 
 export interface ThemeBuilderOptions {
+  fontFamily?: 'sans' | 'serif' | 'mono' | undefined
+  elevation?: 'flat' | 'default' | undefined
   radiusScale?: number | undefined
   spacingScale?: number | undefined
   borderWidth?: number | undefined
@@ -3425,6 +3427,8 @@ export const useResizable = ({
 /* eslint-enable @eslint-react/set-state-in-effect, complexity */
 
 export const useThemeBuilder = ({
+  fontFamily,
+  elevation,
   radiusScale,
   spacingScale,
   borderWidth,
@@ -3503,6 +3507,8 @@ export const useThemeBuilder = ({
 
   const result = useMemo(
     () => createThemeBuilderTokens({
+      fontFamily: fontFamily ?? null,
+      elevation: elevation ?? null,
       radiusScale: radiusScale ?? null,
       spacingScale: spacingScale ?? null,
       borderWidth: borderWidth ?? null,
@@ -3514,6 +3520,8 @@ export const useThemeBuilder = ({
       scheme: currentScheme,
       secondaryColor: currentSecondaryColor
     }), [
+      fontFamily,
+      elevation,
       radiusScale,
       spacingScale,
       borderWidth,

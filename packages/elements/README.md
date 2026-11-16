@@ -1032,3 +1032,37 @@ optional `footer`/`cite` inside `blockquote`; keep media and its `figcaption` to
 or optimized native image integration. Component-owned figures, including Code and charts,
 retain their own styling. Prose styles content; the application owns parsing, sanitization,
 heading IDs, captions, citations, and localization.
+
+## Selection cards
+
+`lumen-checkbox-card` and `lumen-radio-card` style a native label/input composition. Register
+them with `defineLumenElements(['CheckboxCard', 'RadioCard'])` or the individual
+`defineLumenCheckboxCard` / `defineLumenRadioCard` exports. Import the matching
+`styles/components/checkbox-card.css` or `styles/components/radio-card.css` alongside the
+foundation stylesheet, or use the full stylesheet.
+
+```html
+<fieldset>
+  <legend>Workspace</legend>
+  <lumen-radio-card variant="soft">
+    <label>
+      <input type="radio" name="workspace" value="personal" checked
+        aria-labelledby="personal-title" aria-describedby="personal-description">
+      <span data-slot="selection-card-content">
+        <span data-slot="selection-card-label" id="personal-title">Personal</span>
+        <span data-slot="selection-card-description" id="personal-description">For your own projects.</span>
+        <span data-slot="selection-card-addon">One member</span>
+      </span>
+    </label>
+  </lumen-radio-card>
+</fieldset>
+```
+
+Keep one direct `label` containing one native `input` as shown. Use `type="checkbox"` for
+`lumen-checkbox-card`; related radio choices share a `name` inside a labelled fieldset.
+State, `disabled`, `required`, `form` and ARIA attributes belong on the native input, not the
+custom-element host. Set `aria-invalid="true"` and an associated error description for errors.
+The host accepts `variant="outline"` (default) or `variant="soft"`. An optional decorative
+`span data-slot="selection-card-icon" aria-hidden="true"` goes between the input and content.
+Keep label contents non-interactive. The original native input remains the form control;
+registration does not clone it or maintain a second checked state.

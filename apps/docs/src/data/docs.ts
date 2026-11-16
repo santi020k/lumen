@@ -13,7 +13,7 @@ export interface ComponentDoc {
     'Layout' |
     'Navigation' |
     'Overlays'
-  figmaNodeId: string
+  figmaNodeId: string | undefined
   glass?: boolean
   guidance?: ComponentGuidance
   keyboardInteractions?: KeyboardInteractionRow[]
@@ -345,6 +345,7 @@ const figmaNodeIdByComponent = {
   Chart: '53:53',
   ChartMotion: '610:6634',
   Checkbox: '15:6',
+  CheckboxCard: undefined,
   CheckboxGroup: '512:213',
   Code: '53:28',
   CodeTabs: '472:2',
@@ -437,6 +438,7 @@ const figmaNodeIdByComponent = {
   PromptComposer: '608:176',
   Prose: '295:4',
   QRCode: '298:619',
+  RadioCard: undefined,
   RadioGroup: '48:284',
   RangeChart: '610:4321',
   Rating: '269:72',
@@ -498,7 +500,7 @@ const figmaNodeIdByComponent = {
   WaterfallChart: '610:6492',
   Watermark: '287:19',
   WorldMap: '611:389'
-} as const satisfies Record<LumenComponentName, string>
+} as const satisfies Record<LumenComponentName, string | undefined>
 
 export const getFigmaComponentUrl = (nodeId?: string) => nodeId ?
   `${figmaLibraryUrl}?node-id=${nodeId.replace(':', '-')}` :
@@ -988,6 +990,8 @@ const keyboardInteractionsByComponent: Partial<
   ),
   Menubar: rovingGroupKeyboardInteractions,
   NavigationMenu: rovingGroupKeyboardInteractions,
+  CheckboxCard: keyboardRows(['Tab', 'Focus the native checkbox.'], ['Space', 'Toggle the focused choice.']),
+  RadioCard: keyboardRows(['Tab', 'Enter or leave the native radio group.'], ['Arrow keys', 'Move and select within enabled choices sharing a name.'], ['Space', 'Select the focused choice.']),
   RadioGroup: rovingGroupKeyboardInteractions,
   Resizable: keyboardRows(
     [
@@ -1547,6 +1551,24 @@ const apiReferenceByComponent = {
     apiRow(
       'caption', 'string', '-', 'Adds a semantic figcaption after the custom plot.'
     )
+  ],
+  CheckboxCard: [
+    apiRow('label, description', 'string / ReactNode', 'label required', 'Provides the visible label and optional associated description.', ['astro', 'react']),
+    apiRow('variant', '"outline" | "soft"', '"outline"', 'Sets the unselected surface; selection remains visible through the native indicator and border.'),
+    apiRow('icon / icon slot', 'ReactNode / Astro named slot', '-', 'Adds decorative content before the label. Keep children and icons non-interactive.', ['astro', 'react']),
+    apiRow('children / default slot', 'phrasing content', '-', 'Adds supplementary metadata below the description.', ['astro', 'react']),
+    apiRow('invalid', 'boolean', 'false', 'Sets aria-invalid on the input. Associate error text using aria-describedby.', ['astro', 'react']),
+    apiRow('name, value, checked, disabled, required, form', 'native input attributes', '-', 'Passes native form attributes to the checkbox input. React also accepts defaultChecked.'),
+    apiRow('label > input', 'native child contract', 'required', 'Provide a direct label containing a checkbox input and selection-card content slots. Set input state and ARIA on that native control.', ['elements'])
+  ],
+  RadioCard: [
+    apiRow('label, description', 'string / ReactNode', 'label required', 'Provides the visible label and optional associated description.', ['astro', 'react']),
+    apiRow('variant', '"outline" | "soft"', '"outline"', 'Sets the unselected surface without replacing native radio selection behavior.'),
+    apiRow('icon / icon slot', 'ReactNode / Astro named slot', '-', 'Adds decorative content before the label. Keep children and icons non-interactive.', ['astro', 'react']),
+    apiRow('children / default slot', 'phrasing content', '-', 'Adds supplementary metadata below the description.', ['astro', 'react']),
+    apiRow('invalid', 'boolean', 'false', 'Sets aria-invalid on the input. Associate error text using aria-describedby.', ['astro', 'react']),
+    apiRow('name, value, checked, disabled, required, form', 'native input attributes', '-', 'Use the same name within a labelled fieldset for mutually exclusive options. React also accepts defaultChecked.'),
+    apiRow('label > input', 'native child contract', 'required', 'Provide a direct label containing a radio input and selection-card content slots. Set input state and ARIA on that native control.', ['elements'])
   ],
   Checkbox: [
     apiRow(
@@ -3771,6 +3793,12 @@ export const componentDocs: ComponentDoc[] = (
       '<label><Checkbox name="updates" /> Email me product updates</label>'
     ],
     [
+      'CheckboxCard',
+      'Forms',
+      'Presents a descriptive checkbox choice with native form behavior and a visible selection indicator.',
+      '<CheckboxCard name="updates" value="product" label="Product updates" description="New features and release notes." />'
+    ],
+    [
       'CheckboxGroup',
       'Forms',
       'Groups related checkbox choices under one legend.',
@@ -4184,6 +4212,12 @@ export const componentDocs: ComponentDoc[] = (
       'Layout',
       'Adds readable spacing and typography to rendered Markdown or CMS content.',
       '<Prose><h2>Release notes</h2><p>Long-form content receives consistent reading rhythm.</p></Prose>'
+    ],
+    [
+      'RadioCard',
+      'Forms',
+      'Presents a descriptive, mutually exclusive native radio choice with an optional icon and metadata.',
+      '<RadioGroup><legend>Plan</legend><RadioCard name="plan" value="personal" label="Personal" description="For individual projects." /><RadioCard name="plan" value="team" label="Team" description="For shared workspaces." /></RadioGroup>'
     ],
     [
       'RadioGroup',

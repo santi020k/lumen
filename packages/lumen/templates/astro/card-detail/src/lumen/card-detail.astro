@@ -1,0 +1,44 @@
+---
+import { Button, Card, Dialog, DialogBody, DialogFooter, DialogHeader, DialogTitle, Sheet, Typography } from '@santi020k/lumen-astro'
+
+interface Props {
+  id: string
+  title: string
+  summary: string
+  openLabel?: string
+  closeLabel?: string
+  presentation?: 'dialog' | 'sheet'
+}
+
+const { id, title, summary, openLabel = 'View details', closeLabel = 'Close details', presentation = 'dialog' } = Astro.props
+const trigger = presentation === 'sheet' ? { 'data-ui-sheet-trigger': id } : { 'data-ui-dialog-trigger': id }
+---
+
+<Card class="lumen-card-detail">
+  <Typography><h3>{title}</h3></Typography>
+  <p class="lumen-card-detail__summary">{summary}</p>
+  <Button variant="outline" aria-controls={id} aria-haspopup="dialog" {...trigger}>{openLabel}</Button>
+</Card>
+{presentation === 'sheet' ?
+(
+  <Sheet
+id={id}
+aria-labelledby={`${id}-title`}
+class="lumen-card-detail__surface"
+  >
+    <DialogHeader><DialogTitle id={`${id}-title`}>{title}</DialogTitle></DialogHeader>
+    <DialogBody><slot /></DialogBody>
+    <DialogFooter><Button variant="outline" data-ui-sheet-close>{closeLabel}</Button></DialogFooter>
+  </Sheet>
+) :
+(
+  <Dialog
+id={id}
+aria-labelledby={`${id}-title`}
+class="lumen-card-detail__surface"
+  >
+    <DialogHeader><DialogTitle id={`${id}-title`}>{title}</DialogTitle></DialogHeader>
+    <DialogBody><slot /></DialogBody>
+    <DialogFooter><Button variant="outline" data-ui-dialog-close>{closeLabel}</Button></DialogFooter>
+  </Dialog>
+)}

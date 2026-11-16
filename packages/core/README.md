@@ -589,3 +589,7 @@ The DOM-only `@santi020k/lumen-core/reveal` entry shares reveal threshold normal
 lifecycle across web adapters. `createLumenRevealController(element, { once, threshold })` returns a
 `destroy()` cleanup; use the framework components in application code. This helper is intentionally
 outside the root entry so native consumers do not traverse browser behavior.
+
+ThemeBuilder accepts `fontFamily: 'sans' | 'serif' | 'mono'` for safe system font stacks and
+`elevation: 'flat' | 'default'` to remove shadows or preserve the preset. Omit either to retain
+existing typography and elevation. Both are included in CSS and design-token JSON exports. Figma variable exports remain color-only.

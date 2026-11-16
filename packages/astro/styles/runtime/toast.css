@@ -19,13 +19,13 @@
   --ui-button-font-size: 0.875rem;
   --ui-button-font-weight: 600;
   --ui-button-gap: 0.5rem;
-  --ui-button-min-height: 2.5rem;
-  --ui-button-padding: 0.5rem 1rem;
+  --ui-button-min-height: var(--ui-density-control-height, 2.5rem);
+  --ui-button-padding: var(--ui-density-button-padding, 0.5rem 1rem);
   --ui-button-radius: var(--ui-radius-sm);
 
   position: relative;
   display: inline-flex;
-  min-height: var(--ui-button-min-height);
+  min-height: max(var(--ui-button-min-height), var(--ui-density-target-min, 0rem));
   align-items: center;
   justify-content: center;
   gap: var(--ui-button-gap);
@@ -65,7 +65,7 @@
 }
 
 @layer lumen.components {
-.ui-button:hover {
+.ui-button:not(:disabled, [aria-disabled="true"], [aria-busy="true"], .ui-button--disabled, .ui-button--loading):hover {
   transform: translateY(-1px);
 }
 }
@@ -204,7 +204,7 @@
 
 @layer lumen.components {
 .ui-button--sm {
-  min-height: 2.25rem;
+  min-height: max(2.25rem, var(--ui-density-target-min, 0rem));
   padding: 0.4rem 0.75rem;
   font-size: 0.8125rem;
 }
@@ -212,14 +212,14 @@
 
 @layer lumen.components {
 .ui-button--default-size {
-  min-height: 2.5rem;
-  padding: 0.5rem 1rem;
+  min-height: max(var(--ui-button-min-height), var(--ui-density-target-min, 0rem));
+  padding: var(--ui-button-padding);
 }
 }
 
 @layer lumen.components {
 .ui-button--lg {
-  min-height: 3rem;
+  min-height: max(3rem, var(--ui-density-target-min, 0rem));
   padding: 0.65rem 1.25rem;
   font-size: 0.9375rem;
 }
@@ -227,7 +227,7 @@
 
 @layer lumen.components {
 .ui-button--icon {
-  width: 2.5rem;
+  width: max(var(--ui-button-min-height), var(--ui-density-target-min, 0rem));
   padding: 0;
 }
 }
