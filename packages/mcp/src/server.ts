@@ -5,6 +5,7 @@ import { checkCompatibility } from './compatibility.js'
 import { compatibilityOutputSchema, componentOutputSchema, nativeComponentOutputSchema, recipeOutputSchema } from './contracts.js'
 import { loadLumenData } from './data.js'
 import { getMigration } from './migration.js'
+import { normalize } from './normalize.js'
 import {
   diagnose,
   diffCatalog,
@@ -18,6 +19,7 @@ import {
   listComponents,
   listNativeComponents,
   type LumenToolResult,
+  resolveNativeComponent,
   search
 } from './tools.js'
 
@@ -183,6 +185,49 @@ const jsonResource = (
     uri: uri.href
   }]
 })
+
+const decodeResourceVariable = (value: string | string[] | undefined): string => {
+  const raw = Array.isArray(value) ? value[0] ?? '' : value ?? ''
+
+  try {
+    return decodeURIComponent(raw)
+  } catch {
+    return raw
+  }
+}
+
+const nativePlatformKeys = ['react-native', 'swiftui', 'compose'] as const
+
+const resolveNativeResourcePlatform = (
+  name: string,
+  component: ReturnType<typeof resolveNativeComponent>
+): 'compose' | 'react-native' | 'swiftui' => {
+  if (!component) return 'react-native'
+
+  const target = normalize(name)
+
+  for (const key of Object.keys(component.implementations)) {
+    const platform = nativePlatformKeys.find(candidate => candidate === key)
+    const implementation = platform ? component.implementations[platform] : undefined
+
+    if (
+      platform &&
+      implementation &&
+      (normalize(implementation.symbol) === target ||
+        normalize(implementation.exportName) === target)
+    ) {
+      return platform
+    }
+  }
+
+  for (const key of Object.keys(component.implementations)) {
+    const platform = nativePlatformKeys.find(candidate => candidate === key)
+
+    if (platform) return platform
+  }
+
+  return 'react-native'
+}
 
 export const createLumenServer = (): McpServer => {
   const data = loadLumenData()
@@ -497,7 +542,7 @@ export const createLumenServer = (): McpServer => {
       description: 'Framework-neutral component metadata and default Astro usage.',
       mimeType: 'application/json'
     }, (uri, variables) => {
-      const name = String(variables.name)
+      const name = decodeResourceVariable(variables.name)
       const result = getComponent({ detail: 'usage', framework: 'astro', name })
 
       return jsonResource(uri, result.data)
@@ -524,16 +569,9 @@ export const createLumenServer = (): McpServer => {
       description: 'Native component metadata and platform usage.',
       mimeType: 'application/json'
     }, (uri, variables) => {
-      const name = String(variables.name)
-
-      const component = data.nativeComponents.find(item => (
-        item.id === name || item.name === name
-      ))
-
-      const platform = component ?
-        Object.keys(component.implementations)[0] as 'compose' | 'react-native' | 'swiftui' :
-        'react-native'
-
+      const name = decodeResourceVariable(variables.name)
+      const component = resolveNativeComponent(name, data)
+      const platform = resolveNativeResourcePlatform(name, component)
       const result = getNativeComponent({ detail: 'usage', name, platform })
 
       return jsonResource(uri, result.data)
@@ -559,7 +597,7 @@ export const createLumenServer = (): McpServer => {
       description: 'Lumen recipe metadata and install commands.',
       mimeType: 'application/json'
     }, (uri, variables) => {
-      const result = getRecipe({ name: String(variables.name) })
+      const result = getRecipe({ name: decodeResourceVariable(variables.name) })
 
       return jsonResource(uri, result.data)
     }

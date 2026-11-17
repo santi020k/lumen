@@ -9,7 +9,7 @@
     "dev": "vite --host 127.0.0.1 --port 4348",
     "lint": "eslint . --no-warn-ignored --max-warnings=0",
     "package": "node scripts/build.mjs && node scripts/package.mjs",
-    "test": "vitest run --config ../../vitest.config.ts --project figma-plugin && node --test scripts/package.test.mjs",
+    "test": "vitest run --config ../../vitest.config.ts --project figma-plugin && node --test scripts/*.test.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.plugin.json --noEmit",
     "verify:native": "node scripts/verify-native.mjs",
     "verify:generated": "node scripts/build.mjs && node scripts/verify-generated.mjs"
@@ -30,7 +30,9 @@
     "lumen-astro-v4": "catalog:",
     "lumen-astro-v5": "catalog:",
     "lumen-elements-v4": "catalog:",
+    "lumen-elements-v5": "catalog:",
     "lumen-react-v4": "catalog:",
+    "lumen-react-v5": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"

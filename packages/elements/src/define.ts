@@ -162,6 +162,14 @@ import {
 import { LumenInputElement as GranularLumenInputElement, lumenInputElementConfig } from './components/input.js'
 import { LumenMediaFilmstripElement as GranularLumenMediaFilmstripElement, lumenMediaFilmstripElementConfig, LumenMediaThumbnailElement as GranularLumenMediaThumbnailElement, lumenMediaThumbnailElementConfig } from './components/media-selection.js'
 import { LumenMediaViewportElement as GranularLumenMediaViewportElement, lumenMediaViewportElementConfig } from './components/media-viewport.js'
+import {
+  defineLumenCheckboxCard,
+  defineLumenRadioCard,
+  LumenCheckboxCardElement,
+  lumenCheckboxCardElementConfig,
+  LumenRadioCardElement,
+  lumenRadioCardElementConfig
+} from './components/selection-card.js'
 import { LumenTimelineElement as GranularLumenTimelineElement, lumenTimelineElementConfig } from './components/timeline.js'
 import {
   LumenVirtualListElement as GranularLumenVirtualListElement,
@@ -192,7 +200,7 @@ import {
   type LumenElementConstructor
 } from './element-base.js'
 import { boxPlotHtml, calendarHeatmapHtml, funnelChartHtml, parseBoxPlotData, parseCalendarHeatmapData, parseFunnelData } from './expanded-chart-html.js'
-import { observedAttributeNames } from './observed-attributes.js'
+import { observedAttributeNames, scalarObservedAttributeNames } from './observed-attributes.js'
 
 export { LumenDialogElement } from './editorial-behaviors.js'
 
@@ -470,6 +478,7 @@ const elementConfigs = {
     defaults: { type: 'checkbox' },
     tagName: 'lumen-checkbox'
   },
+  CheckboxCard: lumenCheckboxCardElementConfig,
   CheckboxGroup: {
     attributeClasses: {
       orientation: {
@@ -914,6 +923,7 @@ const elementConfigs = {
     defaults: { 'data-slot': 'prose' },
     tagName: 'lumen-prose'
   },
+  RadioCard: lumenRadioCardElementConfig,
   RadioGroup: {
     baseClassName: 'ui-radio-group',
     defaults: { 'data-ui-radio-group': '' },
@@ -2887,6 +2897,14 @@ const createResizableHandle = (
   return handle
 }
 
+const shouldIgnoreKeydown = (event: KeyboardEvent): boolean => (
+  event.defaultPrevented ||
+  event.isComposing ||
+  event.altKey ||
+  event.ctrlKey ||
+  event.metaKey
+)
+
 const initResizableGroups = (scope: ParentNode): void => {
   const closestRoot = getClosestScopedElement(scope, resizableSelector)
   const roots = getScopedElements<HTMLElement>(scope, resizableSelector)
@@ -3027,6 +3045,8 @@ const initResizableGroups = (scope: ParentNode): void => {
       })
 
       handle.addEventListener('keydown', event => {
+        if (shouldIgnoreKeydown(event)) return
+
         const step = event.shiftKey ? 10 : 2
 
         const keyDeltas: Record<string, number> =
@@ -3520,6 +3540,8 @@ const initInputOtpFields = (scope: ParentNode): void => {
     input.addEventListener('keyup', syncSegments)
 
     input.addEventListener('keydown', event => {
+      if (shouldIgnoreKeydown(event)) return
+
       if (event.key === 'ArrowLeft') {
         event.preventDefault()
 
@@ -4125,6 +4147,8 @@ const initCalendars = (scope: ParentNode): void => {
     })
 
     root.addEventListener('keydown', event => {
+      if (shouldIgnoreKeydown(event)) return
+
       const target = event.target
 
       if (
@@ -4307,6 +4331,8 @@ const initDatePickers = (scope: ParentNode): void => {
     const closePopover = (restoreFocus = false): void => {
       outsideController?.abort()
 
+      outsideController = undefined
+
       disconnectPanel?.()
 
       disconnectPanel = undefined
@@ -4387,6 +4413,8 @@ const initDatePickers = (scope: ParentNode): void => {
           closePopover()
         }
       })
+
+      outsideController?.abort()
 
       outsideController = new AbortController()
 
@@ -4570,6 +4598,35 @@ const openContextMenuAt = (menu: HTMLElement, x: number, y: number): void => {
   getFocusable(menu)[0]?.focus()
 }
 
+const contextMenuTriggers = new WeakMap<HTMLElement, HTMLElement>()
+
+const getScopeActiveElement = (node: Element): Element | null => {
+  const root = node.getRootNode()
+
+  if (root instanceof Document || root instanceof ShadowRoot) return root.activeElement
+
+  return node.ownerDocument.activeElement
+}
+
+const shouldRestorePanelFocus = (panel: HTMLElement): boolean => {
+  let reference: Element | null = panel
+
+  while (reference) {
+    const activeElement = getScopeActiveElement(reference)
+
+    if (activeElement) {
+      return panel.contains(activeElement) || activeElement === panel.ownerDocument.body ||
+        (activeElement.matches('dialog[open]') && activeElement.contains(reference))
+    }
+
+    const tree = reference.getRootNode()
+
+    reference = tree instanceof ShadowRoot ? tree.host : null
+  }
+
+  return false
+}
+
 const initContextMenus = (scope: ParentNode): void => {
   for (const trigger of getScopedElements<HTMLElement>(
     scope, contextMenuTriggerSelector
@@ -4590,12 +4647,18 @@ const initContextMenus = (scope: ParentNode): void => {
     menu.dataset.state = 'closed'
 
     trigger.addEventListener('contextmenu', event => {
+      if (event.defaultPrevented || trigger.matches(':disabled, [aria-disabled="true"]')) return
+
       event.preventDefault()
+
+      contextMenuTriggers.set(menu, trigger)
 
       openContextMenuAt(menu, event.clientX, event.clientY)
     })
 
     trigger.addEventListener('keydown', event => {
+      if (shouldIgnoreKeydown(event) || trigger.matches(':disabled, [aria-disabled="true"]')) return
+
       if (
         event.key !== 'ContextMenu' &&
         !(event.shiftKey && event.key === 'F10')
@@ -4606,6 +4669,8 @@ const initContextMenus = (scope: ParentNode): void => {
 
       const rect = trigger.getBoundingClientRect()
 
+      contextMenuTriggers.set(menu, trigger)
+
       openContextMenuAt(menu, rect.left + 16, rect.top + 16)
     })
 
@@ -4614,14 +4679,14 @@ const initContextMenus = (scope: ParentNode): void => {
     menu.dataset.uiContextMenuMenuBound = 'true'
 
     menu.addEventListener('keydown', event => {
-      if (event.defaultPrevented || event.isComposing) return
+      if (shouldIgnoreKeydown(event)) return
 
       if (event.key === 'Escape') {
         event.preventDefault()
 
         closeContextMenu(menu)
 
-        trigger.focus({ preventScroll: true })
+        contextMenuTriggers.get(menu)?.focus({ preventScroll: true })
 
         return
       }
@@ -4644,12 +4709,23 @@ const initContextMenus = (scope: ParentNode): void => {
     })
 
     menu.addEventListener('click', event => {
-      if (
-        event.target instanceof HTMLElement &&
-        event.target.closest('[role="menuitem"]')
-      ) {
-        closeContextMenu(menu)
+      const item = event.target instanceof Element ?
+        event.target.closest<HTMLElement>('[role="menuitem"]') :
+        null
+
+      if (event.defaultPrevented || item?.closest('[data-ui-context-menu]') !== menu) return
+
+      if (item.matches(':disabled, [aria-disabled="true"]') || item.closest('[hidden], [inert]')) {
+        event.preventDefault()
+
+        return
       }
+
+      const restoreFocus = shouldRestorePanelFocus(menu)
+
+      closeContextMenu(menu)
+
+      if (restoreFocus) contextMenuTriggers.get(menu)?.focus({ preventScroll: true })
     })
   }
 }
@@ -4686,7 +4762,7 @@ const installContextMenuController = (): void => {
   })
 
   document.addEventListener('keydown', event => {
-    if (event.defaultPrevented || event.isComposing) return
+    if (shouldIgnoreKeydown(event)) return
 
     if (event.key === 'Escape') {
       const target = getOwnedTarget(event)
@@ -4771,11 +4847,21 @@ const getNextDataTableSortDirection = (
   return 'ascending'
 }
 
+const getElementByIdInRoot = (node: Node, id: string): HTMLElement | null => {
+  const root = node.getRootNode()
+
+  if (root instanceof Document || root instanceof ShadowRoot) {
+    return root.getElementById(id)
+  }
+
+  return hasDocument() ? document.getElementById(id) : null
+}
+
 const getControlledPanel = (trigger: HTMLElement): HTMLElement | null => {
   const controls = trigger.getAttribute('aria-controls')
 
-  if (controls && hasDocument()) {
-    return document.getElementById(controls)
+  if (controls) {
+    return getElementByIdInRoot(trigger, controls)
   }
 
   return trigger.nextElementSibling instanceof HTMLElement ?
@@ -6761,13 +6847,31 @@ class LumenDisclosureBehaviorElement extends LumenElement {
       }, { signal }
     )
 
+    const handledPointerDowns = new WeakSet<Event>()
+
+    this.addEventListener(
+      'pointerdown', event => {
+        handledPointerDowns.add(event)
+      }, { capture: true, signal }
+    )
+
+    if (!this.contains(panel)) {
+      panel.addEventListener(
+        'pointerdown', event => {
+          handledPointerDowns.add(event)
+        }, { capture: true, signal }
+      )
+    }
+
     document.addEventListener(
       'pointerdown', event => {
         if (trigger.getAttribute('aria-expanded') !== 'true') return
 
-        const target = getOwnedTarget(event)
-
-        if (!target || this.contains(target) || panel.contains(target)) return
+        if (
+          handledPointerDowns.has(event) ||
+          event.composedPath().includes(this) ||
+          event.composedPath().includes(panel)
+        ) return
 
         close()
       }, { signal }
@@ -6838,7 +6942,10 @@ class LumenTabsBehaviorElement extends LumenElement {
       for (const item of tabs) {
         const selected = item === tab
         const panelId = item.getAttribute('aria-controls')
-        const panel = panelId ? document.getElementById(panelId) : null
+
+        const panel = panelId ?
+          (panels.find(candidate => candidate.id === panelId) ?? getElementByIdInRoot(this, panelId)) :
+          null
 
         item.setAttribute('aria-selected', String(selected))
 
@@ -6873,13 +6980,17 @@ class LumenTabsBehaviorElement extends LumenElement {
 
     for (const tab of tabs) {
       tab.addEventListener(
-        'click', () => {
+        'click', event => {
+          if (event.defaultPrevented || tab.matches(':disabled, [aria-disabled="true"]')) return
+
           activate(tab)
         }, { signal }
       )
 
       tab.addEventListener(
         'keydown', event => {
+          if (shouldIgnoreKeydown(event)) return
+
           const keys = orientation === 'vertical' ?
             ['ArrowUp', 'ArrowDown', 'Home', 'End'] :
             ['ArrowLeft', 'ArrowRight', 'Home', 'End']
@@ -7112,9 +7223,13 @@ class LumenSelectBehaviorElement extends LumenElement {
       }, { signal }
     )
 
-    select.form?.addEventListener(
-      'reset', () => {
+    const form = select.form
+
+    form?.addEventListener(
+      'reset', event => {
         globalThis.setTimeout(() => {
+          if (signal.aborted || event.defaultPrevented || !this.isConnected || select.form !== form) return
+
           this.#syncValue(select, trigger)
         })
       }, { signal }
@@ -7764,9 +7879,13 @@ class LumenDataTableBehaviorElement extends LumenElement {
       }, { signal }
     )
 
-    this.closest('form')?.addEventListener(
-      'reset', () => {
+    const form = this.closest('form')
+
+    form?.addEventListener(
+      'reset', event => {
         globalThis.setTimeout(() => {
+          if (signal.aborted || event.defaultPrevented || !this.isConnected || this.closest('form') !== form) return
+
           this.#syncSelection(table, selectAll, true)
         })
       }, { signal }
@@ -8063,6 +8182,8 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
     const update = (dispatch = true): void => {
       const result = createThemeBuilderTokens({
         preset: currentPreset,
+        fontFamily: this.querySelector<HTMLSelectElement>('[data-ui-theme-font-family]')?.value ?? null,
+        elevation: this.querySelector<HTMLSelectElement>('[data-ui-theme-elevation]')?.value ?? null,
         radiusScale: this.querySelector<HTMLInputElement>('[data-ui-theme-radius-scale]')?.value ?? null,
         spacingScale: this.querySelector<HTMLInputElement>('[data-ui-theme-spacing-scale]')?.value ?? null,
         borderWidth: this.querySelector<HTMLInputElement>('[data-ui-theme-border-width]')?.value ?? null,
@@ -8109,7 +8230,7 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
       }
     }
 
-    for (const input of this.querySelectorAll<HTMLInputElement>('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width]')) {
+    for (const input of this.querySelectorAll<HTMLInputElement>('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width], [data-ui-theme-font-family], [data-ui-theme-elevation]')) {
       input.addEventListener('input', () => {
         update()
       }, { signal })
@@ -8187,7 +8308,11 @@ class LumenThemeBuilderBehaviorElement extends LumenElement {
 
         const value = output?.value || this.currentExportValue
 
-        navigator.clipboard.writeText(value).catch(() => null)
+        try {
+          navigator.clipboard.writeText(value).catch(() => null)
+        } catch {
+          // Clipboard access is optional; export events still dispatch when unavailable.
+        }
 
         this.dispatchEvent(
           new CustomEvent('ui:theme-export', {
@@ -8578,6 +8703,23 @@ class LumenToastBehaviorElement extends LumenElement {
   }
 }
 
+const resolveDroppedFiles = (files: FileList, multiple: boolean): FileList | null => {
+  if (multiple || files.length <= 1) return files
+
+  if (typeof DataTransfer !== 'function') return null
+
+  try {
+    const transfer = new DataTransfer()
+    const firstFile = files[0]
+
+    if (firstFile) transfer.items.add(firstFile)
+
+    return transfer.files
+  } catch {
+    return null
+  }
+}
+
 class LumenFileUploadBehaviorElement extends LumenElement {
   private abortController: AbortController | undefined
 
@@ -8652,7 +8794,15 @@ class LumenFileUploadBehaviorElement extends LumenElement {
           return
         }
 
-        input.files = event.dataTransfer.files
+        const nextFiles = resolveDroppedFiles(event.dataTransfer.files, input.multiple)
+
+        if (!nextFiles) {
+          renderFiles()
+
+          return
+        }
+
+        input.files = nextFiles
 
         input.dispatchEvent(new Event('change', { bubbles: true }))
       }, { signal: this.abortController.signal }
@@ -10386,12 +10536,26 @@ class LumenKanbanBoardBehaviorElement extends LumenElement {
 }
 
 class LumenBackToTopBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
   override connectedCallback() {
     super.connectedCallback()
 
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
+
     this.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
-    })
+    }, { signal: this.abortController.signal })
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+
+    super.disconnectedCallback()
   }
 }
 
@@ -10596,8 +10760,14 @@ class LumenParticlesBehaviorElement extends LumenElement {
 }
 
 class LumenRatingBehaviorElement extends LumenElement {
+  private abortController: AbortController | undefined
+
   override connectedCallback() {
     super.connectedCallback()
+
+    this.abortController?.abort()
+
+    this.abortController = new AbortController()
 
     this.addEventListener('click', e => {
       if (this.getAttribute('data-readonly') === 'true') return
@@ -10627,7 +10797,15 @@ class LumenRatingBehaviorElement extends LumenElement {
       this.dispatchEvent(
         new CustomEvent('change', { detail: { value: newValue } })
       )
-    })
+    }, { signal: this.abortController.signal })
+  }
+
+  override disconnectedCallback() {
+    this.abortController?.abort()
+
+    this.abortController = undefined
+
+    super.disconnectedCallback()
   }
 }
 
@@ -10780,6 +10958,7 @@ class LumenAnimatedNumberBehaviorElement extends LumenElement {
 }
 
 class LumenThemeToggleBehaviorElement extends LumenElement {
+  #cancelReveal: (() => void) | undefined
   #isAnimating = false
 
   override connectedCallback() {
@@ -10807,11 +10986,17 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
 
     this.setAttribute('aria-checked', String(this.#rootInDarkMode()))
 
+    this.removeEventListener('click', this.#handleClick)
+
     this.addEventListener('click', this.#handleClick)
   }
 
   override disconnectedCallback(): void {
     this.removeEventListener('click', this.#handleClick)
+
+    this.#cancelReveal?.()
+
+    super.disconnectedCallback()
   }
 
   #handleClick = (): void => {
@@ -10871,6 +11056,8 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
       return
     }
 
+    this.#cancelReveal?.()
+
     this.#isAnimating = true
 
     const rect = this.getBoundingClientRect()
@@ -10898,24 +11085,62 @@ class LumenThemeToggleBehaviorElement extends LumenElement {
 
     document.body.appendChild(overlay)
 
+    let raf1 = 0
+    let raf2 = 0
+    let timer: ReturnType<typeof globalThis.setTimeout> | undefined
+    let cleaned = false
+    const isCleaned = (): boolean => cleaned
+
+    const cleanup = () => {
+      if (cleaned) return
+
+      cleaned = true
+
+      if (raf1) cancelAnimationFrame(raf1)
+
+      if (raf2) cancelAnimationFrame(raf2)
+
+      if (timer !== undefined) globalThis.clearTimeout(timer)
+
+      overlay.removeEventListener('transitionend', cleanup)
+
+      overlay.remove()
+
+      if (this.#cancelReveal === cleanup) {
+        this.#cancelReveal = undefined
+
+        this.#isAnimating = false
+      }
+    }
+
+    this.#cancelReveal = cleanup
+
     this.#dispatchChange(newTheme)
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
+    if (isCleaned() || !this.isConnected) {
+      cleanup()
+
+      return
+    }
+
+    raf1 = requestAnimationFrame(() => {
+      raf1 = 0
+
+      if (cleaned) return
+
+      raf2 = requestAnimationFrame(() => {
+        raf2 = 0
+
+        if (cleaned) return
+
         overlay.style.transition =
           'clip-path 580ms cubic-bezier(0.4, 0, 0.2, 1)'
 
         overlay.style.clipPath = `circle(0px at ${x}px ${y}px)`
 
-        const done = () => {
-          overlay.remove()
+        overlay.addEventListener('transitionend', cleanup, { once: true })
 
-          this.#isAnimating = false
-        }
-
-        overlay.addEventListener('transitionend', done, { once: true })
-
-        setTimeout(done, 750)
+        timer = globalThis.setTimeout(cleanup, 750)
       })
     })
   }
@@ -11023,6 +11248,7 @@ export class LumenPhoneNumberElement extends LumenElement {
 class LumenPhoneInputBehaviorElement extends LumenElement {
   private countrySelect: HTMLSelectElement | undefined
   private eventController: AbortController | undefined
+  private initializedInput: HTMLInputElement | undefined
   private numberInput: HTMLInputElement | undefined
 
   get e164(): string | null {
@@ -11114,8 +11340,16 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
       this.#commit()
     }, options)
 
-    this.numberInput.form?.addEventListener('reset', () => {
+    const input = this.numberInput
+    const form = input.form
+    const signal = this.eventController.signal
+
+    form?.addEventListener('reset', event => {
       queueMicrotask(() => {
+        const stale = signal.aborted || event.defaultPrevented || !this.isConnected
+
+        if (stale || this.numberInput !== input || input.form !== form) return
+
         this.#commit()
       })
     }, options)
@@ -11327,7 +11561,11 @@ class LumenPhoneInputBehaviorElement extends LumenElement {
 
     this.numberInput.type = 'tel'
 
-    this.numberInput.value = this.getAttribute('value') ?? this.numberInput.value
+    if (this.initializedInput !== this.numberInput) {
+      this.initializedInput = this.numberInput
+
+      this.numberInput.value = this.getAttribute('value') ?? this.numberInput.value
+    }
   }
 
   #syncInputAttributes() {
@@ -11443,11 +11681,20 @@ const createLumenElementClass = (
   withObservedAttributes(config)
 )
 
+const withScalarObservedAttributes = (
+  config: LumenElementConfig
+): LumenElementConfig => ({ ...config, observedAttributes: scalarObservedAttributeNames })
+
 const createLumenBehaviorElementClass = (
   BaseElement: typeof LumenElement,
   config: LumenElementConfig
 ) => class extends BaseElement {
-  static override config = withObservedAttributes(config)
+  static override config = (
+    BaseElement === LumenScalarFormControlElement ||
+    BaseElement.prototype instanceof LumenScalarFormControlElement
+  ) ?
+    withScalarObservedAttributes(config) :
+    withObservedAttributes(config)
 }
 
 const behaviorElementClasses: Partial<
@@ -11532,6 +11779,8 @@ const granularElementClasses: Partial<
   DumbbellChart: LumenDumbbellChartElement,
   Button: GranularLumenButtonElement,
   Card: GranularLumenCardElement,
+  CheckboxCard: LumenCheckboxCardElement,
+  RadioCard: LumenRadioCardElement,
   Timeline: GranularLumenTimelineElement,
   CardContent: GranularLumenCardContentElement,
   CardDescription: GranularLumenCardDescriptionElement,
@@ -11911,3 +12160,5 @@ export const LumenMediaViewportElement = elementClasses.MediaViewport
 
 export const LumenMediaThumbnailElement = elementClasses.MediaThumbnail
 export const LumenMediaFilmstripElement = elementClasses.MediaFilmstrip
+
+export { defineLumenCheckboxCard, defineLumenRadioCard, LumenCheckboxCardElement, LumenRadioCardElement }

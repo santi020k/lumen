@@ -17,6 +17,15 @@ test('uses each screen preset and orders custom dimensions for orientation', () 
   expect(resolveLumenDeviceFrame('laptop', 'portrait', 1200, 700)).toEqual({ height: 1200, width: 700 })
 })
 
+test.each(['constructor', 'toString', 'valueOf', '__proto__'])('unknown runtime device %s uses the laptop fallback', device => {
+  // JavaScript callers can supply names outside the public TypeScript union.
+  const dimensions: unknown = Reflect.apply(resolveLumenDeviceFrame, undefined, [device])
+  const landscape: unknown = Reflect.apply(resolveLumenDeviceFrame, undefined, [device, 'landscape'])
+
+  expect(dimensions).toEqual({ height: 800, width: 1280 })
+  expect(landscape).toEqual({ height: 800, width: 1280 })
+})
+
 test.each([NaN, Infinity, 0, -1, 16385])('rejects invalid screen dimension %s', value => {
   expect(resolveLumenDeviceFrame('laptop', undefined, value, value)).toEqual({ height: 800, width: 1280 })
 })

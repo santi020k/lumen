@@ -1,0 +1,9 @@
+<link rel="stylesheet" href="./metric-card.css" />
+<section id="revenue-metric" aria-label="Revenue metric"><p>Revenue data is unavailable until the application supplies a snapshot.</p></section>
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  import { renderMetricCard } from './metric-card.ts'
+  defineLumenElements()
+  // Illustrative data. Call renderMetricCard again when the application receives an update.
+  renderMetricCard(document.getElementById('revenue-metric'), { label: 'Monthly revenue', prefix: '$', snapshot: { state: 'stale', value: 184320, values: [118, 126, 132, 148, 162, 184], change: '+12.4%', comparison: 'versus the previous month', trend: 'positive', updatedAt: 'Last refreshed 12 minutes ago' } })
+</script>

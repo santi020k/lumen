@@ -106,19 +106,101 @@ const positionPanel = (context: FloatingContext): void => {
 // Transform transitions and animations move the trigger without resizing it, so ResizeObserver stays quiet.
 const settleEvents = ['animationend', 'animationcancel', 'transitionend', 'transitioncancel'] as const
 
+const isShadowRootNode = (node: Node, view: FloatingView): node is ShadowRoot => (
+  typeof view.ShadowRoot === 'function' && node instanceof view.ShadowRoot
+)
+
+const collectNodeRoots = (
+  start: Node,
+  document: Document,
+  view: FloatingView,
+  roots: Set<Node>
+): void => {
+  let current: Node | null = start
+
+  while (current) {
+    const root = current.getRootNode()
+
+    roots.add(root)
+
+    if (root === document) break
+
+    current = isShadowRootNode(root, view) ? root.host : null
+  }
+}
+
+const collectPanelRoots = (
+  panel: HTMLElement,
+  trigger: HTMLElement,
+  document: Document,
+  view: FloatingView
+): Node[] => {
+  const roots = new Set<Node>()
+
+  collectNodeRoots(panel, document, view, roots)
+
+  collectNodeRoots(trigger, document, view, roots)
+
+  roots.add(document)
+
+  return [...roots]
+}
+
+const findContainingDialog = (trigger: HTMLElement, view: FloatingView): Element | null => {
+  let current: Element | null = trigger
+
+  while (current) {
+    const dialog = current.closest('dialog')
+
+    if (dialog) return dialog
+
+    const root = current.getRootNode()
+
+    current = isShadowRootNode(root, view) && root.host instanceof view.Element ? root.host : null
+  }
+
+  return null
+}
+
+const registerRootObservers = (
+  roots: readonly Node[],
+  removal: MutationObserver | undefined,
+  focusOutside: (event: Event) => void,
+  scroll: (event: Event) => void
+): (() => void) => {
+  for (const root of roots) {
+    removal?.observe(root, { childList: true, subtree: true })
+
+    root.addEventListener('focusin', focusOutside)
+
+    root.addEventListener('scroll', scroll, true)
+  }
+
+  return () => {
+    for (const root of roots) {
+      root.removeEventListener('focusin', focusOutside)
+
+      root.removeEventListener('scroll', scroll, true)
+    }
+  }
+}
+
+const areSameNodes = (left: readonly Node[], right: readonly Node[]): boolean => (
+  left.length === right.length && left.every((node, index) => node === right[index])
+)
+
 const observePosition = (context: FloatingContext, dismiss: () => void): (() => void) => {
   const { panel, trigger, view } = context
   const document = panel.ownerDocument
   const NodeType = view.Node
-  const dialog = trigger.closest('dialog')
+  const handledFocusEvents = new WeakSet<Event>()
+  const ownedFocusEvents = new WeakSet<Event>()
+  let activeRoots: Node[] = []
+  let activeDialog: Element | null = null
+  let stopRootListeners: (() => void) | undefined
 
   const position = () => {
     positionPanel(context)
-  }
-
-  const focusOutside = (event: FocusEvent) => {
-    if (event.target instanceof NodeType &&
-      !panel.contains(event.target) && !trigger.contains(event.target)) dismiss()
   }
 
   const scroll = (event: Event) => {
@@ -126,29 +208,75 @@ const observePosition = (context: FloatingContext, dismiss: () => void): (() => 
   }
 
   const observer = typeof view.ResizeObserver === 'function' ? new view.ResizeObserver(position) : undefined
+  let syncRoots = (): void => undefined
+
+  const markOwnedFocus = (event: Event) => {
+    ownedFocusEvents.add(event)
+
+    syncRoots()
+  }
+
+  const focusOutside = (event: Event) => {
+    if (handledFocusEvents.has(event)) return
+
+    handledFocusEvents.add(event)
+
+    syncRoots()
+
+    if (ownedFocusEvents.has(event)) return
+
+    if (event.target instanceof NodeType &&
+      !panel.contains(event.target) && !trigger.contains(event.target)) dismiss()
+  }
 
   // Removing an open panel's owner must not leave document listeners or an expanded trigger behind.
   const removal = typeof view.MutationObserver === 'function' ?
     new view.MutationObserver(() => {
       if (!trigger.isConnected || !panel.isConnected ||
-        trigger.ownerDocument !== document || panel.ownerDocument !== document) dismiss()
+        trigger.ownerDocument !== document || panel.ownerDocument !== document) {
+        dismiss()
+
+        return
+      }
+
+      syncRoots()
     }) :
     undefined
 
-  removal?.observe(document, { childList: true, subtree: true })
+  syncRoots = () => {
+    const nextRoots = collectPanelRoots(panel, trigger, document, view)
+    const nextDialog = findContainingDialog(trigger, view)
+
+    if (nextDialog !== activeDialog) {
+      activeDialog?.removeEventListener('close', dismiss)
+
+      activeDialog = nextDialog
+
+      activeDialog?.addEventListener('close', dismiss)
+    }
+
+    if (areSameNodes(activeRoots, nextRoots)) return
+
+    stopRootListeners?.()
+
+    removal?.disconnect()
+
+    activeRoots = nextRoots
+
+    stopRootListeners = registerRootObservers(activeRoots, removal, focusOutside, scroll)
+  }
+
+  syncRoots()
+
+  panel.addEventListener('focusin', markOwnedFocus, true)
+
+  trigger.addEventListener('focusin', markOwnedFocus, true)
 
   observer?.observe(trigger)
 
   observer?.observe(panel)
 
-  document.addEventListener('focusin', focusOutside)
-
-  document.addEventListener('scroll', scroll, true)
-
   for (const type of settleEvents) document.addEventListener(type, position, true)
-
-  // Some engines move focus to the body without a focusin when a containing dialog closes.
-  dialog?.addEventListener('close', dismiss)
 
   view.addEventListener('resize', position)
 
@@ -161,13 +289,15 @@ const observePosition = (context: FloatingContext, dismiss: () => void): (() => 
 
     removal?.disconnect()
 
-    document.removeEventListener('focusin', focusOutside)
+    stopRootListeners?.()
 
-    document.removeEventListener('scroll', scroll, true)
+    panel.removeEventListener('focusin', markOwnedFocus, true)
+
+    trigger.removeEventListener('focusin', markOwnedFocus, true)
 
     for (const type of settleEvents) document.removeEventListener(type, position, true)
 
-    dialog?.removeEventListener('close', dismiss)
+    activeDialog?.removeEventListener('close', dismiss)
 
     view.removeEventListener('resize', position)
 
@@ -177,25 +307,71 @@ const observePosition = (context: FloatingContext, dismiss: () => void): (() => 
   }
 }
 
-const restoreExternalFocus = (owner: Document, focused: Element | null): void => {
-  const ElementType = owner.defaultView?.HTMLElement
+const getRootActiveElement = (
+  root: Node,
+  document: Document,
+  view: FloatingView
+): Element | null => {
+  if (root === document) return document.activeElement
 
-  if (ElementType && focused instanceof ElementType && focused.isConnected && owner.activeElement !== focused) {
+  return isShadowRootNode(root, view) ? root.activeElement : null
+}
+
+const captureExternalFocus = (
+  panel: HTMLElement,
+  document: Document,
+  view: FloatingView
+): { root: Document | ShadowRoot, target: Element } | undefined => {
+  const visited = new Set<Node>()
+  let current: Node = panel
+
+  while (!visited.has(current)) {
+    visited.add(current)
+
+    const root = current.getRootNode()
+
+    if (root === document) {
+      return document.activeElement ? { root: document, target: document.activeElement } : undefined
+    }
+
+    if (!isShadowRootNode(root, view)) return undefined
+
+    if (root.activeElement) return { root, target: root.activeElement }
+
+    current = root.host
+  }
+
+  return undefined
+}
+
+const restoreExternalFocus = (
+  root: Document | ShadowRoot,
+  view: FloatingView,
+  focused: Element
+): void => {
+  if (focused instanceof view.HTMLElement && focused.isConnected && root.activeElement !== focused) {
     focused.focus({ preventScroll: true })
   }
 }
 
-const restoreFocus = (panel: HTMLElement, trigger: HTMLElement, topLayer: boolean): void => {
+const restoreFocus = (
+  panel: HTMLElement,
+  trigger: HTMLElement,
+  view: FloatingView,
+  topLayer: boolean
+): void => {
   const document = panel.ownerDocument
-  const focused = document.activeElement
-  const ownedFocus = focused !== null && panel.contains(focused)
+  const panelRoot = panel.getRootNode()
+  const panelRootActive = getRootActiveElement(panelRoot, document, view)
+  const ownedFocus = panelRootActive !== null && panel.contains(panelRootActive)
+  const externalFocus = ownedFocus ? undefined : captureExternalFocus(panel, document, view)
 
   if (topLayer && panel.matches(':popover-open')) panel.hidePopover()
 
   if (ownedFocus && trigger.isConnected) trigger.focus({ preventScroll: true })
 
   // Closing a panel must not steal focus from a dialog opened by its action.
-  if (!ownedFocus) restoreExternalFocus(document, focused)
+  if (externalFocus) restoreExternalFocus(externalFocus.root, view, externalFocus.target)
 }
 
 const restoreAttribute = (panel: HTMLElement, name: string, value: string | null): void => {
@@ -279,7 +455,7 @@ export const connectLumenFloatingPanel = (
 
     stopObserving()
 
-    restoreFocus(panel, trigger, topLayer)
+    restoreFocus(panel, trigger, view, topLayer)
 
     restoreAttribute(panel, 'popover', previousPopover)
 

@@ -72,3 +72,13 @@ test('bundles artwork for every supported phone country with a safe fallback', a
   expect(getLumenPhoneFlagSource('../../secret')).toBeNull()
   expect(getLumenPhoneFlag('12')).toBe('')
 })
+
+test.each(['en_US', 'en--US', ['en_US']])('getLumenPhoneCountries falls back safely when locale tag %j is malformed', locale => {
+  const countries = getLumenPhoneCountries({ locale })
+  const englishCollator = new Intl.Collator('en')
+  const names = countries.map(country => country.displayName)
+
+  expect(countries.length).toBeGreaterThan(200)
+  expect(countries.every(country => country.displayName === country.regionCode)).toBe(true)
+  expect(names).toEqual([...names].sort((left, right) => englishCollator.compare(left, right)))
+})

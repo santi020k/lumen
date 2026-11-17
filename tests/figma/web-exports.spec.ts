@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-for (const platform of ['astro', 'react', 'elements'] as const) {
-  test(`static ${platform} export renders at mobile and desktop sizes`, async ({ page }) => {
+for (const [platform, prefix] of [['astro', ''], ['react', ''], ['elements', ''], ['react', 'workspace/'], ['elements', 'workspace/']] as const) {
+  test(`static ${prefix}${platform} export renders at mobile and desktop sizes`, async ({ page }) => {
     const errors: string[] = []
     page.on('pageerror', error => errors.push(error.message))
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 900 })
-      await page.goto(`http://127.0.0.1:4762/${platform === 'astro' ? '' : platform + '/'}static/`)
+      await page.goto(`http://127.0.0.1:4762/${prefix}${platform === 'astro' ? '' : platform + '/'}static/`)
       await expect(page.getByRole('heading', { name: 'Static card' })).toBeVisible()
       await expect(page.getByText('Static content')).toBeVisible()
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
@@ -22,12 +22,12 @@ for (const platform of ['astro', 'react', 'elements'] as const) {
 }
 
 for (const platform of ['react', 'elements'] as const) {
-  for (const [version, port] of [['5.0.0', 4762], ['4.4.0', 4763]] as const) {
-    test(`generated ${platform} export works with Lumen ${version}`, async ({ page }) => {
+  for (const [version, port, prefix] of [['5.0.0', 4762, ''], ['4.4.0', 4763, ''], ['5.0.0', 4762, 'workspace/']] as const) {
+    test(`generated ${prefix}${platform} export works with Lumen ${version}`, async ({ page }) => {
       const errors: string[] = []
       page.on('pageerror', error => errors.push(error.message))
       await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'light' })
-      await page.goto(`http://127.0.0.1:${port}/${platform}/`)
+      await page.goto(`http://127.0.0.1:${port}/${prefix}${platform}/`)
       const input = page.getByRole('textbox', { name: 'Workspace name' })
       await input.fill('Edited workspace')
       await expect(input).toHaveAccessibleDescription('Shown to everyone in your workspace.')

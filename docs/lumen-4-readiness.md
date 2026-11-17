@@ -90,7 +90,7 @@ retains its space before the client name.
 
 The exact-version React Native renderer patch is combined with the approved Forge and Braces
 patches. Frozen-lockfile installation passes without weakening the release-age policy. The renderer's
-source-build and simulator evidence remains in [native quality](lumen-4-native-quality.md#local-renderer-correction-and-bundle-gate-follow-up);
+source-build and simulator evidence remains in [native quality](archive/lumen-4-native-quality.md#local-renderer-correction-and-bundle-gate-follow-up);
 this preparation run does not relabel it as physical-device qualification. The React and Elements
 bundles retain their public contracts after artifact reductions.
 
@@ -101,7 +101,7 @@ Canonical `pnpm run validate` passes on `d91c9c98`: all 14 build tasks, 24 stric
 security guard tests, package-content dry runs and clean consumers. The owner authorized the exact
 `http-cache-semantics@4.3.0` release-age exception in `b9845f03`; frozen installation and guarded
 security checks pass. The exception was removed after its 24-hour hold expired on October 5,
-02:56:06 UTC; the fixed version remains locked and the normal 24-hour policy applies. See the [dependency review](lumen-4-dependencies.md#cache-advisory-correction)
+02:56:06 UTC; the fixed version remains locked and the normal 24-hour policy applies. See the [dependency review](archive/lumen-4-dependencies.md#cache-advisory-correction)
 for the distinction between audit metadata and a demonstrated cache behavior fix.
 
 The final code passes all 136 desktop/mobile Chromium and WebKit conformance checks. The prior
@@ -208,7 +208,7 @@ Fresh native checks also pass: 68 Swift tests and Compose `test lint apiCheck` (
 Local release integration remains incomplete because the canonical security gate fails.
 `release/v4.0.0` remains at `50990a22`. The 24-hour hold permits reassessing cache version 4.3.0
 after October 4 at 21:56 Colombia time; no age exception or cache-advisory suppression was applied.
-See the [dependency investigation](lumen-4-dependencies.md#consolidation-security-investigation)
+See the [dependency investigation](archive/lumen-4-dependencies.md#consolidation-security-investigation)
 before treating a version change as a demonstrated fix.
 
 Complete-qualification checks still fail for all five native consumer records, all 22 physical
@@ -224,7 +224,7 @@ was taken by this stabilization task.
 The owner subsequently approved raising the combined stylesheet budget. The new 220,000-byte
 raw / 36,000-byte gzip limits pass. Dependency investigation, tested patch options, the disputed
 cache advisory, and the release-age blocker are recorded in
-[the dependency review](lumen-4-dependencies.md#consolidation-security-investigation).
+[the dependency review](archive/lumen-4-dependencies.md#consolidation-security-investigation).
 The owner approved exact-version Forge and Braces patches with integrity and behavior checks.
 The guarded audit now accepts only those two verified patched findings. The remaining integration
 blocker is `http-cache-semantics` 4.2.0: the normal 24-hour hold prevents installing 4.3.0 until
@@ -474,7 +474,7 @@ consolidation checkpoint.
 
 ## Consumer audit and implementation
 
-Twenty dedicated consumer audits are complete. The [consumer decision record](lumen-4-consumer-audit.md)
+Twenty dedicated consumer audits are complete. The [consumer decision record](archive/lumen-4-consumer-audit.md)
 identifies the source evidence and disposition for every project. Consumer repositories remain
 unchanged; older installed APIs are not treated as missing library features.
 
@@ -553,7 +553,7 @@ fallbacks. The header uses separate, consistent controls, visible keyboard focus
 and 44-pixel options. Family and mode remain synchronized across navigation, reloads, denied storage,
 and failed writes. Shared Select now names its listbox, supports Space activation and search with spaces, and dismisses when keyboard focus leaves the component.
 
-The [dependency inventory](lumen-4-dependencies.md) records registry-verified upgrades, compatible
+The [dependency inventory](archive/lumen-4-dependencies.md) records registry-verified upgrades, compatible
 holds, removals, and official references. Removed unused MDX support, redundant root Next and React DOM
 declarations, the monolithic MCP SDK, and nine obsolete overrides. The split MCP v2 integration
 preserves stdio, HTTP, and Worker wire contracts; programmatic consumers must use v2 SDK objects.

@@ -42,7 +42,7 @@ const createToastRecord = (
 })
 
 interface ToastItemProps {
-  onDismiss: () => void
+  onDismiss: (id: string) => void
   toast: ToastRecord
 }
 
@@ -104,13 +104,15 @@ const ToastItem = ({ onDismiss, toast }: ToastItemProps) => {
 
   useEffect(() => {
     if (!toast.open) {
-      const timer = setTimeout(onDismiss, closeDelay)
+      const timer = setTimeout(() => {
+        onDismiss(toast.id)
+      }, closeDelay)
 
       return () => {
         clearTimeout(timer)
       }
     }
-  }, [onDismiss, toast.open])
+  }, [onDismiss, toast.id, toast.open])
 
   const action = toast.action
   const description = toast.description ?? ''
@@ -215,9 +217,7 @@ const ToastViewport = ({
     {toasts.map(toast => (
       <ToastItem
         key={toast.id}
-        onDismiss={() => {
-          removeToast(toast.id)
-        }}
+        onDismiss={removeToast}
         toast={toast}
       />
     ))}

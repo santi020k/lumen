@@ -35,7 +35,7 @@ pnpm run hooks:install
 pnpm run dev
 ```
 
-Install the [Quality CLI](https://github.com/santi020k/quality) before running the hook installer.
+Install [Quality CLI 2.0.0](https://github.com/santi020k/quality/releases/tag/v2.0.0) before running the hook installer.
 The docs app is the fastest way to inspect components while working.
 
 ## Change Workflow
@@ -46,6 +46,11 @@ The docs app is the fastest way to inspect components while working.
 4. Run the smallest useful validation command.
 5. Add a changeset for user-visible package changes.
 6. Use the pull request template and note any commands you could not run.
+
+Changesets skips private workspace packages. Do not mix a private package such as
+`@santi020k/lumen-templates` with public packages in one changeset; keep its notes separate.
+Run `pnpm exec changeset status` to confirm the pending release plan. The release-scope tests also
+check that the repository's pending changesets can be resolved.
 
 ## Validation
 
@@ -119,6 +124,56 @@ PR merge base and includes deleted paths and both sides of renames, including un
 Invalid history stops classification instead of producing an empty selection. The release canary uses
 the same package boundaries; dispatch it manually when an explicit full web, Swift, and Compose
 qualification run is required.
+
+Apple CI also classifies ordinary pull requests before allocating macOS runners. Web component
+changes retain the docs and framework visual checks without compiling unrelated Swift or React
+Native consumers. Native sources and capture baselines select their owning checks; shared foundations,
+dependencies, workflow tooling, and unmapped paths select the complete Apple suite. Every existing
+named check remains present: unaffected modes verify the successful classification on Linux. Missing
+classification, invalid outputs, and incomplete selected capture shards fail the gate.
+
+Same-repository `release/` and `changeset-release/` pull requests and manual Apple workflow runs
+continue to execute every Apple check on macOS. Signing additionally requires `Apple full qualification`,
+which succeeds only after every selected native and visual surface has run; unaffected PR check results
+cannot stand in for full release evidence. The complete release validation and exact-revision
+provenance checks remain required. The path classifier remains deterministic; keep its ownership
+rules and regression tests aligned when adding inputs.
+
+### Quality impact adoption
+
+All shared Quality workflows and setup actions are pinned to the published v2 source revision
+`ff490e9efbd5fdfbdb1e6c404f1741d04c57f585`. The separate **Quality impact plan** workflow installs
+the checksum-verified 2.0.0 release binary with that revision's installer. It records a shadow plan
+for each pull request without installing the Lumen workspace or delaying the existing CI lanes.
+Same-repository release branches and manual runs request the full configured graph. Invalid policy
+fails; unknown/shared paths or unavailable comparison history select every configured surface.
+
+`quality-impact.json` records workspace and native ownership, consumers, and prerequisites. This is
+a candidate coverage map, not a replacement for the complete `pnpm run validate`, platform workflows,
+or release approval gates. Its commands require their existing platform toolchains. Do not execute
+its batches automatically or narrow release qualification until repository contracts, browser suites,
+artifact ownership, and every required result have been mapped and qualified against full runs.
+Turbo still controls workspace task caching; Quality plans do not authorize reuse of arbitrary
+results or release artifacts. Reviewed Changesets remain the source of version intent and changelogs.
+
+```bash
+quality impact plan --base origin/main --head HEAD --format json
+quality impact plan --full --format json
+node --test scripts/quality-impact.test.mjs
+```
+
+The integration tests require the published 2.0.0 CLI on `PATH`, or its absolute path in `QUALITY_BIN`.
+They cover consumers, shared foundations, unknown paths, renames, deletions, empty changes, full
+selection, and malformed policies. Restore the existing full workflow if a selection cannot be proven;
+an empty or failed plan must never stand in for passing validation.
+
+Docs deployment builds once, then uploads a seven-day archive with its source revision and SHA-256
+digest. Each build attempt has its own artifact name. The protected deployment job downloads the exact
+artifact ID returned by its build job, rechecks release approval, and verifies both the archive and the
+independently passed build-job digest before extraction. Production runs serialize without cancelling delivery. Rerun failed jobs to retry delivery or smoke checks
+without rebuilding. If the artifact expires, rerun the complete workflow at the intended revision.
+Every new workflow run builds fresh docs; clock, network, and Git metadata inputs are not assumed
+cache-safe. The docs performance workflow reuses browser binaries while refreshing system dependencies.
 
 CI runs repository lint, workflow contracts, and dependency security before expensive builds.
 Release canaries also check version, API, and coordinated release contracts in that preflight.
@@ -243,7 +298,7 @@ Native component cards reuse the verified native captures. Run
 `pnpm --filter @santi020k/lumen-docs run check:og` and `pnpm --filter @santi020k/lumen-docs run audit:seo` after building. `DocsLayout` builds an
 accessible section menu from page headings; pass explicit `pageNavigation` entries when sections
 need different labels or a stable server-rendered menu. Preserve old deep links with an onward link
-or a focused redirect. See [the navigation audit](docs/documentation-navigation-audit.md) for the
+or a focused redirect. See [the navigation audit](docs/archive/documentation-navigation-audit.md) for the
 current page boundaries and validation coverage.
 
 The docs post-build SEO audit also checks rendered header, sidebar, section, and footer navigation,
@@ -347,3 +402,9 @@ those four tasks for the full workspace. Both retain the platform and integratio
 from their changed paths. Release pull requests also resolve the exact Changesets package set for release builds and publish dry-runs. The
 publication run resolves that scope from pending Changesets or unpublished local versions and
 retains package-family, native, and MCP release gates only when that scope requires them.
+
+Persisted Turbo task hashes include `QUALITY_TASK_RUNTIME`, captured after setup
+from the actual Node and pnpm versions, platform, and architecture. This prevents
+a broad cache restore from reusing outputs after a runtime patch changes, even
+when the declared Node selector remains unchanged. Local runs without that
+variable use a separate task identity.

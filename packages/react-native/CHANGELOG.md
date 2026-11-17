@@ -1,5 +1,20 @@
 # @santi020k/lumen-react-native
 
+## 4.1.1
+
+### Patch Changes
+
+- Keep Android time-picker ownership scoped to the field that opened it, prevent concurrent
+  opens during dismissal, handle unmount dismissal errors, and discard stale callbacks.
+
+- Fix Elements submit-button behavior and dialog backdrop detection, preserve disabled option groups
+  in Astro Select, and keep Android date-picker cleanup scoped to the field that opened it.
+  Refresh the MCP server's bundled native source to include the date-picker fix.
+
+  Check that Corepack can run the consumer's pinned pnpm before rollout changes dependency declarations.
+- Updated dependencies [`77f02b8`, `77f02b8`, `77f02b8`]:
+  - @santi020k/lumen-core@5.3.0
+
 ## 4.1.0
 
 ### Minor Changes

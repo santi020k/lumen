@@ -1,0 +1,60 @@
+name: Quality impact plan
+# cspell:words elif tlsv
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-impact-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    name: Record shadow impact plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22.x
+      - name: Install the published Quality CLI
+        env:
+          QUALITY_INSTALL_DIR: ${{ runner.temp }}/quality-bin
+        run: |
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            https://raw.githubusercontent.com/santi020k/quality/ff490e9efbd5fdfbdb1e6c404f1741d04c57f585/install.sh \
+            --output "$RUNNER_TEMP/install-quality.sh"
+          sh "$RUNNER_TEMP/install-quality.sh" santi020k/quality v2.0.0
+          test "$("$QUALITY_INSTALL_DIR/quality" --version)" = 'quality 2.0.0'
+          echo "$QUALITY_INSTALL_DIR" >> "$GITHUB_PATH"
+      - name: Verify impact policy regressions with the published binary
+        run: node --test scripts/quality-impact.test.mjs
+      - name: Record committed source selection
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          FULL: ${{ github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && (startsWith(github.head_ref, 'release/') || startsWith(github.head_ref, 'changeset-release/'))) }}
+        run: |
+          if [[ "$FULL" == 'true' ]]; then
+            quality impact plan --full --head HEAD --format json > "$RUNNER_TEMP/quality-impact.json"
+          elif [[ "$FULL" == 'false' && -n "$BASE_SHA" ]]; then
+            quality impact plan --base "$BASE_SHA" --head HEAD --format json > "$RUNNER_TEMP/quality-impact.json"
+          else
+            echo 'Invalid impact selector or missing pull request base.' >&2
+            exit 1
+          fi
+      - name: Save the shadow plan
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: quality-impact-plan
+          path: ${{ runner.temp }}/quality-impact.json
+          if-no-files-found: error
+          retention-days: 14

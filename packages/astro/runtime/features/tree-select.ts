@@ -1,6 +1,5 @@
+import { setOpen } from '../panels.js'
 import { queryScope } from '../scope.js'
-
-import { setOpen } from './shared.js'
 
 const bindTreeSelects = (root: HTMLElement): void => {
   if (root.dataset.uiTreeSelectBound === 'true') return

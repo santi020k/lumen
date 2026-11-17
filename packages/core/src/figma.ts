@@ -131,30 +131,31 @@ const lumenTokenDescriptions = {
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max)
 
+const parseHslNumber = (value: string, allowPercent = false): number => {
+  const number = allowPercent && value.endsWith('%') ? value.slice(0, -1) : value
+
+  return /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/iu.test(number) ? Number(number) : NaN
+}
+
 const parseHslToken = (value: string) => {
-  const [color = '', alpha = '1'] = value.split('/').map(part => part.trim())
+  const parts = value.split('/').map(part => part.trim())
+  const [color = '', alpha = '1'] = parts
+  const channels = color.split(/\s+/)
 
-  const [hue, saturation, lightness] = color
-    .replaceAll('%', '')
-    .split(/\s+/)
-    .filter(Boolean)
-    .map(Number)
+  const [hue = NaN, saturation = NaN, lightness = NaN] = channels
+    .map((channel, index) => parseHslNumber(channel, index > 0))
 
-  const opacity = Number(alpha)
+  const opacity = parseHslNumber(alpha)
 
   if (
-    hue === undefined ||
-    saturation === undefined ||
-    lightness === undefined ||
-    Number.isNaN(hue) ||
-    Number.isNaN(saturation) ||
-    Number.isNaN(lightness)
+    parts.length > 2 || channels.length !== 3 ||
+    ![hue, saturation, lightness, opacity].every(Number.isFinite)
   ) {
     throw new Error(`Expected an HSL token value, received "${value}".`)
   }
 
   return {
-    alpha: Number.isNaN(opacity) ? 1 : clamp(opacity, 0, 1),
+    alpha: clamp(opacity, 0, 1),
     hue: ((hue % 360) + 360) % 360,
     lightness: clamp(lightness, 0, 100),
     saturation: clamp(saturation, 0, 100)

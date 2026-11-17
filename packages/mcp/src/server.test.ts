@@ -272,14 +272,21 @@ describe('Lumen MCP protocol server', () => {
 
       const valid = await client.callTool({
         arguments: {
-          baseline: { components: { [componentName]: componentHash }, recipes: {} }
+          baseline: {
+            components: {
+              [componentName]: componentHash,
+              constructor: '2'.repeat(64),
+              toString: '3'.repeat(64)
+            },
+            recipes: {}
+          }
         },
         name: 'lumen_diff_catalog'
       })
 
       expect(valid.isError).toBeFalsy()
       expect(resultStructuredContent(valid)).toMatchObject({
-        components: { removed: [], unchanged: [componentName] }
+        components: { removed: ['constructor', 'toString'], unchanged: [componentName] }
       })
     })
   })
@@ -329,6 +336,87 @@ describe('Lumen MCP protocol server', () => {
       expect(JSON.stringify(component.contents[0])).toContain('DateRangePicker')
       expect(JSON.stringify(nativeComponent.contents[0])).toContain('LumenButton')
       expect(JSON.stringify(recipe.contents[0])).toContain('advanced-fields')
+    })
+  })
+
+  test('decodes resource template variables once safely and resolves native component aliases', async () => {
+    await withClient(async client => {
+      const parseResource = (resource: Awaited<ReturnType<Client['readResource']>>): unknown => {
+        const first = resource.contents[0]
+
+        if (!first || !('text' in first)) throw new Error('Expected text resource content')
+
+        return JSON.parse(first.text)
+      }
+
+      const completion = await client.complete({
+        argument: { name: 'name', value: 'Symbol' },
+        ref: { type: 'ref/resource', uri: 'lumen://native-components/{name}' }
+      })
+
+      expect(completion.completion.values).toContain('Symbol picker')
+
+      const [
+        encodedSpaceNative,
+        rawSpaceNative,
+        symbolAliasNative,
+        underscoreNative,
+        wearComposeNative,
+        wearSwiftNative,
+        encodedComponent,
+        doubleEncodedNative,
+        malformedComponent,
+        malformedNative,
+        malformedRecipe
+      ] = await Promise.all([
+        client.readResource({ uri: 'lumen://native-components/Symbol%20picker' }),
+        client.readResource({ uri: 'lumen://native-components/Symbol picker' }),
+        client.readResource({ uri: 'lumen://native-components/LumenSymbolPicker' }),
+        client.readResource({ uri: 'lumen://native-components/SYMBOL_PICKER' }),
+        client.readResource({ uri: 'lumen://native-components/LumenWearActionButton' }),
+        client.readResource({ uri: 'lumen://native-components/lumen-watch-action-button' }),
+        client.readResource({ uri: 'lumen://components/Date%20Range%20Picker' }),
+        client.readResource({ uri: 'lumen://native-components/Symbol%2520picker' }),
+        client.readResource({ uri: 'lumen://components/%E0%A4%A' }),
+        client.readResource({ uri: 'lumen://native-components/%E0%A4%A' }),
+        client.readResource({ uri: 'lumen://recipes/%E0%A4%A' })
+      ])
+
+      for (const match of [encodedSpaceNative, rawSpaceNative, symbolAliasNative, underscoreNative]) {
+        expect(parseResource(match)).toMatchObject({
+          component: {
+            implementation: { symbol: 'LumenSymbolPicker' },
+            name: 'Symbol picker',
+            platform: 'swiftui'
+          },
+          found: true
+        })
+      }
+
+      expect(parseResource(wearComposeNative)).toMatchObject({
+        component: {
+          implementation: { symbol: 'LumenWearActionButton' },
+          name: 'Wearable action',
+          platform: 'compose'
+        },
+        found: true
+      })
+      expect(parseResource(wearSwiftNative)).toMatchObject({
+        component: {
+          implementation: { symbol: 'LumenWatchActionButton' },
+          name: 'Wearable action',
+          platform: 'swiftui'
+        },
+        found: true
+      })
+      expect(parseResource(encodedComponent)).toMatchObject({
+        component: { name: 'DateRangePicker' },
+        found: true
+      })
+      expect(parseResource(doubleEncodedNative)).toMatchObject({ found: false })
+      expect(parseResource(malformedComponent)).toMatchObject({ found: false })
+      expect(parseResource(malformedNative)).toMatchObject({ found: false })
+      expect(parseResource(malformedRecipe)).toMatchObject({ found: false })
     })
   })
 })

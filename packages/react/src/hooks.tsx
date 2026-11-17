@@ -466,6 +466,8 @@ export interface ThemeBuilderExportDetail {
 }
 
 export interface ThemeBuilderOptions {
+  fontFamily?: 'sans' | 'serif' | 'mono' | undefined
+  elevation?: 'flat' | 'default' | undefined
   radiusScale?: number | undefined
   spacingScale?: number | undefined
   borderWidth?: number | undefined
@@ -2423,28 +2425,90 @@ export const useInputOTP = ({
     }, [onValueChange, syncValue]
   )
 
+  const resetStateRef = useRef({
+    controlledValue,
+    defaultValue,
+    inputMode,
+    length,
+    pattern,
+    value
+  })
+
+  useLayoutEffect(() => {
+    resetStateRef.current = {
+      controlledValue,
+      defaultValue,
+      inputMode,
+      length,
+      pattern,
+      value
+    }
+  })
+
   useEffect(() => {
-    const form = inputRef.current?.form
+    const input = inputRef.current
+
+    if (!input) return
+
+    const eventRoot = input.getRootNode()
+    const pendingResets = new Set<Event>()
     let resetTimer: ReturnType<typeof globalThis.setTimeout> | undefined
 
-    if (!form) return
+    const handleReset = (event: Event): void => {
+      if (!input.form || event.target !== input.form) return
 
-    const handleReset = (): void => {
+      pendingResets.add(event)
+
+      if (resetTimer !== undefined) return
+
       resetTimer = globalThis.setTimeout(() => {
-        syncValue(inputRef.current)
+        resetTimer = undefined
+
+        const currentForm = input.form
+
+        const accepted = Boolean(
+          currentForm &&
+          [...pendingResets].some(
+            resetEvent => !resetEvent.defaultPrevented && resetEvent.target === currentForm
+          )
+        )
+
+        pendingResets.clear()
+
+        if (!accepted || !input.isConnected) return
+
+        const latest = resetStateRef.current
+
+        const nextValue = latest.controlledValue === undefined ?
+          sanitizeInputOtpValue(
+            latest.defaultValue ?? '', latest.length, latest.inputMode, latest.pattern
+          ) :
+          latest.value
+
+        if (latest.controlledValue === undefined) {
+          setUncontrolledValue(nextValue)
+        }
+
+        if (input.value !== nextValue) {
+          input.value = nextValue
+        }
+
+        setActiveIndex(
+          getInputOtpActiveIndex(latest.length, nextValue, nextValue.length)
+        )
       })
     }
 
-    form.addEventListener('reset', handleReset)
+    eventRoot.addEventListener('reset', handleReset, true)
 
     return () => {
-      if (resetTimer) {
-        globalThis.clearTimeout(resetTimer)
-      }
+      globalThis.clearTimeout(resetTimer)
 
-      form.removeEventListener('reset', handleReset)
+      pendingResets.clear()
+
+      eventRoot.removeEventListener('reset', handleReset, true)
     }
-  }, [syncValue])
+  }, [])
 
   const getInputProps = useCallback<InputOTPController['getInputProps']>(
     (props = {}) => ({
@@ -3425,6 +3489,8 @@ export const useResizable = ({
 /* eslint-enable @eslint-react/set-state-in-effect, complexity */
 
 export const useThemeBuilder = ({
+  fontFamily,
+  elevation,
   radiusScale,
   spacingScale,
   borderWidth,
@@ -3503,6 +3569,8 @@ export const useThemeBuilder = ({
 
   const result = useMemo(
     () => createThemeBuilderTokens({
+      fontFamily: fontFamily ?? null,
+      elevation: elevation ?? null,
       radiusScale: radiusScale ?? null,
       spacingScale: spacingScale ?? null,
       borderWidth: borderWidth ?? null,
@@ -3514,6 +3582,8 @@ export const useThemeBuilder = ({
       scheme: currentScheme,
       secondaryColor: currentSecondaryColor
     }), [
+      fontFamily,
+      elevation,
       radiusScale,
       spacingScale,
       borderWidth,

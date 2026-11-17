@@ -1,41 +1,54 @@
 import { queryScope } from '../scope.js'
 
-import { getLoopedIndex } from './shared.js'
+import { getLoopedIndex, shouldIgnoreKeydown } from './shared.js'
+
+const handleTreeBranchKey = (item: HTMLElement, event: KeyboardEvent): boolean => {
+  const opensBranch = ['ArrowRight', 'Enter', ' '].includes(event.key)
+
+  if (!opensBranch && event.key !== 'ArrowLeft') return false
+
+  if (item.matches('[aria-disabled="true"]')) {
+    event.preventDefault()
+
+    return true
+  }
+
+  if (!item.hasAttribute('aria-expanded')) return false
+
+  event.preventDefault()
+
+  item.setAttribute('aria-expanded', String(opensBranch))
+
+  return true
+}
 
 const bindTreeCollections = (root: HTMLElement): void => {
   if (root.dataset.uiBound === 'true') return
 
-  const items = [...root.querySelectorAll<HTMLElement>('[role="treeitem"], [role="row"]')]
+  const itemSelector = '[role="treeitem"], [role="row"]'
+
+  const items = [...root.querySelectorAll<HTMLElement>(itemSelector)]
+    .filter(item => item.closest('[role="tree"], [role="treegrid"]') === root)
+
+  const navigableItems = (): HTMLElement[] => items.filter(item => !item.matches(':disabled') && !item.closest('[hidden], [inert]'))
 
   if (!items.length) return
 
   root.dataset.uiBound = 'true'
 
-  for (const [index, item] of items.entries()) {
-    item.tabIndex = index === 0 ? 0 : -1
+  const initialItem = navigableItems()[0]
+
+  for (const item of items) {
+    item.tabIndex = item === initialItem ? 0 : -1
 
     item.addEventListener('keydown', event => {
-      const keys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Enter', ' ']
+      if (shouldIgnoreKeydown(event)) return
 
-      if (!keys.includes(event.key)) return
+      if (!(event.target instanceof Element) || event.target.closest(itemSelector) !== item) return
 
-      const opensBranch = ['ArrowRight', 'Enter', ' '].includes(event.key)
+      if (item.matches(':disabled') || item.closest('[hidden], [inert]')) return
 
-      if (opensBranch && item.hasAttribute('aria-expanded')) {
-        event.preventDefault()
-
-        item.setAttribute('aria-expanded', 'true')
-
-        return
-      }
-
-      if (event.key === 'ArrowLeft' && item.hasAttribute('aria-expanded')) {
-        event.preventDefault()
-
-        item.setAttribute('aria-expanded', 'false')
-
-        return
-      }
+      if (handleTreeBranchKey(item, event)) return
 
       if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
 
@@ -45,7 +58,8 @@ const bindTreeCollections = (root: HTMLElement): void => {
         nextItem.tabIndex = -1
       }
 
-      const nextItem = items[getLoopedIndex(event.key, index, items.length, ['ArrowDown'])]
+      const candidates = navigableItems()
+      const nextItem = candidates[getLoopedIndex(event.key, candidates.indexOf(item), candidates.length, ['ArrowDown'])]
 
       if (nextItem) {
         nextItem.tabIndex = 0

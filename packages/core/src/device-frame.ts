@@ -31,8 +31,10 @@ export const resolveLumenDeviceFrame = (
   device: LumenDeviceFrameDevice = 'laptop', orientation?: LumenDeviceFrameOrientation,
   width?: number, height?: number
 ): { width: number, height: number } => {
-  const presets: Partial<Record<string, readonly [number, number]>> = lumenDeviceFrameSizes
-  const defaults = presets[device] ?? lumenDeviceFrameSizes.laptop
+  const defaults = Object.hasOwn(lumenDeviceFrameSizes, device) ?
+    lumenDeviceFrameSizes[device] :
+    lumenDeviceFrameSizes.laptop
+
   const first = dimension(width, defaults[0])
   const second = dimension(height, defaults[1])
 

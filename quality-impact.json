@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "global_inputs": [
+    "quality-impact.json",
+    "quality.yml",
+    ".github/",
+    "scripts/",
+    "tests/",
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "turbo.json",
+    "eslint.config.js",
+    "vitest.config.ts",
+    "tsconfig.json",
+    "tsconfig.base.json",
+    "tokens/",
+    "icons/",
+    "flags/",
+    "maps/",
+    "registry/",
+    "packages/core/",
+    "packages/tokens/",
+    "README.md",
+    "llms.txt",
+    "docs/ai-usage.md",
+    ".changeset/config.json"
+  ],
+  "ignored_inputs": [],
+  "nodes": {
+    "repository-checks": {
+      "inputs": [],
+      "always": true,
+      "command": "pnpm",
+      "args": [
+        "run",
+        "ci:preflight"
+      ]
+    },
+    "web": {
+      "inputs": [
+        "packages/astro/",
+        "packages/elements/",
+        "packages/icons-brand/",
+        "packages/lumen/",
+        "packages/react/",
+        "packages/react-hook-form/",
+        "packages/templates/",
+        "apps/motion/",
+        "apps/next-smoke/",
+        "examples/astro-starter/"
+      ],
+      "command": "pnpm",
+      "args": [
+        "exec",
+        "turbo",
+        "run",
+        "build",
+        "typecheck",
+        "lint",
+        "test",
+        "--filter=@santi020k/lumen-astro",
+        "--filter=@santi020k/lumen-elements",
+        "--filter=@santi020k/lumen-icons-brand",
+        "--filter=@santi020k/lumen",
+        "--filter=@santi020k/lumen-react",
+        "--filter=@santi020k/lumen-react-hook-form",
+        "--filter=@santi020k/lumen-templates"
+      ]
+    },
+    "mcp": {
+      "inputs": [
+        "packages/mcp/",
+        "skills/",
+        "plugins/"
+      ],
+      "depends_on": [
+        "web"
+      ],
+      "command": "pnpm",
+      "args": [
+        "exec",
+        "turbo",
+        "run",
+        "build",
+        "typecheck",
+        "lint",
+        "test",
+        "--filter=@santi020k/lumen-mcp"
+      ]
+    },
+    "swift": {
+      "inputs": [
+        "Package.swift",
+        "Package.resolved",
+        "packages/swift/",
+        "packages/swift-widget/",
+        "apps/playground-apple/"
+      ],
+      "command": "apps/playground-apple/ci_scripts/run-native-checks.sh",
+      "args": [
+        "swift"
+      ]
+    },
+    "react-native": {
+      "inputs": [
+        "packages/react-native/",
+        "apps/playground-react-native/"
+      ],
+      "command": "apps/playground-apple/ci_scripts/run-native-checks.sh",
+      "args": [
+        "react-native"
+      ]
+    },
+    "android": {
+      "inputs": [
+        "packages/compose/",
+        "apps/playground-android/"
+      ],
+      "command": "packages/compose/gradlew",
+      "args": [
+        "-p",
+        "packages/compose",
+        "test",
+        "lint",
+        "apiCheck",
+        "assembleDebugAndroidTest",
+        "verifyMavenPublication"
+      ]
+    },
+    "apple-captures": {
+      "inputs": [
+        "apps/docs/src/assets/native-components/",
+        "apps/docs/src/data/native-component-captures.json"
+      ],
+      "depends_on": [
+        "swift"
+      ],
+      "command": "apps/playground-apple/ci_scripts/run-native-checks.sh",
+      "args": [
+        "captures"
+      ]
+    },
+    "docs": {
+      "inputs": [
+        "apps/docs/",
+        "docs/",
+        "packages/react-native/",
+        "apps/playground-react-native/"
+      ],
+      "depends_on": [
+        "web"
+      ],
+      "command": "pnpm",
+      "args": [
+        "exec",
+        "turbo",
+        "run",
+        "build",
+        "typecheck",
+        "lint",
+        "test",
+        "--filter=@santi020k/lumen-docs"
+      ]
+    },
+    "visual": {
+      "inputs": [],
+      "depends_on": [
+        "docs"
+      ],
+      "command": "apps/playground-apple/ci_scripts/run-native-checks.sh",
+      "args": [
+        "visual"
+      ]
+    },
+    "framework-visual": {
+      "inputs": [],
+      "depends_on": [
+        "web"
+      ],
+      "command": "apps/playground-apple/ci_scripts/run-native-checks.sh",
+      "args": [
+        "framework-visual"
+      ]
+    },
+    "figma": {
+      "inputs": [
+        "apps/figma-plugin/",
+        "figma/"
+      ],
+      "depends_on": [
+        "web"
+      ],
+      "command": "pnpm",
+      "args": [
+        "exec",
+        "turbo",
+        "run",
+        "build",
+        "typecheck",
+        "lint",
+        "test",
+        "--filter=@santi020k/lumen-figma-plugin"
+      ]
+    },
+    "mcp-evaluation": {
+      "inputs": [],
+      "depends_on": [
+        "mcp"
+      ],
+      "command": "pnpm",
+      "args": [
+        "--filter",
+        "@santi020k/lumen-mcp",
+        "run",
+        "eval"
+      ]
+    }
+  }
+}

@@ -10,7 +10,7 @@ import {
 } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { lumenComponentNames } from '@santi020k/lumen-core'
+import { lumenComponentBehavior, lumenComponentNames } from '@santi020k/lumen-core'
 import { describe, expect, test } from 'vitest'
 
 import { buildSnippets } from '../lib/snippets'
@@ -116,12 +116,22 @@ describe('component docs snippets', () => {
     }
   })
 
+  test('documents native keyboard interactions without requiring the Astro runtime for selection cards', () => {
+    for (const name of ['CheckboxCard', 'RadioCard'] as const) {
+      expect(lumenComponentBehavior[name].astro).toBe('none')
+      expect(componentDocs.find(component => component.name === name)?.keyboardInteractions?.length).toBeGreaterThan(0)
+    }
+  })
+
   test('link documented Figma components to their exact design nodes', () => {
     expect(getFigmaComponentUrl()).toBe(figmaLibraryUrl)
     expect(new Set(componentDocs.map(component => component.name))).toEqual(new Set(lumenComponentNames))
-    expect(new Set(componentDocs.map(component => component.figmaNodeId)).size).toBe(lumenComponentNames.length)
+    const mappedComponents = componentDocs.filter(component => component.figmaNodeId !== undefined)
+    expect(new Set(mappedComponents.map(component => component.figmaNodeId)).size).toBe(mappedComponents.length)
+    expect(componentDocs.filter(component => component.figmaNodeId === undefined).map(component => component.name).sort()).toEqual(['CheckboxCard', 'RadioCard'])
 
-    for (const { figmaNodeId } of componentDocs) {
+    for (const { figmaNodeId } of mappedComponents) {
+      if (figmaNodeId === undefined) throw new Error('Expected a mapped Figma component')
       expect(figmaNodeId).toMatch(/^\d+:\d+$/)
       expect(getFigmaComponentUrl(figmaNodeId))
         .toBe(`${figmaLibraryUrl}?node-id=${figmaNodeId.replace(':', '-')}`)

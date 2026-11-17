@@ -7,10 +7,102 @@ import test from 'node:test'
 
 import {
   changedPaths,
+  classifyApplePaths,
   classifyCanaryPaths,
   classifyChangedNpmPackages,
-  classifyCiPaths
+  classifyCiPaths,
+  requiresFullAppleChecks
 } from './classify-workflow-paths.mjs'
+
+test('Apple checks select web visuals without compiling unrelated native platforms', () => {
+  assert.deepEqual(classifyApplePaths(['packages/astro/components/Button.astro']), {
+    captures: false,
+    'framework-visual': true,
+    full: false,
+    'react-native': false,
+    reason: 'owned-inputs',
+    swift: false,
+    visual: true
+  })
+
+  assert.deepEqual(classifyApplePaths(['apps/docs/src/pages/docs/example.astro']), {
+    captures: false,
+    'framework-visual': false,
+    full: false,
+    'react-native': false,
+    reason: 'owned-inputs',
+    swift: false,
+    visual: true
+  })
+})
+
+test('Apple scope expands shared, unknown and classification inputs conservatively', () => {
+  for (const path of [
+    'tokens/lumen.tokens.json', 'icons/lumen.icons.json', 'flags/catalog.json',
+    'registry/native-playground-catalog.json', 'pnpm-lock.yaml', 'quality.yml',
+    'packages/core/src/index.ts', '.changeset/config.json',
+    'scripts/classify-workflow-paths.mjs', 'scripts/classify-workflow-paths.test.mjs',
+    'scripts/workflow-scope.test.mjs', '.github/workflows/apple-native.yml',
+    '.github/scripts/apple-capture-products.mjs', 'scripts/lib/new-generator.mjs',
+    'packages/new-adapter/index.ts', 'new-toolchain.toml'
+  ]) {
+    const scope = classifyApplePaths([path])
+
+    for (const check of ['swift', 'react-native', 'captures', 'visual', 'framework-visual']) {
+      assert.equal(scope[check], true, `${path}: ${check}`)
+    }
+  }
+
+  assert.equal(classifyApplePaths(['new-toolchain.toml']).reason, 'unmapped-input')
+})
+
+test('Apple native owners and capture baselines select their dependent checks', () => {
+  const swift = classifyApplePaths(['packages/swift/Sources/LumenUI/Button.swift'])
+  const reactNative = classifyApplePaths(['packages/react-native/src/Button.tsx'])
+  const capture = classifyApplePaths(['apps/docs/public/native-components/apple/button.png'])
+
+  assert.equal(swift.swift, true)
+
+  assert.equal(swift.captures, true)
+
+  assert.equal(swift['react-native'], false)
+
+  assert.equal(reactNative['react-native'], true)
+
+  assert.equal(reactNative.visual, true)
+
+  assert.equal(reactNative.swift, false)
+
+  assert.equal(capture.captures, true)
+
+  assert.equal(capture.visual, true)
+})
+
+test('manual and same-repository release branches retain every Apple gate', () => {
+  const repository = 'santi020k/lumen'
+
+  for (const context of [
+    { eventName: 'workflow_dispatch' },
+    { eventName: 'pull_request', headRef: 'release/v5.3.0', headRepository: repository, repository },
+    { eventName: 'pull_request', headRef: 'changeset-release/main', headRepository: repository, repository }
+  ]) {
+    const full = requiresFullAppleChecks(context)
+
+    assert.equal(full, true)
+
+    const scope = classifyApplePaths(['.changeset/note.md'], { full })
+
+    assert.equal(scope.reason, 'release-or-manual')
+
+    for (const check of ['swift', 'react-native', 'captures', 'visual', 'framework-visual']) assert.equal(scope[check], true)
+  }
+
+  assert.equal(requiresFullAppleChecks({ headRef: 'release/v5.3.0', headRepository: 'contributor/lumen', repository }), false)
+
+  assert.equal(requiresFullAppleChecks({ headRef: 'feature/button', headRepository: repository, repository }), false)
+
+  assert.equal(requiresFullAppleChecks({ headRef: 'release/v5.3.0' }), false)
+})
 
 test('Git scope includes both rename sides, deletions and unusual names from the merge base', () => {
   const directory = mkdtempSync(join(tmpdir(), 'lumen-workflow-scope-'))
@@ -66,6 +158,10 @@ test('Git scope includes both rename sides, deletions and unusual names from the
     assert.equal(classifyCiPaths(paths).apple, true)
 
     assert.equal(classifyCanaryPaths(paths).swift, true)
+
+    assert.equal(classifyApplePaths(paths).swift, true)
+
+    assert.equal(classifyApplePaths(paths).captures, true)
 
     assert.throws(() => changedPaths('missing-revision', 'HEAD', directory))
   } finally {

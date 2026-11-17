@@ -94,6 +94,42 @@ describe('Lumen chart helpers', () => {
 
     expect(scaleLumenChartValue(5, domain, 0, 100)).toBe(50)
     expect(getLumenChartTicks(domain, 3)).toEqual([0, 5, 10])
+    expect(getLumenChartTicks({ max: 100, min: 0 }, 101)).toHaveLength(101)
+  })
+
+  test('bounds tick generation to finite, strictly monotonic, distinct values', () => {
+    expect(getLumenChartTicks({ max: 1e16 + 2, min: 1e16 })).toEqual([1e16, 1e16 + 2])
+    expect(getLumenChartTicks({ max: 2.0000000000000004, min: 2 })).toEqual([2, 2.0000000000000004])
+    expect(getLumenChartTicks({ max: Number.MIN_VALUE * 2, min: 0 })).toEqual([0, Number.MIN_VALUE * 2])
+    expect(getLumenChartTicks({ max: 10, min: 0 }, Number.NaN)).toEqual([0, 2, 4, 6, 8, 10])
+    expect(getLumenChartTicks({ max: 10, min: 0 }, Number.POSITIVE_INFINITY)).toEqual([0, 2, 4, 6, 8, 10])
+
+    const cappedTicks = getLumenChartTicks({ max: 10, min: 0 }, 1_000_000_000)
+
+    expect(cappedTicks.length).toBeGreaterThanOrEqual(2)
+    expect(cappedTicks.length).toBeLessThanOrEqual(4_096 * 2)
+    expect(
+      cappedTicks.every((tick, index) => Number.isFinite(tick) && (index === 0 || tick > (cappedTicks[index - 1] ?? 0)))
+    ).toBe(true)
+
+    const timestampTicks = getLumenChartTicks({
+      max: 1_794_835_801_020,
+      min: 1_794_835_801_010
+    }, 5)
+
+    expect(timestampTicks).toEqual([
+      1_794_835_801_010,
+      1_794_835_801_012,
+      1_794_835_801_014,
+      1_794_835_801_016,
+      1_794_835_801_018,
+      1_794_835_801_020
+    ])
+
+    const extremeTicks = getLumenChartTicks({ max: 1.79e308, min: 1.5e308 }, 5)
+
+    expect(extremeTicks.every(Number.isFinite)).toBe(true)
+    expect(new Set(extremeTicks).size).toBe(extremeTicks.length)
   })
 
   test('scales finite domains that span opposite numeric extremes', () => {

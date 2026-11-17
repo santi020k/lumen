@@ -199,3 +199,157 @@ test('useInputOTP notifies onValueChange once per typed or pasted input', async 
   expect(pasted).toEqual(['9876'])
   expect(native().value).toBe('9876')
 })
+
+test('InputOTP restores normalized uncontrolled defaultValue on accepted form reset, honors canceled reset bursts, and preserves latest controlled value across repeated resets and unmount', async () => {
+  await run(() => {
+    root.render(
+      <form>
+        <InputOTP aria-label="Resettable code" defaultValue="12" length={4} name="otp" />
+      </form>
+    )
+  })
+
+  const form = container.querySelector('form')
+
+  if (!form) throw new Error('Missing OTP form')
+
+  await run(() => {
+    type('34')
+  })
+  expect(native().value).toBe('34')
+  expect(segments().startsWith('34')).toBe(true)
+
+  form.addEventListener('reset', event => {
+    event.preventDefault()
+  }, { once: true })
+
+  await run(() => {
+    form.reset()
+  })
+  expect(native().value).toBe('34')
+  expect(segments().startsWith('34')).toBe(true)
+
+  let burstCount = 0
+
+  form.addEventListener('reset', event => {
+    if (burstCount++ === 1) event.preventDefault()
+  })
+
+  await run(() => {
+    form.reset()
+    form.reset()
+  })
+  expect(native().value).toBe('12')
+  expect(segments().startsWith('12')).toBe(true)
+  expect(new FormData(form).get('otp')).toBe('12')
+
+  await run(() => {
+    root.render(
+      <form>
+        <InputOTP aria-label="Controlled code" length={2} name="otp" value="12" />
+      </form>
+    )
+  })
+
+  act(() => {
+    form.reset()
+    form.reset()
+    root.render(
+      <form>
+        <InputOTP aria-label="Controlled code" length={4} name="otp" value="3456" />
+      </form>
+    )
+  })
+  await act(async () => {
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+
+  expect(native().value).toBe('3456')
+  expect(segments()).toBe('3456')
+  expect(new FormData(form).get('otp')).toBe('3456')
+
+  await act(async () => {
+    form.reset()
+    root.render(null)
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+
+  expect(container.querySelector('input')).toBeNull()
+})
+
+test('InputOTP follows live form ownership changes and ignores stale resets from a previous form', async () => {
+  await run(() => {
+    root.render(
+      <>
+        <form id="owner-a" />
+        <form id="owner-b" />
+        <InputOTP aria-label="Owned code" defaultValue="12" form="owner-a" length={4} name="otp" />
+      </>
+    )
+  })
+
+  const ownerA = container.querySelector<HTMLFormElement>('#owner-a')
+  const ownerB = container.querySelector<HTMLFormElement>('#owner-b')
+
+  if (!ownerA || !ownerB) throw new Error('Missing owner forms')
+
+  await run(() => {
+    type('34')
+  })
+  expect(native().value).toBe('34')
+
+  await run(() => {
+    root.render(
+      <>
+        <form id="owner-a" />
+        <form id="owner-b" />
+        <InputOTP aria-label="Owned code" defaultValue="12" form="owner-b" length={4} name="otp" />
+      </>
+    )
+  })
+
+  await run(() => {
+    type('56')
+  })
+  expect(native().value).toBe('56')
+
+  await run(() => {
+    ownerA.reset()
+  })
+  expect(native().value).toBe('56')
+  expect(segments().startsWith('56')).toBe(true)
+
+  act(() => {
+    root.render(
+      <>
+        <form id="owner-a" />
+        <form id="owner-b" />
+        <InputOTP aria-label="Owned code" defaultValue="12" form="owner-a" length={4} name="otp" />
+      </>
+    )
+  })
+  expect(native().form).toBe(ownerA)
+  act(() => {
+    ownerA.reset()
+    root.render(
+      <>
+        <form id="owner-a" />
+        <form id="owner-b" />
+        <InputOTP aria-label="Owned code" defaultValue="12" form="owner-b" length={4} name="otp" />
+      </>
+    )
+  })
+  expect(native().form).toBe(ownerB)
+  await act(async () => {
+    await new Promise(resolve => setTimeout(resolve, 0))
+  })
+
+  expect(native().value).toBe('56')
+  expect(segments().startsWith('56')).toBe(true)
+
+  await run(() => {
+    ownerB.reset()
+  })
+  expect(native().value).toBe('12')
+  expect(segments().startsWith('12')).toBe(true)
+})

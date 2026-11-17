@@ -3,7 +3,7 @@
 @layer lumen.components {
 .ui-combobox {
   display: grid;
-  gap: var(--ui-space-related);
+  gap: var(--ui-density-field-gap, var(--ui-space-related));
 }
 }
 
@@ -40,22 +40,29 @@
 
 @layer lumen.components {
 .ui-combobox__list [role="option"] {
+  min-height: var(--ui-density-target-min, 0rem);
   border: 0;
   border-radius: var(--ui-radius-sm);
   background: transparent;
   color: hsl(var(--ink-soft));
   cursor: pointer;
   font: inherit;
-  padding: 0.65rem 0.75rem;
+  padding: var(--ui-density-menu-padding, 0.65rem 0.75rem);
   text-align: start;
 }
 }
 
 @layer lumen.components {
-.ui-combobox__list [role="option"]:is(:hover, :focus-visible) {
+.ui-combobox__list [role="option"]:is(:disabled, [aria-disabled="true"]) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+}
+
+@layer lumen.components {
+.ui-combobox__list [role="option"]:not(:disabled, [aria-disabled="true"]):is(:hover, :focus-visible) {
   background: hsl(var(--brand-soft));
   color: hsl(var(--brand));
-  outline: none;
 }
 }
 
@@ -63,7 +70,13 @@
 .ui-combobox__list [role="option"][aria-selected="true"] {
   background: hsl(var(--brand-soft));
   color: hsl(var(--brand));
-  outline: none;
+}
+}
+
+@layer lumen.components {
+.ui-combobox__list [role="option"]:focus-visible {
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: -2px;
 }
 }
 
@@ -81,4 +94,13 @@
     opacity: 0;
     transform: translateY(-0.25rem) scale(0.98);
   }
+}
+
+@layer lumen.components {
+@starting-style {
+.ui-combobox__list[data-state="open"] {
+      opacity: 0;
+      transform: translateY(-0.25rem) scale(0.98);
+    }
+}
 }

@@ -63,6 +63,44 @@ test('recurrence rejects invalid numeric inputs and date overflow without partia
   expect(expandRecurringScheduleEvent(event, 0)).toEqual([])
 })
 
+test.each([
+  { start: 'not-a-date' },
+  { end: 'not-a-date' },
+  { start: '2026-07-04T12:00:00.000Z' }
+])('zero-count recurrence still rejects invalid event intervals %j', invalid => {
+  expect(() => expandRecurringScheduleEvent({ ...event, ...invalid }, 0)).toThrow(TypeError)
+})
+
+test.each([0.5, -1.5])('recurrence rejects fractional day interval %s before producing events', intervalDays => {
+  const overnight = { ...event, start: '2026-07-01T23:00:00.000Z', end: '2026-07-02T01:00:00.000Z' }
+
+  expect(() => expandRecurringScheduleEvent(overnight, 2, intervalDays)).toThrow(RangeError)
+  expect(() => expandRecurringScheduleEvent(overnight, 0, intervalDays)).toThrow(RangeError)
+})
+
+test('recurrence preserves numeric validation precedence for malformed events', () => {
+  const invalid = { ...event, start: 'not-a-date' }
+
+  expect(() => expandRecurringScheduleEvent(invalid, -1, Infinity)).toThrow('count')
+  expect(() => expandRecurringScheduleEvent(invalid, 0, Infinity)).toThrow('interval')
+  expect(() => expandRecurringScheduleEvent(invalid, 0, 0.5)).toThrow('interval')
+})
+
+test.each([0, -1, -7])('recurrence retains zero and negative integer intervals: %s', intervalDays => {
+  const overnight = { ...event, start: '2026-07-01T23:00:00.000Z', end: '2026-07-02T01:00:00.000Z' }
+  const instances = expandRecurringScheduleEvent(overnight, 3, intervalDays)
+
+  expect(instances).toHaveLength(3)
+  expect(overnight.start).toBe('2026-07-01T23:00:00.000Z')
+  for (const [index, instance] of instances.entries()) {
+    const expectedStart = new Date(overnight.start).getTime() + index * intervalDays * 86_400_000
+
+    expect(instance.id).toBe(index === 0 ? event.id : `${event.id}-${index + 1}`)
+    expect(new Date(instance.start).getTime()).toBe(expectedStart)
+    expect(new Date(instance.end).getTime() - new Date(instance.start).getTime()).toBe(7_200_000)
+  }
+})
+
 test.each([['UTC', 0], ['America/New_York', 300], ['Europe/Berlin', -60]] as const)('recurrence preserves UTC instants across DST in %s', (timezone, offset) => {
   vi.stubEnv('TZ', timezone)
   try {

@@ -304,9 +304,35 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 }
 
 @layer lumen.components {
+@starting-style {
+.ui-dialog[open] {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% + 0.75rem)) scale(0.97);
+    }
+}
+}
+
+@layer lumen.components {
+@starting-style {
+.ui-alert-dialog[open] {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% + 0.75rem)) scale(0.97);
+    }
+}
+}
+
+@layer lumen.components {
 .ui-dialog--fullscreen:not([open]) {
     transform: none;
   }
+}
+
+@layer lumen.components {
+@starting-style {
+.ui-dialog--fullscreen[open] {
+      transform: none;
+    }
+}
 }
 
 @layer lumen.components {
@@ -327,6 +353,15 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 }
 
 @layer lumen.components {
+@starting-style {
+.ui-drawer[open] {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+}
+}
+
+@layer lumen.components {
 .ui-sheet {
     transition:
       opacity var(--ui-duration) var(--ui-ease),
@@ -341,6 +376,15 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
     opacity: 0;
     transform: translateX(100%);
   }
+}
+
+@layer lumen.components {
+@starting-style {
+.ui-sheet[open] {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+}
 }
 
 @layer lumen.components {
@@ -383,4 +427,12 @@ lumen-dialog.ui-dialog:not([hidden]):has(> [data-slot="dialog-body"]) {
 :is(.ui-dialog, .ui-alert-dialog, .ui-drawer, .ui-sheet):not([open])::backdrop {
     opacity: 0;
   }
+}
+
+@layer lumen.components {
+@starting-style {
+:is(.ui-dialog, .ui-alert-dialog, .ui-drawer, .ui-sheet)[open]::backdrop {
+      opacity: 0;
+    }
+}
 }

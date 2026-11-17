@@ -26,4 +26,12 @@ describe('language toggle contracts', () => {
     expect(formatLumenLanguageLabel('Change from {current} to {next}', pair.current, pair.next))
       .toBe('Change from Español to English')
   })
+
+  test('substitutes template placeholders without interpreting the inserted labels', () => {
+    const current = { label: 'English ({next}) $&', value: 'en' }
+    const next = { label: 'Español ({current}) $$', value: 'es' }
+
+    expect(formatLumenLanguageLabel('{current} to {next}; {current} / {next}; {unknown}', current, next))
+      .toBe('English ({next}) $& to Español ({current}) $$; English ({next}) $& / Español ({current}) $$; {unknown}')
+  })
 })

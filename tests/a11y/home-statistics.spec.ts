@@ -17,7 +17,7 @@ const readVisibleValues = (statistics: Locator) => statistics.evaluateAll(elemen
 test('homepage statistics stay accurate before scrolling after enhancement', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 823 })
   await page.goto('/')
-  await expect(page.locator('.home-hero__copy')).toHaveAttribute('data-ui-scroll-reveal-bound', 'true')
+  await expect(page.locator('.home-installer')).toHaveAttribute('data-ui-bound', 'true')
   expect(await page.evaluate(() => scrollY)).toBe(0)
   const statistics = page.locator('.home-proof__stats .ui-stat-value')
 

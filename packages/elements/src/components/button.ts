@@ -41,6 +41,7 @@ export class LumenButtonElement extends LumenElement {
   static override config = lumenButtonElementConfig
   private spacePressed = false
   private applyingSemantics = false
+  private activationTimers = new Set<ReturnType<typeof setTimeout>>()
 
   private hasBlockingAttribute(): boolean {
     return ['disabled', 'loading'].some(name => this.hasAttribute(name) && this.getAttribute(name) !== 'false')
@@ -91,10 +92,50 @@ export class LumenButtonElement extends LumenElement {
     return this.hasBlockingAttribute() || this.getAttribute('aria-disabled') === 'true'
   }
 
-  private activateAfterDispatch(event: KeyboardEvent): void {
-    setTimeout(() => {
-      if (this.isConnected && !event.defaultPrevented && !this.isBlocked()) this.click()
+  private afterDispatch(event: Event, activate: () => void): void {
+    const timer = setTimeout(() => {
+      this.activationTimers.delete(timer)
+
+      if (this.isConnected && !event.defaultPrevented && !this.isBlocked()) activate()
     }, 0)
+
+    this.activationTimers.add(timer)
+  }
+
+  private activateAfterDispatch(event: KeyboardEvent): void {
+    this.afterDispatch(event, () => {
+      this.click()
+    })
+  }
+
+  private submitForm(): void {
+    if (this.getAttribute('type')?.toLowerCase() !== 'submit') return
+
+    const submitter = this.ownerDocument.createElement('button')
+
+    submitter.type = 'submit'
+
+    submitter.hidden = true
+
+    for (const name of ['form', 'name', 'value', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget']) {
+      const value = this.getAttribute(name)
+
+      if (value !== null) submitter.setAttribute(name, value)
+    }
+
+    // Let the native submitter resolve form ownership, inherited disabled state,
+    // constraint validation, submitter data, and per-button submission overrides.
+    this.append(submitter)
+
+    try {
+      const form = submitter.form
+
+      if (form && !submitter.matches(':disabled')) {
+        HTMLFormElement.prototype.requestSubmit.call(form, submitter)
+      }
+    } finally {
+      submitter.remove()
+    }
   }
 
   private onKeyDown = (event: KeyboardEvent): void => {
@@ -124,11 +165,25 @@ export class LumenButtonElement extends LumenElement {
   }
 
   private onClick = (event: MouseEvent): void => {
-    if (!this.isBlocked()) return
+    if (this.isBlocked()) {
+      event.preventDefault()
 
-    event.preventDefault()
+      event.stopImmediatePropagation()
 
-    event.stopImmediatePropagation()
+      return
+    }
+
+    if (this.getAttribute('type')?.toLowerCase() !== 'submit') return
+
+    const nestedNativeControl = event.composedPath().some(target => (
+      target instanceof HTMLButtonElement || target instanceof HTMLInputElement
+    ))
+
+    if (nestedNativeControl) return
+
+    this.afterDispatch(event, () => {
+      this.submitForm()
+    })
   }
 
   override connectedCallback(): void {
@@ -165,6 +220,10 @@ export class LumenButtonElement extends LumenElement {
 
   override disconnectedCallback(): void {
     this.spacePressed = false
+
+    for (const timer of this.activationTimers) clearTimeout(timer)
+
+    this.activationTimers.clear()
 
     this.removeEventListener('keydown', this.onKeyDown)
 

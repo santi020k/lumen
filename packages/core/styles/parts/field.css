@@ -7,7 +7,7 @@
 @layer lumen.components {
 .ui-field {
   display: grid;
-  gap: var(--ui-space-related);
+  gap: var(--ui-density-field-gap, var(--ui-space-related));
 }
 }
 
@@ -39,7 +39,7 @@
 @layer lumen.components {
 .ui-field > [data-ui-field-error] {
     margin: 0;
-    color: hsl(var(--danger));
+    color: color-mix(in srgb, hsl(var(--danger)) 65%, hsl(var(--ink)));
     font-size: 0.8125rem;
     line-height: 1.5;
   }
@@ -48,7 +48,7 @@
 @layer lumen.components {
 .ui-field__error {
     margin: 0;
-    color: hsl(var(--danger));
+    color: color-mix(in srgb, hsl(var(--danger)) 65%, hsl(var(--ink)));
     font-size: 0.8125rem;
     line-height: 1.5;
   }

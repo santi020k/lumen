@@ -52,7 +52,20 @@ const lumenData = snapshot as LumenData
 
 setLumenData(lumenData)
 
+const methodNotAllowedBody = {
+  error: {
+    code: -32000,
+    message: 'Method not allowed.'
+  },
+  id: null,
+  jsonrpc: '2.0'
+} as const
+
 const handleMcpRequest = async (request: Request): Promise<Response> => {
+  if (request.method !== 'POST') {
+    return jsonResponse(methodNotAllowedBody, 405, { allow: 'POST' })
+  }
+
   const server = createLumenServer()
   const transport = new WebStandardStreamableHTTPServerTransport({ enableJsonResponse: true })
 

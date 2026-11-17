@@ -77,6 +77,28 @@ test('appearance scopes keep their lower boundary without absorbing neutral scop
   assert.doesNotMatch(foundation + parts.get('card'), /color: purple/u)
 })
 
+test('starting styles travel with their components and preserve nested conditions', () => {
+  const { foundation, parts } = partitionComponentCss([
+    '@layer lumen.components { @media (prefers-reduced-motion: no-preference) { @starting-style { .ui-dialog[open], .ui-select__list { opacity: 0; } } } }'
+  ])
+
+  assert.doesNotMatch(foundation, /@starting-style|ui-dialog|ui-select/u)
+
+  for (const family of ['dialog', 'select']) {
+    const css = parts.get(family)
+
+    assert.match(css, /@layer lumen.components/u)
+
+    assert.match(css, /@media \(prefers-reduced-motion: no-preference\)/u)
+
+    assert.match(css, /@starting-style/u)
+
+    assert.match(css, new RegExp(`\\.ui-${family}`))
+  }
+
+  assert.doesNotMatch(parts.get('dialog'), /ui-select/u)
+})
+
 test('optional glass variables keep URL delimiters and media conditions', () => {
   const { appearances, foundation } = partitionComponentCss([
     '@layer lumen.tokens { @media print { :root { --glass-bg: url(data:image/svg+xml;base64,abc); --brand: blue } } }'
@@ -193,4 +215,26 @@ test('map animation keyframes travel with the map instead of the foundation', ()
   assert.doesNotMatch(result.foundation, /ui-map-enter/u)
 
   assert.match(result.parts.get('world-map'), /@keyframes ui-map-enter/u)
+})
+
+test('portrait animation keyframes travel with the portrait instead of static controls', () => {
+  const names = ['float', 'pulse', 'reveal', 'spin', 'spin-reverse']
+
+  const result = partitionComponentCss([
+    `@layer lumen.components { .ui-animated-portrait { display: block; }
+    ${names.map(name => `@keyframes ui-animated-portrait-${name} { to { opacity: 1; } }`).join('\n')}
+    .ui-button { display: inline-flex; } }`
+  ])
+
+  assert.doesNotMatch(result.foundation + result.parts.get('button'), /ui-animated-portrait/u)
+
+  for (const name of names) assert(result.parts.get('animated-portrait').includes(`@keyframes ui-animated-portrait-${name}`))
+})
+
+test('particle animation keyframes travel with particles instead of the foundation', () => {
+  const result = partitionComponentCss(['.ui-particles__particle { animation: ui-particle-drift 1s; } @keyframes ui-particle-drift { to { opacity: 0; } }'])
+
+  assert.doesNotMatch(result.foundation, /ui-particle-drift/u)
+
+  assert.match(result.parts.get('particles'), /@keyframes ui-particle-drift/u)
 })

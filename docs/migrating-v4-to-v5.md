@@ -15,7 +15,7 @@ runtime adapters in production dependencies.
 Use the [release manifest](../registry/release-manifest.json) for each package's version. In the initial
 v5 release, the six linked web/tooling packages target 5.0.0; React Hook Form targets 4.0.2, brand icons 4.0.1, React Native and tokens 4.1.0. Compose and Wear also target 4.1.0. V5 dependency migration uses this map instead of assigning 5.0.0 to every
 package. `migrate v5` follows the bundled CLI's v5 release versions; explicit audit targets must match
-that bundled manifest. Swift and Maven pins remain application-owned. The refreshed Lucide catalog retains all previous names through aliases and adds new Swift enum cases. Review exhaustive `LumenIconName` switches when updating the Swift package. The repository playground now uses Expo SDK 58 with React Native 0.88 and React 19.3; regenerate and rebuild native applications when adopting that toolchain. See [dependency upgrades](lumen-5-dependencies.md) for exact versions and compatibility holds.
+that bundled manifest. Swift and Maven pins remain application-owned. The refreshed Lucide catalog retains all previous names through aliases and adds new Swift enum cases. Review exhaustive `LumenIconName` switches when updating the Swift package. The repository playground now uses Expo SDK 58 with React Native 0.88 and React 19.3; regenerate and rebuild native applications when adopting that toolchain. See [dependency upgrades](archive/lumen-5-dependencies.md) for exact versions and compatibility holds.
 
 Astro's `LumenInitUiPrimitives(scope)` returns a promise. Await it before relying on enhancement of
 newly inserted markup. The runtime dispatches `ui:ready` after initialization and `ui:runtime-error`
@@ -66,7 +66,7 @@ On mobile, adopt Paper, Field or santi020k one screen at a time with the named t
 the website palette to the supplied santi020k definition. Filled primary actions now use ink while
 links and charts keep the branded palette. Store appearance preference separately from the theme
 identifier. Existing Default, Studio and Glass calls continue to work. The
-[framework parity audit](lumen-5-framework-parity.md) maps these improvements to React, Elements,
+[framework parity audit](archive/lumen-5-framework-parity.md) maps these improvements to React, Elements,
 React Native, SwiftUI and Compose and records the verification scope.
 
 

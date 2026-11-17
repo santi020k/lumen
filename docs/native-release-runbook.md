@@ -1,6 +1,6 @@
 # Native release runbook
 
-This runbook turns the [Lumen 2 readiness plan](lumen-2-readiness.md) into an executable release
+This runbook turns the [Lumen 2 readiness plan](archive/lumen-2-readiness.md) into an executable release
 sequence. It does not authorize publishing, tagging, merging, or changing physical devices. Each
 external action still requires the maintainer's explicit approval.
 

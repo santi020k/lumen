@@ -292,6 +292,10 @@
       ],
       "dependencies": []
     },
+    "CheckboxCard": {
+      "parts": ["selection-card"],
+      "dependencies": []
+    },
     "CheckboxGroup": {
       "parts": [
         "checkbox-group"
@@ -979,6 +983,10 @@
       "parts": [
         "qr-code"
       ],
+      "dependencies": []
+    },
+    "RadioCard": {
+      "parts": ["selection-card"],
       "dependencies": []
     },
     "RadioGroup": {

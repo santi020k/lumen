@@ -281,6 +281,18 @@ const findHostComponent = (root: Root, type: string): TestInstance => {
   return match
 }
 
+const openAndroidDateField = async (root: Root, label: string) => {
+  await runNativeAction(() => {
+    callAction(readProp(findByAccessibilityLabel(root, `${label}, Select a date`), 'onPress'), 'Missing date trigger')
+  })
+
+  const options = vi.mocked(DateTimePickerAndroid.open).mock.calls.at(-1)?.[0]
+
+  if (!options?.onValueChange || !options.onDismiss || !options.onError) throw new Error('Missing Android date picker callbacks')
+
+  return { ...options, onDismiss: options.onDismiss, onError: options.onError, onValueChange: options.onValueChange }
+}
+
 afterEach(async () => {
   nativeDirection.isRTL = false
   const roots = mountedRoots.splice(0)
@@ -1128,36 +1140,34 @@ describe('Lumen React Native component behavior', () => {
         <LumenDateField label="Birthday" minimumDate={minimumDate} maximumDate={maximumDate} onValueChange={onValueChange} value={null} />
       )
 
-      await runNativeAction(() => {
-        callAction(readProp(findByAccessibilityLabel(root, 'Birthday, Select a date'), 'onPress'), 'Missing date trigger')
-      })
-
-      const options = vi.mocked(DateTimePickerAndroid.open).mock.calls.at(-1)?.[0]
-
-      if (!options?.onValueChange) throw new Error('Missing Android date selection handler')
+      const options = await openAndroidDateField(root, 'Birthday')
 
       expect(options).not.toHaveProperty('onChange')
 
       await runNativeAction(() => {
-        options.onDismiss?.()
+        options.onDismiss()
       })
       expect(onValueChange).not.toHaveBeenCalled()
 
-      const change = options.onValueChange
       const event = { nativeEvent: { timestamp: 0, utcOffset: 0 } }
 
       await runNativeAction(() => {
-        change(event, new Date(2026, 0, 1))
+        options.onValueChange(event, new Date(2026, 0, 1))
       })
-      expect(onValueChange).toHaveBeenLastCalledWith(minimumDate)
-      await runNativeAction(() => {
-        change(event, new Date(2026, 0, 30))
-      })
-      expect(onValueChange).toHaveBeenLastCalledWith(maximumDate)
-      await runNativeAction(() => {
-        change(event, new Date(2026, 0, 15))
-      })
-      expect(onValueChange).toHaveBeenLastCalledWith(new Date(2026, 0, 15))
+      expect(onValueChange).not.toHaveBeenCalled()
+
+      for (const [selected, expected] of [
+        [new Date(2026, 0, 1), minimumDate],
+        [new Date(2026, 0, 30), maximumDate],
+        [new Date(2026, 0, 15), new Date(2026, 0, 15)]
+      ] as const) {
+        const selection = await openAndroidDateField(root, 'Birthday')
+
+        await runNativeAction(() => {
+          selection.onValueChange(event, selected)
+        })
+        expect(onValueChange).toHaveBeenLastCalledWith(expected)
+      }
       expect(onValueChange).toHaveBeenCalledTimes(3)
     } finally {
       nativePlatform.OS = 'ios'
@@ -1191,6 +1201,268 @@ describe('Lumen React Native component behavior', () => {
 
       expect(DateTimePickerAndroid.dismiss).toHaveBeenCalledWith('date')
     } finally {
+      nativePlatform.OS = 'ios'
+    }
+  })
+
+  test.each([
+    { operation: 'disable', wasOpen: false },
+    { operation: 'unmount', wasOpen: false },
+    { operation: 'disable', wasOpen: true },
+    { operation: 'unmount', wasOpen: true }
+  ])('changing an unrelated Android date field by $operation preserves the active picker (previously open: $wasOpen)', async ({ operation, wasOpen }) => {
+    nativePlatform.OS = 'android'
+    const changeA = vi.fn()
+    const changeB = vi.fn()
+    const fields = (changed: boolean): ReactElement => (
+      <>
+        {!(changed && operation === 'unmount') && (
+          <LumenDateField key="a" enabled={!changed} label="Date A" onValueChange={changeA} value={null} />
+        )}
+        <LumenDateField key="b" label="Date B" onValueChange={changeB} value={null} />
+      </>
+    )
+
+    try {
+      const root = await renderNative(fields(false))
+
+      if (wasOpen) {
+        const previous = await openAndroidDateField(root, 'Date A')
+
+        await runNativeAction(() => {
+          previous.onDismiss()
+        })
+      }
+
+      const active = await openAndroidDateField(root, 'Date B')
+
+      await runNativeAction(() => {
+        root.render(<LumenProvider scheme="light">{fields(true)}</LumenProvider>)
+      })
+      expect(DateTimePickerAndroid.dismiss).not.toHaveBeenCalled()
+
+      const selected = new Date(2026, 0, 15)
+
+      await runNativeAction(() => {
+        active.onValueChange({ nativeEvent: { timestamp: selected.getTime(), utcOffset: 0 } }, selected)
+      })
+      expect(changeB).toHaveBeenCalledExactlyOnceWith(selected)
+      expect(changeA).not.toHaveBeenCalled()
+    } finally {
+      nativePlatform.OS = 'ios'
+    }
+  })
+
+  test.each(['Date A', 'Date B'])('overlapping Android date requests from %s preserve the original native listener', async nextLabel => {
+    nativePlatform.OS = 'android'
+    const changeA = vi.fn()
+    const changeB = vi.fn()
+    const nativeFragment: {
+      options: Parameters<typeof DateTimePickerAndroid.open>[0] | undefined
+    } = { options: undefined }
+
+    // Android updates an existing fragment without attaching the new open() callback.
+    vi.mocked(DateTimePickerAndroid.open).mockImplementation(options => {
+      nativeFragment.options ??= options
+    })
+
+    try {
+      const root = await renderNative(
+        <>
+          <LumenDateField label="Date A" onValueChange={changeA} value={null} />
+          <LumenDateField label="Date B" onValueChange={changeB} value={null} />
+        </>
+      )
+      const previous = await openAndroidDateField(root, 'Date A')
+
+      await runNativeAction(() => {
+        callAction(readProp(findByAccessibilityLabel(root, `${nextLabel}, Select a date`), 'onPress'), 'Missing overlapping date trigger')
+      })
+      expect(DateTimePickerAndroid.open).toHaveBeenCalledOnce()
+
+      const nativeSelection = nativeFragment.options?.onValueChange
+
+      if (!nativeSelection) throw new Error('Missing original native fragment listener')
+
+      const date = new Date(2026, 0, 15)
+      const event = { nativeEvent: { timestamp: date.getTime(), utcOffset: 0 } }
+
+      await runNativeAction(() => {
+        nativeFragment.options = undefined
+        nativeSelection(event, date)
+      })
+      expect(changeA).toHaveBeenCalledExactlyOnceWith(date)
+      expect(changeB).not.toHaveBeenCalled()
+
+      const current = await openAndroidDateField(root, 'Date B')
+
+      await runNativeAction(() => {
+        previous.onDismiss()
+        previous.onError(new Error('Late native failure'))
+        previous.onValueChange(event, date)
+      })
+      expect(changeA).toHaveBeenCalledOnce()
+      expect(changeB).not.toHaveBeenCalled()
+
+      await runNativeAction(() => {
+        current.onValueChange(event, date)
+        current.onValueChange(event, new Date(2026, 0, 16))
+        root.unmount()
+      })
+      expect(changeB).toHaveBeenCalledExactlyOnceWith(date)
+      expect(DateTimePickerAndroid.dismiss).not.toHaveBeenCalled()
+    } finally {
+      vi.mocked(DateTimePickerAndroid.open).mockReset()
+      nativePlatform.OS = 'ios'
+    }
+  })
+
+  test('unmounting the owning Android date field dismisses its picker and ignores its pending callbacks', async () => {
+    nativePlatform.OS = 'android'
+    const change = vi.fn()
+
+    try {
+      const root = await renderNative(<LumenDateField label="Date" onValueChange={change} value={null} />)
+      const picker = await openAndroidDateField(root, 'Date')
+
+      await runNativeAction(() => {
+        root.unmount()
+      })
+      expect(DateTimePickerAndroid.dismiss).toHaveBeenCalledExactlyOnceWith('date')
+
+      await runNativeAction(() => {
+        picker.onValueChange({ nativeEvent: { timestamp: 0, utcOffset: 0 } }, new Date(2026, 0, 15))
+        picker.onDismiss()
+      })
+      expect(change).not.toHaveBeenCalled()
+    } finally {
+      nativePlatform.OS = 'ios'
+    }
+  })
+
+  test('dismissing an Android date picker releases its cleanup ownership', async () => {
+    nativePlatform.OS = 'android'
+
+    try {
+      const root = await renderNative(<LumenDateField label="Date" onValueChange={() => {}} value={null} />)
+      const picker = await openAndroidDateField(root, 'Date')
+
+      await runNativeAction(() => {
+        picker.onDismiss()
+        root.unmount()
+      })
+      expect(DateTimePickerAndroid.dismiss).not.toHaveBeenCalled()
+    } finally {
+      nativePlatform.OS = 'ios'
+    }
+  })
+
+  test('a failed Android date picker open releases its cleanup ownership', async () => {
+    nativePlatform.OS = 'android'
+    const failure = new Error('Picker unavailable')
+
+    try {
+      const root = await renderNative(<LumenDateField label="Date" onValueChange={() => {}} value={null} />)
+
+      vi.mocked(DateTimePickerAndroid.open).mockImplementationOnce(() => {
+        throw failure
+      })
+      await expect(openAndroidDateField(root, 'Date')).rejects.toThrow(failure)
+
+      await runNativeAction(() => {
+        root.unmount()
+      })
+      expect(DateTimePickerAndroid.dismiss).not.toHaveBeenCalled()
+    } finally {
+      nativePlatform.OS = 'ios'
+    }
+  })
+
+  test('asynchronous Android date picker failures release ownership without affecting a later picker', async () => {
+    nativePlatform.OS = 'android'
+    const failure = new Error('Picker unavailable')
+    const changeA = vi.fn()
+    const changeB = vi.fn()
+
+    try {
+      const root = await renderNative(
+        <>
+          <LumenDateField label="Date A" onValueChange={changeA} value={null} />
+          <LumenDateField label="Date B" onValueChange={changeB} value={null} />
+        </>
+      )
+
+      vi.mocked(DateTimePickerAndroid.open).mockImplementationOnce(options => {
+        queueMicrotask(() => options.onError?.(failure))
+      })
+      const failed = await openAndroidDateField(root, 'Date A')
+      const current = await openAndroidDateField(root, 'Date B')
+      const date = new Date(2026, 0, 15)
+      const event = { nativeEvent: { timestamp: date.getTime(), utcOffset: 0 } }
+
+      await runNativeAction(() => {
+        failed.onError(failure)
+        failed.onValueChange(event, date)
+        current.onValueChange(event, date)
+        root.unmount()
+      })
+      expect(changeA).not.toHaveBeenCalled()
+      expect(changeB).toHaveBeenCalledExactlyOnceWith(date)
+      expect(DateTimePickerAndroid.dismiss).not.toHaveBeenCalled()
+    } finally {
+      nativePlatform.OS = 'ios'
+    }
+  })
+
+  test.each(['resolve', 'reject'])('Android date cleanup waits for native dismissal to %s before accepting another open', async outcome => {
+    nativePlatform.OS = 'android'
+    const change = vi.fn()
+    let resolveDismissal: (value: boolean) => void = () => {
+      throw new Error('Missing native dismissal completion')
+    }
+    let rejectDismissal: (reason: Error) => void = () => {
+      throw new Error('Missing native dismissal rejection')
+    }
+    const dismissal = new Promise<boolean>((resolve, reject) => {
+      resolveDismissal = resolve
+      rejectDismissal = reject
+    })
+
+    try {
+      const rootA = await renderNative(<LumenDateField label="Date A" onValueChange={change} value={null} />)
+      const rootB = await renderNative(<LumenDateField label="Date B" onValueChange={change} value={null} />)
+      const closing = await openAndroidDateField(rootA, 'Date A')
+
+      vi.mocked(DateTimePickerAndroid.dismiss).mockReturnValueOnce(dismissal)
+      await runNativeAction(() => {
+        rootA.unmount()
+      })
+      await runNativeAction(() => {
+        closing.onDismiss()
+        closing.onError(new Error('Late failure during cleanup'))
+        callAction(readProp(findByAccessibilityLabel(rootB, 'Date B, Select a date'), 'onPress'), 'Missing date trigger during cleanup')
+      })
+      expect(DateTimePickerAndroid.open).toHaveBeenCalledOnce()
+      expect(DateTimePickerAndroid.dismiss).toHaveBeenCalledExactlyOnceWith('date')
+
+      await runNativeAction(() => {
+        if (outcome === 'resolve') resolveDismissal(true)
+        else rejectDismissal(new Error('Native activity disappeared'))
+      })
+      const current = await openAndroidDateField(rootB, 'Date B')
+
+      expect(DateTimePickerAndroid.open).toHaveBeenCalledTimes(2)
+
+      const date = new Date(2026, 0, 15)
+      const event = { nativeEvent: { timestamp: date.getTime(), utcOffset: 0 } }
+
+      await runNativeAction(() => {
+        closing.onValueChange(event, date)
+        current.onValueChange(event, date)
+      })
+      expect(change).toHaveBeenCalledExactlyOnceWith(date)
+    } finally {
+      resolveDismissal(true)
       nativePlatform.OS = 'ios'
     }
   })

@@ -10,6 +10,7 @@ import type {
   LumenRecipeSnapshot
 } from './data.js'
 import { loadLumenData } from './data.js'
+import { normalize } from './normalize.js'
 
 export interface CatalogChanges {
   added: string[]
@@ -58,13 +59,6 @@ export interface SearchResult {
   platforms?: LumenNativePlatform[]
   score: number
 }
-
-const normalize = (value: string) => value
-  .normalize('NFD')
-  .replaceAll(/[\u0300-\u036f]/g, '')
-  .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
-  .replaceAll(/[\s_]+/g, '-')
-  .toLowerCase()
 
 const tokenize = (value: string): string[] => normalize(value)
   .split(/[^a-z0-9]+/)
@@ -367,33 +361,15 @@ const appendSearchResult = (
   }
 }
 
-const collectComponentSearchResults = (
+const appendNativeComponentSearchResults = (
+  results: SearchResult[],
   query: string,
   terms: string[],
   data: LumenData,
-  framework?: LumenFramework,
   platform?: LumenNativePlatform
-): SearchResult[] => {
-  const results: SearchResult[] = []
-
-  for (const component of platform ? [] : data.components) {
-    if (framework && !Reflect.get(component.frameworks, framework)) continue
-
-    appendSearchResult(
-      results, {
-        category: component.category,
-        description: component.description,
-        frameworks: availableFrameworks(component),
-        kind: 'component',
-        name: component.name
-      }, query, terms, componentSearchText(component, framework)
-    )
-  }
-
-  if (!platform || framework) return results
-
+): void => {
   for (const component of data.nativeComponents) {
-    if (!component.implementations[platform]) continue
+    if (platform && !component.implementations[platform]) continue
 
     appendSearchResult(
       results, {
@@ -404,6 +380,38 @@ const collectComponentSearchResults = (
         platforms: availableNativePlatforms(component)
       }, query, terms, nativeComponentSearchText(component, platform)
     )
+  }
+}
+
+const collectComponentSearchResults = (
+  query: string,
+  terms: string[],
+  data: LumenData,
+  framework?: LumenFramework,
+  platform?: LumenNativePlatform,
+  kind?: SearchResult['kind']
+): SearchResult[] => {
+  const results: SearchResult[] = []
+  const includeWebComponents = !platform && kind !== 'native-component'
+
+  if (includeWebComponents) {
+    for (const component of data.components) {
+      if (framework && !Reflect.get(component.frameworks, framework)) continue
+
+      appendSearchResult(
+        results, {
+          category: component.category,
+          description: component.description,
+          frameworks: availableFrameworks(component),
+          kind: 'component',
+          name: component.name
+        }, query, terms, componentSearchText(component, framework)
+      )
+    }
+  }
+
+  if (!framework && (Boolean(platform) || kind === 'native-component')) {
+    appendNativeComponentSearchResults(results, query, terms, data, platform)
   }
 
   return results
@@ -471,10 +479,11 @@ const collectSearchResults = (
   terms: string[],
   data: LumenData,
   framework?: LumenFramework,
-  platform?: LumenNativePlatform
+  platform?: LumenNativePlatform,
+  kind?: SearchResult['kind']
 ): SearchResult[] => [
-  ...collectComponentSearchResults(query, terms, data, framework, platform),
-  ...collectReferenceSearchResults(query, terms, data)
+  ...collectComponentSearchResults(query, terms, data, framework, platform, kind),
+  ...(platform ? [] : collectReferenceSearchResults(query, terms, data))
 ]
 
 export const listComponents = (
@@ -1076,7 +1085,7 @@ export const search = (
   const limit = Math.max(1, Math.min(args.limit ?? 20, 100))
 
   const results = collectSearchResults(
-    query, meaningfulSearchTerms(query), data, args.framework, args.platform
+    query, meaningfulSearchTerms(query), data, args.framework, args.platform, args.kind
   ).filter(result => {
     if (args.kind && result.kind !== args.kind) return false
 
@@ -1137,33 +1146,36 @@ export const getMeta = (
   ].join('\n')
 })
 
+const ownRecordEntries = (
+  record: Record<string, string>
+): Map<string, string> => new Map(Object.entries(record))
+
 const diffManifestSection = (
   current: Record<string, string>,
   baseline: Record<string, string>
 ): CatalogChanges => {
-  const currentNames = Object.keys(current)
-  const baselineNames = Object.keys(baseline)
+  const currentEntries = ownRecordEntries(current)
+  const baselineEntries = ownRecordEntries(baseline)
+  const currentNames = [...currentEntries.keys()]
+  const baselineNames = [...baselineEntries.keys()]
 
   return {
     added: currentNames
-      .filter(
-        name => (Reflect.get(baseline, name) as string | undefined) === undefined
-      )
+      .filter(name => !baselineEntries.has(name))
       .sort(),
     changed: currentNames
       .filter(
-        name => (Reflect.get(baseline, name) as string | undefined) !== undefined &&
-          Reflect.get(baseline, name) !== Reflect.get(current, name)
+        name => baselineEntries.has(name) &&
+          baselineEntries.get(name) !== currentEntries.get(name)
       )
       .sort(),
     removed: baselineNames
-      .filter(
-        name => (Reflect.get(current, name) as string | undefined) === undefined
-      )
+      .filter(name => !currentEntries.has(name))
       .sort(),
     unchanged: currentNames
       .filter(
-        name => Reflect.get(baseline, name) === Reflect.get(current, name)
+        name => baselineEntries.has(name) &&
+          baselineEntries.get(name) === currentEntries.get(name)
       )
       .sort()
   }
@@ -1267,6 +1279,7 @@ interface DiagnosticCheck {
 
 const webDiagnosticChecks = (data: LumenData): DiagnosticCheck[] => {
   const componentNames = data.components.map(component => component.name)
+  const componentManifest = ownRecordEntries(data.catalogManifest.components)
 
   return [
     {
@@ -1286,7 +1299,7 @@ const webDiagnosticChecks = (data: LumenData): DiagnosticCheck[] => {
     {
       message: 'Every component has a manifest fingerprint.',
       name: 'component-manifest',
-      status: componentNames.every(name => Reflect.get(data.catalogManifest.components, name)) ?
+      status: componentNames.every(name => Boolean(componentManifest.get(name))) ?
         'pass' :
         'fail'
     },
@@ -1312,6 +1325,7 @@ const webDiagnosticChecks = (data: LumenData): DiagnosticCheck[] => {
 
 const nativeDiagnosticChecks = (data: LumenData): DiagnosticCheck[] => {
   const nativeComponentNames = data.nativeComponents.map(component => component.name)
+  const nativeManifest = ownRecordEntries(data.catalogManifest.nativeComponents ?? {})
 
   return [
     {
@@ -1333,9 +1347,7 @@ const nativeDiagnosticChecks = (data: LumenData): DiagnosticCheck[] => {
     {
       message: 'Every native component has a manifest fingerprint.',
       name: 'native-component-manifest',
-      status: nativeComponentNames.every(name => (
-        Reflect.get(data.catalogManifest.nativeComponents ?? {}, name)
-      )) ?
+      status: nativeComponentNames.every(name => Boolean(nativeManifest.get(name))) ?
         'pass' :
         'fail'
     },

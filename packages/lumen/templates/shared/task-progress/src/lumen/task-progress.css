@@ -1,0 +1,9 @@
+.lumen-task-progress { min-inline-size: 0; }
+.lumen-task-progress__heading { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: var(--ui-space-related); }
+.lumen-task-progress__heading h3 { margin: 0; overflow-wrap: anywhere; }
+.lumen-task-progress__detail { color: hsl(var(--ink-soft)); margin: 0; }
+.lumen-task-progress__count { font-variant-numeric: tabular-nums; color: hsl(var(--ink-soft)); }
+.lumen-task-progress__actions { display: flex; flex-wrap: wrap; gap: var(--ui-space-related); }
+.lumen-task-progress [hidden] { display: none !important; }
+.lumen-task-progress[data-task-status="failed"] { border-color: hsl(var(--danger)); }
+.lumen-task-progress[data-task-status="complete"] { border-color: hsl(var(--success)); }

@@ -1,10 +1,17 @@
 import { createHash } from 'node:crypto'
-import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { lstat, mkdir, readFile } from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
 
 import { bundledV5ReleaseVersions, consumerPackageVersion } from './consumer-release-versions.js'
 import { formatConsumerRollout, inspectLumenConsumer } from './consumer-rollout.js'
 import { formatLumenConsumerUpgradeAudit, inspectConsumerSource, inspectLumenConsumerUpgrade, type LumenConsumerUpgradeAudit } from './consumer-upgrade-audit.js'
+import {
+  createGuardedNewFile,
+  GuardedFilePreWriteError,
+  type GuardedFileSnapshot,
+  readGuardedRegularFile,
+  writeGuardedExistingFile
+} from './guarded-file.js'
 import { discoverSourceFiles } from './v2-migration.js'
 import { migrateLumenV4 } from './v4-migration.js'
 import {
@@ -59,18 +66,23 @@ const checkLedgerLocation = async (root: string): Promise<void> => {
   }
 }
 
-const readLedger = async (path: string): Promise<Record<string, string>> => {
-  let source: string
+interface LedgerState {
+  ledger: Record<string, string>
+  snapshot?: GuardedFileSnapshot
+}
+
+const readLedger = async (path: string): Promise<LedgerState> => {
+  let snapshot: GuardedFileSnapshot
 
   try {
-    source = await readFile(path, 'utf8')
+    snapshot = await readGuardedRegularFile(path, path)
   } catch (error) {
-    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') return {}
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') return { ledger: {} }
 
     throw error
   }
 
-  const value: unknown = JSON.parse(source)
+  const value: unknown = JSON.parse(snapshot.content)
 
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(`Invalid migration ledger: ${path}`)
 
@@ -78,55 +90,84 @@ const readLedger = async (path: string): Promise<Record<string, string>> => {
 
   if (entries.some(([, hash]) => typeof hash !== 'string' || !/^[a-f0-9]{64}$/u.test(hash))) throw new Error(`Invalid migration ledger: ${path}`)
 
-  return Object.fromEntries(entries.map(([file, hash]) => [file, String(hash)]))
+  return {
+    ledger: Object.fromEntries(entries.map(([file, hash]) => [file, String(hash)])),
+    snapshot
+  }
+}
+
+const writeLedger = async (
+  root: string,
+  ledgerPath: string,
+  ledgerState: LedgerState
+): Promise<void> => {
+  const content = `${JSON.stringify(ledgerState.ledger, undefined, 2)}\n`
+
+  if (!ledgerState.snapshot) {
+    await mkdir(resolve(root, '.lumen'), { recursive: true })
+
+    ledgerState.snapshot = await createGuardedNewFile(ledgerPath, content, ledgerPath)
+
+    return
+  }
+
+  ledgerState.snapshot = await writeGuardedExistingFile(
+    ledgerPath,
+    content,
+    ledgerState.snapshot,
+    ledgerPath,
+    `Migration ledger changed during apply: ${ledgerPath}`
+  )
 }
 
 const writeMigratedSource = async (
   absoluteFile: string,
-  source: string,
+  sourceSnapshot: GuardedFileSnapshot,
   nextSource: string,
-  { report, ledger, ledgerPath, file }: {
+  { report, ledgerState, ledgerPath, file }: {
     report: LumenVersionMigrationReport
-    ledger: Record<string, string>
+    ledgerState: LedgerState
     ledgerPath: string
     file: string
   }
 ): Promise<void> => {
-  if (await readFile(absoluteFile, 'utf8') !== source) throw new Error(`Source changed during migration: ${file}`)
-
   if (report.version === 'v4') {
     // Write the intended fingerprint first so an interrupted apply cannot double-rewrite gaps.
-    await mkdir(resolve(report.root, '.lumen'), { recursive: true })
+    ledgerState.ledger[file] = fingerprint(nextSource)
 
-    ledger[file] = fingerprint(nextSource)
-
-    await writeFile(ledgerPath, `${JSON.stringify(ledger, undefined, 2)}\n`, 'utf8')
+    await writeLedger(report.root, ledgerPath, ledgerState)
   }
 
-  if (await readFile(absoluteFile, 'utf8') !== source) {
-    if (report.version === 'v4') {
-      Reflect.deleteProperty(ledger, file)
+  try {
+    await writeGuardedExistingFile(
+      absoluteFile,
+      nextSource,
+      sourceSnapshot,
+      file,
+      `Source changed during migration: ${file}`
+    )
+  } catch (error) {
+    if (report.version === 'v4' && error instanceof GuardedFilePreWriteError) {
+      Reflect.deleteProperty(ledgerState.ledger, file)
 
-      await writeFile(ledgerPath, `${JSON.stringify(ledger, undefined, 2)}\n`, 'utf8')
+      await writeLedger(report.root, ledgerPath, ledgerState)
     }
 
-    throw new Error(`Source changed during migration: ${file}`)
+    throw error
   }
-
-  await writeFile(absoluteFile, nextSource, 'utf8')
 }
 
 const migrateFile = async (
   absoluteFile: string,
   report: LumenVersionMigrationReport,
-  ledger: Record<string, string>,
+  ledgerState: LedgerState,
   ledgerPath: string
 ): Promise<void> => {
   const file = relative(report.root, absoluteFile) || absoluteFile
-  const source = await readFile(absoluteFile, 'utf8')
+  const sourceSnapshot = await readGuardedRegularFile(absoluteFile, file)
 
-  if (report.version === 'v4' && Object.hasOwn(ledger, file)) {
-    if (ledger[file] !== fingerprint(source)) report.manualReview.push({ file,
+  if (report.version === 'v4' && Object.hasOwn(ledgerState.ledger, file)) {
+    if (ledgerState.ledger[file] !== fingerprint(sourceSnapshot.content)) report.manualReview.push({ file,
       line: 1,
       column: 1,
       kind: 'layout-gap',
@@ -135,19 +176,19 @@ const migrateFile = async (
     return
   }
 
-  const migration = migrateLumenVersionSource(source, file, report.version)
+  const migration = migrateLumenVersionSource(sourceSnapshot.content, file, report.version)
 
   report.changes.push(...migration.changes)
 
   report.manualReview.push(...migration.manualReview)
 
-  if (source === migration.source) return
+  if (sourceSnapshot.content === migration.source) return
 
   report.changedFiles.push(file)
 
   if (!report.applied) return
 
-  await writeMigratedSource(absoluteFile, source, migration.source, { report, ledger, ledgerPath, file })
+  await writeMigratedSource(absoluteFile, sourceSnapshot, migration.source, { report, ledgerState, ledgerPath, file })
 }
 
 const createReport = async (
@@ -212,7 +253,7 @@ export const migrateLumenVersion = async (
 
   if (options.version === 'v4') await checkLedgerLocation(root)
 
-  const ledger = options.version === 'v4' ? await readLedger(ledgerPath) : {}
+  const ledgerState: LedgerState = options.version === 'v4' ? await readLedger(ledgerPath) : { ledger: {} }
   const report = await createReport(options, root, files.length)
 
   if (options.dependencies) {
@@ -235,7 +276,7 @@ export const migrateLumenVersion = async (
   }
 
   for (const absoluteFile of files) {
-    await migrateFile(absoluteFile, report, ledger, ledgerPath)
+    await migrateFile(absoluteFile, report, ledgerState, ledgerPath)
   }
 
   await refreshDependencyReport(report)

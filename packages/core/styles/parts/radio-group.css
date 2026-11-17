@@ -20,7 +20,7 @@
 }
 
 @layer lumen.components {
-.ui-radio-group label {
+.ui-radio-group :where(label) {
   display: flex;
   align-items: center;
   gap: 0.5rem;

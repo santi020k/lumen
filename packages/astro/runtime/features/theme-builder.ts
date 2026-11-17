@@ -266,7 +266,7 @@ const bindThemeBuilders = (root: HTMLElement): void => {
   const hasTokenControls = [
     presetButtons.length,
     currentPreset,
-    root.querySelector('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width]'),
+    root.querySelector('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width], [data-ui-theme-font-family], [data-ui-theme-elevation]'),
     brandHue,
     brandHueNumber,
     accentHue,
@@ -349,6 +349,8 @@ const bindThemeBuilders = (root: HTMLElement): void => {
       primaryColor: firstThemeValue(primaryHex?.value, primaryColor?.value),
       secondaryColor: firstThemeValue(secondaryHex?.value, secondaryColor?.value),
       preset: currentPreset,
+      fontFamily: themeInputValue(root, '[data-ui-theme-font-family]'),
+      elevation: themeInputValue(root, '[data-ui-theme-elevation]'),
       radiusScale: themeInputValue(root, '[data-ui-theme-radius-scale]'),
       spacingScale: themeInputValue(root, '[data-ui-theme-spacing-scale]'),
       borderWidth: themeInputValue(root, '[data-ui-theme-border-width]')
@@ -381,7 +383,7 @@ const bindThemeBuilders = (root: HTMLElement): void => {
     }))
   }
 
-  for (const input of root.querySelectorAll<HTMLInputElement>('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width]')) {
+  for (const input of root.querySelectorAll<HTMLInputElement>('[data-ui-theme-radius-scale], [data-ui-theme-spacing-scale], [data-ui-theme-border-width], [data-ui-theme-font-family], [data-ui-theme-elevation]')) {
     input.addEventListener('input', () => {
       update()
     })

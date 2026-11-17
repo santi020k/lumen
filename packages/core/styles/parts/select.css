@@ -2,7 +2,7 @@
 @layer theme, base, lumen.tokens, lumen.base, components, lumen.components, lumen.glass, utilities;
 @layer lumen.components {
 .ui-select {
-  min-height: 2.75rem;
+  min-height: max(var(--ui-density-control-height, 2.75rem), var(--ui-density-target-min, 0rem));
   width: 100%;
   border: var(--ui-border-width, 1px) solid hsl(var(--line));
   border-radius: var(--ui-radius-sm);
@@ -10,7 +10,7 @@
   color: hsl(var(--ink));
   box-shadow: inset 0 1px 2px hsl(222 47% 11% / 0.04);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--ui-density-input-font-size, 0.875rem);
   line-height: 1.4;
   transition:
     border-color 160ms ease,
@@ -20,13 +20,13 @@
 
 @layer lumen.components {
 .ui-select {
-  height: 2.75rem;
-  padding: 0 0.75rem;
+  height: max(var(--ui-density-control-height, 2.75rem), var(--ui-density-target-min, 0rem));
+  padding: 0 var(--ui-density-control-padding, 0.75rem);
 }
 }
 
 @layer lumen.components {
-.ui-select:hover {
+.ui-select:not(:disabled, [aria-disabled="true"], [aria-invalid="true"], :user-invalid):hover {
   border-color: hsl(var(--brand) / 0.42);
 }
 }
@@ -56,7 +56,7 @@
 @layer lumen.components {
 .ui-select-field {
   display: grid;
-  gap: var(--ui-space-related);
+  gap: var(--ui-density-field-gap, var(--ui-space-related));
 }
 }
 
@@ -143,29 +143,29 @@
 
 @layer lumen.components {
 .ui-select__list [role="option"] {
+  min-height: var(--ui-density-target-min, 0rem);
   border: 0;
   border-radius: var(--ui-radius-sm);
   background: transparent;
   color: hsl(var(--ink-soft));
   cursor: pointer;
   font: inherit;
-  padding: 0.65rem 0.75rem;
+  padding: var(--ui-density-menu-padding, 0.65rem 0.75rem);
   text-align: start;
 }
 }
 
 @layer lumen.components {
-.ui-select__list [role="option"][aria-disabled="true"] {
+.ui-select__list [role="option"]:is(:disabled, [aria-disabled="true"]) {
   cursor: not-allowed;
   opacity: 0.55;
 }
 }
 
 @layer lumen.components {
-.ui-select__list [role="option"]:is(:hover, :focus-visible) {
+.ui-select__list [role="option"]:not(:disabled, [aria-disabled="true"]):is(:hover, :focus-visible) {
   background: hsl(var(--brand-soft));
   color: hsl(var(--brand));
-  outline: none;
 }
 }
 
@@ -173,7 +173,13 @@
 .ui-select__list [role="option"][aria-selected="true"] {
   background: hsl(var(--brand-soft));
   color: hsl(var(--brand));
-  outline: none;
+}
+}
+
+@layer lumen.components {
+.ui-select__list [role="option"]:focus-visible {
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: -2px;
 }
 }
 
@@ -194,7 +200,23 @@
 }
 
 @layer lumen.components {
-.ui-select[aria-invalid="true"] {
+@starting-style {
+.ui-select__list[data-state="open"] {
+      opacity: 0;
+      transform: translateY(-0.25rem) scale(0.98);
+    }
+}
+}
+
+@layer lumen.components {
+.ui-select:disabled {
+    background-color: hsl(var(--surface-muted));
+    box-shadow: none;
+  }
+}
+
+@layer lumen.components {
+.ui-select:is([aria-invalid="true"], :user-invalid) {
     border-color: hsl(var(--danger) / 0.6);
     box-shadow:
       inset 0 1px 2px hsl(222 47% 11% / 0.04),
@@ -203,16 +225,16 @@
 }
 
 @layer lumen.components {
-.ui-select[aria-invalid="true"]:focus-visible {
+.ui-select:is([aria-invalid="true"], :user-invalid):focus-visible {
     outline-color: hsl(var(--danger));
   }
 }
 
 @layer lumen.components {
 .ui-select--sm {
-    min-height: 2.25rem;
-    height: 2.25rem;
-    font-size: 0.8125rem;
+    min-height: max(2.25rem, var(--ui-density-target-min, 0rem));
+    height: max(2.25rem, var(--ui-density-target-min, 0rem));
+    font-size: var(--ui-density-input-font-size, 0.8125rem);
   }
 }
 

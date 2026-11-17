@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { initDocumentNavigationControllers } from './runtime/controllers/document-navigation.js'
+import { cleanupDocumentNavigationControllers, initDocumentNavigationControllers } from './runtime/controllers/document-navigation.js'
 
 afterEach(() => {
   document.body.replaceChildren()
@@ -157,4 +157,31 @@ test('initializes scroll progress only inside its scope', () => {
   initDocumentNavigationControllers(first)
   expect(first.dataset.uiBound).toBe('true')
   expect(second.dataset.uiBound).toBeUndefined()
+})
+
+test('disconnects ResizeObserver idempotently on cleanup and reinitializes cleanly', () => {
+  const observe = vi.fn()
+  const disconnect = vi.fn()
+
+  class ResizeObserverStub {
+    observe = observe
+    unobserve = vi.fn()
+    disconnect = disconnect
+  }
+
+  vi.stubGlobal('ResizeObserver', ResizeObserverStub)
+  vi.stubGlobal('requestAnimationFrame', () => 1)
+
+  document.body.innerHTML = '<div data-ui-scroll-progress><span class="ui-scroll-progress__bar"></span></div>'
+
+  initDocumentNavigationControllers(document)
+  expect(observe).toHaveBeenCalledTimes(1)
+
+  cleanupDocumentNavigationControllers()
+  cleanupDocumentNavigationControllers()
+  expect(disconnect).toHaveBeenCalledTimes(1)
+
+  document.body.innerHTML = '<div data-ui-scroll-progress><span class="ui-scroll-progress__bar"></span></div>'
+  initDocumentNavigationControllers(document)
+  expect(observe).toHaveBeenCalledTimes(2)
 })

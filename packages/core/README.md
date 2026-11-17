@@ -154,10 +154,13 @@ a different event sharing its resource; distinct resources and identical event I
 existing behavior. Adjacent valid intervals remain available.
 
 `resizeScheduleEvent` and `expandRecurringScheduleEvent` reject invalid date-times with `TypeError`.
-Recurrence advances UTC calendar days and preserves UTC time-of-day independently of the host time zone. Applications own civil-time recurrence policies and DST conversion.
+Recurrence validates the event even when its count is zero. Integer day intervals preserve UTC
+time-of-day independently of the host time zone; zero repeats the same interval, and negative
+integers generate earlier occurrences. Applications own civil-time recurrence policies and DST conversion.
 
 Invalid bounds, non-finite snapping/recurrence options, unsupported resulting date-times, and
-non-integer or negative recurrence counts produce `RangeError`. Applications own validation and
+fractional recurrence intervals or non-integer/negative recurrence counts produce `RangeError`.
+Recurrence validates its numeric options before its event interval. Applications own validation and
 recovery feedback. `parseScheduleEvents` preserves structurally valid records with malformed
 date-times so applications can repair the original data; these helpers do not rewrite storage.
 
@@ -231,6 +234,10 @@ must be finite.
 domain, tick, scaling, line/area, grouped/stacked bar, and pie/donut geometry helpers. They render
 no DOM and perform no statistical analysis; framework packages use them to keep chart output
 aligned. Linear x coordinates ignore blank strings rather than treating them as zero.
+`getLumenChartTicks` caps the requested tick count at 4,096 and falls back to five for non-finite
+counts. Tick spacing may produce a different number of ticks. For finite, increasing domains,
+returned ticks remain finite, distinct, and increasing even when floating-point precision cannot
+represent the requested spacing.
 
 ```ts
 import {
@@ -267,6 +274,7 @@ independently; unspecified edges fall back to `padding`.
 `@santi020k/lumen-core/phone` provides localized country metadata, supplementary flag labels,
 as-you-type formatting, validation, pasted international-number detection, and E.164 output for the
 web and React Native adapters.
+Malformed locale tags retain ISO country-name fallbacks and use English collation for country lists.
 
 ```ts
 import { getLumenPhoneCountry, resolveLumenPhoneNumber } from '@santi020k/lumen-core/phone'
@@ -333,6 +341,11 @@ exportThemeDesignTokens(theme)
 hierarchical names such as `color/surface/muted`. `exportThemeDesignTokens` returns standard design
 token JSON that importers can map into Figma variables or other design tools.
 
+Color export accepts three finite HSL channels, with optional percent suffixes on saturation and
+lightness, and an optional finite numeric alpha after `/`. Hue wraps, saturation/lightness clamp
+to 0–100, and alpha clamps to 0–1. Malformed channels, missing alpha after `/`, and extra channels
+or slash segments throw the existing HSL parsing error instead of producing invalid color values.
+
 ## Static interface icon data
 
 Import individual definitions from `@santi020k/lumen-core/icon-data` when icon names are known at
@@ -359,7 +372,9 @@ than an assumed pass; these checks supplement rendered accessibility verificatio
 decimal strings across localized display and editing. Invalid locale tags fall back to `en-US`
 consistently in server rendering, parsing and browser controllers. Call the amount controller’s
 `refresh()` after moving it to a different document or shadow root; this rebinds native form resets
-without replacing its draft. The shared amount and message-scroller DOM controllers power the web
+without replacing its draft. Localized negative amounts accept the directional marks emitted by
+`Intl.NumberFormat` and ASCII minus signs while retaining strict grouping validation. Invalid
+programmatic `setValue()` calls leave the previous draft intact. The shared amount and message-scroller DOM controllers power the web
 adapters. Currency policy and message state remain consumer-owned.
 
 ## Combobox DOM controller
@@ -422,8 +437,9 @@ input. `isLumenDecimalInBounds(value, { locale, min, max, step })` validates com
 floating-point conversion. Bounds and steps use ASCII decimal strings; drafts use localized decimal
 separators, the locale's numbering-system digits, and Unicode decimal digits. This includes Chinese
 decimal numerals (`hanidec`), so formatted steps remain editable on subsequent steps.
-Grouping, exponents, whitespace and inputs exceeding 128
-characters are rejected. Empty drafts stay distinct from zero; unfinished drafts cannot step.
+The directional marks emitted by `Intl.NumberFormat` are ignored when parsing, while the
+128-character limit applies to the original input. Grouping, exponents, whitespace and longer inputs
+are rejected. Empty drafts stay distinct from zero; unfinished drafts cannot step.
 Malformed locale tags safely use English decimal symbols.
 Applications own units, currency policy, required validation and submission serialization.
 
@@ -581,3 +597,7 @@ The DOM-only `@santi020k/lumen-core/reveal` entry shares reveal threshold normal
 lifecycle across web adapters. `createLumenRevealController(element, { once, threshold })` returns a
 `destroy()` cleanup; use the framework components in application code. This helper is intentionally
 outside the root entry so native consumers do not traverse browser behavior.
+
+ThemeBuilder accepts `fontFamily: 'sans' | 'serif' | 'mono'` for safe system font stacks and
+`elevation: 'flat' | 'default'` to remove shadows or preserve the preset. Omit either to retain
+existing typography and elevation. Both are included in CSS and design-token JSON exports. Figma variable exports remain color-only.

@@ -1,10 +1,13 @@
+import { getFocusable, getPanel, nextAnchorName, setOpen, shouldRestorePanelFocus, supportsAnchoredPopovers } from '../panels.js'
 import { getScopeActiveElement } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
-import { getFocusable, getLoopedIndex, getPanel, nextAnchorName, setOpen, supportsAnchoredPopovers } from './shared.js'
+import { getLoopedIndex, shouldIgnoreKeydown } from './shared.js'
 
 const disclosureSelector = '[data-ui-popover], [data-ui-dropdown-menu], [data-ui-hover-card]'
 const boundDisclosures = new WeakSet<HTMLElement>()
+const isNestedMenuEvent = (panel: HTMLElement, event: Event): boolean => panel.matches('[role="menu"]') && event.target instanceof Element && event.target.closest('[role="menu"]') !== panel
+const getDisclosureItems = (panel: HTMLElement): HTMLElement[] => getFocusable(panel).filter(item => !panel.matches('[role="menu"]') || item.closest('[role="menu"]') === panel)
 
 export const isBoundDisclosure = (root: HTMLElement): boolean => boundDisclosures.has(root)
 
@@ -51,12 +54,16 @@ const bindDisclosures = (root: HTMLElement): void => {
 
   setOpen(trigger, panel, trigger.getAttribute('aria-expanded') === 'true')
 
-  trigger.addEventListener('click', () => {
+  trigger.addEventListener('click', event => {
+    if (event.defaultPrevented || trigger.matches(':disabled, [aria-disabled="true"]')) return
+
     setOpen(trigger, panel, trigger.getAttribute('aria-expanded') !== 'true')
   })
 
   trigger.addEventListener('keydown', event => {
-    if (event.defaultPrevented || event.isComposing) return
+    if (shouldIgnoreKeydown(event)) return
+
+    if (trigger.matches(':disabled, [aria-disabled="true"]')) return
 
     if (event.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
       event.preventDefault()
@@ -72,11 +79,13 @@ const bindDisclosures = (root: HTMLElement): void => {
 
     setOpen(trigger, panel, true)
 
-    getFocusable(panel)[0]?.focus()
+    getDisclosureItems(panel)[0]?.focus()
   })
 
   panel.addEventListener('keydown', event => {
-    if (event.defaultPrevented || event.isComposing) return
+    if (shouldIgnoreKeydown(event)) return
+
+    if (isNestedMenuEvent(panel, event)) return
 
     if (event.key === 'Escape') {
       event.preventDefault()
@@ -94,7 +103,7 @@ const bindDisclosures = (root: HTMLElement): void => {
 
     if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
 
-    const items = getFocusable(panel)
+    const items = getDisclosureItems(panel)
 
     if (!items.length) return
 
@@ -112,9 +121,21 @@ const bindDisclosures = (root: HTMLElement): void => {
         event.target.closest<HTMLElement>('[role="menuitem"]') :
         null
 
-      if (!item || item.matches(':disabled, [aria-disabled="true"]')) return
+      if (event.defaultPrevented || !item || !panel.contains(item)) return
+
+      if (panel.matches('[role="menu"]') && item.closest('[role="menu"]') !== panel) return
+
+      if (item.matches(':disabled, [aria-disabled="true"]') || item.closest('[hidden], [inert]')) {
+        event.preventDefault()
+
+        return
+      }
+
+      const restoreFocus = shouldRestorePanelFocus(panel)
 
       setOpen(trigger, panel, false)
+
+      if (restoreFocus) trigger.focus({ preventScroll: true })
     })
   }
 
@@ -128,6 +149,8 @@ const bindDisclosures = (root: HTMLElement): void => {
     }
 
     root.addEventListener('mouseenter', () => {
+      if (trigger.matches(':disabled, [aria-disabled="true"]')) return
+
       setOpen(trigger, panel, true)
     })
 
@@ -136,7 +159,7 @@ const bindDisclosures = (root: HTMLElement): void => {
     })
 
     root.addEventListener('focusin', event => {
-      if (containsFocusTarget(event.relatedTarget)) return
+      if (containsFocusTarget(event.relatedTarget) || trigger.matches(':disabled, [aria-disabled="true"]')) return
 
       setOpen(trigger, panel, true)
     })

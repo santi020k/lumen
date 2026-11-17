@@ -1,5 +1,5 @@
 // cspell:words archivos seleccionados
-import { afterEach, beforeAll, expect, test } from 'vitest'
+import { afterEach, beforeAll, expect, test, vi } from 'vitest'
 
 import { defineLumenElements } from './index.js'
 
@@ -7,6 +7,7 @@ beforeAll(() => {
   defineLumenElements()
 })
 afterEach(() => {
+  vi.unstubAllGlobals()
   document.body.replaceChildren()
 })
 
@@ -147,4 +148,125 @@ test('dropping text preserves selected files and restores the selection state', 
   expect(summary.textContent).toBe('selected.txt')
   expect(upload.getAttribute('data-state')).toBe('selected')
   expect(changes).toBe(0)
+})
+
+test('single-file drop retains only the first file while multiple preserves all files and order', () => {
+  const createFileList = (list: File[]): FileList => Object.assign([...list], {
+    item: (index: number) => list[index] ?? null
+  })
+
+  class MockDataTransfer {
+    private list: File[] = []
+
+    items = {
+      add: (file: File) => {
+        this.list.push(file)
+      }
+    }
+
+    get files(): FileList {
+      return createFileList(this.list)
+    }
+  }
+
+  if (typeof globalThis.DataTransfer !== 'function') {
+    vi.stubGlobal('DataTransfer', MockDataTransfer)
+  }
+
+  document.body.innerHTML = '<lumen-file-upload><input type="file" data-ui-file-upload-input><span data-ui-file-upload-files></span></lumen-file-upload>'
+  const singleUpload = document.querySelector('lumen-file-upload')
+  const singleInput = document.querySelector('input')
+  const singleSummary = document.querySelector('[data-ui-file-upload-files]')
+  if (!singleUpload || !singleInput || !singleSummary) throw new Error('Missing single upload fixture')
+
+  let singleFiles: FileList = createFileList([])
+  Object.defineProperty(singleInput, 'files', {
+    configurable: true,
+    get: () => singleFiles,
+    set: (value: FileList) => {
+      singleFiles = value
+    }
+  })
+
+  let singleChanges = 0
+  singleInput.addEventListener('change', () => {
+    singleChanges += 1
+  })
+
+  const first = new File(['a'], 'first.txt')
+  const second = new File(['b'], 'second.txt')
+  const singleDrop = new Event('drop', { bubbles: true, cancelable: true })
+  const droppedList = createFileList([first, second])
+  Object.defineProperty(singleDrop, 'dataTransfer', { value: { files: droppedList } })
+  singleUpload.dispatchEvent(singleDrop)
+
+  expect(singleChanges).toBe(1)
+  expect([...singleFiles].map(file => file.name)).toEqual(['first.txt'])
+  expect(singleSummary.textContent).toBe('first.txt')
+
+  const { input: multiInput, summary: multiSummary, upload: multiUpload } = mount()
+  let multiFiles: FileList = createFileList([])
+  Object.defineProperty(multiInput, 'files', {
+    configurable: true,
+    get: () => multiFiles,
+    set: (value: FileList) => {
+      multiFiles = value
+    }
+  })
+
+  let multiChanges = 0
+  multiInput.addEventListener('change', () => {
+    multiChanges += 1
+  })
+
+  const multiDrop = new Event('drop', { bubbles: true, cancelable: true })
+  Object.defineProperty(multiDrop, 'dataTransfer', { value: { files: droppedList } })
+  multiUpload.dispatchEvent(multiDrop)
+
+  expect(multiChanges).toBe(1)
+  expect(multiFiles).toBe(droppedList)
+  expect([...multiFiles].map(file => file.name)).toEqual(['first.txt', 'second.txt'])
+  expect(multiSummary.textContent).toBe('2 archivos seleccionados')
+})
+
+test('single-file multi-drop preserves existing selection with no change event when DataTransfer is unavailable', () => {
+  const createFileList = (list: File[]): FileList => Object.assign([...list], {
+    item: (index: number) => list[index] ?? null
+  })
+
+  vi.stubGlobal('DataTransfer', undefined)
+
+  document.body.innerHTML = '<lumen-file-upload><input type="file" data-ui-file-upload-input><span data-ui-file-upload-files></span></lumen-file-upload>'
+  const upload = document.querySelector('lumen-file-upload')
+  const input = document.querySelector('input')
+  const summary = document.querySelector('[data-ui-file-upload-files]')
+  if (!upload || !input || !summary) throw new Error('Missing upload fixture')
+
+  let files: FileList = createFileList([new File(['existing'], 'existing.txt')])
+  Object.defineProperty(input, 'files', {
+    configurable: true,
+    get: () => files,
+    set: (value: FileList) => {
+      files = value
+    }
+  })
+
+  input.dispatchEvent(new Event('change'))
+
+  let changes = 0
+  input.addEventListener('change', () => {
+    changes += 1
+  })
+
+  const drop = new Event('drop', { bubbles: true, cancelable: true })
+  Object.defineProperty(drop, 'dataTransfer', {
+    value: { files: createFileList([new File(['a'], 'first.txt'), new File(['b'], 'second.txt')]) }
+  })
+  upload.dispatchEvent(new Event('dragover', { bubbles: true, cancelable: true }))
+  upload.dispatchEvent(drop)
+
+  expect(changes).toBe(0)
+  expect([...files].map(file => file.name)).toEqual(['existing.txt'])
+  expect(summary.textContent).toBe('existing.txt')
+  expect(upload.getAttribute('data-state')).toBe('selected')
 })

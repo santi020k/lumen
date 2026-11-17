@@ -459,36 +459,102 @@ export const scaleLumenChartValue = (
   return rangeStart + ratio * (rangeEnd - rangeStart)
 }
 
-export const getLumenChartTicks = (
-  domain: LumenChartDomain,
-  count = 5
-): number[] => {
-  const safeCount = Math.max(2, Math.round(count))
-  const span = domain.max - domain.min
+const defaultChartTickCount = 5
+const maximumChartTickCount = 4_096
 
-  if (!Number.isFinite(span) || span <= 0) return [domain.min, domain.max]
+const getNiceChartTickStep = (span: number, count: number): number => {
+  const roughStep = span / (count - 1)
 
-  const roughStep = span / (safeCount - 1)
+  if (!Number.isFinite(roughStep) || roughStep <= 0) return Number.NaN
+
   const magnitude = 10 ** Math.floor(Math.log10(roughStep))
+
+  if (!Number.isFinite(magnitude) || magnitude <= 0) return Number.NaN
+
   const residual = roughStep / magnitude
-  let niceFactor = 1
 
-  if (residual >= 7.5) niceFactor = 10
-  else if (residual >= 3.5) niceFactor = 5
-  else if (residual >= 1.5) niceFactor = 2
+  if (residual >= 7.5) return 10 * magnitude
 
-  const step = niceFactor * magnitude
-  const first = Math.ceil(domain.min / step) * step
-  const last = Math.floor(domain.max / step) * step
+  if (residual >= 3.5) return 5 * magnitude
+
+  if (residual >= 1.5) return 2 * magnitude
+
+  return magnitude
+}
+
+const formatChartTickValue = (
+  rawValue: number,
+  step: number,
+  precision: number
+): number => {
+  const rounded = Number(rawValue.toPrecision(precision))
+
+  return Number.isFinite(rounded) && Math.abs(rounded - rawValue) <= step * 1e-3 ?
+    rounded :
+    rawValue
+}
+
+const isValidChartTickSpan = (
+  first: number,
+  last: number,
+  stepCount: number,
+  safeCount: number
+): boolean => (
+  Number.isFinite(first) &&
+  Number.isFinite(last) &&
+  Number.isFinite(stepCount) &&
+  stepCount >= 1 &&
+  stepCount <= safeCount * 4
+)
+
+const collectChartTicks = (
+  first: number,
+  last: number,
+  step: number,
+  stepCount: number
+): number[] | undefined => {
+  const maxAbs = Math.max(Math.abs(first), Math.abs(last), step)
+  const precision = Math.min(15, Math.max(12, Math.ceil(Math.log10(maxAbs / step)) + 2))
   const ticks: number[] = []
 
-  for (let value = first; value <= last + step / 1000; value += step) {
-    ticks.push(Number(value.toPrecision(12)))
+  for (let index = 0; index <= stepCount; index += 1) {
+    const tick = formatChartTickValue(first + index * step, step, precision)
+    const previous = ticks.at(-1)
+
+    if (!Number.isFinite(tick) || (previous !== undefined && tick <= previous)) {
+      return undefined
+    }
+
+    ticks.push(tick)
   }
 
-  if (ticks.length >= 2) return ticks
+  return ticks.length >= 2 ? ticks : undefined
+}
 
-  return [domain.min, domain.max]
+export const getLumenChartTicks = (
+  domain: LumenChartDomain,
+  count = defaultChartTickCount
+): number[] => {
+  const safeCount = Number.isFinite(count) ?
+    Math.min(maximumChartTickCount, Math.max(2, Math.round(count))) :
+    defaultChartTickCount
+
+  const span = domain.max - domain.min
+
+  if (!Number.isFinite(domain.min) || !Number.isFinite(domain.max) || !Number.isFinite(span) || span <= 0) {
+    return [domain.min, domain.max]
+  }
+
+  const step = getNiceChartTickStep(span, safeCount)
+  const first = Math.ceil(domain.min / step) * step
+  const last = Math.floor(domain.max / step) * step
+  const stepCount = Math.round((last - first) / step)
+
+  if (!isValidChartTickSpan(first, last, stepCount, safeCount)) {
+    return [domain.min, domain.max]
+  }
+
+  return collectChartTicks(first, last, step, stepCount) ?? [domain.min, domain.max]
 }
 
 const chartAxisLabelCharacterWidth = 7

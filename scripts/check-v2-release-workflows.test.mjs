@@ -234,15 +234,17 @@ test("public Apple checks use free standard GitHub runners and preserve every ga
 
   assert.match(appleWorkflow, /runs-on: macos-26/u);
 
+  assert.match(appleWorkflow, /needs\.classify\.outputs\[matrix\.check\] == 'true' && 'macos-26' \|\| 'ubuntu-latest'/u);
+
   assert.match(appleWorkflow, /github.event.repository.private == false/u);
 
   assert.match(appleWorkflow, /check: \[swift, react-native, visual, framework-visual\]/u);
 
-  assert.match(appleWorkflow, /name: Apple captures[\s\S]*needs: capture-shards[\s\S]*if: always\(\)/u);
+  assert.match(appleWorkflow, /name: Apple captures[\s\S]*needs: \[classify, capture-build, capture-shards\][\s\S]*if: always\(\)/u);
 
   assert.match(appleWorkflow, /shard: \[0, 1, 2, 3\]/u);
 
-  assert.match(appleWorkflow, /capture-shards:[\s\S]*needs: capture-build/u);
+  assert.match(appleWorkflow, /capture-shards:[\s\S]*needs: \[classify, capture-build\]/u);
 
   assert.match(appleWorkflow, /CODE_SIGNING_ALLOWED=NO build-for-testing/u);
 
@@ -254,7 +256,9 @@ test("public Apple checks use free standard GitHub runners and preserve every ga
 
   assert.match(appleWorkflow, /--compare --platform=apple --source=default --tolerance=0\.12/u);
 
-  assert.doesNotMatch(appleWorkflow, /fetch-depth: 0|LUMEN_CAPTURE_SETTLE_SECONDS/u);
+  assert.match(appleWorkflow.slice(0, appleWorkflow.indexOf('\n  checks:')), /fetch-depth: 0/u);
+
+  assert.doesNotMatch(appleWorkflow.slice(appleWorkflow.indexOf('\n  checks:')), /fetch-depth: 0|LUMEN_CAPTURE_SETTLE_SECONDS/u);
 
   assert.match(appleWorkflow, /cancel-in-progress: true/u);
 
@@ -318,13 +322,13 @@ test("iOS version bumps do not implicitly launch a macOS store upload", () => {
 
 test("native capture jobs need Node and Xcode without installing the web workspace", async () => {
   const workflow = await readWorkflow("apple-native.yml");
-  const captureJobs = workflow.slice(workflow.indexOf("  capture-build:"), workflow.indexOf("  captures:"));
+  const captureJobs = workflow.slice(workflow.indexOf("\n  capture-build:"), workflow.indexOf("\n  captures:"));
 
   assert.equal(captureJobs.match(/uses: actions\/setup-node@/gu)?.length, 2);
 
   assert.doesNotMatch(captureJobs, /setup-pnpm|pnpm install/u);
 
-  assert.match(workflow.slice(workflow.indexOf("  captures:")), /setup-pnpm/u);
+  assert.match(workflow.slice(workflow.indexOf("\n  captures:")), /setup-pnpm/u);
 });
 
 test("the combined Swift gate checks both API baselines from disposable consumer builds", async () => {
