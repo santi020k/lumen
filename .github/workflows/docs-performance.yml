@@ -28,11 +28,13 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
-      - uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
+      - uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: 22.x
-      - name: Install Chromium
-        run: pnpm exec playwright install --with-deps chromium
+      - name: Set up cached Chromium
+        uses: ./.github/actions/setup-playwright
+        with:
+          browsers: chromium
       - name: Build docs
         run: pnpm run docs:build
       - name: Check mobile Lighthouse budgets

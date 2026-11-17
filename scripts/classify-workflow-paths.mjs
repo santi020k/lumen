@@ -21,6 +21,51 @@ const publicPackageNames = new Map([
 ])
 
 const matchesAny = (paths, patterns) => paths.some(path => patterns.some(pattern => pattern.test(path)))
+const appleChecks = ['swift', 'react-native', 'captures', 'visual', 'framework-visual']
+const webAppleChecks = ['visual', 'framework-visual']
+
+// Keep the first rollout conservative: shared tooling, dependency changes and
+// unknown paths qualify every Apple surface. Only explicitly owned paths narrow it.
+const appleScopeRules = [
+  { pattern: /^(?:package\.json|pnpm-(?:lock|workspace)\.yaml|turbo\.json|quality\.yml|tsconfig[^/]*\.json|eslint\.config\.js|vitest\.config\.ts|\.changeset\/config\.json)$/u, checks: appleChecks },
+  { pattern: /^(?:\.github|scripts|registry|tokens|icons|flags|maps)\//u, checks: appleChecks },
+  { pattern: /^packages\/(?:core|tokens)\//u, checks: appleChecks },
+  { pattern: /^(?:Package\.(?:swift|resolved)|packages\/(?:swift|swift-widget)\/|apps\/playground-apple\/)/u, checks: ['swift', 'captures'] },
+  { pattern: /^(?:packages\/react-native\/|apps\/playground-react-native\/)/u, checks: ['react-native', 'visual'] },
+  { pattern: /^packages\/(?:astro|elements|icons-brand|lumen|react|react-hook-form|templates)\//u, checks: webAppleChecks },
+  { pattern: /^apps\/docs\/(?:public\/native-components\/|scripts\/sync-native-component-captures\.mjs$|src\/data\/native-component-captures\.json$)/u, checks: ['captures', 'visual'] },
+  { pattern: /^(?:apps\/docs\/|docs\/|[A-Z][A-Z_]*\.md$)/u, checks: ['visual'] },
+  { pattern: /^apps\/next-smoke\//u, checks: ['framework-visual'] },
+  { pattern: /^(?:apps\/(?:figma-plugin|motion|templates)\/|examples\/astro-starter\/|figma\/|tests\/(?:a11y|editorial|figma|fixtures|frameworks|motion|product-workflows|rendered-audit|visual)\/|playwright(?:\.[^/]*)?\.config\.ts$)/u, checks: webAppleChecks },
+  { pattern: /^(?:packages\/compose\/|apps\/playground-android\/)/u, checks: ['visual'] },
+  { pattern: /^(?:packages\/mcp\/|skills\/|plugins\/|\.claude-plugin\/|\.changeset\/[^/]+\.md$|llms\.txt$|LICENSE$)/u, checks: [] }
+]
+
+/** @param {readonly string[]} paths @param {{ full?: boolean }} options */
+export const classifyApplePaths = (paths, { full = false } = {}) => {
+  const matches = paths.map(path => appleScopeRules.filter(rule => rule.pattern.test(path)))
+  const unknown = matches.some(rules => rules.length === 0)
+  const selected = new Set(full || unknown ? appleChecks : matches.flat().flatMap(rule => rule.checks))
+  let reason = 'owned-inputs'
+
+  if (full) reason = 'release-or-manual'
+  else if (unknown) reason = 'unmapped-input'
+
+  return {
+    captures: selected.has('captures'),
+    'framework-visual': selected.has('framework-visual'),
+    full: appleChecks.every(check => selected.has(check)),
+    'react-native': selected.has('react-native'),
+    reason,
+    swift: selected.has('swift'),
+    visual: selected.has('visual')
+  }
+}
+
+/** @param {{ eventName?: string, headRef?: string, headRepository?: string, repository?: string }} context */
+export const requiresFullAppleChecks = ({ eventName, headRef, headRepository, repository }) =>
+  eventName === 'workflow_dispatch' ||
+  Boolean(repository && headRepository === repository && /^(?:release|changeset-release)\//u.test(headRef ?? ''))
 
 export const changedPaths = (base, head, cwd = process.cwd()) => {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')))
@@ -306,7 +351,7 @@ const parseArguments = (arguments_) => {
 const runCli = async () => {
   const { values, workflow } = parseArguments(process.argv.slice(2))
 
-  assert.ok(workflow === 'ci' || workflow === 'canary', 'Expected workflow to be ci or canary')
+  assert.ok(['ci', 'canary', 'apple'].includes(workflow), 'Expected workflow to be ci, canary or apple')
 
   const base = values.get('--base')
   const head = values.get('--head')
@@ -323,9 +368,20 @@ const runCli = async () => {
     paths = changedPaths(base, head)
   }
 
-  const classification = workflow === 'ci'
-    ? classifyCiPaths(paths, { releasePullRequest: process.env.IS_RELEASE_PR === 'true' })
-    : classifyCanaryPaths(paths, { manual })
+  let classification
+
+  if (workflow === 'apple') {
+    classification = classifyApplePaths(paths, { full: requiresFullAppleChecks({
+      eventName: process.env.GITHUB_EVENT_NAME,
+      headRef: process.env.HEAD_REF,
+      headRepository: process.env.HEAD_REPOSITORY,
+      repository: process.env.GITHUB_REPOSITORY
+    }) })
+  } else if (workflow === 'ci') {
+    classification = classifyCiPaths(paths, { releasePullRequest: process.env.IS_RELEASE_PR === 'true' })
+  } else {
+    classification = classifyCanaryPaths(paths, { manual })
+  }
 
   await appendFile(
     output,

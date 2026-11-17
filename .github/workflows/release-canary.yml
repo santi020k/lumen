@@ -152,7 +152,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
+        uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: 22.x
       - name: Check repository and dependency security before builds
@@ -203,11 +203,16 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
+        uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: 22.x
           task-cache-path: .turbo/cache
           task-cache-key: canary-web
+      - name: Bind task cache to the resolved runtime
+        shell: bash
+        run: |
+          echo "QUALITY_TASK_RUNTIME=$(node --version)-$(pnpm --version)-$(node -p 'process.platform + "/" + process.arch')" >> "$GITHUB_ENV"
+
       - name: Build the selected release packages
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
@@ -240,7 +245,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
+        uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: 22.x
           install: false
@@ -278,11 +283,16 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
+        uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: 22.x
           task-cache-path: .turbo/cache
           task-cache-key: canary-react-native
+      - name: Bind task cache to the resolved runtime
+        shell: bash
+        run: |
+          echo "QUALITY_TASK_RUNTIME=$(node --version)-$(pnpm --version)-$(node -p 'process.platform + "/" + process.arch')" >> "$GITHUB_ENV"
+
       - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
         with:
           distribution: temurin
@@ -321,11 +331,16 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
+        uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: 22.x
           task-cache-path: .turbo/cache
           task-cache-key: canary-browser-${{ matrix.shard }}
+      - name: Bind task cache to the resolved runtime
+        shell: bash
+        run: |
+          echo "QUALITY_TASK_RUNTIME=$(node --version)-$(pnpm --version)-$(node -p 'process.platform + "/" + process.arch')" >> "$GITHUB_ENV"
+
       - name: Build the selected release packages
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then

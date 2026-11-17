@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "agentGuidance": false,
-  "globalEnv": ["CI", "VITEST"],
+  "globalEnv": ["CI", "VITEST", "QUALITY_TASK_RUNTIME"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
