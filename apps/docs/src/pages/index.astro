@@ -164,7 +164,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
   <main class="home">
     <section class="home-hero">
       <div class="home-hero__wash" aria-hidden="true"></div>
-      <RevealGroup class="home-hero__copy" stagger={70}>
+      <Stack class="home-hero__copy" gap="none" align="center">
         <Eyebrow class="home-hero__eyebrow">
           <Marker variant="success">Open source</Marker>
           <span>{componentCount} primitives</span>
@@ -193,7 +193,7 @@ const useCases: readonly UseCase[] = featuredProjects.flatMap(name => {
           copyLabel="Copy install command"
           items={heroInstallers}
         />
-      </RevealGroup>
+      </Stack>
 
       <ScrollReveal animation="scale" class="home-hero__product" delay={140}>
         <div class="home-hero__product-label" aria-hidden="true">
