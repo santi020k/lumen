@@ -3,7 +3,7 @@ import * as z from 'zod'
 
 import { checkCompatibility } from './compatibility.js'
 import { compatibilityOutputSchema, componentOutputSchema, nativeComponentOutputSchema, recipeOutputSchema } from './contracts.js'
-import { loadLumenData } from './data.js'
+import { loadLumenData, type LumenNativePlatform, lumenNativePlatforms } from './data.js'
 import { getMigration } from './migration.js'
 import { normalize } from './normalize.js'
 import {
@@ -47,7 +47,7 @@ const listComponentsOutputSchema = z.strictObject({
   count: z.int().min(0)
 })
 
-const nativePlatformSchema = z.enum(['react-native', 'swiftui', 'compose'])
+const nativePlatformSchema = z.enum(lumenNativePlatforms)
 
 const nativeComponentSummarySchema = z.strictObject({
   accessibility: z.string().trim(),
@@ -158,6 +158,7 @@ const diagnosticsOutputSchema = z.strictObject({
   }),
   nativeCoverage: z.strictObject({
     compose: z.int().min(0),
+    harmonyos: z.int().min(0),
     'react-native': z.int().min(0),
     swiftui: z.int().min(0)
   }),
@@ -196,18 +197,16 @@ const decodeResourceVariable = (value: string | string[] | undefined): string =>
   }
 }
 
-const nativePlatformKeys = ['react-native', 'swiftui', 'compose'] as const
-
 const resolveNativeResourcePlatform = (
   name: string,
   component: ReturnType<typeof resolveNativeComponent>
-): 'compose' | 'react-native' | 'swiftui' => {
+): LumenNativePlatform => {
   if (!component) return 'react-native'
 
   const target = normalize(name)
 
   for (const key of Object.keys(component.implementations)) {
-    const platform = nativePlatformKeys.find(candidate => candidate === key)
+    const platform = lumenNativePlatforms.find(candidate => candidate === key)
     const implementation = platform ? component.implementations[platform] : undefined
 
     if (
@@ -221,7 +220,7 @@ const resolveNativeResourcePlatform = (
   }
 
   for (const key of Object.keys(component.implementations)) {
-    const platform = nativePlatformKeys.find(candidate => candidate === key)
+    const platform = lumenNativePlatforms.find(candidate => candidate === key)
 
     if (platform) return platform
   }
@@ -290,7 +289,7 @@ export const createLumenServer = (): McpServer => {
         'List native Lumen components with platform availability, accessibility, category, and shared contract tier.',
       inputSchema: z.strictObject({
         platform: nativePlatformSchema.optional()
-          .meta({ description: 'Only list components available for this native platform.' }),
+          .meta({ description: 'Only list components available for this native platform. harmonyos is the ArkUI pilot and covers part of the catalog.' }),
         query: z.string().trim().min(1).optional()
           .meta({ description: 'Natural-language component or native use-case query.' })
       }),
@@ -302,7 +301,7 @@ export const createLumenServer = (): McpServer => {
     'lumen_get_native_component', {
       annotations: { ...readOnlyAnnotations, title: 'Read a Lumen native component' },
       description:
-        'Get install steps, imports, setup, API, accessible usage example, and optional reference source for React Native, SwiftUI, or Compose.',
+        'Get install steps, imports, setup, API, accessible usage example, and optional reference source for React Native, SwiftUI, Compose, or ArkUI (pilot; the harmonyos platform covers part of the catalog).',
       inputSchema: z.strictObject({
         detail: z.enum(['summary', 'usage', 'source']).default('usage'),
         name: z.string().trim().min(1)

@@ -360,6 +360,68 @@ describe('native component tools', () => {
     expect(result.text).toContain('Available platforms: swiftui')
   })
 
+  test('lists exactly the ArkUI pilot components for harmonyos', () => {
+    const result = listNativeComponents({ platform: 'harmonyos' })
+
+    expect(result.data.count).toBe(6)
+    expect(result.data.components.map(component => component.id).sort()).toEqual([
+      'button',
+      'card',
+      'surface',
+      'text',
+      'text-field',
+      'theme'
+    ])
+    expect(result.data.components.every(component => component.platforms.includes('harmonyos'))).toBe(true)
+  })
+
+  test.each([
+    ['Theme', 'LumenTheme'],
+    ['Text', 'LumenText'],
+    ['Surface', 'LumenSurface'],
+    ['Button', 'LumenButton'],
+    ['Text field', 'LumenTextField'],
+    ['Card', 'LumenCard']
+  ])('returns pilot ArkTS usage and source for %s on harmonyos', (name, symbol) => {
+    const result = getNativeComponent({ detail: 'source', name, platform: 'harmonyos' })
+    const component = result.data.component
+
+    expect(result.isError).toBeUndefined()
+    expect(result.data.found).toBe(true)
+    expect(component?.implementation).toMatchObject({
+      exportName: symbol,
+      importStatement: `import { ${symbol} } from '@santi020k/lumen-arkui'`,
+      language: 'arkts',
+      maturity: 'Pilot',
+      packageName: '@santi020k/lumen-arkui',
+      symbol
+    })
+    expect(component && 'source' in component ? component.source : '').toContain(`export struct ${symbol}`)
+    expect(result.text).toContain('Platform: harmonyos')
+    expect(result.text).toContain('Maturity: Pilot')
+    expect(result.text).toContain('file:../path/to/lumen/packages/arkui')
+    expect(result.text).toContain('```arkts')
+    expect(result.text).toContain('LumenTheme')
+    expect(result.text).toContain(`export struct ${symbol}`)
+  })
+
+  test('reports components outside the ArkUI pilot as unavailable for harmonyos', () => {
+    const result = getNativeComponent({ name: 'badge', platform: 'harmonyos' })
+
+    expect(result.isError).toBe(true)
+    expect(result.data.found).toBe(false)
+    expect(result.data.component).toBeUndefined()
+    expect(result.text).toContain('Badge is not available for harmonyos.')
+    expect(result.text).toContain('Available platforms: compose, react-native, swiftui.')
+  })
+
+  test('does not claim a published ArkUI release', () => {
+    const data = loadLumenData()
+
+    expect(Object.keys(data.meta.packageVersions)).not.toContain('@santi020k/lumen-arkui')
+    expect(Object.keys(data.nativeSources.harmonyos).every(file => file.endsWith('.ets'))).toBe(true)
+  })
+
   test('searches native contracts by platform', () => {
     const result = search({ platform: 'compose', query: 'settings row' })
 
@@ -796,6 +858,23 @@ describe('catalog freshness and diagnostics', () => {
         meta: { ...data.meta, componentCount: 0 }
       }).data.status
     ).toBe('issues')
+  })
+
+  test('reports ArkUI pilot coverage beside the other native platforms', () => {
+    const data = loadLumenData()
+    const result = diagnose()
+
+    expect(result.data.status).toBe('healthy')
+    expect(result.data.nativeCoverage.harmonyos).toBe(6)
+    expect(Object.keys(result.data.nativeCoverage).sort()).toEqual(['compose', 'harmonyos', 'react-native', 'swiftui'])
+    expect(result.data.nativeCoverage.compose).toBe(
+      data.nativeComponents.filter(component => component.implementations.compose).length
+    )
+    expect(result.text).toContain(
+      `Native coverage — React Native: ${result.data.nativeCoverage['react-native']}, ` +
+      `SwiftUI: ${result.data.nativeCoverage.swiftui}, Compose: ${result.data.nativeCoverage.compose}, ` +
+      'ArkUI (pilot): 6'
+    )
   })
 
   test('checks manifest presence using own properties when components use Object.prototype names', () => {

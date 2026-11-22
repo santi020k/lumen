@@ -217,17 +217,17 @@
       "Heatmap": "1ce7407e409b61ee89c1de8e7224eb6f8e19d0d705e684d03b511a4a59512e11",
       "Range chart": "50d0497102e62182cdfec85817c6779df6b70bbf8d2b424c51d92c78279aed4a",
       "Combo chart": "4d85767c16e6ca96a8a0e0985e4fbf316d1fd0487d36e8b75473770f0e270b0e",
-      "Theme": "20c97d2e5394924028c5519056554758eefe65a1d99b75f53be643616eff2e63",
-      "Text": "c5d0fc09428976e996415b2d1b70718c1ed94151369835d6337f7b80d62af9c5",
-      "Surface": "7892aa14e14b24844c5f70e87714efbd9f5b1a85f9c1bccf889c99472b7cf1d3",
+      "Theme": "e089792bcd38f9c254dab3f4dc82005b6b8be1d5a326260b1a43a5aded8fffcf",
+      "Text": "84ecf144c47a84bb0e2b9dacc02247a28973d4873839afb9dca452c063bc6705",
+      "Surface": "de8f31e936bb626b27514c75215d4fb9ffafec8f37f6f0805b9bbb38af95e9d6",
       "Icon": "e1fe244892236549660c59584808e37778f4b0f0931e59593bf47eb508cde74a",
       "Icon button": "2935ed907b723a09a069a887986c668306d7893bee50577700000f7701c8950a",
-      "Button": "8cf296102889b9c8ab9d779280c1995a8e3f2d543ba464c3292345c933ee01eb",
-      "Text field": "a3460914f9e362f7351cc2ff0234ae965e96684dd886996097756cd422114d7f",
+      "Button": "8c97d26f3a1fee9a8d3de719b8504c0fbf16d928899b4f511a35cb7243e952a1",
+      "Text field": "4965088b4a44613a1d18bc74f981c5fd14b768eb44cf04060febdc01dd3ca1c7",
       "Badge": "5ecacfeca210a7f5808638ca7420a5243986bb5dcf7497861da0bbb907be9ba1",
       "Divider": "7c0feb9fee3c8344dde840bbdd09bd41789d8905bcdb0d024daf88d7bcf93137",
       "Spinner": "18257040ca331707f29bdf82821bc5ae423f32e4fc59d050f1d6ca5778f6f2c2",
-      "Card": "e2faedc751af234ae239ceedf40fae979dfdbfca347bf51a303a8c76c4931c04",
+      "Card": "965449ae33f3fc67258a6c83d46e762d8ca259f510407a7ed8af510d82900db7",
       "Alert": "08401af12946f42c5caa2179bd5fee0f2f3c1f2a4f60a3d0c5ea7b90451626ef",
       "Progress": "f88ae398bfa13a75c342681923512206342ad8f2c62f6e8e0dcfc006a13e5447",
       "Skeleton": "67bd48d90b5ee6456da8bdee9a6d6fbb2d010cbe137712f13fed0d26585607db",
@@ -47280,7 +47280,7 @@
     "readme": "<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com\">\n    <picture>\n      <source media=\"(prefers-color-scheme: dark)\" srcset=\"./docs/assets/readme/hero-dark.svg\">\n      <img src=\"./docs/assets/readme/hero-light.svg\" alt=\"Lumen UI — A shared language. Every interface.\" width=\"1200\" height=\"340\">\n    </picture>\n  </a>\n</p>\n\n<h1 align=\"center\">Lumen UI</h1>\n\n<p align=\"center\">\n  <strong>Accessible primitives. Native authoring. Shared foundations.</strong><br>\n  An open-source UI system for Astro, React, Web Components, React Native, SwiftUI, and Jetpack Compose.\n</p>\n\n<p align=\"center\">\n  <a href=\"https://lumen.santi020k.com/docs\">Documentation</a> ·\n  <a href=\"https://lumen.santi020k.com/docs/components\">Components</a> ·\n  <a href=\"https://lumen.santi020k.com/#playgrounds\">Playgrounds</a> ·\n  <a href=\"https://lumen.santi020k.com/support\">Support</a>\n</p>\n\n<p align=\"center\">\n  <strong>Figma Community</strong> ·\n  <a href=\"https://www.figma.com/community/file/1662337342676541513/lumen-ui-library-v5\">Lumen UI Library</a> ·\n  <a href=\"https://www.figma.com/community/file/1700607667944072280/lumen-templates\">Lumen Templates</a> ·\n  <a href=\"https://www.figma.com/community/file/1700608473577262170/lumen-playgrounds\">Lumen Playgrounds</a>\n</p>\n\n<p align=\"center\">\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/ci.yml\"><img alt=\"CI status on main\" src=\"https://img.shields.io/github/actions/workflow/status/santi020k/lumen/ci.yml?branch=main&amp;style=flat-square&amp;label=CI\"></a>\n  <a href=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml\"><img alt=\"CodeQL status\" src=\"https://github.com/santi020k/lumen/actions/workflows/codeql.yml/badge.svg\"></a>\n  <a href=\"https://www.npmjs.com/package/@santi020k/lumen-astro\"><img alt=\"Published Astro package version\" src=\"https://img.shields.io/npm/v/@santi020k/lumen-astro?style=flat-square&amp;label=npm\"></a>\n  <a href=\"./LICENSE\"><img alt=\"MIT license\" src=\"https://img.shields.io/badge/license-MIT-036b8c?style=flat-square\"></a>\n</p>\n\n## One system, your framework\n\nBuild web and native interfaces with shared design tokens, accessible components, and each\nplatform's own authoring conventions. Astro is the reference implementation.\n\n<p>\n  <a href=\"https://lumen.santi020k.com/docs/web/playground\">\n    <img src=\"./apps/docs/src/assets/platforms/web.webp\" alt=\"A Lumen web workspace with navigation, metric cards, an interactive chart, and a task form\" width=\"1184\" height=\"802\">\n  </a>\n</p>\n\n*Real Lumen components with illustrative data. [Open the web playground →](https://lumen.santi020k.com/docs/web/playground)*\n\n## Start building\n\n**Start with a free Astro project.** The [Lumen Astro starter](https://lumen.santi020k.com/starters/astro)\nincludes landing page, ecommerce, dashboard, and portfolio templates with seven Lumen theme families\nand light/dark modes. Use it for personal or commercial projects under the MIT license.\n\n[View the source](https://github.com/santi020k/lumen/tree/main/examples/astro-starter) ·\n[Download the starter](https://lumen.santi020k.com/downloads/lumen-astro-starter.zip) ·\n[Follow the walkthrough](https://lumen.santi020k.com/guides/build-an-astro-starter)\n\nChoose your framework, install its adapter, and follow the setup guide for styles and runtime.\n\n| Framework | Setup guide |\n| --- | --- |\n| **Astro** | [Astro quick start](https://lumen.santi020k.com/docs/frameworks/astro) |\n| **React** | [React quick start](https://lumen.santi020k.com/docs/frameworks/react) |\n| **Web Components** | [Elements quick start](https://lumen.santi020k.com/docs/frameworks/elements) |\n| **React Native** | [React Native guide](https://lumen.santi020k.com/docs/react-native) |\n| **SwiftUI** | [Apple guide](https://lumen.santi020k.com/docs/apple) |\n| **Jetpack Compose** | [Android guide](https://lumen.santi020k.com/docs/android) |\n\nAstro requires Astro 5+; React requires React 19+. See each guide for supported toolchains\nand complete configuration. Browse the [package directory](https://lumen.santi020k.com/docs/packages)\nfor tokens, icons, integrations, and focused native packages.\n\n> **Upgrading to Lumen 5?** Follow the [migration guide](https://lumen.santi020k.com/docs/migrations/v4-to-v5)\n> and [selective installation guide](docs/selective-installation.md). Package versions and store\n> builds follow their own release schedules; check availability before upgrading.\n\n## Explore the system\n\n| I want to… | Go to |\n| --- | --- |\n| Find a component and its API | [Component catalog](https://lumen.santi020k.com/docs/components) |\n| Try components, states, and themes | [Web playground](https://lumen.santi020k.com/docs/web/playground) |\n| Start from a complete product layout | [Dashboard and app templates](https://lumen.santi020k.com/templates) |\n| Customize colors and appearance | [Web themes](https://lumen.santi020k.com/docs/web/themes) · [Theme playground](https://lumen.santi020k.com/docs/theme-playground) |\n| Use Tailwind alongside Lumen | [Tailwind integration](https://lumen.santi020k.com/docs/web/tailwind) |\n| Build a real screen step by step | [Practical guides](https://lumen.santi020k.com/guides) |\n| Understand the shared foundations | [Tokens and platform contracts](https://lumen.santi020k.com/docs/foundations) |\n\n## Try it on native\n\n<table>\n  <tr>\n    <th>SwiftUI</th>\n    <th>Jetpack Compose</th>\n    <th>React Native</th>\n  </tr>\n  <tr>\n    <td><a href=\"https://lumen.santi020k.com/docs/apple/playground\"><img src=\"./apps/docs/src/assets/platforms/apple.webp\" alt=\"Native SwiftUI release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/android/playground\"><img src=\"./apps/docs/src/assets/platforms/android.webp\" alt=\"Native Compose release checklist example\" width=\"220\"></a></td>\n    <td><a href=\"https://lumen.santi020k.com/docs/react-native/playground\"><img src=\"./apps/docs/src/assets/platforms/react-native.webp\" alt=\"Expo browser preview of the contributor profile example\" width=\"220\"></a></td>\n  </tr>\n  <tr>\n    <td>Native app capture</td>\n    <td>Native app capture</td>\n    <td>Expo browser preview</td>\n  </tr>\n</table>\n\nSee [capture provenance](apps/docs/src/assets/platforms/README.md) for sources and verification scope.\n\n[Apple App Store](https://apps.apple.com/app/id6805250815) ·\n[Google Play](https://play.google.com/store/apps/details?id=com.santi020k.lumen.playground.compose) ·\n[React Native browser preview](https://lumen.santi020k.com/docs/react-native/playground#preview)\n\nFor local setup and source, see the [playground guide](docs/playgrounds.md).\nCheck [native compatibility](docs/native-compatibility.md) and\n[device validation evidence](docs/native-device-validation.md) for your target.\n\n## Build with AI and Figma\n\nGive your coding agent Lumen's component selection, composition, and verification guidance:\n\n```bash\nnpx skills add santi020k/lumen --skill lumen-ui\n```\n\n[Agent skill guide](https://lumen.santi020k.com/docs/ai-skill) ·\n[MCP catalog](https://lumen.santi020k.com/docs/mcp) ·\n[Lumen UI plugin for ChatGPT and Codex](https://chatgpt.com/plugins/plugin_asdk_app_6a8f6c526c5481918eb8a48806fa112b)\n\nDesign with the [Figma community library](https://www.figma.com/community/file/1662337342676541513)\nand follow the [Figma integration guide](https://lumen.santi020k.com/docs/figma)\nfor variables and Code Connect. The [local Figma plugin](apps/figma-plugin/README.md) exports\nAstro, React and Web Components starters for Lumen releases 5.0.0 and 4.4.0. It also exports React Native and Compose 4.1.0 components and SwiftUI views for iPhone and Mac using the v5.0.0 Swift package.\n\n## Contribute and connect\n\nRead [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, workspace commands, tests, and release rules.\nThe [architecture guide](docs/cross-platform.md) explains package boundaries and platform responsibilities.\n\n[Feedback and support](https://lumen.santi020k.com/support) ·\n[Public roadmap](https://lumen.santi020k.com/support#roadmap) ·\n[Community showcase](https://lumen.santi020k.com/community) ·\n[Changelog](https://lumen.santi020k.com/changelog)\n\n## License\n\nLumen's original code and artwork are available under the [MIT License](./LICENSE). Generated\ninterface icons retain the Lucide ISC or Feather MIT terms, and generated brand icons retain Font\nAwesome Free's CC BY 4.0 terms. The native packages include the required attribution and license\nnotices; see [`icons/THIRD_PARTY_NOTICES.md`](./icons/THIRD_PARTY_NOTICES.md).\n\nCreated and maintained by [Santiago Molina](https://santi020k.com).\n"
   },
   "meta": {
-    "catalogHash": "05d6fbbaec014dab1133a7b89533291a34505c8cfb74cd4c6983c83edb4ae3a3",
+    "catalogHash": "bc159d915c160dd4c9194e35770e7c5a010825ac2c22c52c4efe613c3b379432",
     "componentCount": 198,
     "nativeComponentCount": 125,
     "packages": [
@@ -47291,7 +47291,8 @@
       "@santi020k/lumen-react-native",
       "@santi020k/lumen-tokens",
       "LumenUI",
-      "com.santi020k:lumen-compose"
+      "com.santi020k:lumen-compose",
+      "@santi020k/lumen-arkui"
     ],
     "packageVersions": {
       "@santi020k/lumen-astro": "5.3.0",
@@ -50135,6 +50136,44 @@
           "sourceFile": "packages/compose/src/main/kotlin/com/santi020k/lumen/LumenTheme.kt",
           "symbol": "LumenTheme"
         },
+        "harmonyos": {
+          "api": [
+            {
+              "defaultValue": "LumenColorSchemePreference.System",
+              "description": "Follows the system color mode or forces light or dark.",
+              "name": "colorScheme",
+              "values": "LumenColorSchemePreference.System · Light · Dark"
+            },
+            {
+              "defaultValue": "true",
+              "description": "Fills the parent; pass false to hug the content.",
+              "name": "fillsParent",
+              "values": "boolean"
+            },
+            {
+              "defaultValue": "LumenColors.light / LumenColors.dark",
+              "description": "Replaces the semantic palette for a color mode. Read once, when the theme appears.",
+              "name": "lightColors / darkColors",
+              "values": "LumenColorPalette"
+            },
+            {
+              "defaultValue": "Required",
+              "description": "Provides Lumen theme values to the descendant tree.",
+              "name": "content",
+              "values": "Trailing closure"
+            }
+          ],
+          "example": "LumenTheme({ colorScheme: LumenColorSchemePreference.System }) {\n  AppContent()\n}",
+          "exportName": "LumenTheme",
+          "importStatement": "import { LumenTheme } from '@santi020k/lumen-arkui'",
+          "install": "Pilot, not published to ohpm. From a checkout of https://github.com/santi020k/lumen, add \"@santi020k/lumen-arkui\": \"file:../path/to/lumen/packages/arkui\" to the dependencies in the consuming module's oh-package.json5, then run ohpm install. Requires HarmonyOS NEXT 5.0 (API 12).",
+          "language": "arkts",
+          "maturity": "Pilot",
+          "packageName": "@santi020k/lumen-arkui",
+          "setup": "Render one LumenTheme at the application root; it publishes the palette to every Lumen component in the application. Pilot: the ArkUI sources have not been compiled with DevEco Studio or run on a device, and the API can change in any release.",
+          "sourceFile": "packages/arkui/src/main/ets/theme/LumenTheme.ets",
+          "symbol": "LumenTheme"
+        },
         "react-native": {
           "api": [
             {
@@ -50235,6 +50274,38 @@
           "packageName": "com.santi020k:lumen-compose",
           "setup": "Wrap application content in LumenTheme and preserve Compose state and navigation.",
           "sourceFile": "packages/compose/src/main/kotlin/com/santi020k/lumen/Primitives.kt",
+          "symbol": "LumenText"
+        },
+        "harmonyos": {
+          "api": [
+            {
+              "defaultValue": "Empty string",
+              "description": "The text content.",
+              "name": "text",
+              "values": "ResourceStr"
+            },
+            {
+              "defaultValue": "LumenTextVariant.Body",
+              "description": "Selects the shared typography role.",
+              "name": "variant",
+              "values": "LumenTextVariant.Body · Caption · Label · Title"
+            },
+            {
+              "defaultValue": "LumenTextTone.Default",
+              "description": "Selects a semantic foreground role.",
+              "name": "tone",
+              "values": "LumenTextTone.Default · Soft · Muted · Success · Warning · Danger"
+            }
+          ],
+          "example": "LumenTheme() {\n  LumenText({\n    text: 'Welcome back',\n    variant: LumenTextVariant.Title,\n    tone: LumenTextTone.Default\n  })\n}",
+          "exportName": "LumenText",
+          "importStatement": "import { LumenText } from '@santi020k/lumen-arkui'",
+          "install": "Pilot, not published to ohpm. From a checkout of https://github.com/santi020k/lumen, add \"@santi020k/lumen-arkui\": \"file:../path/to/lumen/packages/arkui\" to the dependencies in the consuming module's oh-package.json5, then run ohpm install. Requires HarmonyOS NEXT 5.0 (API 12).",
+          "language": "arkts",
+          "maturity": "Pilot",
+          "packageName": "@santi020k/lumen-arkui",
+          "setup": "Render one LumenTheme at the application root; it publishes the palette to every Lumen component in the application. Pilot: the ArkUI sources have not been compiled with DevEco Studio or run on a device, and the API can change in any release.",
+          "sourceFile": "packages/arkui/src/main/ets/components/LumenText.ets",
           "symbol": "LumenText"
         },
         "react-native": {
@@ -50361,6 +50432,50 @@
           "packageName": "com.santi020k:lumen-compose",
           "setup": "Wrap application content in LumenTheme and preserve Compose state and navigation.",
           "sourceFile": "packages/compose/src/main/kotlin/com/santi020k/lumen/Primitives.kt",
+          "symbol": "LumenSurface"
+        },
+        "harmonyos": {
+          "api": [
+            {
+              "defaultValue": "LumenSurfaceTone.Surface",
+              "description": "Selects the semantic background role.",
+              "name": "tone",
+              "values": "LumenSurfaceTone.Canvas · Surface · Muted · Strong"
+            },
+            {
+              "defaultValue": "LumenSurfacePadding.Md",
+              "description": "Applies generated spacing as padding.",
+              "name": "inset",
+              "values": "LumenSurfacePadding.None · Sm · Md · Lg · Xl"
+            },
+            {
+              "defaultValue": "LumenSurfaceRadius.Md",
+              "description": "Applies a generated corner radius.",
+              "name": "cornerRadius",
+              "values": "LumenSurfaceRadius.None · Sm · Md · Lg · Xl · Size2xl · Size3xl"
+            },
+            {
+              "defaultValue": "false",
+              "description": "Fills the parent width. ArkUI ignores universal attributes on a trailing-closure component.",
+              "name": "fillsWidth",
+              "values": "boolean"
+            },
+            {
+              "defaultValue": "Empty",
+              "description": "Composes the surface body.",
+              "name": "content",
+              "values": "Trailing closure"
+            }
+          ],
+          "example": "LumenTheme() {\n  LumenSurface({ tone: LumenSurfaceTone.Muted, inset: LumenSurfacePadding.Lg }) {\n    LumenText({ text: 'Workspace' })\n  }\n}",
+          "exportName": "LumenSurface",
+          "importStatement": "import { LumenSurface } from '@santi020k/lumen-arkui'",
+          "install": "Pilot, not published to ohpm. From a checkout of https://github.com/santi020k/lumen, add \"@santi020k/lumen-arkui\": \"file:../path/to/lumen/packages/arkui\" to the dependencies in the consuming module's oh-package.json5, then run ohpm install. Requires HarmonyOS NEXT 5.0 (API 12).",
+          "language": "arkts",
+          "maturity": "Pilot",
+          "packageName": "@santi020k/lumen-arkui",
+          "setup": "Render one LumenTheme at the application root; it publishes the palette to every Lumen component in the application. Pilot: the ArkUI sources have not been compiled with DevEco Studio or run on a device, and the API can change in any release.",
+          "sourceFile": "packages/arkui/src/main/ets/components/LumenSurface.ets",
           "symbol": "LumenSurface"
         },
         "react-native": {
@@ -50789,6 +50904,56 @@
           "sourceFile": "packages/compose/src/main/kotlin/com/santi020k/lumen/Primitives.kt",
           "symbol": "LumenButton"
         },
+        "harmonyos": {
+          "api": [
+            {
+              "defaultValue": "Empty string",
+              "description": "Provides the visible button label.",
+              "name": "label",
+              "values": "ResourceStr"
+            },
+            {
+              "defaultValue": "No action",
+              "description": "Runs the button action.",
+              "name": "onPress",
+              "values": "() => void"
+            },
+            {
+              "defaultValue": "LumenButtonIntent.Primary",
+              "description": "Selects semantic emphasis.",
+              "name": "intent",
+              "values": "LumenButtonIntent.Primary · Secondary · Quiet · Success · Danger"
+            },
+            {
+              "defaultValue": "LumenControlSize.Md",
+              "description": "Selects shared control height and padding.",
+              "name": "controlSize",
+              "values": "LumenControlSize.Sm · Md · Lg"
+            },
+            {
+              "defaultValue": "false / \"Loading\"",
+              "description": "Shows native progress, announces the loading label, and prevents activation.",
+              "name": "loading / loadingLabel",
+              "values": "boolean / string"
+            },
+            {
+              "defaultValue": "false",
+              "description": "Controls native disabled state.",
+              "name": "isDisabled",
+              "values": "boolean"
+            }
+          ],
+          "example": "LumenTheme() {\n  LumenButton({\n    label: 'Save changes',\n    intent: LumenButtonIntent.Primary,\n    controlSize: LumenControlSize.Md,\n    loading: this.saving,\n    loadingLabel: 'Saving',\n    onPress: () => {\n      this.save()\n    }\n  })\n}",
+          "exportName": "LumenButton",
+          "importStatement": "import { LumenButton } from '@santi020k/lumen-arkui'",
+          "install": "Pilot, not published to ohpm. From a checkout of https://github.com/santi020k/lumen, add \"@santi020k/lumen-arkui\": \"file:../path/to/lumen/packages/arkui\" to the dependencies in the consuming module's oh-package.json5, then run ohpm install. Requires HarmonyOS NEXT 5.0 (API 12).",
+          "language": "arkts",
+          "maturity": "Pilot",
+          "packageName": "@santi020k/lumen-arkui",
+          "setup": "Render one LumenTheme at the application root; it publishes the palette to every Lumen component in the application. Pilot: the ArkUI sources have not been compiled with DevEco Studio or run on a device, and the API can change in any release.",
+          "sourceFile": "packages/arkui/src/main/ets/components/LumenButton.ets",
+          "symbol": "LumenButton"
+        },
         "react-native": {
           "api": [
             {
@@ -50949,6 +51114,62 @@
           "packageName": "com.santi020k:lumen-compose",
           "setup": "Wrap application content in LumenTheme and preserve Compose state and navigation.",
           "sourceFile": "packages/compose/src/main/kotlin/com/santi020k/lumen/Primitives.kt",
+          "symbol": "LumenTextField"
+        },
+        "harmonyos": {
+          "api": [
+            {
+              "defaultValue": "Empty string",
+              "description": "Stores the current native input value.",
+              "name": "value",
+              "values": "string"
+            },
+            {
+              "defaultValue": "No action",
+              "description": "Updates application state.",
+              "name": "onValueChange",
+              "values": "(value: string) => void"
+            },
+            {
+              "defaultValue": "Empty strings",
+              "description": "Names the field and supplies optional hint text.",
+              "name": "label / placeholder",
+              "values": "string / string"
+            },
+            {
+              "defaultValue": "LumenControlSize.Md",
+              "description": "Selects shared control metrics.",
+              "name": "controlSize",
+              "values": "LumenControlSize.Sm · Md · Lg"
+            },
+            {
+              "defaultValue": "false / empty string",
+              "description": "Applies the semantic invalid treatment and adds the error text to the input description.",
+              "name": "invalid / errorMessage",
+              "values": "boolean / string"
+            },
+            {
+              "defaultValue": "false",
+              "description": "Controls native editing state.",
+              "name": "isDisabled",
+              "values": "boolean"
+            },
+            {
+              "defaultValue": "InputType.Normal",
+              "description": "Selects the native keyboard and input behavior.",
+              "name": "inputType",
+              "values": "ArkUI InputType"
+            }
+          ],
+          "example": "LumenTheme() {\n  LumenTextField({\n    value: this.email,\n    label: 'Email address',\n    errorMessage: this.emailError,\n    inputType: InputType.Email,\n    onValueChange: (value: string) => {\n      this.email = value\n    }\n  })\n}",
+          "exportName": "LumenTextField",
+          "importStatement": "import { LumenTextField } from '@santi020k/lumen-arkui'",
+          "install": "Pilot, not published to ohpm. From a checkout of https://github.com/santi020k/lumen, add \"@santi020k/lumen-arkui\": \"file:../path/to/lumen/packages/arkui\" to the dependencies in the consuming module's oh-package.json5, then run ohpm install. Requires HarmonyOS NEXT 5.0 (API 12).",
+          "language": "arkts",
+          "maturity": "Pilot",
+          "packageName": "@santi020k/lumen-arkui",
+          "setup": "Render one LumenTheme at the application root; it publishes the palette to every Lumen component in the application. Pilot: the ArkUI sources have not been compiled with DevEco Studio or run on a device, and the API can change in any release.",
+          "sourceFile": "packages/arkui/src/main/ets/components/LumenTextField.ets",
           "symbol": "LumenTextField"
         },
         "react-native": {
@@ -51405,6 +51626,56 @@
           "packageName": "com.santi020k:lumen-compose",
           "setup": "Wrap application content in LumenTheme and preserve Compose state and navigation.",
           "sourceFile": "packages/compose/src/main/kotlin/com/santi020k/lumen/SharedComponents.kt",
+          "symbol": "LumenCard"
+        },
+        "harmonyos": {
+          "api": [
+            {
+              "defaultValue": "LumenCardVariant.Default",
+              "description": "Selects the native surface treatment.",
+              "name": "variant",
+              "values": "LumenCardVariant.Default · Muted · Accent · Success · Warning · Destructive"
+            },
+            {
+              "defaultValue": "LumenSurfacePadding.Xl",
+              "description": "Applies generated spacing as padding.",
+              "name": "inset",
+              "values": "LumenSurfacePadding.None · Sm · Md · Lg · Xl"
+            },
+            {
+              "defaultValue": "LumenSurfaceRadius.Lg",
+              "description": "Applies a generated corner radius.",
+              "name": "cornerRadius",
+              "values": "LumenSurfaceRadius.None · Sm · Md · Lg · Xl · Size2xl · Size3xl"
+            },
+            {
+              "defaultValue": "false",
+              "description": "Fills the parent width. ArkUI ignores universal attributes on a trailing-closure component.",
+              "name": "fillsWidth",
+              "values": "boolean"
+            },
+            {
+              "defaultValue": "undefined / false",
+              "description": "Makes the whole card a native button and controls its disabled state.",
+              "name": "onPress / isDisabled",
+              "values": "() => void / boolean"
+            },
+            {
+              "defaultValue": "Empty",
+              "description": "Composes the card body.",
+              "name": "content",
+              "values": "Trailing closure"
+            }
+          ],
+          "example": "LumenTheme() {\n  LumenCard({ variant: LumenCardVariant.Muted }) {\n    LumenText({ text: 'Team workspace' })\n  }\n}",
+          "exportName": "LumenCard",
+          "importStatement": "import { LumenCard } from '@santi020k/lumen-arkui'",
+          "install": "Pilot, not published to ohpm. From a checkout of https://github.com/santi020k/lumen, add \"@santi020k/lumen-arkui\": \"file:../path/to/lumen/packages/arkui\" to the dependencies in the consuming module's oh-package.json5, then run ohpm install. Requires HarmonyOS NEXT 5.0 (API 12).",
+          "language": "arkts",
+          "maturity": "Pilot",
+          "packageName": "@santi020k/lumen-arkui",
+          "setup": "Render one LumenTheme at the application root; it publishes the palette to every Lumen component in the application. Pilot: the ArkUI sources have not been compiled with DevEco Studio or run on a device, and the API can change in any release.",
+          "sourceFile": "packages/arkui/src/main/ets/components/LumenCard.ets",
           "symbol": "LumenCard"
         },
         "react-native": {
@@ -62161,6 +62432,14 @@
       "packages/compose/src/main/kotlin/com/santi020k/lumen/TreeSelectComponents.kt": "package com.santi020k.lumen\n\nimport androidx.compose.foundation.layout.Arrangement\nimport androidx.compose.foundation.layout.Column\nimport androidx.compose.foundation.layout.heightIn\nimport androidx.compose.foundation.layout.padding\nimport androidx.compose.foundation.lazy.LazyColumn\nimport androidx.compose.foundation.lazy.items\nimport androidx.compose.runtime.Composable\nimport androidx.compose.runtime.getValue\nimport androidx.compose.runtime.mutableStateOf\nimport androidx.compose.runtime.remember\nimport androidx.compose.runtime.setValue\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.semantics.contentDescription\nimport androidx.compose.ui.semantics.liveRegion\nimport androidx.compose.ui.semantics.LiveRegionMode\nimport androidx.compose.ui.semantics.semantics\nimport androidx.compose.ui.semantics.selected\nimport androidx.compose.ui.semantics.stateDescription\nimport androidx.compose.ui.unit.dp\n\n@Composable\nfun LumenTreeSelect(\n    label: String,\n    nodes: List<LumenTreeNode>,\n    value: String?,\n    onValueChange: (String) -> Unit,\n    modifier: Modifier = Modifier,\n    enabled: Boolean = true,\n    readOnly: Boolean = false,\n    loading: Boolean = false,\n    error: String? = null,\n    placeholder: String = \"Select…\",\n    unknownSelectionLabel: String = \"Unavailable selection\",\n    loadingLabel: String = \"Loading\",\n    emptyLabel: String = \"No options\",\n    invalidLabel: String = \"Invalid options\",\n    expandedLabel: String = \"Expanded\",\n    collapsedLabel: String = \"Collapsed\",\n    formatOption: (String, List<String>, Int) -> String = { _, path, level -> \"${path.joinToString(\" / \")}, level $level\" }\n) {\n    val model = LumenTreeSelectModel(nodes)\n    var open by remember { mutableStateOf(false) }\n    val selection = model.selectionLabel(value, placeholder, unknownSelectionLabel)\n    val status = when { loading -> loadingLabel; error != null -> error; !model.valid -> invalidLabel; else -> null }\n    Column(modifier.semantics { contentDescription = label }, verticalArrangement = Arrangement.spacedBy(LumenSpacing.Sm)) {\n        LumenText(label)\n        if (status != null) LumenText(selection, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })\n        if (status != null) LumenText(status, modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite })\n        else {\n            LumenButton(enabled = enabled, onClick = { if (enabled) open = !open },\n                modifier = Modifier.semantics { contentDescription = \"$label: $selection\"; stateDescription = if (open) expandedLabel else collapsedLabel }) { LumenText(selection) }\n            if (open) LazyColumn(Modifier.heightIn(max = 320.dp), verticalArrangement = Arrangement.spacedBy(LumenSpacing.Xs)) {\n                if (model.rows.isEmpty()) item { LumenText(emptyLabel) }\n                items(model.rows, key = { it.node.id }) { row ->\n                    val interactive = enabled && !readOnly && model.canSelect(row.node.id)\n                    val name = formatOption(row.node.label, model.tree.path(row.node.id).map { it.label }, row.depth + 1)\n                    LumenButton(enabled = interactive, modifier = Modifier.padding(start = LumenSpacing.Sm * row.depth.coerceAtMost(8))\n                        .semantics { contentDescription = name; selected = value == row.node.id }, onClick = {\n                            if (interactive) {\n                                val next = model.selecting(row.node.id, value)\n                                if (next != null && next != value) onValueChange(next)\n                                open = false\n                            }\n                        }) { LumenText(row.node.label) }\n                }\n            }\n        }\n    }\n}\n",
       "packages/compose/src/main/kotlin/com/santi020k/lumen/TreeSelectModels.kt": "package com.santi020k.lumen\n\nclass LumenTreeSelectModel(nodes: List<LumenTreeNode>) {\n    val tree = LumenTreeModel(nodes)\n    val valid = tree.valid && nodes.all { it.id.isNotBlank() }\n    val rows = if (valid) tree.visibleRows(nodes.map { it.id }.toSet()) else emptyList()\n    fun canSelect(id: String): Boolean = valid && tree.node(id)?.selectable == true && !tree.isDisabled(id)\n    fun selecting(id: String, current: String?): String? = if (canSelect(id)) id else current\n    fun selectionLabel(value: String?, placeholder: String, unknownLabel: String): String = when {\n        value == null -> placeholder\n        !valid -> unknownLabel\n        else -> tree.node(value)?.label ?: unknownLabel\n    }\n}\n",
       "packages/compose/wear/src/main/kotlin/com/santi020k/lumen/wear/WearComponents.kt": "package com.santi020k.lumen\n\nimport androidx.compose.foundation.Canvas\nimport androidx.compose.foundation.background\nimport androidx.compose.foundation.clickable\nimport androidx.compose.foundation.layout.Arrangement\nimport androidx.compose.foundation.layout.Box\nimport androidx.compose.foundation.layout.BoxScope\nimport androidx.compose.foundation.layout.Column\nimport androidx.compose.foundation.layout.Row\nimport androidx.compose.foundation.layout.RowScope\nimport androidx.compose.foundation.layout.fillMaxWidth\nimport androidx.compose.foundation.layout.padding\nimport androidx.compose.foundation.layout.size\nimport androidx.compose.foundation.shape.CircleShape\nimport androidx.compose.foundation.shape.RoundedCornerShape\nimport androidx.compose.foundation.text.BasicText\nimport androidx.compose.runtime.Composable\nimport androidx.compose.runtime.CompositionLocalProvider\nimport androidx.compose.ui.Alignment\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.draw.alpha\nimport androidx.compose.ui.draw.clip\nimport androidx.compose.ui.geometry.Offset\nimport androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.graphics.StrokeCap\nimport androidx.compose.ui.graphics.drawscope.Stroke\nimport androidx.compose.ui.semantics.ProgressBarRangeInfo\nimport androidx.compose.ui.semantics.Role\nimport androidx.compose.ui.semantics.contentDescription\nimport androidx.compose.ui.semantics.disabled\nimport androidx.compose.ui.semantics.progressBarRangeInfo\nimport androidx.compose.ui.semantics.role\nimport androidx.compose.ui.semantics.semantics\nimport androidx.compose.ui.text.TextStyle\nimport androidx.compose.ui.text.font.FontWeight\nimport androidx.compose.ui.unit.Dp\nimport androidx.compose.ui.unit.dp\nimport androidx.compose.ui.unit.sp\n\nenum class LumenWearTone {\n    Accent,\n    Brand,\n    Danger,\n    Neutral,\n    Success,\n    Warning\n}\n\ninternal data class LumenWearProgressValue(\n    val maximum: Float,\n    val value: Float\n) {\n    val fraction: Float\n        get() = value / maximum\n\n    companion object {\n        fun resolve(value: Float, maximum: Float): LumenWearProgressValue {\n            val safeMaximum = if (maximum.isFinite() && maximum > 0f) maximum else 1f\n            val safeValue = if (value.isFinite()) value.coerceIn(0f, safeMaximum) else 0f\n            return LumenWearProgressValue(maximum = safeMaximum, value = safeValue)\n        }\n    }\n}\n\ninternal data class LumenWearActionMetrics(\n    val dimension: Dp,\n    val ringWidth: Dp\n) {\n    companion object {\n        fun resolve(dimension: Dp, ringWidth: Dp): LumenWearActionMetrics {\n            val safeDimension = if (dimension.value.isFinite()) {\n                dimension.value.coerceIn(48f, 180f).dp\n            } else {\n                120.dp\n            }\n            val safeRingWidth = if (ringWidth.value.isFinite()) {\n                ringWidth.value.coerceIn(2f, 12f).dp\n            } else {\n                4.dp\n            }\n            return LumenWearActionMetrics(safeDimension, safeRingWidth)\n        }\n    }\n}\n\ninternal fun lumenWearColor(palette: LumenColorPalette, tone: LumenWearTone): Color = when (tone) {\n    LumenWearTone.Accent -> palette.accent\n    LumenWearTone.Brand -> palette.brandSolid\n    LumenWearTone.Danger -> palette.danger\n    LumenWearTone.Neutral -> palette.inkMuted\n    LumenWearTone.Success -> palette.success\n    LumenWearTone.Warning -> palette.warning\n}\n\n@Composable\nfun LumenWearTheme(\n    darkTheme: Boolean = true,\n    values: LumenThemeValues? = null,\n    content: @Composable () -> Unit\n) {\n    val resolvedValues = values ?: LumenThemeValues(\n        colors = if (darkTheme) LumenColors.Dark else LumenColors.Light,\n        isDark = darkTheme\n    )\n    CompositionLocalProvider(LocalLumenTheme provides resolvedValues, content = content)\n}\n\n@Composable\nfun LumenWearActionButton(\n    accessibilityLabel: String,\n    onClick: () -> Unit,\n    modifier: Modifier = Modifier,\n    tone: LumenWearTone = LumenWearTone.Brand,\n    dimension: Dp = 120.dp,\n    enabled: Boolean = true,\n    content: @Composable BoxScope.() -> Unit\n) {\n    val colors = LocalLumenTheme.current.colors\n    val metrics = LumenWearActionMetrics.resolve(dimension, 4.dp)\n    val color = lumenWearColor(colors, tone)\n\n    Box(\n        modifier = modifier\n            .size(metrics.dimension)\n            .clip(CircleShape)\n            .background(color)\n            .alpha(if (enabled) 1f else 0.48f)\n            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)\n            .semantics {\n                role = Role.Button\n                contentDescription = accessibilityLabel\n                if (!enabled) disabled()\n            },\n        contentAlignment = Alignment.Center,\n        content = content\n    )\n}\n\n@Composable\nfun LumenWearProgressRing(\n    value: Float,\n    modifier: Modifier = Modifier,\n    maximum: Float = 1f,\n    tone: LumenWearTone = LumenWearTone.Brand,\n    lineWidth: Dp = 4.dp,\n    content: @Composable BoxScope.() -> Unit\n) {\n    val colors = LocalLumenTheme.current.colors\n    val progress = LumenWearProgressValue.resolve(value, maximum)\n    val metrics = LumenWearActionMetrics.resolve(120.dp, lineWidth)\n\n    Box(\n        modifier = modifier.semantics {\n            progressBarRangeInfo = ProgressBarRangeInfo(progress.value, 0f..progress.maximum)\n        },\n        contentAlignment = Alignment.Center\n    ) {\n        Canvas(modifier = Modifier.matchParentSize()) {\n            val strokeWidth = metrics.ringWidth.toPx()\n            val radius = (size.minDimension - strokeWidth) / 2\n            drawCircle(\n                color = colors.line.copy(alpha = 0.5f),\n                radius = radius,\n                style = Stroke(width = strokeWidth)\n            )\n            drawArc(\n                color = lumenWearColor(colors, tone),\n                startAngle = -90f,\n                sweepAngle = 360f * progress.fraction,\n                useCenter = false,\n                topLeft = Offset(center.x - radius, center.y - radius),\n                size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2),\n                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)\n            )\n        }\n        content()\n    }\n}\n\n@Composable\nfun LumenWearStatus(\n    text: String,\n    modifier: Modifier = Modifier,\n    tone: LumenWearTone = LumenWearTone.Neutral,\n    leading: (@Composable RowScope.() -> Unit)? = null\n) {\n    val colors = LocalLumenTheme.current.colors\n    val color = lumenWearColor(colors, tone)\n    Row(\n        modifier = modifier\n            .clip(CircleShape)\n            .background(color.copy(alpha = 0.24f))\n            .padding(horizontal = LumenSpacing.Sm, vertical = LumenSpacing.Xs),\n        horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Xs),\n        verticalAlignment = Alignment.CenterVertically\n    ) {\n        leading?.invoke(this)\n        BasicText(\n            text = text,\n            style = TextStyle(\n                color = if (tone == LumenWearTone.Neutral) colors.inkSoft else color,\n                fontSize = 12.sp,\n                fontWeight = FontWeight.SemiBold\n            )\n        )\n    }\n}\n\n@Composable\nfun LumenWearMetric(\n    label: String,\n    value: String,\n    modifier: Modifier = Modifier,\n    detail: String? = null,\n    tone: LumenWearTone = LumenWearTone.Neutral\n) {\n    val colors = LocalLumenTheme.current.colors\n    Column(\n        modifier = modifier\n            .clip(RoundedCornerShape(LumenRadius.Md))\n            .background(colors.surfaceMuted.copy(alpha = 0.84f))\n            .padding(LumenSpacing.Sm),\n        verticalArrangement = Arrangement.spacedBy(2.dp)\n    ) {\n        BasicText(label, style = TextStyle(color = colors.inkMuted, fontSize = 12.sp))\n        BasicText(\n            value,\n            style = TextStyle(\n                color = lumenWearColor(colors, tone),\n                fontSize = 18.sp,\n                fontWeight = FontWeight.Bold\n            )\n        )\n        if (detail != null) {\n            BasicText(detail, style = TextStyle(color = colors.inkSoft, fontSize = 12.sp))\n        }\n    }\n}\n\n@Composable\nfun LumenWearListRow(\n    modifier: Modifier = Modifier,\n    leading: (@Composable RowScope.() -> Unit)? = null,\n    trailing: (@Composable RowScope.() -> Unit)? = null,\n    content: @Composable RowScope.() -> Unit\n) {\n    val colors = LocalLumenTheme.current.colors\n    Row(\n        modifier = modifier\n            .fillMaxWidth()\n            .clip(RoundedCornerShape(LumenRadius.Md))\n            .background(colors.surfaceMuted.copy(alpha = 0.84f))\n            .padding(LumenSpacing.Sm),\n        horizontalArrangement = Arrangement.spacedBy(LumenSpacing.Sm),\n        verticalAlignment = Alignment.CenterVertically\n    ) {\n        leading?.invoke(this)\n        content()\n        trailing?.invoke(this)\n    }\n}\n"
+    },
+    "harmonyos": {
+      "packages/arkui/src/main/ets/components/LumenButton.ets": "import { LumenThemeValues, lumenThemeValues } from '../theme/ThemeValues'\nimport { LumenRadius, LumenSpacing, LumenTypography } from '../tokens/Tokens.generated'\nimport {\n  LumenButtonIntent,\n  LumenControlSize,\n  lumenButtonPalette,\n  lumenControlMetrics,\n  lumenDisabledOpacity\n} from './Styles'\n\n/**\n * Text button with Lumen intents and control sizes. While `loading`, the button shows progress,\n * keeps its label, describes the state to assistive technology, and ignores repeat activation.\n */\n@Component\nexport struct LumenButton {\n  @Prop label: ResourceStr = ''\n  @Prop intent: LumenButtonIntent = LumenButtonIntent.Primary\n  @Prop controlSize: LumenControlSize = LumenControlSize.Md\n  @Prop loading: boolean = false\n  @Prop loadingLabel: string = 'Loading'\n  @Prop isDisabled: boolean = false\n  onPress: () => void = () => {\n  }\n  @StorageProp('lumenTheme') lumenTheme: LumenThemeValues = lumenThemeValues(false)\n\n  build() {\n    Button({ type: ButtonType.Normal, stateEffect: true }) {\n      Row({ space: LumenSpacing.sm }) {\n        if (this.loading) {\n          LoadingProgress()\n            .width(LumenSpacing.lg)\n            .height(LumenSpacing.lg)\n            .color(lumenButtonPalette(this.lumenTheme.colors, this.intent).foreground)\n        }\n        Text(this.label)\n          .fontSize(LumenTypography.smSize)\n          .fontWeight(LumenTypography.semiboldWeight)\n          .fontColor(lumenButtonPalette(this.lumenTheme.colors, this.intent).foreground)\n      }\n      .justifyContent(FlexAlign.Center)\n      .padding({\n        left: lumenControlMetrics(this.controlSize).horizontalPadding,\n        right: lumenControlMetrics(this.controlSize).horizontalPadding,\n        top: LumenSpacing.sm,\n        bottom: LumenSpacing.sm\n      })\n    }\n    .constraintSize({ minHeight: lumenControlMetrics(this.controlSize).minHeight })\n    .backgroundColor(lumenButtonPalette(this.lumenTheme.colors, this.intent).background)\n    .borderRadius(LumenRadius.sm)\n    .borderWidth(1)\n    .borderColor(lumenButtonPalette(this.lumenTheme.colors, this.intent).border)\n    .enabled(!this.isDisabled && !this.loading)\n    .opacity(this.isDisabled || this.loading ? lumenDisabledOpacity : 1)\n    .accessibilityDescription(this.loading ? this.loadingLabel : '')\n    .onClick(() => {\n      this.onPress()\n    })\n  }\n}\n",
+      "packages/arkui/src/main/ets/components/LumenCard.ets": "import { LumenThemeValues, lumenThemeValues } from '../theme/ThemeValues'\nimport {\n  LumenCardVariant,\n  LumenSurfacePadding,\n  LumenSurfaceRadius,\n  lumenCardPalette,\n  lumenDisabledOpacity,\n  lumenSurfacePadding,\n  lumenSurfaceRadius\n} from './Styles'\n\n/**\n * Neutral or semantic bordered container. Passing `onPress` renders the card as a native button.\n * It hugs its content unless `fillsWidth` is set.\n */\n@Component\nexport struct LumenCard {\n  @Prop variant: LumenCardVariant = LumenCardVariant.Default\n  @Prop inset: LumenSurfacePadding = LumenSurfacePadding.Xl\n  @Prop cornerRadius: LumenSurfaceRadius = LumenSurfaceRadius.Lg\n  @Prop isDisabled: boolean = false\n  @Prop fillsWidth: boolean = false\n  onPress?: () => void\n  @StorageProp('lumenTheme') lumenTheme: LumenThemeValues = lumenThemeValues(false)\n\n  @Builder\n  emptyContent() {\n  }\n\n  @BuilderParam content: () => void = this.emptyContent\n\n  @Styles\n  cardFrame() {\n    .constraintSize({ minWidth: this.fillsWidth ? '100%' : 0 })\n    .backgroundColor(lumenCardPalette(this.lumenTheme.colors, this.variant).background)\n    .borderRadius(lumenSurfaceRadius(this.cornerRadius))\n    .borderWidth(1)\n    .borderColor(lumenCardPalette(this.lumenTheme.colors, this.variant).border)\n  }\n\n  build() {\n    if (this.onPress === undefined) {\n      Column() {\n        this.content()\n      }\n      .alignItems(HorizontalAlign.Start)\n      .padding(lumenSurfacePadding(this.inset))\n      .cardFrame()\n    } else {\n      Button({ type: ButtonType.Normal, stateEffect: true }) {\n        Column() {\n          this.content()\n        }\n        .alignItems(HorizontalAlign.Start)\n        .padding(lumenSurfacePadding(this.inset))\n      }\n      .cardFrame()\n      .enabled(!this.isDisabled)\n      .opacity(this.isDisabled ? lumenDisabledOpacity : 1)\n      .onClick(() => {\n        this.onPress?.()\n      })\n    }\n  }\n}\n",
+      "packages/arkui/src/main/ets/components/LumenSurface.ets": "import { LumenThemeValues, lumenThemeValues } from '../theme/ThemeValues'\nimport {\n  LumenSurfacePadding,\n  LumenSurfaceRadius,\n  LumenSurfaceTone,\n  lumenSurfaceColor,\n  lumenSurfacePadding,\n  lumenSurfaceRadius\n} from './Styles'\n\n/**\n * Semantic background container with token padding and radius. It hugs its content unless\n * `fillsWidth` is set, because ArkUI ignores universal attributes on trailing-closure components.\n */\n@Component\nexport struct LumenSurface {\n  @Prop tone: LumenSurfaceTone = LumenSurfaceTone.Surface\n  @Prop inset: LumenSurfacePadding = LumenSurfacePadding.Md\n  @Prop cornerRadius: LumenSurfaceRadius = LumenSurfaceRadius.Md\n  @Prop fillsWidth: boolean = false\n  @StorageProp('lumenTheme') lumenTheme: LumenThemeValues = lumenThemeValues(false)\n\n  @Builder\n  emptyContent() {\n  }\n\n  @BuilderParam content: () => void = this.emptyContent\n\n  build() {\n    Column() {\n      this.content()\n    }\n    .alignItems(HorizontalAlign.Start)\n    .constraintSize({ minWidth: this.fillsWidth ? '100%' : 0 })\n    .padding(lumenSurfacePadding(this.inset))\n    .backgroundColor(lumenSurfaceColor(this.lumenTheme.colors, this.tone))\n    .borderRadius(lumenSurfaceRadius(this.cornerRadius))\n  }\n}\n",
+      "packages/arkui/src/main/ets/components/LumenText.ets": "import { LumenThemeValues, lumenThemeValues } from '../theme/ThemeValues'\nimport { LumenTextTone, LumenTextVariant, lumenTextColor, lumenTextStyle } from './Styles'\n\n/** Body, caption, label, and title text in the active Lumen palette. Sizes follow font scaling. */\n@Component\nexport struct LumenText {\n  @Prop text: ResourceStr = ''\n  @Prop variant: LumenTextVariant = LumenTextVariant.Body\n  @Prop tone: LumenTextTone = LumenTextTone.Default\n  @StorageProp('lumenTheme') lumenTheme: LumenThemeValues = lumenThemeValues(false)\n\n  build() {\n    Text(this.text)\n      .fontSize(lumenTextStyle(this.variant).fontSize)\n      .fontWeight(lumenTextStyle(this.variant).fontWeight)\n      .fontColor(lumenTextColor(this.lumenTheme.colors, this.tone))\n  }\n}\n",
+      "packages/arkui/src/main/ets/components/LumenTextField.ets": "import { LumenThemeValues, lumenThemeValues } from '../theme/ThemeValues'\nimport { LumenRadius, LumenSpacing, LumenTypography } from '../tokens/Tokens.generated'\nimport {\n  LumenControlSize,\n  lumenControlMetrics,\n  lumenDisabledOpacity,\n  lumenFieldDescription,\n  resolveLumenFieldError\n} from './Styles'\n\n/**\n * Single-line text entry with a visible label. Assistive technology reads the entered value,\n * then the label and `errorMessage` as the input's description.\n */\n@Component\nexport struct LumenTextField {\n  @Prop value: string = ''\n  @Prop label: string = ''\n  @Prop placeholder: string = ''\n  @Prop controlSize: LumenControlSize = LumenControlSize.Md\n  @Prop invalid: boolean = false\n  @Prop errorMessage: string = ''\n  @Prop isDisabled: boolean = false\n  @Prop inputType: InputType = InputType.Normal\n  onValueChange: (value: string) => void = (_value: string) => {\n  }\n  @State private focused: boolean = false\n  @StorageProp('lumenTheme') lumenTheme: LumenThemeValues = lumenThemeValues(false)\n\n  private fieldBorderColor(): string {\n    if (resolveLumenFieldError(this.invalid, this.errorMessage)) {\n      return this.lumenTheme.colors.danger\n    }\n\n    return this.focused ? this.lumenTheme.colors.brand : this.lumenTheme.colors.line\n  }\n\n  build() {\n    Column({ space: LumenSpacing.xs }) {\n      if (this.label.length > 0) {\n        Text(this.label)\n          .fontSize(LumenTypography.smSize)\n          .fontWeight(LumenTypography.mediumWeight)\n          .fontColor(this.lumenTheme.colors.inkSoft)\n          .accessibilityLevel('no')\n      }\n\n      TextInput({ text: this.value, placeholder: this.placeholder })\n        .type(this.inputType)\n        .width('100%')\n        .constraintSize({ minHeight: lumenControlMetrics(this.controlSize).minHeight })\n        .padding({\n          left: lumenControlMetrics(this.controlSize).horizontalPadding,\n          right: lumenControlMetrics(this.controlSize).horizontalPadding,\n          top: LumenSpacing.sm,\n          bottom: LumenSpacing.sm\n        })\n        .fontSize(LumenTypography.mdSize)\n        .fontColor(this.lumenTheme.colors.ink)\n        .placeholderColor(this.lumenTheme.colors.inkMuted)\n        .caretColor(this.lumenTheme.colors.brand)\n        .backgroundColor(this.lumenTheme.colors.surface)\n        .borderRadius(LumenRadius.sm)\n        .borderWidth(1)\n        .borderColor(this.fieldBorderColor())\n        .enabled(!this.isDisabled)\n        .opacity(this.isDisabled ? lumenDisabledOpacity : 1)\n        .accessibilityDescription(lumenFieldDescription(this.label, this.errorMessage))\n        .onChange((value: string) => {\n          this.onValueChange(value)\n        })\n        .onFocus(() => {\n          this.focused = true\n        })\n        .onBlur(() => {\n          this.focused = false\n        })\n\n      if (this.errorMessage.length > 0) {\n        Text(this.errorMessage)\n          .fontSize(LumenTypography.xsSize)\n          .fontColor(this.lumenTheme.colors.danger)\n          .accessibilityLevel('no')\n      }\n    }\n    .alignItems(HorizontalAlign.Start)\n  }\n}\n",
+      "packages/arkui/src/main/ets/theme/LumenTheme.ets": "import { mediaquery } from '@kit.ArkUI'\nimport { LumenColorPalette, LumenColors } from '../tokens/Tokens.generated'\nimport {\n  LumenColorSchemePreference,\n  LumenThemeValues,\n  lumenThemeValues,\n  resolveLumenIsDark\n} from './ThemeValues'\n\n/**\n * Publishes Lumen's semantic palette to every Lumen component in the application. Follows the\n * system color mode unless `colorScheme` forces light or dark. Render one `LumenTheme` at the\n * application root: the palette is application-wide, so a second instance replaces the first.\n * `lightColors` and `darkColors` are read once, when the component appears.\n */\n@Component\nexport struct LumenTheme {\n  @Prop @Watch('onColorSchemeChange') colorScheme: LumenColorSchemePreference =\n    LumenColorSchemePreference.System\n  @Prop fillsParent: boolean = true\n  lightColors: LumenColorPalette = LumenColors.light\n  darkColors: LumenColorPalette = LumenColors.dark\n  private systemIsDark: boolean = false\n  private schemeListener?: mediaquery.MediaQueryListener\n\n  @Builder\n  emptyContent() {\n  }\n\n  @BuilderParam content: () => void = this.emptyContent\n\n  aboutToAppear(): void {\n    const listener = this.getUIContext().getMediaQuery().matchMediaSync('(dark-mode: true)')\n\n    this.schemeListener = listener\n    this.systemIsDark = listener.matches\n    listener.on('change', (result: mediaquery.MediaQueryResult) => {\n      this.systemIsDark = result.matches\n      this.applyTheme()\n    })\n    this.applyTheme()\n  }\n\n  aboutToDisappear(): void {\n    this.schemeListener?.off('change')\n  }\n\n  onColorSchemeChange(_propertyName: string): void {\n    this.applyTheme()\n  }\n\n  private applyTheme(): void {\n    AppStorage.setOrCreate<LumenThemeValues>('lumenTheme', lumenThemeValues(\n      resolveLumenIsDark(this.colorScheme, this.systemIsDark),\n      this.lightColors,\n      this.darkColors\n    ))\n  }\n\n  build() {\n    Stack({ alignContent: Alignment.TopStart }) {\n      this.content()\n    }\n    .constraintSize({\n      minWidth: this.fillsParent ? '100%' : 0,\n      minHeight: this.fillsParent ? '100%' : 0\n    })\n  }\n}\n"
     },
     "react-native": {
       "packages/react-native/src/accessibility-announcement.ts": "import { useEffect, useRef } from 'react'\nimport { AccessibilityInfo, Platform } from 'react-native'\n\nimport type { LumenErrorStateAnnouncement } from './structured-recipes.js'\n\n/** Android and web use live regions; iOS requires an explicit announcement. */\nexport const useLumenAccessibilityAnnouncement = (\n  message: string,\n  announcement: LumenErrorStateAnnouncement\n): void => {\n  const previousRef = useRef<{ message: string, announcement: LumenErrorStateAnnouncement } | null>(null)\n\n  useEffect(() => {\n    if (Platform.OS !== 'ios' || announcement === 'off' || !message.trim()) {\n      previousRef.current = null\n\n      return\n    }\n\n    if (previousRef.current?.message === message && previousRef.current.announcement === announcement) return\n\n    previousRef.current = { announcement, message }\n\n    AccessibilityInfo.announceForAccessibilityWithOptions(message, { queue: announcement === 'polite' })\n  }, [announcement, message])\n}\n",

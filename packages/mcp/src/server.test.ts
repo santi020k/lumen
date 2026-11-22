@@ -199,6 +199,10 @@ describe('Lumen MCP protocol server', () => {
       name: 'lumen_get_native_component'
     },
     {
+      arguments: { platform: 'arkui' },
+      name: 'lumen_list_native_components'
+    },
+    {
       arguments: { framework: 'vue' },
       name: 'lumen_list_components'
     },
@@ -220,6 +224,49 @@ describe('Lumen MCP protocol server', () => {
 
       expect(result.isError).toBe(true)
       expect(resultText(result)).toContain('Invalid arguments')
+    })
+  })
+
+  test('serves the ArkUI pilot catalog for harmonyos over MCP', async () => {
+    await withClient(async client => {
+      const [list, button, badge, diagnostics] = await Promise.all([
+        client.callTool({ arguments: { platform: 'harmonyos' }, name: 'lumen_list_native_components' }),
+        client.callTool({
+          arguments: { detail: 'source', name: 'Button', platform: 'harmonyos' },
+          name: 'lumen_get_native_component'
+        }),
+        client.callTool({
+          arguments: { name: 'badge', platform: 'harmonyos' },
+          name: 'lumen_get_native_component'
+        }),
+        client.callTool({ arguments: {}, name: 'lumen_diagnose' })
+      ])
+
+      expect(list.isError).toBe(false)
+      expect(resultStructuredContent(list)).toMatchObject({ count: 6 })
+      expect(resultText(list)).toContain('Text field (text-field)')
+      expect(resultText(list)).not.toContain('Badge')
+
+      expect(button.isError).toBe(false)
+      expect(resultStructuredContent(button)).toMatchObject({
+        component: {
+          implementation: { language: 'arkts', maturity: 'Pilot', packageName: '@santi020k/lumen-arkui' },
+          platform: 'harmonyos'
+        },
+        found: true
+      })
+      expect(resultText(button)).toContain('export struct LumenButton')
+
+      expect(badge.isError).toBe(true)
+      expect(resultStructuredContent(badge)).toMatchObject({ found: false })
+      expect(resultText(badge)).toContain('Available platforms: compose, react-native, swiftui.')
+
+      expect(diagnostics.isError).toBe(false)
+      expect(resultStructuredContent(diagnostics)).toMatchObject({
+        nativeCoverage: { harmonyos: 6 },
+        status: 'healthy'
+      })
+      expect(resultText(diagnostics)).toContain('ArkUI (pilot): 6')
     })
   })
 

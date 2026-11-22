@@ -1,9 +1,11 @@
 import * as z from 'zod'
 
+import { lumenNativePlatforms } from './data.js'
+
 const textSchema = z.string().trim()
 const stringsSchema = z.array(textSchema)
 const frameworkNameSchema = z.enum(['astro', 'react', 'elements'])
-const platformNameSchema = z.enum(['react-native', 'swiftui', 'compose'])
+const platformNameSchema = z.enum(lumenNativePlatforms)
 
 const apiRowSchema = z.strictObject({
   defaultValue: textSchema, description: textSchema, name: textSchema, values: textSchema
@@ -79,8 +81,8 @@ const nativeComponentSchema = z.strictObject({
     exportName: textSchema,
     importStatement: textSchema.optional(),
     install: textSchema.optional(),
-    language: z.enum(['kotlin', 'swift', 'tsx']).optional(),
-    maturity: z.enum(['Experimental', 'Supported']).optional(),
+    language: z.enum(['arkts', 'kotlin', 'swift', 'tsx']).optional(),
+    maturity: z.enum(['Experimental', 'Pilot', 'Supported']).optional(),
     packageName: textSchema,
     setup: textSchema.optional(),
     source: textSchema.optional(),

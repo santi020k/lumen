@@ -17,7 +17,7 @@ describe('structured usage contracts', () => {
       }
     })
 
-    test.each(['react-native', 'swiftui', 'compose'] as const)('validates every %s component', platform => {
+    test.each(['react-native', 'swiftui', 'compose', 'harmonyos'] as const)('validates every %s component', platform => {
       for (const component of data.nativeComponents) {
         const result = getNativeComponent({ detail, name: component.name, platform }, data)
 
