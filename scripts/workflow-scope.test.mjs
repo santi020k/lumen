@@ -535,6 +535,22 @@ test('MCP deployment skips unpublished and stale-tag revisions before production
 })
 
 
+test('the HarmonyOS bundle check runs on the built workspace packages in the React Native job', () => {
+  const job = ci.split('  react-native-captures:\n')[1]?.split(/\n {2}[a-z][a-z-]*:\n/u)[0]
+
+  assert.ok(job, 'CI must preserve the React Native job')
+
+  assert.match(job, /runs-on: ubuntu-latest/u)
+
+  const build = job.indexOf('pnpm --filter @santi020k/lumen-react-native... run build')
+  const bundle = job.indexOf('run: pnpm run check:harmony-bundle')
+  const packed = job.indexOf('node scripts/prepare-packed-react-native-canary.mjs')
+
+  assert.ok(build !== -1 && build < bundle, 'The HarmonyOS bundle needs the built React Native package')
+
+  assert.ok(bundle < packed, 'The HarmonyOS bundle must resolve workspace packages, not the packed canary')
+})
+
 test('early failures block every expensive CI and release canary lane', () => {
   const expensiveJobs = {
     ci: ['native-android', 'browser-contracts', 'react-native-captures', 'mcp-node-20'],

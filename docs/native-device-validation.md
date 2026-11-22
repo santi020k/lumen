@@ -21,6 +21,10 @@ iOS 16, macOS 13, visionOS 1, and watchOS 9, WidgetKit uses iOS 16, macOS 13, an
 Compose uses Android API 23, and Wear uses API 30. A Partial result
 must list the checks or evidence that still block completion.
 
+The React Native row for HarmonyOS tracks the [HarmonyOS NEXT preview](harmonyos.md) through React
+Native for OpenHarmony. Its minimum, HarmonyOS NEXT 5.0 (API 12), is the `compatibleSdkVersion` of
+`apps/playground-harmony/harmony/build-profile.template.json5`. No device pass has been recorded.
+
 ## Automated gates
 
 Run the following before starting a manual device pass:
@@ -49,19 +53,20 @@ packages, generated tokens, or either native workflow changes.
 Record the device, exact OS version, date, tester, and an issue or recording link for every pass.
 Do not replace a physical-device result with a simulator or emulator result.
 
-| Adapter                 | Minimum pass                   | Current pass                          | Assistive technology                                                                     | Evidence                             |
-| ----------------------- | ------------------------------ | ------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------ |
-| React Native on iOS     | iOS 15.1 physical iPhone       | Current iPhone and iOS                | VoiceOver, Larger Text, Reduce Motion, Increase Contrast                                 | Pending                              |
-| React Native on Android | Android API 24 physical device | Current Android device                | TalkBack, font size and display size, remove animations, high contrast                   | Pending                              |
-| SwiftUI on iOS          | iOS 16 device                  | Current iPhone and iOS                | VoiceOver, Dynamic Type, Reduce Motion, Increase Contrast                                | Partial hardware pass recorded below |
-| SwiftUI on macOS        | macOS 13 Mac                   | Current macOS Mac                     | VoiceOver, Full Keyboard Access, Reduce Motion, Increase Contrast                        | Partial hardware pass recorded below |
-| SwiftUI on visionOS     | visionOS 1 Apple Vision Pro    | Current Apple Vision Pro and visionOS | VoiceOver, Dynamic Type, Reduce Motion, Increase Contrast, gaze and gesture input        | Pending                              |
-| SwiftUI on watchOS      | watchOS 9 Apple Watch          | Current Apple Watch and watchOS       | VoiceOver, Larger Text, Reduce Motion, Increase Contrast, Always On                      | Pending                              |
-| WidgetKit on iOS        | iOS 16 physical iPhone         | Current iPhone and iOS                | VoiceOver, Larger Text, Reduce Motion, Increase Contrast, widget-family layouts          | Partial hardware pass recorded below |
-| WidgetKit on macOS      | macOS 13 physical Mac          | Current Mac and macOS                 | VoiceOver, Full Keyboard Access, Reduce Motion, Increase Contrast, widget-family layouts | Pending                              |
-| WidgetKit on watchOS    | watchOS 9 physical Apple Watch | Current Apple Watch and watchOS       | VoiceOver, Larger Text, Reduce Motion, Increase Contrast, Always On                      | Pending                              |
-| Compose on Android      | Android API 23 physical device | Current Android device                | TalkBack, font size and display size, remove animations, high contrast                   | Pending                              |
-| Compose on Wear OS      | Wear OS API 30 physical watch  | Current Wear OS watch                 | TalkBack, font scaling, remove animations, round-screen clipping, rotary input           | Pending                              |
+| Adapter                   | Minimum pass                                | Current pass                          | Assistive technology                                                                     | Evidence                             |
+| ------------------------- | ------------------------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------ |
+| React Native on iOS       | iOS 15.1 physical iPhone                    | Current iPhone and iOS                | VoiceOver, Larger Text, Reduce Motion, Increase Contrast                                 | Pending                              |
+| React Native on Android   | Android API 24 physical device              | Current Android device                | TalkBack, font size and display size, remove animations, high contrast                   | Pending                              |
+| React Native on HarmonyOS | HarmonyOS NEXT 5.0 (API 12) physical device | Current HarmonyOS NEXT device         | Screen reader, text and display size, reduced motion, high-contrast text                 | Pending (preview)                    |
+| SwiftUI on iOS            | iOS 16 device                               | Current iPhone and iOS                | VoiceOver, Dynamic Type, Reduce Motion, Increase Contrast                                | Partial hardware pass recorded below |
+| SwiftUI on macOS          | macOS 13 Mac                                | Current macOS Mac                     | VoiceOver, Full Keyboard Access, Reduce Motion, Increase Contrast                        | Partial hardware pass recorded below |
+| SwiftUI on visionOS       | visionOS 1 Apple Vision Pro                 | Current Apple Vision Pro and visionOS | VoiceOver, Dynamic Type, Reduce Motion, Increase Contrast, gaze and gesture input        | Pending                              |
+| SwiftUI on watchOS        | watchOS 9 Apple Watch                       | Current Apple Watch and watchOS       | VoiceOver, Larger Text, Reduce Motion, Increase Contrast, Always On                      | Pending                              |
+| WidgetKit on iOS          | iOS 16 physical iPhone                      | Current iPhone and iOS                | VoiceOver, Larger Text, Reduce Motion, Increase Contrast, widget-family layouts          | Partial hardware pass recorded below |
+| WidgetKit on macOS        | macOS 13 physical Mac                       | Current Mac and macOS                 | VoiceOver, Full Keyboard Access, Reduce Motion, Increase Contrast, widget-family layouts | Pending                              |
+| WidgetKit on watchOS      | watchOS 9 physical Apple Watch              | Current Apple Watch and watchOS       | VoiceOver, Larger Text, Reduce Motion, Increase Contrast, Always On                      | Pending                              |
+| Compose on Android        | Android API 23 physical device              | Current Android device                | TalkBack, font size and display size, remove animations, high contrast                   | Pending                              |
+| Compose on Wear OS        | Wear OS API 30 physical watch               | Current Wear OS watch                 | TalkBack, font scaling, remove animations, round-screen clipping, rotary input           | Pending                              |
 
 ## Component pass
 

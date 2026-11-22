@@ -90,6 +90,50 @@
       }
     },
     {
+      "id": "react-native-harmony",
+      "adapter": "React Native",
+      "platform": "HarmonyOS",
+      "minimumOperatingSystem": "HarmonyOS NEXT 5.0 (API 12)",
+      "minimum": {
+        "status": "pending",
+        "targetDescription": "HarmonyOS NEXT 5.0 (API 12) physical device",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      },
+      "current": {
+        "status": "pending",
+        "targetDescription": "Current HarmonyOS NEXT device",
+        "environment": null,
+        "date": null,
+        "revision": null,
+        "tester": null,
+        "evidence": [],
+        "checks": {
+          "screenReader": false,
+          "alternateInput": false,
+          "maximumTextScale": false,
+          "reducedMotion": false,
+          "increasedContrast": false,
+          "responsiveLayout": false,
+          "stateAndAnnouncements": false
+        },
+        "blockingIssues": []
+      }
+    },
+    {
       "id": "swiftui-ios",
       "adapter": "SwiftUI",
       "platform": "iOS",
