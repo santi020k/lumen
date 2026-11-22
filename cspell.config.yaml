@@ -772,6 +772,11 @@ words:
   - Leyenda
   - Categoría
   - Serie
+  - hermesc
+  - hvigor
+  - ohos
+  - ohpm
+  - RNOH
 ignoreRegExpList:
   - luQW2pTQ3jGGxSFPAAsfa9
 ignorePaths:
@@ -801,6 +806,7 @@ ignorePaths:
   - apps/playground-apple/LumenApplePlayground.xcodeproj/**
   - apps/playground-apple/Supporting/Info.plist
   - apps/playground-apple/project.yml
+  - apps/playground-harmony/harmony/**
 
 # Standard ARIA attribute suffixes used by virtualized collections.
 

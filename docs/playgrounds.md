@@ -205,6 +205,14 @@ Run `pnpm run build:android:store` for a production Android artifact or `pnpm ru
 iOS archive. EAS requests the relevant Google or Apple signing credentials during the first
 production build.
 
+### Run on HarmonyOS NEXT (preview)
+
+`apps/playground-harmony` hosts the same React Native playground on HarmonyOS through React Native
+for OpenHarmony. Run `pnpm run check:harmony-bundle` to verify the JavaScript bundle without
+HarmonyOS tooling. The [playground README](../apps/playground-harmony/README.md) covers DevEco
+Studio, signing and device setup; [HarmonyOS NEXT (preview)](harmonyos.md) records versions and
+verification status.
+
 ## Apple and SwiftUI
 
 ### Install LumenUI in another Xcode project

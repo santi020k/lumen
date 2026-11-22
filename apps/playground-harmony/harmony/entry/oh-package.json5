@@ -1,0 +1,9 @@
+{
+  "license": "MIT",
+  "devDependencies": {},
+  "name": "entry",
+  "description": "Lumen playground entry module",
+  "version": "1.0.0",
+  "dependencies": {
+  }
+}

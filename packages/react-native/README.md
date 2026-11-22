@@ -75,6 +75,15 @@ the application uses that subpath:
 pnpm add @react-native-community/datetimepicker
 ```
 
+### HarmonyOS NEXT (preview)
+
+The adapter targets HarmonyOS NEXT as a preview through React Native for OpenHarmony 0.86, which is
+still a release candidate. Its JavaScript bundle builds for HarmonyOS; native builds and devices are
+not verified yet. Add the SVG port beside `react-native-svg`, and the date picker port if the
+application uses date fields. See
+[HarmonyOS NEXT (preview)](https://github.com/santi020k/lumen/blob/main/docs/harmonyos.md) for
+versions, Metro setup and verification status.
+
 ## Usage
 
 React 19.2 and React Native 0.86.2 or newer are application-provided peer dependencies. Mount one
