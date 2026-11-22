@@ -17,6 +17,8 @@ the other packages adapt or expose shared pieces.
 - `packages/tokens` publishes the canonical platform-neutral token document.
 - `packages/react-native`, `packages/swift`, and `packages/compose` hold native platform adapters;
   the repository-root `Package.swift` exposes the SwiftUI sources to Swift Package Manager.
+- `packages/arkui` holds the HarmonyOS ArkUI pilot adapter. Keep decisions in its tested `.ts`
+  resolvers; its `.ets` components can't be compiled without DevEco Studio.
 - `packages/lumen` is the umbrella package and public package map.
 - `apps/docs` is the Astro documentation and demo site.
 

@@ -6,17 +6,18 @@ Lumen's React Native adapter targets HarmonyOS NEXT through
 [React Native for OpenHarmony](https://gitcode.com/OpenHarmony-RN/ohos_react_native) (RNOH).
 Support is a **preview**: `@santi020k/lumen-react-native` needs React Native 0.86.2 or newer, and
 RNOH's 0.86 line is still a release candidate. The latest stable RNOH line, 0.82, is below the
-adapter's minimum peer. A native ArkTS and ArkUI adapter is planned separately.
+adapter's minimum peer. A native ArkTS and ArkUI adapter has started as a
+[six-component pilot](#native-arkui-adapter-pilot).
 
 ## Status
 
 | Layer | State | Evidence |
 | --- | --- | --- |
-| JavaScript bundle | Verified | `pnpm run check:harmony-bundle` bundles the complete React Native playground for the `harmony` platform. React, React Native, React Native SVG, Safe Area Context and the date picker each resolve to one copy, and those three libraries are redirected to their RNOH ports. |
+| JavaScript bundle | Verified in CI | `pnpm run check:harmony-bundle` bundles the complete React Native playground for the `harmony` platform, and the React Native job in `.github/workflows/ci.yml` runs it on every pull request that changes the adapter, either playground or the workspace catalog. React, React Native, React Native SVG, Safe Area Context and the date picker each resolve to one copy, and those three libraries are redirected to their RNOH ports. |
 | Hermes bytecode | Verified | `pnpm run playground:harmony:bundle` compiles the release `hermes_bundle.hbc` the host loads. |
 | Playground types and lint | Verified | `tsc --noEmit` and ESLint pass for `apps/playground-harmony`, including the shared playground source. |
 | DevEco Studio native build | Not yet verified | Needs DevEco Studio, the HarmonyOS SDK and a Huawei developer account for signing. |
-| Device rendering and accessibility | Not yet verified | Needs a HarmonyOS NEXT emulator or device. Record results in the [native device validation matrix](native-device-validation.md). |
+| Device rendering and accessibility | Not yet verified | Needs a HarmonyOS NEXT emulator or device. The React Native on HarmonyOS row of the [native device validation matrix](native-device-validation.md) is pending; record results there and in `registry/native-device-evidence.json`. |
 
 ## Versions
 
@@ -85,10 +86,39 @@ pnpm run playground:harmony:bundle  # release Hermes bundle into the DevEco proj
 pnpm run playground:harmony         # Metro server for debug builds
 ```
 
+## Native ArkUI adapter (pilot)
+
+[`packages/arkui`](../packages/arkui/README.md) is a HarmonyOS library module written in ArkTS. It
+doesn't use React Native. The pilot covers `LumenTheme`, `LumenText`, `LumenSurface`,
+`LumenButton`, `LumenTextField`, and `LumenCard`, plus every foundation token group.
+
+| Layer | State | Evidence |
+| --- | --- | --- |
+| Tokens | Generated and verified | `pnpm run check:platform-tokens` keeps `Tokens.generated.ts` in step with `tokens/lumen.tokens.json`. |
+| Theme values and style resolvers | Verified | `pnpm --filter @santi020k/lumen-arkui run test`, `typecheck`, and `lint`. Colors, sizes, and error state are decided in these `.ts` files. |
+| Registry and MCP catalog | Verified | `pnpm run check:native-contracts` requires each pilot symbol to be an exported struct. The MCP catalog lists the pilot as the `harmonyos` platform. |
+| ArkUI components | Not yet verified | The `.ets` sources follow the API 12 documentation but haven't been compiled with DevEco Studio or run on a device. |
+
+The package isn't published to ohpm, and its API can change. `registry/native-components.json`
+marks the adapter `"maturity": "pilot"`, which lets it cover part of the catalog. The pilot
+graduates when:
+
+1. A DevEco Studio build of the module and a device or emulator run succeed.
+2. An ArkUI row with a recorded pass is added to the native device validation matrix.
+3. The package is published to ohpm through a GitHub release workflow.
+4. Coverage reaches the universal primitives: Icon, IconButton, Badge, Divider, and Spinner.
+
 ## Graduating from preview
+
+Two criteria are met:
+
+- `pnpm run check:harmony-bundle` runs in CI with the React Native checks.
+- The native device validation matrix has a React Native on HarmonyOS row. Its minimum is HarmonyOS
+  NEXT 5.0 (API 12), the playground's `compatibleSdkVersion`.
+
+Three remain:
 
 1. RNOH publishes a stable 0.86 or newer line, and the svg and date-picker ports publish releases
    for it.
 2. A DevEco Studio build and an emulator run of the playground succeed.
-3. Device rows for HarmonyOS are added to the native device validation matrix.
-4. `pnpm run check:harmony-bundle` runs in CI with the React Native checks.
+3. A HarmonyOS NEXT device pass is recorded in the matrix's pending row.

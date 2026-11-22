@@ -32,6 +32,7 @@ const appleScopeRules = [
   { pattern: /^packages\/(?:core|tokens)\//u, checks: appleChecks },
   { pattern: /^(?:Package\.(?:swift|resolved)|packages\/(?:swift|swift-widget)\/|apps\/playground-apple\/)/u, checks: ['swift', 'captures'] },
   { pattern: /^(?:packages\/react-native\/|apps\/playground-react-native\/)/u, checks: ['react-native', 'visual'] },
+  { pattern: /^(?:apps\/playground-harmony|packages\/arkui)\//u, checks: [] },
   { pattern: /^packages\/(?:astro|elements|icons-brand|lumen|react|react-hook-form|templates)\//u, checks: webAppleChecks },
   { pattern: /^apps\/docs\/(?:public\/native-components\/|scripts\/sync-native-component-captures\.mjs$|src\/data\/native-component-captures\.json$)/u, checks: ['captures', 'visual'] },
   { pattern: /^(?:apps\/docs\/|docs\/|[A-Z][A-Z_]*\.md$)/u, checks: ['visual'] },
@@ -147,7 +148,7 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   ])
 
   const reactNativeCaptures = matchesAny(paths, [
-    /^apps\/playground-react-native\//u,
+    /^apps\/playground-(?:harmony|react-native)\//u,
     /^packages\/(core|react-native|tokens)\//u,
     /^tokens\//u,
     /^apps\/docs\/(public\/native-components\/|scripts\/sync-native-component-captures\.mjs|src\/data\/native-component-captures\.json)/u,
@@ -158,9 +159,9 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
 
   const nativeContracts = matchesAny(paths, [
     /^apps\/playground-(android|apple|react-native)\//u,
-    /^packages\/(compose|core|react-native|swift|swift-widget|tokens)\//u,
+    /^packages\/(arkui|compose|core|react-native|swift|swift-widget|tokens)\//u,
     /^tokens\//u,
-    /^registry\/(compose-api-classification|lumen-[34]-contract|native-api-baseline|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$/u,
+    /^registry\/(compose-api-classification|lumen-[34]-contract|native-api-baseline|native-components|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$/u,
     /^apps\/docs\/(public\/native-components\/|scripts\/sync-native-component-captures\.mjs|src\/data\/native-component-captures\.json)/u,
     /^scripts\/(check-compose-api-classification|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$/u,
     /^Package\.swift$/u,

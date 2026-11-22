@@ -213,6 +213,13 @@ owned.
 `LumenWearTheme`, `LumenWearTone`, `LumenWearActionButton`, `LumenWearProgressRing`,
 `LumenWearStatus`, `LumenWearMetric`, and `LumenWearListRow` retain their Supported API classification.
 
+### ArkUI (pilot)
+
+The HarmonyOS adapter in [`packages/arkui`](../packages/arkui/README.md) is a pilot. It covers
+`LumenTheme`, `LumenText`, `LumenSurface`, `LumenButton`, `LumenTextField`, and `LumenCard`, isn't
+published, and hasn't been compiled with DevEco Studio yet. The tables below describe the React
+Native, SwiftUI, and Compose adapters; [HarmonyOS NEXT (preview)](harmonyos.md) tracks the pilot.
+
 ## Supported surface
 
 | Contract          | React Native            | SwiftUI                  | Compose                 | Shared behavior                                                               |

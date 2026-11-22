@@ -103,6 +103,8 @@ export default defineConfig({
       project('icons-brand', 'packages/icons-brand'),
       project('astro', 'packages/astro', { include: ['*.test.ts'] }),
       project('templates', 'packages/templates'),
+      // The HAR compiles everything under src/main, so the ArkUI suite lives outside it.
+      project('arkui', 'packages/arkui', { include: ['tests/**/*.test.ts'] }),
       project('next-smoke', 'apps/next-smoke', { passWithNoTests: true }),
       project('template-showcase', 'apps/templates', { passWithNoTests: true }),
       project('docs', 'apps/docs', { passWithNoTests: true }),

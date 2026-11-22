@@ -311,6 +311,65 @@ test('each playground selects only its owning expensive surface', () => {
   assert.equal(reactNative.android, false)
 })
 
+test('the HarmonyOS playground bundles with the React Native checks without selecting Apple or Android', () => {
+  for (const path of [
+    'apps/playground-harmony/index.ts',
+    'apps/playground-harmony/metro.config.js',
+    'apps/playground-harmony/package.json',
+    'apps/playground-harmony/harmony/entry/src/main/ets/pages/Index.ets'
+  ]) {
+    const classification = classifyCiPaths([path])
+
+    assert.equal(classification['react-native-captures'], true, path)
+
+    assert.equal(classification['native-contracts'], false, path)
+
+    assert.equal(classification.apple, false, path)
+
+    assert.equal(classification.android, false, path)
+
+    assert.deepEqual(classifyApplePaths([path]), {
+      captures: false,
+      'framework-visual': false,
+      full: false,
+      'react-native': false,
+      reason: 'owned-inputs',
+      swift: false,
+      visual: false
+    }, path)
+  }
+
+  for (const path of [
+    'packages/react-native/src/Button.tsx',
+    'apps/playground-react-native/src/App.tsx',
+    'pnpm-workspace.yaml',
+    '.github/workflows/ci.yml'
+  ]) {
+    assert.equal(classifyCiPaths([path])['react-native-captures'], true, path)
+  }
+})
+
+test('ArkUI pilot changes run native contracts without Apple or Android jobs', () => {
+  for (const path of [
+    'packages/arkui/Index.ets',
+    'packages/arkui/src/main/ets/components/LumenButton.ets',
+    'packages/arkui/src/main/ets/tokens/Tokens.generated.ts',
+    'packages/arkui/tests/styles.test.ts'
+  ]) {
+    const classification = classifyCiPaths([path])
+
+    assert.equal(classification['native-contracts'], true, path)
+
+    assert.equal(classification.apple, false, path)
+
+    assert.equal(classification.android, false, path)
+
+    assert.equal(classifyApplePaths([path]).full, false, path)
+  }
+
+  assert.equal(classifyCiPaths(['registry/native-components.json'])['native-contracts'], true)
+})
+
 test('Apple release automation selects its dedicated CI and canary coverage', () => {
   for (const path of [
     'scripts/check-playground-apple-release.mjs',

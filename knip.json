@@ -47,6 +47,10 @@
       ],
       "project": ["src/**/*.{ts,tsx}", "scripts/*.mjs"]
     },
+    "packages/arkui": {
+      "entry": ["src/main/ets/**/*.ts", "tests/**/*.test.ts"],
+      "project": ["src/**/*.ts", "tests/**/*.ts"]
+    },
     "apps/playground-react-native": {
       "entry": ["src/fixtures/TextLayoutProbe.tsx"],
       "project": ["src/**/*.{ts,tsx}", "plugins/*.{cjs,ts}"]

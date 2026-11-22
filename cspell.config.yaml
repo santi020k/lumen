@@ -777,6 +777,13 @@ words:
   - ohos
   - ohpm
   - RNOH
+  - AARRGGBB
+  - arkts
+  - arkui
+  - harmonyos
+  - hvigorfile
+  - mediaquery
+  - ohpmignore
 ignoreRegExpList:
   - luQW2pTQ3jGGxSFPAAsfa9
 ignorePaths:

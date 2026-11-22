@@ -25,6 +25,7 @@ The generator produces and verifies:
 | React Native | TypeScript hexadecimal colors and numeric dimensions |
 | SwiftUI | Swift `Color`, `CGFloat`, duration, cubic Bezier, and elevation values |
 | Jetpack Compose | Compose `Color`, `Dp`, `Sp`, duration, cubic Bezier, and elevation values |
+| ArkUI (pilot) | Typed ArkTS-compatible hexadecimal colors, `vp` lengths, `fp` font sizes, duration, cubic Bezier, and elevation values |
 | Token consumers | Published `@santi020k/lumen-tokens` JSON |
 
 The check also compares the semantic light and dark colors with `packages/lumen/styles.css`, so a

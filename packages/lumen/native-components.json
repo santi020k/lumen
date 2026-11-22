@@ -31,6 +31,14 @@
         "kotlin": "2.4.21",
         "minSdk": 23
       }
+    },
+    "arkUI": {
+      "package": "@santi020k/lumen-arkui",
+      "sourceDirectory": "packages/arkui/src/main/ets/components",
+      "additionalSourceDirectories": [
+        "packages/arkui/src/main/ets/theme"
+      ],
+      "maturity": "pilot"
     }
   },
   "components": [
@@ -42,7 +50,8 @@
       "symbols": {
         "reactNative": "LumenProvider",
         "swiftUI": "LumenTheme",
-        "compose": "LumenTheme"
+        "compose": "LumenTheme",
+        "arkUI": "LumenTheme"
       }
     },
     {
@@ -53,7 +62,8 @@
       "symbols": {
         "reactNative": "LumenText",
         "swiftUI": "LumenText",
-        "compose": "LumenText"
+        "compose": "LumenText",
+        "arkUI": "LumenText"
       }
     },
     {
@@ -86,7 +96,8 @@
       "symbols": {
         "reactNative": "LumenSurface",
         "swiftUI": "LumenSurface",
-        "compose": "LumenSurface"
+        "compose": "LumenSurface",
+        "arkUI": "LumenSurface"
       }
     },
     {
@@ -97,7 +108,8 @@
       "symbols": {
         "reactNative": "LumenButton",
         "swiftUI": "LumenButton",
-        "compose": "LumenButton"
+        "compose": "LumenButton",
+        "arkUI": "LumenButton"
       }
     },
     {
@@ -108,7 +120,8 @@
       "symbols": {
         "reactNative": "LumenTextField",
         "swiftUI": "LumenTextField",
-        "compose": "LumenTextField"
+        "compose": "LumenTextField",
+        "arkUI": "LumenTextField"
       }
     },
     {
@@ -306,7 +319,8 @@
       "symbols": {
         "reactNative": "LumenCard",
         "swiftUI": "LumenCard",
-        "compose": "LumenCard"
+        "compose": "LumenCard",
+        "arkUI": "LumenCard"
       }
     },
     {
