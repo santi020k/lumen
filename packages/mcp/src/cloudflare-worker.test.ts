@@ -1,9 +1,51 @@
+import { Client, type ReconnectionScheduler, StreamableHTTPClientTransport } from '@modelcontextprotocol/client'
 import { describe, expect, test, vi } from 'vitest'
 
 import worker from './cloudflare-worker.js'
 import { getMeta } from './tools.js'
 
 describe('Cloudflare Worker MCP transport', () => {
+  test('returns 405 with Allow: POST for non-POST MCP requests and connects without SSE reconnects', async () => {
+    const limit = vi.fn().mockResolvedValue({ success: true })
+    const environment = { LUMEN_MCP_RATE_LIMITER: { limit } }
+
+    for (const method of ['GET', 'DELETE'] as const) {
+      const response = await worker.fetch(new Request('https://lumen.example/mcp', {
+        headers: { 'cf-connecting-ip': '192.0.2.1' },
+        method
+      }), environment)
+
+      expect(response.status).toBe(405)
+      expect(response.headers.get('allow')).toBe('POST')
+      expect(response.headers.get('cache-control')).toBe('no-store')
+      expect(response.headers.get('referrer-policy')).toBe('no-referrer')
+      expect(response.headers.get('x-content-type-options')).toBe('nosniff')
+      expect(response.headers.get('x-frame-options')).toBe('DENY')
+      await expect(response.json()).resolves.toEqual({
+        error: { code: -32000, message: 'Method not allowed.' },
+        id: null,
+        jsonrpc: '2.0'
+      })
+    }
+
+    const client = new Client({ name: 'lumen-worker-sdk-test', version: '1.0.0' })
+    const reconnectionScheduler = vi.fn<ReconnectionScheduler>(() => () => undefined)
+    const transport = new StreamableHTTPClientTransport(new URL('https://lumen.example/mcp'), {
+      fetch: (url, init) => worker.fetch(new Request(url, init), environment),
+      reconnectionScheduler
+    })
+
+    try {
+      await client.connect(transport)
+      const tools = await client.listTools()
+
+      expect(reconnectionScheduler).not.toHaveBeenCalled()
+      expect(tools.tools.map(tool => tool.name)).toContain('lumen_get_meta')
+    } finally {
+      await client.close()
+    }
+  })
+
   test('keeps the existing stateless protocol handshake and tool responses', async () => {
     const limit = vi.fn().mockResolvedValue({ success: true })
     const environment = { LUMEN_MCP_RATE_LIMITER: { limit } }

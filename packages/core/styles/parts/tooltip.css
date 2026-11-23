@@ -62,3 +62,11 @@
     visibility: visible;
   }
 }
+
+@layer lumen.components {
+@starting-style {
+.ui-tooltip [role="tooltip"][popover]:popover-open {
+      opacity: 0;
+    }
+}
+}

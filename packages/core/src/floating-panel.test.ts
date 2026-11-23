@@ -237,3 +237,183 @@ test('a malformed initial focus selector in a same-origin iframe still lets the 
   expect(framePanel.style.left).toBe('4px')
   frame.remove()
 })
+
+test('preserves focus inside open and closed shadow roots, dismisses once on same-root or external focus, and restores trigger focus', () => {
+  for (const mode of ['open', 'closed'] as const) {
+    const host = document.createElement('div')
+    const shadow = host.attachShadow({ mode })
+    const shadowTrigger = document.createElement('button')
+    const shadowPanel = document.createElement('div')
+    const panelInput = document.createElement('input')
+    const shadowSibling = document.createElement('button')
+    const externalButton = document.createElement('button')
+
+    shadowPanel.hidden = true
+    shadowPanel.append(panelInput)
+    shadow.append(popoverStyles.cloneNode(true), shadowTrigger, shadowPanel, shadowSibling)
+    document.body.append(host, externalButton)
+
+    const onDismiss = vi.fn()
+    const disconnect = connectLumenFloatingPanel(shadowPanel, shadowTrigger, {
+      initialFocus: 'input',
+      onDismiss
+    })
+
+    expect(shadow.activeElement).toBe(panelInput)
+    expect(onDismiss).toHaveBeenCalledTimes(0)
+
+    shadowTrigger.focus()
+    expect(onDismiss).toHaveBeenCalledTimes(0)
+
+    panelInput.focus()
+    expect(onDismiss).toHaveBeenCalledTimes(0)
+
+    // Same-root sibling outside focus dismisses once.
+    shadowSibling.focus()
+    expect(onDismiss).toHaveBeenCalledTimes(1)
+
+    // External document focus dismisses once.
+    externalButton.focus()
+    expect(onDismiss).toHaveBeenCalledTimes(2)
+
+    // Cleanup returns owned focus to the trigger inside the shadow root and stops listening.
+    panelInput.focus()
+    disconnect()
+    expect(shadow.activeElement).toBe(shadowTrigger)
+
+    shadowSibling.focus()
+    externalButton.focus()
+    expect(onDismiss).toHaveBeenCalledTimes(2)
+
+    host.remove()
+    externalButton.remove()
+  }
+})
+
+test('observes nested closed shadow-root ancestor chains, cleans up all roots, and preserves external dialog focus', async () => {
+  const outerHost = document.createElement('div')
+  const outerShadow = outerHost.attachShadow({ mode: 'closed' })
+  const outerSibling = document.createElement('button')
+  const innerHost = document.createElement('div')
+  const innerShadow = innerHost.attachShadow({ mode: 'closed' })
+  const innerTrigger = document.createElement('button')
+  const innerPanel = document.createElement('div')
+  const innerAction = document.createElement('button')
+  const externalDialog = document.createElement('dialog')
+  const externalDialogButton = document.createElement('button')
+
+  externalDialog.open = true
+  externalDialog.append(externalDialogButton)
+  innerPanel.hidden = true
+  innerPanel.append(innerAction)
+  innerShadow.append(popoverStyles.cloneNode(true), innerTrigger, innerPanel)
+  outerShadow.append(popoverStyles.cloneNode(true), innerHost, outerSibling)
+  document.body.append(outerHost, externalDialog)
+
+  const onDismiss = vi.fn()
+  const disconnect = connectLumenFloatingPanel(innerPanel, innerTrigger, {
+    initialFocus: 'button',
+    onDismiss
+  })
+
+  expect(innerShadow.activeElement).toBe(innerAction)
+  expect(onDismiss).toHaveBeenCalledTimes(0)
+
+  // Moving focus from the inner closed root to a sibling in the outer closed root must dismiss once.
+  outerSibling.focus()
+  expect(onDismiss).toHaveBeenCalledTimes(1)
+
+  // Native hidePopover moving focus back to innerTrigger without changing document.activeElement must still restore outerSibling.
+  const previousHideDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'hidePopover')
+  const previousHidePopover: unknown = previousHideDescriptor?.value
+
+  Object.defineProperty(HTMLElement.prototype, 'hidePopover', {
+    configurable: true,
+    value: function (this: HTMLElement) {
+      if (typeof previousHidePopover === 'function') Reflect.apply(previousHidePopover, this, [])
+      innerTrigger.focus()
+    }
+  })
+
+  disconnect()
+  expect(outerShadow.activeElement).toBe(outerSibling)
+  expect(document.activeElement).toBe(outerHost)
+
+  if (previousHideDescriptor) {
+    Object.defineProperty(HTMLElement.prototype, 'hidePopover', previousHideDescriptor)
+  }
+
+  // Opening/focusing an external dialog in document must dismiss once and keep external focus on cleanup.
+  const disconnectExternal = connectLumenFloatingPanel(innerPanel, innerTrigger, {
+    initialFocus: 'button',
+    onDismiss
+  })
+
+  externalDialogButton.focus()
+  expect(onDismiss).toHaveBeenCalledTimes(2)
+
+  disconnectExternal()
+  expect(document.activeElement).toBe(externalDialogButton)
+
+  // After cleanup, focus transitions across inner, outer, and document roots do not re-trigger onDismiss.
+  innerAction.focus()
+  outerSibling.focus()
+  externalDialogButton.focus()
+  expect(onDismiss).toHaveBeenCalledTimes(2)
+
+  // Removing a shadow-rooted panel while connected must dismiss once via root MutationObserver.
+  const removeDismiss = vi.fn()
+  const disconnectRemoval = connectLumenFloatingPanel(innerPanel, innerTrigger, { onDismiss: removeDismiss })
+
+  innerPanel.remove()
+  await Promise.resolve()
+  expect(removeDismiss).toHaveBeenCalledTimes(1)
+
+  disconnectRemoval()
+  outerHost.remove()
+  externalDialog.remove()
+})
+
+test('rebinds root observers when connected trigger and panel relocate between closed shadow roots', async () => {
+  const hostA = document.createElement('div')
+  const shadowA = hostA.attachShadow({ mode: 'closed' })
+  const hostB = document.createElement('div')
+  const shadowB = hostB.attachShadow({ mode: 'closed' })
+  const relocatedTrigger = document.createElement('button')
+  const relocatedPanel = document.createElement('div')
+  const insideB = document.createElement('input')
+  const siblingB = document.createElement('button')
+
+  relocatedPanel.hidden = true
+  relocatedPanel.append(insideB)
+  shadowA.append(popoverStyles.cloneNode(true), relocatedTrigger, relocatedPanel)
+  shadowB.append(popoverStyles.cloneNode(true), siblingB)
+  document.body.append(hostA, hostB)
+
+  const onDismiss = vi.fn()
+  const disconnect = connectLumenFloatingPanel(relocatedPanel, relocatedTrigger, { onDismiss })
+
+  // Move both connected elements synchronously from closed root A to closed root B.
+  shadowB.append(relocatedTrigger, relocatedPanel)
+  expect(relocatedTrigger.isConnected).toBe(true)
+  expect(relocatedPanel.isConnected).toBe(true)
+  expect(onDismiss).toHaveBeenCalledTimes(0)
+
+  // Immediate focus inside relocated panel in B must stay open before MutationObserver microtasks flush.
+  insideB.focus()
+  expect(shadowB.activeElement).toBe(insideB)
+  expect(onDismiss).toHaveBeenCalledTimes(0)
+
+  // Same-root sibling focus in B must dismiss once.
+  siblingB.focus()
+  expect(onDismiss).toHaveBeenCalledTimes(1)
+
+  // Later removal of panel inside B must be observed and dismiss once.
+  relocatedPanel.remove()
+  await Promise.resolve()
+  expect(onDismiss).toHaveBeenCalledTimes(2)
+
+  disconnect()
+  hostA.remove()
+  hostB.remove()
+})

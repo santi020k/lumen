@@ -107,15 +107,18 @@ export function PromptPreview() {
     id: 'recipes',
     label: 'Product recipes',
     title: 'Start with an interaction that works.',
-    description: 'Install pricing, feature previews, onboarding, or command search. Adapt their state and callbacks to your product.',
+    description: 'Install pricing, onboarding, command search, card details, metric states, and task progress. Adapt their state and callbacks to your product.',
     components: ['MotionGroup', 'VisualEffect', 'PromptComposer'],
     useCase: 'Choose a recipe when you need a complete starting point. Install its source, then connect application behavior.',
-    notes: ['All four recipes support Astro, React, and Elements. The preview uses fictional local state.', 'Pricing requests a plan selection; your application owns checkout. Onboarding preserves a draft; your application owns saving it.', 'Command search supports Arrow keys, Home, End, Enter, and Escape. Preserve this keyboard path when adapting commands.', 'Astro recipes clean up before a view swap. Elements recipe modules require a bundler.', 'Installed recipe files are yours to edit. Keep component imports public and reuse semantic tokens.'],
+    notes: ['All seven recipes support Astro, React, and Elements. The preview uses fictional local state.', 'Pricing requests a plan selection; your application owns checkout. Onboarding preserves a draft; your application owns saving it.', 'Command search supports Arrow keys, Home, End, Enter, and Escape. Preserve this keyboard path when adapting commands.', 'Card details restore modal focus. Metrics preserve labeled stale values. Task progress only changes when the application supplies a snapshot.', 'Import each recipe stylesheet once. Mount the task-progress controller for Astro; clean it up before a view swap. Elements recipe modules require a bundler.', 'Installed recipe files are yours to edit. Keep component imports public and reuse semantic tokens.'],
     next: 'motion',
     code: `lumen add interactive-pricing --target react
 lumen add feature-preview --target react
 lumen add guided-onboarding --target react
-lumen add command-center --target react`
+lumen add command-center --target react
+lumen add card-detail --target react
+lumen add metric-card --target react
+lumen add task-progress --target react`
   }
 ] as const
 

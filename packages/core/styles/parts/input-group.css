@@ -3,7 +3,7 @@
 @layer lumen.components {
 .ui-input-group {
   display: flex;
-  min-height: 2.75rem;
+  min-height: max(var(--ui-density-control-height, 2.75rem), var(--ui-density-target-min, 0rem));
   align-items: center;
   gap: 0.5rem;
   overflow: hidden;
@@ -31,7 +31,28 @@
 }
 
 @layer lumen.components {
-.ui-input-group:has(> [aria-invalid="true"]) {
+.ui-input-group:has(> [readonly]) {
+    background-color: hsl(var(--surface-muted));
+    border-style: dashed;
+  }
+}
+
+@layer lumen.components {
+.ui-input-group:has(> :is([aria-invalid="true"], :user-invalid)) {
     border-color: hsl(var(--danger) / 0.6);
+    box-shadow: 0 0 0 3px hsl(var(--danger) / 0.14);
+  }
+}
+
+@layer lumen.components {
+.ui-input-group:has(> :focus-visible) {
+    outline: 2px solid hsl(var(--brand));
+    outline-offset: 2px;
+  }
+}
+
+@layer lumen.components {
+.ui-input-group:has(> :is([aria-invalid="true"], :user-invalid)):focus-within {
+    outline-color: hsl(var(--danger));
   }
 }

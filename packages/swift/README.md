@@ -73,8 +73,8 @@ by the widget target.
 ## Install
 
 In Xcode, choose **File → Add Package Dependencies**, paste
-`https://github.com/santi020k/lumen`, and use **Exact Version** `5.2.1` for a reproducible production
-build. Choose **Up to Next Major Version** from `5.2.1` when the application intentionally accepts
+`https://github.com/santi020k/lumen`, and use **Exact Version** `5.3.0` for a reproducible production
+build. Choose **Up to Next Major Version** from `5.3.0` when the application intentionally accepts
 compatible Lumen updates. Reserve the `main` branch for local evaluation. Add the `LumenUI` product
 to your application target. The package manifest lives at the repository root, so the Git
 dependency works directly; no npm package, CocoaPod, or copied source is required.
@@ -85,7 +85,7 @@ For a project managed with `Package.swift`, add the package and product explicit
 dependencies: [
     .package(
         url: "https://github.com/santi020k/lumen",
-        exact: "5.2.1"
+        exact: "5.3.0"
     )
 ],
 targets: [
@@ -98,11 +98,11 @@ targets: [
 ]
 ```
 
-Use `.package(url: "https://github.com/santi020k/lumen", from: "5.2.1")` instead when the
+Use `.package(url: "https://github.com/santi020k/lumen", from: "5.3.0")` instead when the
 application's update policy accepts later compatible releases. Commit `Package.resolved` for
-applications, generated Xcode projects, and CI builds, then verify its `version` is `5.2.1` and its
-`revision` matches the `v5.2.1` tag before shipping. XcodeGen projects use the same policy in
-`project.yml` with `version: 5.2.1` for compatible updates or `exactVersion: 5.2.1` for an exact
+applications, generated Xcode projects, and CI builds, then verify its `version` is `5.3.0` and its
+`revision` matches the `v5.3.0` tag before shipping. XcodeGen projects use the same policy in
+`project.yml` with `version: 5.3.0` for compatible updates or `exactVersion: 5.3.0` for an exact
 pin. Deterministic project generators should declare the requirement in their checked-in source
 and regenerate the project instead of patching the generated `.xcodeproj`.
 
@@ -414,7 +414,9 @@ LumenDateRangeField(
 )
 ```
 
-On macOS, shortcut validation remains application-owned while Lumen handles capture and presentation:
+On macOS, shortcut validation remains application-owned while Lumen handles capture and presentation.
+`LumenShortcutRecorder` stops active key capture if the control is disabled or leaves the view
+hierarchy:
 
 ```swift
 LumenShortcutRecorder("Quick switch", shortcut: $shortcut) { candidate in
@@ -569,7 +571,8 @@ binary consumers must rebuild.
 ### Phone presentation in v4
 
 `LumenPhoneInput` uses bundled flag artwork and a continuous control frame, and accepts `readOnly`
-in addition to `enabled`. Read-only fields also lock country selection. `LumenCountryFlag` and
+in addition to `enabled`. Read-only, disabled, or empty-catalog fields also lock and dismiss
+country selection. `LumenCountryFlag` and
 `LumenPhoneNumberView` expose the same artwork and normalized read-only phone presentation.
 Country names and calling codes remain the accessible selector label. The flag source and license
 are documented in [flags/README.md](https://github.com/santi020k/lumen/blob/main/flags/README.md); no external flag request is made.

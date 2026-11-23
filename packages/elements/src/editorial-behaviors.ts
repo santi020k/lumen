@@ -2,7 +2,7 @@ import { activateLumenAnchor, decodeLumenAnchorFragment, getLumenActiveAnchorInd
 
 import { LumenElement } from './element-base.js'
 import { createLumenElementClass, defineLumenElement, type LumenCustomElementRegistry, type LumenElementConfig } from './element-base.js'
-import { observedAttributeNames } from './observed-attributes.js'
+import { observedAttributeNames, scalarControlAttributes, scalarObservedAttributeNames } from './observed-attributes.js'
 
 const focusableSelector = [
   'a[href]',
@@ -49,29 +49,6 @@ export const getFocusable = (root: ParentNode | null): HTMLElement[] => {
 export const getOwnedTarget = (event: Event): Node | null => event.target instanceof Node ? event.target : null
 
 export type LumenScalarNativeControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-
-const scalarControlAttributes = [
-  'accept',
-  'aria-describedby',
-  'aria-label',
-  'aria-labelledby',
-  'autocomplete',
-  'disabled',
-  'form',
-  'inputmode',
-  'max',
-  'maxlength',
-  'min',
-  'minlength',
-  'multiple',
-  'pattern',
-  'placeholder',
-  'readonly',
-  'required',
-  'rows',
-  'size',
-  'step'
-] as const
 
 const getValidityFlags = (validity: ValidityState): ValidityStateFlags => ({
   badInput: validity.badInput,
@@ -439,6 +416,7 @@ export class LumenScalarFormControlElement extends LumenElement {
     control.disabled = this.disabled || this.formDisabledState
 
     if (this.id) control.id = `${this.id}-control`
+    else control.removeAttribute('id')
 
     if (this.internals) {
       control.removeAttribute('name')
@@ -567,9 +545,39 @@ export class LumenDialogBehaviorElement extends LumenElement {
       this.dataset.state = initiallyOpen ? 'open' : 'closed'
     }
 
+    let pressStartedOutside = false
+
+    const isBackdropPoint = (event: MouseEvent): boolean => {
+      const nativeDialog = this.#nativeDialog
+
+      if (!nativeDialog || event.target !== nativeDialog) return false
+
+      const bounds = nativeDialog.getBoundingClientRect()
+
+      return event.clientX < bounds.left || event.clientX >= bounds.right ||
+        event.clientY < bounds.top || event.clientY >= bounds.bottom
+    }
+
+    this.#nativeDialog?.addEventListener(
+      'pointerdown', event => {
+        pressStartedOutside = !event.defaultPrevented && isBackdropPoint(event)
+      }, { signal }
+    )
+
+    this.#nativeDialog?.addEventListener(
+      'pointercancel', () => {
+        pressStartedOutside = false
+      }, { signal }
+    )
+
     this.#nativeDialog?.addEventListener(
       'click', event => {
-        if (event.target === this.#nativeDialog && !this.#isAlertDialog) {
+        const dismiss = pressStartedOutside && event.detail > 0 &&
+          !event.defaultPrevented && isBackdropPoint(event)
+
+        pressStartedOutside = false
+
+        if (dismiss && !this.#isAlertDialog) {
           this.#closeDialog()
         }
       }, { signal }
@@ -577,6 +585,8 @@ export class LumenDialogBehaviorElement extends LumenElement {
 
     this.#nativeDialog?.addEventListener(
       'close', () => {
+        pressStartedOutside = false
+
         if (this.#nativeDialog?.open) return
 
         this.#returnFocus()
@@ -622,7 +632,21 @@ export class LumenDialogBehaviorElement extends LumenElement {
       }, { signal }
     )
 
-    document.addEventListener(
+    this.#bindDialogTriggers(signal)
+  }
+
+  #bindDialogTriggers(signal: AbortSignal): void {
+    const root = this.getRootNode()
+    const triggerRoot: EventTarget = root instanceof Document || root instanceof ShadowRoot ? root : document
+    const handledPointerDowns = new WeakSet<Event>()
+
+    this.addEventListener(
+      'pointerdown', event => {
+        handledPointerDowns.add(event)
+      }, { capture: true, signal }
+    )
+
+    triggerRoot.addEventListener(
       'click', event => {
         const target = getOwnedTarget(event)
 
@@ -637,7 +661,7 @@ export class LumenDialogBehaviorElement extends LumenElement {
           trigger?.dataset.uiDialogTrigger ??
           trigger?.dataset.uiAlertDialogTrigger
 
-        if (!trigger || targetId !== this.id) return
+        if (!trigger || !this.id || targetId !== this.id) return
 
         this.#openDialog(trigger)
       }, { signal }
@@ -647,9 +671,7 @@ export class LumenDialogBehaviorElement extends LumenElement {
       'pointerdown', event => {
         if (!this.#isOpen() || this.#isAlertDialog) return
 
-        const target = getOwnedTarget(event)
-
-        if (!target || this.contains(target)) return
+        if (handledPointerDowns.has(event) || event.composedPath().includes(this)) return
 
         this.#closeDialog()
       }, { signal }
@@ -726,7 +748,11 @@ export class LumenDialogBehaviorElement extends LumenElement {
 
     if (!first || !last) return
 
-    if (event.shiftKey && document.activeElement === first) {
+    const root = this.getRootNode()
+    const inRoot = root instanceof Document || root instanceof ShadowRoot
+    const activeElement = inRoot ? root.activeElement : document.activeElement
+
+    if (event.shiftKey && activeElement === first) {
       event.preventDefault()
 
       last.focus()
@@ -734,7 +760,7 @@ export class LumenDialogBehaviorElement extends LumenElement {
       return
     }
 
-    if (!event.shiftKey && document.activeElement === last) {
+    if (!event.shiftKey && activeElement === last) {
       event.preventDefault()
 
       first.focus()
@@ -1024,7 +1050,7 @@ export const lumenSearchFieldElementConfig = {
   tagName: 'lumen-search-field'
 } as const satisfies LumenElementConfig
 export class LumenSearchFieldElement extends LumenScalarFormControlElement {
-  static override config = { ...lumenSearchFieldElementConfig, observedAttributes: observedAttributeNames }
+  static override config = { ...lumenSearchFieldElementConfig, observedAttributes: scalarObservedAttributeNames }
 }
 export const defineLumenSearchField = (registry: LumenCustomElementRegistry = customElements): void => {
   defineLumenElement(lumenSearchFieldElementConfig, LumenSearchFieldElement, registry)

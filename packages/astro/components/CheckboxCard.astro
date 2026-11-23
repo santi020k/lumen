@@ -1,0 +1,65 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import '../styles/foundation.css'
+import '../styles/components/checkbox-card.css'
+
+import { resolveLumenAstroProps } from '@santi020k/lumen-core'
+
+interface Props extends Omit<HTMLAttributes<'input'>, 'type' | 'children'> {
+  class?: string | null
+  className?: string
+  description?: string
+  invalid?: boolean
+  label: string
+  variant?: 'outline' | 'soft'
+}
+
+const {
+  'aria-describedby': ariaDescribedby,
+  'aria-invalid': ariaInvalid,
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledby,
+  class: classProp = '',
+  className = '',
+  description,
+  id,
+  invalid = false,
+  label,
+  variant = 'outline',
+  ...rest
+} = Astro.props
+
+const controlId = id ?? `ui-checkbox-card-${crypto.randomUUID()}`
+const labelId = `${controlId}-label`
+const descriptionId = description ? `${controlId}-description` : undefined
+const describedBy = [ariaDescribedby, descriptionId].filter(Boolean).join(' ') || undefined
+
+const { classList, passthrough } = resolveLumenAstroProps(rest, [
+  'ui-selection-card',
+  'ui-checkbox-card',
+  `ui-selection-card--${variant}`
+], classProp, className)
+---
+
+<span class:list={classList} data-slot="checkbox-card">
+  <label>
+    <input
+      {...passthrough}
+      aria-describedby={describedBy}
+      aria-invalid={invalid ? 'true' : ariaInvalid}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby ?? (ariaLabel ? undefined : labelId)}
+      id={controlId}
+      type="checkbox"
+    />
+    {Astro.slots.has('icon') && (
+      <span aria-hidden="true" data-slot="selection-card-icon"><slot name="icon" /></span>
+    )}
+    <span data-slot="selection-card-content">
+      <span data-slot="selection-card-label" id={labelId}>{label}</span>
+      {description && <span data-slot="selection-card-description" id={descriptionId}>{description}</span>}
+      {Astro.slots.has('default') && <span data-slot="selection-card-addon"><slot /></span>}
+    </span>
+  </label>
+</span>

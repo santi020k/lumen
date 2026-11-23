@@ -1,3 +1,4 @@
+import { getScopeActiveElement } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
 import { getLoopedIndex, isOwnedByAnotherAdapter } from './shared.js'
@@ -64,7 +65,7 @@ const renderSelectOptions = (select: HTMLSelectElement, listbox: HTMLElement): v
 
       item.textContent = option.label
 
-      if (option.disabled) {
+      if (option.matches(':disabled')) {
         item.disabled = true
 
         item.setAttribute('aria-disabled', 'true')
@@ -146,16 +147,12 @@ const inferSelectLabel = (select: HTMLSelectElement, trigger: HTMLElement): void
 }
 
 const syncSelectLabels = (select: HTMLSelectElement, trigger: HTMLElement, listbox: HTMLElement): void => {
-  for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid']) {
+  for (const attribute of ['aria-label', 'aria-labelledby', 'aria-describedby']) {
     const value = select.getAttribute(attribute)
 
     if (value) {
       trigger.setAttribute(attribute, value)
     }
-  }
-
-  if (select.required) {
-    trigger.setAttribute('aria-required', 'true')
   }
 
   inferSelectLabel(select, trigger)
@@ -173,6 +170,38 @@ const syncSelectLabels = (select: HTMLSelectElement, trigger: HTMLElement, listb
       trigger.focus({ preventScroll: true })
     })
   }
+}
+
+const bindSelectState = (root: HTMLElement, select: HTMLSelectElement, trigger: HTMLButtonElement): void => {
+  const sync = (): void => {
+    trigger.disabled = select.disabled
+
+    if (select.required) trigger.setAttribute('aria-required', 'true')
+    else trigger.removeAttribute('aria-required')
+
+    const invalid = select.getAttribute('aria-invalid')
+
+    if (invalid === null) trigger.removeAttribute('aria-invalid')
+    else trigger.setAttribute('aria-invalid', invalid)
+
+    if (select.disabled) closeSelect(root)
+  }
+
+  sync()
+
+  // Observe only the native control, without a document listener retaining removed fields.
+  new MutationObserver(sync).observe(select, {
+    attributeFilter: ['aria-invalid', 'disabled', 'required'], attributes: true
+  })
+
+  select.addEventListener('focus', () => {
+    sync()
+
+    // Validation checks and synthetic focus events must not move focus from another control.
+    if (!select.matches(':disabled') && getScopeActiveElement(select) === select) {
+      trigger.focus({ preventScroll: true })
+    }
+  })
 }
 
 const focusSelectedItem = (root: HTMLElement): void => {
@@ -203,7 +232,7 @@ const bindSelects = (root: HTMLElement): void => {
 
   select.setAttribute('aria-hidden', 'true')
 
-  trigger.disabled = select.disabled
+  bindSelectState(root, select, trigger)
 
   trigger.setAttribute('aria-haspopup', 'listbox')
 

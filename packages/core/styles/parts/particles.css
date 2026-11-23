@@ -26,6 +26,23 @@
 }
 }
 
+@keyframes ui-particle-drift {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
 .ui-particles__particle {
     display: none;

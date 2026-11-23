@@ -20,7 +20,7 @@ const runs = ['ci', 'apple-native'].map((workflow, index) => ({
 
 const identities = runs.map(run => ({ id: run.workflow_id, path: run.path }));
 
-const passed = ['Build and validate (22.x)', 'Apple swift', 'Apple react-native', 'Apple captures', 'Apple visual', 'Apple framework-visual'].map((name, index) => ({
+const passed = ['Build and validate (22.x)', 'Apple swift', 'Apple react-native', 'Apple captures', 'Apple visual', 'Apple framework-visual', 'Apple full qualification'].map((name, index) => ({
   id: index + 1,
   name,
   head_sha: revision,
@@ -35,6 +35,14 @@ test('all required Apple checks must pass in their expected workflows before sig
 
   for (const check of passed)
     assert.throws(() => requireAppleChecks(passed.filter(item => item !== check), runs, revision, identities));
+});
+
+test('successful unaffected PR checks cannot authorize signing without full Apple qualification', () => {
+  const checks = passed.map(check => check.name === 'Apple full qualification'
+    ? { ...check, conclusion: 'skipped' }
+    : check);
+
+  assert.throws(() => requireAppleChecks(checks, runs, revision, identities), /Apple full qualification/u);
 });
 
 test('documented ref-qualified workflow paths preserve exact source provenance', () => {

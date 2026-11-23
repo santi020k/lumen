@@ -2,10 +2,10 @@
 
 This audit records the reviewed native API inventory and the external evidence required for
 publication. The [v4 readiness record](lumen-4-readiness.md) describes the current candidate;
-[Lumen 2 readiness](lumen-2-readiness.md) preserves the original graduation history.
+[Lumen 2 readiness](archive/lumen-2-readiness.md) preserves the original graduation history.
 
 The reviewed defaults, state semantics, ownership boundaries, and intentional platform differences
-are recorded in the [Native contract review](native-contract-review.md).
+are recorded in the [Native contract review](archive/native-contract-review.md).
 
 ## Classification vocabulary
 
@@ -102,7 +102,7 @@ Simulator, emulator, and local test results do not count as a published stabilit
 The native contract-freeze gate remains In progress until:
 
 - every inventory entry has one classification;
-- the accepted [Native contract review](native-contract-review.md) remains aligned with every
+- the accepted [Native contract review](archive/native-contract-review.md) remains aligned with every
   supported declaration and documented platform boundary;
 - all intentional pre-2 breakages have migration notes;
 - Experimental APIs are visibly labeled in source and documentation; and

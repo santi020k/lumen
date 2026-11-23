@@ -1,8 +1,9 @@
-import { readdir, readFile, writeFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { basename, extname, join, relative, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
+import { readGuardedRegularFile, writeGuardedExistingFile } from './guarded-file.js'
 import { scriptRegexRanges } from './source-script-ranges.js'
 
 // cspell:words swiftpm
@@ -345,23 +346,27 @@ const migrateFile = async (path: string, rules: MigrationRule[], report: LumenV4
   report.filesScanned += 1
 
   const file = relative(report.root, path)
-  const source = await readFile(path, 'utf8')
+  const snapshot = await readGuardedRegularFile(path, file)
   const webCode = ['.ts', '.js', '.mjs'].includes(extname(path))
-  const migration = webCode ? migrateLumenV4Source(source, file) : { changes: [], source }
+  const migration = webCode ? migrateLumenV4Source(snapshot.content, file) : { changes: [], source: snapshot.content }
 
   report.changes.push(...migration.changes)
 
-  report.manualReview.push(...reviewSource(source, file, rules))
+  report.manualReview.push(...reviewSource(snapshot.content, file, rules))
 
-  if (migration.source === source) return
+  if (migration.source === snapshot.content) return
 
   report.changedFiles.push(file)
 
   if (!report.applied) return
 
-  if (await readFile(path, 'utf8') !== source) throw new Error(`Source changed during migration: ${file}`)
-
-  await writeFile(path, migration.source, 'utf8')
+  await writeGuardedExistingFile(
+    path,
+    migration.source,
+    snapshot,
+    file,
+    `Source changed during migration: ${file}`
+  )
 }
 
 export const migrateLumenV4 = async (

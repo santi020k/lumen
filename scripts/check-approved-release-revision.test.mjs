@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
@@ -927,5 +927,194 @@ for (const [field, value, diagnostic] of [
     const contract = { ...lumen5Contract, [field]: value };
 
     await assert.rejects(validateLumen5Contract(contract, repositoryRoot), diagnostic);
+  });
+}
+
+for (const field of ['docs', 'evidence', 'packages', 'tests']) {
+  test(`v5 validation requires a non-empty ${field} array`, async () => {
+    const firstChange = { ...lumen5Contract.changes[0], [field]: [] };
+
+    const contract = {
+      ...lumen5Contract,
+      changes: [firstChange, ...lumen5Contract.changes.slice(1)]
+    };
+
+    await assert.rejects(validateLumen5Contract(contract, repositoryRoot), new RegExp(`non-empty ${field}`));
+  });
+}
+
+test('v5 validation permits empty signals and extensions arrays', async () => {
+  const firstChange = { ...lumen5Contract.changes[0], extensions: [], signals: [] };
+
+  const contract = {
+    ...lumen5Contract,
+    changes: [firstChange, ...lumen5Contract.changes.slice(1)]
+  };
+
+  await validateLumen5Contract(contract, repositoryRoot);
+});
+
+test('v5 validation enforces realpath containment while preserving internal symlinks', async () => {
+  const directory = await mkdtemp(resolve(tmpdir(), 'lumen-v5-symlink-repo-'));
+  const outside = await mkdtemp(resolve(tmpdir(), 'lumen-v5-symlink-outside-'));
+
+  try {
+    await mkdir(resolve(directory, 'docs'), { recursive: true });
+
+    await writeFile(resolve(directory, 'docs/real.md'), 'Internal doc\n');
+
+    await writeFile(resolve(outside, 'secret.md'), 'Outside secret\n');
+
+    await symlink('real.md', resolve(directory, 'docs/internal-link.md'));
+
+    await symlink(resolve(outside, 'secret.md'), resolve(directory, 'docs/escape-link.md'));
+
+    const internalContract = {
+      ...lumen5Contract,
+      changes: [{
+        ...lumen5Contract.changes[0],
+        docs: ['docs/internal-link.md'],
+        evidence: ['docs/real.md']
+      }]
+    };
+
+    await validateLumen5Contract(internalContract, directory);
+
+    const escapingContract = {
+      ...lumen5Contract,
+      changes: [{
+        ...lumen5Contract.changes[0],
+        docs: ['docs/escape-link.md'],
+        evidence: ['docs/real.md']
+      }]
+    };
+
+    await assert.rejects(
+      validateLumen5Contract(escapingContract, directory),
+      /Contract reference escapes repository/
+    );
+  } finally {
+    await rm(directory, { force: true, recursive: true });
+
+    await rm(outside, { force: true, recursive: true });
+  }
+});
+
+for (const major of [4, 5]) {
+  test(`major ${major} validates contract and evidence from --candidate-ref when HEAD differs`, async () => {
+    const { directory, reviewedRevision } = await createCandidate(major);
+
+    try {
+      const draftContract = JSON.parse(
+        await readFile(resolve(directory, `registry/lumen-${major}-contract.json`), 'utf8')
+      );
+
+      await approveCandidate(directory, reviewedRevision, major);
+
+      const approvedRevision = run('git', ['rev-parse', 'HEAD'], directory).stdout.trim();
+      const rejectedDraftRef = runChecker(directory, ['--candidate-ref', reviewedRevision], major);
+
+      assert.notEqual(rejectedDraftRef.status, 0);
+
+      assert.match(rejectedDraftRef.stderr, /requires an approved contract/);
+
+      const referencedPath = draftContract.changes[0].evidence[0];
+
+      await rm(resolve(directory, referencedPath));
+
+      await writeContract(directory, draftContract, major);
+
+      commit(directory, `test: advance HEAD to draft without ${referencedPath}`);
+
+      const approvedOlderRef = runChecker(directory, ['--candidate-ref', approvedRevision], major);
+
+      assert.equal(approvedOlderRef.status, 0, approvedOlderRef.stderr);
+    } finally {
+      await rm(directory, { force: true, recursive: true });
+    }
+  });
+
+  test(`major ${major} rejects a candidate missing referenced evidence even when later HEAD restores it`, async () => {
+    const { directory } = await createCandidate(major);
+
+    try {
+      const draftContract = JSON.parse(
+        await readFile(resolve(directory, `registry/lumen-${major}-contract.json`), 'utf8')
+      );
+
+      const missingPath = draftContract.changes[0].evidence[0];
+
+      await rm(resolve(directory, missingPath));
+
+      const brokenReviewedRevision = commit(directory, `test: remove ${missingPath} before approval`);
+
+      await approveCandidate(directory, brokenReviewedRevision, major);
+
+      const brokenApprovedRevision = run('git', ['rev-parse', 'HEAD'], directory).stdout.trim();
+      const failedAtHead = runChecker(directory, [], major);
+
+      assert.notEqual(failedAtHead.status, 0);
+
+      assert.match(failedAtHead.stderr, /Referenced file does not exist|ENOENT|Missing contract reference/);
+
+      await mkdir(resolve(directory, missingPath, '..'), { recursive: true });
+
+      await writeFile(resolve(directory, missingPath), 'Restored after approval\n');
+
+      commit(directory, `test: restore ${missingPath} after broken approval`);
+
+      const stillRejected = runChecker(directory, ['--candidate-ref', brokenApprovedRevision], major);
+
+      assert.notEqual(stillRejected.status, 0);
+
+      assert.match(stillRejected.stderr, /Referenced file does not exist|ENOENT|Missing contract reference/);
+    } finally {
+      await rm(directory, { force: true, recursive: true });
+    }
+  });
+
+  test(`major ${major} accepts committed internal symlinks and rejects committed escaping symlinks in candidate trees`, async () => {
+    const { directory } = await createCandidate(major);
+
+    try {
+      const draftContract = JSON.parse(
+        await readFile(resolve(directory, `registry/lumen-${major}-contract.json`), 'utf8')
+      );
+
+      const targetPath = draftContract.changes[0].docs[0];
+      const realDocPath = resolve(directory, targetPath);
+      const realContent = await readFile(realDocPath, 'utf8');
+      const internalTargetPath = resolve(realDocPath, '..', 'internal-symlink-target.md');
+
+      await writeFile(internalTargetPath, realContent);
+
+      await rm(realDocPath);
+
+      await symlink('internal-symlink-target.md', realDocPath);
+
+      const internalReviewedRevision = commit(directory, 'test: replace doc with internal symlink');
+
+      await approveCandidate(directory, internalReviewedRevision, major);
+
+      const internalApproved = runChecker(directory, [], major);
+
+      assert.equal(internalApproved.status, 0, internalApproved.stderr);
+
+      await rm(realDocPath);
+
+      await symlink('../../../../outside-secret.md', realDocPath);
+
+      const escapingReviewedRevision = commit(directory, 'test: replace doc with escaping symlink');
+
+      await approveCandidate(directory, escapingReviewedRevision, major);
+
+      const escapingRejected = runChecker(directory, [], major);
+
+      assert.notEqual(escapingRejected.status, 0);
+
+      assert.match(escapingRejected.stderr, /Referenced file does not exist/);
+    } finally {
+      await rm(directory, { force: true, recursive: true });
+    }
   });
 }

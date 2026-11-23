@@ -263,11 +263,14 @@ accessibility contract without replacing form state. Native-backed controls forw
 submitted DOM controls and work directly with React Hook Form's `register()`.
 
 Native form resets defer past the browser's default action and honor a cancelled `reset` event:
-`DatePicker`, `DateRangeInput`, `PhoneInput`, and `Combobox` only restore uncontrolled defaults when
+`DatePicker`, `DateRangeInput`, `PhoneInput`, `InputOTP`, and `Combobox` only restore uncontrolled defaults when
 the reset is not prevented, and leave a controlled `value` untouched. `DatePicker` calendar
-selection fires the native `onChange` exactly once, matching typed input. `DateRangeInput` attaches
+selection fires the native `onChange` exactly once, matching typed input, and restores trigger focus
+only when the consumer has not moved focus elsewhere or reopened/disabled the control. `DateRangeInput` attaches
 its reset listener even without `name`, honoring an explicit `form` id as well as the nearest
-ancestor form.
+ancestor form. `Segmented` controls default to `name="segmented"`; when rendering multiple `Segmented`
+instances within the same form or page, assign a distinct explicit `name` to each control so their
+radio groups remain independent in the DOM and form submission.
 
 For controlled composites, install the optional adapter:
 
@@ -1277,3 +1280,32 @@ to show a labelled read-only field when clipboard access fails. It contains the 
 including empty strings, and selects its contents on focus. Recovery does not take focus and
 remains available after transient feedback resets. A successful retry, source update, or tab
 change removes it. Omit the prop to keep the existing feedback-only behavior.
+
+## Selection cards
+
+`CheckboxCard` and `RadioCard` provide descriptive choices using real native inputs. Their
+`label`, `description`, `icon` and children compose the visible card without replacing native
+form submission, reset, required validation or radio grouping.
+
+```tsx
+import { RadioCard, RadioGroup } from '@santi020k/lumen-react'
+import '@santi020k/lumen-react/styles/foundation.css'
+import '@santi020k/lumen-react/styles/components/radio-card.css'
+import '@santi020k/lumen-react/styles/components/radio-group.css'
+
+<RadioGroup>
+  <legend>Workspace</legend>
+  <RadioCard name="workspace" value="personal" label="Personal" description="For your own projects." defaultChecked>
+    One member
+  </RadioCard>
+  <RadioCard name="workspace" value="team" label="Team" description="Shared projects and resources." variant="soft" />
+</RadioGroup>
+```
+
+Use `CheckboxGroup` with `CheckboxCard` for independent choices. Both support `outline`
+(default) and `soft`, `invalid`, `disabled`, `required`, and native input props. `className`
+styles the card; the `ref`, `id`, ARIA and remaining input props reach the native input.
+`icon` is decorative, and children are supplementary metadata. Keep all supplied content
+non-interactive. Labels and descriptions receive stable generated IDs; caller-supplied ARIA
+references are preserved. Cards support controlled `checked`/`onChange` or uncontrolled
+`defaultChecked` and are exported from the main React entry, not the server-only entry.

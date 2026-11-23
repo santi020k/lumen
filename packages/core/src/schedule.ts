@@ -101,11 +101,11 @@ export const expandRecurringScheduleEvent = (
 ): LumenScheduleEvent[] => {
   if (!Number.isSafeInteger(count) || count < 0) throw new RangeError('Schedule recurrence count must be a non-negative safe integer.')
 
-  if (!Number.isFinite(intervalDays)) throw new RangeError('Schedule recurrence interval must be finite.')
-
-  if (count === 0) return []
+  if (!Number.isInteger(intervalDays)) throw new RangeError('Schedule recurrence interval must be a finite integer.')
 
   const range = requireScheduleRange(event)
+
+  if (count === 0) return []
 
   return Array.from({ length: count }, (_, index) => {
     const start = new Date(range.start)

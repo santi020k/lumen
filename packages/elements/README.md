@@ -730,7 +730,9 @@ Associate the heading id with the dialog's `aria-labelledby`.
 ```
 
 A cancelled click or disabled native button does not dismiss the dialog. Nested
-close actions only dismiss their own dialog. `lumen-file-upload` accepts
+close actions only dismiss their own dialog. A slotted native `dialog` dismisses only when
+a pointer press starts and ends on its backdrop; interior padding and drags out of the dialog
+preserve the task. Alert dialogs require an explicit dismissal action. `lumen-file-upload` accepts
 `selected-files-label` containing `{count}` for localized multiple-file feedback.
 
 ### Rich description rows
@@ -880,6 +882,16 @@ disabled/loading activation, including direct clicks. Blocking flags expose `ari
 removing them restores any prior application-supplied ARIA value. Native nested controls retain
 their own keyboard path.
 
+Set `type="submit"` to submit the containing form, or use `form="form-id"` for an external
+form owner. Submission respects canceled click events, native constraint validation, and disabled
+fieldset ancestors (including the first legend exception). The native submitter carries `name`, `value`, and the
+`formaction`, `formenctype`, `formmethod`, `formnovalidate`, and `formtarget` overrides. Nested
+native submit buttons keep their own submission without triggering a second one. Omitting `type`
+or using `type="button"` keeps an ordinary action button.
+`SubmitEvent.submitter` is a temporary native button, not the custom-element host. Capture
+`new FormData(form, event.submitter)` synchronously in the submit handler when the submitter's
+name and value are needed; its attributes remain readable after that native button is removed.
+
 ## Device demonstrations
 
 `DeviceFrame` presents slotted HTML, an image, or a titled iframe inside `macbook-pro`, `macbook-air`, `imac`,
@@ -1020,3 +1032,37 @@ optional `footer`/`cite` inside `blockquote`; keep media and its `figcaption` to
 or optimized native image integration. Component-owned figures, including Code and charts,
 retain their own styling. Prose styles content; the application owns parsing, sanitization,
 heading IDs, captions, citations, and localization.
+
+## Selection cards
+
+`lumen-checkbox-card` and `lumen-radio-card` style a native label/input composition. Register
+them with `defineLumenElements(['CheckboxCard', 'RadioCard'])` or the individual
+`defineLumenCheckboxCard` / `defineLumenRadioCard` exports. Import the matching
+`styles/components/checkbox-card.css` or `styles/components/radio-card.css` alongside the
+foundation stylesheet, or use the full stylesheet.
+
+```html
+<fieldset>
+  <legend>Workspace</legend>
+  <lumen-radio-card variant="soft">
+    <label>
+      <input type="radio" name="workspace" value="personal" checked
+        aria-labelledby="personal-title" aria-describedby="personal-description">
+      <span data-slot="selection-card-content">
+        <span data-slot="selection-card-label" id="personal-title">Personal</span>
+        <span data-slot="selection-card-description" id="personal-description">For your own projects.</span>
+        <span data-slot="selection-card-addon">One member</span>
+      </span>
+    </label>
+  </lumen-radio-card>
+</fieldset>
+```
+
+Keep one direct `label` containing one native `input` as shown. Use `type="checkbox"` for
+`lumen-checkbox-card`; related radio choices share a `name` inside a labelled fieldset.
+State, `disabled`, `required`, `form` and ARIA attributes belong on the native input, not the
+custom-element host. Set `aria-invalid="true"` and an associated error description for errors.
+The host accepts `variant="outline"` (default) or `variant="soft"`. An optional decorative
+`span data-slot="selection-card-icon" aria-hidden="true"` goes between the input and content.
+Keep label contents non-interactive. The original native input remains the form control;
+registration does not clone it or maintain a second checked state.

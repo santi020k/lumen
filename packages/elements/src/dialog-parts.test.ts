@@ -1,4 +1,4 @@
-import { afterEach, beforeAll, expect, test } from 'vitest'
+import { afterEach, beforeAll, expect, test, vi } from 'vitest'
 
 import { defineLumenElements, LumenDialogElement } from './index.js'
 
@@ -7,6 +7,7 @@ beforeAll(() => {
 })
 afterEach(() => {
   document.body.replaceChildren()
+  vi.restoreAllMocks()
 })
 
 const mount = () => {
@@ -73,4 +74,124 @@ test('a stale native close event does not move focus out of a reopened modal', (
   native.removeAttribute('open')
   native.dispatchEvent(new Event('close'))
   expect(document.activeElement).toBe(opener)
+})
+
+const nativeFixture = (alert = false) => {
+  const tag = alert ? 'lumen-alert-dialog' : 'lumen-dialog'
+  document.body.innerHTML = `<${tag}><dialog><input aria-label="Unsaved task"></dialog></${tag}>`
+  const owner = document.querySelector(tag)
+  const native = owner?.querySelector('dialog')
+  if (!(owner instanceof HTMLElement) || !native) throw new Error('Missing native dialog fixture')
+  vi.spyOn(native, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 100, 200, 200))
+  const close = vi.fn(() => {
+    native.open = false
+    native.dispatchEvent(new Event('close'))
+  })
+  Object.defineProperty(native, 'close', { configurable: true, value: close })
+  native.open = true
+  const point = (type: string, inside: boolean, detail = 1) => native.dispatchEvent(new MouseEvent(type, {
+    bubbles: true,
+    cancelable: true,
+    clientX: inside ? 110 : 50,
+    clientY: inside ? 110 : 50,
+    detail
+  }))
+  return { close, native, owner, point }
+}
+
+test('native dialogs ignore interior padding and drag-out clicks, then close on a genuine backdrop press', () => {
+  const { close, native, point } = nativeFixture()
+  point('pointerdown', true)
+  point('click', true)
+  expect(native.open).toBe(true)
+  point('pointerdown', true)
+  point('click', false)
+  expect(native.open).toBe(true)
+  point('pointerdown', false)
+  point('click', true)
+  expect(native.open).toBe(true)
+  point('pointerdown', false)
+  point('click', false)
+  expect(native.open).toBe(false)
+  expect(close).toHaveBeenCalledOnce()
+})
+
+test('native dialogs ignore canceled, programmatic, and abandoned backdrop activation', () => {
+  const { close, native, point } = nativeFixture()
+  native.addEventListener('click', event => {
+    event.preventDefault()
+  }, { capture: true, once: true })
+  point('pointerdown', false)
+  point('click', false)
+  point('pointerdown', false)
+  point('click', false, 0)
+  point('pointerdown', false)
+  point('pointercancel', false)
+  point('click', false)
+  expect(native.open).toBe(true)
+  expect(close).not.toHaveBeenCalled()
+})
+
+test('native alert dialogs retain explicit dismissal and disconnect clears backdrop tracking', () => {
+  const alert = nativeFixture(true)
+  alert.point('pointerdown', false)
+  alert.point('click', false)
+  expect(alert.native.open).toBe(true)
+  expect(alert.close).not.toHaveBeenCalled()
+
+  const { close, native, owner, point } = nativeFixture()
+  point('pointerdown', false)
+  owner.remove()
+  document.body.append(owner)
+  point('click', false)
+  expect(native.open).toBe(true)
+  point('pointerdown', false)
+  point('click', false)
+  expect(close).toHaveBeenCalledOnce()
+})
+
+test.each(['open', 'closed'] as const)('dialogs in %s shadow roots scope triggers, keep inside clicks open, and dismiss on outside pointerdown', mode => {
+  const outsideDialog = document.createElement('lumen-dialog')
+  outsideDialog.id = 'shared-dialog'
+  outsideDialog.innerHTML = '<button type="button">Outside action</button>'
+  document.body.append(outsideDialog)
+
+  const host = document.createElement('div')
+  const shadow = host.attachShadow({ mode })
+  shadow.innerHTML = `<button type="button" data-ui-dialog-trigger="shared-dialog">Open shadow</button>
+    <lumen-dialog id="shared-dialog">
+      <button type="button" id="inside-btn">Inside</button>
+      <lumen-dialog id="nested-dialog">
+        <button type="button" id="nested-btn">Nested</button>
+      </lumen-dialog>
+    </lumen-dialog>`
+  document.body.append(host)
+
+  const trigger = shadow.querySelector<HTMLButtonElement>('[data-ui-dialog-trigger]')
+  const shadowDialog = shadow.querySelector<LumenDialogElement>('#shared-dialog')
+  const insideBtn = shadow.querySelector<HTMLButtonElement>('#inside-btn')
+  const nestedDialog = shadow.querySelector<LumenDialogElement>('#nested-dialog')
+  const nestedBtn = shadow.querySelector<HTMLButtonElement>('#nested-btn')
+  if (!trigger || !shadowDialog || !insideBtn || !nestedDialog || !nestedBtn) {
+    throw new Error('Missing shadow dialog fixture')
+  }
+
+  trigger.click()
+  expect(shadowDialog.hidden).toBe(false)
+  expect(outsideDialog.hidden).toBe(true)
+
+  insideBtn.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
+  expect(shadowDialog.hidden).toBe(false)
+
+  nestedDialog.show()
+  nestedBtn.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
+  expect(nestedDialog.hidden).toBe(false)
+  expect(shadowDialog.hidden).toBe(false)
+
+  insideBtn.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
+  expect(nestedDialog.hidden).toBe(true)
+  expect(shadowDialog.hidden).toBe(false)
+
+  document.body.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
+  expect(shadowDialog.hidden).toBe(true)
 })

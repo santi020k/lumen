@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
 import v5Contract from '../../../registry/lumen-5-contract.json'
-import manifest from '../../../registry/release-manifest.json'
 
 import { analyzeSelection } from './convert.js'
 import { componentNode, designNode, nativeFixture } from './fixtures.js'
@@ -11,13 +10,13 @@ import { defaultFor, readTarget } from './targets.js'
 
 const targets = ['react-native', 'compose', 'swiftui-ios', 'swiftui-macos'] as const
 
-test('uses adapter contracts rather than the umbrella version', () => {
-  expect(defaultFor('react-native').version).toBe(manifest.release.npm.packages['@santi020k/lumen-react-native'].version)
-  expect(defaultFor('compose').version).toBe(manifest.release.compose.version)
+test('uses supported native export contracts instead of rolling release versions', () => {
+  expect(defaultFor('react-native').version).toBe(v5Contract.npmPublicationVersions['@santi020k/lumen-react-native'])
+  expect(defaultFor('compose').version).toBe('4.1.0')
   for (const apple of ['swiftui-ios', 'swiftui-macos'] as const) {
     expect(defaultFor(apple).version).toBe(v5Contract.targetVersion)
   }
-  for (const [platform, version, appearance] of [['compose', '5.0.0', 'project'], ['swiftui-macos', '4.1.0', 'project'], ['swiftui-ios', '5.0.0', 'glass'], ['watchos', '5.0.0', 'project']]) {
+  for (const [platform, version, appearance] of [['react-native', '4.1.1', 'project'], ['compose', '4.1.1', 'project'], ['compose', '5.0.0', 'project'], ['swiftui-macos', '4.1.0', 'project'], ['swiftui-ios', '5.0.0', 'glass'], ['watchos', '5.0.0', 'project']]) {
     expect(readTarget(platform, version, appearance)).toBeNull()
   }
 })

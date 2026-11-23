@@ -1,11 +1,35 @@
 import { request } from 'node:http'
 
-import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client'
-import { describe, expect, test } from 'vitest'
+import { Client, type ReconnectionScheduler, StreamableHTTPClientTransport } from '@modelcontextprotocol/client'
+import { describe, expect, test, vi } from 'vitest'
 
 import { startLumenMcpHttp } from './index.js'
 
 describe('Lumen MCP Streamable HTTP transport', () => {
+  test('returns 405 with Allow: POST for non-POST MCP requests', async () => {
+    const running = await startLumenMcpHttp({ port: 0 })
+
+    try {
+      for (const method of ['GET', 'DELETE'] as const) {
+        const response = await fetch(running.url, { method })
+
+        expect(response.status).toBe(405)
+        expect(response.headers.get('allow')).toBe('POST')
+        expect(response.headers.get('cache-control')).toBe('no-store')
+        expect(response.headers.get('referrer-policy')).toBe('no-referrer')
+        expect(response.headers.get('x-content-type-options')).toBe('nosniff')
+        expect(response.headers.get('x-frame-options')).toBe('DENY')
+        await expect(response.json()).resolves.toEqual({
+          error: { code: -32000, message: 'Method not allowed.' },
+          id: null,
+          jsonrpc: '2.0'
+        })
+      }
+    } finally {
+      await running.close()
+    }
+  })
+
   test('keeps the existing protocol handshake for connected clients', async () => {
     const running = await startLumenMcpHttp({ port: 0 })
 
@@ -70,7 +94,8 @@ describe('Lumen MCP Streamable HTTP transport', () => {
   test('serves MCP tools and a health endpoint on loopback', async () => {
     const running = await startLumenMcpHttp({ port: 0 })
     const client = new Client({ name: 'lumen-http-test', version: '1.0.0' })
-    const transport = new StreamableHTTPClientTransport(running.url)
+    const reconnectionScheduler = vi.fn<ReconnectionScheduler>(() => () => undefined)
+    const transport = new StreamableHTTPClientTransport(running.url, { reconnectionScheduler })
 
     try {
       await client.connect(transport)
@@ -81,6 +106,7 @@ describe('Lumen MCP Streamable HTTP transport', () => {
         fetch(new URL('/ready', running.url))
       ])
 
+      expect(reconnectionScheduler).not.toHaveBeenCalled()
       expect(tools.tools.map(tool => tool.name)).toContain('lumen_diagnose')
       expect(await health.json()).toEqual({ status: 'ok' })
       const readinessText = await readiness.text()

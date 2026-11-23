@@ -36,6 +36,7 @@
 - [Install](#install)
 - [Lu mascot](#lu-mascot)
 - [Typography](#typography)
+- [Web density and control states](#web-density-and-control-states)
 - [Commands](#commands)
 - [Version migration previews](#version-migration-previews)
 - [Coordinated consumer rollout](#coordinated-consumer-rollout)
@@ -124,6 +125,19 @@ Lumen defaults `--ui-font` to the canonical Santi020k Montserrat family stack:
 The package declares the family but does not bundle or load font files. Applications should load
 Montserrat once through their preferred delivery path, or override `--ui-font` when using another
 typeface.
+
+## Web density and control states
+
+Set `data-ui-density="compact"`, `"comfortable"`, or `"spacious"` on a container to coordinate
+web control heights, form gaps, card padding, menus, and table cells. Density can be nested
+independently of the palette and is included in both full and selective styles. Explicit
+component size props keep priority; narrow and coarse-pointer layouts preserve control targets
+and readable input text. Without the attribute, existing dimensions are unchanged.
+
+Readonly controls use a muted surface and dashed border while remaining focusable and
+selectable. Invalid and disabled controls retain distinct hover/focus treatment, and keyboard
+focus in menus remains visible independently of selection. See the
+[density and state guidance](../../docs/appearance-presets.md#coordinated-web-density) for examples.
 
 ## Commands
 
@@ -215,6 +229,11 @@ Run `lumen audit-tokens [path]` before incremental adoption when an existing sty
 declare names such as `--surface`, `--ink`, or `--line`. The audit reports complete CSS colors that
 are incompatible with Lumen's HSL-channel token format and exits non-zero when it finds conflicts.
 
+The [visual product recipes](../../docs/visual-product-recipes.md) add `card-detail`, `metric-card`,
+and `task-progress` for Astro, React, and Elements. They include scoped styles, complete product
+states, and application-owned callbacks. Preview them in the
+[product recipes workbench](https://lumen.santi020k.com/docs/visual-playground/recipes).
+
 ## Version migration previews
 
 Run `lumen migrate v3` for the v2-to-v3 review: no web source rewrites are needed. It reports
@@ -240,6 +259,8 @@ for the upgrade sequence, asynchronous Astro initialization, optional selective 
 
 V4 apply records output fingerprints in `.lumen/migrations-v4.json`. Commit that ledger with the
 source changes: repeated applies skip migrated files, and later edits to them require manual review.
+Migration writers verify final-component regular single-link file identity and expected content
+before writing source files or the v4 ledger.
 The pure `migrateLumenVersionSource` API assumes v3 input and does not maintain that filesystem ledger.
 Markup migrations preserve literal slash-star text; script comments and regex literals remain
 excluded from rewrites. The umbrella package includes TypeScript as a runtime dependency so
@@ -310,6 +331,14 @@ framework checks. Use `lumen doctor-native` to inspect consumer-native pins.
 A pre-v5 target without a manifest uses the historical uniform-package rollout, which
 updates pinned/caret ranges and refreshes existing release-age exceptions. Both modes require an
 exact pnpm declaration and a supported Node runtime. `--allow-dirty` permits a dirty worktree.
+
+Apply first runs `corepack pnpm --version` in the consumer to check that its package manager can
+start, before changing manifests, workspace catalogs, or the lockfile. A failed preflight leaves those
+files unchanged; inventory and dry-run do not launch the package manager. Standard Windows npm/Node,
+local `.bin`, and bundled Corepack shims use their adjacent JavaScript entry through Node without a
+shell. Unsupported or incomplete installations fail preflight. A later update, install, or
+verification failure can leave partial changes: inspect the command report and restore the recorded
+baseline and lockfile before retrying when recovery is needed.
 
 ## Consumer upgrade and theme audits
 

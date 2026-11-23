@@ -19,7 +19,7 @@ supported Apple form factors. Wear and WidgetKit intentionally use separate, sma
 Reviewed 196 web entries: 96 counterparts, 65 compositions,
 33 platform/host boundaries and 2 gaps. The 23 new counterparts have dedicated native
 contracts, controlled examples and focused behavior checks. Full catalog captures and combined
-validation are tracked in [the completion plan](native-catalog-parity-plan.md); this source audit
+validation are tracked in [the completion plan](archive/native-catalog-parity-plan.md); this source audit
 alone does not qualify a release. MultiSelect and RangeSlider remain additional shared contracts.
 
 For controlled Rating, Stepper and Timeline compositions, start with the
@@ -69,6 +69,7 @@ or store update is implied by this audit.
 | `Carousel` | Counterpart | `carousel`; Controlled native paging with localized positions and status guards. |
 | `Chart` | Composition | `line-chart` plus host slots/state; no matching standalone export. |
 | `Checkbox` | Counterpart | `checkbox` |
+| `CheckboxCard` | Composition | `checkbox` plus platform-native card layout and descriptive content; no matching standalone export. |
 | `CheckboxGroup` | Composition | `checkbox` plus host slots/state; no matching standalone export. |
 | `Collapsible` | Composition | `disclosure` plus host slots/state; no matching standalone export. |
 | `Code` | Platform / host | Native text and LumenTabs; host owns syntax highlighting. |
@@ -138,6 +139,7 @@ or store update is implied by this audit.
 | `Popover` | Composition | `sheet` plus host slots/state; no matching standalone export. |
 | `Progress` | Counterpart | `progress` |
 | `Prose` | Composition | `text` plus host slots/state; no matching standalone export. |
+| `RadioCard` | Composition | `radio-group` plus platform-native card layout and descriptive content; no matching standalone export. |
 | `RadioGroup` | Counterpart | `radio-group` |
 | `Resizable` | Platform / host | Native split-view/pane layout; Compose includes adaptive list/detail scaffolds. |
 | `RichTextEditor` | Gap | React Native rich editing explicitly deferred; no new native editor dependency. SwiftUI/Compose inline formatting is a limited subset. |

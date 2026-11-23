@@ -310,3 +310,72 @@ test('amount refresh moves reset ownership and cannot resurrect a destroyed cont
     frame.remove()
   }
 })
+
+test('parses native Intl grouped negative amounts in RTL locales and ASCII-minus grouped sv-SE', () => {
+  for (const locale of ['ar-EG', 'ar-SA', 'fa-IR', 'he-IL']) {
+    const formatted = new Intl.NumberFormat(locale).format(-1234.45)
+
+    expect(parseLumenAmountDraft(formatted, { allowNegative: true, locale })).toBe('-1234.45')
+  }
+
+  expect(parseLumenAmountDraft('-1\u00a0234', { allowNegative: true, locale: 'sv-SE' })).toBe('-1234')
+  expect(parseLumenAmountDraft('-1\u00a0234,50', { allowNegative: true, locale: 'sv-SE' })).toBe('-1234.50')
+  expect(parseLumenAmountDraft(new Intl.NumberFormat('ar-EG').format(-1234.45), { allowNegative: false, locale: 'ar-EG' })).toBeUndefined()
+  expect(parseLumenAmountDraft('\u061c-١٬٢٣', { allowNegative: true, locale: 'ar-EG' })).toBeUndefined()
+  expect(parseLumenAmountDraft('\u061c-١٬٢٣٤٫٤٬٥', { allowNegative: true, locale: 'ar-EG' })).toBeUndefined()
+})
+
+test('places caret after leading decimal and preserves previous state on rejected setValue', () => {
+  const root = document.createElement('span')
+
+  root.setAttribute('allow-negative', '')
+  root.innerHTML = '<input data-ui-amount-input><input data-ui-amount-value type="hidden">'
+  document.body.append(root)
+
+  const input = root.querySelector('input')
+  const submission = root.querySelector<HTMLInputElement>('[data-ui-amount-value]')
+
+  if (!input || !submission) throw new Error('Missing amount caret fixture')
+
+  const controller = createLumenAmountFieldController(root)
+
+  try {
+    input.value = '.'
+    input.setSelectionRange(1, 1)
+    input.dispatchEvent(new InputEvent('input', { inputType: 'insertText' }))
+
+    expect(input.value).toBe('0.')
+    expect(input.selectionStart).toBe(2)
+
+    input.value = '0.5'
+    input.setSelectionRange(3, 3)
+    input.dispatchEvent(new InputEvent('input', { inputType: 'insertText' }))
+
+    expect(input.value).toBe('0.5')
+    expect(submission.value).toBe('0.5')
+
+    input.value = '-.'
+    input.setSelectionRange(2, 2)
+    input.dispatchEvent(new InputEvent('input', { inputType: 'insertText' }))
+
+    expect(input.value).toBe('-0.')
+    expect(input.selectionStart).toBe(3)
+
+    controller.setValue('12.34')
+
+    expect(() => {
+      controller.setValue('invalid')
+    }).toThrow(RangeError)
+    expect(input.value).toBe('12.34')
+    expect(submission.value).toBe('12.34')
+
+    input.value = 'abc'
+    input.dispatchEvent(new InputEvent('input', { inputType: 'insertText' }))
+
+    expect(input.value).toBe('12.34')
+    expect(submission.value).toBe('12.34')
+  } finally {
+    controller.destroy()
+    root.remove()
+  }
+})

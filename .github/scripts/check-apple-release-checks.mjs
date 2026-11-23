@@ -3,7 +3,7 @@ import { pathToFileURL } from 'node:url';
 
 const requiredWorkflows = [
   { path: '.github/workflows/ci.yml', names: ['Build and validate (22.x)'] },
-  { path: '.github/workflows/apple-native.yml', names: ['swift', 'react-native', 'captures', 'visual', 'framework-visual'].map(name => `Apple ${name}`) },
+  { path: '.github/workflows/apple-native.yml', names: ['swift', 'react-native', 'captures', 'visual', 'framework-visual', 'full qualification'].map(name => `Apple ${name}`) },
 ];
 
 /** @param {unknown} value @returns {value is Record<string, unknown>} */

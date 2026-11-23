@@ -87,7 +87,7 @@
       "migration": "The Lumen v2 migrator rewrites only literal sm, default, and lg values on Lumen Input and NativeSelect usage. Dynamic values require a diagnostic and manual review.",
       "evidence": [
         "docs/ai-usage.md",
-        "docs/lumen-improvements-from-sibling-usage.md",
+        "docs/archive/lumen-improvements-from-sibling-usage.md",
         "packages/astro/components/Input.astro",
         "packages/astro/components/NativeSelect.astro",
         "packages/elements/src/define.ts"
@@ -153,8 +153,8 @@
         "packages/swift/Tests/LumenUITests/LumenThemeTests.swift"
       ],
       "docs": [
-        "docs/lumen-2-contract.md",
-        "docs/native-contract-review.md",
+        "docs/archive/lumen-2-contract.md",
+        "docs/archive/native-contract-review.md",
         "packages/swift/README.md"
       ],
       "tests": [
@@ -201,7 +201,7 @@
         "registry/native-api-baseline.json"
       ],
       "docs": [
-        "docs/lumen-2-contract.md",
+        "docs/archive/lumen-2-contract.md",
         "docs/migrating-to-lumen.md",
         "docs/native-components.md",
         "packages/react-native/README.md"
@@ -250,7 +250,7 @@
       "decision": "retain",
       "resolution": "Retain the framework-neutral Core reexports from the umbrella root in Lumen 2. The API baseline and consumer audit found no observed problem that justifies a breaking removal.",
       "evidence": [
-        "docs/lumen-2-consumer-import-audit.md",
+        "docs/archive/lumen-2-consumer-import-audit.md",
         "registry/web-api-baseline.json",
         "scripts/smoke-consumer-packages.mjs"
       ]

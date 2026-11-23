@@ -53,6 +53,23 @@ test('formats zoom safely even for malformed locale identifiers', () => {
   expect(formatLumenMediaZoom(2, 'invalid_tag')).toBe('200%')
 })
 
+test.each(['constructor', 'toString', 'valueOf', '__proto__'])('ignores inherited keyboard action %s without canceling the event', key => {
+  const { root, stage } = fixture()
+  const changes = vi.fn<(value: LumenMediaViewportValue) => void>()
+
+  cleanups.push(bindLumenMediaViewport(root, {
+    disabled: () => false,
+    getValue: () => ({ zoom: 2, x: 0, y: 0 }),
+    maxZoom: () => 4,
+    onValueChange: changes
+  }))
+  const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })
+
+  stage.dispatchEvent(event)
+  expect(event.defaultPrevented).toBe(false)
+  expect(changes).not.toHaveBeenCalled()
+})
+
 test('adopted content controls keep their pointer interaction instead of starting a pan', () => {
   const { root, stage, content } = fixture()
   const capture = vi.spyOn(stage, 'setPointerCapture')

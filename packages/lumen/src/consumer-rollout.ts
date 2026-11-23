@@ -1,6 +1,6 @@
 import { execFile } from 'node:child_process'
-import { lstat, readdir, readFile, writeFile } from 'node:fs/promises'
-import { join, relative, resolve } from 'node:path'
+import { lstat, readdir, readFile, realpath, stat, writeFile } from 'node:fs/promises'
+import { basename, join, relative, resolve } from 'node:path'
 import { promisify } from 'node:util'
 
 import { gt, minVersion, satisfies, valid, validRange } from 'semver'
@@ -428,38 +428,29 @@ export const updateLumenManifestSource = (
   return changed ? `${JSON.stringify(manifest, undefined, 2)}\n` : source
 }
 
-const lumenWorkspaceVersionPattern = new RegExp([
-  String.raw`^(\s*['"]?@santi020k\/lumen`,
-  String.raw`(?:-(?:astro|core|elements|mcp|react))?['"]?\s*:\s*['"]?)`,
-  String.raw`([~^]?)(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)(['"]?\s*(?:#.*)?)$`
-].join(''), 'gm')
-
 export const updateLumenWorkspaceSource = (
   source: string, targetVersion: string, packageVersions?: Readonly<Record<string, string>>, preserveCompatible = false
 ): string => {
-  if (packageVersions) {
-    let inCatalog = false
+  let inCatalog = false
 
-    return source.split(/(?<=\n)/u).map(line => {
-      if (/^[^\s#]/u.test(line)) inCatalog = /^(?:catalog|catalogs):/u.test(line)
+  return source.split(/(?<=\n)/u).map(line => {
+    if (/^[^\s#]/u.test(line)) inCatalog = /^(?:catalog|catalogs):/u.test(line)
 
-      if (!inCatalog) return line
+    if (!inCatalog) return line
 
-      const range = readCatalogRange(line)
-      const target = range && packageVersions[range.packageName]
+    const range = readCatalogRange(line)
 
-      if (!range || !target || !validRange(range.version)) return line
+    if (!range || !validRange(range.version)) return line
 
-      if (preserveCompatible && satisfies(target, range.version)) return line
+    const target = packageVersions ? packageVersions[range.packageName] : targetVersion
 
-      return line.slice(0, range.offset) + replaceRange(range.version, target) +
-        line.slice(range.offset + range.version.length)
-    }).join('')
-  }
+    if (!target) return line
 
-  return source.replaceAll(lumenWorkspaceVersionPattern, (
-    _match: string, before: string, prefix: string, _version: string, after: string
-  ) => `${before}${prefix}${targetVersion}${after}`)
+    if (preserveCompatible && satisfies(target, range.version)) return line
+
+    return line.slice(0, range.offset) + replaceRange(range.version, target) +
+      line.slice(range.offset + range.version.length)
+  }).join('')
 }
 
 const getVerificationScripts = (manifest: PackageManifest, frameworks: LumenFramework[]): string[] => {
@@ -477,6 +468,54 @@ const getVerificationScripts = (manifest: PackageManifest, frameworks: LumenFram
   return [...new Set(preferred)]
 }
 
+const commandFileExists = async (path: string): Promise<boolean> => {
+  try {
+    return (await stat(path)).isFile()
+  } catch (error) {
+    if (error instanceof Error && 'code' in error && (error.code === 'ENOENT' || error.code === 'ENOTDIR')) return false
+
+    throw error
+  }
+}
+
+const corepackCommand = async (root: string): Promise<{ executable: string, args: string[] }> => {
+  if (process.platform !== 'win32') return { executable: 'corepack', args: [] }
+
+  for (const entry of (process.env.PATH ?? '').split(';').filter(Boolean)) {
+    const directory = resolve(root, entry.startsWith('"') && entry.endsWith('"') ? entry.slice(1, -1) : entry)
+    const executable = join(directory, 'corepack.exe')
+
+    if (await commandFileExists(executable)) return { executable, args: [] }
+
+    if (await commandFileExists(join(directory, 'corepack.cmd'))) {
+      // Corepack is an external tool. Resolve its standard adjacent installation,
+      // without searching this CLI's dependencies or running a .cmd through a shell.
+      const directoryName = basename(directory).toLowerCase()
+      let installation = join(directory, 'node_modules', 'corepack')
+
+      if (directoryName === '.bin') installation = resolve(directory, '..', 'corepack')
+      else if (directoryName === 'shims') installation = resolve(directory, '..')
+
+      const script = join(installation, 'dist', 'corepack.js')
+
+      if (await commandFileExists(script)) return { executable: process.execPath, args: [await realpath(script)] }
+
+      throw new Error('The Corepack installation is missing its JavaScript entry. Reinstall Corepack before applying a rollout.')
+    }
+  }
+
+  throw new Error('Corepack was not found on PATH. Install Corepack before applying a rollout.')
+}
+
+const commandErrorOutput = (error: unknown): string => {
+  if (!(error instanceof Error)) return 'Command failed.'
+
+  const stdout = 'stdout' in error && typeof error.stdout === 'string' ? error.stdout : ''
+  const stderr = 'stderr' in error && typeof error.stderr === 'string' ? error.stderr : ''
+
+  return `${stdout}${stderr}`.trim() || error.message || 'Command failed.'
+}
+
 const runCommand = async (
   root: string,
   executable: string,
@@ -485,19 +524,19 @@ const runCommand = async (
   const command = [executable, ...args].join(' ')
 
   try {
-    const { stderr, stdout } = await execFileAsync(executable, args, {
+    const launch = executable === 'corepack' ? await corepackCommand(root) : { executable, args: [] }
+
+    const { stderr, stdout } = await execFileAsync(launch.executable, [...launch.args, ...args], {
       cwd: root,
       maxBuffer: 10 * 1024 * 1024
     })
 
     return { command, ok: true, output: `${stdout}${stderr}`.trim() }
   } catch (error) {
-    const detail = error as { stderr?: string, stdout?: string, message?: string }
-
     return {
       command,
       ok: false,
-      output: `${detail.stdout ?? ''}${detail.stderr ?? ''}`.trim() || detail.message || 'Command failed.'
+      output: commandErrorOutput(error)
     }
   }
 }
@@ -618,7 +657,7 @@ export const addReleaseAgeTarget = (source: string, packages: string[], version:
   return lines.join(newline)
 }
 
-const removeObsoleteReleaseAgeEntries = (
+export const removeObsoleteReleaseAgeEntries = (
   source: string, targetVersion: string, packageVersions?: Readonly<Record<string, string>>
 ): string => {
   const section = releaseAgeSection(source)
@@ -626,8 +665,7 @@ const removeObsoleteReleaseAgeEntries = (
   if (!section) return source
 
   const { end, lines, newline, start } = section
-  const pattern = packageVersions ? lumenPackageNamePattern : '@santi020k/lumen(?:-(?:astro|core|elements|mcp|react))?'
-  const entry = new RegExp(`^\\s*-\\s*['"]?(${pattern})@([^'"\\s]+)['"]?\\s*$`, 'u')
+  const entry = new RegExp(`^\\s*-\\s*['"]?(${lumenPackageNamePattern})@([^'"\\s]+)['"]?\\s*$`, 'u')
 
   const isCurrent = (line: string): boolean => {
     const match = entry.exec(line)
@@ -696,6 +734,10 @@ const upgradeConsumer = async (
 
   if (packageNames.length === 0) return []
 
+  const commands = [await runCommand(inventory.repository, 'corepack', ['pnpm', '--version'])]
+
+  if (!commands[0]?.ok) return commands
+
   const manifestPaths = await findPackageManifests(inventory.repository)
   const desiredDeclarations = new Map<string, string>()
 
@@ -734,14 +776,14 @@ const upgradeConsumer = async (
     `${name}@${consumerPackageVersion(name, targetVersion, packageVersions)}` :
     name)
 
-  const commands = [await runCommand(inventory.repository, 'corepack', ['pnpm', 'update', '--recursive', ...updates])]
+  commands.push(await runCommand(inventory.repository, 'corepack', ['pnpm', 'update', '--recursive', ...updates]))
 
   // pnpm update may rewrite declared ranges or catalog references.
   for (const [path, source] of desiredDeclarations) {
     if (!(await regularFileExists(path)) || await readFile(path, 'utf8') !== source) await writeFile(path, source)
   }
 
-  if (!commands[0]?.ok) return commands
+  if (!commands.at(-1)?.ok) return commands
 
   commands.push(await runCommand(inventory.repository, 'corepack', ['pnpm', 'install']))
 

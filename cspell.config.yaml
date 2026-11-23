@@ -1,6 +1,11 @@
 version: "0.2"
 language: en
 words:
+  - formaction
+  - formenctype
+  - formmethod
+  - formnovalidate
+  - formtarget
   - ecommerce
   - bcpkix
   - bcprov

@@ -139,7 +139,11 @@ export const normalizeLumenFormErrors = (
       continue
     }
 
-    fields.push(...messages.map(message => ({ message, name })))
+    for (const message of messages) {
+      const error = normalizeFieldError({ message, name })
+
+      if (error) fields.push(error)
+    }
   }
 
   return { fields, form }

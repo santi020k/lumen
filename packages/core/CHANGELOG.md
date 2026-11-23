@@ -1,5 +1,52 @@
 # @santi020k/lumen-core
 
+## 5.3.0
+
+### Minor Changes
+
+- Add CheckboxCard and RadioCard compositions for descriptive choices with visible native
+  selection indicators, labels, descriptions, decorative icons and metadata. Preserve native
+  form values, reset, keyboard behavior and validation, with outline/soft surfaces and clear
+  selected, focus, invalid and disabled states across the web adapters.
+
+- Add scoped compact, comfortable, and spacious web density through `data-ui-density`, coordinating
+  controls, form gaps, cards, menus, and table cells. Nested scopes reset density independently of
+  theme; coarse-pointer and narrow layouts preserve control targets and readable input text.
+
+  Differentiate readonly controls, preserve invalid feedback during hover and keyboard focus,
+  reflect native validation feedback, and make keyboard focus distinct from selected menu options.
+  Existing layouts without a density attribute retain their dimensions.
+
+- Add safe system typography choices and flat elevation to ThemeBuilder across web adapters. Extend the theme workbench with density and shareable appearance controls.
+
+### Patch Changes
+
+- Keep component entry animations and portrait/particle keyframes in their selective styles,
+  avoiding unrelated animation CSS on static routes.
+
+- Keep floating-panel focus owned across open, closed, and nested shadow roots. Follow panel
+  relocation, refresh root observers and containing-dialog listeners, and preserve external
+  focus when closing the panel.
+
+- Bound chart tick requests to 2–4096 ticks, using five for nonfinite counts. Keep ticks finite,
+  distinct, and strictly increasing across extreme finite domains and millisecond timestamps.
+
+- Scan theme CSS and YAML, Markdown, and Markup code in linear time for adversarial inputs.
+  Preserve complete Unicode and escaped CSS identifiers, first-declaration and whitespace-only
+  values, contiguous code token offsets, and attributes containing quoted `>` characters.
+
+- Ignore inherited properties when filtering and sorting records, resolving device presets, and
+  handling rich-text and media-viewport shortcuts. Preserve explicitly owned record fields,
+  literal locale labels in templates, and consistent normalization of record-based form errors.
+
+- Reject malformed or nonfinite HSL exports while preserving hue wrapping and channel clamping.
+  Validate recurring events even for zero occurrences and reject fractional day intervals;
+  preserve zero and negative integer intervals, validation precedence, and date overflow errors.
+
+- Parse localized negative amounts and decimals containing RTL direction marks. Keep the
+  AmountField caret after a leading decimal point and preserve its previous state when `setValue`
+  rejects a draft. Fall back safely when phone-country sorting receives a malformed locale.
+
 ## 5.0.0
 
 - Share selective component delivery and React server export metadata through the component-delivery entry for CLI and Figma tooling.

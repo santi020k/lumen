@@ -42,6 +42,15 @@
 }
 
 @layer lumen.components {
+@starting-style {
+.ui-popover > :where(div, section, article, form, [role="dialog"])[data-state="open"] {
+      opacity: 0;
+      transform: translateY(-0.25rem) scale(0.98);
+    }
+}
+}
+
+@layer lumen.components {
 .ui-popover > [popover] {
     position: fixed;
     position-area: block-end span-inline-end;

@@ -16,6 +16,7 @@ on:
       - "packages/templates/**"
       - "packages/tokens/**"
       - ".github/workflows/deploy-docs.yml"
+      - ".github/scripts/docs-deployment-artifact.mjs"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
@@ -28,7 +29,7 @@ permissions:
 
 concurrency:
   group: deploy-docs-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   CLOUDFLARE_PAGES_PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME || 'lumen' }}
@@ -38,12 +39,15 @@ env:
   PUBLIC_SITE_URL: ${{ vars.PUBLIC_SITE_URL || 'https://lumen.santi020k.com' }}
 
 jobs:
-  build-and-deploy:
+  build:
     if: github.ref == 'refs/heads/main'
-    name: Build and deploy docs
+    name: Build docs artifact
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: production
+    outputs:
+      artifact-id: ${{ steps.upload.outputs.artifact-id }}
+      archive-sha256: ${{ steps.archive.outputs.sha256 }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
@@ -51,7 +55,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up pnpm workspace
-        uses: santi020k/quality/actions/setup-pnpm@208015ed792b633a1455201ae2f3dd8d9b7eb96c # v1.4.0
+        uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -60,6 +64,64 @@ jobs:
 
       - name: Build docs
         run: pnpm run docs:build
+
+      - name: Bind the built archive to this revision
+        id: archive
+        run: |
+          test -s "$DOCS_DIST_DIR/index.html"
+          tar -czf "$RUNNER_TEMP/docs.tar.gz" -C "$DOCS_DIST_DIR" .
+          digest="$(node .github/scripts/docs-deployment-artifact.mjs record \
+            "$RUNNER_TEMP/docs.tar.gz" "$RUNNER_TEMP/docs-manifest.json")"
+          echo "sha256=$digest" >> "$GITHUB_OUTPUT"
+
+      - name: Save docs for deployment retries
+        id: upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: docs-deployment-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/docs.tar.gz
+            ${{ runner.temp }}/docs-manifest.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
+  build-and-deploy:
+    name: Build and deploy docs
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - name: Checkout the same source revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up the lockfile-pinned deployment tool
+        uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Restore this run's built docs
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          path: ${{ runner.temp }}/docs-deployment
+          merge-multiple: true
+
+      - name: Verify source approval and archive integrity before extraction
+        env:
+          EXPECTED_ARCHIVE_SHA256: ${{ needs.build.outputs.archive-sha256 }}
+        run: |
+          node scripts/check-approved-release-revision.mjs
+          node .github/scripts/docs-deployment-artifact.mjs verify \
+            "$RUNNER_TEMP/docs-deployment/docs.tar.gz" "$RUNNER_TEMP/docs-deployment/docs-manifest.json" "$EXPECTED_ARCHIVE_SHA256"
+          mkdir -p "$DOCS_DIST_DIR"
+          tar -xzf "$RUNNER_TEMP/docs-deployment/docs.tar.gz" -C "$DOCS_DIST_DIR"
+          test -s "$DOCS_DIST_DIR/index.html"
 
       - name: Deploy to Cloudflare Pages
         env:

@@ -156,4 +156,145 @@ describe('Mentions', () => {
 
     expect(textarea.value).toBe('Hello @alice ')
   })
+
+  test('ignores Enter with Alt, Ctrl, or Meta modifiers without preventing default or changing selection', () => {
+    const onValueChange = vi.fn()
+    const container = document.createElement('div')
+    const root = createRoot(container)
+    document.body.append(container)
+    mounted.push({ container, root })
+
+    act(() => {
+      root.render(createElement(Mentions, {
+        onValueChange,
+        options: ['alice', 'bob']
+      }))
+    })
+
+    const textarea = requireTextarea(container)
+    act(() => {
+      setTextareaValue(textarea, 'Hello @al')
+    })
+
+    expect(textarea.getAttribute('aria-expanded')).toBe('true')
+    const activeOptionBefore = textarea.getAttribute('aria-activedescendant')
+    expect(activeOptionBefore).toBeTruthy()
+    onValueChange.mockClear()
+
+    for (const modifier of [{ altKey: true }, { ctrlKey: true }, { metaKey: true }]) {
+      const event = new KeyboardEvent('keydown', {
+        bubbles: true,
+        cancelable: true,
+        key: 'Enter',
+        ...modifier
+      })
+
+      act(() => {
+        textarea.dispatchEvent(event)
+      })
+
+      expect(event.defaultPrevented).toBe(false)
+      expect(onValueChange).not.toHaveBeenCalled()
+      expect(textarea.value).toBe('Hello @al')
+      expect(textarea.getAttribute('aria-expanded')).toBe('true')
+      expect(textarea.getAttribute('aria-activedescendant')).toBe(activeOptionBefore)
+    }
+  })
+
+  test('Enter and Shift+Enter insert active mention and close suggestions', () => {
+    for (const shiftKey of [false, true]) {
+      const onValueChange = vi.fn()
+      const container = document.createElement('div')
+      const root = createRoot(container)
+      document.body.append(container)
+      mounted.push({ container, root })
+
+      act(() => {
+        root.render(createElement(Mentions, {
+          onValueChange,
+          options: ['alice', 'bob']
+        }))
+      })
+
+      const textarea = requireTextarea(container)
+      act(() => {
+        setTextareaValue(textarea, 'Hello @al')
+      })
+
+      expect(textarea.getAttribute('aria-expanded')).toBe('true')
+      onValueChange.mockClear()
+
+      const event = new KeyboardEvent('keydown', {
+        bubbles: true,
+        cancelable: true,
+        key: 'Enter',
+        shiftKey
+      })
+
+      act(() => {
+        textarea.dispatchEvent(event)
+      })
+
+      expect(event.defaultPrevented).toBe(true)
+      expect(onValueChange).toHaveBeenCalledWith('Hello @alice ')
+      expect(textarea.value).toBe('Hello @alice ')
+      expect(textarea.getAttribute('aria-expanded')).toBe('false')
+    }
+  })
+
+  test('ignores canceled or composing Enter events, preserving active suggestions and values', () => {
+    const onValueChange = vi.fn()
+    const container = document.createElement('div')
+    const root = createRoot(container)
+    document.body.append(container)
+    mounted.push({ container, root })
+
+    act(() => {
+      root.render(createElement(Mentions, {
+        onValueChange,
+        options: ['alice', 'bob']
+      }))
+    })
+
+    const textarea = requireTextarea(container)
+    act(() => {
+      setTextareaValue(textarea, 'Hello @al')
+    })
+
+    expect(textarea.getAttribute('aria-expanded')).toBe('true')
+    const activeOptionBefore = textarea.getAttribute('aria-activedescendant')
+    expect(activeOptionBefore).toBeTruthy()
+    onValueChange.mockClear()
+
+    const canceledEvent = new KeyboardEvent('keydown', {
+      bubbles: true,
+      cancelable: true,
+      key: 'Enter'
+    })
+    canceledEvent.preventDefault()
+
+    act(() => {
+      textarea.dispatchEvent(canceledEvent)
+    })
+    expect(onValueChange).not.toHaveBeenCalled()
+    expect(textarea.value).toBe('Hello @al')
+    expect(textarea.getAttribute('aria-expanded')).toBe('true')
+    expect(textarea.getAttribute('aria-activedescendant')).toBe(activeOptionBefore)
+
+    const composingEvent = new KeyboardEvent('keydown', {
+      bubbles: true,
+      cancelable: true,
+      isComposing: true,
+      key: 'Enter'
+    })
+
+    act(() => {
+      textarea.dispatchEvent(composingEvent)
+    })
+    expect(composingEvent.defaultPrevented).toBe(false)
+    expect(onValueChange).not.toHaveBeenCalled()
+    expect(textarea.value).toBe('Hello @al')
+    expect(textarea.getAttribute('aria-expanded')).toBe('true')
+    expect(textarea.getAttribute('aria-activedescendant')).toBe(activeOptionBefore)
+  })
 })

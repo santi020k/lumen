@@ -7,11 +7,14 @@ import {
   Card,
   ColorPicker,
   Field,
+  Grid,
   Input,
   Label,
   NumberField,
+  Select,
   Slider,
   Stack,
+  Table,
   Tabs,
   Textarea,
   ThemeBuilder
@@ -120,6 +123,21 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token] ?? ''};`).j
           <Label for="theme-border-width">Border width in pixels</Label>
           <NumberField id="theme-border-width" data-ui-theme-border-width min="0" max="3" step="0.5" value="1" />
         </Field>
+
+        <Field>
+          <Label for="theme-font-family">Typography</Label>
+          <Select id="theme-font-family" data-ui-theme-font-family value="sans" options={[{ label: 'System sans', value: 'sans' }, { label: 'Editorial serif', value: 'serif' }, { label: 'Monospace', value: 'mono' }]} />
+        </Field>
+        <Field>
+          <Label for="theme-elevation">Elevation</Label>
+          <Select id="theme-elevation" data-ui-theme-elevation value="default" options={[{ label: 'Preset shadows', value: 'default' }, { label: 'Flat surfaces', value: 'flat' }]} />
+        </Field>
+        <Field>
+          <Label for="theme-density">Density</Label>
+          <Select id="theme-density" data-theme-density value="comfortable" options={['compact', 'comfortable', 'spacious']} />
+        </Field>
+        <Button data-theme-share variant="outline">Copy workbench link</Button>
+        <p role="status" data-theme-share-status></p>
 
         <Tabs class="theme-playground__tabs">
           <div role="tablist" aria-label="Theme input mode">
@@ -279,7 +297,32 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token] ?? ''};`).j
           <h2 id="theme-preview-title">Representative primitives</h2>
         </div>
 
+        <Field>
+          <Label for="theme-state">Field state</Label>
+          <Select id="theme-state" data-theme-state value="default" options={['default', 'invalid', 'disabled', 'readonly']} />
+        </Field>
+        <p data-theme-inspector role="status">Focus a preview control to inspect its styling tokens.</p>
         <Stack id="theme-playground-preview" data-ui-theme-preview style={`color-scheme: ${defaultScheme}; ${tokenStyle}`}>
+        <Grid minItemWidth="16rem">
+          <Card>
+            <Field>
+              <Label for="theme-state-field">Workspace name</Label>
+              <Input aria-describedby="theme-state-message" id="theme-state-field" value="Lumen studio" />
+              <p id="theme-state-message" data-theme-state-message>Choose a recognizable name.</p>
+            </Field>
+          </Card>
+          <Card variant="muted">
+            <Table><table aria-label="Example workspace records">
+              <thead><tr><th>Project</th><th>Status</th></tr></thead>
+              <tbody><tr><td>Website</td><td>Ready</td></tr><tr><td>Mobile</td><td>In review</td></tr></tbody></table>
+            </Table>
+          </Card>
+        </Grid>
+        <Card data-theme-comparison style="color-scheme: dark">
+          <h3>Opposite scheme comparison</h3>
+          <Field><Label for="theme-comparison-field">Workspace name</Label><Input id="theme-comparison-field" value="Lumen studio" /></Field>
+          <Button>Save workspace</Button>
+        </Card>
         <PrimitiveShowcase
           class="theme-playground__preview"
           description="The preview reads generated tokens from this scoped container."
@@ -342,6 +385,14 @@ ${lumenTokenNames.map(token => `  --${token}: ${defaultTokens[token] ?? ''};`).j
       </Card>
     </ThemeBuilder>
   </div>
+
+  <script>
+    import { initializeAppearanceWorkbench } from '../../lib/appearance-workbench'
+
+    document.addEventListener('astro:page-load', initializeAppearanceWorkbench)
+
+    initializeAppearanceWorkbench()
+  </script>
 
   <script is:inline>
     (() => {

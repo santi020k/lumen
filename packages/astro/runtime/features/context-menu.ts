@@ -1,7 +1,13 @@
+import { getFocusable, shouldRestorePanelFocus } from '../panels.js'
 import { getScopeActiveElement, getScopeTarget } from '../relationships.js'
 import { queryScope } from '../scope.js'
 
-import { getFocusable, getLoopedIndex } from './shared.js'
+import { getLoopedIndex, shouldIgnoreKeydown } from './shared.js'
+
+const boundContextMenus = new WeakSet<HTMLElement>()
+const contextMenuTriggers = new WeakMap<HTMLElement, HTMLElement>()
+const isOwnedMenuEvent = (menu: HTMLElement, event: Event): boolean => event.target instanceof Element && event.target.closest('[data-ui-context-menu]') === menu
+const getContextMenuItems = (menu: HTMLElement): HTMLElement[] => getFocusable(menu).filter(item => item.closest('[data-ui-context-menu]') === menu)
 
 export const closeContextMenu = (menu: HTMLElement): void => {
   if (menu.dataset.state !== 'open') return
@@ -36,7 +42,7 @@ const openContextMenuAt = (menu: HTMLElement, x: number, y: number): void => {
 
   menu.style.top = `${top}px`
 
-  getFocusable(menu)[0]?.focus()
+  getContextMenuItems(menu)[0]?.focus()
 }
 
 const bindContextMenus = (target: HTMLElement): void => {
@@ -49,42 +55,60 @@ const bindContextMenus = (target: HTMLElement): void => {
 
   target.dataset.uiBound = 'true'
 
-  menu.dataset.uiContextMenuBound = 'true'
-
-  menu.hidden = true
-
-  menu.dataset.state = 'closed'
-
   target.addEventListener('contextmenu', event => {
+    if (event.defaultPrevented || target.matches(':disabled, [aria-disabled="true"]')) return
+
     event.preventDefault()
+
+    contextMenuTriggers.set(menu, target)
 
     openContextMenuAt(menu, event.clientX, event.clientY)
   })
 
   target.addEventListener('keydown', event => {
+    if (shouldIgnoreKeydown(event)) return
+
+    if (target.matches(':disabled, [aria-disabled="true"]')) return
+
     if (event.key !== 'ContextMenu' && !(event.shiftKey && event.key === 'F10')) return
 
     event.preventDefault()
 
     const rect = target.getBoundingClientRect()
 
+    contextMenuTriggers.set(menu, target)
+
     openContextMenuAt(menu, rect.left + 16, rect.top + 16)
   })
 
+  if (boundContextMenus.has(menu)) return
+
+  boundContextMenus.add(menu)
+
+  menu.dataset.uiContextMenuBound = 'true'
+
+  menu.hidden = true
+
+  menu.dataset.state = 'closed'
+
   menu.addEventListener('keydown', event => {
-    if (event.defaultPrevented || event.isComposing) return
+    if (shouldIgnoreKeydown(event)) return
+
+    if (!isOwnedMenuEvent(menu, event)) return
 
     if (event.key === 'Escape') {
+      event.preventDefault()
+
       closeContextMenu(menu)
 
-      target.focus()
+      contextMenuTriggers.get(menu)?.focus({ preventScroll: true })
 
       return
     }
 
     if (!['ArrowDown', 'ArrowUp', 'End', 'Home'].includes(event.key)) return
 
-    const items = getFocusable(menu)
+    const items = getContextMenuItems(menu)
 
     if (items.length === 0) return
 
@@ -100,9 +124,21 @@ const bindContextMenus = (target: HTMLElement): void => {
   })
 
   menu.addEventListener('click', event => {
-    if (event.target instanceof HTMLElement && event.target.closest('[role="menuitem"]')) {
-      closeContextMenu(menu)
+    const item = event.target instanceof Element ? event.target.closest<HTMLElement>('[role="menuitem"]') : null
+
+    if (event.defaultPrevented || item?.closest('[data-ui-context-menu]') !== menu) return
+
+    if (item.matches(':disabled, [aria-disabled="true"]') || item.closest('[hidden], [inert]')) {
+      event.preventDefault()
+
+      return
     }
+
+    const restoreFocus = shouldRestorePanelFocus(menu)
+
+    closeContextMenu(menu)
+
+    if (restoreFocus) contextMenuTriggers.get(menu)?.focus({ preventScroll: true })
   })
 }
 

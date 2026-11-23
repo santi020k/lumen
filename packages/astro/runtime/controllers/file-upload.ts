@@ -79,13 +79,27 @@ export const initFileUploadControllers = (scope: ParentNode): void => {
 
       event.preventDefault()
 
-      if (!event.dataTransfer?.files.length) {
+      let list = event.dataTransfer?.files
+
+      if (list && !input.multiple && list.length > 1) {
+        try {
+          const transfer = new DataTransfer()
+
+          if (list[0]) transfer.items.add(list[0])
+
+          list = transfer.files
+        } catch {
+          list = undefined
+        }
+      }
+
+      if (!list?.length) {
         renderFiles()
 
         return
       }
 
-      input.files = event.dataTransfer.files
+      input.files = list
 
       input.dispatchEvent(new Event('change', { bubbles: true }))
     })

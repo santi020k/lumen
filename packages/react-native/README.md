@@ -220,7 +220,11 @@ the matching Lumen rendering adapter. See the
 composition examples.
 
 Date values remain controlled by the application. `LumenDateField` opens the system picker, while
-`LumenDateRangeField` coordinates two pickers and prevents the end from preceding the start:
+`LumenDateRangeField` coordinates two pickers and prevents the end from preceding the start.
+On Android, disabling or unmounting the field that opened the current picker dismisses it;
+changing an unrelated date field leaves it open. While that picker is open or being dismissed,
+additional open requests leave it with its original field. Later callbacks from completed pickers
+are ignored:
 
 ```tsx
 import {
@@ -581,6 +585,9 @@ and `LumenIconButton`. The same `react-native-svg` peer is required.
 locale tags while preserving the requested 12-hour or 24-hour format. On iOS and web, changing the
 controlled value or time bounds dismisses an open sheet and resets its draft; reopen to edit the
 updated value. Android validates an open native picker against the latest bounds and callback.
+Only one Android time picker opens at a time. Unmounting or making its owner disabled or read-only
+dismisses it; another time field can open after dismissal settles. Callbacks from a previous picker
+cannot update a reopened field.
 
 ```tsx
 <LumenNumberField

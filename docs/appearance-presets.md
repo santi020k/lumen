@@ -103,6 +103,52 @@ React's `useThemeBuilder` accepts controlled `preset`, `radiusScale`, `spacingSc
 local or application-owned preset selection. Passing `undefined` to `setPreset` restores the
 existing generated mode. Existing calls without a preset keep generated color behavior.
 
+### Coordinated web density
+
+Set `data-ui-density="compact|comfortable|spacious"` on an application root or a section to
+coordinate control height, input padding, field gaps, card spacing, menu rows, and table cells.
+Density is independent of the color theme and does not scale text or icons. The foundation
+includes its scoped tokens, so the same attribute works with full or selective web styles.
+
+```astro
+---
+import { Button, Card, Field, Input, Label } from '@santi020k/lumen-astro'
+---
+
+<section data-ui-density="compact">
+  <Card>
+    <Field>
+      <Label for="workspace-name">Workspace name</Label>
+      <Input id="workspace-name" value="Design team" />
+    </Field>
+    <Button>Save workspace</Button>
+  </Card>
+  <section data-ui-density="comfortable">
+    <Card>Nested content uses comfortable spacing.</Card>
+  </section>
+</section>
+```
+
+| Density | Default control height on desktop | Default card padding | Table cell padding |
+| --- | --- | --- | --- |
+| `compact` | 2.25rem | `lg` spacing | 0.5rem × 0.75rem |
+| `comfortable` | 2.75rem | `inset` spacing | 0.75rem × 1rem |
+| `spacious` | 3.25rem | `2xl` spacing | 1rem × 1.25rem |
+
+A nested density resets all density dimensions. Explicit component sizes, such as Input's
+`visualSize` and Card's `density`, keep priority. On coarse-pointer devices or viewports up to
+40rem, density scopes preserve at least 2.75rem targets for buttons, inputs, selects, and menu
+options; input text uses 1rem to remain readable. Link-style buttons retain their inline layout.
+Mobile record tables keep their existing layout. Components outside a density scope retain
+their existing dimensions, and application CSS can still override the public tokens.
+
+Readonly inputs remain focusable and selectable, with a muted surface and dashed border.
+Disabled inputs keep their native behavior and do not gain hover emphasis. Invalid controls
+retain error borders during hover and show an error-colored focus ring; native validation
+uses `:user-invalid` so untouched required fields do not show errors immediately. Always pair
+invalid styling with a useful error message and `aria-describedby`. Menu and select options
+use a visible keyboard outline distinct from the selected background.
+
 ### The santi020k website appearance
 
 Lumen generates the named light and dark palettes from the shared website colors in

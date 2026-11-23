@@ -360,7 +360,7 @@ using named arguments where needed.
 | React Native / Compose localization | Translate `requiredLabel` and optional `panelAccessibilityLabel`; check screen-reader descriptions with visible labels. |
 
 Swift resolves the `Required` localization key in the application. See [native patterns](native-patterns.md)
-and [native quality](lumen-4-native-quality.md) for platform-specific compositions.
+and [native quality](archive/lumen-4-native-quality.md) for platform-specific compositions.
 React Native's optional `/foundations` entrypoint reduces the import graph for basic primitives;
 existing root imports remain supported. Adopt it only when its exported catalog covers the surface.
 

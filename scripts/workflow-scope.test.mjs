@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, matchesGlob, resolve } from 'node:path'
 import test from 'node:test'
@@ -9,6 +9,144 @@ import test from 'node:test'
 
 const repositoryRoot = resolve(import.meta.dirname, '..')
 const readRepositoryFile = path => readFile(resolve(repositoryRoot, path), 'utf8')
+const appleWorkflow = await readRepositoryFile('.github/workflows/apple-native.yml')
+
+const appleGateScript = name => {
+  const section = appleWorkflow.split(`      - name: ${name}\n`)[1]?.split('      - uses:')[0]
+
+  assert.ok(section, `Missing Apple scope gate: ${name}`)
+
+  const script = section.split('        run: |\n')[1]
+
+  assert.ok(script, `Missing executable Apple scope gate: ${name}`)
+
+  return script.replace(/^ {10}/gmu, '')
+}
+
+test('Apple required check identities stay present while unaffected modes use Linux', () => {
+  assert.match(appleWorkflow, /check: \[swift, react-native, visual, framework-visual\]/u)
+
+  assert.match(appleWorkflow, /name: Apple \$\{\{ matrix\.check \}\}/u)
+
+  assert.match(appleWorkflow, /name: Apple captures/u)
+
+  assert.match(appleWorkflow, /needs\.classify\.outputs\[matrix\.check\] == 'true' && 'macos-26' \|\| 'ubuntu-latest'/u)
+
+  assert.match(appleWorkflow, /node scripts\/classify-workflow-paths\.mjs apple/u)
+
+  assert.match(appleWorkflow, /HEAD_REF: \$\{\{ github\.head_ref \}\}/u)
+
+  assert.match(appleWorkflow, /HEAD_REPOSITORY: \$\{\{ github\.event\.pull_request\.head\.repo\.full_name \}\}/u)
+
+  const gate = appleWorkflow.split('      - name: Run equivalent Apple gate\n')[1]?.split('      - name:')[0]
+
+  assert.ok(gate)
+
+  assert.match(gate, /if: needs\.classify\.outputs\[matrix\.check\] == 'true'/u)
+
+  assert.match(gate, /run-native-checks\.sh/u)
+})
+
+test('Apple check gates reject failed classification and missing or malformed selection', () => {
+  const script = appleGateScript('Require a valid Apple scope')
+
+  for (const classification of ['success', 'failure', 'cancelled', 'skipped', '']) {
+    for (const selected of ['true', 'false', '', 'unexpected']) {
+      const result = spawnSync('bash', ['-euo', 'pipefail', '-c', script], {
+        encoding: 'utf8',
+        env: { ...process.env, CLASSIFICATION_RESULT: classification, SELECTED: selected, SCOPE_REASON: 'owned-inputs' }
+      })
+
+      assert.equal(result.status === 0, classification === 'success' && ['true', 'false'].includes(selected), `${classification}/${selected}`)
+    }
+  }
+})
+
+test('Apple capture gate requires complete selected shards or a verified unaffected plan', () => {
+  const script = appleGateScript('Require every selected native capture group')
+
+  for (const selected of ['true', 'false', '', 'unexpected']) {
+    for (const buildResult of ['success', 'failure', 'cancelled', 'skipped']) {
+      for (const captureResult of ['success', 'failure', 'cancelled', 'skipped']) {
+        for (const classification of ['success', 'failure']) {
+          const result = spawnSync('bash', ['-euo', 'pipefail', '-c', script], {
+            encoding: 'utf8',
+            env: { ...process.env, CLASSIFICATION_RESULT: classification, SELECTED: selected, BUILD_RESULT: buildResult, CAPTURE_RESULT: captureResult }
+          })
+
+          const expectedStatus = { true: 'success', false: 'skipped' }[selected]
+          const expected = classification === 'success' && [buildResult, captureResult].every(status => status === expectedStatus)
+
+          assert.equal(result.status === 0, expected, `${classification}/${selected}/${buildResult}/${captureResult}`)
+        }
+      }
+    }
+  }
+})
+
+test('signing eligibility requires executed Apple surfaces and successful aggregates', () => {
+  const script = appleGateScript('Require every Apple surface before signing eligibility')
+
+  const valid = {
+    CLASSIFICATION_RESULT: 'success', CHECKS_RESULT: 'success', CAPTURES_RESULT: 'success',
+    SWIFT_SELECTED: 'true', REACT_NATIVE_SELECTED: 'true', CAPTURES_SELECTED: 'true',
+    VISUAL_SELECTED: 'true', FRAMEWORK_VISUAL_SELECTED: 'true'
+  }
+
+  const run = environment => spawnSync('bash', ['-euo', 'pipefail', '-c', script], {
+    encoding: 'utf8', env: { ...process.env, ...environment }
+  })
+
+  assert.equal(run(valid).status, 0)
+
+  for (const key of Object.keys(valid)) {
+    for (const value of ['', 'false', 'skipped', 'failure', 'cancelled']) {
+      assert.notEqual(run({ ...valid, [key]: value }).status, 0, `${key}/${value}`)
+    }
+  }
+
+  const qualification = appleWorkflow.slice(appleWorkflow.indexOf('\n  qualification:'))
+
+  assert.match(qualification, /needs: \[classify, checks, captures\]/u)
+
+  assert.match(qualification, /if: always\(\).*needs\.classify\.outputs\.full == 'true'/u)
+})
+
+test('Apple CLI keeps manual and release qualification full with no changed files', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'lumen-apple-scope-'))
+  const script = resolve(repositoryRoot, 'scripts/classify-workflow-paths.mjs')
+
+  try {
+    for (const context of [
+      { event: 'workflow_dispatch', branch: '', base: '', full: true },
+      { event: 'pull_request', branch: 'release/v5.3.0', base: 'HEAD', full: true },
+      { event: 'pull_request', branch: 'changeset-release/main', base: 'HEAD', full: true },
+      { event: 'pull_request', branch: 'feature/button', base: 'HEAD', full: false }
+    ]) {
+      const outputPath = join(directory, crypto.randomUUID())
+
+      const result = spawnSync(process.execPath, [script, 'apple', '--base', context.base, '--head', context.base, '--output', outputPath], {
+        cwd: repositoryRoot,
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          GITHUB_EVENT_NAME: context.event, HEAD_REF: context.branch,
+          GITHUB_REPOSITORY: 'santi020k/lumen', HEAD_REPOSITORY: 'santi020k/lumen'
+        }
+      })
+
+      assert.equal(result.status, 0, result.stderr)
+
+      const outputs = Object.fromEntries((await readFile(outputPath, 'utf8')).trim().split('\n').map(line => line.split('=')))
+
+      for (const check of ['swift', 'react-native', 'captures', 'visual', 'framework-visual', 'full']) {
+        assert.equal(outputs[check], String(context.full), `${context.branch}/${check}`)
+      }
+    }
+  } finally {
+    await rm(directory, { recursive: true })
+  }
+})
 
 test('motion browser tests wait for their preview build and inherit the browser cache path', () => {
   const result = spawnSync(process.execPath, [
@@ -567,4 +705,92 @@ if [[ "$1" == cp ]]; then cp "$2" "$3"; else cat > "$MOCK_APT_CONFIG"; fi
   } finally {
     await rm(root, { recursive: true, force: true })
   }
+})
+
+test('shared Quality actions use the published immutable v2 revision', async () => {
+  for (const name of await readdir(resolve(repositoryRoot, '.github/workflows'))) {
+    if (!name.endsWith('.yml')) continue
+
+    const workflow = await readRepositoryFile(`.github/workflows/${name}`)
+
+    for (const reference of workflow.matchAll(/santi020k\/quality[^\s]*@([a-f0-9]+|v[0-9.]+)/gu)) {
+      assert.equal(reference[1], 'ff490e9efbd5fdfbdb1e6c404f1741d04c57f585', name)
+    }
+  }
+})
+
+test('Quality impact remains shadow planning with explicit full release selection', async () => {
+  const workflow = await readRepositoryFile('.github/workflows/quality-impact.yml')
+
+  assert.match(workflow, /fetch-depth: 0/u)
+
+  assert.match(workflow, /persist-credentials: false/u)
+
+  assert.match(workflow, /quality\/ff490e9efbd5fdfbdb1e6c404f1741d04c57f585\/install\.sh/u)
+
+  assert.match(workflow, /santi020k\/quality v2\.0\.0/u)
+
+  assert.match(workflow, /'quality 2\.0\.0'/u)
+
+  assert.match(workflow, /quality impact plan --full --head HEAD/u)
+
+  assert.match(workflow, /quality impact plan --base "\$BASE_SHA" --head HEAD/u)
+
+  assert.match(workflow, /workflow_dispatch/u)
+
+  assert.match(workflow, /head\.repo\.full_name == github\.repository/u)
+
+  assert.match(workflow, /startsWith\(github\.head_ref, 'release\/'\)/u)
+
+  assert.match(workflow, /startsWith\(github\.head_ref, 'changeset-release\/'\)/u)
+
+  assert.match(workflow, /node --test scripts\/quality-impact\.test\.mjs/u)
+
+  assert.match(workflow, /Invalid impact selector or missing pull request base/u)
+
+  assert.doesNotMatch(ci, /needs:[^\n]*impact/u)
+})
+
+test('docs deployment retries restore the same verified archive without rebuilding', async () => {
+  const workflow = await readRepositoryFile('.github/workflows/deploy-docs.yml')
+  const build = workflow.split('  build:\n')[1].split('  build-and-deploy:\n')[0]
+  const deploy = workflow.split('  build-and-deploy:\n')[1]
+
+  assert.match(build, /pnpm run docs:build/u)
+
+  assert.match(build, /docs-deployment-artifact\.mjs record/u)
+
+  assert.match(build, /name: docs-deployment-\$\{\{ github\.run_attempt \}\}/u)
+
+  assert.match(build, /artifact-id: \$\{\{ steps\.upload\.outputs\.artifact-id \}\}/u)
+
+  assert.match(workflow, /cancel-in-progress: false/u)
+
+  assert.match(build, /retention-days: 7/u)
+
+  assert.match(build, /if: github\.ref == 'refs\/heads\/main'/u)
+
+  assert.match(build, /environment: production/u)
+
+  assert.doesNotMatch(build, /secrets\./u)
+
+  assert.match(deploy, /needs: build/u)
+
+  assert.match(deploy, /name: Build and deploy docs/u)
+
+  assert.match(deploy, /environment: production/u)
+
+  assert.match(deploy, /actions\/download-artifact@[a-f0-9]{40}/u)
+
+  assert.match(deploy, /artifact-ids: \$\{\{ needs\.build\.outputs\.artifact-id \}\}/u)
+
+  assert.match(deploy, /EXPECTED_ARCHIVE_SHA256: \$\{\{ needs\.build\.outputs\.archive-sha256 \}\}/u)
+
+  assert.doesNotMatch(deploy, /run-id:|github-token:|docs:build|turbo run build/u)
+
+  assert.ok(deploy.indexOf('docs-deployment-artifact.mjs verify') < deploy.indexOf('tar -xzf'))
+
+  assert.ok(deploy.indexOf('check-approved-release-revision.mjs') < deploy.indexOf('wrangler pages deploy'))
+
+  assert.match(deploy, /Smoke test the public docs/u)
 })

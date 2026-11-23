@@ -13,6 +13,8 @@ export type LumenThemeBuilderMode = 'generated' | 'manual'
 export type LumenThemeBuilderScheme = 'dark' | 'light'
 
 export interface LumenThemeBuilderOptions {
+  fontFamily?: string | null
+  elevation?: string | null
   radiusScale?: number | string | null
   spacingScale?: number | string | null
   borderWidth?: number | string | null
@@ -51,6 +53,21 @@ const customizeAppearance = (tokens: LumenThemeTokens, options: LumenThemeBuilde
   scaleAppearanceDimensions(tokens, ['zero', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'].map(name => `ui-space-${name}`), options.spacingScale)
 
   tokens['ui-border-width'] = `${appearanceNumber(options.borderWidth, 1)}px`
+
+  const fonts: Record<string, string> = {
+    sans: 'ui-sans-serif, system-ui, sans-serif',
+    serif: 'ui-serif, Georgia, serif',
+    mono: 'ui-monospace, monospace'
+  }
+
+  const fontName = options.fontFamily ?? ''
+  const font = Object.hasOwn(fonts, fontName) ? fonts[fontName] : undefined
+
+  if (font) tokens['ui-font'] = font
+
+  if (options.elevation === 'flat') {
+    for (const name of ['ui-shadow-sm', 'ui-shadow-md', 'ui-shadow-lg']) tokens[name] = 'none'
+  }
 }
 
 export interface LumenThemeBuilderResult {

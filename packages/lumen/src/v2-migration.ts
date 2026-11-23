@@ -1,5 +1,7 @@
-import { lstat, readdir, readFile, writeFile } from 'node:fs/promises'
+import { lstat, readdir } from 'node:fs/promises'
 import { extname, relative, resolve } from 'node:path'
+
+import { readGuardedRegularFile, writeGuardedExistingFile } from './guarded-file.js'
 
 // cspell:words swiftpm
 
@@ -1340,18 +1342,25 @@ export const migrateLumenV2 = async (
 
   for (const absoluteFile of files) {
     const file = relative(root, absoluteFile) || absoluteFile
-    const source = await readFile(absoluteFile, 'utf8')
-    const migration = migrateLumenV2Source(source, file)
+    const snapshot = await readGuardedRegularFile(absoluteFile, file)
+    const migration = migrateLumenV2Source(snapshot.content, file)
 
     changes.push(...migration.changes)
 
     manualReview.push(...migration.manualReview)
 
-    if (migration.source !== source) {
+    if (migration.source !== snapshot.content) {
       changedFiles.push(file)
 
-      if (options.apply)
-        await writeFile(absoluteFile, migration.source, 'utf8')
+      if (options.apply) {
+        await writeGuardedExistingFile(
+          absoluteFile,
+          migration.source,
+          snapshot,
+          file,
+          `Source changed during migration: ${file}`
+        )
+      }
     }
   }
 

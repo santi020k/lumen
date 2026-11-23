@@ -290,6 +290,59 @@
 }
 
 @layer lumen.components {
+@keyframes ui-animated-portrait-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.75rem);
+  }
+}
+}
+
+@layer lumen.components {
+@keyframes ui-animated-portrait-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+}
+
+@layer lumen.components {
+@keyframes ui-animated-portrait-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+}
+
+@layer lumen.components {
+@keyframes ui-animated-portrait-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+}
+
+@layer lumen.components {
+@keyframes ui-animated-portrait-spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+}
+
+@layer lumen.components {
 @media (prefers-reduced-motion: reduce) {
 .ui-animated-portrait {
     animation: none;

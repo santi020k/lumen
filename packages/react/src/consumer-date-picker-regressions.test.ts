@@ -140,3 +140,167 @@ test('DatePicker still handles Escape when month navigation leaves focus on the 
   expect(trigger().getAttribute('aria-expanded')).toBe('false')
   expect(document.activeElement).toBe(trigger())
 })
+
+test('DatePicker restores trigger focus on normal selection, preserves consumer focus moves, and cancels stale focus on reopen or readOnly', async () => {
+  const nextInput = document.createElement('input')
+  const onChange = vi.fn()
+
+  document.body.append(nextInput)
+
+  try {
+    await run(() => {
+      root.render(createElement(DatePicker, { defaultValue: '2024-03-12', locale: 'en', onChange }))
+    })
+    await run(() => {
+      trigger().click()
+    })
+
+    const day15 = container.querySelector<HTMLElement>('[data-date="2024-03-15"]')
+
+    if (!day15) throw new Error('Missing day 15')
+
+    await run(() => {
+      day15.click()
+    })
+
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(document.activeElement).toBe(trigger())
+
+    await run(() => {
+      root.render(createElement(DatePicker, {
+        defaultValue: '2024-03-12',
+        locale: 'en',
+        onValueChange: () => {
+          nextInput.focus()
+        }
+      }))
+    })
+    await run(() => {
+      trigger().click()
+    })
+
+    const day16 = container.querySelector<HTMLElement>('[data-date="2024-03-16"]')
+
+    if (!day16) throw new Error('Missing day 16')
+
+    await run(() => {
+      day16.click()
+    })
+
+    expect(document.activeElement).toBe(nextInput)
+
+    await run(() => {
+      root.render(createElement(DatePicker, { defaultValue: '2024-03-12', locale: 'en' }))
+    })
+    await run(() => {
+      trigger().click()
+    })
+
+    const day17 = container.querySelector<HTMLElement>('[data-date="2024-03-17"]')
+
+    if (!day17) throw new Error('Missing day 17')
+
+    await act(async () => {
+      day17.click()
+      trigger().click()
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+
+    expect(trigger().getAttribute('aria-expanded')).toBe('true')
+    expect(document.activeElement).not.toBe(trigger())
+
+    await run(() => {
+      root.render(createElement(DatePicker, { defaultValue: '2024-03-12', locale: 'en', readOnly: true }))
+    })
+
+    nextInput.focus()
+    expect(document.activeElement).toBe(nextInput)
+
+    const shadowHost = document.createElement('div')
+    const shadow = shadowHost.attachShadow({ mode: 'open' })
+    const shadowMount = document.createElement('div')
+    const shadowNext = document.createElement('input')
+
+    shadow.append(shadowMount, shadowNext)
+    document.body.append(shadowHost)
+
+    const shadowRoot = createRoot(shadowMount)
+
+    try {
+      await run(() => {
+        shadowRoot.render(createElement(DatePicker, { defaultValue: '2024-03-12', locale: 'en' }))
+      })
+
+      const shadowTrigger = shadowMount.querySelector<HTMLButtonElement>('[data-ui-date-picker-trigger]')
+
+      if (!shadowTrigger) throw new Error('Missing shadow trigger')
+
+      await run(() => {
+        shadowTrigger.click()
+      })
+
+      const shadowDay15 = shadowMount.querySelector<HTMLElement>('[data-date="2024-03-15"]')
+
+      if (!shadowDay15) throw new Error('Missing shadow day 15')
+
+      await run(() => {
+        shadowDay15.click()
+      })
+
+      expect(shadow.activeElement).toBe(shadowTrigger)
+
+      await run(() => {
+        shadowRoot.render(createElement(DatePicker, {
+          defaultValue: '2024-03-12',
+          locale: 'en',
+          onChange: () => {
+            shadowNext.focus()
+          }
+        }))
+      })
+      await run(() => {
+        shadowTrigger.click()
+      })
+
+      const shadowDay16 = shadowMount.querySelector<HTMLElement>('[data-date="2024-03-16"]')
+
+      if (!shadowDay16) throw new Error('Missing shadow day 16')
+
+      await run(() => {
+        shadowDay16.click()
+      })
+
+      expect(shadow.activeElement).toBe(shadowNext)
+
+      await run(() => {
+        shadowRoot.render(createElement(DatePicker, {
+          defaultValue: '2024-03-12',
+          locale: 'en',
+          onValueChange: () => {
+            nextInput.focus()
+          }
+        }))
+      })
+      await run(() => {
+        shadowTrigger.click()
+      })
+
+      const shadowDay17 = shadowMount.querySelector<HTMLElement>('[data-date="2024-03-17"]')
+
+      if (!shadowDay17) throw new Error('Missing shadow day 17')
+
+      await run(() => {
+        shadowDay17.click()
+      })
+
+      expect(document.activeElement).toBe(nextInput)
+    } finally {
+      await run(() => {
+        shadowRoot.unmount()
+      })
+      shadowHost.remove()
+    }
+  } finally {
+    nextInput.remove()
+  }
+})

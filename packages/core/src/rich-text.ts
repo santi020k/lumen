@@ -95,7 +95,9 @@ export const getLumenRichTextShortcut = (
 
   const key = event.key.toLowerCase()
 
-  if (!event.shiftKey) return shortcuts[key]
+  if (!event.shiftKey) return Object.hasOwn(shortcuts, key) ? shortcuts[key] : undefined
 
-  return (event.code ? shiftedCodeShortcuts[event.code] : undefined) ?? shiftedKeyShortcuts[key]
+  if (event.code && Object.hasOwn(shiftedCodeShortcuts, event.code)) return shiftedCodeShortcuts[event.code]
+
+  return Object.hasOwn(shiftedKeyShortcuts, key) ? shiftedKeyShortcuts[key] : undefined
 }

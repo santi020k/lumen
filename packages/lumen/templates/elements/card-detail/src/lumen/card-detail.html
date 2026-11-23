@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="./card-detail.css" />
+<!-- Give each installed instance unique IDs. Use lumen-sheet and data-ui-sheet-trigger/close for a sheet. -->
+<lumen-card class="lumen-card-detail">
+  <lumen-typography><h3>Release overview</h3></lumen-typography>
+  <p class="lumen-card-detail__summary">Inspect the scope and supporting evidence.</p>
+  <lumen-button variant="outline" aria-controls="release-details" aria-haspopup="dialog" data-ui-dialog-trigger="release-details">View details</lumen-button>
+</lumen-card>
+<lumen-dialog id="release-details" aria-labelledby="release-details-title" class="lumen-card-detail__surface">
+  <lumen-dialog-header><lumen-dialog-title id="release-details-title">Release overview</lumen-dialog-title></lumen-dialog-header>
+  <lumen-dialog-body><lumen-typography><p>Replace this illustrative content with application-owned details.</p></lumen-typography></lumen-dialog-body>
+  <lumen-dialog-footer><lumen-button variant="outline" data-ui-dialog-close>Close details</lumen-button></lumen-dialog-footer>
+</lumen-dialog>
+<script type="module">
+  import { defineLumenElements } from '@santi020k/lumen-elements/define'
+  defineLumenElements()
+</script>
