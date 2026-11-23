@@ -11,6 +11,7 @@ import {
   classifyCanaryPaths,
   classifyChangedNpmPackages,
   classifyCiPaths,
+  isCiPullRequest,
   requiresFullAppleChecks
 } from './classify-workflow-paths.mjs'
 
@@ -614,4 +615,46 @@ test('v5 contract sources select contract and MCP checks', () => {
 
     assert.equal(classifyCanaryPaths([path]).web, true, path)
   }
+})
+
+test('canaries defer shared gates to CI only for pull requests CI validates', () => {
+  assert.equal(isCiPullRequest({ baseRef: 'main', eventName: 'pull_request' }), true)
+
+  assert.equal(isCiPullRequest({ baseRef: 'release/v5.4.0', eventName: 'pull_request' }), false)
+
+  assert.equal(isCiPullRequest({ baseRef: 'main', eventName: 'workflow_dispatch' }), false)
+
+  assert.equal(isCiPullRequest({}), false)
+
+  const paths = ['packages/react/src/Button.tsx', 'packages/compose/src/commonMain/Button.kt']
+
+  for (const classification of [classifyCanaryPaths(paths), classifyCanaryPaths([], { manual: true }), classifyCanaryPaths(paths, { ciPullRequest: true, manual: true })]) {
+    assert.equal(classification['ci-browser'], false)
+
+    assert.equal(classification['ci-compose'], false)
+
+    assert.equal(classification['ci-preflight'], false)
+  }
+
+  const shared = classifyCanaryPaths(paths, { ciPullRequest: true })
+
+  assert.equal(shared['ci-browser'], true)
+
+  assert.equal(shared['ci-compose'], true)
+
+  assert.equal(shared['ci-preflight'], true)
+
+  // The canary keeps a gate whenever CI's own path scope would not schedule it.
+  for (const path of ['.github/workflows/release-canary.yml', 'packages/tokens/src/index.ts', 'packages/compose/src/commonMain/Button.kt']) {
+    const canary = classifyCanaryPaths([path], { ciPullRequest: true })
+    const ci = classifyCiPaths([path])
+
+    assert.equal(canary['ci-browser'], ci.playwright, path)
+
+    assert.equal(canary['ci-compose'], ci.android, path)
+  }
+
+  assert.equal(classifyCanaryPaths(['packages/tokens/src/index.ts'], { ciPullRequest: true })['ci-browser'], false)
+
+  assert.equal(classifyCanaryPaths(['packages/tokens/src/index.ts'], { ciPullRequest: true }).browser, true)
 })

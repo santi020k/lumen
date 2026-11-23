@@ -240,7 +240,7 @@ test('primitive motion has browser coverage for ordinary and release pull reques
 
   assert.match(releaseBrowser, /browsers: chromium webkit/u)
 
-  assert.match(releaseBrowser, /if: matrix\.shard == 1\n\s+run: pnpm run test:motion/u)
+  assert.match(releaseBrowser, /if: matrix\.shard == 1 && needs\.classify\.outputs\.ci-browser != 'true'\n\s+run: pnpm run test:motion/u)
 
   assert.match(trigger, /- "tests\/motion\/\*\*"/u)
 
@@ -846,4 +846,42 @@ test('parallel browser suites share an environment-driven worker count', async (
   assert.match(vitest, /process\.env\.LUMEN_VITEST_MAX_WORKERS/u)
 
   assert.match(vitest, /maxWorkers: suiteWorkers/u)
+})
+
+test('release canaries skip only the gates CI runs for the same revision', () => {
+  const section = name => canary.split(`  ${name}:\n`)[1]?.split(/\n {2}[a-z][a-z-]*:\n/u)[0]
+  const ciBrowser = ci.slice(ci.indexOf('\n  browser-contracts:\n'), ci.indexOf('\n  react-native-captures:\n'))
+  const ciCompose = ci.slice(ci.indexOf('\n  native-android:\n'), ci.indexOf('\n  browser-contracts:\n'))
+
+  assert.match(ci, /pull_request:\n\s+branches: \[main\]/u)
+
+  assert.match(canary, /BASE_REF: \$\{\{ github\.base_ref \}\}/u)
+
+  assert.match(section('preflight'), /if: needs\.classify\.outputs\.ci-preflight != 'true'\n\s+run: pnpm run ci:preflight/u)
+
+  assert.match(ci, /command: pnpm run ci:preflight/u)
+
+  assert.match(section('compose'), /if: needs\.classify\.outputs\.compose == 'true' && needs\.classify\.outputs\.ci-compose != 'true'/u)
+
+  // Every command of a skipped canary gate must still run in the CI job that replaces it.
+  for (const command of section('compose').matchAll(/(?:run: (?:>-\n\s+)?|^\s+)((?:\.\/gradlew|\.\/packages\/compose\/gradlew|pnpm run check:compose|node scripts\/check-wear)[^\n]*)/gmu)) {
+    if (command[1].startsWith('./gradlew ')) {
+      for (const task of command[1].split(' ').slice(1)) assert.match(ciCompose, new RegExp(`gradlew [^\\n]*\\b${task}\\b`, 'u'), task)
+    } else {
+      assert.ok(ciCompose.includes(command[1]), command[1])
+    }
+  }
+
+  assert.match(ciCompose, /assembleDebug :app:verifyLumenArtifactIsolation/u)
+
+  const skipped = [...section('browser').matchAll(/if: matrix\.shard == 1 && needs\.classify\.outputs\.ci-browser != 'true'\n(?:\s+env:\n\s+[^\n]+\n)?\s+run: ([^\n]+)/gu)]
+    .flatMap(match => match[1].split(' && '))
+
+  assert.deepEqual(skipped, [
+    'pnpm run test:framework-conformance', 'pnpm run test:motion', 'pnpm run check:route-delivery', 'pnpm run measure:subscribe-form'
+  ])
+
+  for (const command of skipped) assert.ok(ciBrowser.includes(command), command)
+
+  assert.doesNotMatch(ciBrowser.split('    steps:')[0] + ciCompose.split('    steps:')[0], /release-pr/u)
 })

@@ -68,6 +68,10 @@ export const requiresFullAppleChecks = ({ eventName, headRef, headRepository, re
   eventName === 'workflow_dispatch' ||
   Boolean(repository && headRepository === repository && /^(?:release|changeset-release)\//u.test(headRef ?? ''))
 
+// Mirrors the CI workflow trigger: every pull request that targets main.
+/** @param {{ eventName?: string, baseRef?: string }} context */
+export const isCiPullRequest = ({ eventName, baseRef }) => eventName === 'pull_request' && baseRef === 'main'
+
 export const changedPaths = (base, head, cwd = process.cwd()) => {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')))
   const git = args => execFileSync('git', args, { cwd, env, encoding: 'utf8' })
@@ -228,10 +232,21 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   }
 }
 
-export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
+/**
+ * `ciPullRequest` marks a pull request that the CI workflow also validates at the same
+ * revision. The `ci-*` outputs then name the canary gates CI already runs for these paths,
+ * so each shared gate executes once per revision instead of once per workflow.
+ *
+ * @param {readonly string[]} paths
+ * @param {{ manual?: boolean, ciPullRequest?: boolean }} options
+ */
+export const classifyCanaryPaths = (paths, { manual = false, ciPullRequest = false } = {}) => {
   if (manual) {
     return {
       browser: true,
+      'ci-browser': false,
+      'ci-compose': false,
+      'ci-preflight': false,
       compose: true,
       'consumer-packages': true,
       native: true,
@@ -325,8 +340,13 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     sharedConfiguration
   ])
 
+  const ci = classifyCiPaths(paths)
+
   return {
     browser,
+    'ci-browser': ciPullRequest && ci.playwright,
+    'ci-compose': ciPullRequest && ci.android,
+    'ci-preflight': ciPullRequest,
     compose,
     'consumer-packages': consumerPackages,
     native,
@@ -381,7 +401,10 @@ const runCli = async () => {
   } else if (workflow === 'ci') {
     classification = classifyCiPaths(paths, { releasePullRequest: process.env.IS_RELEASE_PR === 'true' })
   } else {
-    classification = classifyCanaryPaths(paths, { manual })
+    classification = classifyCanaryPaths(paths, {
+      ciPullRequest: isCiPullRequest({ baseRef: process.env.BASE_REF, eventName: process.env.GITHUB_EVENT_NAME }),
+      manual
+    })
   }
 
   await appendFile(
