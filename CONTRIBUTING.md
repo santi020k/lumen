@@ -184,6 +184,13 @@ The dedicated `pnpm run test:motion` suite also runs for ordinary and release pu
 covering primitive motion and reduced-motion behavior in Chromium, WebKit, and mobile Chromium.
 Quality's pinned pnpm setup action restores Turbo task outputs, while Java setup caches Gradle
 dependencies. Cache hits accelerate work but never replace the required checks or release approval.
+GitHub shares a cache saved from `main` with every pull request, but keeps a cache saved by a pull
+request private to it. The `Seed CI caches` workflow therefore saves the pnpm store, Playwright
+browsers, Compose Gradle dependencies, and Swift build directories from `main` whenever their inputs
+change, using the keys the pull request jobs compute. Pull requests whose lockfile and Gradle files
+match `main` then only read those caches, and Apple pull request jobs never write Swift builds. Keep
+the keys in both places identical; `scripts/workflow-scope.test.mjs` enforces it. Run the workflow
+manually from `main` to reseed after GitHub evicts unused entries.
 The build matrix installs Chromium before affected package tests; Turbo passes the cached browser
 location to those tests without using the machine-specific path as a cache key. Motion browser
 tests depend on their own preview build as well as dependency package builds.

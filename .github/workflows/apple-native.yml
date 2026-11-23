@@ -89,20 +89,22 @@ jobs:
         if: needs.classify.outputs[matrix.check] == 'true'
         with:
           node-version: 22.x
+      # Pull requests only read Swift build caches. The cache seeding workflow writes them
+      # from main, where every pull request can restore them.
       - name: Restore Swift build cache
         if: needs.classify.outputs[matrix.check] == 'true' && matrix.check == 'swift'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .build
-          key: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}-${{ github.sha }}
-          restore-keys: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}-
+          key: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}
+          restore-keys: swift-${{ runner.os }}-${{ runner.arch }}-26.5-
       - name: Restore playground Swift build cache
         if: needs.classify.outputs[matrix.check] == 'true' && matrix.check == 'swift'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: apps/playground-apple/.build
-          key: swift-playground-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}-${{ github.sha }}
-          restore-keys: swift-playground-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}-
+          key: swift-playground-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}
+          restore-keys: swift-playground-${{ runner.os }}-${{ runner.arch }}-26.5-
       - name: Set up cached browsers
         if: needs.classify.outputs[matrix.check] == 'true' && (matrix.check == 'visual' || matrix.check == 'framework-visual')
         uses: ./.github/actions/setup-playwright

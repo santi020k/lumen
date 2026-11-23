@@ -995,3 +995,58 @@ test('Compose library gates and device checks run as independent jobs', async ()
     assert.match(job, /cache: gradle/u)
   }
 })
+
+test('main seeds the shared caches with the exact keys pull request jobs read', async () => {
+  const seed = await readRepositoryFile('.github/workflows/ci-caches.yml')
+  const keys = source => [...source.matchAll(/^ {10}key: (swift-[^\n]+)$/gmu)].map(match => match[1]).sort()
+  const gradlePaths = source => /cache: gradle\n\s+cache-dependency-path: \|\n((?: {12}[^\n]+\n)+)/u.exec(source)?.[1]
+
+  assert.match(seed, /push:\n\s+branches: \[main\]/u)
+
+  assert.doesNotMatch(seed, /pull_request/u)
+
+  for (const job of seed.split('\njobs:\n')[1].split(/\n(?= {2}[a-z][a-z-]*:\n)/u)) {
+    assert.match(job, /if: github\.ref == 'refs\/heads\/main'/u)
+  }
+
+  // Pull requests restore Swift builds and never write them.
+  const appleSwift = appleWorkflow.slice(appleWorkflow.indexOf('- name: Restore Swift build cache'), appleWorkflow.indexOf('- name: Set up cached browsers'))
+
+  assert.equal(appleSwift.match(/uses: actions\/cache\/restore@[a-f0-9]{40}/gu).length, 2)
+
+  assert.doesNotMatch(appleWorkflow, /uses: actions\/cache(?:\/save)?@/u)
+
+  assert.doesNotMatch(appleSwift, /github\.sha/u)
+
+  assert.equal(keys(appleWorkflow).length, 2)
+
+  assert.deepEqual([...new Set(keys(seed))], keys(appleWorkflow))
+
+  for (const key of keys(appleWorkflow)) {
+    assert.equal(seed.split(`key: ${key}\n`).length - 1, 2, 'each Swift cache needs one lookup and one save')
+  }
+
+  assert.equal(seed.match(/lookup-only: true/gu).length, 2)
+
+  assert.match(seed, /DEVELOPER_DIR: \/Applications\/Xcode_26\.5\.app\/Contents\/Developer/u)
+
+  assert.match(seed, /github\.event\.repository\.private == false\n\s+runs-on: macos-26/u)
+
+  assert.ok(gradlePaths(seed))
+
+  assert.equal(gradlePaths(seed), gradlePaths(ci.split('  native-android:\n')[1]))
+
+  assert.equal(gradlePaths(seed), gradlePaths(canary.split('  compose:\n')[1]))
+
+  const seeded = /browsers: \[([^\]]+)\]/u.exec(seed)[1].split(', ')
+
+  for (const name of ['ci.yml', 'release-canary.yml', 'docs-performance.yml']) {
+    const workflow = await readRepositoryFile(`.github/workflows/${name}`)
+
+    for (const [, browsers] of workflow.matchAll(/^ {10}browsers: ([^\n$]+)$/gmu)) {
+      assert.ok(seeded.includes(browsers), `${name}: ${browsers}`)
+    }
+  }
+
+  assert.match(seed.split('  apple:\n')[1], /setup-playwright\n\s+with:\n\s+browsers: chromium\n/u)
+})
