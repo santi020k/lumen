@@ -99,6 +99,55 @@ jobs:
     needs: [classify, preflight]
     if: needs.classify.outputs.android == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Java
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+          cache-dependency-path: |
+            packages/compose/**/*.gradle*
+            packages/compose/gradle/wrapper/gradle-wrapper.properties
+            apps/playground-android/**/*.gradle*
+
+      - name: Set up pnpm workspace
+        uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
+        with:
+          node-version: 22.x
+
+      - name: Install Android platform
+        run: |
+          android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          "$android_sdk_root/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" \
+            "build-tools;36.0.0"
+
+      - name: Build and test Compose library
+        working-directory: packages/compose
+        run: ./gradlew test lint apiCheck verifyMavenPublication
+
+      - name: Check the Compose API classifications
+        run: pnpm run check:compose-api-classification && pnpm run test:compose-api-classification
+
+      - name: Check the Wear API classifications
+        run: node scripts/check-wear-api-classification.mjs
+
+      - name: Build a consumer from the candidate Compose artifact
+        run: >-
+          ./packages/compose/gradlew -p apps/playground-android
+          -PlumenComposeRepository=../../packages/compose/build/central-staging
+          assembleDebug :app:verifyLumenArtifactIsolation
+
+  native-android-device:
+    name: Compose device checks
+    # Instrumentation and captures build from source, so they run beside the library gates.
+    needs: [classify, preflight]
+    if: needs.classify.outputs.android == 'true'
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -128,22 +177,6 @@ jobs:
             "platform-tools" \
             "emulator" \
             "system-images;android-35;google_apis;x86_64"
-
-      - name: Build and test Compose library
-        working-directory: packages/compose
-        run: ./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication
-
-      - name: Check the Compose API classifications
-        run: pnpm run check:compose-api-classification && pnpm run test:compose-api-classification
-
-      - name: Check the Wear API classifications
-        run: node scripts/check-wear-api-classification.mjs
-
-      - name: Build a consumer from the candidate Compose artifact
-        run: >-
-          ./packages/compose/gradlew -p apps/playground-android
-          -PlumenComposeRepository=../../packages/compose/build/central-staging
-          assembleDebug :app:verifyLumenArtifactIsolation
 
       - name: Run Compose accessibility tests on Android
         working-directory: packages/compose

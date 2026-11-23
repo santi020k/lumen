@@ -553,7 +553,7 @@ test('the HarmonyOS bundle check runs on the built workspace packages in the Rea
 
 test('early failures block every expensive CI and release canary lane', () => {
   const expensiveJobs = {
-    ci: ['native-android', 'browser-contracts', 'react-native-captures', 'mcp-node-20'],
+    ci: ['native-android', 'native-android-device', 'browser-contracts', 'react-native-captures', 'mcp-node-20'],
     canary: ['web', 'compose', 'react-native-android', 'browser']
   }
 
@@ -960,4 +960,38 @@ test('CI browser contracts run every suite exactly once across parallel lanes', 
 
   // Browser servers build their packages through Turbo so those lanes can reuse cached outputs.
   assert.match(manifest.scripts['prepare:docs-browser'], /^turbo run build (?:--filter=\S+ )+--concurrency=2$/u)
+})
+
+test('Compose library gates and device checks run as independent jobs', async () => {
+  const library = ci.slice(ci.indexOf('\n  native-android:\n'), ci.indexOf('\n  native-android-device:\n'))
+  const device = ci.slice(ci.indexOf('\n  native-android-device:\n'), ci.indexOf('\n  browser-contracts:\n'))
+  const settings = await readRepositoryFile('apps/playground-android/settings.gradle.kts')
+
+  assert.match(library, /run: \.\/gradlew test lint apiCheck verifyMavenPublication\n/u)
+
+  assert.match(library, /-PlumenComposeRepository=\.\.\/\.\.\/packages\/compose\/build\/central-staging\n\s+assembleDebug :app:verifyLumenArtifactIsolation/u)
+
+  assert.doesNotMatch(library, /emulator|connectedDebugAndroidTest/u)
+
+  // The device job never reads the staged artifact: without the repository property the
+  // playground consumes the library as an included source build.
+  assert.doesNotMatch(device, /lumenComposeRepository|central-staging/u)
+
+  assert.match(settings, /if \(!lumenComposeRepository\.isPresent\) \{\n\s+includeBuild\("\.\.\/\.\.\/packages\/compose"\)/u)
+
+  for (const command of [
+    '"system-images;android-35;google_apis;x86_64"',
+    "run_phase 'Compose instrumentation' ./gradlew connectedDebugAndroidTest",
+    "run_phase 'Android consumer install' ./gradlew -p ../../apps/playground-android :app:assembleDebug :app:installDebug",
+    '--compare --platform=android --source=default --tolerance=0.12',
+    'name: compose-android-test-reports'
+  ]) {
+    assert.ok(device.includes(command), command)
+  }
+
+  for (const job of [library, device]) {
+    assert.match(job, /if: needs\.classify\.outputs\.android == 'true'/u)
+
+    assert.match(job, /cache: gradle/u)
+  }
 })
