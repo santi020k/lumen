@@ -173,13 +173,24 @@ artifact ID returned by its build job, rechecks release approval, and verifies b
 independently passed build-job digest before extraction. Production runs serialize without cancelling delivery. Rerun failed jobs to retry delivery or smoke checks
 without rebuilding. If the artifact expires, rerun the complete workflow at the intended revision.
 Every new workflow run builds fresh docs; clock, network, and Git metadata inputs are not assumed
-cache-safe. The docs performance workflow reuses browser binaries while refreshing system dependencies.
+cache-safe. The docs performance workflow reuses browser binaries while refreshing system dependencies,
+and reads the Turbo remote cache that CI populates; only the deployment build is always fresh.
 
 CI runs repository lint, workflow contracts, and dependency security before expensive builds.
 Release canaries also check version, API, and coordinated release contracts in that preflight.
 Failures stop downstream jobs; browser shards cancel their sibling on failure and stop at the
 first failed test. All accessibility tests remain covered across two shards. Packed npm, browser,
 Compose, and packed React Native Android checks run in separate lanes after preflight.
+CI and the release canaries share some gates. For a pull request into `main`, the canary classifier
+reports the gates CI already schedules for the same paths (`ci-preflight`, `ci-compose`, and
+`ci-browser`), and the canary skips its copy of the preflight command, the Compose job, and the
+conformance, motion, route-delivery, and subscribe-form steps. Manual canary runs and pull requests
+into other branches keep every gate, and CI runs those jobs for release pull requests as well.
+CI browser contracts run as four parallel lanes: two shards of the interaction suite, the framework
+and Figma contracts, and motion with delivery measurements and web coverage. Compose library gates
+and emulator checks are separate jobs, because the device checks build the library from source.
+History-dependent checkouts use `fetch-depth: 0` with `filter: blob:none`, which keeps every commit
+and tag for merge-base and release checks without downloading old file contents.
 The dedicated `pnpm run test:motion` suite also runs for ordinary and release pull requests,
 covering primitive motion and reduced-motion behavior in Chromium, WebKit, and mobile Chromium.
 Quality's pinned pnpm setup action restores Turbo task outputs, while Java setup caches Gradle
@@ -195,7 +206,10 @@ The build matrix installs Chromium before affected package tests; Turbo passes t
 location to those tests without using the machine-specific path as a cache key. Motion browser
 tests depend on their own preview build as well as dependency package builds.
 The matrix limits concurrent Turbo tasks to half the runner's logical CPUs because each Vitest
-suite uses two workers. The native catalog check runs the Android and Apple capture scripts in
+suite uses two workers. `LUMEN_VITEST_MAX_WORKERS` raises that bound for a run that owns its machine,
+as the CI coverage lane does. Parallel Playwright suites use two workers locally and up to four in
+CI; `LUMEN_PLAYWRIGHT_WORKERS` overrides both. Node 24 runs build and test only, while Node 22 runs
+the full task set. The native catalog check runs the Android and Apple capture scripts in
 sequence because both launch a subprocess for each fixture interaction. This keeps the capture
 checks within their individual timeouts under load.
 Run `pnpm run ci:preflight` locally for the same early feedback; `pnpm run validate` remains the
