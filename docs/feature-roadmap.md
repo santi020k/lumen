@@ -108,6 +108,24 @@ This section is the single list of open work. Add new items here instead of crea
 top-level backlog file. Each item links to the archived record that holds its original evidence
 and acceptance criteria. Remove an item once its acceptance work has landed.
 
+### Rust and Dioxus
+
+`lumen-dioxus` shipped its first wave of components. The remaining Dioxus Native gaps are listed in
+the [crate README](../packages/dioxus/README.md#dioxus-native-support).
+
+- **P1: Verify Dioxus Native's default renderer.** Run the gallery example on macOS with Vello GPU
+  and decide whether glass surfaces need the Skia renderer by default.
+- **P1: Move to Dioxus 0.8 when it is stable.** Its Blitz draws tab lists, checkbox marks, and
+  switch thumbs that Dioxus Native 0.7 misses.
+- **P1: Publish the crate.** Add a crates.io release path with the same exact-revision approval as
+  the other adapters, then a docs-site Dioxus guide with setup data, navigation, and search.
+- **P2: Native checkbox and switch.** Return `Checkbox` and `Switch` to `<input>` elements and drop
+  the generated `[aria-checked]` aliases once Blitz supports `appearance: none`.
+- **P2: Next component wave.** Port the components that rely on `:has()` or container queries by
+  setting data attributes from Rust state, starting with Select, Dialog, and Tooltip.
+- **P2: Blitz visual regression check.** Turn the Chrome and Blitz screenshot comparison into a CI
+  check with a per-component threshold.
+
 ### Consumer adoption tooling
 
 Carried from the [Lumen 4.2 consumer upgrade findings](archive/lumen-4.2-consumer-upgrade-findings.md).
