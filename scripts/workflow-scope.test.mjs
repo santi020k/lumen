@@ -910,23 +910,17 @@ test('path classification uses a partial checkout that still contains its only i
   }
 })
 
-test('docs builds outside CI reuse cached task outputs bound to the same runtime', async () => {
+test('docs performance reuses cached builds while deployments always build fresh', async () => {
   const deployBuild = (await readRepositoryFile('.github/workflows/deploy-docs.yml')).split('  build:\n')[1].split('  build-and-deploy:\n')[0]
   const performance = await readRepositoryFile('.github/workflows/docs-performance.yml')
-  const docsTurbo = JSON.parse(await readRepositoryFile('apps/docs/turbo.json'))
 
-  // A cache hit must restore the directory that deployment archives.
-  assert.ok(docsTurbo.tasks.build.outputs.includes('cloudflare/dist/**'))
-
-  assert.match(deployBuild, /task-cache-path: \.turbo\/cache\n\s+task-cache-key: deploy-docs/u)
+  assert.doesNotMatch(deployBuild, /task-cache|TURBO_TOKEN|QUALITY_TASK_RUNTIME/u)
 
   assert.match(performance, /TURBO_TOKEN: \$\{\{ secrets\.TURBO_TOKEN \}\}\n\s+TURBO_TEAM: \$\{\{ secrets\.TURBO_TEAM \}\}/u)
 
-  for (const source of [deployBuild, performance]) {
-    assert.ok(source.indexOf('QUALITY_TASK_RUNTIME=$(node --version)') < source.indexOf('pnpm run docs:build'))
+  assert.ok(performance.indexOf('QUALITY_TASK_RUNTIME=$(node --version)') > 0)
 
-    assert.ok(source.indexOf('QUALITY_TASK_RUNTIME=$(node --version)') > 0)
-  }
+  assert.ok(performance.indexOf('QUALITY_TASK_RUNTIME=$(node --version)') < performance.indexOf('pnpm run docs:build'))
 })
 
 test('CI browser contracts run every suite exactly once across parallel lanes', async () => {

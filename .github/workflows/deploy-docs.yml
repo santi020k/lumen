@@ -60,15 +60,6 @@ jobs:
         uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          # Only runs on main can write this cache, so a deployment reuses outputs that
-          # an earlier approved main build produced for identical task inputs.
-          task-cache-path: .turbo/cache
-          task-cache-key: deploy-docs
-
-      - name: Bind task cache to the resolved runtime
-        shell: bash
-        run: |
-          echo "QUALITY_TASK_RUNTIME=$(node --version)-$(pnpm --version)-$(node -p 'process.platform + "/" + process.arch')" >> "$GITHUB_ENV"
 
       - name: Verify release approval
         run: node scripts/check-approved-release-revision.mjs
