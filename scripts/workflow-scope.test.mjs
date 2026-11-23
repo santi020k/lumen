@@ -810,3 +810,40 @@ test('docs deployment retries restore the same verified archive without rebuildi
 
   assert.match(deploy, /Smoke test the public docs/u)
 })
+
+test('parallel browser suites share an environment-driven worker count', async () => {
+  const { resolvePlaywrightWorkers } = await import('../playwright.shared.config.ts')
+
+  assert.equal(resolvePlaywrightWorkers({}, 8), 2)
+
+  assert.equal(resolvePlaywrightWorkers({ CI: 'true' }, 8), 4)
+
+  assert.equal(resolvePlaywrightWorkers({ CI: 'true' }, 3), 3)
+
+  assert.equal(resolvePlaywrightWorkers({ CI: 'true', LUMEN_PLAYWRIGHT_WORKERS: '6' }, 2), 6)
+
+  assert.equal(resolvePlaywrightWorkers({ LUMEN_PLAYWRIGHT_WORKERS: '' }, 8), 2)
+
+  for (const invalid of ['0', '-1', '1.5', 'four', '1000']) {
+    assert.throws(() => resolvePlaywrightWorkers({ LUMEN_PLAYWRIGHT_WORKERS: invalid }, 8), /positive integer/u)
+  }
+
+  const configurations = (await readdir(repositoryRoot))
+    .filter(name => /^playwright(?:\.[^.]+)?\.config\.ts$/u.test(name) && name !== 'playwright.shared.config.ts')
+
+  // The Figma and rendered-audit suites stay serial by design.
+  const serial = new Set(['playwright.figma.config.ts', 'playwright.rendered-audit.config.ts'])
+
+  for (const name of configurations) {
+    const source = await readRepositoryFile(name)
+
+    if (serial.has(name)) assert.match(source, /workers: 1\b/u, name)
+    else assert.match(source, /workers: playwrightWorkers\b/u, name)
+  }
+
+  const vitest = await readRepositoryFile('vitest.config.ts')
+
+  assert.match(vitest, /process\.env\.LUMEN_VITEST_MAX_WORKERS/u)
+
+  assert.match(vitest, /maxWorkers: suiteWorkers/u)
+})

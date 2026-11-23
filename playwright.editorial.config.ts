@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
+import { playwrightWorkers } from './playwright.shared.config'
+
 const port = process.env.LUMEN_EDITORIAL_PORT ?? '4356'
 const baseURL = `http://127.0.0.1:${port}`
 
@@ -14,7 +16,7 @@ export default defineConfig({
   testDir: './tests/editorial',
   testMatch: ['editorial.spec.ts', 'reading-controls.spec.ts', 'interactive.spec.ts'],
   use: { baseURL },
-  workers: 2,
+  workers: playwrightWorkers,
   webServer: {
     command: `node apps/templates/node_modules/astro/bin/astro.mjs preview --root .cache/editorial-consumer --ignore-lock --host 127.0.0.1 --port ${port}`,
     reuseExistingServer: !process.env.CI,

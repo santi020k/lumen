@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
+import { playwrightWorkers } from './playwright.shared.config'
+
 const port = process.env.LUMEN_MOTION_PORT ?? '4349'
 const baseURL = `http://127.0.0.1:${port}`
 
@@ -12,7 +14,7 @@ export default defineConfig({
   ],
   reporter: process.env.CI ? 'github' : 'list',
   testDir: './tests/motion',
-  workers: 2,
+  workers: playwrightWorkers,
   use: { baseURL, screenshot: 'only-on-failure', trace: 'retain-on-failure' },
   webServer: {
     command: `pnpm run prepare:docs-browser && pnpm --filter @santi020k/lumen-docs exec astro dev --ignore-lock --host 127.0.0.1 --port ${port}`,

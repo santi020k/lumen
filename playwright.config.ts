@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
+import { playwrightWorkers } from './playwright.shared.config'
+
 const port = process.env.LUMEN_VISUAL_PORT ?? '4322'
 const baseURL = `http://127.0.0.1:${port}`
 
@@ -26,7 +28,7 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
   retries: 0,
   testDir: './tests/visual',
-  workers: 2,
+  workers: playwrightWorkers,
   use: {
     baseURL
   },

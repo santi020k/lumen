@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
+import { playwrightWorkers } from './playwright.shared.config'
+
 const port = process.env.LUMEN_PORTABLE_EDITORIAL_PORT ?? '4386'
 
 export default defineConfig({
@@ -12,7 +14,7 @@ export default defineConfig({
   reporter: 'list',
   testDir: './tests/editorial',
   testMatch: ['portable.spec.ts', 'selective-installer.spec.ts'],
-  workers: 2,
+  workers: playwrightWorkers,
   use: { reducedMotion: 'reduce', baseURL: `http://127.0.0.1:${port}` },
   webServer: {
     command: `node node_modules/vite/bin/vite.js preview .cache/portable-editorial-consumer --host 127.0.0.1 --port ${port}`,

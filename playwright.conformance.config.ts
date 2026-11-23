@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
+import { playwrightWorkers } from './playwright.shared.config'
+
 const port = process.env.LUMEN_FRAMEWORK_CONFORMANCE_PORT ?? '4331'
 const baseURL = `http://127.0.0.1:${port}`
 
@@ -48,7 +50,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   testDir: './tests/frameworks',
   testMatch: ['framework-conformance.spec.ts', 'framework-appearance.spec.ts', 'adapter-ownership.spec.ts', 'date-picker-dialog.spec.ts', 'list-box.spec.ts'],
-  workers: 2,
+  workers: playwrightWorkers,
   use: {
     baseURL
   },
