@@ -17,6 +17,10 @@ the other packages adapt or expose shared pieces.
 - `packages/tokens` publishes the canonical platform-neutral token document.
 - `packages/react-native`, `packages/swift`, and `packages/compose` hold native platform adapters;
   the repository-root `Package.swift` exposes the SwiftUI sources to Swift Package Manager.
+- `packages/dioxus` holds the experimental `lumen-dioxus` Rust crate for Dioxus web, desktop, and
+  Dioxus Native. Its `assets/lumen.css` is generated: run `pnpm run generate:dioxus-css` after
+  changing component CSS, and `pnpm run generate:dioxus-fixtures` after changing the markup of a
+  React component it mirrors.
 - `packages/lumen` is the umbrella package and public package map.
 - `apps/docs` is the Astro documentation and demo site.
 

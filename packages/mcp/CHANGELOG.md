@@ -4,6 +4,9 @@
 
 ### Patch Changes
 
+- Refresh the bundled project overview so agents can find the experimental `lumen-dioxus` Rust crate
+  for Dioxus web, desktop, and Dioxus Native.
+
 - Return HTTP `405` with `Allow: POST` for non-POST requests to stateless `/mcp` endpoints. Decode
   resource-template variables safely once, resolve native aliases consistently, and ignore
   inherited properties in catalog comparisons and manifest diagnostics.

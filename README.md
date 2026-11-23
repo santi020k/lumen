@@ -68,6 +68,7 @@ Choose your framework, install its adapter, and follow the setup guide for style
 | **React Native** | [React Native guide](https://lumen.santi020k.com/docs/react-native) |
 | **SwiftUI** | [Apple guide](https://lumen.santi020k.com/docs/apple) |
 | **Jetpack Compose** | [Android guide](https://lumen.santi020k.com/docs/android) |
+| **Dioxus** (Rust, experimental) | [lumen-dioxus README](packages/dioxus/README.md) |
 
 Astro requires Astro 5+; React requires React 19+. See each guide for supported toolchains
 and complete configuration. Browse the [package directory](https://lumen.santi020k.com/docs/packages)

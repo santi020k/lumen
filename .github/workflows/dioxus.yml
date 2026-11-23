@@ -1,0 +1,70 @@
+name: Dioxus
+
+on:
+  pull_request:
+    branches: [main, 'release/**']
+    paths:
+      - .github/workflows/dioxus.yml
+      - packages/dioxus/**
+      - packages/core/styles/**
+      - scripts/generate-dioxus-css.mjs
+      - scripts/generate-dioxus-css.test.mjs
+      - scripts/lib/css-source.mjs
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/dioxus.yml
+      - packages/dioxus/**
+      - packages/core/styles/**
+      - scripts/generate-dioxus-css.mjs
+      - scripts/generate-dioxus-css.test.mjs
+      - scripts/lib/css-source.mjs
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  crate:
+    name: lumen-dioxus crate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: packages/dioxus
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install the stable Rust toolchain
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt,clippy
+          rustup default stable
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            packages/dioxus/target
+          key: dioxus-${{ runner.os }}-${{ hashFiles('packages/dioxus/Cargo.lock') }}
+
+      - name: Check that the bundled stylesheet matches Lumen's CSS
+        working-directory: .
+        run: |
+          node scripts/generate-dioxus-css.mjs --check
+          node --test scripts/generate-dioxus-css.test.mjs
+
+      - name: Check formatting
+        run: cargo fmt --check
+
+      - name: Lint
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+      - name: Test
+        run: cargo test --locked

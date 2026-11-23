@@ -1,6 +1,19 @@
 version: "0.2"
 language: en
 words:
+  - clippy
+  - Dioxus
+  - onchange
+  - onclick
+  - oninput
+  - onmounted
+  - progressbar
+  - rustup
+  - serde
+  - Skia
+  - tablist
+  - valuemin
+  - Vello
   - formaction
   - formenctype
   - formmethod
