@@ -885,3 +885,27 @@ test('release canaries skip only the gates CI runs for the same revision', () =>
 
   assert.doesNotMatch(ciBrowser.split('    steps:')[0] + ciCompose.split('    steps:')[0], /release-pr/u)
 })
+
+test('path classification uses a partial checkout that still contains its only inputs', async () => {
+  const classifier = await readRepositoryFile('scripts/classify-workflow-paths.mjs')
+
+  // The sparse checkout holds the scripts directory only, so the classifier must stay self-contained.
+  for (const [, specifier] of classifier.matchAll(/^import [^\n]* from '([^']+)'$/gmu)) {
+    assert.match(specifier, /^node:/u, specifier)
+  }
+
+  for (const [name, source] of [['ci', ci], ['canary', canary], ['apple', appleWorkflow]]) {
+    const checkout = source.split('  classify:\n')[1].split(`node scripts/classify-workflow-paths.mjs ${name}`)[0]
+
+    assert.match(checkout, /fetch-depth: 0\n(?:\s+#[^\n]*\n)*\s+filter: blob:none\n\s+sparse-checkout: scripts\n/u, name)
+  }
+
+  // Full-tree jobs that compare against the merge base keep every commit but skip old file contents.
+  for (const source of [ci.split('  build:\n')[1], canary.split('  preflight:\n')[1]]) {
+    for (const [checkout] of source.matchAll(/fetch-depth: 0\n(?:[^\n]*\n){0,3}/gu)) {
+      assert.match(checkout, /filter: blob:none/u)
+
+      assert.doesNotMatch(checkout, /sparse-checkout/u)
+    }
+  }
+})

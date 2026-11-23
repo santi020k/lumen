@@ -133,6 +133,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # Path classification reads commit history and this script only: skip file
+          # contents for the history and check out just the classifier.
+          filter: blob:none
+          sparse-checkout: scripts
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Classify changed paths
@@ -156,6 +160,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # History is needed for merge-base comparisons, not for old file contents.
+          filter: blob:none
       - name: Set up pnpm workspace
         uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
@@ -209,6 +215,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # History is needed for merge-base comparisons, not for old file contents.
+          filter: blob:none
       - name: Set up pnpm workspace
         uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
@@ -338,6 +346,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # History is needed for merge-base comparisons, not for old file contents.
+          filter: blob:none
       - name: Set up pnpm workspace
         uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
