@@ -234,11 +234,20 @@ jobs:
           retention-days: 7
 
   browser-contracts:
-    name: Browser interaction contracts
+    name: Browser interaction contracts (${{ matrix.lane }})
     needs: [classify, preflight]
     if: needs.classify.outputs.playwright == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        # Independent suites run side by side; the interaction suite is split in two.
+        lane: [interactions-1, interactions-2, frameworks, motion]
+    env:
+      # Reuse the package builds that the build job publishes for identical inputs.
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
 
@@ -247,24 +256,43 @@ jobs:
         with:
           node-version: 22.x
 
+      - name: Bind task cache to the resolved runtime
+        shell: bash
+        run: |
+          echo "QUALITY_TASK_RUNTIME=$(node --version)-$(pnpm --version)-$(node -p 'process.platform + "/" + process.arch')" >> "$GITHUB_ENV"
+
       - name: Install Playwright browsers
         uses: ./.github/actions/setup-playwright
         with:
           browsers: chromium firefox webkit
 
       - name: Run cross-browser interaction contracts
-        run: pnpm run test:interactions && pnpm run test:framework-conformance && pnpm run test:figma-plugin
+        if: startsWith(matrix.lane, 'interactions-')
+        env:
+          SHARD: ${{ matrix.lane == 'interactions-1' && '1/2' || '2/2' }}
+        run: pnpm run test:interactions --shard="$SHARD"
+
+      - name: Run cross-browser framework contracts
+        if: matrix.lane == 'frameworks'
+        run: pnpm run test:framework-conformance && pnpm run test:figma-plugin
 
       - name: Check local motion previews
+        if: matrix.lane == 'motion'
         run: pnpm --filter @santi020k/lumen-motion build && pnpm --filter @santi020k/lumen-motion test
 
       - name: Verify primitive motion and reduced-motion behavior
+        if: matrix.lane == 'motion'
         run: pnpm run test:motion && pnpm run check:route-delivery
 
       - name: Measure packed selective subscribe forms
+        if: matrix.lane == 'motion'
         run: pnpm run measure:subscribe-form
 
       - name: Enforce web unit coverage
+        if: matrix.lane == 'motion'
+        env:
+          # This run owns the runner, unlike the suites Turbo schedules side by side.
+          LUMEN_VITEST_MAX_WORKERS: 4
         run: pnpm run test:web-coverage
 
   react-native-captures:

@@ -928,3 +928,36 @@ test('docs builds outside CI reuse cached task outputs bound to the same runtime
     assert.ok(source.indexOf('QUALITY_TASK_RUNTIME=$(node --version)') > 0)
   }
 })
+
+test('CI browser contracts run every suite exactly once across parallel lanes', async () => {
+  const job = ci.slice(ci.indexOf('\n  browser-contracts:\n'), ci.indexOf('\n  react-native-captures:\n'))
+  const manifest = JSON.parse(await readRepositoryFile('package.json'))
+
+  assert.match(job, /lane: \[interactions-1, interactions-2, frameworks, motion\]/u)
+
+  assert.match(job, /fail-fast: false/u)
+
+  const steps = job.split('    steps:\n')[1].split(/\n\n(?= {6}- )/u).filter(step => step.includes('        run: pnpm'))
+  const lanes = Object.fromEntries(steps.map(step => [/run: ([^\n]+)/u.exec(step)[1], /if: ([^\n]+)/u.exec(step)?.[1]]))
+
+  assert.deepEqual(lanes, {
+    'pnpm run test:interactions --shard="$SHARD"': "startsWith(matrix.lane, 'interactions-')",
+    'pnpm run test:framework-conformance && pnpm run test:figma-plugin': "matrix.lane == 'frameworks'",
+    'pnpm --filter @santi020k/lumen-motion build && pnpm --filter @santi020k/lumen-motion test': "matrix.lane == 'motion'",
+    'pnpm run test:motion && pnpm run check:route-delivery': "matrix.lane == 'motion'",
+    'pnpm run measure:subscribe-form': "matrix.lane == 'motion'",
+    'pnpm run test:web-coverage': "matrix.lane == 'motion'"
+  })
+
+  // Both halves of the split suite must be scheduled, and nothing else may be sharded.
+  assert.match(job, /SHARD: \$\{\{ matrix\.lane == 'interactions-1' && '1\/2' \|\| '2\/2' \}\}/u)
+
+  assert.equal(job.match(/--shard/gu).length, 1)
+
+  assert.match(job, /TURBO_TOKEN: \$\{\{ secrets\.TURBO_TOKEN \}\}/u)
+
+  assert.ok(job.indexOf('QUALITY_TASK_RUNTIME=') < job.indexOf('pnpm run test:interactions'))
+
+  // Browser servers build their packages through Turbo so those lanes can reuse cached outputs.
+  assert.match(manifest.scripts['prepare:docs-browser'], /^turbo run build (?:--filter=\S+ )+--concurrency=2$/u)
+})
