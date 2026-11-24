@@ -110,6 +110,37 @@ const isOpaqueHex = (color: string): boolean => {
   return true
 }
 
+// Keep the core readable-ink policy without importing its web HSL parser into ArkUI.
+const linearColorChannel = (color: string, offset: number): number => {
+  const channel = Number.parseInt(color.slice(offset, offset + 2), 16) / 255
+
+  return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+}
+
+const relativeLuminance = (color: string): number => (
+  0.2126 * linearColorChannel(color, 1) +
+  0.7152 * linearColorChannel(color, 3) +
+  0.0722 * linearColorChannel(color, 5)
+)
+
+const readableSuccessForeground = (colors: LumenColorPalette): string => {
+  if (!isOpaqueHex(colors.success)) return colors.onBrand
+
+  const background = relativeLuminance(colors.success)
+
+  if (isOpaqueHex(colors.onBrand)) {
+    const foreground = relativeLuminance(colors.onBrand)
+    const contrast = (Math.max(background, foreground) + 0.05) / (Math.min(background, foreground) + 0.05)
+
+    if (contrast >= 4.5) return colors.onBrand
+  }
+
+  const blackContrast = (background + 0.05) / 0.05
+  const whiteContrast = 1.05 / (background + 0.05)
+
+  return blackContrast >= whiteContrast ? '#000000' : '#FFFFFF'
+}
+
 /**
  * Applies an alpha channel to a `#RRGGBB` color and returns ArkUI's `#AARRGGBB` form.
  * Any other color notation is returned unchanged.
@@ -236,7 +267,7 @@ export const lumenButtonPalette = (
       return { background: colors.surfaceMuted, border: colors.line, foreground: colors.ink }
 
     case LumenButtonIntent.Success:
-      return { background: colors.success, border: colors.success, foreground: colors.onBrand }
+      return { background: colors.success, border: colors.success, foreground: readableSuccessForeground(colors) }
 
     default:
       return {

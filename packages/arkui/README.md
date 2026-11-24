@@ -119,6 +119,9 @@ struct SignIn {
 `colorScheme: LumenColorSchemePreference.Dark` or `.Light` to force one, and `lightColors` or
 `darkColors` to replace a palette; both are read once, when the theme appears. The palette is
 application-wide, so a second `LumenTheme` replaces the first instead of scoping a subtree.
+Success buttons preserve `onBrand` when it meets 4.5:1 contrast against an opaque `#RRGGBB`
+`success` color; otherwise they select black or white for readable labels. Custom success colors
+in other notations retain `onBrand`, so their contrast must be checked by the application.
 
 ArkUI ignores universal attributes such as `.width()` on a component that takes a trailing closure.
 `LumenTheme` fills its parent unless `fillsParent` is `false`. `LumenSurface` and `LumenCard` hug

@@ -25,6 +25,23 @@ import { LumenColors, LumenRadius, LumenSpacing, LumenTypography } from '../src/
 
 const colors = LumenColors.light
 
+const contrastRatio = (foreground: string, background: string): number => {
+  const luminances = [foreground, background].map(color => {
+    const rgb = Number.parseInt(color.slice(1), 16)
+    const channels = [(rgb >> 16) & 255, (rgb >> 8) & 255, rgb & 255]
+    const weights = [0.2126, 0.7152, 0.0722]
+
+    return channels.reduce((sum, byte, index) => {
+      const normalized = byte / 255
+      const linear = normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4
+
+      return sum + linear * (weights[index] ?? 0)
+    }, 0)
+  })
+
+  return (Math.max(...luminances) + 0.05) / (Math.min(...luminances) + 0.05)
+}
+
 describe('lumenColorWithAlpha', () => {
   test('prefixes the alpha channel in ArkUI order', () => {
     expect(lumenColorWithAlpha('#22624D', 0.06)).toBe('#0F22624D')
@@ -144,7 +161,7 @@ describe('button', () => {
     expect(lumenButtonPalette(colors, LumenButtonIntent.Success)).toEqual({
       background: colors.success,
       border: colors.success,
-      foreground: colors.onBrand
+      foreground: '#000000'
     })
 
     expect(lumenButtonPalette(colors, LumenButtonIntent.Quiet)).toEqual({
@@ -152,6 +169,43 @@ describe('button', () => {
       border: '#00000000',
       foreground: colors.inkSoft
     })
+  })
+
+  test.each([LumenColors.light, LumenColors.dark])('keeps success labels above normal-text AA in each built-in palette', palette => {
+    const result = lumenButtonPalette(palette, LumenButtonIntent.Success)
+
+    expect(result.background).toBe(palette.success)
+    expect(result.border).toBe(palette.success)
+    expect(result.foreground).toBe('#000000')
+    expect(contrastRatio(result.foreground, result.background)).toBeGreaterThanOrEqual(4.5)
+  })
+
+  test.each([
+    ['#004400', '#FFFFFF', '#FFFFFF'],
+    ['#004400', '#000000', '#FFFFFF'],
+    ['#FFFFFF', '#FFFFFF', '#000000'],
+    ['#000000', '#000000', '#FFFFFF'],
+    ['#757575', '#757575', '#FFFFFF'],
+    ['#767676', '#767676', '#000000'],
+    ['#ffffff', '#182325', '#182325'],
+    ['#ffffff', 'invalid', '#000000']
+  ])('resolves readable custom success %s with foreground %s', (success, onBrand, foreground) => {
+    for (const palette of [LumenColors.light, LumenColors.dark]) {
+      const result = lumenButtonPalette({ ...palette, success, onBrand }, LumenButtonIntent.Success)
+
+      expect(contrastRatio(result.foreground, result.background)).toBeGreaterThanOrEqual(4.5)
+      expect(result).toEqual({
+        background: success,
+        border: success,
+        foreground
+      })
+    }
+  })
+
+  test('preserves custom foreground for success notation that cannot be measured', () => {
+    for (const success of ['#123', '#00112233', 'green', '#11223G', `#${'F'.repeat(1_000_000)}`]) {
+      expect(lumenButtonPalette({ ...colors, success }, LumenButtonIntent.Success).foreground).toBe(colors.onBrand)
+    }
   })
 
   test('keeps every control size at or above a 36vp target', () => {
