@@ -1059,6 +1059,15 @@ const nativePlatformConfigs = {
       'Include packages/compose from a shallow Git checkout pinned to the Lumen release tag, then add implementation(project(":lumen-compose")).',
     setup: 'Wrap application content in LumenTheme and preserve Compose state and navigation.'
   },
+  harmonyos: {
+    adapter: 'arkUI',
+    docsPlatform: 'harmonyos',
+    importStatement: symbol => `import { ${symbol} } from '@santi020k/lumen-arkui'`,
+    install:
+      'Pilot, not published to ohpm. From a checkout of https://github.com/santi020k/lumen, add "@santi020k/lumen-arkui": "file:../path/to/lumen/packages/arkui" to the dependencies in the consuming module\'s oh-package.json5, then run ohpm install. Requires HarmonyOS NEXT 5.0 (API 12).',
+    setup:
+      'Render one LumenTheme at the application root; it publishes the palette to every Lumen component in the application. Pilot: the ArkUI sources have not been compiled with DevEco Studio or run on a device, and the API can change in any release.'
+  },
   'react-native': {
     adapter: 'reactNative',
     docsPlatform: 'react-native',
@@ -1080,6 +1089,7 @@ const nativePlatformConfigs = {
 
 const nativeSourceExtensions = {
   compose: new Set(['.kt']),
+  harmonyos: new Set(['.ets']),
   'react-native': new Set(['.ts', '.tsx']),
   swiftui: new Set(['.swift'])
 }
@@ -1149,6 +1159,8 @@ const findNativeSourceFile = (sources, platform, symbol) => {
     )
   } else if (platform === 'swiftui') {
     declarationPattern = new RegExp(`\\b(?:class|enum|func|struct)\\s+${escapedSymbol}\\b`)
+  } else if (platform === 'harmonyos') {
+    declarationPattern = new RegExp(`\\bexport\\s+struct\\s+${escapedSymbol}\\b`)
   } else {
     declarationPattern = new RegExp(
       '\\b(?:fun\\s+(?:<[^>]+>\\s*)?|(?:data\\s+|enum\\s+)?class\\s+|object\\s+)' +

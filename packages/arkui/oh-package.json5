@@ -1,0 +1,12 @@
+{
+  "name": "@santi020k/lumen-arkui",
+  "version": "0.1.0",
+  "description": "ArkUI primitives for Lumen UI on HarmonyOS NEXT (pilot)",
+  "main": "Index.ets",
+  "author": "Santiago Molina",
+  "license": "MIT",
+  "homepage": "https://lumen.santi020k.com",
+  "repository": "https://github.com/santi020k/lumen",
+  "keywords": ["arkui", "design-system", "harmonyos", "lumen", "ui"],
+  "dependencies": {},
+}

@@ -205,13 +205,21 @@ Run `pnpm run build:android:store` for a production Android artifact or `pnpm ru
 iOS archive. EAS requests the relevant Google or Apple signing credentials during the first
 production build.
 
+### Run on HarmonyOS NEXT (preview)
+
+`apps/playground-harmony` hosts the same React Native playground on HarmonyOS through React Native
+for OpenHarmony. Run `pnpm run check:harmony-bundle` to verify the JavaScript bundle without
+HarmonyOS tooling. The [playground README](../apps/playground-harmony/README.md) covers DevEco
+Studio, signing and device setup; [HarmonyOS NEXT (preview)](harmonyos.md) records versions and
+verification status.
+
 ## Apple and SwiftUI
 
 ### Install LumenUI in another Xcode project
 
 1. In Xcode, choose File → Add Package Dependencies.
 2. Paste `https://github.com/santi020k/lumen` into the search field.
-3. Choose Exact Version and enter `5.3.0`. Use Up to Next Major Version from `5.3.0` only when the
+3. Choose Exact Version and enter `5.4.0`. Use Up to Next Major Version from `5.4.0` only when the
    application intentionally accepts compatible updates; reserve `main` for local evaluation.
 4. Select the `LumenUI` product and add it to your application target.
 5. Add `import LumenUI` to the SwiftUI view that uses Lumen components.
@@ -323,7 +331,7 @@ link the platform package differently:
 - React Native installs `@santi020k/lumen-react-native` from npm and mounts one `LumenProvider`.
 - Apple applications add `https://github.com/santi020k/lumen` through Swift Package Manager and
   select the `LumenUI` product.
-- Android applications install `com.santi020k:lumen-compose:4.1.0` from Maven Central. The repository
+- Android applications install `com.santi020k:lumen-compose:4.1.1` from Maven Central. The repository
   playground intentionally references the local module so it can exercise unreleased changes.
 
 See the corresponding React Native, Apple, or Android documentation page for complete application

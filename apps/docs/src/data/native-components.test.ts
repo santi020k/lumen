@@ -4,11 +4,16 @@ import registry from '../../../../registry/native-components.json'
 
 import { getNativeComponentsForPlatform } from './native-components'
 
-const adapters = [
+const documentedAdapters = [
   ['react-native', 'reactNative'],
   ['apple', 'swiftUI'],
   ['android', 'compose']
 ] as const
+
+// HarmonyOS (ArkUI) is a pilot that covers part of the catalog and has no documentation routes.
+const adapters = [...documentedAdapters, ['harmonyos', 'arkUI']] as const
+
+const arkUIPilotSlugs = ['button', 'card', 'surface', 'text', 'text-field', 'theme']
 
 const advancedSlugs = ['time-field', 'autocomplete', 'number-field', 'password-field', 'input-otp', 'image-comparison']
 
@@ -34,8 +39,36 @@ describe('native component documentation coverage', () => {
     }
   })
 
+  test('limits the ArkUI pilot to its six components with ArkTS usage', () => {
+    const docs = getNativeComponentsForPlatform('harmonyos')
+
+    expect(docs.map(component => component.slug).sort()).toEqual(arkUIPilotSlugs)
+
+    for (const component of docs) {
+      const implementation = component.implementations.harmonyos
+
+      if (!implementation) throw new Error(`Missing harmonyos implementation for ${component.slug}`)
+
+      const api = implementation.api.map(row => `${row.name} ${row.values} ${row.defaultValue}`).join('\n')
+
+      expect(implementation).toMatchObject({ language: 'arkts', maturity: 'Pilot', platform: 'harmonyos' })
+      expect(implementation.example).toContain('LumenTheme(')
+      expect(implementation.example).toContain(`${implementation.exportName}(`)
+      expect(implementation.example).not.toMatch(/<Lumen|\bpadding\b|\bsize\b|\bonClick\b/)
+      expect(api).not.toMatch(/Modifier|@Composable|ReactNode|-> Unit|—/)
+    }
+  })
+
+  test('keeps the documented platforms on supported or experimental maturity', () => {
+    for (const [platform] of documentedAdapters) {
+      for (const component of getNativeComponentsForPlatform(platform)) {
+        expect(component.implementations[platform]?.maturity, `${platform}/${component.slug}`).not.toBe('Pilot')
+      }
+    }
+  })
+
   test('gives advanced controls platform-specific usage and API types', () => {
-    for (const [platform] of adapters) {
+    for (const [platform] of documentedAdapters) {
       const docs = getNativeComponentsForPlatform(platform)
       for (const slug of advancedSlugs) {
         const component = docs.find(candidate => candidate.slug === slug)

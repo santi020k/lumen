@@ -1,0 +1,28 @@
+{
+  "extends": ["@santi020k/pawl/biome"],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "formatter": {
+    "lineWidth": 100,
+    "includes": [
+      ".github/scripts/docs-deployment-artifact.mjs",
+      ".github/scripts/docs-deployment-artifact.test.mjs"
+    ]
+  },
+  "plugins": ["./.pawl/rules/zod.grit"],
+  "linter": {
+    "includes": [
+      ".github/scripts/docs-deployment-artifact.mjs",
+      ".github/scripts/docs-deployment-artifact.test.mjs"
+    ]
+  },
+  "assist": {
+    "includes": [
+      ".github/scripts/docs-deployment-artifact.mjs",
+      ".github/scripts/docs-deployment-artifact.test.mjs"
+    ]
+  }
+}

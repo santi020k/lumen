@@ -11,6 +11,7 @@ import {
   classifyCanaryPaths,
   classifyChangedNpmPackages,
   classifyCiPaths,
+  isCiPullRequest,
   requiresFullAppleChecks
 } from './classify-workflow-paths.mjs'
 
@@ -311,6 +312,65 @@ test('each playground selects only its owning expensive surface', () => {
   assert.equal(reactNative.android, false)
 })
 
+test('the HarmonyOS playground bundles with the React Native checks without selecting Apple or Android', () => {
+  for (const path of [
+    'apps/playground-harmony/index.ts',
+    'apps/playground-harmony/metro.config.js',
+    'apps/playground-harmony/package.json',
+    'apps/playground-harmony/harmony/entry/src/main/ets/pages/Index.ets'
+  ]) {
+    const classification = classifyCiPaths([path])
+
+    assert.equal(classification['react-native-captures'], true, path)
+
+    assert.equal(classification['native-contracts'], false, path)
+
+    assert.equal(classification.apple, false, path)
+
+    assert.equal(classification.android, false, path)
+
+    assert.deepEqual(classifyApplePaths([path]), {
+      captures: false,
+      'framework-visual': false,
+      full: false,
+      'react-native': false,
+      reason: 'owned-inputs',
+      swift: false,
+      visual: false
+    }, path)
+  }
+
+  for (const path of [
+    'packages/react-native/src/Button.tsx',
+    'apps/playground-react-native/src/App.tsx',
+    'pnpm-workspace.yaml',
+    '.github/workflows/ci.yml'
+  ]) {
+    assert.equal(classifyCiPaths([path])['react-native-captures'], true, path)
+  }
+})
+
+test('ArkUI pilot changes run native contracts without Apple or Android jobs', () => {
+  for (const path of [
+    'packages/arkui/Index.ets',
+    'packages/arkui/src/main/ets/components/LumenButton.ets',
+    'packages/arkui/src/main/ets/tokens/Tokens.generated.ts',
+    'packages/arkui/tests/styles.test.ts'
+  ]) {
+    const classification = classifyCiPaths([path])
+
+    assert.equal(classification['native-contracts'], true, path)
+
+    assert.equal(classification.apple, false, path)
+
+    assert.equal(classification.android, false, path)
+
+    assert.equal(classifyApplePaths([path]).full, false, path)
+  }
+
+  assert.equal(classifyCiPaths(['registry/native-components.json'])['native-contracts'], true)
+})
+
 test('Apple release automation selects its dedicated CI and canary coverage', () => {
   for (const path of [
     'scripts/check-playground-apple-release.mjs',
@@ -555,4 +615,46 @@ test('v5 contract sources select contract and MCP checks', () => {
 
     assert.equal(classifyCanaryPaths([path]).web, true, path)
   }
+})
+
+test('canaries defer shared gates to CI only for pull requests CI validates', () => {
+  assert.equal(isCiPullRequest({ baseRef: 'main', eventName: 'pull_request' }), true)
+
+  assert.equal(isCiPullRequest({ baseRef: 'release/v5.4.0', eventName: 'pull_request' }), false)
+
+  assert.equal(isCiPullRequest({ baseRef: 'main', eventName: 'workflow_dispatch' }), false)
+
+  assert.equal(isCiPullRequest({}), false)
+
+  const paths = ['packages/react/src/Button.tsx', 'packages/compose/src/commonMain/Button.kt']
+
+  for (const classification of [classifyCanaryPaths(paths), classifyCanaryPaths([], { manual: true }), classifyCanaryPaths(paths, { ciPullRequest: true, manual: true })]) {
+    assert.equal(classification['ci-browser'], false)
+
+    assert.equal(classification['ci-compose'], false)
+
+    assert.equal(classification['ci-preflight'], false)
+  }
+
+  const shared = classifyCanaryPaths(paths, { ciPullRequest: true })
+
+  assert.equal(shared['ci-browser'], true)
+
+  assert.equal(shared['ci-compose'], true)
+
+  assert.equal(shared['ci-preflight'], true)
+
+  // The canary keeps a gate whenever CI's own path scope would not schedule it.
+  for (const path of ['.github/workflows/release-canary.yml', 'packages/tokens/src/index.ts', 'packages/compose/src/commonMain/Button.kt']) {
+    const canary = classifyCanaryPaths([path], { ciPullRequest: true })
+    const ci = classifyCiPaths([path])
+
+    assert.equal(canary['ci-browser'], ci.playwright, path)
+
+    assert.equal(canary['ci-compose'], ci.android, path)
+  }
+
+  assert.equal(classifyCanaryPaths(['packages/tokens/src/index.ts'], { ciPullRequest: true })['ci-browser'], false)
+
+  assert.equal(classifyCanaryPaths(['packages/tokens/src/index.ts'], { ciPullRequest: true }).browser, true)
 })

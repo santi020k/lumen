@@ -379,18 +379,27 @@ test("release pull requests run source checks and social-image regressions", asy
   assert.ok(shell, "source validation must expose an executable shell block");
 
   for (const release of ["true", "false"]) {
-    const result = spawnSync("bash", ["-e", "-c", 'pnpm() { printf "%s\\n" "$@"; }\n' + shell], {
-      encoding: "utf8",
-      env: { ...process.env, IS_RELEASE_PR: release },
-    });
+    for (const [nodeLine, tasks] of [["22.x", ["build", "typecheck", "lint", "test"]], ["24.x", ["build", "test"]]]) {
+      const result = spawnSync("bash", ["-e", "-c", 'pnpm() { printf "%s\\n" "$@"; }\n' + shell], {
+        encoding: "utf8",
+        env: { ...process.env, IS_RELEASE_PR: release, NODE_LINE: nodeLine },
+      });
 
-    assert.equal(result.status, 0, result.stderr);
+      assert.equal(result.status, 0, result.stderr);
 
-    assert.deepEqual(result.stdout.trim().split("\n"), [
-      "exec", "turbo", "run", "build", "typecheck", "lint", "test",
-      ...(release === "false" ? ["--affected"] : []), "--concurrency=50%",
-    ]);
+      assert.deepEqual(result.stdout.trim().split("\n"), [
+        "exec", "turbo", "run", ...tasks,
+        ...(release === "false" ? ["--affected"] : []), "--concurrency=50%",
+      ]);
+    }
   }
+
+  assert.match(sourceCheck, /NODE_LINE: \$\{\{ matrix\.node-version \}\}/u);
+
+  assert.ok(
+    ciWorkflow.includes(`''["22.x"]'' || ''["22.x","24.x"]''`),
+    "the full task set must stay on the 22.x line that every pull request runs",
+  );
 
   const buildJob = ciWorkflow.split("  build:\n")[1];
 
@@ -398,7 +407,7 @@ test("release pull requests run source checks and social-image regressions", asy
 
   assertOrderedCommands(buildJob, "browser setup before affected package tests", [
     "uses: ./.github/actions/setup-playwright",
-    'pnpm exec turbo run build typecheck lint test "${scope[@]}"',
+    'pnpm exec turbo run "${tasks[@]}" "${scope[@]}"',
   ]);
 
   const nodeMatrix = buildJob.split("    env:")[0];
@@ -424,7 +433,7 @@ test("release pull requests run source checks and social-image regressions", asy
 
 test("pull-request compatibility checks reuse the affected build outputs", () => {
   assertOrderedCommands(ciWorkflow, "pull-request compatibility checks", [
-    'pnpm exec turbo run build typecheck lint test "${scope[@]}"',
+    'pnpm exec turbo run "${tasks[@]}" "${scope[@]}"',
     "pnpm run build:release-scope",
     "pnpm run check:bundle-size",
     "pnpm run check:publish-dry-run",
@@ -585,7 +594,7 @@ test('v4 contract changes trigger canaries and are checked before publication', 
   }
 
   for (const command of ['pnpm run check:lumen-4-contract', 'pnpm run test:lumen-4-contract']) {
-    assert.ok(packageManifest.scripts.validate.includes(command));
+    assert.ok(packageManifest.scripts['validate:repo'].includes(command));
 
     assert.ok(canaryWorkflow.includes(command));
   }
@@ -744,7 +753,7 @@ test("canonical package commands enforce graduation identity before publication"
     await readFile(resolve(repositoryRoot, "package.json"), "utf8"),
   );
 
-  assertOrderedCommands(packageManifest.scripts.validate, "validation", [
+  assertOrderedCommands(packageManifest.scripts["validate:repo"], "validation", [
     "pnpm run check:graduated-release-revision",
     "pnpm run test:graduated-release-revision",
     "pnpm run test:maven-release-artifacts",
@@ -885,7 +894,7 @@ test('release validation does not schedule removed native qualification checks',
 
   for (const name of Object.keys(manifest.scripts)) assert.doesNotMatch(name, removed);
 
-  for (const surface of [manifest.scripts.validate, releaseScope, ciWorkflow, canaryWorkflow, npmWorkflow, composeWorkflow]) {
+  for (const surface of [manifest.scripts.validate, manifest.scripts["validate:repo"], releaseScope, ciWorkflow, canaryWorkflow, npmWorkflow, composeWorkflow]) {
     assert.doesNotMatch(surface, removed);
   }
 });

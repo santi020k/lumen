@@ -1,0 +1,33 @@
+diff --git a/dist/io/TarGz.js b/dist/io/TarGz.js
+index 657758301f9b042465bfb012737e3e3a5da9a653..8f8bfa1a0a4c5a75919cdf808bec89b8599e7634 100644
+--- a/dist/io/TarGz.js
++++ b/dist/io/TarGz.js
+@@ -12,13 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.unpackTarGz = unpackTarGz;
+ const node_fs_1 = __importDefault(require("node:fs"));
+ const node_zlib_1 = __importDefault(require("node:zlib"));
+-const tar_1 = __importDefault(require("tar"));
++const tar_1 = require("tar");
+ function unpackTarGz(archivePath, outputDirPath) {
+     if (!node_fs_1.default.existsSync(outputDirPath.getValue())) {
+         node_fs_1.default.mkdirSync(outputDirPath.getValue(), { recursive: true });
+     }
+     const readStream = node_fs_1.default.createReadStream(archivePath.getValue());
+-    const writeStream = tar_1.default.extract({
++    const writeStream = tar_1.extract({
+         cwd: outputDirPath.getValue(),
+     });
+     readStream.pipe(node_zlib_1.default.createGunzip()).pipe(writeStream);
+diff --git a/src/io/TarGz.ts b/src/io/TarGz.ts
+index 3c7e52aebfcb95e926409b96a50e99fd3edf1ee0..4f133b9038698d758393e2fe6933d6040ccf42f0 100644
+--- a/src/io/TarGz.ts
++++ b/src/io/TarGz.ts
+@@ -7,7 +7,7 @@
+ 
+ import fs from 'node:fs';
+ import zlib from 'node:zlib';
+-import tar from 'tar';
++import * as tar from 'tar';
+ import { AbsolutePath } from '../core';
+ 
+ export function unpackTarGz(

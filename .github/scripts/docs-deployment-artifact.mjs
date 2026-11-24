@@ -42,11 +42,14 @@ export const verifyArtifact = async (archive, manifest, revision, expectedDigest
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [mode, archive, manifest, expectedDigest, ...extra] = process.argv.slice(2)
 
-  assert.ok(['record', 'verify'].includes(mode) && archive && manifest && extra.length === 0,
-    'Usage: docs-deployment-artifact.mjs record|verify archive manifest [expected-digest]')
+  assert.ok(
+    ['record', 'verify'].includes(mode) && archive && manifest && extra.length === 0,
+    'Usage: docs-deployment-artifact.mjs record|verify archive manifest [expected-digest]'
+  )
 
   const revision = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
 
-  if (mode === 'record') console.log(await recordArtifact(archive, manifest, revision))
+  if (mode === 'record')
+    process.stdout.write(`${await recordArtifact(archive, manifest, revision)}\n`)
   else await verifyArtifact(archive, manifest, revision, expectedDigest)
 }

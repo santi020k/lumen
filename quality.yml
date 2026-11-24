@@ -28,12 +28,18 @@ tools:
     check: false
     required: true
 tasks:
+  pawl:
+    name: Pawl Biome deployment-tooling pilot
+    command: node
+    args: [scripts/check-pawl.mjs]
+    required: true
+    parser: eslint-json
   repository-check:
-    name: Repository check (validate)
+    name: Repository validation
     command: pnpm
     args:
     - run
-    - validate
+    - validate:repo
     required: true
     parser: generic
 hooks:

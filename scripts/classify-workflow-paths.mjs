@@ -32,6 +32,7 @@ const appleScopeRules = [
   { pattern: /^packages\/(?:core|tokens)\//u, checks: appleChecks },
   { pattern: /^(?:Package\.(?:swift|resolved)|packages\/(?:swift|swift-widget)\/|apps\/playground-apple\/)/u, checks: ['swift', 'captures'] },
   { pattern: /^(?:packages\/react-native\/|apps\/playground-react-native\/)/u, checks: ['react-native', 'visual'] },
+  { pattern: /^(?:apps\/playground-harmony|packages\/arkui)\//u, checks: [] },
   { pattern: /^packages\/(?:astro|elements|icons-brand|lumen|react|react-hook-form|templates)\//u, checks: webAppleChecks },
   { pattern: /^apps\/docs\/(?:public\/native-components\/|scripts\/sync-native-component-captures\.mjs$|src\/data\/native-component-captures\.json$)/u, checks: ['captures', 'visual'] },
   { pattern: /^(?:apps\/docs\/|docs\/|[A-Z][A-Z_]*\.md$)/u, checks: ['visual'] },
@@ -66,6 +67,10 @@ export const classifyApplePaths = (paths, { full = false } = {}) => {
 export const requiresFullAppleChecks = ({ eventName, headRef, headRepository, repository }) =>
   eventName === 'workflow_dispatch' ||
   Boolean(repository && headRepository === repository && /^(?:release|changeset-release)\//u.test(headRef ?? ''))
+
+// Mirrors the CI workflow trigger: every pull request that targets main.
+/** @param {{ eventName?: string, baseRef?: string }} context */
+export const isCiPullRequest = ({ eventName, baseRef }) => eventName === 'pull_request' && baseRef === 'main'
 
 export const changedPaths = (base, head, cwd = process.cwd()) => {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('GIT_')))
@@ -147,7 +152,7 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   ])
 
   const reactNativeCaptures = matchesAny(paths, [
-    /^apps\/playground-react-native\//u,
+    /^apps\/playground-(?:harmony|react-native)\//u,
     /^packages\/(core|react-native|tokens)\//u,
     /^tokens\//u,
     /^apps\/docs\/(public\/native-components\/|scripts\/sync-native-component-captures\.mjs|src\/data\/native-component-captures\.json)/u,
@@ -158,9 +163,9 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
 
   const nativeContracts = matchesAny(paths, [
     /^apps\/playground-(android|apple|react-native)\//u,
-    /^packages\/(compose|core|react-native|swift|swift-widget|tokens)\//u,
+    /^packages\/(arkui|compose|core|react-native|swift|swift-widget|tokens)\//u,
     /^tokens\//u,
-    /^registry\/(compose-api-classification|lumen-[34]-contract|native-api-baseline|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$/u,
+    /^registry\/(compose-api-classification|lumen-[34]-contract|native-api-baseline|native-components|swift-api-baseline|swift-widget-api-baseline|wear-api-classification)\.json$/u,
     /^apps\/docs\/(public\/native-components\/|scripts\/sync-native-component-captures\.mjs|src\/data\/native-component-captures\.json)/u,
     /^scripts\/(check-compose-api-classification|check-wear-api-classification|check-(native|swift)-api-baseline|generate-platform-tokens)\.mjs$/u,
     /^Package\.swift$/u,
@@ -227,10 +232,21 @@ export const classifyCiPaths = (paths, { releasePullRequest = false } = {}) => {
   }
 }
 
-export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
+/**
+ * `ciPullRequest` marks a pull request that the CI workflow also validates at the same
+ * revision. The `ci-*` outputs then name the canary gates CI already runs for these paths,
+ * so each shared gate executes once per revision instead of once per workflow.
+ *
+ * @param {readonly string[]} paths
+ * @param {{ manual?: boolean, ciPullRequest?: boolean }} options
+ */
+export const classifyCanaryPaths = (paths, { manual = false, ciPullRequest = false } = {}) => {
   if (manual) {
     return {
       browser: true,
+      'ci-browser': false,
+      'ci-compose': false,
+      'ci-preflight': false,
       compose: true,
       'consumer-packages': true,
       native: true,
@@ -324,8 +340,13 @@ export const classifyCanaryPaths = (paths, { manual = false } = {}) => {
     sharedConfiguration
   ])
 
+  const ci = classifyCiPaths(paths)
+
   return {
     browser,
+    'ci-browser': ciPullRequest && ci.playwright,
+    'ci-compose': ciPullRequest && ci.android,
+    'ci-preflight': ciPullRequest,
     compose,
     'consumer-packages': consumerPackages,
     native,
@@ -380,7 +401,10 @@ const runCli = async () => {
   } else if (workflow === 'ci') {
     classification = classifyCiPaths(paths, { releasePullRequest: process.env.IS_RELEASE_PR === 'true' })
   } else {
-    classification = classifyCanaryPaths(paths, { manual })
+    classification = classifyCanaryPaths(paths, {
+      ciPullRequest: isCiPullRequest({ baseRef: process.env.BASE_REF, eventName: process.env.GITHUB_EVENT_NAME }),
+      manual
+    })
   }
 
   await appendFile(

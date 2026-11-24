@@ -68,6 +68,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
         with:
           fetch-depth: 0
+          # Path classification reads commit history and this script only: skip file
+          # contents for the history and check out just the classifier.
+          filter: blob:none
+          sparse-checkout: scripts
 
       - name: Classify changed paths
         id: paths
@@ -92,6 +96,55 @@ jobs:
 
   native-android:
     name: Compose library
+    needs: [classify, preflight]
+    if: needs.classify.outputs.android == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Java
+        uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+          cache-dependency-path: |
+            packages/compose/**/*.gradle*
+            packages/compose/gradle/wrapper/gradle-wrapper.properties
+            apps/playground-android/**/*.gradle*
+
+      - name: Set up pnpm workspace
+        uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
+        with:
+          node-version: 22.x
+
+      - name: Install Android platform
+        run: |
+          android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          "$android_sdk_root/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" \
+            "build-tools;36.0.0"
+
+      - name: Build and test Compose library
+        working-directory: packages/compose
+        run: ./gradlew test lint apiCheck verifyMavenPublication
+
+      - name: Check the Compose API classifications
+        run: pnpm run check:compose-api-classification && pnpm run test:compose-api-classification
+
+      - name: Check the Wear API classifications
+        run: node scripts/check-wear-api-classification.mjs
+
+      - name: Build a consumer from the candidate Compose artifact
+        run: >-
+          ./packages/compose/gradlew -p apps/playground-android
+          -PlumenComposeRepository=../../packages/compose/build/central-staging
+          assembleDebug :app:verifyLumenArtifactIsolation
+
+  native-android-device:
+    name: Compose device checks
+    # Instrumentation and captures build from source, so they run beside the library gates.
     needs: [classify, preflight]
     if: needs.classify.outputs.android == 'true'
     runs-on: ubuntu-latest
@@ -124,22 +177,6 @@ jobs:
             "platform-tools" \
             "emulator" \
             "system-images;android-35;google_apis;x86_64"
-
-      - name: Build and test Compose library
-        working-directory: packages/compose
-        run: ./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication
-
-      - name: Check the Compose API classifications
-        run: pnpm run check:compose-api-classification && pnpm run test:compose-api-classification
-
-      - name: Check the Wear API classifications
-        run: node scripts/check-wear-api-classification.mjs
-
-      - name: Build a consumer from the candidate Compose artifact
-        run: >-
-          ./packages/compose/gradlew -p apps/playground-android
-          -PlumenComposeRepository=../../packages/compose/build/central-staging
-          assembleDebug :app:verifyLumenArtifactIsolation
 
       - name: Run Compose accessibility tests on Android
         working-directory: packages/compose
@@ -230,11 +267,20 @@ jobs:
           retention-days: 7
 
   browser-contracts:
-    name: Browser interaction contracts
+    name: Browser interaction contracts (${{ matrix.lane }})
     needs: [classify, preflight]
     if: needs.classify.outputs.playwright == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        # Independent suites run side by side; the interaction suite is split in two.
+        lane: [interactions-1, interactions-2, frameworks, motion]
+    env:
+      # Reuse the package builds that the build job publishes for identical inputs.
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
 
@@ -243,25 +289,58 @@ jobs:
         with:
           node-version: 22.x
 
+      - name: Bind task cache to the resolved runtime
+        shell: bash
+        run: |
+          echo "QUALITY_TASK_RUNTIME=$(node --version)-$(pnpm --version)-$(node -p 'process.platform + "/" + process.arch')" >> "$GITHUB_ENV"
+
       - name: Install Playwright browsers
         uses: ./.github/actions/setup-playwright
         with:
-          browsers: chromium firefox webkit
+          browsers: ${{ matrix.lane == 'motion' && 'chromium webkit' || 'chromium firefox webkit' }}
 
       - name: Run cross-browser interaction contracts
-        run: pnpm run test:interactions && pnpm run test:framework-conformance && pnpm run test:figma-plugin
+        if: startsWith(matrix.lane, 'interactions-')
+        env:
+          SHARD: ${{ matrix.lane == 'interactions-1' && '1/2' || '2/2' }}
+        run: pnpm run test:interactions --shard="$SHARD"
+
+      - name: Run cross-browser framework contracts
+        if: matrix.lane == 'frameworks'
+        run: pnpm run test:framework-conformance && pnpm run test:figma-plugin
 
       - name: Check local motion previews
-        run: pnpm --filter @santi020k/lumen-motion build && pnpm --filter @santi020k/lumen-motion test
+        if: matrix.lane == 'motion'
+        # This lane starts cold; build the preview with its workspace dependencies first.
+        run: pnpm exec turbo run build --filter=@santi020k/lumen-motion --concurrency=2 && pnpm --filter @santi020k/lumen-motion test
 
       - name: Verify primitive motion and reduced-motion behavior
+        if: matrix.lane == 'motion'
         run: pnpm run test:motion && pnpm run check:route-delivery
 
       - name: Measure packed selective subscribe forms
+        if: matrix.lane == 'motion'
         run: pnpm run measure:subscribe-form
 
       - name: Enforce web unit coverage
+        if: matrix.lane == 'motion'
+        env:
+          # This run owns the runner, unlike the suites Turbo schedules side by side.
+          LUMEN_VITEST_MAX_WORKERS: 4
         run: pnpm run test:web-coverage
+
+      - name: Preserve browser failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: browser-contracts-${{ matrix.lane }}-diagnostics
+          path: |
+            test-results/
+            playwright-report/
+            packages/motion/test-results/
+            packages/motion/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
 
   react-native-captures:
     name: React Native captures
@@ -285,9 +364,15 @@ jobs:
         with:
           browsers: chromium
 
+      - name: Build the React Native package
+        run: pnpm --filter @santi020k/lumen-react-native... run build
+
+      - name: Bundle the HarmonyOS playground
+        # Runs before the packed canary replaces the playground's workspace packages.
+        run: pnpm run check:harmony-bundle
+
       - name: Regenerate and compare React Native component captures
         run: |
-          pnpm --filter @santi020k/lumen-react-native... run build
           node scripts/prepare-packed-react-native-canary.mjs
           CI=1 pnpm --filter @santi020k/lumen-playground-react-native exec \
             expo start --web --port 8081 > "$RUNNER_TEMP/lumen-expo.log" 2>&1 &
@@ -367,6 +452,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
         with:
           fetch-depth: 0
+          # History is needed for merge-base comparisons, not for old file contents.
+          filter: blob:none
 
       - name: Set up pnpm workspace
         uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
@@ -405,12 +492,19 @@ jobs:
         # Each Vitest suite already uses two workers; avoid oversubscribing the runner.
         env:
           IS_RELEASE_PR: ${{ needs.classify.outputs.release-pr }}
+          NODE_LINE: ${{ matrix.node-version }}
         run: |
           scope=()
           if [[ "$IS_RELEASE_PR" != "true" ]]; then
             scope+=(--affected)
           fi
-          pnpm exec turbo run build typecheck lint test "${scope[@]}" --concurrency=50%
+          # Type checking and linting do not depend on the runtime: the primary Node line
+          # runs the full set and the compatibility line proves the build and tests.
+          tasks=(build typecheck lint test)
+          if [[ "$NODE_LINE" != "22.x" ]]; then
+            tasks=(build test)
+          fi
+          pnpm exec turbo run "${tasks[@]}" "${scope[@]}" --concurrency=50%
 
       - name: Validate portable AI plugin and migration artifacts
         run: pnpm run check:plugin-package && pnpm run test:plugin-package && pnpm run check:v4-migration

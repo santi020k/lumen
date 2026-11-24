@@ -104,6 +104,31 @@ for (const target of ['react', 'elements']) {
     await expect(page.getByRole('button', { name: 'View larger image' })).toBeFocused()
   })
 
+  test(`${target} fixture remount control wraps enlarged labels without clipping`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 })
+    await page.goto(`/${target}.html`)
+    await page.locator('html').evaluate(element => {
+      element.style.fontSize = '200%'
+      element.dir = 'rtl'
+    })
+    const remount = page.locator('[data-remount]')
+    const label = 'Remount portable editorial recipes with enlarged text'
+
+    await remount.evaluate((element, text) => { element.textContent = text }, label)
+    expect(await remount.evaluate(element => {
+      const rect = element.getBoundingClientRect()
+
+      return rect.left >= 0 && rect.right <= innerWidth &&
+        element.scrollWidth <= element.clientWidth && element.scrollHeight <= element.clientHeight
+    })).toBe(true)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    await page.locator('article.article-text').evaluate(element => { element.dataset.beforeRemount = 'true' })
+    await remount.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('article.article-text')).not.toHaveAttribute('data-before-remount')
+    await expect(remount).toBeFocused()
+  })
+
   for (const width of [320, 1440]) {
     test(`${target} reading fits ${width}px with enlarged text and follows its content`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 700 })
@@ -128,7 +153,35 @@ for (const target of ['react', 'elements']) {
       await expect.poll(async () => Number(await progress.getAttribute('aria-valuenow'))).toBeGreaterThan(0)
       await page.screenshot({ path: testInfo.outputPath(`${target}-${width}.png`) })
       await page.locator('html').evaluate(element => { element.style.fontSize = '200%'; element.dir = 'rtl'; element.dataset.theme = 'lumen-dark' })
-      expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
+      const layout = await page.evaluate(() => {
+        const viewportWidth = innerWidth
+        const scrollWidth = document.documentElement.scrollWidth
+        const overflowing = [...document.querySelectorAll('body *')].flatMap(element => {
+          const rect = element.getBoundingClientRect()
+
+          if (rect.width === 0 || (rect.left >= 0 && rect.right <= viewportWidth)) return []
+
+          const style = getComputedStyle(element)
+
+          return [{
+            tag: element.localName, id: element.id, className: element.getAttribute('class'),
+            left: rect.left, right: rect.right, width: rect.width,
+            scrollWidth: element.scrollWidth, clientWidth: element.clientWidth,
+            position: style.position, direction: style.direction, fontSize: style.fontSize,
+            overflowX: style.overflowX
+          }]
+        })
+
+        return { viewportWidth, scrollWidth, scrollX, overflowing }
+      })
+
+      if (layout.scrollWidth > layout.viewportWidth) {
+        await testInfo.attach('overflow-layout.json', {
+          body: JSON.stringify(layout, null, 2), contentType: 'application/json'
+        })
+      }
+
+      expect(layout.scrollWidth > layout.viewportWidth, JSON.stringify(layout)).toBe(false)
       await page.getByRole('button', { name: 'Search', exact: true }).click()
       const dialog = page.getByRole('dialog')
       await expect(dialog).toBeVisible()

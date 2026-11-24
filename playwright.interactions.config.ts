@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
+import { playwrightWorkers } from './playwright.shared.config'
+
 const port = process.env.LUMEN_INTERACTIONS_PORT ?? '4324'
 const baseURL = `http://127.0.0.1:${port}`
 
@@ -47,7 +49,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   testDir: './tests/a11y',
   testMatch: 'component-interactions.spec.ts',
-  workers: 2,
+  workers: playwrightWorkers,
   use: {
     baseURL
   },

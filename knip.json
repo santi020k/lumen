@@ -32,6 +32,25 @@
       ],
       "project": ["src/**/*.{astro,css,ts,tsx}", "scripts/**/*.{js,mjs}"]
     },
+    "apps/playground-harmony": {
+      "entry": ["scripts/*.mjs", "src/expo-status-bar.tsx"],
+      "ignoreDependencies": [
+        "@babel/runtime",
+        "@react-native-community/datetimepicker",
+        "@react-native-oh/react-native-harmony-cli",
+        "@react-native-ohos/datetimepicker",
+        "@react-native-ohos/react-native-safe-area-context",
+        "@react-native-ohos/react-native-svg",
+        "hermes-compiler",
+        "react-native-safe-area-context",
+        "react-native-svg"
+      ],
+      "project": ["src/**/*.{ts,tsx}", "scripts/*.mjs"]
+    },
+    "packages/arkui": {
+      "entry": ["src/main/ets/**/*.ts", "tests/**/*.test.ts"],
+      "project": ["src/**/*.ts", "tests/**/*.ts"]
+    },
     "apps/playground-react-native": {
       "entry": ["src/fixtures/TextLayoutProbe.tsx"],
       "project": ["src/**/*.{ts,tsx}", "plugins/*.{cjs,ts}"]

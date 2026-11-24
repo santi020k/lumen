@@ -5,14 +5,15 @@ if [[ "${RUNNER_OS:-}" != Linux ]]; then
   exit 0
 fi
 
-# Keep the runner's configured HTTPS fallback when its Azure HTTP mirror stalls.
+# Keep the runner's configured HTTPS fallback when its cloud HTTP mirrors stall.
 mirror_list="${1:-/etc/apt/apt-mirrors.txt}"
+cloud_mirror_pattern='^http://(azure|[a-z0-9-]+[.]ec2)[.]archive[.]ubuntu[.]com/ubuntu/?$'
 if [[ -f "$mirror_list" ]] \
   && awk '$1 == "https://archive.ubuntu.com/ubuntu/" || $1 == "https://archive.ubuntu.com/ubuntu" { found = 1 } END { exit !found }' "$mirror_list" \
-  && awk '$1 == "http://azure.archive.ubuntu.com/ubuntu/" || $1 == "http://azure.archive.ubuntu.com/ubuntu" { found = 1 } END { exit !found }' "$mirror_list"; then
+  && awk -v pattern="$cloud_mirror_pattern" '$1 ~ pattern { found = 1 } END { exit !found }' "$mirror_list"; then
   filtered="$(mktemp)"
   trap 'rm -f "$filtered"' EXIT
-  awk '$1 != "http://azure.archive.ubuntu.com/ubuntu/" && $1 != "http://azure.archive.ubuntu.com/ubuntu"' "$mirror_list" > "$filtered"
+  awk -v pattern="$cloud_mirror_pattern" '$1 !~ pattern' "$mirror_list" > "$filtered"
   sudo cp "$filtered" "$mirror_list"
 fi
 

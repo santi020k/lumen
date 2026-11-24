@@ -33,6 +33,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
         with:
           fetch-depth: 0
+          # Keep release history and tags without downloading historical file blobs.
+          filter: blob:none
           ref: ${{ github.sha }}
 
       - name: Prepare release comparison ref

@@ -236,11 +236,11 @@ test('primitive motion has browser coverage for ordinary and release pull reques
 
   assert.match(ciBrowser, /run: pnpm run test:motion/u)
 
-  assert.match(ciBrowser, /browsers: chromium firefox webkit/u)
+  assert.match(ciBrowser, /browsers: \$\{\{ matrix\.lane == 'motion' && 'chromium webkit' \|\| 'chromium firefox webkit' \}\}/u)
 
   assert.match(releaseBrowser, /browsers: chromium webkit/u)
 
-  assert.match(releaseBrowser, /if: matrix\.shard == 1\n\s+run: pnpm run test:motion/u)
+  assert.match(releaseBrowser, /if: matrix\.shard == 1 && needs\.classify\.outputs\.ci-browser != 'true'\n\s+run: pnpm run test:motion/u)
 
   assert.match(trigger, /- "tests\/motion\/\*\*"/u)
 
@@ -535,9 +535,25 @@ test('MCP deployment skips unpublished and stale-tag revisions before production
 })
 
 
+test('the HarmonyOS bundle check runs on the built workspace packages in the React Native job', () => {
+  const job = ci.split('  react-native-captures:\n')[1]?.split(/\n {2}[a-z][a-z-]*:\n/u)[0]
+
+  assert.ok(job, 'CI must preserve the React Native job')
+
+  assert.match(job, /runs-on: ubuntu-latest/u)
+
+  const build = job.indexOf('pnpm --filter @santi020k/lumen-react-native... run build')
+  const bundle = job.indexOf('run: pnpm run check:harmony-bundle')
+  const packed = job.indexOf('node scripts/prepare-packed-react-native-canary.mjs')
+
+  assert.ok(build !== -1 && build < bundle, 'The HarmonyOS bundle needs the built React Native package')
+
+  assert.ok(bundle < packed, 'The HarmonyOS bundle must resolve workspace packages, not the packed canary')
+})
+
 test('early failures block every expensive CI and release canary lane', () => {
   const expensiveJobs = {
-    ci: ['native-android', 'browser-contracts', 'react-native-captures', 'mcp-node-20'],
+    ci: ['native-android', 'native-android-device', 'browser-contracts', 'react-native-captures', 'mcp-node-20'],
     canary: ['web', 'compose', 'react-native-android', 'browser']
   }
 
@@ -675,6 +691,16 @@ if [[ "$1" == cp ]]; then cp "$2" "$3"; else cat > "$MOCK_APT_CONFIG"; fi
 
     assert.equal(await readFile(mirrors, 'utf8'), unchangedMirrors)
 
+    const secureMirrors = 'https://archive.ubuntu.com/ubuntu priority:2\nhttps://us-east-2.ec2.archive.ubuntu.com/ubuntu/ priority:3\nhttps://security.ubuntu.com/ubuntu/ priority:4\nhttp://mirror.example.com/ubuntu/ priority:5\nhttp://azure.archive.ubuntu.com.example.com/ubuntu/ priority:6\nhttp://azureXarchiveXubuntuXcom/ubuntu priority:7\nhttp://us-east-2Xec2XarchiveXubuntuXcom/ubuntu/ priority:8\nhttp://us-east-2.ec2.archive.ubuntu.com.example.com/ubuntu/ priority:9\n'
+
+    await writeFile(mirrors, `http://us-east-2.ec2.archive.ubuntu.com/ubuntu/ priority:1\nhttp://eu-west-1.ec2.archive.ubuntu.com/ubuntu priority:1\n${secureMirrors}`)
+
+    const cloudFallback = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux' } })
+
+    assert.equal(cloudFallback.status, 0, cloudFallback.stderr)
+
+    assert.equal(await readFile(mirrors, 'utf8'), secureMirrors)
+
     await writeFile(mirrors, 'http://azure.archive.ubuntu.com/ubuntu/ priority:1\n')
 
     const noFallback = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux' } })
@@ -682,6 +708,14 @@ if [[ "$1" == cp ]]; then cp "$2" "$3"; else cat > "$MOCK_APT_CONFIG"; fi
     assert.equal(noFallback.status, 0, noFallback.stderr)
 
     assert.equal(await readFile(mirrors, 'utf8'), 'http://azure.archive.ubuntu.com/ubuntu/ priority:1\n')
+
+    await writeFile(mirrors, 'http://us-east-2.ec2.archive.ubuntu.com/ubuntu/ priority:1\n')
+
+    const noCloudFallback = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux' } })
+
+    assert.equal(noCloudFallback.status, 0, noCloudFallback.stderr)
+
+    assert.equal(await readFile(mirrors, 'utf8'), 'http://us-east-2.ec2.archive.ubuntu.com/ubuntu/ priority:1\n')
 
     const failed = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux', MOCK_APT_FAILURE: 'true' } })
 
@@ -756,7 +790,7 @@ test('docs deployment retries restore the same verified archive without rebuildi
   const build = workflow.split('  build:\n')[1].split('  build-and-deploy:\n')[0]
   const deploy = workflow.split('  build-and-deploy:\n')[1]
 
-  assert.match(build, /pnpm run docs:build/u)
+  assert.match(build, /pnpm --filter @santi020k\/lumen-docs run build/u)
 
   assert.match(build, /docs-deployment-artifact\.mjs record/u)
 
@@ -793,4 +827,307 @@ test('docs deployment retries restore the same verified archive without rebuildi
   assert.ok(deploy.indexOf('check-approved-release-revision.mjs') < deploy.indexOf('wrangler pages deploy'))
 
   assert.match(deploy, /Smoke test the public docs/u)
+})
+
+test('parallel browser suites share an environment-driven worker count', async () => {
+  const { resolvePlaywrightWorkers } = await import('../playwright.shared.config.ts')
+
+  assert.equal(resolvePlaywrightWorkers({}, 8), 2)
+
+  assert.equal(resolvePlaywrightWorkers({ CI: 'true' }, 8), 4)
+
+  assert.equal(resolvePlaywrightWorkers({ CI: 'true' }, 3), 3)
+
+  assert.equal(resolvePlaywrightWorkers({ CI: 'true', LUMEN_PLAYWRIGHT_WORKERS: '6' }, 2), 6)
+
+  assert.equal(resolvePlaywrightWorkers({ LUMEN_PLAYWRIGHT_WORKERS: '' }, 8), 2)
+
+  for (const invalid of ['0', '-1', '1.5', 'four', '1000']) {
+    assert.throws(() => resolvePlaywrightWorkers({ LUMEN_PLAYWRIGHT_WORKERS: invalid }, 8), /positive integer/u)
+  }
+
+  const configurations = (await readdir(repositoryRoot))
+    .filter(name => /^playwright(?:\.[^.]+)?\.config\.ts$/u.test(name) && name !== 'playwright.shared.config.ts')
+
+  // The Figma and rendered-audit suites stay serial by design.
+  const serial = new Set(['playwright.figma.config.ts', 'playwright.rendered-audit.config.ts'])
+
+  for (const name of configurations) {
+    const source = await readRepositoryFile(name)
+
+    if (serial.has(name)) assert.match(source, /workers: 1\b/u, name)
+    else if (name === 'playwright.motion.config.ts') assert.match(source, /workers: process\.env\.CI \? 1 : playwrightWorkers/u, name)
+    else assert.match(source, /workers: playwrightWorkers\b/u, name)
+  }
+
+  const vitest = await readRepositoryFile('vitest.config.ts')
+
+  assert.match(vitest, /process\.env\.LUMEN_VITEST_MAX_WORKERS/u)
+
+  assert.match(vitest, /maxWorkers: suiteWorkers/u)
+})
+
+test('release canaries skip only the gates CI runs for the same revision', () => {
+  const section = name => canary.split(`  ${name}:\n`)[1]?.split(/\n {2}[a-z][a-z-]*:\n/u)[0]
+  const ciBrowser = ci.slice(ci.indexOf('\n  browser-contracts:\n'), ci.indexOf('\n  react-native-captures:\n'))
+  const ciCompose = ci.slice(ci.indexOf('\n  native-android:\n'), ci.indexOf('\n  browser-contracts:\n'))
+
+  assert.match(ci, /pull_request:\n\s+branches: \[main\]/u)
+
+  assert.match(canary, /BASE_REF: \$\{\{ github\.base_ref \}\}/u)
+
+  assert.match(section('preflight'), /if: needs\.classify\.outputs\.ci-preflight != 'true'\n\s+run: pnpm run ci:preflight/u)
+
+  assert.match(ci, /command: pnpm run ci:preflight/u)
+
+  assert.match(section('compose'), /if: needs\.classify\.outputs\.compose == 'true' && needs\.classify\.outputs\.ci-compose != 'true'/u)
+
+  // Every command of a skipped canary gate must still run in the CI job that replaces it.
+  for (const command of section('compose').matchAll(/(?:run: (?:>-\n\s+)?|^\s+)((?:\.\/gradlew|\.\/packages\/compose\/gradlew|pnpm run check:compose|node scripts\/check-wear)[^\n]*)/gmu)) {
+    if (command[1].startsWith('./gradlew ')) {
+      for (const task of command[1].split(' ').slice(1)) assert.match(ciCompose, new RegExp(`gradlew [^\\n]*\\b${task}\\b`, 'u'), task)
+    } else {
+      assert.ok(ciCompose.includes(command[1]), command[1])
+    }
+  }
+
+  assert.match(ciCompose, /assembleDebug :app:verifyLumenArtifactIsolation/u)
+
+  const skipped = [...section('browser').matchAll(/if: matrix\.shard == 1 && needs\.classify\.outputs\.ci-browser != 'true'\n(?:\s+env:\n\s+[^\n]+\n)?\s+run: ([^\n]+)/gu)]
+    .flatMap(match => match[1].split(' && '))
+
+  assert.deepEqual(skipped, [
+    'pnpm run test:framework-conformance', 'pnpm run test:motion', 'pnpm run check:route-delivery', 'pnpm run measure:subscribe-form'
+  ])
+
+  for (const command of skipped) assert.ok(ciBrowser.includes(command), command)
+
+  assert.doesNotMatch(ciBrowser.split('    steps:')[0] + ciCompose.split('    steps:')[0], /release-pr/u)
+})
+
+test('path classification uses a partial checkout that still contains its only inputs', async () => {
+  const classifier = await readRepositoryFile('scripts/classify-workflow-paths.mjs')
+
+  // The sparse checkout holds the scripts directory only, so the classifier must stay self-contained.
+  for (const [, specifier] of classifier.matchAll(/^import [^\n]* from '([^']+)'$/gmu)) {
+    assert.match(specifier, /^node:/u, specifier)
+  }
+
+  for (const [name, source] of [['ci', ci], ['canary', canary], ['apple', appleWorkflow]]) {
+    const checkout = source.split('  classify:\n')[1].split(`node scripts/classify-workflow-paths.mjs ${name}`)[0]
+
+    assert.match(checkout, /fetch-depth: 0\n(?:\s+#[^\n]*\n)*\s+filter: blob:none\n\s+sparse-checkout: scripts\n/u, name)
+  }
+
+  // Full-tree jobs that compare against the merge base keep every commit but skip old file contents.
+  for (const source of [ci.split('  build:\n')[1], canary.split('  preflight:\n')[1]]) {
+    for (const [checkout] of source.matchAll(/fetch-depth: 0\n(?:[^\n]*\n){0,3}/gu)) {
+      assert.match(checkout, /filter: blob:none/u)
+
+      assert.doesNotMatch(checkout, /sparse-checkout/u)
+    }
+  }
+})
+
+test('docs performance reuses cached builds while deployments always build fresh', async () => {
+  const deployBuild = (await readRepositoryFile('.github/workflows/deploy-docs.yml')).split('  build:\n')[1].split('  build-and-deploy:\n')[0]
+  const performance = await readRepositoryFile('.github/workflows/docs-performance.yml')
+
+  assert.doesNotMatch(deployBuild, /TURBO_TOKEN|TURBO_TEAM/u)
+
+  assert.match(deployBuild, /task-cache-key: docs-dependencies-main/u)
+
+  assert.match(deployBuild, /pnpm exec turbo run build --filter='@santi020k\/lumen-docs\^\.\.\.'/u)
+
+  assert.match(deployBuild, /pnpm --filter @santi020k\/lumen-docs run build/u)
+
+  assert.match(performance, /TURBO_TOKEN: \$\{\{ secrets\.TURBO_TOKEN \}\}\n\s+TURBO_TEAM: \$\{\{ secrets\.TURBO_TEAM \}\}/u)
+
+  assert.ok(performance.indexOf('QUALITY_TASK_RUNTIME=$(node --version)') > 0)
+
+  assert.ok(performance.indexOf('QUALITY_TASK_RUNTIME=$(node --version)') < performance.indexOf('pnpm run docs:build'))
+})
+
+test('CI browser contracts run every suite exactly once across parallel lanes', async () => {
+  const job = ci.slice(ci.indexOf('\n  browser-contracts:\n'), ci.indexOf('\n  react-native-captures:\n'))
+  const manifest = JSON.parse(await readRepositoryFile('package.json'))
+
+  assert.match(job, /lane: \[interactions-1, interactions-2, frameworks, motion\]/u)
+
+  assert.match(job, /fail-fast: false/u)
+
+  assert.match(job, /browsers: \$\{\{ matrix\.lane == 'motion' && 'chromium webkit' \|\| 'chromium firefox webkit' \}\}/u)
+
+  const motionConfig = await readRepositoryFile('playwright.motion.config.ts')
+
+  assert.doesNotMatch(motionConfig, /firefox|Desktop Firefox/u)
+
+  assert.match(motionConfig, /Desktop Chrome/u)
+
+  assert.match(motionConfig, /Desktop Safari/u)
+
+  const steps = job.split('    steps:\n')[1].split(/\n\n(?= {6}- )/u).filter(step => step.includes('        run: pnpm'))
+  const lanes = Object.fromEntries(steps.map(step => [/run: ([^\n]+)/u.exec(step)[1], /if: ([^\n]+)/u.exec(step)?.[1]]))
+
+  assert.deepEqual(lanes, {
+    'pnpm run test:interactions --shard="$SHARD"': "startsWith(matrix.lane, 'interactions-')",
+    'pnpm run test:framework-conformance && pnpm run test:figma-plugin': "matrix.lane == 'frameworks'",
+    'pnpm exec turbo run build --filter=@santi020k/lumen-motion --concurrency=2 && pnpm --filter @santi020k/lumen-motion test': "matrix.lane == 'motion'",
+    'pnpm run test:motion && pnpm run check:route-delivery': "matrix.lane == 'motion'",
+    'pnpm run measure:subscribe-form': "matrix.lane == 'motion'",
+    'pnpm run test:web-coverage': "matrix.lane == 'motion'"
+  })
+
+  // Both halves of the split suite must be scheduled, and nothing else may be sharded.
+  assert.match(job, /SHARD: \$\{\{ matrix\.lane == 'interactions-1' && '1\/2' \|\| '2\/2' \}\}/u)
+
+  assert.equal(job.match(/--shard/gu).length, 1)
+
+  assert.match(job, /TURBO_TOKEN: \$\{\{ secrets\.TURBO_TOKEN \}\}/u)
+
+  assert.ok(job.indexOf('QUALITY_TASK_RUNTIME=') < job.indexOf('pnpm run test:interactions'))
+
+  // Browser servers build their packages through Turbo so those lanes can reuse cached outputs.
+  assert.match(manifest.scripts['prepare:docs-browser'], /^turbo run build (?:--filter=\S+ )+--concurrency=2$/u)
+})
+
+test('motion uses a fresh production preview and browser failures retain their diagnostics', async () => {
+  const config = await readRepositoryFile('playwright.motion.config.ts')
+  const job = ci.slice(ci.indexOf('\n  browser-contracts:\n'), ci.indexOf('\n  react-native-captures:\n'))
+
+  assert.match(config, /prepare:docs-browser && LUMEN_DOCS_OUT_DIR=\.astro\/motion-dist-\$\{port\} pnpm --filter @santi020k\/lumen-docs exec astro build && LUMEN_DOCS_OUT_DIR=\.astro\/motion-dist-\$\{port\} node apps\/docs\/node_modules\/astro\/bin\/astro\.mjs preview/u)
+
+  assert.match(config, /reuseExistingServer: false/u)
+
+  assert.match(config, /workers: process\.env\.CI \? 1 : playwrightWorkers/u)
+
+  assert.doesNotMatch(config, /astro dev|retries:/u)
+
+  const diagnostics = job.split('      - name: Preserve browser failure diagnostics\n')[1]
+
+  assert.ok(diagnostics)
+
+  assert.match(diagnostics, /if: failure\(\)/u)
+
+  assert.match(diagnostics, /name: browser-contracts-\$\{\{ matrix\.lane \}\}-diagnostics/u)
+
+  for (const path of ['test-results/', 'playwright-report/', 'packages/motion/test-results/', 'packages/motion/playwright-report/']) {
+    assert.ok(diagnostics.split('\n').some(line => line.trim() === path))
+  }
+})
+
+test('the isolated CI motion lane builds core exports before its preview', () => {
+  const step = ci.split('      - name: Check local motion previews\n')[1]?.split('      - name:')[0]
+  const command = /run: (.+?) && /u.exec(step ?? '')?.[1]
+
+  assert.ok(command, 'The motion preview must be built before browser tests run')
+
+  assert.ok(command.startsWith('pnpm exec turbo '), 'Workspace build dependencies must be scheduled')
+
+  const result = spawnSync(process.execPath, [
+    resolve(repositoryRoot, 'node_modules/turbo/bin/turbo'),
+    ...command.slice('pnpm exec turbo '.length).split(' '), '--dry=json', '--no-daemon'
+  ], { cwd: repositoryRoot, encoding: 'utf8', timeout: 30_000 })
+
+  assert.equal(result.status, 0, result.stderr)
+
+  const { tasks } = JSON.parse(result.stdout)
+  const preview = tasks.find(task => task.taskId === '@santi020k/lumen-motion#build')
+
+  assert.ok(preview)
+
+  for (const dependency of ['@santi020k/lumen-core#build', '@santi020k/lumen-astro#build']) {
+    assert.ok(preview.dependencies.includes(dependency), `Preview must wait for ${dependency}`)
+
+    assert.ok(tasks.some(task => task.taskId === dependency), `${dependency} must be scheduled`)
+  }
+})
+
+test('Compose library gates and device checks run as independent jobs', async () => {
+  const library = ci.slice(ci.indexOf('\n  native-android:\n'), ci.indexOf('\n  native-android-device:\n'))
+  const device = ci.slice(ci.indexOf('\n  native-android-device:\n'), ci.indexOf('\n  browser-contracts:\n'))
+  const settings = await readRepositoryFile('apps/playground-android/settings.gradle.kts')
+
+  assert.match(library, /run: \.\/gradlew test lint apiCheck verifyMavenPublication\n/u)
+
+  assert.match(library, /-PlumenComposeRepository=\.\.\/\.\.\/packages\/compose\/build\/central-staging\n\s+assembleDebug :app:verifyLumenArtifactIsolation/u)
+
+  assert.doesNotMatch(library, /emulator|connectedDebugAndroidTest/u)
+
+  // The device job never reads the staged artifact: without the repository property the
+  // playground consumes the library as an included source build.
+  assert.doesNotMatch(device, /lumenComposeRepository|central-staging/u)
+
+  assert.match(settings, /if \(!lumenComposeRepository\.isPresent\) \{\n\s+includeBuild\("\.\.\/\.\.\/packages\/compose"\)/u)
+
+  for (const command of [
+    '"system-images;android-35;google_apis;x86_64"',
+    "run_phase 'Compose instrumentation' ./gradlew connectedDebugAndroidTest",
+    "run_phase 'Android consumer install' ./gradlew -p ../../apps/playground-android :app:assembleDebug :app:installDebug",
+    '--compare --platform=android --source=default --tolerance=0.12',
+    'name: compose-android-test-reports'
+  ]) {
+    assert.ok(device.includes(command), command)
+  }
+
+  for (const job of [library, device]) {
+    assert.match(job, /if: needs\.classify\.outputs\.android == 'true'/u)
+
+    assert.match(job, /cache: gradle/u)
+  }
+})
+
+test('main seeds the shared caches with the exact keys pull request jobs read', async () => {
+  const seed = await readRepositoryFile('.github/workflows/ci-caches.yml')
+  const keys = source => [...source.matchAll(/^ {10}key: (swift-[^\n]+)$/gmu)].map(match => match[1]).sort()
+  const gradlePaths = source => /cache: gradle\n\s+cache-dependency-path: \|\n((?: {12}[^\n]+\n)+)/u.exec(source)?.[1]
+
+  assert.match(seed, /push:\n\s+branches: \[main\]/u)
+
+  assert.doesNotMatch(seed, /pull_request/u)
+
+  for (const job of seed.split('\njobs:\n')[1].split(/\n(?= {2}[a-z][a-z-]*:\n)/u)) {
+    assert.match(job, /if: github\.ref == 'refs\/heads\/main'/u)
+  }
+
+  // Pull requests restore Swift builds and never write them.
+  const appleSwift = appleWorkflow.slice(appleWorkflow.indexOf('- name: Restore Swift build cache'), appleWorkflow.indexOf('- name: Set up cached browsers'))
+
+  assert.equal(appleSwift.match(/uses: actions\/cache\/restore@[a-f0-9]{40}/gu).length, 2)
+
+  assert.doesNotMatch(appleWorkflow, /uses: actions\/cache(?:\/save)?@/u)
+
+  assert.doesNotMatch(appleSwift, /github\.sha/u)
+
+  assert.equal(keys(appleWorkflow).length, 2)
+
+  assert.deepEqual([...new Set(keys(seed))], keys(appleWorkflow))
+
+  for (const key of keys(appleWorkflow)) {
+    assert.equal(seed.split(`key: ${key}\n`).length - 1, 2, 'each Swift cache needs one lookup and one save')
+  }
+
+  assert.equal(seed.match(/lookup-only: true/gu).length, 2)
+
+  assert.match(seed, /DEVELOPER_DIR: \/Applications\/Xcode_26\.5\.app\/Contents\/Developer/u)
+
+  assert.match(seed, /github\.event\.repository\.private == false\n\s+runs-on: macos-26/u)
+
+  assert.ok(gradlePaths(seed))
+
+  assert.equal(gradlePaths(seed), gradlePaths(ci.split('  native-android:\n')[1]))
+
+  assert.equal(gradlePaths(seed), gradlePaths(canary.split('  compose:\n')[1]))
+
+  const seeded = /browsers: \[([^\]]+)\]/u.exec(seed)[1].split(', ')
+
+  for (const name of ['ci.yml', 'release-canary.yml', 'docs-performance.yml']) {
+    const workflow = await readRepositoryFile(`.github/workflows/${name}`)
+
+    for (const [, browsers] of workflow.matchAll(/^ {10}browsers: ([^\n$]+)$/gmu)) {
+      assert.ok(seeded.includes(browsers), `${name}: ${browsers}`)
+    }
+  }
+
+  assert.match(seed.split('  apple:\n')[1], /setup-playwright\n\s+with:\n\s+browsers: chromium\n/u)
 })

@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Lumen UI React Native playground"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Explore Lumen UI components on HarmonyOS"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Lumen Playground"
+    }
+  ]
+}

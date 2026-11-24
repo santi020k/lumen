@@ -4,8 +4,9 @@ Confirm each selected component and prop against the current Lumen package, MCP 
 component docs before implementation.
 
 The table below describes the full web catalog. Native adapters intentionally expose a smaller,
-platform-shaped component set. For React Native, SwiftUI, or Compose, confirm the component exists
-in that adapter and prefer its native state, navigation, icon, and accessibility conventions.
+platform-shaped component set. For React Native, SwiftUI, Compose, or ArkUI (pilot), confirm the
+component exists in that adapter and prefer its native state, navigation, icon, and accessibility
+conventions.
 
 ## Choose by Intent
 

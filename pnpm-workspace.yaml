@@ -7,6 +7,7 @@ allowBuilds:
   unrs-resolver: false
   workerd: false
 catalog:
+  "@biomejs/biome": 2.6.8
   "@astrojs/check": ^0.9.12
   "@astrojs/compiler": ^4.0.0
   "@astrojs/markdown-satteri": 0.4.7
@@ -40,6 +41,7 @@ catalog:
   "@santi020k/eslint-config-tools": ^3.1.6
   "@santi020k/eslint-config-vite": 3.1.5
   "@santi020k/og": 1.2.1
+  "@santi020k/pawl": 0.4.0
   "@santi020k/theme": 3.0.0
   "@tailwindcss/vite": ^4.3.4
   "@tanstack/react-table": 9.3.1
@@ -78,7 +80,7 @@ catalog:
   lumen-react-v5: npm:@santi020k/lumen-react@5.0.0
   motion: 14.9.1
   next: ^16.4.5
-  oxlint: 1.90.0
+  oxlint: 1.94.0
   postcss: 8.5.32
   postcss-selector-parser: 7.1.7
   react: 19.3.0
@@ -107,6 +109,23 @@ catalogs:
     react-native: 0.88.1
     react-native-safe-area-context: ~5.11.1
     react-native-svg: 15.16.0
+  # React Native for OpenHarmony (RNOH). RNOH 0.86 is a release candidate; keep this group on the
+  # versions its native ports are published for until the harmony playground validates an upgrade.
+  harmony:
+    "@babel/core": 7.29.7
+    "@babel/runtime": 7.29.7
+    "@react-native-community/cli": 20.1.0
+    "@react-native-community/datetimepicker": 9.1.0
+    "@react-native-oh/react-native-harmony": 0.86.1
+    "@react-native-oh/react-native-harmony-cli": 0.86.1
+    "@react-native-ohos/datetimepicker": 9.0.0-beta.1
+    "@react-native-ohos/react-native-safe-area-context": 5.6.5
+    "@react-native-ohos/react-native-svg": 15.14.0-beta.4
+    "@react-native/babel-preset": 0.86.3
+    "@react-native/metro-config": 0.86.3
+    react-native: 0.86.3
+    react-native-safe-area-context: 5.8.0
+    react-native-svg: 15.15.5
 ignoredBuiltDependencies:
   - esbuild
   - sharp
@@ -114,10 +133,18 @@ ignoredBuiltDependencies:
   - workerd
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
+  # Reviewed published tooling pilot; keep the age exception limited to this exact version.
+  - "@santi020k/pawl@0.4.0"
   - "@santi020k/og"
   - "@santi020k/eslint-config-typescript"
 minimumReleaseAgeStrict: true
 overrides:
+  # Match the existing ESLint bridge to the Oxlint peer required by Pawl.
+  "@santi020k/eslint-config-extensions@3.1.6>eslint-plugin-oxlint": 1.94.0
+  # Harmony's CLI only uses tar.extract; keep its archive handling on the patched release.
+  "@react-native-oh/react-native-harmony-cli@0.86.1>tar": 7.5.23
+  # json5-writer's older codemod runner uses the compatible micromatch.isMatch API.
+  "jscodeshift@0.9.0>micromatch": 4.0.8
   ajv@>=8.0.0 <8.18.0: 8.20.0
   body-parser@>=2.0.0 <2.4.0: 2.4.0
   brace-expansion@>=2.0.0 <2.1.7: 2.1.7
@@ -148,6 +175,7 @@ packageExtensions:
     dependencies:
       "@emnapi/runtime": 1.11.3
 patchedDependencies:
+  '@react-native-oh/react-native-harmony-cli@0.86.1': patches/@react-native-oh__react-native-harmony-cli@0.86.1.patch
   braces@3.0.3: patches/braces@3.0.3.patch
   eslint-plugin-import-x@4.17.1: patches/eslint-plugin-import-x@4.17.1.patch
   react-native@0.88.1: patches/react-native@0.88.1.patch

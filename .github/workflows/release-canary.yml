@@ -117,6 +117,10 @@ jobs:
     timeout-minutes: 5
     outputs:
       browser: ${{ steps.paths.outputs.browser }}
+      # The ci-* outputs name gates the CI workflow already runs for this revision.
+      ci-browser: ${{ steps.paths.outputs.ci-browser }}
+      ci-compose: ${{ steps.paths.outputs.ci-compose }}
+      ci-preflight: ${{ steps.paths.outputs.ci-preflight }}
       compose: ${{ steps.paths.outputs.compose }}
       consumer-packages: ${{ steps.paths.outputs.consumer-packages }}
       native: ${{ steps.paths.outputs.native }}
@@ -129,11 +133,16 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # Path classification reads commit history and this script only: skip file
+          # contents for the history and check out just the classifier.
+          filter: blob:none
+          sparse-checkout: scripts
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Classify changed paths
         id: paths
         env:
+          BASE_REF: ${{ github.base_ref }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: >-
@@ -151,11 +160,15 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # History is needed for merge-base comparisons, not for old file contents.
+          filter: blob:none
       - name: Set up pnpm workspace
         uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: 22.x
       - name: Check repository and dependency security before builds
+        # CI runs the same preflight for every pull request that targets main.
+        if: needs.classify.outputs.ci-preflight != 'true'
         run: pnpm run ci:preflight
       - run: pnpm run check:release-manifest
       - run: node --test scripts/generate-release-manifest.test.mjs
@@ -202,6 +215,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # History is needed for merge-base comparisons, not for old file contents.
+          filter: blob:none
       - name: Set up pnpm workspace
         uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
@@ -239,7 +254,8 @@ jobs:
   compose:
     name: Compose source and app consumer
     needs: [classify, preflight]
-    if: needs.classify.outputs.compose == 'true'
+    # CI's Compose library job runs these Gradle and consumer gates for the same revision.
+    if: needs.classify.outputs.compose == 'true' && needs.classify.outputs.ci-compose != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -330,6 +346,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # History is needed for merge-base comparisons, not for old file contents.
+          filter: blob:none
       - name: Set up pnpm workspace
         uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
@@ -368,17 +386,18 @@ jobs:
       - name: Verify explicit rendered audits
         if: needs.classify.outputs.browser == 'true'
         run: pnpm run test:rendered-audit --shard=${{ matrix.shard }}/2 --max-failures=1
+      # CI's browser contracts already cover the remaining gates for the same revision.
       - name: Verify release-candidate framework behavior
-        if: matrix.shard == 1
+        if: matrix.shard == 1 && needs.classify.outputs.ci-browser != 'true'
         env:
           LUMEN_FRAMEWORK_CONFORMANCE_PROJECTS: chromium
         run: pnpm run test:framework-conformance
       - name: Verify release-candidate primitive motion
-        if: matrix.shard == 1
+        if: matrix.shard == 1 && needs.classify.outputs.ci-browser != 'true'
         run: pnpm run test:motion && pnpm run check:route-delivery
 
       - name: Measure packed selective subscribe forms
-        if: matrix.shard == 1
+        if: matrix.shard == 1 && needs.classify.outputs.ci-browser != 'true'
         run: pnpm run measure:subscribe-form
       - name: Preserve browser failure diagnostics
         if: failure()

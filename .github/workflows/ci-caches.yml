@@ -1,0 +1,126 @@
+name: Seed CI caches
+
+# Caches saved by a pull request are visible to that pull request only, so every pull
+# request used to store its own multi-gigabyte copies. Caches saved from main are visible
+# to all of them. This workflow saves the shared ones from main with the exact keys the
+# pull request jobs compute, which turns those jobs into cache readers.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/actions/setup-playwright/**"
+      - ".github/workflows/ci-caches.yml"
+      - "Package.resolved"
+      - "Package.swift"
+      - "apps/playground-android/**/*.gradle*"
+      - "apps/playground-apple/Package.resolved"
+      - "apps/playground-apple/Package.swift"
+      - "packages/compose/**/*.gradle*"
+      - "packages/compose/gradle/wrapper/gradle-wrapper.properties"
+      - "pnpm-lock.yaml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-caches
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: Dependencies and ${{ matrix.browsers }}
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browsers: [chromium, chromium webkit, chromium firefox webkit]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+      - uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
+        with:
+          node-version: 22.x
+      - uses: ./.github/actions/setup-playwright
+        with:
+          browsers: ${{ matrix.browsers }}
+
+  gradle:
+    name: Compose Gradle dependencies
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+          cache-dependency-path: |
+            packages/compose/**/*.gradle*
+            packages/compose/gradle/wrapper/gradle-wrapper.properties
+            apps/playground-android/**/*.gradle*
+      - name: Install Android platform
+        run: |
+          android_sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          "$android_sdk_root/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" \
+            "build-tools;36.0.0"
+      - name: Resolve the dependencies of the pull request Compose jobs
+        working-directory: packages/compose
+        run: |
+          ./gradlew test lint apiCheck assembleDebugAndroidTest verifyMavenPublication
+          ./gradlew -p ../../apps/playground-android :app:assembleDebug
+
+  apple:
+    name: Apple dependencies and Swift builds
+    if: github.ref == 'refs/heads/main' && github.event.repository.private == false
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
+      - name: Verify stable Apple toolchain
+        run: apps/playground-apple/scripts/check-app-store-toolchain.sh
+      - uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
+        with:
+          node-version: 22.x
+      - uses: ./.github/actions/setup-playwright
+        with:
+          browsers: chromium
+      - name: Look up the Swift build cache
+        id: swift
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .build
+          key: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}
+          lookup-only: true
+      - name: Build the Swift package and its tests
+        if: steps.swift.outputs.cache-hit != 'true'
+        run: swift build --build-tests
+      - name: Save the Swift build cache
+        if: steps.swift.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .build
+          key: swift-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved') }}
+      - name: Look up the playground Swift build cache
+        id: playground
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: apps/playground-apple/.build
+          key: swift-playground-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}
+          lookup-only: true
+      - name: Build the playground Swift package
+        if: steps.playground.outputs.cache-hit != 'true'
+        run: swift build --package-path apps/playground-apple
+      - name: Save the playground Swift build cache
+        if: steps.playground.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: apps/playground-apple/.build
+          key: swift-playground-${{ runner.os }}-${{ runner.arch }}-26.5-${{ hashFiles('Package.swift', 'Package.resolved', 'apps/playground-apple/Package.swift', 'apps/playground-apple/Package.resolved') }}

@@ -24,24 +24,40 @@ test('presets animate real components and lists retain focus and state', async (
 
 test('the playground reinitializes after client navigation', async ({ page }) => {
   await page.goto(route)
+  await expect(page.locator('[data-motion-playground]')).toHaveAttribute('data-ui-motion', /^(system|reduce)$/)
+  await page.evaluate(() => {
+    document.addEventListener('astro:page-load', () => {
+      document.documentElement.dataset.motionTestLoadedPath = location.pathname
+    })
+  })
   await Promise.all([
     page.waitForURL(/\/docs\/components\/scroll-reveal$/),
     page.locator('[data-motion-playground]').getByRole('link', { name: 'ScrollReveal', exact: true }).click()
   ])
   await expect(page).toHaveURL(/\/docs\/components\/scroll-reveal$/)
+  // The URL changes during the DOM swap, before scripts and the page-load event finish.
+  // Complete the forward navigation before testing history restoration.
+  await expect(page.locator('html')).toHaveAttribute('data-motion-test-loaded-path', '/docs/components/scroll-reveal')
   await page.goBack()
   await expect(page).toHaveURL(new RegExp(`${route}$`))
+  await expect(page.locator('html')).toHaveAttribute('data-motion-test-loaded-path', route)
+  await expect(page.locator('[data-motion-playground]')).toHaveAttribute('data-ui-motion', /^(system|reduce)$/)
   await page.getByRole('button', { name: 'Add item', exact: true }).click()
   await expect(page.locator('[data-motion-list] [role="listitem"]')).toHaveCount(2)
 })
 
 test('save feedback announces completion without losing the button focus', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-24T12:00:00Z') })
   await page.goto(route)
+  await expect(page.locator('[data-motion-playground]')).toHaveAttribute('data-ui-motion', /^(system|reduce)$/)
+  // Keep the brief pending state observable even when WebKit or the runner is busy.
+  await page.clock.pauseAt(new Date('2026-11-24T12:01:00Z'))
   const save = page.getByRole('button', { name: 'Simulate save' })
   await save.focus()
   await page.keyboard.press('Enter')
   await expect(save).toHaveAttribute('aria-busy', 'true')
   await expect(page.locator('[data-motion-feedback]')).toHaveText('Saving demonstration…')
+  await page.clock.resume()
   await expect(page.locator('[data-motion-success]')).toBeVisible()
   await expect(save).toBeEnabled()
   await expect(save).toBeFocused()

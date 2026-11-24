@@ -115,6 +115,14 @@
     "top": 10
   },
   {
+    "platform": "harmonyos",
+    "query": "labeled text entry with error",
+    "expectedInTop": [
+      "Text field"
+    ],
+    "top": 5
+  },
+  {
     "platform": "swiftui",
     "query": "botón accesible",
     "expectedInTop": [

@@ -162,15 +162,18 @@ export interface LumenNativeImplementationSnapshot {
   exportName: string
   importStatement: string
   install: string
-  language: 'kotlin' | 'swift' | 'tsx'
-  maturity: 'Experimental' | 'Supported'
+  language: 'arkts' | 'kotlin' | 'swift' | 'tsx'
+  maturity: 'Experimental' | 'Pilot' | 'Supported'
   packageName: string
   setup: string
   sourceFile: string
   symbol: string
 }
 
-export type LumenNativePlatform = 'compose' | 'react-native' | 'swiftui'
+/** Native platform keys in reporting order. `harmonyos` is the unpublished ArkUI pilot. */
+export const lumenNativePlatforms = ['react-native', 'swiftui', 'compose', 'harmonyos'] as const
+
+export type LumenNativePlatform = typeof lumenNativePlatforms[number]
 
 export type LumenFramework = 'astro' | 'elements' | 'react'
 

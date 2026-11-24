@@ -9,7 +9,7 @@ import type {
   LumenNativePlatform,
   LumenRecipeSnapshot
 } from './data.js'
-import { loadLumenData } from './data.js'
+import { loadLumenData, lumenNativePlatforms } from './data.js'
 import { normalize } from './normalize.js'
 
 export interface CatalogChanges {
@@ -151,6 +151,14 @@ const componentSummary = (
   name: component.name,
   recipes: component.recipes.map(recipe => recipe.name)
 })
+
+/** Display names for coverage text. ArkUI stays labeled as a pilot wherever its status is shown. */
+const nativePlatformLabels: Record<LumenNativePlatform, string> = {
+  compose: 'Compose',
+  harmonyos: 'ArkUI (pilot)',
+  'react-native': 'React Native',
+  swiftui: 'SwiftUI'
+}
 
 const availableNativePlatforms = (
   component: LumenNativeComponentSnapshot
@@ -898,6 +906,7 @@ const formatNativeComponent = (
     `Platform: ${platform}`,
     `Available platforms: ${availableNativePlatforms(component).join(', ')}`,
     `Package: ${implementation.packageName}`,
+    ...(implementation.maturity === 'Supported' ? [] : [`Maturity: ${implementation.maturity}`]),
     `Install: ${implementation.install}`,
     `Import: ${implementation.importStatement}`,
     `Setup: ${implementation.setup}`,
@@ -1387,6 +1396,7 @@ export const diagnose = (
 
   const nativeCoverage = {
     compose: data.nativeComponents.filter(component => component.implementations.compose).length,
+    harmonyos: data.nativeComponents.filter(component => component.implementations.harmonyos).length,
     'react-native': data.nativeComponents.filter(component => component.implementations['react-native']).length,
     swiftui: data.nativeComponents.filter(component => component.implementations.swiftui).length
   }
@@ -1405,8 +1415,9 @@ export const diagnose = (
       `Catalog hash: ${data.meta.catalogHash}`,
       `Framework coverage — Astro: ${frameworkCoverage.astro}, ` +
       `React: ${frameworkCoverage.react}, Elements: ${frameworkCoverage.elements}`,
-      `Native coverage — React Native: ${nativeCoverage['react-native']}, ` +
-      `SwiftUI: ${nativeCoverage.swiftui}, Compose: ${nativeCoverage.compose}`,
+      `Native coverage — ${lumenNativePlatforms.map(platform => (
+        `${nativePlatformLabels[platform]}: ${nativeCoverage[platform]}`
+      )).join(', ')}`,
       '',
       ...checks.map(
         check => `- ${check.status.toUpperCase()} ${check.name}: ${check.message}`

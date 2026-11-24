@@ -1,5 +1,12 @@
 # @santi020k/lumen-react-native
 
+## 4.1.2
+
+### Patch Changes
+
+- Document HarmonyOS NEXT as a preview target through React Native for OpenHarmony 0.86, including the
+  SVG and date picker ports, the Metro setup, and what is verified so far.
+
 ## 4.1.1
 
 ### Patch Changes

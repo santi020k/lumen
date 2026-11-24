@@ -179,7 +179,7 @@ catalog does not require user authentication.
 | --- | --- |
 | `lumen_list_components` | List components with descriptions, categories, framework availability, collections, and recipe membership. Filter by `framework`, `recipe`, or natural-language `query`. |
 | `lumen_get_component` | Get a component for `astro`, `react`, or `elements` at `summary`, `usage`, or `source` detail. Usage includes imports, styles, props or attributes, examples, keyboard interactions, guidance, and events. |
-| `lumen_list_native_components` | List native components and filter them by `react-native`, `swiftui`, or `compose`. |
+| `lumen_list_native_components` | List native components and filter them by `react-native`, `swiftui`, `compose`, or `harmonyos`. The `harmonyos` platform is the unpublished ArkUI pilot and covers part of the catalog. |
 | `lumen_get_native_component` | Get native installation, setup, import, API, example, accessibility guidance, and optional adapter source for one platform. |
 | `lumen_get_recipe` | Get a recipe or component set with its purpose, components, files, categories, and framework-specific install command. Recipes with starter source expose `frameworks`; unsupported framework requests return a domain error and are excluded from filtered searches. The legacy `install` map retains its keys for compatibility. |
 | `lumen_search` | Rank natural-language matches across web contracts, recipes, tokens, and agent rules. Supply `platform` to search native contracts; optionally filter web results by `framework` and matches by `kind`. |
@@ -366,7 +366,7 @@ now expose concrete nested output schemas. Existing MCP clients can keep using t
 - The shared component catalog and registry metadata.
 - Astro and React component declarations.
 - The Web Component definition registry.
-- The native registry and React Native, SwiftUI, and Compose adapter sources.
+- The native registry and React Native, SwiftUI, Compose, and ArkUI (pilot) adapter sources.
 - Native documentation examples, API rows, accessibility, and platform guidance.
 - Documentation examples, API rows, guidance, keyboard interactions, and runtime events.
 - Design tokens, recipes, the root `README.md`, `docs/ai-usage.md`, and `llms.txt`.

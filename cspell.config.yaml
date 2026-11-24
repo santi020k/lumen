@@ -1,6 +1,7 @@
 version: "0.2"
 language: en
 words:
+  - biomejs
   - formaction
   - formenctype
   - formmethod
@@ -772,6 +773,18 @@ words:
   - Leyenda
   - Categoría
   - Serie
+  - hermesc
+  - hvigor
+  - ohos
+  - ohpm
+  - RNOH
+  - AARRGGBB
+  - arkts
+  - arkui
+  - harmonyos
+  - hvigorfile
+  - mediaquery
+  - ohpmignore
 ignoreRegExpList:
   - luQW2pTQ3jGGxSFPAAsfa9
 ignorePaths:
@@ -801,6 +814,7 @@ ignorePaths:
   - apps/playground-apple/LumenApplePlayground.xcodeproj/**
   - apps/playground-apple/Supporting/Info.plist
   - apps/playground-apple/project.yml
+  - apps/playground-harmony/harmony/**
 
 # Standard ARIA attribute suffixes used by virtualized collections.
 

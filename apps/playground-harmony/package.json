@@ -1,0 +1,36 @@
+{
+  "name": "@santi020k/lumen-playground-harmony",
+  "version": "0.0.0",
+  "private": true,
+  "description": "HarmonyOS NEXT preview host for the Lumen React Native playground through React Native for OpenHarmony.",
+  "main": "index.ts",
+  "scripts": {
+    "bundle": "node scripts/bundle-harmony.mjs",
+    "bundle:check": "react-native bundle-harmony --dev false --entry-file index.ts --bundle-output .harmony-check/bundle.harmony.js --assets-dest .harmony-check/assets",
+    "lint": "eslint . --no-warn-ignored --max-warnings=0",
+    "start": "react-native start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@babel/runtime": "catalog:harmony",
+    "@react-native-community/datetimepicker": "catalog:harmony",
+    "@react-native-oh/react-native-harmony": "catalog:harmony",
+    "@react-native-ohos/datetimepicker": "catalog:harmony",
+    "@react-native-ohos/react-native-safe-area-context": "catalog:harmony",
+    "@react-native-ohos/react-native-svg": "catalog:harmony",
+    "@santi020k/lumen-playground-react-native": "workspace:*",
+    "react": "catalog:",
+    "react-native": "catalog:harmony",
+    "react-native-safe-area-context": "catalog:harmony",
+    "react-native-svg": "catalog:harmony"
+  },
+  "devDependencies": {
+    "@babel/core": "catalog:harmony",
+    "@react-native-community/cli": "catalog:harmony",
+    "@react-native-oh/react-native-harmony-cli": "catalog:harmony",
+    "@react-native/babel-preset": "catalog:harmony",
+    "@react-native/metro-config": "catalog:harmony",
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
+  }
+}

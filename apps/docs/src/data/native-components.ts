@@ -1,4 +1,11 @@
+/** Native platforms that have their own documentation section and component routes. */
 export type NativePlatformId = 'android' | 'apple' | 'react-native'
+
+/**
+ * Every native platform with component usage data. HarmonyOS (ArkUI) is an unpublished pilot that
+ * covers part of the catalog and has no documentation routes yet.
+ */
+export type NativeCatalogPlatformId = NativePlatformId | 'harmonyos'
 
 export type NativeComponentCategory =
   | 'Actions' |
@@ -32,15 +39,17 @@ interface NativeApiRow {
   values: string
 }
 
+type NativeComponentMaturity = 'Experimental' | 'Pilot' | 'Supported'
+
 interface NativeComponentImplementation {
   api: NativeApiRow[]
   appleAvailability?: AppleEcosystemTarget[]
   example: string
   exportName: string
-  language: 'kotlin' | 'swift' | 'tsx'
-  maturity: 'Experimental' | 'Supported'
+  language: 'arkts' | 'kotlin' | 'swift' | 'tsx'
+  maturity: NativeComponentMaturity
   packageName?: 'LumenUI' | 'LumenWidgetUI'
-  platform: NativePlatformId
+  platform: NativeCatalogPlatformId
 }
 
 export interface NativeComponentDoc {
@@ -48,14 +57,14 @@ export interface NativeComponentDoc {
   category: NativeComponentCategory
   guidance: string
   implementations: Partial<
-    Record<NativePlatformId, NativeComponentImplementation>
+    Record<NativeCatalogPlatformId, NativeComponentImplementation>
   >
   name: string
   slug: string
   summary: string
 }
 
-type PlatformValue = string | Partial<Record<NativePlatformId, string>>
+type PlatformValue = string | Partial<Record<NativeCatalogPlatformId, string>>
 
 interface ComponentProperty {
   defaultValue: PlatformValue
@@ -67,24 +76,33 @@ interface ComponentProperty {
 interface ComponentDefinition {
   accessibility: string
   category: NativeComponentCategory
-  examples: Partial<Record<NativePlatformId, string>>
-  exports: Partial<Record<NativePlatformId, string>>
+  examples: Partial<Record<NativeCatalogPlatformId, string>>
+  exports: Partial<Record<NativeCatalogPlatformId, string>>
   guidance: string
-  maturity?: Partial<Record<NativePlatformId, 'Experimental' | 'Supported'>>
+  maturity?: Partial<Record<NativeCatalogPlatformId, NativeComponentMaturity>>
   name: string
   properties: ComponentProperty[]
-  platformProperties?: Partial<Record<NativePlatformId, ComponentProperty[]>>
+  platformProperties?: Partial<Record<NativeCatalogPlatformId, ComponentProperty[]>>
   slug: string
   summary: string
 }
 
 const platformLanguages: Record<
-  NativePlatformId,
+  NativeCatalogPlatformId,
   NativeComponentImplementation['language']
 > = {
   android: 'kotlin',
   apple: 'swift',
+  harmonyos: 'arkts',
   'react-native': 'tsx'
+}
+
+// The ArkUI adapter is an unpublished pilot, so every HarmonyOS implementation reports that status.
+const platformDefaultMaturity: Record<NativeCatalogPlatformId, NativeComponentMaturity> = {
+  android: 'Supported',
+  apple: 'Supported',
+  harmonyos: 'Pilot',
+  'react-native': 'Supported'
 }
 
 const appleEcosystemTargets: Record<
@@ -234,7 +252,7 @@ const getAppleAvailability = (slug: string): AppleEcosystemTarget[] => {
 
 const platformValue = (
   value: PlatformValue,
-  platform: NativePlatformId
+  platform: NativeCatalogPlatformId
 ): string => (typeof value === 'string' ? value : (value[platform] ?? '—'))
 
 const property = (
@@ -249,7 +267,7 @@ const createComponent = (
 ): NativeComponentDoc => {
   const implementations: NativeComponentDoc['implementations'] = {}
 
-  for (const platform of ['react-native', 'apple', 'android'] as const) {
+  for (const platform of ['react-native', 'apple', 'android', 'harmonyos'] as const) {
     const example = definition.examples[platform]
     const exportName = definition.exports[platform]
 
@@ -282,7 +300,7 @@ const createComponent = (
       example,
       exportName,
       language: platformLanguages[platform],
-      maturity: definition.maturity?.[platform] ?? 'Supported',
+      maturity: definition.maturity?.[platform] ?? platformDefaultMaturity[platform],
       platform
     }
   }
@@ -605,6 +623,9 @@ const sharedDefinitions: ComponentDefinition[] = [
 }`,
       apple: `AppContent()
     .lumenTheme(.light)`,
+      harmonyos: `LumenTheme({ colorScheme: LumenColorSchemePreference.System }) {
+  AppContent()
+}`,
       'react-native': `<LumenProvider scheme="system">
   <AppContent />
 </LumenProvider>`
@@ -612,6 +633,7 @@ const sharedDefinitions: ComponentDefinition[] = [
     exports: {
       android: 'LumenTheme',
       apple: '.lumenTheme',
+      harmonyos: 'LumenTheme',
       'react-native': 'LumenProvider'
     },
     guidance:
@@ -643,6 +665,34 @@ const sharedDefinitions: ComponentDefinition[] = [
         'Provides Lumen theme values to the descendant tree.'
       )
     ],
+    platformProperties: {
+      harmonyos: [
+        property(
+          'colorScheme',
+          'LumenColorSchemePreference.System · Light · Dark',
+          'LumenColorSchemePreference.System',
+          'Follows the system color mode or forces light or dark.'
+        ),
+        property(
+          'fillsParent',
+          'boolean',
+          'true',
+          'Fills the parent; pass false to hug the content.'
+        ),
+        property(
+          'lightColors / darkColors',
+          'LumenColorPalette',
+          'LumenColors.light / LumenColors.dark',
+          'Replaces the semantic palette for a color mode. Read once, when the theme appears.'
+        ),
+        property(
+          'content',
+          'Trailing closure',
+          'Required',
+          'Provides Lumen theme values to the descendant tree.'
+        )
+      ]
+    },
     slug: 'theme',
     summary:
       'Provide generated semantic colors, spacing, radii, typography, motion, and elevation to native components.'
@@ -662,6 +712,13 @@ const sharedDefinitions: ComponentDefinition[] = [
     variant: .title,
     tone: .default
 )`,
+      harmonyos: `LumenTheme() {
+  LumenText({
+    text: 'Welcome back',
+    variant: LumenTextVariant.Title,
+    tone: LumenTextTone.Default
+  })
+}`,
       'react-native': `<LumenText variant="title" tone="default">
   Welcome back
 </LumenText>`
@@ -669,6 +726,7 @@ const sharedDefinitions: ComponentDefinition[] = [
     exports: {
       android: 'LumenText',
       apple: 'LumenText',
+      harmonyos: 'LumenText',
       'react-native': 'LumenText'
     },
     guidance:
@@ -704,6 +762,28 @@ const sharedDefinitions: ComponentDefinition[] = [
         'Adds platform-native layout and presentation overrides.'
       )
     ],
+    platformProperties: {
+      harmonyos: [
+        property(
+          'text',
+          'ResourceStr',
+          'Empty string',
+          'The text content.'
+        ),
+        property(
+          'variant',
+          'LumenTextVariant.Body · Caption · Label · Title',
+          'LumenTextVariant.Body',
+          'Selects the shared typography role.'
+        ),
+        property(
+          'tone',
+          'LumenTextTone.Default · Soft · Muted · Success · Warning · Danger',
+          'LumenTextTone.Default',
+          'Selects a semantic foreground role.'
+        )
+      ]
+    },
     slug: 'text',
     summary:
       'Render native text with shared typography variants and semantic color tones.'
@@ -722,6 +802,11 @@ const sharedDefinitions: ComponentDefinition[] = [
       apple: `LumenSurface(tone: .muted, padding: .lg) {
     LumenText("Workspace")
 }`,
+      harmonyos: `LumenTheme() {
+  LumenSurface({ tone: LumenSurfaceTone.Muted, inset: LumenSurfacePadding.Lg }) {
+    LumenText({ text: 'Workspace' })
+  }
+}`,
       'react-native': `<LumenSurface tone="muted" padding="lg">
   <LumenText>Workspace</LumenText>
 </LumenSurface>`
@@ -729,6 +814,7 @@ const sharedDefinitions: ComponentDefinition[] = [
     exports: {
       android: 'LumenSurface',
       apple: 'LumenSurface',
+      harmonyos: 'LumenSurface',
       'react-native': 'LumenSurface'
     },
     guidance:
@@ -760,6 +846,40 @@ const sharedDefinitions: ComponentDefinition[] = [
         'Composes or lays out the surface with native APIs.'
       )
     ],
+    platformProperties: {
+      harmonyos: [
+        property(
+          'tone',
+          'LumenSurfaceTone.Canvas · Surface · Muted · Strong',
+          'LumenSurfaceTone.Surface',
+          'Selects the semantic background role.'
+        ),
+        property(
+          'inset',
+          'LumenSurfacePadding.None · Sm · Md · Lg · Xl',
+          'LumenSurfacePadding.Md',
+          'Applies generated spacing as padding.'
+        ),
+        property(
+          'cornerRadius',
+          'LumenSurfaceRadius.None · Sm · Md · Lg · Xl · Size2xl · Size3xl',
+          'LumenSurfaceRadius.Md',
+          'Applies a generated corner radius.'
+        ),
+        property(
+          'fillsWidth',
+          'boolean',
+          'false',
+          'Fills the parent width. ArkUI ignores universal attributes on a trailing-closure component.'
+        ),
+        property(
+          'content',
+          'Trailing closure',
+          'Empty',
+          'Composes the surface body.'
+        )
+      ]
+    },
     slug: 'surface',
     summary:
       'Compose content on semantic native backgrounds with shared padding and radius roles.'
@@ -947,6 +1067,18 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
     intent: .primary,
     action: continueFlow
 )`,
+      harmonyos: `LumenTheme() {
+  LumenButton({
+    label: 'Save changes',
+    intent: LumenButtonIntent.Primary,
+    controlSize: LumenControlSize.Md,
+    loading: this.saving,
+    loadingLabel: 'Saving',
+    onPress: () => {
+      this.save()
+    }
+  })
+}`,
       'react-native': `<LumenButton
   intent="primary"
   onPress={continueFlow}
@@ -957,6 +1089,7 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
     exports: {
       android: 'LumenButton',
       apple: 'LumenButton',
+      harmonyos: 'LumenButton',
       'react-native': 'LumenButton'
     },
     guidance:
@@ -1004,6 +1137,46 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
         'Provides the visible button label.'
       )
     ],
+    platformProperties: {
+      harmonyos: [
+        property(
+          'label',
+          'ResourceStr',
+          'Empty string',
+          'Provides the visible button label.'
+        ),
+        property(
+          'onPress',
+          '() => void',
+          'No action',
+          'Runs the button action.'
+        ),
+        property(
+          'intent',
+          'LumenButtonIntent.Primary · Secondary · Quiet · Success · Danger',
+          'LumenButtonIntent.Primary',
+          'Selects semantic emphasis.'
+        ),
+        property(
+          'controlSize',
+          'LumenControlSize.Sm · Md · Lg',
+          'LumenControlSize.Md',
+          'Selects shared control height and padding.'
+        ),
+        property(
+          'loading / loadingLabel',
+          'boolean / string',
+          'false / "Loading"',
+          'Shows native progress, announces the loading label, and prevents activation.'
+        ),
+        property(
+          'isDisabled',
+          'boolean',
+          'false',
+          'Controls native disabled state.'
+        )
+      ]
+    },
     slug: 'button',
     summary:
       'Run native actions with shared intent, size, loading, and disabled contracts.'
@@ -1022,6 +1195,17 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
     "Email address",
     text: $email
 )`,
+      harmonyos: `LumenTheme() {
+  LumenTextField({
+    value: this.email,
+    label: 'Email address',
+    errorMessage: this.emailError,
+    inputType: InputType.Email,
+    onValueChange: (value: string) => {
+      this.email = value
+    }
+  })
+}`,
       'react-native': `<LumenTextField
   accessibilityLabel="Email address"
   onChangeText={setEmail}
@@ -1031,6 +1215,7 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
     exports: {
       android: 'LumenTextField',
       apple: 'LumenTextField',
+      harmonyos: 'LumenTextField',
       'react-native': 'LumenTextField'
     },
     guidance:
@@ -1081,6 +1266,52 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
         'Controls native editing state.'
       )
     ],
+    platformProperties: {
+      harmonyos: [
+        property(
+          'value',
+          'string',
+          'Empty string',
+          'Stores the current native input value.'
+        ),
+        property(
+          'onValueChange',
+          '(value: string) => void',
+          'No action',
+          'Updates application state.'
+        ),
+        property(
+          'label / placeholder',
+          'string / string',
+          'Empty strings',
+          'Names the field and supplies optional hint text.'
+        ),
+        property(
+          'controlSize',
+          'LumenControlSize.Sm · Md · Lg',
+          'LumenControlSize.Md',
+          'Selects shared control metrics.'
+        ),
+        property(
+          'invalid / errorMessage',
+          'boolean / string',
+          'false / empty string',
+          'Applies the semantic invalid treatment and adds the error text to the input description.'
+        ),
+        property(
+          'isDisabled',
+          'boolean',
+          'false',
+          'Controls native editing state.'
+        ),
+        property(
+          'inputType',
+          'ArkUI InputType',
+          'InputType.Normal',
+          'Selects the native keyboard and input behavior.'
+        )
+      ]
+    },
     slug: 'text-field',
     summary:
       'Collect a single line of text using each platform’s native input and focus behavior.'
@@ -1232,6 +1463,11 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
       apple: `LumenCard(variant: .muted) {
     LumenText("Team workspace")
 }`,
+      harmonyos: `LumenTheme() {
+  LumenCard({ variant: LumenCardVariant.Muted }) {
+    LumenText({ text: 'Team workspace' })
+  }
+}`,
       'react-native': `<LumenCard variant="muted">
   <LumenText>Team workspace</LumenText>
 </LumenCard>`
@@ -1239,6 +1475,7 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
     exports: {
       android: 'LumenCard',
       apple: 'LumenCard',
+      harmonyos: 'LumenCard',
       'react-native': 'LumenCard'
     },
     guidance:
@@ -1274,6 +1511,46 @@ LumenIcon(name: .brandGithub, label: "GitHub")`,
         'Controls card placement and sizing.'
       )
     ],
+    platformProperties: {
+      harmonyos: [
+        property(
+          'variant',
+          'LumenCardVariant.Default · Muted · Accent · Success · Warning · Destructive',
+          'LumenCardVariant.Default',
+          'Selects the native surface treatment.'
+        ),
+        property(
+          'inset',
+          'LumenSurfacePadding.None · Sm · Md · Lg · Xl',
+          'LumenSurfacePadding.Xl',
+          'Applies generated spacing as padding.'
+        ),
+        property(
+          'cornerRadius',
+          'LumenSurfaceRadius.None · Sm · Md · Lg · Xl · Size2xl · Size3xl',
+          'LumenSurfaceRadius.Lg',
+          'Applies a generated corner radius.'
+        ),
+        property(
+          'fillsWidth',
+          'boolean',
+          'false',
+          'Fills the parent width. ArkUI ignores universal attributes on a trailing-closure component.'
+        ),
+        property(
+          'onPress / isDisabled',
+          '() => void / boolean',
+          'undefined / false',
+          'Makes the whole card a native button and controls its disabled state.'
+        ),
+        property(
+          'content',
+          'Trailing closure',
+          'Empty',
+          'Composes the card body.'
+        )
+      ]
+    },
     slug: 'card',
     summary:
       'Group related native content on a bordered semantic surface with optional card-level action.'
@@ -5937,7 +6214,7 @@ export const nativeComponentCategories: NativeComponentCategory[] = [
 ]
 
 export const getNativeComponentsForPlatform = (
-  platform: NativePlatformId
+  platform: NativeCatalogPlatformId
 ): NativeComponentDoc[] => nativeComponentDocs.filter(
   component => component.implementations[platform]
 )

@@ -37,6 +37,17 @@ const alias = {
 
 const coverageReporters = process.env.CI ? ['text', 'lcov'] : ['text', 'html']
 
+const requestedSuiteWorkers = process.env.LUMEN_VITEST_MAX_WORKERS ?? ''
+
+if (requestedSuiteWorkers !== '' && !/^[1-9]\d{0,2}$/u.test(requestedSuiteWorkers)) {
+  throw new Error(`LUMEN_VITEST_MAX_WORKERS must be a positive integer, received: ${requestedSuiteWorkers}`)
+}
+
+// Turbo runs package suites concurrently; bound each suite's worker pool so large graph
+// regressions retain CPU time within their normal timeout. A run that owns the whole
+// machine, such as the CI coverage lane, raises the bound through LUMEN_VITEST_MAX_WORKERS.
+const suiteWorkers = requestedSuiteWorkers === '' ? 2 : Number(requestedSuiteWorkers)
+
 const project = (
   name: string,
   path: string,
@@ -85,9 +96,7 @@ export default defineConfig({
       }
     },
     includeTaskLocation: true,
-    // Turbo runs package suites concurrently; bound each suite's worker pool so
-    // large graph regressions retain CPU time within their normal timeout.
-    maxWorkers: 2,
+    maxWorkers: suiteWorkers,
     projects: [
       project('core', 'packages/core'),
       project('lumen', 'packages/lumen'),
@@ -103,6 +112,8 @@ export default defineConfig({
       project('icons-brand', 'packages/icons-brand'),
       project('astro', 'packages/astro', { include: ['*.test.ts'] }),
       project('templates', 'packages/templates'),
+      // The HAR compiles everything under src/main, so the ArkUI suite lives outside it.
+      project('arkui', 'packages/arkui', { include: ['tests/**/*.test.ts'] }),
       project('next-smoke', 'apps/next-smoke', { passWithNoTests: true }),
       project('template-showcase', 'apps/templates', { passWithNoTests: true }),
       project('docs', 'apps/docs', { passWithNoTests: true }),

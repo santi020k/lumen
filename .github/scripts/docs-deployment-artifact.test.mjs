@@ -19,11 +19,20 @@ test('docs delivery accepts only the same revision and exact built archive', asy
 
     await verifyArtifact(archive, manifest, revision, digest)
 
-    await assert.rejects(verifyArtifact(archive, manifest, 'b'.repeat(40), digest), /different source/u)
+    await assert.rejects(
+      verifyArtifact(archive, manifest, 'b'.repeat(40), digest),
+      /different source/u
+    )
 
-    await assert.rejects(verifyArtifact(archive, manifest, revision, ''), /build job archive digest/u)
+    await assert.rejects(
+      verifyArtifact(archive, manifest, revision, ''),
+      /build job archive digest/u
+    )
 
-    await assert.rejects(verifyArtifact(archive, manifest, revision, 'b'.repeat(64)), /build job digest/u)
+    await assert.rejects(
+      verifyArtifact(archive, manifest, revision, 'b'.repeat(64)),
+      /build job digest/u
+    )
 
     await writeFile(archive, 'different pages')
 
@@ -53,4 +62,23 @@ test('docs delivery accepts only the same revision and exact built archive', asy
   } finally {
     await rm(directory, { recursive: true, force: true })
   }
+})
+
+test('docs deployment caches dependencies only on main and always rebuilds the site', async () => {
+  const workflow = await readFile(new URL('../workflows/deploy-docs.yml', import.meta.url), 'utf8')
+  const build = workflow.split('  build:\n')[1].split('  build-and-deploy:\n')[0]
+
+  assert.match(build, /if: github.ref == 'refs\/heads\/main'/u)
+
+  assert.match(build, /task-cache-key: docs-dependencies-main/u)
+
+  assert.match(build, /QUALITY_TASK_RUNTIME=\$\(node --version\)-\$\(pnpm --version\)/u)
+
+  assert.match(build, /pnpm exec turbo run build --filter='@santi020k\/lumen-docs\^\.\.\.'/u)
+
+  assert.match(build, /pnpm --filter @santi020k\/lumen-docs run build/u)
+
+  assert.ok(build.indexOf('Build fresh docs') < build.indexOf('Bind the built archive'))
+
+  assert.doesNotMatch(build, /if:.*cache-hit/u)
 })

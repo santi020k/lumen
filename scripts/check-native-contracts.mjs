@@ -8,7 +8,10 @@ const documentationPath = join(repositoryRoot, 'docs', 'native-components.md')
 const registry = JSON.parse(await readFile(registryPath, 'utf8'))
 const documentation = await readFile(documentationPath, 'utf8')
 const adapterNames = ['reactNative', 'swiftUI', 'compose']
-const supportedExtensions = new Set(['.kt', '.swift', '.ts', '.tsx'])
+// Pilot adapters cover a declared subset of the catalog until they graduate.
+const pilotAdapterNames = ['arkUI']
+const allAdapterNames = [...adapterNames, ...pilotAdapterNames]
+const supportedExtensions = new Set(['.ets', '.kt', '.swift', '.ts', '.tsx'])
 const escapeRegExp = value => value.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const hasPublicSwiftSymbol = (source, symbol) => {
@@ -64,13 +67,21 @@ const readSourceDirectory = async directory => {
 
 assert.equal(registry.schemaVersion, 5, 'Unsupported native contract schema version')
 
-assert.deepEqual(Object.keys(registry.adapters).sort(), [...adapterNames].sort())
+assert.deepEqual(Object.keys(registry.adapters).sort(), [...allAdapterNames].sort())
+
+for (const adapterName of allAdapterNames) {
+  assert.equal(
+    registry.adapters[adapterName].maturity,
+    pilotAdapterNames.includes(adapterName) ? 'pilot' : undefined,
+    `${adapterName} must declare pilot maturity only while it covers part of the catalog`
+  )
+}
 
 assert.ok(Array.isArray(registry.components) && registry.components.length > 0)
 
 assert.ok(Array.isArray(registry.platformComponents) && registry.platformComponents.length > 0)
 
-const sourceByAdapter = Object.fromEntries(await Promise.all(adapterNames.map(async adapterName => {
+const sourceByAdapter = Object.fromEntries(await Promise.all(allAdapterNames.map(async adapterName => {
   const adapter = registry.adapters[adapterName]
 
   assert.equal(typeof adapter.package, 'string')
@@ -94,6 +105,8 @@ const reactNativePublicSource = (
   )))
 ).join('\n')
 
+const arkUIPublicSource = await readFile(join(repositoryRoot, 'packages/arkui/Index.ets'), 'utf8')
+const pilotCoverage = new Map(pilotAdapterNames.map(adapterName => [adapterName, 0]))
 const ids = new Set()
 
 for (const component of registry.components) {
@@ -127,15 +140,24 @@ for (const component of registry.components) {
     : adapterNames
 
   assert.deepEqual(
-    implementationEntries.map(([adapterName]) => adapterName).sort(),
+    implementationEntries
+      .map(([adapterName]) => adapterName)
+      .filter(adapterName => !pilotAdapterNames.includes(adapterName))
+      .sort(),
     [...expectedAdapters].sort(),
     component.formFactor === 'wearable'
       ? `${component.id} must support SwiftUI and Compose without adding wearable code to React Native`
-      : `${component.id} must support every native adapter`
+      : `${component.id} must support every graduated native adapter`
+  )
+
+  assert.ok(
+    component.formFactor !== 'wearable'
+    || implementationEntries.every(([adapterName]) => !pilotAdapterNames.includes(adapterName)),
+    `${component.id} must not add wearable code to a pilot adapter`
   )
 
   for (const [adapterName, symbol] of implementationEntries) {
-    assert.ok(adapterNames.includes(adapterName), `${component.id} uses an unknown adapter ${adapterName}`)
+    assert.ok(allAdapterNames.includes(adapterName), `${component.id} uses an unknown adapter ${adapterName}`)
 
     const escapedSymbol = escapeRegExp(symbol)
 
@@ -173,11 +195,33 @@ for (const component of registry.components) {
       )
     }
 
+    if (adapterName === 'arkUI') {
+      assert.match(
+        sourceByAdapter.arkUI,
+        new RegExp(`(?:^|\\n)export\\s+struct\\s+${escapedSymbol}\\b`),
+        `${component.id} claims ArkUI support, but ${symbol} is not an exported struct`
+      )
+
+      assert.match(
+        arkUIPublicSource,
+        new RegExp(`\\b${escapedSymbol}\\b`),
+        `${component.id} claims ArkUI support, but ${symbol} is not exported from Index.ets`
+      )
+    }
+
+    if (pilotCoverage.has(adapterName)) {
+      pilotCoverage.set(adapterName, pilotCoverage.get(adapterName) + 1)
+    }
+
     assert.ok(
       documentation.includes(`\`${symbol}\``),
       `${component.id} symbol ${symbol} is missing from docs/native-components.md`
     )
   }
+}
+
+for (const [adapterName, count] of pilotCoverage) {
+  assert.ok(count > 0, `${adapterName} must implement at least one shared component`)
 }
 
 const nativePlatforms = new Set([
@@ -258,7 +302,8 @@ assert.match(
 
 process.stdout.write(
   `Checked ${registry.components.length} shared native contracts and `
-    + `${registry.platformComponents.length} platform contracts across ${adapterNames.length} adapters.\n`
+    + `${registry.platformComponents.length} platform contracts across ${adapterNames.length} adapters `
+    + `and ${pilotAdapterNames.length} pilot adapter.\n`
 )
 
 // Keep the reviewed web/native disposition table complete as the reference catalog evolves.
