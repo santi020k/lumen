@@ -19,11 +19,20 @@ test('docs delivery accepts only the same revision and exact built archive', asy
 
     await verifyArtifact(archive, manifest, revision, digest)
 
-    await assert.rejects(verifyArtifact(archive, manifest, 'b'.repeat(40), digest), /different source/u)
+    await assert.rejects(
+      verifyArtifact(archive, manifest, 'b'.repeat(40), digest),
+      /different source/u
+    )
 
-    await assert.rejects(verifyArtifact(archive, manifest, revision, ''), /build job archive digest/u)
+    await assert.rejects(
+      verifyArtifact(archive, manifest, revision, ''),
+      /build job archive digest/u
+    )
 
-    await assert.rejects(verifyArtifact(archive, manifest, revision, 'b'.repeat(64)), /build job digest/u)
+    await assert.rejects(
+      verifyArtifact(archive, manifest, revision, 'b'.repeat(64)),
+      /build job digest/u
+    )
 
     await writeFile(archive, 'different pages')
 
@@ -54,7 +63,6 @@ test('docs delivery accepts only the same revision and exact built archive', asy
     await rm(directory, { recursive: true, force: true })
   }
 })
-
 
 test('docs deployment caches dependencies only on main and always rebuilds the site', async () => {
   const workflow = await readFile(new URL('../workflows/deploy-docs.yml', import.meta.url), 'utf8')

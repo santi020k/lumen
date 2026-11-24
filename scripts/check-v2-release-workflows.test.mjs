@@ -594,7 +594,7 @@ test('v4 contract changes trigger canaries and are checked before publication', 
   }
 
   for (const command of ['pnpm run check:lumen-4-contract', 'pnpm run test:lumen-4-contract']) {
-    assert.ok(packageManifest.scripts.validate.includes(command));
+    assert.ok(packageManifest.scripts['validate:repo'].includes(command));
 
     assert.ok(canaryWorkflow.includes(command));
   }
@@ -753,7 +753,7 @@ test("canonical package commands enforce graduation identity before publication"
     await readFile(resolve(repositoryRoot, "package.json"), "utf8"),
   );
 
-  assertOrderedCommands(packageManifest.scripts.validate, "validation", [
+  assertOrderedCommands(packageManifest.scripts["validate:repo"], "validation", [
     "pnpm run check:graduated-release-revision",
     "pnpm run test:graduated-release-revision",
     "pnpm run test:maven-release-artifacts",
@@ -894,7 +894,7 @@ test('release validation does not schedule removed native qualification checks',
 
   for (const name of Object.keys(manifest.scripts)) assert.doesNotMatch(name, removed);
 
-  for (const surface of [manifest.scripts.validate, releaseScope, ciWorkflow, canaryWorkflow, npmWorkflow, composeWorkflow]) {
+  for (const surface of [manifest.scripts.validate, manifest.scripts["validate:repo"], releaseScope, ciWorkflow, canaryWorkflow, npmWorkflow, composeWorkflow]) {
     assert.doesNotMatch(surface, removed);
   }
 });

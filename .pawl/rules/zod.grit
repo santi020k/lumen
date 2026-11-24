@@ -1,0 +1,31 @@
+// Written by pawl for the "zod" guard. Run "pawl sync" to update it; do not edit it.
+engine biome(1.0)
+language js(typescript, jsx)
+
+or {
+  `$schema.optional().nullable()` as $match where {
+    register_diagnostic(span = $match, message = "Write .nullish() in a Zod schema, not .optional() and .nullable() together.", severity = "error")
+  },
+  `$schema.nullable().optional()` as $match where {
+    register_diagnostic(span = $match, message = "Write .nullish() in a Zod schema, not .optional() and .nullable() together.", severity = "error")
+  },
+  `z.object($...).strict($...)` as $match where {
+    register_diagnostic(span = $match, message = "Write z.strictObject(...) instead of z.object(...).strict().", severity = "error")
+  },
+  `z.object($...).$method($...)` as $match where {
+    $method <: r"^(?:passthrough|loose)$",
+    register_diagnostic(span = $match, message = "Write z.looseObject(...) instead of z.object(...).passthrough() or .loose().", severity = "error")
+  },
+  `$schema.$check($...).trim()` as $match where {
+    $check <: r"^(?:min|max|length)$",
+    register_diagnostic(span = $match, message = "Call .trim() before .min(), .max() or .length() in a Zod schema, so the trimmed value is measured.", severity = "error")
+  },
+  `$schema.meta($...).$method($...)` as $match where {
+    not $method <: r"^(?:meta|(?:safe)?(?:parse|encode|decode)(?:Async)?|spa|validate(?:Async)?)$",
+    register_diagnostic(span = $match, message = "Call .meta() last in a Zod schema, after every other method.", severity = "error")
+  },
+  `z.union($items)` as $match where {
+    $items <: r"^\[\s*z\.literal\(\s*(?:'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\")\s*\)(?:\s*,\s*z\.literal\(\s*(?:'(?:[^'\\\n]|\\.)*'|\"(?:[^\"\\\n]|\\.)*\")\s*\))+\s*,?\s*\]$",
+    register_diagnostic(span = $match, message = "Write z.enum([...]) instead of z.union() of string z.literal() values.", severity = "error")
+  }
+}
