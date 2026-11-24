@@ -56,7 +56,8 @@ and light/dark modes. Use it for personal or commercial projects under the MIT l
 
 [View the source](https://github.com/santi020k/lumen/tree/main/examples/astro-starter) ·
 [Download the starter](https://lumen.santi020k.com/downloads/lumen-astro-starter.zip) ·
-[Follow the walkthrough](https://lumen.santi020k.com/guides/build-an-astro-starter)
+[Follow the walkthrough](https://lumen.santi020k.com/guides/build-an-astro-starter) ·
+[Listed on Astro Themes](https://astro.build/themes/details/lumen-astro-starter/)
 
 Choose your framework, install its adapter, and follow the setup guide for styles and runtime.
 
