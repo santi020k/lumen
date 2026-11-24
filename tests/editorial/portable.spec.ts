@@ -128,7 +128,35 @@ for (const target of ['react', 'elements']) {
       await expect.poll(async () => Number(await progress.getAttribute('aria-valuenow'))).toBeGreaterThan(0)
       await page.screenshot({ path: testInfo.outputPath(`${target}-${width}.png`) })
       await page.locator('html').evaluate(element => { element.style.fontSize = '200%'; element.dir = 'rtl'; element.dataset.theme = 'lumen-dark' })
-      expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
+      const layout = await page.evaluate(() => {
+        const viewportWidth = innerWidth
+        const scrollWidth = document.documentElement.scrollWidth
+        const overflowing = [...document.querySelectorAll('body *')].flatMap(element => {
+          const rect = element.getBoundingClientRect()
+
+          if (rect.width === 0 || (rect.left >= 0 && rect.right <= viewportWidth)) return []
+
+          const style = getComputedStyle(element)
+
+          return [{
+            tag: element.localName, id: element.id, className: element.getAttribute('class'),
+            left: rect.left, right: rect.right, width: rect.width,
+            scrollWidth: element.scrollWidth, clientWidth: element.clientWidth,
+            position: style.position, direction: style.direction, fontSize: style.fontSize,
+            overflowX: style.overflowX
+          }]
+        })
+
+        return { viewportWidth, scrollWidth, scrollX, overflowing }
+      })
+
+      if (layout.scrollWidth > layout.viewportWidth) {
+        await testInfo.attach('overflow-layout.json', {
+          body: JSON.stringify(layout, null, 2), contentType: 'application/json'
+        })
+      }
+
+      expect(layout.scrollWidth > layout.viewportWidth, JSON.stringify(layout)).toBe(false)
       await page.getByRole('button', { name: 'Search', exact: true }).click()
       const dialog = page.getByRole('dialog')
       await expect(dialog).toBeVisible()

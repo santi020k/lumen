@@ -15,7 +15,7 @@ export default defineConfig({
   testDir: './tests/editorial',
   testMatch: ['portable.spec.ts', 'selective-installer.spec.ts'],
   workers: playwrightWorkers,
-  use: { reducedMotion: 'reduce', baseURL: `http://127.0.0.1:${port}` },
+  use: { reducedMotion: 'reduce', baseURL: `http://127.0.0.1:${port}`, screenshot: 'only-on-failure', trace: 'retain-on-failure' },
   webServer: {
     command: `node node_modules/vite/bin/vite.js preview .cache/portable-editorial-consumer --host 127.0.0.1 --port ${port}`,
     reuseExistingServer: !process.env.CI,
