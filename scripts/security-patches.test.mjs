@@ -18,11 +18,22 @@ const root = resolve(import.meta.dirname, '..')
 const policies = JSON.parse(await readFile(resolve(root, 'registry/security-patches.json'), 'utf8'))
 const hash = contents => createHash('sha256').update(contents).digest('hex')
 
-const harmonyCliRequire = () => {
-  const playground = createRequire(resolve(root, 'apps/playground-harmony/package.json'))
+// Resolve from each consumer's declared dependencies, not the test workspace's dependencies.
+const consumerDependencyRequire = (consumer, name) => {
+  const manifest = consumer('./package.json')
 
-  return createRequire(playground.resolve('@react-native-oh/react-native-harmony-cli/package.json'))
+  assert.ok(
+    Object.hasOwn(manifest.dependencies ?? {}, name) || Object.hasOwn(manifest.devDependencies ?? {}, name),
+    `${manifest.name} must declare ${name}`
+  )
+
+  return createRequire(consumer.resolve(`${name}/package.json`))
 }
+
+const harmonyCliRequire = () => consumerDependencyRequire(
+  createRequire(resolve(root, 'apps/playground-harmony/package.json')),
+  '@react-native-oh/react-native-harmony-cli'
+)
 
 test('Harmony archive extraction preserves its CommonJS consumer contract', async context => {
   const directory = await mkdtemp(resolve(tmpdir(), 'lumen-harmony-archive-'))
@@ -30,7 +41,7 @@ test('Harmony archive extraction preserves its CommonJS consumer contract', asyn
   context.after(() => rm(directory, { recursive: true, force: true }))
 
   const require = harmonyCliRequire()
-  const tar = require('tar')
+  const tar = consumerDependencyRequire(require, 'tar')('.')
   const { unpackTarGz } = require('./dist/io/TarGz.js')
   const { AbsolutePath } = require('./dist/core/AbsolutePath.js')
   const source = resolve(directory, 'source')
@@ -50,8 +61,8 @@ test('Harmony archive extraction preserves its CommonJS consumer contract', asyn
 
 test('Harmony codemod ignore patterns retain glob and dotfile behavior', () => {
   const require = harmonyCliRequire()
-  const writer = createRequire(require.resolve('json5-writer/package.json'))
-  const codemod = createRequire(writer.resolve('jscodeshift/package.json'))
+  const writer = consumerDependencyRequire(require, 'json5-writer')
+  const codemod = consumerDependencyRequire(writer, 'jscodeshift')
   const ignore = codemod('./src/ignoreFiles.js')
 
   ignore.add(['**/node_modules/**', '**/*.generated.{js,ts}', '**/.cache/**'])
