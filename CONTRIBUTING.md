@@ -222,6 +222,8 @@ and tag for merge-base and release checks without downloading old file contents.
 The dedicated `pnpm run test:motion` suite also runs for ordinary and release pull requests,
 covering primitive motion and reduced-motion behavior in Chromium, WebKit, and mobile Chromium.
 That lane installs only Chromium and WebKit; other interaction lanes retain Firefox coverage.
+The motion suite uses one CI worker so Linux WebKit has enough rendering capacity for real
+animations. Other browser lanes retain their shared worker policy and parallel execution.
 Motion checks build a dedicated production docs output and serve it through Astro preview, matching
 the interaction suite instead of compiling routes during browser actions. Failed browser lanes retain
 traces, screenshots, and reports for seven days.

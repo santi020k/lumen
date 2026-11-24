@@ -856,6 +856,7 @@ test('parallel browser suites share an environment-driven worker count', async (
     const source = await readRepositoryFile(name)
 
     if (serial.has(name)) assert.match(source, /workers: 1\b/u, name)
+    else if (name === 'playwright.motion.config.ts') assert.match(source, /workers: process\.env\.CI \? 1 : playwrightWorkers/u, name)
     else assert.match(source, /workers: playwrightWorkers\b/u, name)
   }
 
@@ -997,6 +998,8 @@ test('motion uses a fresh production preview and browser failures retain their d
   assert.match(config, /prepare:docs-browser && LUMEN_DOCS_OUT_DIR=\.astro\/motion-dist-\$\{port\} pnpm --filter @santi020k\/lumen-docs exec astro build && LUMEN_DOCS_OUT_DIR=\.astro\/motion-dist-\$\{port\} node apps\/docs\/node_modules\/astro\/bin\/astro\.mjs preview/u)
 
   assert.match(config, /reuseExistingServer: false/u)
+
+  assert.match(config, /workers: process\.env\.CI \? 1 : playwrightWorkers/u)
 
   assert.doesNotMatch(config, /astro dev|retries:/u)
 

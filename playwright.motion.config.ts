@@ -14,7 +14,8 @@ export default defineConfig({
   ],
   reporter: process.env.CI ? 'github' : 'list',
   testDir: './tests/motion',
-  workers: playwrightWorkers,
+  // Software-rendered WebKit needs the runner to itself for reliable animation frames.
+  workers: process.env.CI ? 1 : playwrightWorkers,
   use: { baseURL, screenshot: 'only-on-failure', trace: 'retain-on-failure' },
   webServer: {
     command: `pnpm run prepare:docs-browser && LUMEN_DOCS_OUT_DIR=.astro/motion-dist-${port} pnpm --filter @santi020k/lumen-docs exec astro build && LUMEN_DOCS_OUT_DIR=.astro/motion-dist-${port} node apps/docs/node_modules/astro/bin/astro.mjs preview --root apps/docs --ignore-lock --host 127.0.0.1 --port ${port}`,
