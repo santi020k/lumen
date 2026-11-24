@@ -937,7 +937,7 @@ test('CI browser contracts run every suite exactly once across parallel lanes', 
   assert.deepEqual(lanes, {
     'pnpm run test:interactions --shard="$SHARD"': "startsWith(matrix.lane, 'interactions-')",
     'pnpm run test:framework-conformance && pnpm run test:figma-plugin': "matrix.lane == 'frameworks'",
-    'pnpm --filter @santi020k/lumen-motion build && pnpm --filter @santi020k/lumen-motion test': "matrix.lane == 'motion'",
+    'pnpm exec turbo run build --filter=@santi020k/lumen-motion --concurrency=2 && pnpm --filter @santi020k/lumen-motion test': "matrix.lane == 'motion'",
     'pnpm run test:motion && pnpm run check:route-delivery': "matrix.lane == 'motion'",
     'pnpm run measure:subscribe-form': "matrix.lane == 'motion'",
     'pnpm run test:web-coverage': "matrix.lane == 'motion'"
@@ -954,6 +954,33 @@ test('CI browser contracts run every suite exactly once across parallel lanes', 
 
   // Browser servers build their packages through Turbo so those lanes can reuse cached outputs.
   assert.match(manifest.scripts['prepare:docs-browser'], /^turbo run build (?:--filter=\S+ )+--concurrency=2$/u)
+})
+
+test('the isolated CI motion lane builds core exports before its preview', () => {
+  const step = ci.split('      - name: Check local motion previews\n')[1]?.split('      - name:')[0]
+  const command = /run: (.+?) && /u.exec(step ?? '')?.[1]
+
+  assert.ok(command, 'The motion preview must be built before browser tests run')
+
+  assert.ok(command.startsWith('pnpm exec turbo '), 'Workspace build dependencies must be scheduled')
+
+  const result = spawnSync(process.execPath, [
+    resolve(repositoryRoot, 'node_modules/turbo/bin/turbo'),
+    ...command.slice('pnpm exec turbo '.length).split(' '), '--dry=json', '--no-daemon'
+  ], { cwd: repositoryRoot, encoding: 'utf8', timeout: 30_000 })
+
+  assert.equal(result.status, 0, result.stderr)
+
+  const { tasks } = JSON.parse(result.stdout)
+  const preview = tasks.find(task => task.taskId === '@santi020k/lumen-motion#build')
+
+  assert.ok(preview)
+
+  for (const dependency of ['@santi020k/lumen-core#build', '@santi020k/lumen-astro#build']) {
+    assert.ok(preview.dependencies.includes(dependency), `Preview must wait for ${dependency}`)
+
+    assert.ok(tasks.some(task => task.taskId === dependency), `${dependency} must be scheduled`)
+  }
 })
 
 test('Compose library gates and device checks run as independent jobs', async () => {

@@ -311,7 +311,8 @@ jobs:
 
       - name: Check local motion previews
         if: matrix.lane == 'motion'
-        run: pnpm --filter @santi020k/lumen-motion build && pnpm --filter @santi020k/lumen-motion test
+        # This lane starts cold; build the preview with its workspace dependencies first.
+        run: pnpm exec turbo run build --filter=@santi020k/lumen-motion --concurrency=2 && pnpm --filter @santi020k/lumen-motion test
 
       - name: Verify primitive motion and reduced-motion behavior
         if: matrix.lane == 'motion'
