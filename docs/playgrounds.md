@@ -219,7 +219,7 @@ verification status.
 
 1. In Xcode, choose File → Add Package Dependencies.
 2. Paste `https://github.com/santi020k/lumen` into the search field.
-3. Choose Exact Version and enter `5.3.0`. Use Up to Next Major Version from `5.3.0` only when the
+3. Choose Exact Version and enter `5.4.0`. Use Up to Next Major Version from `5.4.0` only when the
    application intentionally accepts compatible updates; reserve `main` for local evaluation.
 4. Select the `LumenUI` product and add it to your application target.
 5. Add `import LumenUI` to the SwiftUI view that uses Lumen components.
