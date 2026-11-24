@@ -990,6 +990,29 @@ test('CI browser contracts run every suite exactly once across parallel lanes', 
   assert.match(manifest.scripts['prepare:docs-browser'], /^turbo run build (?:--filter=\S+ )+--concurrency=2$/u)
 })
 
+test('motion uses a fresh production preview and browser failures retain their diagnostics', async () => {
+  const config = await readRepositoryFile('playwright.motion.config.ts')
+  const job = ci.slice(ci.indexOf('\n  browser-contracts:\n'), ci.indexOf('\n  react-native-captures:\n'))
+
+  assert.match(config, /prepare:docs-browser && LUMEN_DOCS_OUT_DIR=\.astro\/motion-dist-\$\{port\} pnpm --filter @santi020k\/lumen-docs exec astro build && LUMEN_DOCS_OUT_DIR=\.astro\/motion-dist-\$\{port\} node apps\/docs\/node_modules\/astro\/bin\/astro\.mjs preview/u)
+
+  assert.match(config, /reuseExistingServer: false/u)
+
+  assert.doesNotMatch(config, /astro dev|retries:/u)
+
+  const diagnostics = job.split('      - name: Preserve browser failure diagnostics\n')[1]
+
+  assert.ok(diagnostics)
+
+  assert.match(diagnostics, /if: failure\(\)/u)
+
+  assert.match(diagnostics, /name: browser-contracts-\$\{\{ matrix\.lane \}\}-diagnostics/u)
+
+  for (const path of ['test-results/', 'playwright-report/', 'packages/motion/test-results/', 'packages/motion/playwright-report/']) {
+    assert.ok(diagnostics.split('\n').some(line => line.trim() === path))
+  }
+})
+
 test('the isolated CI motion lane builds core exports before its preview', () => {
   const step = ci.split('      - name: Check local motion previews\n')[1]?.split('      - name:')[0]
   const command = /run: (.+?) && /u.exec(step ?? '')?.[1]

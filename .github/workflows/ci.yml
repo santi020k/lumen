@@ -329,6 +329,19 @@ jobs:
           LUMEN_VITEST_MAX_WORKERS: 4
         run: pnpm run test:web-coverage
 
+      - name: Preserve browser failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: browser-contracts-${{ matrix.lane }}-diagnostics
+          path: |
+            test-results/
+            playwright-report/
+            packages/motion/test-results/
+            packages/motion/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
   react-native-captures:
     name: React Native captures
     needs: [classify, preflight]

@@ -222,6 +222,9 @@ and tag for merge-base and release checks without downloading old file contents.
 The dedicated `pnpm run test:motion` suite also runs for ordinary and release pull requests,
 covering primitive motion and reduced-motion behavior in Chromium, WebKit, and mobile Chromium.
 That lane installs only Chromium and WebKit; other interaction lanes retain Firefox coverage.
+Motion checks build a dedicated production docs output and serve it through Astro preview, matching
+the interaction suite instead of compiling routes during browser actions. Failed browser lanes retain
+traces, screenshots, and reports for seven days.
 Linux browser setup uses the runner's existing canonical HTTPS Ubuntu fallback when Azure or EC2
 HTTP mirrors are present. It preserves other mirrors, package signatures, TLS verification, and
 bounded network retries. Browser-cache hits still install required operating-system dependencies.
