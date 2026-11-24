@@ -29,6 +29,12 @@ pnpm run check:harmony-bundle
 
 The bundle is written to `apps/playground-harmony/.harmony-check/`.
 
+The workspace overrides Harmony CLI 0.86.1's archive dependency to patched `tar` 7.5.23 and its
+older codemod runner to `micromatch` 4.0.8. A pnpm patch replaces the CLI's default `tar` import
+with a namespace import for the newer CommonJS exports. `pnpm run check:security` verifies archive
+extraction and codemod ignore patterns alongside the dependency audit. Keep these overrides and
+the patch until the upstream CLI adopts patched dependencies and compatible imports.
+
 ## Run on an emulator or device
 
 Prerequisites: DevEco Studio with the HarmonyOS SDK, a Huawei developer account, and a HarmonyOS

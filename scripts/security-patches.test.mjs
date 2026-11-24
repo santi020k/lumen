@@ -1,3 +1,5 @@
+// cspell:words jscodeshift
+
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -15,6 +17,53 @@ import { collectPatchedInstances, evaluateAudit, verifyBracesBehavior, verifyFor
 const root = resolve(import.meta.dirname, '..')
 const policies = JSON.parse(await readFile(resolve(root, 'registry/security-patches.json'), 'utf8'))
 const hash = contents => createHash('sha256').update(contents).digest('hex')
+
+const harmonyCliRequire = () => {
+  const playground = createRequire(resolve(root, 'apps/playground-harmony/package.json'))
+
+  return createRequire(playground.resolve('@react-native-oh/react-native-harmony-cli/package.json'))
+}
+
+test('Harmony archive extraction preserves its CommonJS consumer contract', async context => {
+  const directory = await mkdtemp(resolve(tmpdir(), 'lumen-harmony-archive-'))
+
+  context.after(() => rm(directory, { recursive: true, force: true }))
+
+  const require = harmonyCliRequire()
+  const tar = require('tar')
+  const { unpackTarGz } = require('./dist/io/TarGz.js')
+  const { AbsolutePath } = require('./dist/core/AbsolutePath.js')
+  const source = resolve(directory, 'source')
+  const output = resolve(directory, 'output')
+  const archive = resolve(directory, 'fixture.tar.gz')
+
+  await mkdir(source)
+
+  await writeFile(resolve(source, 'module.json'), '{"name":"fixture"}')
+
+  await tar.create({ cwd: source, file: archive, gzip: true }, ['module.json'])
+
+  await unpackTarGz(new AbsolutePath(archive), new AbsolutePath(output))
+
+  assert.equal(await readFile(resolve(output, 'module.json'), 'utf8'), '{"name":"fixture"}')
+})
+
+test('Harmony codemod ignore patterns retain glob and dotfile behavior', () => {
+  const require = harmonyCliRequire()
+  const writer = createRequire(require.resolve('json5-writer/package.json'))
+  const codemod = createRequire(writer.resolve('jscodeshift/package.json'))
+  const ignore = codemod('./src/ignoreFiles.js')
+
+  ignore.add(['**/node_modules/**', '**/*.generated.{js,ts}', '**/.cache/**'])
+
+  assert.equal(ignore.shouldIgnore('/project/node_modules/example/index.js'), true)
+
+  assert.equal(ignore.shouldIgnore('/project/src/tokens.generated.ts'), true)
+
+  assert.equal(ignore.shouldIgnore('/project/.cache/module.js'), true)
+
+  assert.equal(ignore.shouldIgnore('/project/src/index.ts'), false)
+})
 
 const createFixture = async context => {
   const directory = await mkdtemp(resolve(tmpdir(), 'lumen-security-'))
