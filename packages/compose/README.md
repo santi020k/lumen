@@ -66,6 +66,15 @@ becomes false. Reopening during dismissal cancels the exit. Programmatic closure
 
 ## Install
 
+### 4.1.1 release notes
+
+Update libphonenumber to 9.0.44 for current phone-number metadata, and build the Compose library
+and Android playground with Android Gradle Plugin 9.5.2 and Gradle 9.9.2. The Gradle update includes
+security fixes. Public component APIs are unchanged.
+Compose and Wear share the 4.1.1 release coordinate; applications can update both Maven dependencies
+without a source migration. If phone-number validation changes affect your application, restore
+its previous 4.1.0 dependency pin while reviewing the updated metadata.
+
 Add Maven Central to the application's repositories, then add Lumen to `app/build.gradle.kts`:
 
 ```kotlin
@@ -74,7 +83,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.santi020k:lumen-compose:4.1.0")
+    implementation("com.santi020k:lumen-compose:4.1.1")
 }
 ```
 
@@ -361,7 +370,7 @@ See the [native compatibility matrix](https://github.com/santi020k/lumen/blob/ma
 JDK, Gradle, Kotlin, and Compose baselines.
 
 Wear OS applications should use the sibling
-[`lumen-compose-wear`](https://github.com/santi020k/lumen/tree/main/packages/compose/wear) artifact (`com.santi020k:lumen-compose-wear:4.1.0`). It provides a
+[`lumen-compose-wear`](https://github.com/santi020k/lumen/tree/main/packages/compose/wear) artifact (`com.santi020k:lumen-compose-wear:4.1.1`). It provides a
 deliberately small round-screen tier without
 forcing phone applications to acquire wearable contracts or requiring consumers to migrate their
 selected Wear Material version.
