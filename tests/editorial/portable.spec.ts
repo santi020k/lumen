@@ -104,6 +104,31 @@ for (const target of ['react', 'elements']) {
     await expect(page.getByRole('button', { name: 'View larger image' })).toBeFocused()
   })
 
+  test(`${target} fixture remount control wraps enlarged labels without clipping`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 })
+    await page.goto(`/${target}.html`)
+    await page.locator('html').evaluate(element => {
+      element.style.fontSize = '200%'
+      element.dir = 'rtl'
+    })
+    const remount = page.locator('[data-remount]')
+    const label = 'Remount portable editorial recipes with enlarged text'
+
+    await remount.evaluate((element, text) => { element.textContent = text }, label)
+    expect(await remount.evaluate(element => {
+      const rect = element.getBoundingClientRect()
+
+      return rect.left >= 0 && rect.right <= innerWidth &&
+        element.scrollWidth <= element.clientWidth && element.scrollHeight <= element.clientHeight
+    })).toBe(true)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    await page.locator('article.article-text').evaluate(element => { element.dataset.beforeRemount = 'true' })
+    await remount.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('article.article-text')).not.toHaveAttribute('data-before-remount')
+    await expect(remount).toBeFocused()
+  })
+
   for (const width of [320, 1440]) {
     test(`${target} reading fits ${width}px with enlarged text and follows its content`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 700 })
