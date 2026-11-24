@@ -30,6 +30,8 @@ jobs:
           fetch-depth: 0
           # Publication checks read tags and commit history, not old file contents.
           filter: blob:none
+          # The publication guard only reads the umbrella version and Git tags.
+          sparse-checkout: packages/lumen
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Check publication tag before deployment approval

@@ -236,7 +236,7 @@ test('primitive motion has browser coverage for ordinary and release pull reques
 
   assert.match(ciBrowser, /run: pnpm run test:motion/u)
 
-  assert.match(ciBrowser, /browsers: chromium firefox webkit/u)
+  assert.match(ciBrowser, /browsers: \$\{\{ matrix\.lane == 'motion' && 'chromium webkit' \|\| 'chromium firefox webkit' \}\}/u)
 
   assert.match(releaseBrowser, /browsers: chromium webkit/u)
 
@@ -691,6 +691,16 @@ if [[ "$1" == cp ]]; then cp "$2" "$3"; else cat > "$MOCK_APT_CONFIG"; fi
 
     assert.equal(await readFile(mirrors, 'utf8'), unchangedMirrors)
 
+    const secureMirrors = 'https://archive.ubuntu.com/ubuntu priority:2\nhttps://us-east-2.ec2.archive.ubuntu.com/ubuntu/ priority:3\nhttps://security.ubuntu.com/ubuntu/ priority:4\nhttp://mirror.example.com/ubuntu/ priority:5\nhttp://azure.archive.ubuntu.com.example.com/ubuntu/ priority:6\nhttp://azureXarchiveXubuntuXcom/ubuntu priority:7\nhttp://us-east-2Xec2XarchiveXubuntuXcom/ubuntu/ priority:8\nhttp://us-east-2.ec2.archive.ubuntu.com.example.com/ubuntu/ priority:9\n'
+
+    await writeFile(mirrors, `http://us-east-2.ec2.archive.ubuntu.com/ubuntu/ priority:1\nhttp://eu-west-1.ec2.archive.ubuntu.com/ubuntu priority:1\n${secureMirrors}`)
+
+    const cloudFallback = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux' } })
+
+    assert.equal(cloudFallback.status, 0, cloudFallback.stderr)
+
+    assert.equal(await readFile(mirrors, 'utf8'), secureMirrors)
+
     await writeFile(mirrors, 'http://azure.archive.ubuntu.com/ubuntu/ priority:1\n')
 
     const noFallback = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux' } })
@@ -698,6 +708,14 @@ if [[ "$1" == cp ]]; then cp "$2" "$3"; else cat > "$MOCK_APT_CONFIG"; fi
     assert.equal(noFallback.status, 0, noFallback.stderr)
 
     assert.equal(await readFile(mirrors, 'utf8'), 'http://azure.archive.ubuntu.com/ubuntu/ priority:1\n')
+
+    await writeFile(mirrors, 'http://us-east-2.ec2.archive.ubuntu.com/ubuntu/ priority:1\n')
+
+    const noCloudFallback = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux' } })
+
+    assert.equal(noCloudFallback.status, 0, noCloudFallback.stderr)
+
+    assert.equal(await readFile(mirrors, 'utf8'), 'http://us-east-2.ec2.archive.ubuntu.com/ubuntu/ priority:1\n')
 
     const failed = spawnSync('bash', [script, mirrors], { encoding: 'utf8', env: { ...env, RUNNER_OS: 'Linux', MOCK_APT_FAILURE: 'true' } })
 
@@ -772,7 +790,7 @@ test('docs deployment retries restore the same verified archive without rebuildi
   const build = workflow.split('  build:\n')[1].split('  build-and-deploy:\n')[0]
   const deploy = workflow.split('  build-and-deploy:\n')[1]
 
-  assert.match(build, /pnpm run docs:build/u)
+  assert.match(build, /pnpm --filter @santi020k\/lumen-docs run build/u)
 
   assert.match(build, /docs-deployment-artifact\.mjs record/u)
 
@@ -914,7 +932,13 @@ test('docs performance reuses cached builds while deployments always build fresh
   const deployBuild = (await readRepositoryFile('.github/workflows/deploy-docs.yml')).split('  build:\n')[1].split('  build-and-deploy:\n')[0]
   const performance = await readRepositoryFile('.github/workflows/docs-performance.yml')
 
-  assert.doesNotMatch(deployBuild, /task-cache|TURBO_TOKEN|QUALITY_TASK_RUNTIME/u)
+  assert.doesNotMatch(deployBuild, /TURBO_TOKEN|TURBO_TEAM/u)
+
+  assert.match(deployBuild, /task-cache-key: docs-dependencies-main/u)
+
+  assert.match(deployBuild, /pnpm exec turbo run build --filter='@santi020k\/lumen-docs\^\.\.\.'/u)
+
+  assert.match(deployBuild, /pnpm --filter @santi020k\/lumen-docs run build/u)
 
   assert.match(performance, /TURBO_TOKEN: \$\{\{ secrets\.TURBO_TOKEN \}\}\n\s+TURBO_TEAM: \$\{\{ secrets\.TURBO_TEAM \}\}/u)
 
@@ -930,6 +954,16 @@ test('CI browser contracts run every suite exactly once across parallel lanes', 
   assert.match(job, /lane: \[interactions-1, interactions-2, frameworks, motion\]/u)
 
   assert.match(job, /fail-fast: false/u)
+
+  assert.match(job, /browsers: \$\{\{ matrix\.lane == 'motion' && 'chromium webkit' \|\| 'chromium firefox webkit' \}\}/u)
+
+  const motionConfig = await readRepositoryFile('playwright.motion.config.ts')
+
+  assert.doesNotMatch(motionConfig, /firefox|Desktop Firefox/u)
+
+  assert.match(motionConfig, /Desktop Chrome/u)
+
+  assert.match(motionConfig, /Desktop Safari/u)
 
   const steps = job.split('    steps:\n')[1].split(/\n\n(?= {6}- )/u).filter(step => step.includes('        run: pnpm'))
   const lanes = Object.fromEntries(steps.map(step => [/run: ([^\n]+)/u.exec(step)[1], /if: ([^\n]+)/u.exec(step)?.[1]]))

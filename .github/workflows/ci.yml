@@ -297,7 +297,7 @@ jobs:
       - name: Install Playwright browsers
         uses: ./.github/actions/setup-playwright
         with:
-          browsers: chromium firefox webkit
+          browsers: ${{ matrix.lane == 'motion' && 'chromium webkit' || 'chromium firefox webkit' }}
 
       - name: Run cross-browser interaction contracts
         if: startsWith(matrix.lane, 'interactions-')

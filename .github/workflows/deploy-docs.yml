@@ -60,12 +60,23 @@ jobs:
         uses: santi020k/quality/actions/setup-pnpm@ff490e9efbd5fdfbdb1e6c404f1741d04c57f585 # v2.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
+          # This job only runs on main; PR jobs never write this cache namespace.
+          task-cache-path: .turbo/cache
+          task-cache-key: docs-dependencies-main
+
+      - name: Bind dependency cache to the resolved runtime
+        run: |
+          echo "QUALITY_TASK_RUNTIME=$(node --version)-$(pnpm --version)-$(node -p 'process.platform + "/" + process.arch')" >> "$GITHUB_ENV"
 
       - name: Verify release approval
         run: node scripts/check-approved-release-revision.mjs
 
-      - name: Build docs
-        run: pnpm run docs:build
+      - name: Build cached docs dependencies
+        run: pnpm exec turbo run build --filter='@santi020k/lumen-docs^...'
+
+      - name: Build fresh docs
+        # Direct execution keeps docs, OG generation, and the deployment archive fresh.
+        run: pnpm --filter @santi020k/lumen-docs run build
 
       - name: Bind the built archive to this revision
         id: archive
@@ -100,6 +111,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.0
         with:
           fetch-depth: 0
+          # Approval uses history; deployment restores the verified build artifact.
+          filter: blob:none
           persist-credentials: false
 
       - name: Set up the lockfile-pinned deployment tool

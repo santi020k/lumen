@@ -31,17 +31,24 @@ test('the playground reinitializes after client navigation', async ({ page }) =>
   await expect(page).toHaveURL(/\/docs\/components\/scroll-reveal$/)
   await page.goBack()
   await expect(page).toHaveURL(new RegExp(`${route}$`))
+  // History updates the URL before Astro's page-load handler binds the restored playground.
+  await expect(page.locator('[data-motion-playground]')).toHaveAttribute('data-ui-motion', /^(system|reduce)$/)
   await page.getByRole('button', { name: 'Add item', exact: true }).click()
   await expect(page.locator('[data-motion-list] [role="listitem"]')).toHaveCount(2)
 })
 
 test('save feedback announces completion without losing the button focus', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-11-24T12:00:00Z') })
   await page.goto(route)
+  await expect(page.locator('[data-motion-playground]')).toHaveAttribute('data-ui-motion', /^(system|reduce)$/)
+  // Keep the brief pending state observable even when WebKit or the runner is busy.
+  await page.clock.pauseAt(new Date('2026-11-24T12:01:00Z'))
   const save = page.getByRole('button', { name: 'Simulate save' })
   await save.focus()
   await page.keyboard.press('Enter')
   await expect(save).toHaveAttribute('aria-busy', 'true')
   await expect(page.locator('[data-motion-feedback]')).toHaveText('Saving demonstration…')
+  await page.clock.resume()
   await expect(page.locator('[data-motion-success]')).toBeVisible()
   await expect(save).toBeEnabled()
   await expect(save).toBeFocused()

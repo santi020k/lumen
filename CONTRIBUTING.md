@@ -173,7 +173,9 @@ artifact ID returned by its build job, rechecks release approval, and verifies b
 independently passed build-job digest before extraction. Production runs serialize without cancelling delivery. Rerun failed jobs to retry delivery or smoke checks
 without rebuilding. If the artifact expires, rerun the complete workflow at the intended revision.
 Every new workflow run builds fresh docs; clock, network, and Git metadata inputs are not assumed
-cache-safe. The docs performance workflow reuses browser binaries while refreshing system dependencies,
+cache-safe. The main-only deployment job caches dependency builds in a dedicated Turbo cache
+namespace bound to the resolved Node, pnpm, OS, and architecture. It then runs the docs build directly,
+so cached dependency outputs never substitute for fresh pages, OG images, or the deployment archive. The docs performance workflow reuses browser binaries while refreshing system dependencies,
 and reads the Turbo remote cache that CI populates; only the deployment build is always fresh.
 
 CI runs repository lint, workflow contracts, and dependency security before expensive builds.
@@ -193,6 +195,10 @@ History-dependent checkouts use `fetch-depth: 0` with `filter: blob:none`, which
 and tag for merge-base and release checks without downloading old file contents.
 The dedicated `pnpm run test:motion` suite also runs for ordinary and release pull requests,
 covering primitive motion and reduced-motion behavior in Chromium, WebKit, and mobile Chromium.
+That lane installs only Chromium and WebKit; other interaction lanes retain Firefox coverage.
+Linux browser setup uses the runner's existing canonical HTTPS Ubuntu fallback when Azure or EC2
+HTTP mirrors are present. It preserves other mirrors, package signatures, TLS verification, and
+bounded network retries. Browser-cache hits still install required operating-system dependencies.
 Quality's pinned pnpm setup action restores Turbo task outputs, while Java setup caches Gradle
 dependencies. Cache hits accelerate work but never replace the required checks or release approval.
 GitHub shares a cache saved from `main` with every pull request, but keeps a cache saved by a pull
